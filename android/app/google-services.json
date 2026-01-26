@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "719182648136",
+    "project_id": "vaktinde-85094",
+    "storage_bucket": "vaktinde-85094.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719182648136:android:d3bc5d6d8084326140197d",
+        "android_client_info": {
+          "package_name": "com.mmdigital.vaktinde"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlOKDGLZSvcpedEQFluEDrvUfyJ2LFkpM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

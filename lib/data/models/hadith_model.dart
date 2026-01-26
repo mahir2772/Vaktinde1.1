@@ -1,14 +1,21 @@
 class HadithModel {
   final String? content; // Hadisin metni
-  final String? source; // Kaynak (Örn: Tirmizi)
+  final String? source; // Kaynak (Buhari vb.)
 
   HadithModel({this.content, this.source});
 
   factory HadithModel.fromJson(Map<String, dynamic> json) {
     return HadithModel(
-      // API "hadith" ve "source" olarak veri dönüyor
-      content: json['hadith'] ?? "Hadis metni bulunamadı.",
-      source: json['source'] ?? "Kaynak Bilinmiyor",
+      content:
+          json['hadeeth'] ??
+          json['text'] ??
+          json['content'] ??
+          "Hadis metni bulunamadı.",
+      source: json['attribution'] ?? json['source'] ?? "Kaynak Bilinmiyor",
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'content': content, 'source': source};
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart'; // <--- Provider Eklendi (Veri çekmek için)
+import 'package:provider/provider.dart';
+// --- DİL DESTEĞİ İMPORTU ---
+import 'package:ezan_saati/l10n/app_localizations.dart';
+// ---------------------------
 import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
-import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
-import 'package:ezan_saati/features/home/view_model/home_view_model.dart'; // <--- ViewModel Eklendi
+import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -24,7 +26,6 @@ class _MainWrapperState extends State<MainWrapper> {
   final List<Widget> _pages = [
     const HomeView(),
     const QiblaView(),
-    const MissedPrayersView(),
     const ToolsView(),
   ];
 
@@ -33,13 +34,15 @@ class _MainWrapperState extends State<MainWrapper> {
     super.initState();
     _loadAd();
 
-    // --- EKLENEN KISIM ---
-    // Uygulama açılır açılmaz veriyi çekmeye başla.
-    // IndexedStack sayesinde sayfa değişse bile bu veri korunacak.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeViewModel>().initializeApp();
+      // Dili context üzerinden alıp ViewModel'e gönderiyoruz
+      // (Eğer context hazır değilse hata vermemesi için try-catch veya null check yapılabilir ama
+      // addPostFrameCallback içinde context genelde güvenlidir.)
+      final loc = AppLocalizations.of(context);
+      if (loc != null) {
+        context.read<HomeViewModel>().initializeApp(loc);
+      }
     });
-    // ---------------------
   }
 
   void _loadAd() {
@@ -55,7 +58,7 @@ class _MainWrapperState extends State<MainWrapper> {
         },
         onAdFailedToLoad: (ad, err) {
           ad.dispose();
-          print('Reklam yüklenemedi: ${err.message}');
+          debugPrint('Reklam yüklenemedi: ${err.message}');
         },
       ),
     )..load();
@@ -69,15 +72,12 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // --- KRİTİK DEĞİŞİKLİK BURASI ---
-      // IndexedStack: Sayfaları hafızada canlı tutar.
-      // Sekme değiştirince HomeView kapanmaz, sadece gizlenir.
-      // Böylece tekrar tekrar API isteği atmaz.
-      body: IndexedStack(index: _currentIndex, children: _pages),
-      // -------------------------------
+    // Çeviri nesnesini alıyoruz
+    final loc = AppLocalizations.of(context)!;
 
-      // Alt Menü + Reklam (Senin Kodun)
+    return Scaffold(
+      body: IndexedStack(index: _currentIndex, children: _pages),
+
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -97,26 +97,21 @@ class _MainWrapperState extends State<MainWrapper> {
             },
             backgroundColor: Colors.white,
             indicatorColor: Colors.teal.shade100,
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home, color: Colors.teal),
-                label: 'Vakitler',
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(Icons.home, color: Colors.teal),
+                label: loc.navPrayer, // "Vakitler" veya "Times"
               ),
               NavigationDestination(
-                icon: Icon(Icons.explore_outlined),
-                selectedIcon: Icon(Icons.explore, color: Colors.teal),
-                label: 'Kıble',
+                icon: const Icon(Icons.explore_outlined),
+                selectedIcon: const Icon(Icons.explore, color: Colors.teal),
+                label: loc.navQibla, // "Kıble" veya "Qibla"
               ),
               NavigationDestination(
-                icon: Icon(Icons.history_edu_outlined),
-                selectedIcon: Icon(Icons.history_edu, color: Colors.teal),
-                label: 'Kaza',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.grid_view),
-                selectedIcon: Icon(Icons.grid_view_rounded, color: Colors.teal),
-                label: 'Diğer',
+                icon: const Icon(Icons.dashboard_outlined),
+                selectedIcon: const Icon(Icons.dashboard, color: Colors.teal),
+                label: loc.navMenu, // "Menü" veya "Menu"
               ),
             ],
           ),

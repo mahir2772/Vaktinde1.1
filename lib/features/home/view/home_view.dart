@@ -1,9 +1,18 @@
+// ignore_for_file: deprecated_member_use, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+// --- YENİ EKLENDİ: Upgrader Paketi ---
+import 'package:upgrader/upgrader.dart';
+// ------------------------------------
+import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../common/language_provider.dart';
+import '../../common/theme_provider.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/countdown_widget.dart';
-
 import '../../../data/models/hadith_model.dart';
 
 class HomeView extends StatefulWidget {
@@ -20,7 +29,13 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeViewModel>().initializeApp();
+      final loc = AppLocalizations.of(context)!;
+      final viewModel = context.read<HomeViewModel>();
+      viewModel.initializeApp(loc);
+
+      // --- EKLENDİ: Başlangıçta mevcut dile göre hadisi çek ---
+      final currentLocale = context.read<LanguageProvider>().locale;
+      viewModel.getDailyHadith(currentLocale);
     });
   }
 
@@ -54,7 +69,9 @@ class _HomeViewState extends State<HomeView> {
     _nextVakitIsmi = foundNext;
   }
 
-  LinearGradient _getGradient(String vakit) {
+  LinearGradient? _getGradient(String vakit, bool hasImage) {
+    if (hasImage) return null;
+
     switch (vakit) {
       case "İmsak":
         return const LinearGradient(
@@ -100,58 +117,129 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<HomeViewModel>();
+    final loc = AppLocalizations.of(context)!;
+    final themeProvider = context.watch<ThemeProvider>();
+
+    viewModel.updateLocalization(loc);
+
     if (viewModel.prayerTimes != null) {
       _calculateNextPrayer(viewModel);
     }
 
-    final currentGradient = _getGradient(_nextVakitIsmi);
+    final currentGradient = _getGradient(
+      _nextVakitIsmi,
+      themeProvider.backgroundImage != null,
+    );
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      extendBodyBehindAppBar: true,
-
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          "Ezan Vakti",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
+    return UpgradeAlert(
+      dialogStyle: UpgradeDialogStyle.cupertino,
+      showIgnore: false,
+      showLater: true,
+      upgrader: Upgrader(debugLogging: true, languageCode: loc.localeName),
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.white,
-        leading: Container(),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => viewModel.refreshLocationAndTimes(),
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: Text(
+            loc.appTitle,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
-      body: Container(
-        decoration: BoxDecoration(gradient: currentGradient),
-        child: SafeArea(child: _buildBody(viewModel)),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          foregroundColor: Colors.white,
+          leading: Container(),
+          actions: [
+            PopupMenuButton<Locale>(
+              onSelected: (Locale newLocale) {
+                context.read<LanguageProvider>().setLanguage(newLocale);
+                context.read<HomeViewModel>().getDailyHadith(newLocale);
+              },
+              icon: const Icon(Icons.language, color: Colors.white),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: Locale('tr'),
+                  child: Text("Türkçe 🇹🇷"),
+                ),
+                const PopupMenuItem(
+                  value: Locale('en'),
+                  child: Text("English 🇬🇧"),
+                ),
+                const PopupMenuItem(
+                  value: Locale('de'),
+                  child: Text("Deutsch 🇩🇪"),
+                ),
+                const PopupMenuItem(
+                  value: Locale('fr'),
+                  child: Text("Français 🇫🇷"),
+                ),
+                const PopupMenuItem(
+                  value: Locale('ar'),
+                  child: Text("العربية 🇸🇦"),
+                ),
+              ],
+            ),
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () => viewModel.refreshLocationAndTimes(context),
+            ),
+          ],
+        ),
+        body: Container(
+          decoration: BoxDecoration(gradient: currentGradient),
+          child: SafeArea(child: _buildBody(viewModel, loc, themeProvider)),
+        ),
       ),
     );
   }
 
-  Widget _buildBody(HomeViewModel viewModel) {
+  Widget _buildBody(
+    HomeViewModel viewModel,
+    AppLocalizations loc,
+    ThemeProvider themeProvider,
+  ) {
     if (viewModel.isLoading) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(color: Colors.white),
-            SizedBox(height: 10),
-            Text(
-              "Vakitler Hesaplanıyor...",
-              style: TextStyle(color: Colors.white),
-            ),
+            const CircularProgressIndicator(color: Colors.white),
+            const SizedBox(height: 10),
+            Text(loc.loading, style: const TextStyle(color: Colors.white)),
           ],
         ),
       );
     }
-    if (viewModel.errorMessage.isNotEmpty) {
+
+    if (viewModel.errorMessageKey.isNotEmpty) {
+      String displayedError = loc.error;
+      switch (viewModel.errorMessageKey) {
+        case "noInternet":
+          displayedError = loc.noInternet;
+          break;
+        case "gpsOff":
+          displayedError = loc.gpsOff;
+          break;
+        case "permissionDenied":
+          displayedError = loc.permissionDenied;
+          break;
+        case "locationError":
+          displayedError = loc.locationError;
+          break;
+        case "internetNeeded":
+          displayedError = loc.internetNeeded;
+          break;
+        case "locationFoundNoName":
+          displayedError = "Konum bulundu ama isim yok.";
+          break;
+        case "dataError":
+          displayedError = loc.error;
+          break;
+        default:
+          displayedError = viewModel.errorDetail ?? loc.error;
+      }
+
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -159,38 +247,69 @@ class _HomeViewState extends State<HomeView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                viewModel.errorMessage,
+                displayedError,
                 style: const TextStyle(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () => viewModel.refreshLocationAndTimes(),
-                child: const Text("Tekrar Dene"),
+                onPressed: () => viewModel.refreshLocationAndTimes(context),
+                child: Text(loc.retry),
               ),
             ],
           ),
         ),
       );
     }
-    if (viewModel.prayerTimes == null)
-      return const Center(
-        child: Text("Veri yok.", style: TextStyle(color: Colors.white)),
+
+    if (viewModel.prayerTimes == null) {
+      return Center(
+        child: Text(loc.noData, style: const TextStyle(color: Colors.white)),
       );
+    }
+
+    String displayCity = viewModel.city ?? loc.waitingLocation;
+    String displayDistrict = "";
+    if (viewModel.district != null && viewModel.district!.isNotEmpty) {
+      String rawDistrict = viewModel.district!;
+      if (displayCity != loc.waitingLocation &&
+          rawDistrict.toLowerCase().startsWith(displayCity.toLowerCase())) {
+        if (rawDistrict.length > displayCity.length) {
+          displayDistrict = rawDistrict.substring(displayCity.length).trim();
+        } else {
+          displayDistrict = rawDistrict;
+        }
+      } else {
+        displayDistrict = rawDistrict;
+      }
+    }
+    String locationText = displayCity;
+    if (displayDistrict.isNotEmpty && displayCity != loc.waitingLocation) {
+      locationText = "$displayCity / $displayDistrict";
+    }
+
+    String currentLocaleCode = Localizations.localeOf(context).toString();
+    String formattedDate = DateFormat(
+      'dd MMMM yyyy',
+      currentLocaleCode,
+    ).format(DateTime.now());
+
+    bool hasImage = themeProvider.backgroundImage != null;
 
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
           child: Column(
             children: [
               Text(
-                viewModel.city.toUpperCase(),
+                locationText,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 32,
+                  fontSize: 26,
                   fontWeight: FontWeight.w900,
                   color: Colors.white,
-                  letterSpacing: 1.5,
+                  letterSpacing: 1.2,
                   shadows: [
                     Shadow(
                       color: Colors.black45,
@@ -200,37 +319,32 @@ class _HomeViewState extends State<HomeView> {
                   ],
                 ),
               ),
-              const SizedBox(height: 5),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  DateFormat('dd MMMM yyyy', 'tr_TR').format(DateTime.now()),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
+              const SizedBox(height: 2),
+              Text(
+                formattedDate,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 20),
-              CountdownWidget(prayerTimes: viewModel.prayerTimes!),
+              const SizedBox(height: 10),
+              Transform.scale(
+                scale: 0.9,
+                child: CountdownWidget(prayerTimes: viewModel.prayerTimes!),
+              ),
             ],
           ),
         ),
         Expanded(
           child: Container(
-            margin: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 5),
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: hasImage
+                  ? Theme.of(context).cardTheme.color!.withValues(alpha: 0.2)
+                  : Theme.of(context).cardTheme.color,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
               ),
@@ -239,37 +353,62 @@ class _HomeViewState extends State<HomeView> {
               padding: const EdgeInsets.only(top: 20, bottom: 20),
               children: [
                 if (viewModel.dailyHadith != null)
-                  _buildHadithCard(viewModel.dailyHadith!),
+                  _buildHadithCard(
+                    context,
+                    viewModel.dailyHadith!,
+                    loc,
+                    hasImage,
+                  ),
+
                 if (viewModel.dailyHadith != null) const SizedBox(height: 15),
+
                 _buildExpandableCard(
                   viewModel,
+                  loc,
                   "İmsak",
+                  loc.imsak,
                   viewModel.prayerTimes!.imsak!,
+                  hasImage,
                 ),
                 _buildExpandableCard(
                   viewModel,
+                  loc,
                   "Güneş",
+                  loc.gunes,
                   viewModel.prayerTimes!.gunes!,
+                  hasImage,
                 ),
                 _buildExpandableCard(
                   viewModel,
+                  loc,
                   "Öğle",
+                  loc.ogle,
                   viewModel.prayerTimes!.ogle!,
+                  hasImage,
                 ),
                 _buildExpandableCard(
                   viewModel,
+                  loc,
                   "İkindi",
+                  loc.ikindi,
                   viewModel.prayerTimes!.ikindi!,
+                  hasImage,
                 ),
                 _buildExpandableCard(
                   viewModel,
+                  loc,
                   "Akşam",
+                  loc.aksam,
                   viewModel.prayerTimes!.aksam!,
+                  hasImage,
                 ),
                 _buildExpandableCard(
                   viewModel,
+                  loc,
                   "Yatsı",
+                  loc.yatsi,
                   viewModel.prayerTimes!.yatsi!,
+                  hasImage,
                 ),
               ],
             ),
@@ -279,94 +418,240 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildHadithCard(HadithModel hadith) {
+  Widget _buildHadithCard(
+    BuildContext context,
+    HadithModel hadith,
+    AppLocalizations loc,
+    bool hasImage,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.teal.shade50, Colors.white],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: hasImage
+            ? Theme.of(context).cardTheme.color!.withValues(alpha: 0.6)
+            : Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: Colors.teal.withValues(alpha: 0.3)),
         boxShadow: [
           BoxShadow(
-            color: Colors.teal.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.format_quote_rounded, color: Colors.teal, size: 30),
-              SizedBox(width: 10),
-              Text(
-                "Günün Hadisi",
-                style: TextStyle(
-                  color: Colors.teal,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(15),
+          onTap: () {
+            _showHadithDetailDialog(context, hadith, loc);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.format_quote_rounded,
+                          color: Colors.teal,
+                          size: 30,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          loc.hadithTitle,
+                          style: const TextStyle(
+                            color: Colors.teal,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: Colors.teal.withValues(alpha: 0.5),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            hadith.content ?? "",
-            style: const TextStyle(
-              fontSize: 15,
-              color: Colors.black87,
-              fontStyle: FontStyle.italic,
-              height: 1.4,
+                const SizedBox(height: 10),
+                Text(
+                  hadith.content ?? "",
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontStyle: FontStyle.italic,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      loc.readMore,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.teal.shade400,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        "- ${hadith.source}",
+                        textAlign: TextAlign.end,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.teal.shade700,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "- ${hadith.source}",
-              style: TextStyle(
-                color: Colors.teal.shade700,
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
+    );
+  }
+
+  void _showHadithDetailDialog(
+    BuildContext context,
+    HadithModel hadith,
+    AppLocalizations loc,
+  ) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.format_quote_rounded,
+                  color: Colors.teal,
+                  size: 40,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  loc.hadithTitle,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
+                  ),
+                ),
+                const Divider(height: 30, color: Colors.teal),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      hadith.content ?? "",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "- ${hadith.source}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: Text(
+                          loc.close,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () {
+                          String textToShare =
+                              "\"${hadith.content}\"\n\n- ${hadith.source}\n\n(${loc.appTitle} ile Paylaşıldı)";
+                          Share.share(textToShare);
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'hadis_paylasildi',
+                          );
+                        },
+                        icon: const Icon(Icons.share, size: 18),
+                        label: Text(loc.share),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildExpandableCard(
     HomeViewModel viewModel,
-    String title,
+    AppLocalizations loc,
+    String logicKey,
+    String displayTitle,
     String time,
+    bool hasImage,
   ) {
-    bool isNext = _nextVakitIsmi == title;
-    bool isOnTimeActive = viewModel.onTimeAlarms[title] ?? false;
-    bool isReminderActive = viewModel.reminderAlarms[title] ?? false;
-
-    // Yeni: Sessiz Mod Durumu
-    bool isSilentActive = viewModel.silentModeSettings[title] ?? false;
-
-    String sureMetni = (title == "İmsak" || title == "Güneş")
-        ? "30 dk"
-        : "15 dk";
-    String currentEzanId = viewModel.selectedSounds[title] ?? "ezan1";
+    bool isNext = _nextVakitIsmi == logicKey;
+    bool isOnTimeActive = viewModel.onTimeAlarms[logicKey] ?? false;
+    bool isReminderActive = viewModel.reminderAlarms[logicKey] ?? false;
+    bool isSilentActive = viewModel.silentModeSettings[logicKey] ?? false;
+    String sureDegeri = (logicKey == "İmsak" || logicKey == "Güneş")
+        ? "30"
+        : "15";
+    String currentEzanId = viewModel.selectedSounds[logicKey] ?? "ezan1";
     String currentReminderId =
-        viewModel.selectedReminderSounds[title] ?? "bildirim1";
+        viewModel.selectedReminderSounds[logicKey] ?? "bildirim1";
+
+    Color cardColor;
+    if (hasImage) {
+      cardColor = isNext
+          ? Colors.teal.withValues(alpha: 0.6)
+          : Theme.of(context).cardTheme.color!.withValues(alpha: 0.4);
+    } else {
+      cardColor = isNext
+          ? const Color(0xFFE0F2F1)
+          : Theme.of(context).cardTheme.color!;
+    }
 
     return Card(
       elevation: isNext ? 8 : 2,
       shadowColor: isNext ? Colors.teal.withValues(alpha: 0.4) : Colors.black12,
       margin: const EdgeInsets.only(bottom: 12, left: 5, right: 5),
-      color: isNext ? const Color(0xFFE0F2F1) : Colors.white,
+      color: cardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: isNext
@@ -389,11 +674,13 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           title: Text(
-            title,
+            displayTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 17,
-              color: isNext ? Colors.teal.shade800 : Colors.black87,
+              color: isNext
+                  ? (hasImage ? Colors.white : Colors.teal.shade800)
+                  : Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
           trailing: Container(
@@ -409,7 +696,9 @@ class _HomeViewState extends State<HomeView> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: isNext ? Colors.teal.shade900 : Colors.black87,
+                color: isNext
+                    ? (hasImage ? Colors.white : Colors.teal.shade900)
+                    : Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
           ),
@@ -419,83 +708,73 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 children: [
                   Divider(color: Colors.grey.shade300),
-
-                  // 1. TAM VAKTİNDE OKU
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text(
-                      "Tam Vaktinde Oku",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    subtitle: const Text(
-                      "Bildirim gönderir.",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    activeTrackColor: Colors.teal,
-                    value: isOnTimeActive,
-                    onChanged: (val) => viewModel.toggleAlarm(title, true, val),
-                  ),
-
-                  // --- YENİ: SESSİZ MOD SEÇENEĞİ (Sadece Alarm Açıksa Görünür) ---
-                  if (isOnTimeActive)
-                    SwitchListTile(
-                      contentPadding: const EdgeInsets.only(
-                        left: 16,
-                      ), // Biraz içeriden başlasın
-                      title: const Text(
-                        "Sadece Yazılı Bildirim",
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      subtitle: const Text(
-                        "Ezan/Ses çalmaz, sadece uyarı gelir.",
-                        style: TextStyle(fontSize: 11),
-                      ),
-                      activeTrackColor: Colors.blueGrey,
-                      value: isSilentActive,
-                      onChanged: (val) =>
-                          viewModel.toggleSilentMode(title, val),
-                    ),
-
-                  // Ses Seçimi (Sadece Sesli Moddaysa Göster)
-                  if (isOnTimeActive && !isSilentActive)
-                    _buildSoundSelector(
-                      viewModel: viewModel,
-                      title: title,
-                      currentSoundId: currentEzanId,
-                      soundList: viewModel.soundList,
-                      isReminder: false,
-                    ),
-
-                  const SizedBox(height: 5),
-
-                  // 2. ERKEN UYARI
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(
-                      "$sureMetni Önce Uyar",
+                      loc.exactAlarm,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    subtitle: const Text(
-                      "Kısa bildirim sesi.",
-                      style: TextStyle(fontSize: 12),
+                    subtitle: Text(
+                      loc.exactAlarmSub,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    activeTrackColor: Colors.teal,
+                    value: isOnTimeActive,
+                    onChanged: (val) =>
+                        viewModel.toggleAlarm(logicKey, true, val),
+                  ),
+                  if (isOnTimeActive)
+                    SwitchListTile(
+                      contentPadding: const EdgeInsets.only(left: 16),
+                      title: Text(
+                        loc.silentNotif,
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                      subtitle: Text(
+                        loc.silentNotifSub,
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                      activeTrackColor: Colors.blueGrey,
+                      value: isSilentActive,
+                      onChanged: (val) =>
+                          viewModel.toggleSilentMode(logicKey, val),
+                    ),
+                  if (isOnTimeActive && !isSilentActive)
+                    _buildSoundSelector(
+                      viewModel: viewModel,
+                      title: logicKey,
+                      currentSoundId: currentEzanId,
+                      soundList: viewModel.soundIds,
+                      isReminder: false,
+                    ),
+                  const SizedBox(height: 5),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      loc.warningAlarm(sureDegeri),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      loc.warningAlarmSub,
+                      style: const TextStyle(fontSize: 12),
                     ),
                     activeTrackColor: Colors.orange,
                     value: isReminderActive,
                     onChanged: (val) =>
-                        viewModel.toggleAlarm(title, false, val),
+                        viewModel.toggleAlarm(logicKey, false, val),
                   ),
                   if (isReminderActive)
                     _buildSoundSelector(
                       viewModel: viewModel,
-                      title: title,
+                      title: logicKey,
                       currentSoundId: currentReminderId,
-                      soundList: viewModel.reminderSoundList,
+                      soundList: viewModel.reminderSoundIds,
                       isReminder: true,
                     ),
                 ],
@@ -511,9 +790,22 @@ class _HomeViewState extends State<HomeView> {
     required HomeViewModel viewModel,
     required String title,
     required String currentSoundId,
-    required List<Map<String, String>> soundList,
+    required List<String> soundList,
     required bool isReminder,
   }) {
+    String getSoundName(String id, AppLocalizations loc) {
+      if (id.startsWith("ezan")) {
+        String number = id.replaceAll("ezan", "");
+        return "${loc.soundEzan} $number";
+      } else if (id.startsWith("bildirim")) {
+        String number = id.replaceAll("bildirim", "");
+        return "${loc.soundBeep} $number";
+      }
+      return id;
+    }
+
+    final loc = AppLocalizations.of(context)!;
+
     return Container(
       margin: const EdgeInsets.only(top: 5, bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -542,20 +834,24 @@ class _HomeViewState extends State<HomeView> {
                 value: currentSoundId,
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down),
-                style: const TextStyle(color: Colors.black87, fontSize: 13),
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                  fontSize: 13,
+                ),
                 items: soundList
                     .map(
-                      (sound) => DropdownMenuItem<String>(
-                        value: sound['id'],
-                        child: Text(sound['name']!),
+                      (soundId) => DropdownMenuItem<String>(
+                        value: soundId,
+                        child: Text(getSoundName(soundId, loc)),
                       ),
                     )
                     .toList(),
                 onChanged: (newValue) {
-                  if (newValue != null)
+                  if (newValue != null) {
                     isReminder
                         ? viewModel.changeReminderSound(title, newValue)
                         : viewModel.changeSound(title, newValue);
+                  }
                 },
               ),
             ),

@@ -1,0 +1,214 @@
+{
+    "appTitle": "Vaktinde",
+    "nextPrayer": "Nächstes Gebet",
+    "hadithTitle": "Hadith des Tages",
+    "readMore": "Mehr lesen...",
+    "share": "Teilen",
+    "close": "Schließen",
+    "loading": "Zeiten werden berechnet...",
+    "error": "Fehler",
+    "retry": "Erneut versuchen",
+    "noData": "Keine Daten.",
+    "imsak": "Fadschr",
+    "gunes": "Sonnenaufgang",
+    "ogle": "Duhur",
+    "ikindi": "Asr",
+    "aksam": "Maghrib",
+    "yatsi": "Ischa",
+    "exactAlarm": "Pünktlich benachrichtigen",
+    "exactAlarmSub": "Sendet eine Benachrichtigung.",
+    "silentNotif": "Nur Textbenachrichtigung",
+    "silentNotifSub": "Kein Ton/Adhan, nur Warnung.",
+    "warningAlarm": "{minute} Min. vorher warnen",
+    "@warningAlarm": {
+        "placeholders": {
+            "minute": {
+                "type": "String"
+            }
+        }
+    },
+    "warningAlarmSub": "Kurzer Benachrichtigungston.",
+    "settings": "Einstellungen",
+    "changeLanguage": "Sprache ändern",
+    "waitingLocation": "Standort wird ermittelt...",
+    "noInternet": "Keine Internetverbindung und keine gespeicherten Daten gefunden.",
+    "gpsOff": "GPS ist aus. Bitte Standort aktivieren.",
+    "permissionDenied": "Standortzugriff verweigert.",
+    "locationError": "Standort konnte nicht abgerufen werden.",
+    "internetNeeded": "Internetverbindung erforderlich.",
+    "soundEzan": "Adhan",
+    "soundBeep": "Kurzer Piepton",
+    "notifTitleTime": "Gebetszeit",
+    "notifBodyTime": "Es ist Zeit für {vakit}.",
+    "@notifBodyTime": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "notifTitleUpcoming": "Zeit naht",
+    "notifBodyUpcoming": "Noch {minute} Minuten bis {vakit}.",
+    "@notifBodyUpcoming": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "navPrayer": "Zeiten",
+    "navQibla": "Qibla",
+    "navMenu": "Menü",
+    "menuTitle": "Einstellungen",
+    "sectionLocation": "STANDORT & ZEITEN",
+    "changeLocation": "Standort ändern",
+    "citySelect": "Stadt wählen",
+    "districtSelect": "Bezirk wählen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "locationWarning": "Die Wahl des Bezirks ist wichtig für genaue Gebetszeiten.",
+    "menuNotifications": "Benachrichtigungsrechte",
+    "menuNotificationsSub": "Hier prüfen, wenn kein Ton kommt.",
+    "menuTroubleshoot": "Keine Benachrichtigungen?",
+    "menuTroubleshootSub": "Batterieeinstellungen für Samsung/Xiaomi.",
+    "sectionSupport": "SUPPORT",
+    "shareApp": "Mit Freunden teilen",
+    "rateApp": "Bewerten Sie uns",
+    "contactUs": "Kontakt & Fehler melden",
+    "shareText": "Ich habe eine tolle Gebetszeiten-App gefunden! Download: {link}",
+    "@shareText": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
+    "batteryDialogTitle": "Benachrichtigungsprobleme beheben",
+    "batteryDialogBody": "Ihr Telefon beendet die App möglicherweise, um Akku zu sparen. Um dies zu verhindern:\n\n1. Öffnen Sie die letzten Apps (Quadrat-Taste).\n2. Halten Sie die 'Vaktinde'-App gedrückt oder tippen Sie auf das Logo.\n3. Tippen Sie auf das Schloss-Symbol 🔒, um sie zu sperren.\n\nGehen Sie außerdem zu Einstellungen > Apps > Vaktinde > Akku > Nicht eingeschränkt.",
+    "okUnderstood": "Verstanden",
+    "religiousDaysTitle": "Religiöse Tage",
+    "errorOccurred": "Fehler aufgetreten: {error}",
+    "@errorOccurred": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noDataFound": "Keine Daten gefunden.",
+    "noDataForYear": "Keine Daten für das Jahr {year} gefunden.",
+    "@noDataForYear": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "religiousDaysListTitle": "Liste der religiösen Tage {year}",
+    "@religiousDaysListTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "missedPrayersTitle": "Verpasste Gebete",
+    "missedPrayersInfo": "Notieren Sie hier Ihre verpassten Gebete und reduzieren Sie sie, wenn Sie sie nachgeholt haben.\n(Tippen Sie auf die Zahl zur manuellen Eingabe)",
+    "editMissedTitle": "{title} bearbeiten",
+    "@editMissedTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "missedCountLabel": "Anzahl",
+    "missedCountHint": "Bsp: 150",
+    "sabah": "Fadschr",
+    "ogle": "Duhur",
+    "ikindi": "Asr",
+    "aksam": "Maghrib",
+    "yatsi": "Ischa",
+    "vitir": "Witr",
+    "oruc": "Fasten",
+    "timeLeftFor": "Verbleibende Zeit für {vakit}",
+    "@timeLeftFor": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "tomorrow": "(Morgen)",
+    "fridayMessagesTitle": "Freitagsnachrichten",
+    "esmaulHusnaTitle": "99 Namen Allahs",
+    "closeCaps": "SCHLIESSEN",
+    "zakatTitle": "Zakat-Rechner",
+    "zakatCalculatorTitle": "Intelligenter Zakat-Rechner",
+    "liveRatesLoading": "Aktuelle Kurse werden geladen...",
+    "liveRatesInfo": "Sie können die automatisch abgerufenen Kurse bei Bedarf manuell anpassen.",
+    "sectionGold": "Goldvermögen",
+    "goldType": "Goldart",
+    "goldAmount": "Menge / Gramm",
+    "goldUnitPrice": "Stückpreis (TL)",
+    "sectionCurrency": "Währungsvermögen",
+    "currencyType": "Währungstyp",
+    "currencyAmount": "Betrag",
+    "currencyRate": "Aktueller Kurs (TL)",
+    "sectionCashDebt": "Bargeld & Schulden",
+    "cashAmount": "Bargeld & Bank (TL)",
+    "debtAmount": "Gesamtschulden (Abzuziehen)",
+    "calculateButton": "BERECHNEN",
+    "zakatResultTitle": "Zu zahlende Zakat",
+    "netAssets": "Nettovermögen:",
+    "qiblaTitle": "Qibla-Kompass",
+    "locationServiceOff": "Standortdienst ist deaktiviert. Bitte aktivieren.",
+    "locationPermissionDenied": "Standortzugriff verweigert.",
+    "locationPermissionForever": "Standortzugriff dauerhaft verweigert. In Einstellungen aktivieren.",
+    "compassError": "Sensorfehler: {error}",
+    "@compassError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noCompass": "Kein Kompass auf dem Gerät.",
+    "qiblaFound": "SIE HABEN DIE QIBLA GEFUNDEN!",
+    "qiblaAngle": "Qibla-Winkel: {angle}°",
+    "@qiblaAngle": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "keepAwayMetal": "Von Metallgegenständen fernhalten.",
+    "goldGram": "Gramm Gold (24K)",
+    "goldQuarter": "Viertelgold",
+    "goldFull": "Vollgold",
+    "typeOther": "Andere (Manuell)",
+    "usd": "US-Dollar (USD)",
+    "eur": "Euro (EUR)",
+    "gbp": "Britisches Pfund (GBP)",
+    "sectionAppearance": "AUSSEHEN & SPRACHE",
+    "appearanceSettings": "Erscheinungsbild",
+    "appearanceSub": "Design & Hintergrund",
+    "themeMode": "Design-Modus",
+    "themeSystem": "System",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "bgImage": "Hintergrundbild",
+    "bgDefault": "Standard",
+    "bgMosque": "Moschee",
+    "bgKaaba": "Kaaba",
+    "bgQuran": "Koran",
+    "none": "Keine",
+    "zakatEligible": "Zakat ist erforderlich",
+    "zakatNotEligible": "Zakat nicht erforderlich",
+    "nisabLimit": "Nisab-Grenze (80,18g Gold)",
+    "belowNisabMessage": "Zakat ist nicht verpflichtend, da Ihr Nettovermögen unter der Nisab-Grenze liegt."
+}

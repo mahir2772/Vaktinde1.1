@@ -1,10 +1,13 @@
+analyzer:
+  errors:
+    deprecated_member_use: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    # Print kullanımına izin ver (Mavi uyarıyı kapatır)
+    
     avoid_print: false
-    # Tek satırlık if'lere izin ver (Parantez uyarısını kapatır)
+    
     curly_braces_in_flow_control_structures: false
-    # Const uyarısını biraz gevşetelim
+    
     prefer_const_constructors: false

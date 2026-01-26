@@ -1,0 +1,214 @@
+{
+    "appTitle": "Vaktinde",
+    "nextPrayer": "الصلاة القادمة",
+    "hadithTitle": "حديث اليوم",
+    "readMore": "اقرأ المزيد...",
+    "share": "مشاركة",
+    "close": "إغلاق",
+    "loading": "جاري حساب الأوقات...",
+    "error": "خطأ",
+    "retry": "إعادة المحاولة",
+    "noData": "لا توجد بيانات.",
+    "imsak": "الفجر",
+    "gunes": "الشروق",
+    "ogle": "الظهر",
+    "ikindi": "العصر",
+    "aksam": "المغرب",
+    "yatsi": "العشاء",
+    "exactAlarm": "تنبيه في الوقت بالضبط",
+    "exactAlarmSub": "يرسل إشعاراً.",
+    "silentNotif": "إشعار نصي فقط",
+    "silentNotifSub": "بدون صوت/أذان، فقط تنبيه.",
+    "warningAlarm": "تذكير قبل {minute} دقيقة",
+    "@warningAlarm": {
+        "placeholders": {
+            "minute": {
+                "type": "String"
+            }
+        }
+    },
+    "warningAlarmSub": "صوت تنبيه قصير.",
+    "settings": "الإعدادات",
+    "changeLanguage": "تغيير اللغة",
+    "waitingLocation": "جاري انتظار الموقع...",
+    "noInternet": "لا يوجد اتصال بالإنترنت ولا توجد بيانات محفوظة.",
+    "gpsOff": "نظام تحديد المواقع مغلق. يرجى تفعيله.",
+    "permissionDenied": "تم رفض إذن الموقع.",
+    "locationError": "تعذر الحصول على الموقع.",
+    "internetNeeded": "يتطلب اتصالاً بالإنترنت.",
+    "soundEzan": "أذان",
+    "soundBeep": "تنبيه قصير",
+    "notifTitleTime": "وقت الصلاة",
+    "notifBodyTime": "ححان الآن موعد صلاة {vakit}.",
+    "@notifBodyTime": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "notifTitleUpcoming": "اقترب الوقت",
+    "notifBodyUpcoming": "متبقي {minute} دقيقة على صلاة {vakit}.",
+    "@notifBodyUpcoming": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "navPrayer": "الأوقات",
+    "navQibla": "القبلة",
+    "navMenu": "القائمة",
+    "menuTitle": "الإعدادات",
+    "sectionLocation": "الموقع والأوقات",
+    "changeLocation": "تغيير الموقع",
+    "citySelect": "اختر المدينة",
+    "districtSelect": "اختر المنطقة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "locationWarning": "اختيار المنطقة مهم للحصول على أوقات دقيقة.",
+    "menuNotifications": "أذونات الإشعارات",
+    "menuNotificationsSub": "تحقق هنا إذا كنت لا تسمع صوتاً.",
+    "menuTroubleshoot": "الإشعارات لا تعمل؟",
+    "menuTroubleshootSub": "إعدادات البطارية لأجهزة Samsung/Xiaomi.",
+    "sectionSupport": "الدعم",
+    "shareApp": "شارك مع الأصدقاء",
+    "rateApp": "قيمنا",
+    "contactUs": "تواصل معنا والإبلاغ عن خطأ",
+    "shareText": "لقد وجدت تطبيقاً رائعاً لمواقيت الصلاة! حمل من: {link}",
+    "@shareText": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
+    "batteryDialogTitle": "إصلاح مشاكل الإشعارات",
+    "batteryDialogBody": "قد يقوم هاتفك بإغلاق التطبيق لتوفير البطارية. لمنع ذلك:\n\n1. افتح التطبيقات الحديثة (الزر المربع).\n2. اضغط مطولاً على تطبيق 'Vaktinde' أو انقر على الشعار.\n3. اضغط على رمز القفل 🔒 لقفل التطبيق.\n\nاذهب أيضاً إلى الإعدادات > التطبيقات > Vaktinde > البطارية > غير مقيد.",
+    "okUnderstood": "حسناً، فهمت",
+    "religiousDaysTitle": "الأيام الدينية",
+    "errorOccurred": "حدث خطأ: {error}",
+    "@errorOccurred": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noDataFound": "لا توجد بيانات.",
+    "noDataForYear": "لا توجد بيانات لعام {year}.",
+    "@noDataForYear": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "religiousDaysListTitle": "قائمة الأيام الدينية لعام {year}",
+    "@religiousDaysListTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "missedPrayersTitle": "قضاء الصلوات",
+    "missedPrayersInfo": "تتبع صلواتك الفائتة هنا وقم بإنقاص العدد عند القضاء.\n(اضغط على الرقم للإدخال اليدوي)",
+    "editMissedTitle": "تعديل فائت {title}",
+    "@editMissedTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "missedCountLabel": "العدد",
+    "missedCountHint": "مثال: 150",
+    "sabah": "الفجر",
+    "ogle": "الظهر",
+    "ikindi": "العصر",
+    "aksam": "المغرب",
+    "yatsi": "العشاء",
+    "vitir": "الوتر",
+    "oruc": "الصيام",
+    "timeLeftFor": "الوقت المتبقي لـ {vakit}",
+    "@timeLeftFor": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "tomorrow": "(غداً)",
+    "fridayMessagesTitle": "رسائل الجمعة",
+    "esmaulHusnaTitle": "أسماء الله الحسنى",
+    "closeCaps": "إغلاق",
+    "zakatTitle": "حاسبة الزكاة",
+    "zakatCalculatorTitle": "حاسبة الزكاة الذكية",
+    "liveRatesLoading": "جاري جلب الأسعار المباشرة...",
+    "liveRatesInfo": "يمكنك تعديل الأسعار يدوياً إذا لزم الأمر.",
+    "sectionGold": "أصول الذهب",
+    "goldType": "نوع الذهب",
+    "goldAmount": "الكمية / جرام",
+    "goldUnitPrice": "سعر الوحدة (ليرة)",
+    "sectionCurrency": "أصول العملات",
+    "currencyType": "نوع العملة",
+    "currencyAmount": "المبلغ",
+    "currencyRate": "السعر الحالي (ليرة)",
+    "sectionCashDebt": "النقد والديون",
+    "cashAmount": "النقد في اليد والبنك (ليرة)",
+    "debtAmount": "إجمالي الديون (للخصم)",
+    "calculateButton": "حساب",
+    "zakatResultTitle": "الزكاة المستحقة",
+    "netAssets": "صافي الأصول:",
+    "qiblaTitle": "بوصلة القبلة",
+    "locationServiceOff": "خدمة الموقع معطلة. يرجى تفعيل الموقع.",
+    "locationPermissionDenied": "تم رفض إذن الموقع.",
+    "locationPermissionForever": "تم رفض إذن الموقع بشكل دائم. قم بتفعيله من الإعدادات.",
+    "compassError": "خطأ في المستشعر: {error}",
+    "@compassError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noCompass": "لا توجد بوصلة في الجهاز.",
+    "qiblaFound": "لقد وجدت القبلة!",
+    "qiblaAngle": "زاوية القبلة: {angle}°",
+    "@qiblaAngle": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "keepAwayMetal": "ابعد الجهاز عن المعادن.",
+    "goldGram": "جرام ذهب (24 قيراط)",
+    "goldQuarter": "ربع ذهب",
+    "goldFull": "ذهب كامل",
+    "typeOther": "أخرى (يدوي)",
+    "usd": "دولار أمريكي (USD)",
+    "eur": "يورو (EUR)",
+    "gbp": "جنيه إسترليني (GBP)",
+    "sectionAppearance": "المظهر واللغة",
+    "appearanceSettings": "إعدادات المظهر",
+    "appearanceSub": "السمة والخلفية",
+    "themeMode": "وضع السمة",
+    "themeSystem": "النظام",
+    "themeLight": "فاتح",
+    "themeDark": "داكن",
+    "bgImage": "صورة الخلفية",
+    "bgDefault": "افتراضي",
+    "bgMosque": "مسجد",
+    "bgKaaba": "الكعبة",
+    "bgQuran": "القرآن",
+    "none": "لا يوجد",
+    "zakatEligible": "تجب الزكاة",
+    "zakatNotEligible": "لا تجب الزكاة",
+    "nisabLimit": "حد النصاب (80.18 جرام ذهب)",
+    "belowNisabMessage": "الزكاة غير واجبة لأن صافي أصولك أقل من حد النصاب."
+}

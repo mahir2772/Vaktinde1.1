@@ -1,0 +1,214 @@
+{
+    "appTitle": "Vaktinde",
+    "nextPrayer": "Sıradaki Vakit",
+    "hadithTitle": "Günün Hadisi",
+    "readMore": "Devamını Oku...",
+    "share": "Paylaş",
+    "close": "Kapat",
+    "loading": "Vakitler Hesaplanıyor...",
+    "error": "Hata",
+    "retry": "Tekrar Dene",
+    "noData": "Veri yok.",
+    "imsak": "İmsak",
+    "gunes": "Güneş",
+    "ogle": "Öğle",
+    "ikindi": "İkindi",
+    "aksam": "Akşam",
+    "yatsi": "Yatsı",
+    "exactAlarm": "Tam Vaktinde Oku",
+    "exactAlarmSub": "Bildirim gönderir.",
+    "silentNotif": "Sadece Yazılı Bildirim",
+    "silentNotifSub": "Ezan/Ses çalmaz, sadece uyarı gelir.",
+    "warningAlarm": "{minute} dk Önce Uyar",
+    "@warningAlarm": {
+        "placeholders": {
+            "minute": {
+                "type": "String"
+            }
+        }
+    },
+    "warningAlarmSub": "Kısa bildirim sesi.",
+    "settings": "Ayarlar",
+    "changeLanguage": "Dil Değiştir",
+    "waitingLocation": "Konum Bekleniyor...",
+    "noInternet": "İnternet bağlantısı yok ve kayıtlı veri bulunamadı.",
+    "gpsOff": "GPS kapalı. Lütfen konumu açın.",
+    "permissionDenied": "Konum izni reddedildi.",
+    "locationError": "Konum alınamadı.",
+    "internetNeeded": "İnternet bağlantısı gerekiyor.",
+    "soundEzan": "Ezan",
+    "soundBeep": "Kısa Bildirim",
+    "notifTitleTime": "Ezan Vakti",
+    "notifBodyTime": "{vakit} vakti girdi.",
+    "@notifBodyTime": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "notifTitleUpcoming": "Vakit Yaklaşıyor",
+    "notifBodyUpcoming": "{vakit} vaktine {minute} dakika kaldı.",
+    "@notifBodyUpcoming": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "navPrayer": "Vakitler",
+    "navQibla": "Kıble",
+    "navMenu": "Menü",
+    "menuTitle": "Ayarlar",
+    "sectionLocation": "KONUM & VAKİTLER",
+    "changeLocation": "Konum Değiştir",
+    "citySelect": "İl Seçiniz",
+    "districtSelect": "İlçe Seçiniz",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "locationWarning": "Doğru namaz vakitleri için İlçe seçimi önemlidir.",
+    "menuNotifications": "Bildirim İzinleri",
+    "menuNotificationsSub": "Ses gelmiyorsa buradan kontrol et.",
+    "menuTroubleshoot": "Bildirim Gelmiyor mu?",
+    "menuTroubleshootSub": "Samsung/Xiaomi için pil ayarı yapın.",
+    "sectionSupport": "DESTEK",
+    "shareApp": "Arkadaşınla Paylaş",
+    "rateApp": "Bize Puan Ver",
+    "contactUs": "İletişim & Hata Bildir",
+    "shareText": "Harika bir Ezan Vakti uygulaması buldum! İndir: {link}",
+    "@shareText": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
+    "batteryDialogTitle": "Bildirim Sorunu Çözümü",
+    "batteryDialogBody": "Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (Kare tuşu) ekranını açın.\n2. 'Vaktinde' uygulamasının üzerine basılı tutun veya logoya tıklayın.\n3. Kilit Simgesine 🔒 basarak kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil > Kısıtlanmamış seçeneğini seçin.",
+    "okUnderstood": "Tamam, Anladım",
+    "religiousDaysTitle": "Dini Günler",
+    "errorOccurred": "Hata oluştu: {error}",
+    "@errorOccurred": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noDataFound": "Veri bulunamadı.",
+    "noDataForYear": "{year} yılı için veri bulunamadı.",
+    "@noDataForYear": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "religiousDaysListTitle": "{year} Yılı Dini Günler Listesi",
+    "@religiousDaysListTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "missedPrayersTitle": "Kaza Takibi",
+    "missedPrayersInfo": "Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya tıklayarak elle girebilirsiniz)",
+    "editMissedTitle": "{title} Kazasını Düzenle",
+    "@editMissedTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "missedCountLabel": "Kaza Sayısı",
+    "missedCountHint": "Örn: 150",
+    "sabah": "Sabah",
+    "ogle": "Öğle",
+    "ikindi": "İkindi",
+    "aksam": "Akşam",
+    "yatsi": "Yatsı",
+    "vitir": "Vitir",
+    "oruc": "Oruç",
+    "timeLeftFor": "{vakit} Vaktine Kalan",
+    "@timeLeftFor": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "tomorrow": "(Yarın)",
+    "fridayMessagesTitle": "Cuma Mesajları",
+    "esmaulHusnaTitle": "Esmaül Hüsna",
+    "closeCaps": "KAPAT",
+    "zakatTitle": "Zekat Hesapla",
+    "zakatCalculatorTitle": "Akıllı Zekat Hesapla",
+    "liveRatesLoading": "Güncel kurlar çekiliyor...",
+    "liveRatesInfo": "Otomatik çekilen kurları isterseniz el ile düzeltebilirsiniz.",
+    "sectionGold": "Altın Varlığı",
+    "goldType": "Altın Türü",
+    "goldAmount": "Adet / Gram",
+    "goldUnitPrice": "Birim Fiyatı (TL)",
+    "sectionCurrency": "Döviz Varlığı",
+    "currencyType": "Döviz Türü",
+    "currencyAmount": "Miktar",
+    "currencyRate": "Güncel Kur (TL)",
+    "sectionCashDebt": "Nakit & Borçlar",
+    "cashAmount": "Eldeki & Bankadaki Nakit (TL)",
+    "debtAmount": "Toplam Borçlar (Düşülecek)",
+    "calculateButton": "HESAPLA",
+    "zakatResultTitle": "Vermeniz Gereken Zekat",
+    "netAssets": "Net Varlık:",
+    "qiblaTitle": "Kıble Pusulası",
+    "locationServiceOff": "Konum servisi kapalı. Lütfen konumu açın.",
+    "locationPermissionDenied": "Konum izni reddedildi.",
+    "locationPermissionForever": "Konum izni kalıcı olarak engellendi. Ayarlardan açmalısınız.",
+    "compassError": "Sensör hatası: {error}",
+    "@compassError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noCompass": "Cihazda pusula yok.",
+    "qiblaFound": "KIBLEYİ BULDUNUZ!",
+    "qiblaAngle": "Kıble Açısı: {angle}°",
+    "@qiblaAngle": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "keepAwayMetal": "Metal eşyalardan uzak tutun.",
+    "goldGram": "Gram Altın (24 Ayar)",
+    "goldQuarter": "Çeyrek Altın",
+    "goldFull": "Tam Altın",
+    "typeOther": "Diğer (Manuel)",
+    "usd": "ABD Doları (USD)",
+    "eur": "Euro (EUR)",
+    "gbp": "İngiliz Sterlini (GBP)",
+    "sectionAppearance": "GÖRÜNÜM & DİL",
+    "appearanceSettings": "Görünüm Ayarları",
+    "appearanceSub": "Tema ve Arka Plan",
+    "themeMode": "Tema Modu",
+    "themeSystem": "Sistem",
+    "themeLight": "Açık",
+    "themeDark": "Koyu",
+    "bgImage": "Arka Plan Resmi",
+    "bgDefault": "Varsayılan",
+    "bgMosque": "Cami",
+    "bgKaaba": "Kabe",
+    "bgQuran": "Kur'an",
+    "none": "Yok",
+    "zakatEligible": "Zekat Verilmesi Gerekir",
+    "zakatNotEligible": "Zekat Gerekmiyor",
+    "nisabLimit": "Nisab Sınırı (80.18 gr Altın)",
+    "belowNisabMessage": "Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir."
+}

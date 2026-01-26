@@ -9,22 +9,18 @@ class NotificationService {
 
   Future<void> init() async {
     tz.initializeTimeZones();
-
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/launcher_icon');
-
     const DarwinInitializationSettings iosSettings =
         DarwinInitializationSettings(
           requestAlertPermission: true,
           requestBadgePermission: true,
           requestSoundPermission: true,
         );
-
     const InitializationSettings initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
-
     await _notificationsPlugin.initialize(initSettings);
   }
 
@@ -35,13 +31,7 @@ class NotificationService {
               .resolvePlatformSpecificImplementation<
                 AndroidFlutterLocalNotificationsPlugin
               >();
-
-      // 1. Bildirim Gönderme İzni (Android 13+)
       await androidImplementation?.requestNotificationsPermission();
-
-      // 2. Tam Zamanlı Alarm İzni (Android 12+) - İŞTE BU EKLENDİ ✅
-      // Bu komut, kullanıcıyı "Alarmlar ve Hatırlatıcılar" ekranına yönlendirir
-      // veya izin istendiğini belirtir. Bu olmadan ezan vaktinde çalmaz.
       await androidImplementation?.requestExactAlarmsPermission();
     }
   }
@@ -54,23 +44,16 @@ class NotificationService {
     String? soundName,
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
-
-    String channelId;
-    String channelName;
-    bool playSound;
-    RawResourceAndroidNotificationSound? soundSource;
-
-    if (soundName != null) {
-      channelId = 'channel_$soundName';
-      channelName = 'Ses: $soundName';
-      playSound = true;
-      soundSource = RawResourceAndroidNotificationSound(soundName);
-    } else {
-      channelId = 'channel_silent_prayer';
-      channelName = 'Sessiz Ezan Bildirimleri';
-      playSound = false;
-      soundSource = null;
-    }
+    String channelId = soundName != null
+        ? 'channel_$soundName'
+        : 'channel_silent_prayer';
+    String channelName = soundName != null
+        ? 'Ses: $soundName'
+        : 'Sessiz Ezan Bildirimleri';
+    bool playSound = soundName != null;
+    RawResourceAndroidNotificationSound? soundSource = soundName != null
+        ? RawResourceAndroidNotificationSound(soundName)
+        : null;
 
     await _notificationsPlugin.zonedSchedule(
       id,
@@ -86,7 +69,6 @@ class NotificationService {
           playSound: playSound,
           ticker: 'Ezan Vakti',
           icon: '@mipmap/launcher_icon',
-          visibility: NotificationVisibility.public,
           sound: soundSource,
           enableVibration: true,
         ),
@@ -101,22 +83,30 @@ class NotificationService {
     );
   }
 
+  // --- 🔥 PRO TASARIM GÜNCELLEMESİ BURADA ---
   Future<void> showStickyNotification({
-    required String title,
-    required String body,
+    required String title, // Kapalıyken görünen başlık (Örn: Sıradaki: İmsak)
+    required String body, // Kapalıyken görünen metin (Örn: Kalan Süre...)
+    required String bigContent, // AÇILINCA görünen tablo metni
+    DateTime? endTime,
   }) async {
-    // HTML formatı kapalı (false), düz metin
-    final BigTextStyleInformation bigTextStyleInformation =
-        BigTextStyleInformation(
-          body,
-          htmlFormatBigText: false,
-          contentTitle: title,
-          htmlFormatContentTitle: false,
-        );
+    // Pro Tasarım: BigTextStyle
+    final BigTextStyleInformation
+    bigTextStyleInformation = BigTextStyleInformation(
+      bigContent, // Genişleyince çıkacak olan o tablo yapısı
+      htmlFormatBigText: false,
+
+      contentTitle: title, // Genişleyince üstte kalan başlık
+      htmlFormatContentTitle: false,
+
+      summaryText:
+          "Vaktin Çıkmasına: ", // Sağ üstte uygulama adının yanındaki küçük yazı
+      htmlFormatSummaryText: false,
+    );
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-          'sticky_channel_id_simple',
+          'vaktinde_sticky_channel',
           'Kalıcı Sayaç',
           channelDescription: 'Vakte kalan süreyi gösterir',
           importance: Importance.low,
@@ -125,9 +115,13 @@ class NotificationService {
           autoCancel: false,
           playSound: false,
           enableVibration: false,
-          showWhen: false,
           icon: '@mipmap/launcher_icon',
-          styleInformation: bigTextStyleInformation,
+          styleInformation: bigTextStyleInformation, // <-- Özel tasarım stili
+          // KRONOMETRE AYARLARI (Sağ üstte saniye sayar)
+          usesChronometer: endTime != null,
+          chronometerCountDown: endTime != null,
+          when: endTime?.millisecondsSinceEpoch,
+          showWhen: true,
         );
 
     final NotificationDetails platformChannelSpecifics = NotificationDetails(

@@ -27,11 +27,34 @@ class LocationService {
     return await Geolocator.getCurrentPosition();
   }
 
-  Future<String?> getCityFromCoordinates(double lat, double long) async {
+  // --- İŞTE EKSİK OLAN FONKSİYON BU ---
+  Future<Map<String, String>?> getCityAndDistrictFromCoordinates(
+    double lat,
+    double long,
+  ) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+
       if (placemarks.isNotEmpty) {
-        return placemarks.first.administrativeArea;
+        Placemark place = placemarks[0];
+
+        // AdministrativeArea = İl (Örn: Erzincan)
+        // SubAdministrativeArea = İlçe (Örn: Merkez, Kemaliye) veya Locality
+
+        String? city = place.administrativeArea;
+        String? district = place.subAdministrativeArea;
+
+        // Bazen geocoder ilçe bulamazsa 'locality' kullanabiliriz
+        if (district == null || district.isEmpty) {
+          district = place.locality;
+        }
+
+        if (city != null && city.isNotEmpty) {
+          return {
+            'city': city,
+            'district': district ?? '', // İlçe yoksa boş string gönder
+          };
+        }
       }
       return null;
     } catch (e) {

@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+// --- DİL İMPORTU ---
+import 'package:ezan_saati/l10n/app_localizations.dart';
+// -------------------
 import '../../../data/models/prayer_times_model.dart';
 
 class CountdownWidget extends StatefulWidget {
@@ -14,14 +17,21 @@ class CountdownWidget extends StatefulWidget {
 class _CountdownWidgetState extends State<CountdownWidget> {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
-  String _nextVakitIsmi = "Hesaplanıyor...";
+
+  // Ekranda gösterilecek çevrilmiş metin
+  String _displayNextVakitIsmi = "";
 
   @override
   void initState() {
     super.initState();
-    _calculateNextPrayer();
+    // İlk hesaplamayı build içinde yapacağız çünkü context (dil) lazım
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _calculateNextPrayer();
+      if (mounted) {
+        setState(() {
+          // Timer her tetiklendiğinde hesaplama yapacak
+          // (Hesaplama build içinde çağrılan helper ile yapılacak)
+        });
+      }
     });
   }
 
@@ -31,11 +41,13 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     super.dispose();
   }
 
-  void _calculateNextPrayer() {
+  // --- HESAPLAMA FONKSİYONU (Artık 'loc' alıyor) ---
+  void _calculateNextPrayer(AppLocalizations loc) {
     if (widget.prayerTimes.imsak == null) return;
 
     final now = DateTime.now();
 
+    // LogicKey (Değişmez) -> Zaman Eşleşmesi
     Map<String, String> vakitler = {
       "İmsak": widget.prayerTimes.imsak!,
       "Güneş": widget.prayerTimes.gunes!,
@@ -46,7 +58,8 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     };
 
     DateTime? targetDate;
-    String targetName = "";
+    String targetLogicKey = ""; // "İmsak", "Güneş" vs. (TR)
+    bool isTomorrow = false;
 
     for (var entry in vakitler.entries) {
       List<String> parts = entry.value.split(':');
@@ -60,7 +73,7 @@ class _CountdownWidgetState extends State<CountdownWidget> {
 
       if (vakitDate.isAfter(now)) {
         targetDate = vakitDate;
-        targetName = entry.key;
+        targetLogicKey = entry.key;
         break;
       }
     }
@@ -74,19 +87,49 @@ class _CountdownWidgetState extends State<CountdownWidget> {
         int.parse(parts[0]),
         int.parse(parts[1]),
       );
-      targetName = "İmsak (Yarın)";
+      targetLogicKey = "İmsak";
+      isTomorrow = true;
     }
 
-    if (mounted) {
-      setState(() {
-        _remainingTime = targetDate!.difference(now);
-        _nextVakitIsmi = targetName;
-      });
+    _remainingTime = targetDate.difference(now);
+
+    // --- İSMİ ÇEVİRME ---
+    String translatedName = _getLocalizedName(targetLogicKey, loc);
+    if (isTomorrow) {
+      translatedName = "$translatedName ${loc.tomorrow}"; // "Fajr (Tomorrow)"
+    }
+
+    _displayNextVakitIsmi = translatedName;
+  }
+
+  // Helper: TR Anahtarı -> Çevrilmiş İsim
+  String _getLocalizedName(String key, AppLocalizations loc) {
+    switch (key) {
+      case "İmsak":
+        return loc.imsak;
+      case "Güneş":
+        return loc.gunes;
+      case "Öğle":
+        return loc.ogle;
+      case "İkindi":
+        return loc.ikindi;
+      case "Akşam":
+        return loc.aksam;
+      case "Yatsı":
+        return loc.yatsi;
+      default:
+        return key;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Dil nesnesini al
+    final loc = AppLocalizations.of(context)!;
+
+    // Her frame'de (ve timer tick'inde) hesapla
+    _calculateNextPrayer(loc);
+
     String formatDuration(Duration d) {
       String twoDigits(int n) => n.toString().padLeft(2, "0");
       String hours = twoDigits(d.inHours);
@@ -98,7 +141,6 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
-        // DÜZELTME: withValues kullanıldı
         color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white30, width: 1),
@@ -106,7 +148,8 @@ class _CountdownWidgetState extends State<CountdownWidget> {
       child: Column(
         children: [
           Text(
-            "$_nextVakitIsmi Vaktine Kalan",
+            // Çeviri: "{vakit} Vaktine Kalan" -> "Time left for Fajr"
+            loc.timeLeftFor(_displayNextVakitIsmi),
             style: const TextStyle(color: Colors.white, fontSize: 14),
           ),
           const SizedBox(height: 5),

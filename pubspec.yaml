@@ -1,7 +1,7 @@
 name: ezan_saati
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.0.0+6
+version: 1.0.0+8
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
@@ -9,13 +9,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  
+ 
+  flutter_localizations:
+    sdk: flutter
+  
 
   # Temel Paketler
   http: ^1.2.0
   geolocator: ^11.0.0
   geocoding: ^3.0.0
   permission_handler: ^11.3.0
-  intl: ^0.19.0
+  intl: ^0.20.2
   provider: ^6.1.1
   flutter_local_notifications: ^18.0.1
   timezone: ^0.10.0
@@ -24,7 +29,6 @@ dependencies:
   connectivity_plus: ^6.0.3
   in_app_review: ^2.0.9
   google_mobile_ads: ^5.1.0
-  
   
   # Pusula İçin Sadece Bunlar Yeterli
   flutter_compass: ^0.8.0
@@ -35,6 +39,9 @@ dependencies:
   google_fonts: ^6.1.0
   url_launcher: ^6.2.0
   flutter_background_service: ^5.1.0
+  firebase_core: ^4.3.0
+  firebase_analytics: ^12.1.0
+  upgrader: ^12.3.0
 
 dev_dependencies:
   flutter_test:
@@ -45,11 +52,17 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  
+  # --- DİL KODLARINI ÜRETMEK İÇİN EKLENDİ ---
+  generate: true
+  # ------------------------------------------
 
   assets:
     - assets/sounds/
     - assets/icon/
     - assets/data/
+    - assets/images/backgrounds/
+    
 
 flutter_launcher_icons:
   android: "launcher_icon"

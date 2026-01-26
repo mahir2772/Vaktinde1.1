@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Sadece sayı girişi için gerekli
+import 'package:flutter/services.dart';
+// --- DİL İMPORTU ---
+import 'package:ezan_saati/l10n/app_localizations.dart';
+// -------------------
 import '../../../data/services/storage_service.dart';
+// --- REKLAM İMPORTU ---
+import '../../common/widgets/ad_banner_widget.dart';
 
 class MissedPrayersView extends StatefulWidget {
   const MissedPrayersView({super.key});
@@ -49,43 +54,66 @@ class _MissedPrayersViewState extends State<MissedPrayersView> {
     _storageService.updateMissedPrayer(key, newValue);
   }
 
-  // --- YENİ EKLENEN: MANUEL SAYI GİRME FONKSİYONU ---
-  void _showManualEntryDialog(String title) {
+  String _getLocalizedTitle(String key, AppLocalizations loc) {
+    switch (key) {
+      case "Sabah":
+        return loc.sabah;
+      case "Öğle":
+        return loc.ogle;
+      case "İkindi":
+        return loc.ikindi;
+      case "Akşam":
+        return loc.aksam;
+      case "Yatsı":
+        return loc.yatsi;
+      case "Vitir":
+        return loc.vitir;
+      case "Oruç":
+        return loc.oruc;
+      default:
+        return key;
+    }
+  }
+
+  void _showManualEntryDialog(String key, AppLocalizations loc) {
     TextEditingController controller = TextEditingController(
-      text: _missedPrayers[title].toString(),
+      text: _missedPrayers[key].toString(),
     );
+
+    String displayTitle = _getLocalizedTitle(key, loc);
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("$title Kazasını Düzenle"),
+          title: Text(loc.editMissedTitle(displayTitle)),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ], // Sadece rakam
-            decoration: const InputDecoration(
-              labelText: "Kaza Sayısı",
-              border: OutlineInputBorder(),
-              hintText: "Örn: 150",
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(
+              labelText: loc.missedCountLabel,
+              border: const OutlineInputBorder(),
+              hintText: loc.missedCountHint,
             ),
             autofocus: true,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("İptal", style: TextStyle(color: Colors.grey)),
+              child: Text(
+                loc.cancel,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
                 int? newValue = int.tryParse(controller.text);
                 if (newValue != null) {
                   setState(() {
-                    _missedPrayers[title] = newValue;
+                    _missedPrayers[key] = newValue;
                   });
-                  _storageService.updateMissedPrayer(title, newValue);
+                  _storageService.updateMissedPrayer(key, newValue);
                 }
                 Navigator.pop(context);
               },
@@ -93,23 +121,27 @@ class _MissedPrayersViewState extends State<MissedPrayersView> {
                 backgroundColor: Colors.teal,
                 foregroundColor: Colors.white,
               ),
-              child: const Text("Kaydet"),
+              child: Text(loc.save),
             ),
           ],
         );
       },
     );
   }
-  // ---------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Kaza Takibi"),
+        title: Text(loc.missedPrayersTitle),
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
       ),
+      // --- REKLAM ALANI EKLENDİ ---
+      bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
+      // ---------------------------
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
@@ -129,28 +161,29 @@ class _MissedPrayersViewState extends State<MissedPrayersView> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          "Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya tıklayarak elle girebilirsiniz)",
+                          loc.missedPrayersInfo,
                           style: TextStyle(color: Colors.teal.shade800),
                         ),
                       ),
                     ],
                   ),
                 ),
-                _buildPrayerItem("Sabah", Icons.wb_twilight),
-                _buildPrayerItem("Öğle", Icons.wb_sunny),
-                _buildPrayerItem("İkindi", Icons.wb_sunny_outlined),
-                _buildPrayerItem("Akşam", Icons.nights_stay_outlined),
-                _buildPrayerItem("Yatsı", Icons.nights_stay),
-                _buildPrayerItem("Vitir", Icons.star_border),
+                _buildPrayerItem("Sabah", Icons.wb_twilight, loc),
+                _buildPrayerItem("Öğle", Icons.wb_sunny, loc),
+                _buildPrayerItem("İkindi", Icons.wb_sunny_outlined, loc),
+                _buildPrayerItem("Akşam", Icons.nights_stay_outlined, loc),
+                _buildPrayerItem("Yatsı", Icons.nights_stay, loc),
+                _buildPrayerItem("Vitir", Icons.star_border, loc),
                 const Divider(),
-                _buildPrayerItem("Oruç", Icons.restaurant_menu),
+                _buildPrayerItem("Oruç", Icons.restaurant_menu, loc),
               ],
             ),
     );
   }
 
-  Widget _buildPrayerItem(String title, IconData icon) {
-    int count = _missedPrayers[title] ?? 0;
+  Widget _buildPrayerItem(String key, IconData icon, AppLocalizations loc) {
+    int count = _missedPrayers[key] ?? 0;
+    String displayTitle = _getLocalizedTitle(key, loc);
 
     return Card(
       elevation: 2,
@@ -170,20 +203,17 @@ class _MissedPrayersViewState extends State<MissedPrayersView> {
             ),
             const SizedBox(width: 15),
             Text(
-              title,
+              displayTitle,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const Spacer(),
             IconButton(
-              onPressed: () => _updateCount(title, -1),
+              onPressed: () => _updateCount(key, -1),
               icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
               iconSize: 32,
             ),
-
-            // --- BURASI GÜNCELLENDİ: TIKLANABİLİR SAYI ALANI ---
             InkWell(
-              onTap: () =>
-                  _showManualEntryDialog(title), // Tıklayınca diyalog aç
+              onTap: () => _showManualEntryDialog(key, loc),
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -202,15 +232,13 @@ class _MissedPrayersViewState extends State<MissedPrayersView> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Courier',
-                    color: Colors.teal, // Rengi dikkat çeksin diye teal yaptım
+                    color: Colors.teal,
                   ),
                 ),
               ),
             ),
-
-            // ---------------------------------------------------
             IconButton(
-              onPressed: () => _updateCount(title, 1),
+              onPressed: () => _updateCount(key, 1),
               icon: const Icon(Icons.add_circle_outline, color: Colors.green),
               iconSize: 32,
             ),

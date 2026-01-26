@@ -15,7 +15,33 @@ class PrayerTimesModel {
     this.yatsi,
   });
 
-  factory PrayerTimesModel.fromJson(List<dynamic> jsonList) {
+  // --- 1. YENİ EKLENEN: KAYDETME İÇİN (ToJson) ---
+  // StorageService bu fonksiyonu arıyordu, o yüzden hata veriyordu.
+  Map<String, dynamic> toJson() {
+    return {
+      'imsak': imsak,
+      'gunes': gunes,
+      'ogle': ogle,
+      'ikindi': ikindi,
+      'aksam': aksam,
+      'yatsi': yatsi,
+    };
+  }
+
+  // --- 2. YENİ EKLENEN: OKUMA İÇİN (FromJson - Map) ---
+  // StorageService hafızadan okurken bu formatı kullanır.
+  factory PrayerTimesModel.fromJson(Map<String, dynamic> json) {
+    return PrayerTimesModel(
+      imsak: json['imsak'],
+      gunes: json['gunes'],
+      ogle: json['ogle'],
+      ikindi: json['ikindi'],
+      aksam: json['aksam'],
+      yatsi: json['yatsi'],
+    );
+  }
+
+  factory PrayerTimesModel.fromList(List<dynamic> jsonList) {
     String getTime(String vakitIsmi) {
       try {
         var item = jsonList.firstWhere(

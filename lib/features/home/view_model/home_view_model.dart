@@ -4,33 +4,47 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
+
+import '../../../data/services/il_ilce_service.dart';
 import '../../../data/services/location_service.dart';
 import '../../../data/services/prayer_time_service.dart';
 import '../../../data/services/storage_service.dart';
 import '../../../data/services/hadith_service.dart';
 import '../../../data/models/prayer_times_model.dart';
 import '../../../data/models/hadith_model.dart';
-import '../../../main.dart'; // notificationService buradan geliyor
+import '../../../main.dart';
 
 class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final LocationService _locationService = LocationService();
   final PrayerTimeService _prayerTimeService = PrayerTimeService();
   final StorageService _storageService = StorageService();
   final HadithService _hadithService = HadithService();
+  final IlIlceService _ilIlceService = IlIlceService();
 
   AudioPlayer? _audioPlayer;
-  Timer? _stickyNotificationTimer; // Widget için Timer geri geldi ✅
+  Timer? _stickyNotificationTimer;
 
   PrayerTimesModel? prayerTimes;
   HadithModel? dailyHadith;
 
-  String city = "Konum Bekleniyor...";
-  bool isLoading = true;
-  String errorMessage = "";
+  String? city;
+  String? district;
 
-  // --- İŞTE O KRİTİK HAFIZA KONTROLÜ ---
+  Map<String, List<String>> allCitiesAndDistricts = {};
+  List<String> get citiesList => allCitiesAndDistricts.keys.toList()..sort();
+  List<String> get districtsList =>
+      (city != null && allCitiesAndDistricts.containsKey(city))
+      ? allCitiesAndDistricts[city]!
+      : [];
+
+  bool isLoading = true;
+  String errorMessageKey = "";
+  String? errorDetail;
   bool _isDataLoaded = false;
-  // ------------------------------------
 
   Map<String, bool> onTimeAlarms = {};
   Map<String, bool> reminderAlarms = {};
@@ -38,137 +52,187 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   Map<String, String> selectedReminderSounds = {};
   Map<String, bool> silentModeSettings = {};
 
-  final List<Map<String, String>> soundList = [
-    {"id": "ezan1", "name": "Ezan 1 "},
-    {"id": "ezan2", "name": "Ezan 2 "},
-    {"id": "ezan3", "name": "Ezan 3 "},
-    {"id": "ezan4", "name": "Ezan 4 "},
-    {"id": "ezan5", "name": "Ezan 5 "},
-    {"id": "ezan6", "name": "Ezan 6 "},
-    {"id": "bildirim1", "name": "Kısa Bildirim 1"},
-    {"id": "bildirim2", "name": "Kısa Bildirim 2"},
+  final List<String> soundIds = [
+    "ezan1",
+    "ezan2",
+    "ezan3",
+    "ezan4",
+    "ezan5",
+    "ezan6",
+    "ezan7",
+    "bildirim1",
+    "bildirim2",
+    "bildirim3",
   ];
 
-  final List<Map<String, String>> reminderSoundList = [
-    {"id": "bildirim1", "name": "Kısa Uyarı 1"},
-    {"id": "bildirim2", "name": "Kısa Uyarı 2"},
-  ];
-
+  final List<String> reminderSoundIds = ["bildirim1", "bildirim2", "bildirim3"];
   String? currentlyPlayingSound;
+  AppLocalizations? _currentLoc;
 
   HomeViewModel() {
     WidgetsBinding.instance.addObserver(this);
   }
 
+  void updateLocalization(AppLocalizations loc) {
+    _currentLoc = loc;
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Uygulama tamamen kapandığında veya arka plana atıldığında
+    // Timer'ı durdurmuyoruz ki widget güncel kalsın,
+    // ama veriler boşsa işlem yapmıyoruz.
     if (state == AppLifecycleState.resumed) {
-      _updateStickyNotification(); // Uygulama açılınca widget'ı güncelle
+      if (_isDataLoaded) {
+        _sendTimesToBackgroundService();
+        _updateStickyNotification();
+      }
     }
   }
 
-  Future<void> initializeApp() async {
-    // --- BURASI ÇOK ÖNEMLİ ---
-    // Eğer veri zaten hafızadaysa, fonksiyonu hemen durdur.
-    // Böylece tekrar loading çıkmaz, tekrar API'ye gitmez.
-    if (_isDataLoaded) {
-      return;
-    }
-    // -------------------------
+  Future<void> initializeApp(AppLocalizations loc) async {
+    _currentLoc = loc;
+    if (_isDataLoaded) return;
 
     try {
       await initializeDateFormatting('tr_TR', null);
       await _loadSavedSettings();
       await notificationService.init();
+      await _requestBatteryOptimization();
+      _fetchIlIlceData();
+
+      PrayerTimesModel? cachedTimes = await _storageService
+          .loadPrayerTimesData();
+      String? savedCity = await _storageService.loadLocation();
+      String? savedDistrict = await _storageService.loadDistrict();
+
+      getDailyHadith(const Locale('tr'));
+
+      if (cachedTimes != null && savedCity != null) {
+        prayerTimes = cachedTimes;
+        city = savedCity;
+        district = savedDistrict;
+        isLoading = false;
+        _isDataLoaded = true;
+
+        _sendTimesToBackgroundService();
+        await _rescheduleAlarms();
+        startStickyNotificationLoop();
+        notifyListeners();
+        return;
+      }
 
       var connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult.contains(ConnectivityResult.none)) {
-        errorMessage = "İnternet bağlantısı yok. Lütfen internetinizi açın.";
-        String? savedCity = await _storageService.loadLocation();
-        if (savedCity != null) city = savedCity;
+        errorMessageKey = "noInternet";
         isLoading = false;
-
-        // İnternet yoksa bile işlem bitti sayalım ki sürekli denemesin
-        _isDataLoaded = true;
-
         notifyListeners();
         return;
       }
 
       await Future.delayed(const Duration(milliseconds: 500));
 
-      String? savedCity = await _storageService.loadLocation();
       if (savedCity != null && savedCity.isNotEmpty) {
-        // Burada isLoading = true olur ama sadece ilk açılışta
-        await changeCityManually(savedCity);
-        getDailyHadith();
+        await changeCityAndDistrict(savedCity, savedDistrict);
       } else {
-        await Future.wait([
-          getPrayerTimes(isManualRefresh: false),
-          getDailyHadith(),
-        ]);
+        await Future.wait([getPrayerTimes(loc: loc, isManualRefresh: false)]);
       }
 
-      // İşlemler bitti, bayrağı dik! Bir daha buraya girmeyecek.
       _isDataLoaded = true;
     } catch (e) {
-      errorMessage = "Başlatma sırasında beklenmedik hata: $e";
+      errorMessageKey = "generalError";
+      errorDetail = e.toString();
       isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> changeCityManually(String newCity) async {
+  Future<void> _fetchIlIlceData() async {
+    final data = await _ilIlceService.getIlIlceListesi();
+    if (data != null) {
+      allCitiesAndDistricts = data;
+      notifyListeners();
+    }
+  }
+
+  // --- DÜZELTME BURADA YAPILDI ---
+  Future<void> changeCityAndDistrict(
+    String newCity,
+    String? newDistrict,
+  ) async {
+    // ESKİSİ: if (prayerTimes == null) { isLoading = true; notifyListeners(); }
+    // YENİSİ: Her durumda yükleniyor göster ki kullanıcı işlemin başladığını anlasın.
     isLoading = true;
-    errorMessage = "";
     notifyListeners();
 
     try {
       var connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult.contains(ConnectivityResult.none)) {
-        errorMessage = "Şehir değiştirmek için internet bağlantısı gerekiyor.";
+        if (prayerTimes == null) errorMessageKey = "internetNeeded";
         isLoading = false;
         notifyListeners();
         return;
       }
 
-      final apiResult = await _prayerTimeService.getPrayerTimes(newCity);
+      final apiResult = await _prayerTimeService.getPrayerTimes(
+        newCity,
+        district: newDistrict,
+      );
 
       if (apiResult != null) {
         prayerTimes = apiResult;
         city = newCity;
-        await _storageService.saveLocation(newCity);
+        district = newDistrict;
+        errorMessageKey = "";
+        errorDetail = null;
 
+        await _storageService.saveLocation(newCity);
+        if (newDistrict != null) {
+          await _storageService.saveDistrict(newDistrict);
+        } else {
+          await _storageService.saveDistrict("");
+        }
+
+        await _storageService.savePrayerTimesData(apiResult);
+        _sendTimesToBackgroundService();
         Future.microtask(() => _rescheduleAlarms());
-        startStickyNotificationLoop(); // Timer'ı başlat
+        startStickyNotificationLoop();
+
+        await FirebaseAnalytics.instance.logEvent(
+          name: 'sehir_secildi',
+          parameters: {'sehir': newCity, 'ilce': newDistrict ?? 'Merkez'},
+        );
       } else {
-        errorMessage =
-            "'$newCity' bulunamadı. İsmi doğru yazdığınızdan emin olun.";
+        if (prayerTimes == null) {
+          errorMessageKey = "dataError";
+          errorDetail = newCity;
+        }
       }
     } catch (e) {
-      errorMessage = "Veri alınamadı: $e";
+      if (prayerTimes == null) {
+        errorMessageKey = "generalError";
+        errorDetail = e.toString();
+      }
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> getPrayerTimes({bool isManualRefresh = false}) async {
-    errorMessage = "";
-    notifyListeners();
-
-    if (!isManualRefresh) {
-      String? savedCity = await _storageService.loadLocation();
-      if (savedCity != null && savedCity.isNotEmpty) {
-        await changeCityManually(savedCity);
-        return;
-      }
+  Future<void> getPrayerTimes({
+    required AppLocalizations loc,
+    bool isManualRefresh = false,
+  }) async {
+    _currentLoc = loc;
+    if (prayerTimes == null) {
+      errorMessageKey = "";
+      notifyListeners();
     }
 
     try {
       bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!isServiceEnabled) {
-        errorMessage = "GPS (Konum) kapalı. Lütfen ayarlardan konumu açın.";
+        if (prayerTimes == null) errorMessageKey = "gpsOff";
         isLoading = false;
         notifyListeners();
         return;
@@ -178,55 +242,85 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          errorMessage =
-              "Konum izni reddedildi. Uygulamayı kullanmak için izin verin.";
+          if (prayerTimes == null) errorMessageKey = "permissionDenied";
           isLoading = false;
           notifyListeners();
           return;
         }
       }
 
-      if (permission == LocationPermission.deniedForever) {
-        errorMessage =
-            "Konum izni kalıcı olarak engellendi. Ayarlardan izin vermelisiniz.";
-        isLoading = false;
-        notifyListeners();
-        return;
-      }
-
       final position = await _locationService.determinePosition();
       if (position != null) {
-        final cityName = await _locationService.getCityFromCoordinates(
-          position.latitude,
-          position.longitude,
-        );
-        if (cityName != null) {
-          await changeCityManually(cityName);
+        final locationData = await _locationService
+            .getCityAndDistrictFromCoordinates(
+              position.latitude,
+              position.longitude,
+            );
+
+        if (locationData != null) {
+          String city = locationData['city']!;
+          String? district = locationData['district'];
+          if (district != null && district.isEmpty) district = null;
+          await changeCityAndDistrict(city, district);
         } else {
-          errorMessage = "Konum bulundu fakat şehir ismi belirlenemedi.";
+          if (prayerTimes == null) errorMessageKey = "locationFoundNoName";
         }
       } else {
-        errorMessage = "Konum alınamadı. GPS sinyali zayıf olabilir.";
+        if (prayerTimes == null) errorMessageKey = "locationError";
       }
     } catch (e) {
-      errorMessage = "Bir hata oluştu: $e";
+      if (prayerTimes == null) {
+        errorMessageKey = "generalError";
+        errorDetail = e.toString();
+      }
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> refreshLocationAndTimes() async {
-    await getPrayerTimes(isManualRefresh: true);
+  void _sendTimesToBackgroundService() {
+    if (prayerTimes == null) return;
+    try {
+      Map<String, String> vakitler = {
+        "İmsak": prayerTimes!.imsak!,
+        "Güneş": prayerTimes!.gunes!,
+        "Öğle": prayerTimes!.ogle!,
+        "İkindi": prayerTimes!.ikindi!,
+        "Akşam": prayerTimes!.aksam!,
+        "Yatsı": prayerTimes!.yatsi!,
+      };
+      // Servis başlatılmamışsa hata verebilir, try-catch ile koruyoruz
+      FlutterBackgroundService().invoke("setPrayerTimes", vakitler);
+    } catch (e) {
+      debugPrint("Servis Hatası (Önemsiz): $e");
+    }
   }
 
-  Future<void> getDailyHadith() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult.contains(ConnectivityResult.none)) {
+  Future<void> refreshLocationAndTimes(BuildContext context) async {
+    final loc = AppLocalizations.of(context)!;
+    _currentLoc = loc;
+
+    bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isServiceEnabled) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(loc.gpsOff),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
       return;
     }
 
-    final hadith = await _hadithService.getDailyHadith();
+    isLoading = true;
+    notifyListeners();
+    await getPrayerTimes(loc: loc, isManualRefresh: true);
+  }
+
+  Future<void> getDailyHadith(Locale locale) async {
+    final hadith = await _hadithService.getDailyHadith(locale);
     if (hadith != null) {
       dailyHadith = hadith;
       notifyListeners();
@@ -253,7 +347,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     );
   }
 
-  // --- WIDGET İÇİN TIMER MANTIĞI (ESKİ SİSTEM) ---
   void startStickyNotificationLoop() {
     _stickyNotificationTimer?.cancel();
     _updateStickyNotification();
@@ -265,7 +358,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void _updateStickyNotification() {
+    // 1. KORUMA: Eğer veriler null ise sakın widget'ı güncelleme!
+    // Bu sayede uygulama kapanırken boş veri göndermez.
     if (prayerTimes == null) return;
+    if (prayerTimes!.imsak == null || prayerTimes!.yatsi == null) return;
 
     final now = DateTime.now();
 
@@ -280,7 +376,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
     String nextVakit = "İmsak";
     DateTime? nextTime;
-
     for (var entry in vakitler.entries) {
       List<String> parts = entry.value.split(':');
       DateTime vTime = DateTime(
@@ -290,14 +385,12 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         int.parse(parts[0]),
         int.parse(parts[1]),
       );
-
       if (vTime.isAfter(now)) {
         nextVakit = entry.key;
         nextTime = vTime;
         break;
       }
     }
-
     if (nextTime == null) {
       List<String> parts = prayerTimes!.imsak!.split(':');
       nextTime = DateTime(
@@ -310,35 +403,62 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       nextVakit = "İmsak";
     }
 
-    Duration diff = nextTime.difference(now);
-    String kalanSure = "${diff.inHours} sa ${diff.inMinutes.remainder(60)} dk";
+    Duration diff = nextTime!.difference(now);
+    String remainingText =
+        "${diff.inHours}:${(diff.inMinutes % 60).toString().padLeft(2, '0')}:${(diff.inSeconds % 60).toString().padLeft(2, '0')}";
 
-    String titleText = "Sıradaki: $nextVakit ($kalanSure)";
-    String bodyText = vakitler.entries
-        .map((e) => "${e.key}:${e.value}")
-        .join(" | ");
+    String titleText = "Vaktinde • $nextVakit: ${vakitler[nextVakit]}";
 
-    notificationService.showStickyNotification(
-      title: titleText,
-      body: bodyText,
-    );
+    String locationInfo = city ?? "";
+    if (district != null && district!.isNotEmpty) {
+      locationInfo = district!;
+    }
+    String bodyText = "$locationInfo     Kalan: $remainingText";
+
+    // --- TABLO TASARIMI (YATAY HİZALI) ---
+    // \u2003 = Geniş Boşluk (Em Space) kullanarak hizalamayı garantiye alıyoruz.
+    String headerRow =
+        "İmsak\u2003Güneş\u2003Öğle\u2003İkindi\u2003Akşam\u2003Yatsı";
+    String timeRow =
+        "${vakitler['İmsak']}\u2003${vakitler['Güneş']}\u2003${vakitler['Öğle']}\u2003${vakitler['İkindi']}\u2003${vakitler['Akşam']}\u2003${vakitler['Yatsı']}";
+
+    String bigContent = "$headerRow\n$timeRow";
+
+    // Bildirimi güvenli blok içinde gönder
+    try {
+      notificationService.showStickyNotification(
+        title: titleText,
+        body: bodyText,
+        bigContent: bigContent,
+        endTime: nextTime,
+      );
+    } catch (e) {
+      debugPrint("Bildirim güncelleme hatası: $e");
+    }
   }
-  // ----------------------------------------------
 
   void toggleAlarm(String vakit, bool isExactTime, bool value) {
     if (isExactTime)
       onTimeAlarms[vakit] = value;
     else
       reminderAlarms[vakit] = value;
-
     if (value == false) {
       _audioPlayer?.stop();
       currentlyPlayingSound = null;
     }
-
     notifyListeners();
     _saveCurrentSettings();
     _rescheduleAlarms();
+
+    if (value == true) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'alarm_acildi',
+        parameters: {
+          'vakit': vakit,
+          'tip': isExactTime ? 'tam_vakit' : 'hatirlatma',
+        },
+      );
+    }
   }
 
   void toggleSilentMode(String vakit, bool value) {
@@ -374,17 +494,14 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     try {
       _audioPlayer ??= AudioPlayer();
       await _audioPlayer!.stop();
-
       if (currentlyPlayingSound == soundId) {
         currentlyPlayingSound = null;
         notifyListeners();
         return;
       }
-
       await _audioPlayer!.play(AssetSource('sounds/$soundId.mp3'));
       currentlyPlayingSound = soundId;
       notifyListeners();
-
       _audioPlayer!.onPlayerComplete.listen((event) {
         currentlyPlayingSound = null;
         notifyListeners();
@@ -395,14 +512,22 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _rescheduleAlarms() async {
-    if (prayerTimes == null) return;
+    if (prayerTimes == null || _currentLoc == null) return;
     try {
       await notificationService.requestPermissions();
       await notificationService.cancelAllNotifications();
-
-      startStickyNotificationLoop(); // Alarm kurulunca Timer'ı da tazele
+      startStickyNotificationLoop();
 
       final now = DateTime.now();
+      Map<String, String> vakitDisplayNames = {
+        "İmsak": _currentLoc!.imsak,
+        "Güneş": _currentLoc!.gunes,
+        "Öğle": _currentLoc!.ogle,
+        "İkindi": _currentLoc!.ikindi,
+        "Akşam": _currentLoc!.aksam,
+        "Yatsı": _currentLoc!.yatsi,
+      };
+
       Map<String, String> vakitler = {
         "İmsak": prayerTimes!.imsak!,
         "Güneş": prayerTimes!.gunes!,
@@ -411,9 +536,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": prayerTimes!.aksam!,
         "Yatsı": prayerTimes!.yatsi!,
       };
+
       int idCounter = 0;
       for (var entry in vakitler.entries) {
-        String vakitIsmi = entry.key;
+        String vakitLogicKey = entry.key;
+        String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
         List<String> parts = entry.value.split(':');
         DateTime vakitDate = DateTime(
           now.year,
@@ -423,38 +550,42 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
           int.parse(parts[1]),
         );
 
-        if (onTimeAlarms[vakitIsmi] == true) {
-          if (vakitDate.isAfter(now)) {
-            bool isSilent = silentModeSettings[vakitIsmi] ?? false;
-            String? soundToSend = isSilent
-                ? null
-                : (selectedSounds[vakitIsmi] ?? "ezan1");
+        if (vakitDate.isBefore(now)) {
+          vakitDate = vakitDate.add(const Duration(days: 1));
+        }
 
-            await notificationService.schedulePrayerNotification(
-              id: idCounter,
-              title: "Ezan Vakti",
-              body: "$vakitIsmi vakti girdi.",
-              scheduledTime: vakitDate,
-              soundName: soundToSend,
-            );
-          }
+        if (onTimeAlarms[vakitLogicKey] == true) {
+          bool isSilent = silentModeSettings[vakitLogicKey] ?? false;
+          String? soundToSend = isSilent
+              ? null
+              : (selectedSounds[vakitLogicKey] ?? "ezan1");
+
+          await notificationService.schedulePrayerNotification(
+            id: idCounter,
+            title: _currentLoc!.notifTitleTime,
+            body: _currentLoc!.notifBodyTime(vakitDisplayName),
+            scheduledTime: vakitDate,
+            soundName: soundToSend,
+          );
         }
         idCounter++;
 
-        if (reminderAlarms[vakitIsmi] == true) {
-          int dakikaOnce = (vakitIsmi == "İmsak" || vakitIsmi == "Güneş")
-              ? 30
-              : 15;
+        if (reminderAlarms[vakitLogicKey] == true) {
+          int dakikaOnce =
+              (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş") ? 30 : 15;
           DateTime hatirlatmaZamani = vakitDate.subtract(
             Duration(minutes: dakikaOnce),
           );
           if (hatirlatmaZamani.isAfter(now)) {
             await notificationService.schedulePrayerNotification(
               id: idCounter,
-              title: "Vakit Yaklaşıyor",
-              body: "$vakitIsmi vaktine $dakikaOnce dakika kaldı.",
+              title: _currentLoc!.notifTitleUpcoming,
+              body: _currentLoc!.notifBodyUpcoming(
+                vakitDisplayName,
+                dakikaOnce,
+              ),
               scheduledTime: hatirlatmaZamani,
-              soundName: selectedReminderSounds[vakitIsmi] ?? "bildirim1",
+              soundName: selectedReminderSounds[vakitLogicKey] ?? "bildirim1",
             );
           }
         }
@@ -462,6 +593,17 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       }
     } catch (e) {
       debugPrint("Alarm kurma hatası: $e");
+    }
+  }
+
+  Future<void> _requestBatteryOptimization() async {
+    try {
+      var status = await Permission.ignoreBatteryOptimizations.status;
+      if (!status.isGranted) {
+        await Permission.ignoreBatteryOptimizations.request();
+      }
+    } catch (e) {
+      debugPrint("Pil izni hatası: $e");
     }
   }
 

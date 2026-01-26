@@ -3,69 +3,190 @@ import 'dart:ui';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+// --- GLOBAL ALAN ---
+
+class NextVakitInfo {
+  final String name;
+  final DateTime time;
+  NextVakitInfo(this.name, this.time);
+}
+
+// 1. Sıradaki Vakti Bulan Fonksiyon (Düzeltilmiş)
+NextVakitInfo? globalFindNextVakit(Map<String, String> vakitler) {
+  final now = DateTime.now();
+
+  // Vakit sıralaması
+  final List<String> vakitSirasi = [
+    "İmsak",
+    "Güneş",
+    "Öğle",
+    "İkindi",
+    "Akşam",
+    "Yatsı",
+  ];
+
+  for (final vakit in vakitSirasi) {
+    if (!vakitler.containsKey(vakit)) continue;
+    try {
+      final parts = vakitler[vakit]!.split(':');
+      final time = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+
+      // Şimdiki zamandan ilerideyse bu vakti seç
+      if (time.isAfter(now)) {
+        return NextVakitInfo(vakit, time);
+      }
+    } catch (e) {
+      continue;
+    }
+  }
+
+  // Eğer bugünkü tüm vakitler geçtiyse, yarının İmsak vaktini bul
+  if (vakitler.containsKey("İmsak")) {
+    try {
+      final parts = vakitler["İmsak"]!.split(':');
+      // now.day + 1 diyerek yarını veriyoruz (Dart tarihi otomatik düzeltir)
+      final time = DateTime(
+        now.year,
+        now.month,
+        now.day + 1,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+      return NextVakitInfo("İmsak", time);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
+// 2. Bildirimi Güncelleyen Fonksiyon (YENİ SADE TASARIM)
+Future<void> globalUpdateNotification(
+  ServiceInstance service,
+  Map<String, String> vakitler,
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+  NextVakitInfo nextInfo,
+) async {
+  if (service is AndroidServiceInstance) {
+    if (await service.isForegroundService()) {
+      // --- YENİ TASARIM: SADE VE ŞIK ---
+      String title = "Sıradaki Vakit: ${nextInfo.name}";
+
+      // Android chronometer kullanacağı için body'ye sadece etiketi yazıyoruz.
+      // Sistem saati otomatik olarak yanına koyacak.
+      String body = "Vaktin Çıkmasına:";
+
+      await flutterLocalNotificationsPlugin.show(
+        888,
+        title,
+        body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'vaktinde_sticky_channel',
+            'Vaktin Çıkmasına',
+            icon: '@mipmap/launcher_icon',
+            // Büyük ikon olarak da uygulama logosunu kullanıyoruz, temiz durur.
+            largeIcon: const DrawableResourceAndroidBitmap(
+              '@mipmap/launcher_icon',
+            ),
+
+            // --- SAYAÇ AYARLARI ---
+            usesChronometer: true, // Sistem sayacını kullan
+            chronometerCountDown: true, // Geri sayım modu
+            when: nextInfo.time.millisecondsSinceEpoch, // Hedef zaman
+            // --- DİĞER GÖRSEL AYARLAR ---
+            showWhen: true,
+            ongoing: true, // Bildirim silinemez (sabit)
+            autoCancel: false,
+            importance: Importance.low, // Ses çıkarmasın
+            priority: Priority.low,
+            showProgress: false,
+            onlyAlertOnce: true, // Her güncellemede titremesin
+            // Gereksiz "BigText" stillerini kaldırdık, standart görünüm kullandık.
+            // Bu sayede o karmaşık tablo yerine sade bir satır görünecek.
+          ),
+        ),
+      );
+    }
+  }
+}
+
+// --- SERVİS BAŞLANGIÇ NOKTASI ---
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
-
-  // --- 1. BİLDİRİM EKLENTİSİNİ BURADA DA HAZIRLIYORUZ ---
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  final FlutterLocalNotificationsPlugin notifications =
       FlutterLocalNotificationsPlugin();
-
-  // İkon ayarı (Hata almadığın launcher_icon)
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/launcher_icon');
-
-  final InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
+  const androidInit = AndroidInitializationSettings('@mipmap/launcher_icon');
+  await notifications.initialize(
+    const InitializationSettings(android: androidInit),
   );
 
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  // -----------------------------------------------------
-
   Map<String, String> vakitler = {};
+  Timer? nextVakitTimer;
 
   service.on('setPrayerTimes').listen((event) {
-    if (event != null) {
-      try {
-        vakitler = Map<String, String>.from(event);
-        // Güncelleme fonksiyonuna plugin'i de gönderiyoruz
-        BackgroundManager._updateNotification(
-          service,
-          vakitler,
-          flutterLocalNotificationsPlugin,
-        );
-      } catch (e) {
-        print("Hata: $e");
-      }
-    }
-  });
+    if (event == null) return;
+    try {
+      vakitler = Map<String, String>.from(event);
 
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
-    if (vakitler.isNotEmpty) {
-      BackgroundManager._updateNotification(
-        service,
-        vakitler,
-        flutterLocalNotificationsPlugin,
-      );
+      // Mevcut sayacı iptal et
+      nextVakitTimer?.cancel();
+
+      // Yeni hedefi bul
+      final nextInfo = globalFindNextVakit(vakitler);
+      if (nextInfo == null) return;
+
+      // Bildirimi güncelle
+      globalUpdateNotification(service, vakitler, notifications, nextInfo);
+
+      // Hedef zamana kadar bekle
+      final now = DateTime.now();
+      final duration = nextInfo.time.difference(now);
+
+      // Eğer süre pozitifse timer kur (Eksiye düşmeyi engellemek için)
+      if (duration.inSeconds > 0) {
+        // Süre bitince (veya 1 saniye sonra) tekrar kontrol et
+        // duration + 1 saniye ekliyoruz ki tam 00:00'da kalmasın, diğer vakte geçsin
+        nextVakitTimer = Timer(duration + const Duration(seconds: 2), () {
+          // Timer bittiğinde vakitleri tekrar kontrol et ve bildirimi güncelle
+          final newNext = globalFindNextVakit(vakitler);
+          if (newNext != null) {
+            globalUpdateNotification(service, vakitler, notifications, newNext);
+          }
+        });
+      } else {
+        // Eğer süre zaten geçmişse hemen bir sonrakini bulmaya çalış
+        final newNext = globalFindNextVakit(vakitler);
+        if (newNext != null) {
+          globalUpdateNotification(service, vakitler, notifications, newNext);
+        }
+      }
+    } catch (e) {
+      print("Background Hata: $e");
     }
   });
 }
 
+// --- YÖNETİCİ SINIF ---
 class BackgroundManager {
   static Future<void> initializeService() async {
     final service = FlutterBackgroundService();
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    const channel = AndroidNotificationChannel(
       'vaktinde_sticky_channel',
-      'Vakit Sayacı',
+      'Vaktin Çıkmasına',
       description: 'Namaz vaktine kalan süreyi gösterir',
-      importance: Importance.low, // Sessiz
+      importance: Importance.low,
+      showBadge: false,
     );
-
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-
-    await flutterLocalNotificationsPlugin
+    final notifications = FlutterLocalNotificationsPlugin();
+    await notifications
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()
@@ -76,103 +197,15 @@ class BackgroundManager {
         onStart: onStart,
         autoStart: true,
         isForegroundMode: true,
-        notificationChannelId: 'vaktinde_sticky_channel',
-        initialNotificationTitle: 'Vaktinde',
-        initialNotificationContent: 'Başlatılıyor...',
-        foregroundServiceNotificationId: 888, // Bu ID çok önemli
+        notificationChannelId: channel.id,
+        initialNotificationTitle: 'Vaktin Çıkmasına',
+        initialNotificationContent: 'Hesaplanıyor...',
+        foregroundServiceNotificationId: 888,
       ),
       iosConfiguration: IosConfiguration(
         autoStart: true,
         onForeground: onStart,
       ),
     );
-  }
-
-  // --- GÜNCELLEME FONKSİYONU (ARTIK KENDİ BİLDİRİMİMİZİ BASIYORUZ) ---
-  static void _updateNotification(
-    ServiceInstance service,
-    Map<String, String> vakitler,
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-  ) async {
-    if (service is AndroidServiceInstance) {
-      if (await service.isForegroundService()) {
-        final now = DateTime.now();
-        String nextVakit = "İmsak";
-        DateTime? nextTime;
-
-        // Vakit bulma mantığı...
-        for (var entry in vakitler.entries) {
-          try {
-            List<String> parts = entry.value.split(':');
-            DateTime vTime = DateTime(
-              now.year,
-              now.month,
-              now.day,
-              int.parse(parts[0]),
-              int.parse(parts[1]),
-            );
-            if (vTime.isAfter(now)) {
-              nextVakit = entry.key;
-              nextTime = vTime;
-              break;
-            }
-          } catch (e) {
-            continue;
-          }
-        }
-
-        if (nextTime == null && vakitler.containsKey("İmsak")) {
-          try {
-            List<String> parts = vakitler["İmsak"]!.split(':');
-            nextTime = DateTime(
-              now.year,
-              now.month,
-              now.day + 1,
-              int.parse(parts[0]),
-              int.parse(parts[1]),
-            );
-            nextVakit = "İmsak";
-          } catch (e) {}
-        }
-
-        if (nextTime != null) {
-          Duration diff = nextTime.difference(now);
-          String kalanSure =
-              "${diff.inHours} sa ${diff.inMinutes.remainder(60)} dk";
-
-          String title = "Sıradaki: $nextVakit ($kalanSure)";
-          String body = vakitler.entries
-              .map((e) => "${e.key}:${e.value}")
-              .join(" | ");
-
-          // --- İŞTE SİHİRLİ DOKUNUŞ BURASI ---
-          // Servisin kendi kısıtlı metodunu kullanmıyoruz.
-          // Manuel olarak "Large Icon" (Büyük Renkli İkon) ekleyip basıyoruz.
-
-          await flutterLocalNotificationsPlugin.show(
-            888, // Servis ID'si ile aynı olmalı ki üzerine yazsın!
-            title,
-            body,
-            const NotificationDetails(
-              android: AndroidNotificationDetails(
-                'vaktinde_sticky_channel',
-                'Vakit Sayacı',
-                icon: '@mipmap/launcher_icon', // Küçük ikon (mecburen kalır)
-                // >>> BU SATIR SENİN RENKLİ İKONUNU GERİ GETİRECEK <<<
-                largeIcon: DrawableResourceAndroidBitmap(
-                  '@mipmap/launcher_icon',
-                ),
-
-                // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-                ongoing: true, // Silinemez yap
-                importance: Importance.low,
-                priority: Priority.low,
-                showWhen: false,
-              ),
-            ),
-          );
-        }
-      }
-    }
   }
 }

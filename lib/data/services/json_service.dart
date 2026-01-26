@@ -1,17 +1,22 @@
 import 'dart:convert';
-import 'package:flutter/services.dart'; // Dosya okumak için
+import 'package:flutter/services.dart';
 import '../models/hadith_model.dart';
 
 class JsonService {
-  // Esmaül Hüsna Çek
-  Future<List<Map<String, dynamic>>> getEsmaulHusna() async {
-    final String response = await rootBundle.loadString(
-      'assets/data/esmaul_husna.json',
-    );
-    return List<Map<String, dynamic>>.from(json.decode(response));
+  Future<List<Map<String, dynamic>>> getEsmaulHusna(String languageCode) async {
+    try {
+      final String response = await rootBundle.loadString(
+        'assets/data/esmaul_husna_$languageCode.json',
+      );
+      return List<Map<String, dynamic>>.from(json.decode(response));
+    } catch (e) {
+      final String response = await rootBundle.loadString(
+        'assets/data/esmaul_husna_tr.json',
+      );
+      return List<Map<String, dynamic>>.from(json.decode(response));
+    }
   }
 
-  // Dini Günler Çek
   Future<List<Map<String, dynamic>>> getReligiousDays() async {
     final String response = await rootBundle.loadString(
       'assets/data/religious_days.json',
@@ -19,15 +24,20 @@ class JsonService {
     return List<Map<String, dynamic>>.from(json.decode(response));
   }
 
-  // Cuma Mesajları Çek
-  Future<List<String>> getFridayMessages() async {
-    final String response = await rootBundle.loadString(
-      'assets/data/friday_messages.json',
-    );
-    return List<String>.from(json.decode(response));
+  Future<List<String>> getFridayMessages(String languageCode) async {
+    try {
+      final String response = await rootBundle.loadString(
+        'assets/data/friday_messages_$languageCode.json',
+      );
+      return List<String>.from(json.decode(response));
+    } catch (e) {
+      final String response = await rootBundle.loadString(
+        'assets/data/friday_messages_tr.json',
+      );
+      return List<String>.from(json.decode(response));
+    }
   }
 
-  // Hadisleri Çek
   Future<List<HadithModel>> getHadiths() async {
     final String response = await rootBundle.loadString(
       'assets/data/hadiths.json',
