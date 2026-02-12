@@ -210,5 +210,16 @@
     "zakatEligible": "Zekat Verilmesi Gerekir",
     "zakatNotEligible": "Zekat Gerekmiyor",
     "nisabLimit": "Nisab Sınırı (80.18 gr Altın)",
-    "belowNisabMessage": "Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir."
+    "belowNisabMessage": "Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.",
+    "searchLocationTitle": "Konum Ara (Tüm Dünya)",
+    "searchLocationHint": "Şehir veya Ülke (Örn: Paris)",
+    "searchInitial": "Aramak istediğiniz yeri yazın...",
+    "searchNotFound": "Konum bulunamadı.",
+    "searchError": "Sonuç bulunamadı. Lütfen tekrar deneyin.",
+    "locationSelected": "{city} seçildi",
+    "@locationSelected": {
+        "placeholders": {
+            "city": { "type": "String" }
+        }
+    }
 }

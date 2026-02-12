@@ -421,4 +421,24 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get belowNisabMessage =>
       'Zakat ist nicht verpflichtend, da Ihr Nettovermögen unter der Nisab-Grenze liegt.';
+
+  @override
+  String get searchLocationTitle => 'Standort suchen (Weltweit)';
+
+  @override
+  String get searchLocationHint => 'Stadt oder Land (z.B. Paris)';
+
+  @override
+  String get searchInitial => 'Tippen zum Suchen...';
+
+  @override
+  String get searchNotFound => 'Standort nicht gefunden.';
+
+  @override
+  String get searchError => 'Keine Ergebnisse. Bitte versuchen Sie es erneut.';
+
+  @override
+  String locationSelected(String city) {
+    return '$city ausgewählt';
+  }
 }

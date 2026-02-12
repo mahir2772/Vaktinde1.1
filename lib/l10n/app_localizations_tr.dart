@@ -420,4 +420,24 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get belowNisabMessage =>
       'Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.';
+
+  @override
+  String get searchLocationTitle => 'Konum Ara (Tüm Dünya)';
+
+  @override
+  String get searchLocationHint => 'Şehir veya Ülke (Örn: Paris)';
+
+  @override
+  String get searchInitial => 'Aramak istediğiniz yeri yazın...';
+
+  @override
+  String get searchNotFound => 'Konum bulunamadı.';
+
+  @override
+  String get searchError => 'Sonuç bulunamadı. Lütfen tekrar deneyin.';
+
+  @override
+  String locationSelected(String city) {
+    return '$city seçildi';
+  }
 }

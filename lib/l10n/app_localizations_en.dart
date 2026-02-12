@@ -420,4 +420,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get belowNisabMessage =>
       'Zakat is not obligatory because your net assets are below the Nisab threshold.';
+
+  @override
+  String get searchLocationTitle => 'Search Location (Worldwide)';
+
+  @override
+  String get searchLocationHint => 'City or Country (Ex: Paris)';
+
+  @override
+  String get searchInitial => 'Type to search...';
+
+  @override
+  String get searchNotFound => 'Location not found.';
+
+  @override
+  String get searchError => 'No results found. Please try again.';
+
+  @override
+  String locationSelected(String city) {
+    return '$city selected';
+  }
 }

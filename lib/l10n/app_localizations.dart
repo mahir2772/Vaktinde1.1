@@ -871,6 +871,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.'**
   String get belowNisabMessage;
+
+  /// No description provided for @searchLocationTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum Ara (Tüm Dünya)'**
+  String get searchLocationTitle;
+
+  /// No description provided for @searchLocationHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şehir veya Ülke (Örn: Paris)'**
+  String get searchLocationHint;
+
+  /// No description provided for @searchInitial.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aramak istediğiniz yeri yazın...'**
+  String get searchInitial;
+
+  /// No description provided for @searchNotFound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum bulunamadı.'**
+  String get searchNotFound;
+
+  /// No description provided for @searchError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonuç bulunamadı. Lütfen tekrar deneyin.'**
+  String get searchError;
+
+  /// No description provided for @locationSelected.
+  ///
+  /// In tr, this message translates to:
+  /// **'{city} seçildi'**
+  String locationSelected(String city);
 }
 
 class _AppLocalizationsDelegate

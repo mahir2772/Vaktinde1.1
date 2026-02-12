@@ -35,15 +35,27 @@ class _MainWrapperState extends State<MainWrapper> {
     _loadAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Dili context üzerinden alıp ViewModel'e gönderiyoruz
-      // (Eğer context hazır değilse hata vermemesi için try-catch veya null check yapılabilir ama
-      // addPostFrameCallback içinde context genelde güvenlidir.)
       final loc = AppLocalizations.of(context);
       if (loc != null) {
+        // Uygulama ilk açıldığında verileri yükle
         context.read<HomeViewModel>().initializeApp(loc);
       }
     });
   }
+
+  // --- EKLENEN KISIM: DİL DEĞİŞİKLİĞİNİ YAKALAR ---
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Uygulamanın dili her değiştiğinde burası çalışır
+    final loc = AppLocalizations.of(context);
+    if (loc != null) {
+      // ViewModel'e "Dil değişti, alarmları yeni dile göre ayarla" diyoruz
+      context.read<HomeViewModel>().updateLocalization(loc);
+    }
+  }
+  // ------------------------------------------------
 
   void _loadAd() {
     _bannerAd = BannerAd(
@@ -72,7 +84,6 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    // Çeviri nesnesini alıyoruz
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -101,17 +112,17 @@ class _MainWrapperState extends State<MainWrapper> {
               NavigationDestination(
                 icon: const Icon(Icons.home_outlined),
                 selectedIcon: const Icon(Icons.home, color: Colors.teal),
-                label: loc.navPrayer, // "Vakitler" veya "Times"
+                label: loc.navPrayer,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.explore_outlined),
                 selectedIcon: const Icon(Icons.explore, color: Colors.teal),
-                label: loc.navQibla, // "Kıble" veya "Qibla"
+                label: loc.navQibla,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.dashboard_outlined),
                 selectedIcon: const Icon(Icons.dashboard, color: Colors.teal),
-                label: loc.navMenu, // "Menü" veya "Menu"
+                label: loc.navMenu,
               ),
             ],
           ),

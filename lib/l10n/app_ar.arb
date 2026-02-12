@@ -210,5 +210,16 @@
     "zakatEligible": "تجب الزكاة",
     "zakatNotEligible": "لا تجب الزكاة",
     "nisabLimit": "حد النصاب (80.18 جرام ذهب)",
-    "belowNisabMessage": "الزكاة غير واجبة لأن صافي أصولك أقل من حد النصاب."
+    "belowNisabMessage": "الزكاة غير واجبة لأن صافي أصولك أقل من حد النصاب.",
+    "searchLocationTitle": "بحث عن موقع (جميع أنحاء العالم)",
+    "searchLocationHint": "المدينة أو البلد (مثال: باريس)",
+    "searchInitial": "اكتب للبحث...",
+    "searchNotFound": "لم يتم العثور على الموقع.",
+    "searchError": "لم يتم العثور على نتائج. حاول مرة أخرى.",
+    "locationSelected": "تم اختيار {city}",
+    "@locationSelected": {
+        "placeholders": {
+            "city": { "type": "String" }
+        }
+    }
 }

@@ -210,5 +210,16 @@
     "zakatEligible": "La Zakat est requise",
     "zakatNotEligible": "Zakat non requise",
     "nisabLimit": "Seuil Nisab (80,18g d'Or)",
-    "belowNisabMessage": "La Zakat n'est pas obligatoire car votre actif net est inférieur au seuil Nisab."
+    "belowNisabMessage": "La Zakat n'est pas obligatoire car votre actif net est inférieur au seuil Nisab.",
+    "searchLocationTitle": "Rechercher un lieu (Monde entier)",
+    "searchLocationHint": "Ville ou Pays (Ex: Paris)",
+    "searchInitial": "Tapez pour rechercher...",
+    "searchNotFound": "Lieu non trouvé.",
+    "searchError": "Aucun résultat. Veuillez réessayer.",
+    "locationSelected": "{city} sélectionné",
+    "@locationSelected": {
+        "placeholders": {
+            "city": { "type": "String" }
+        }
+    }
 }

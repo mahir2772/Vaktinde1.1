@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+// --- DİKKAT: Dosya yolun doğru mu kontrol et ---
+import 'package:ezan_saati/features/location_search_dialog/location_search_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
@@ -28,14 +30,14 @@ class SettingsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(title: Text(loc.menuTitle), centerTitle: true),
-      // --- REKLAM ALANI EKLENDİ ---
+      // --- REKLAM ALANI ---
       bottomNavigationBar: const SafeArea(
         child: Padding(
           padding: EdgeInsets.only(bottom: 5.0),
           child: AdBannerWidget(),
         ),
       ),
-      // ---------------------------
+      // --------------------
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -84,6 +86,7 @@ class SettingsView extends StatelessWidget {
               title: Text(loc.changeLocation),
               subtitle: Consumer<HomeViewModel>(
                 builder: (context, viewModel, child) {
+                  // Şehir ve ilçe bilgisi varsa göster
                   String displayCity = viewModel.city ?? loc.citySelect;
                   if (viewModel.district != null &&
                       viewModel.district!.isNotEmpty) {
@@ -93,6 +96,7 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              // --- GÜNCELLENEN KISIM: YENİ ARAMA PENCERESİNİ AÇAR ---
               onTap: () => _showCityDistrictDialog(context, loc),
             ),
             const Divider(height: 1),
@@ -467,128 +471,14 @@ class SettingsView extends StatelessWidget {
     );
   }
 
+  // --- GÜNCELLENEN FONKSİYON ---
+  // Artık eski Dropdown pencerelerini değil, yeni yaptığımız modern arama penceresini açıyor.
   void _showCityDistrictDialog(BuildContext context, AppLocalizations loc) {
-    final viewModel = context.read<HomeViewModel>();
-
-    if (viewModel.allCitiesAndDistricts.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loc.loading), backgroundColor: Colors.orange),
-      );
-      return;
-    }
-
-    String? selectedCity;
-    String? selectedDistrict;
-    List<String> districtList = [];
-
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(loc.changeLocation),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    loc.locationWarning,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 15),
-                  DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: loc.citySelect,
-                      border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.location_city),
-                    ),
-                    initialValue: selectedCity,
-                    items: viewModel.citiesList.map((city) {
-                      return DropdownMenuItem(value: city, child: Text(city));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCity = value;
-                        selectedDistrict = null;
-                        if (value != null) {
-                          districtList =
-                              viewModel.allCitiesAndDistricts[value] ?? [];
-                        } else {
-                          districtList = [];
-                        }
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 15),
-                  DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: loc.districtSelect,
-                      border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.map),
-                    ),
-                    value: selectedDistrict,
-                    items: districtList.isEmpty
-                        ? []
-                        : districtList.map((district) {
-                            return DropdownMenuItem(
-                              value: district,
-                              child: Text(district),
-                            );
-                          }).toList(),
-                    onChanged: selectedCity == null
-                        ? null
-                        : (value) {
-                            setState(() {
-                              selectedDistrict = value;
-                            });
-                          },
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: Text(
-                    loc.cancel,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () {
-                    if (selectedCity != null) {
-                      viewModel.changeCityAndDistrict(
-                        selectedCity!,
-                        selectedDistrict,
-                      );
-                      Navigator.pop(ctx);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "$selectedCity ${selectedDistrict ?? ''}...",
-                          ),
-                          backgroundColor: Colors.teal,
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(loc.citySelect),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(loc.save),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      isScrollControlled: true, // Tam ekran gibi açılması için
+      backgroundColor: Colors.transparent,
+      builder: (context) => const LocationSearchDialog(),
     );
   }
 

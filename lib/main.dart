@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
         textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: Colors.white.withOpacity(0.9),
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -107,7 +107,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
         textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: const Color(0xFF1E1E1E).withOpacity(0.9),
           elevation: 2,
           shape: RoundedRectangleBorder(

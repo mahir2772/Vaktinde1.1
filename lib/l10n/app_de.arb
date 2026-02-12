@@ -210,5 +210,16 @@
     "zakatEligible": "Zakat ist erforderlich",
     "zakatNotEligible": "Zakat nicht erforderlich",
     "nisabLimit": "Nisab-Grenze (80,18g Gold)",
-    "belowNisabMessage": "Zakat ist nicht verpflichtend, da Ihr Nettovermögen unter der Nisab-Grenze liegt."
+    "belowNisabMessage": "Zakat ist nicht verpflichtend, da Ihr Nettovermögen unter der Nisab-Grenze liegt.",
+    "searchLocationTitle": "Standort suchen (Weltweit)",
+    "searchLocationHint": "Stadt oder Land (z.B. Paris)",
+    "searchInitial": "Tippen zum Suchen...",
+    "searchNotFound": "Standort nicht gefunden.",
+    "searchError": "Keine Ergebnisse. Bitte versuchen Sie es erneut.",
+    "locationSelected": "{city} ausgewählt",
+    "@locationSelected": {
+        "placeholders": {
+            "city": { "type": "String" }
+        }
+    }
 }

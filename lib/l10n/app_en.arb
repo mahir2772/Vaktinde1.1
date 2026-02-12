@@ -20,6 +20,13 @@
     "silentNotif": "Text Notification Only",
     "silentNotifSub": "No sound/Adhan, just a notification.",
     "warningAlarm": "Remind {minute} min Before",
+    "@warningAlarm": {
+        "placeholders": {
+            "minute": {
+                "type": "String"
+            }
+        }
+    },
     "warningAlarmSub": "Short notification sound.",
     "settings": "Settings",
     "changeLanguage": "Change Language",
@@ -33,8 +40,25 @@
     "soundBeep": "Short Beep",
     "notifTitleTime": "Prayer Time",
     "notifBodyTime": "It is time for {vakit}.",
+    "@notifBodyTime": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
     "notifTitleUpcoming": "Time Approaching",
     "notifBodyUpcoming": "{minute} minutes left for {vakit}.",
+    "@notifBodyUpcoming": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
     "navPrayer": "Times",
     "navQibla": "Qibla",
     "navMenu": "Menu",
@@ -55,17 +79,52 @@
     "rateApp": "Rate Us",
     "contactUs": "Contact & Report Bug",
     "shareText": "I found a great Prayer Times app! Download: {link}",
+    "@shareText": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "batteryDialogTitle": "Fix Notification Issues",
     "batteryDialogBody": "Your phone might be killing the app to save battery. To prevent this:\n\n1. Open Recent Apps (Square button).\n2. Long press 'Vaktinde' app or click the logo.\n3. Tap the Lock Icon 🔒 to lock it.\n\nAlso go to Settings > Apps > Vaktinde > Battery > Unrestricted.",
     "okUnderstood": "OK, Understood",
     "religiousDaysTitle": "Religious Days",
     "errorOccurred": "Error occurred: {error}",
+    "@errorOccurred": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
     "noDataFound": "No data found.",
     "noDataForYear": "No data found for the year {year}.",
+    "@noDataForYear": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
     "religiousDaysListTitle": "{year} Religious Days List",
+    "@religiousDaysListTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
     "missedPrayersTitle": "Missed Prayers",
     "missedPrayersInfo": "Track your missed prayers here and decrease as you perform them.\n(Tap the number to enter manually)",
     "editMissedTitle": "Edit {title} Missed",
+    "@editMissedTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
     "missedCountLabel": "Missed Count",
     "missedCountHint": "Ex: 150",
     "sabah": "Fajr",
@@ -76,6 +135,13 @@
     "vitir": "Witr",
     "oruc": "Fasting",
     "timeLeftFor": "Time left for {vakit}",
+    "@timeLeftFor": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
     "tomorrow": "(Tomorrow)",
     "fridayMessagesTitle": "Friday Messages",
     "esmaulHusnaTitle": "99 Names of Allah",
@@ -103,9 +169,23 @@
     "locationPermissionDenied": "Location permission denied.",
     "locationPermissionForever": "Location permission permanently denied. Enable from settings.",
     "compassError": "Sensor error: {error}",
+    "@compassError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
     "noCompass": "No compass on device.",
     "qiblaFound": "YOU FOUND THE QIBLA!",
     "qiblaAngle": "Qibla Angle: {angle}°",
+    "@qiblaAngle": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
     "keepAwayMetal": "Keep away from metal objects.",
     "goldGram": "Gram Gold (24K)",
     "goldQuarter": "Quarter Gold",
@@ -130,5 +210,16 @@
     "zakatEligible": "Zakat is Required",
     "zakatNotEligible": "Zakat Not Required",
     "nisabLimit": "Nisab Threshold (80.18g Gold)",
-    "belowNisabMessage": "Zakat is not obligatory because your net assets are below the Nisab threshold."
+    "belowNisabMessage": "Zakat is not obligatory because your net assets are below the Nisab threshold.",
+    "searchLocationTitle": "Search Location (Worldwide)",
+    "searchLocationHint": "City or Country (Ex: Paris)",
+    "searchInitial": "Type to search...",
+    "searchNotFound": "Location not found.",
+    "searchError": "No results found. Please try again.",
+    "locationSelected": "{city} selected",
+    "@locationSelected": {
+        "placeholders": {
+            "city": { "type": "String" }
+        }
+    }
 }

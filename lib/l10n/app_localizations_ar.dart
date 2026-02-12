@@ -417,4 +417,24 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get belowNisabMessage =>
       'الزكاة غير واجبة لأن صافي أصولك أقل من حد النصاب.';
+
+  @override
+  String get searchLocationTitle => 'بحث عن موقع (جميع أنحاء العالم)';
+
+  @override
+  String get searchLocationHint => 'المدينة أو البلد (مثال: باريس)';
+
+  @override
+  String get searchInitial => 'اكتب للبحث...';
+
+  @override
+  String get searchNotFound => 'لم يتم العثور على الموقع.';
+
+  @override
+  String get searchError => 'لم يتم العثور على نتائج. حاول مرة أخرى.';
+
+  @override
+  String locationSelected(String city) {
+    return 'تم اختيار $city';
+  }
 }

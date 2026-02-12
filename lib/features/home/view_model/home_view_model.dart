@@ -17,6 +17,9 @@ import '../../../data/services/hadith_service.dart';
 import '../../../data/models/prayer_times_model.dart';
 import '../../../data/models/hadith_model.dart';
 import '../../../main.dart';
+// EKLENDİ: Widget servisini import ediyoruz (Yolunu projene göre ayarla)
+// Eğer lib/widget_service.dart ise:
+import '../../../data/services/widget_service.dart';
 
 class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final LocationService _locationService = LocationService();
@@ -26,7 +29,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final IlIlceService _ilIlceService = IlIlceService();
 
   AudioPlayer? _audioPlayer;
-  Timer? _stickyNotificationTimer;
+
+  // DÜZELTME: Timer kaldırıldı (Çakışma önlendi)
+  // Timer? _stickyNotificationTimer;
 
   PrayerTimesModel? prayerTimes;
   HadithModel? dailyHadith;
@@ -73,19 +78,30 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
   }
 
+  // --- GÜNCELLENEN KISIM ---
+  // Dil değiştiğinde tetiklenir.
   void updateLocalization(AppLocalizations loc) {
     _currentLoc = loc;
+
+    // Eğer veriler yüklüyse, alarmları yeni dille tekrar kur.
+    // Böylece bildirimler "Vakit Geldi" yerine "Prayer Time" (veya tam tersi) olur.
+    if (_isDataLoaded) {
+      _rescheduleAlarms();
+      // EKLENDİ: Dil değişince Widget da güncellensin
+      _updateHomeScreenWidget();
+    }
   }
+  // -------------------------
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Uygulama tamamen kapandığında veya arka plana atıldığında
-    // Timer'ı durdurmuyoruz ki widget güncel kalsın,
-    // ama veriler boşsa işlem yapmıyoruz.
     if (state == AppLifecycleState.resumed) {
       if (_isDataLoaded) {
+        // DÜZELTME: Uygulama öne gelince sadece arka plana güncel veriyi hatırlatıyoruz.
+        // Kendimiz bildirim oluşturmuyoruz.
         _sendTimesToBackgroundService();
-        _updateStickyNotification();
+        // EKLENDİ: Uygulama açılınca Widget güncellensin
+        _updateHomeScreenWidget();
       }
     }
   }
@@ -115,9 +131,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         isLoading = false;
         _isDataLoaded = true;
 
+        // Verileri arka plana gönder, gerisine karışma
         _sendTimesToBackgroundService();
         await _rescheduleAlarms();
-        startStickyNotificationLoop();
+
         notifyListeners();
         return;
       }
@@ -155,13 +172,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  // --- DÜZELTME BURADA YAPILDI ---
   Future<void> changeCityAndDistrict(
     String newCity,
     String? newDistrict,
   ) async {
-    // ESKİSİ: if (prayerTimes == null) { isLoading = true; notifyListeners(); }
-    // YENİSİ: Her durumda yükleniyor göster ki kullanıcı işlemin başladığını anlasın.
     isLoading = true;
     notifyListeners();
 
@@ -194,9 +208,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         }
 
         await _storageService.savePrayerTimesData(apiResult);
+
+        // DÜZELTME: Veri değişti, servise haber ver.
         _sendTimesToBackgroundService();
         Future.microtask(() => _rescheduleAlarms());
-        startStickyNotificationLoop();
 
         await FirebaseAnalytics.instance.logEvent(
           name: 'sehir_secildi',
@@ -279,9 +294,68 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+  // --- KRİTİK METOT: Arka plan servisiyle konuşan tek yer burası ---
   void _sendTimesToBackgroundService() {
-    if (prayerTimes == null) return;
+    if (prayerTimes == null || _currentLoc == null) return;
     try {
+      // 1. Hesaplama için gerekli ham veriler (Bunlar değişmez, kodun kalbi)
+      Map<String, String> times = {
+        "İmsak": prayerTimes!.imsak!,
+        "Güneş": prayerTimes!.gunes!,
+        "Öğle": prayerTimes!.ogle!,
+        "İkindi": prayerTimes!.ikindi!,
+        "Akşam": prayerTimes!.aksam!,
+        "Yatsı": prayerTimes!.yatsi!,
+      };
+
+      // 2. Bildirimde görünecek ÇEVİRİLER (Dinamik)
+      // "Kalan" kelimesi için basit bir sözlük yapıyoruz
+      String langCode = _currentLoc!.localeName; // 'tr', 'en' vb.
+      String remainingText = "Kalan"; // Varsayılan TR
+
+      if (langCode.startsWith('en'))
+        remainingText = "Left";
+      else if (langCode.startsWith('de'))
+        remainingText = "Übrig";
+      else if (langCode.startsWith('fr'))
+        remainingText = "Restant";
+      else if (langCode.startsWith('ar'))
+        remainingText = "الباقي";
+
+      Map<String, String> displayTexts = {
+        "next": _currentLoc!.nextPrayer, // "Sıradaki Vakit" / "Next Prayer"
+        "remaining": remainingText, // "Kalan" / "Left"
+        "İmsak": _currentLoc!.imsak, // "İmsak" / "Fajr"
+        "Güneş": _currentLoc!.gunes,
+        "Öğle": _currentLoc!.ogle,
+        "İkindi": _currentLoc!.ikindi,
+        "Akşam": _currentLoc!.aksam,
+        "Yatsı": _currentLoc!.yatsi,
+      };
+
+      // Servise ikisini birden paketleyip atıyoruz
+      FlutterBackgroundService().invoke("setPrayerTimes", {
+        "times": times,
+        "display": displayTexts,
+      });
+
+      // EKLENDİ: Veriler hazır olduğunda Widget'ı da güncelle!
+      _updateHomeScreenWidget();
+    } catch (e) {
+      debugPrint("Servis Hatası (Önemsiz): $e");
+    }
+  }
+
+  // ========================================================
+  // EKLENEN YENİ FONKSİYON: Ana Ekran Widget'ını Hesapla ve Güncelle
+  // ========================================================
+  void _updateHomeScreenWidget() {
+    if (prayerTimes == null) return;
+
+    try {
+      final now = DateTime.now();
+
+      // Vakitler Map'i
       Map<String, String> vakitler = {
         "İmsak": prayerTimes!.imsak!,
         "Güneş": prayerTimes!.gunes!,
@@ -290,10 +364,60 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": prayerTimes!.aksam!,
         "Yatsı": prayerTimes!.yatsi!,
       };
-      // Servis başlatılmamışsa hata verebilir, try-catch ile koruyoruz
-      FlutterBackgroundService().invoke("setPrayerTimes", vakitler);
+
+      String sonrakiVakitIsmi = "İmsak";
+      DateTime? sonrakiVakitTarihi;
+      bool bulundu = false;
+
+      // Sıradaki vakti bul
+      for (var entry in vakitler.entries) {
+        if (entry.key == "Güneş")
+          continue; // Güneş namaz vakti olmadığı için atlanabilir
+
+        List<String> parts = entry.value.split(':');
+        DateTime vakitDate = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          int.parse(parts[0]),
+          int.parse(parts[1]),
+        );
+
+        if (vakitDate.isAfter(now)) {
+          sonrakiVakitIsmi = entry.key;
+          sonrakiVakitTarihi = vakitDate;
+          bulundu = true;
+          break;
+        }
+      }
+
+      // Gece ise yarınki İmsak'ı hedef al
+      if (!bulundu) {
+        sonrakiVakitIsmi = "İmsak";
+        List<String> parts = vakitler["İmsak"]!.split(':');
+        sonrakiVakitTarihi = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          int.parse(parts[0]),
+          int.parse(parts[1]),
+        ).add(const Duration(days: 1));
+      }
+
+      // Kalan Süreyi Hesapla (Örn: "02:15" formatında)
+      Duration diff = sonrakiVakitTarihi!.difference(now);
+      String kalanSureText =
+          "${diff.inHours.toString().padLeft(2, '0')}:${(diff.inMinutes % 60).toString().padLeft(2, '0')}";
+
+      // Widget'a gönder
+      WidgetService.widgetiGuncelle(
+        baslik: "$sonrakiVakitIsmi Vaktine Kalan",
+        kalanSure:
+            kalanSureText, // Saniye saniye saymaz, widget güncellendikçe değişir
+        vakitler: vakitler,
+      );
     } catch (e) {
-      debugPrint("Servis Hatası (Önemsiz): $e");
+      debugPrint("Widget Hesaplama Hatası: $e");
     }
   }
 
@@ -347,95 +471,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     );
   }
 
-  void startStickyNotificationLoop() {
-    _stickyNotificationTimer?.cancel();
-    _updateStickyNotification();
-    _stickyNotificationTimer = Timer.periodic(const Duration(minutes: 1), (
-      timer,
-    ) {
-      _updateStickyNotification();
-    });
-  }
-
-  void _updateStickyNotification() {
-    // 1. KORUMA: Eğer veriler null ise sakın widget'ı güncelleme!
-    // Bu sayede uygulama kapanırken boş veri göndermez.
-    if (prayerTimes == null) return;
-    if (prayerTimes!.imsak == null || prayerTimes!.yatsi == null) return;
-
-    final now = DateTime.now();
-
-    Map<String, String> vakitler = {
-      "İmsak": prayerTimes!.imsak!,
-      "Güneş": prayerTimes!.gunes!,
-      "Öğle": prayerTimes!.ogle!,
-      "İkindi": prayerTimes!.ikindi!,
-      "Akşam": prayerTimes!.aksam!,
-      "Yatsı": prayerTimes!.yatsi!,
-    };
-
-    String nextVakit = "İmsak";
-    DateTime? nextTime;
-    for (var entry in vakitler.entries) {
-      List<String> parts = entry.value.split(':');
-      DateTime vTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
-      if (vTime.isAfter(now)) {
-        nextVakit = entry.key;
-        nextTime = vTime;
-        break;
-      }
-    }
-    if (nextTime == null) {
-      List<String> parts = prayerTimes!.imsak!.split(':');
-      nextTime = DateTime(
-        now.year,
-        now.month,
-        now.day + 1,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
-      nextVakit = "İmsak";
-    }
-
-    Duration diff = nextTime!.difference(now);
-    String remainingText =
-        "${diff.inHours}:${(diff.inMinutes % 60).toString().padLeft(2, '0')}:${(diff.inSeconds % 60).toString().padLeft(2, '0')}";
-
-    String titleText = "Vaktinde • $nextVakit: ${vakitler[nextVakit]}";
-
-    String locationInfo = city ?? "";
-    if (district != null && district!.isNotEmpty) {
-      locationInfo = district!;
-    }
-    String bodyText = "$locationInfo     Kalan: $remainingText";
-
-    // --- TABLO TASARIMI (YATAY HİZALI) ---
-    // \u2003 = Geniş Boşluk (Em Space) kullanarak hizalamayı garantiye alıyoruz.
-    String headerRow =
-        "İmsak\u2003Güneş\u2003Öğle\u2003İkindi\u2003Akşam\u2003Yatsı";
-    String timeRow =
-        "${vakitler['İmsak']}\u2003${vakitler['Güneş']}\u2003${vakitler['Öğle']}\u2003${vakitler['İkindi']}\u2003${vakitler['Akşam']}\u2003${vakitler['Yatsı']}";
-
-    String bigContent = "$headerRow\n$timeRow";
-
-    // Bildirimi güvenli blok içinde gönder
-    try {
-      notificationService.showStickyNotification(
-        title: titleText,
-        body: bodyText,
-        bigContent: bigContent,
-        endTime: nextTime,
-      );
-    } catch (e) {
-      debugPrint("Bildirim güncelleme hatası: $e");
-    }
-  }
+  // --- DÜZELTME: Bu metotlar (Sticky Notification Loop) tamamen silindi ---
+  // Çakışmayı önlemek için buradaki timer ve bildirim kodlarını sildik.
+  // Bildirimi artık BackgroundManager tek başına yönetiyor.
 
   void toggleAlarm(String vakit, bool isExactTime, bool value) {
     if (isExactTime)
@@ -515,8 +553,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     if (prayerTimes == null || _currentLoc == null) return;
     try {
       await notificationService.requestPermissions();
+      // Sadece zamanlanmış alarmları iptal ediyoruz, sticky bildirimi ellemiyoruz.
+      // Sticky bildirimi zaten ID 888 ile BackgroundManager yönetiyor.
       await notificationService.cancelAllNotifications();
-      startStickyNotificationLoop();
 
       final now = DateTime.now();
       Map<String, String> vakitDisplayNames = {
@@ -610,7 +649,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _stickyNotificationTimer?.cancel();
+    // Timer silindiği için dispose'a gerek kalmadı
     _audioPlayer?.dispose();
     super.dispose();
   }
