@@ -15,8 +15,6 @@ class PrayerTimesModel {
     this.yatsi,
   });
 
-  // --- 1. YENİ EKLENEN: KAYDETME İÇİN (ToJson) ---
-  // StorageService bu fonksiyonu arıyordu, o yüzden hata veriyordu.
   Map<String, dynamic> toJson() {
     return {
       'imsak': imsak,
@@ -28,8 +26,6 @@ class PrayerTimesModel {
     };
   }
 
-  // --- 2. YENİ EKLENEN: OKUMA İÇİN (FromJson - Map) ---
-  // StorageService hafızadan okurken bu formatı kullanır.
   factory PrayerTimesModel.fromJson(Map<String, dynamic> json) {
     return PrayerTimesModel(
       imsak: json['imsak'],

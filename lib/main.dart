@@ -12,6 +12,9 @@ import 'data/services/notification_service.dart';
 import 'data/services/background_manager.dart';
 import 'features/onboarding/view/onboarding_language_view.dart';
 import 'features/common/theme_provider.dart';
+import 'features/zikirmatik/view_model/zikir_view_model.dart';
+// --- REKLAM HELPER İMPORTU EKLENDİ ---
+import 'features/common/ad_helper.dart';
 
 final NotificationService notificationService = NotificationService();
 
@@ -25,6 +28,9 @@ void main() async {
   }
 
   MobileAds.instance.initialize();
+
+  // REKLAMI PUSUYA YATIRIYORUZ
+  AdHelper.instance.loadInterstitialAd();
 
   // Background servisi başlatıyoruz
   try {
@@ -41,6 +47,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ZikirViewModel()),
       ],
       child: const MyApp(),
     ),

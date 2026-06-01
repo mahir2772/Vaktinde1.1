@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:vector_math/vector_math.dart' show radians;
@@ -15,21 +16,52 @@ class QiblaView extends StatefulWidget {
 
 class _QiblaViewState extends State<QiblaView> {
   bool _hasPermissions = false;
-  double _qiblaAngle = 0; // Kabe'nin açısı
+  double _qiblaAngle = 0;
   bool _isLoading = true;
   String? _errorMessage;
 
-  // Mekke Koordinatları
+  StreamSubscription<CompassEvent>? _compassSubscription;
+
+  // EFSANE MATEMATİK İÇİN DEĞİŞKENLER
+  double _lastHeading = 0;
+  double _smoothHeading =
+      0; // 360'ı aşsa bile katlanarak büyür (Titremeyi %100 keser)
+
+  bool _isAligned = false;
+  bool _isCalibrationPoor = false;
+
   final double meccaLat = 21.422487;
   final double meccaLong = 39.826206;
 
   @override
   void initState() {
     super.initState();
-    // Ekran çizildikten sonra işlemleri başlat
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initQibla();
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) _initQibla();
+      });
     });
+  }
+
+  Future<Position?> _fetchPositionSafe() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return null;
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) return null;
+      }
+      if (permission == LocationPermission.deniedForever) return null;
+
+      return await Geolocator.getLastKnownPosition() ??
+          await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.medium,
+          );
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> _initQibla() async {
@@ -41,67 +73,39 @@ class _QiblaViewState extends State<QiblaView> {
       _errorMessage = null;
     });
 
+    Position? position;
+
     try {
-      // 1. Konum Servisi Açık mı?
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        // Servis kapalıysa kullanıcıdan açmasını iste
-        // (Bazı telefonlarda direkt hata fırlatmak yerine null dönebilir)
-        throw Exception(loc.locationServiceOff);
-      }
+      position = await _fetchPositionSafe().timeout(const Duration(seconds: 5));
+    } catch (_) {
+      position = null;
+    }
 
-      // 2. İzin Kontrolü
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          throw Exception(loc.locationPermissionDenied);
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        throw Exception(loc.locationPermissionForever);
-      }
-
-      // 3. Konumu Al (Zaman Aşımı Ekli!)
-      Position? position;
-      try {
-        // Önce 5 saniye içinde yüksek hassasiyetle bulmaya çalış
-        position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-          timeLimit: const Duration(seconds: 5),
-        );
-      } catch (e) {
-        // Bulamazsa son bilinen konumu dene (Daha hızlıdır)
-        position = await Geolocator.getLastKnownPosition();
-      }
-
-      // Eğer hala konum yoksa (GPS tamamen kapalı veya sinyal yok)
-      if (position == null) {
-        // Varsayılan olarak İstanbul veya 0 kabul edip açalım ki uygulama kilitlenmesin
-        // Kullanıcıya uyarı verip devam ediyoruz
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Konum alınamadı, varsayılan değer kullanılıyor."),
-            ),
-          );
-        }
-        position = Position(
-          longitude: 28.9784, // İstanbul (Varsayılan)
-          latitude: 41.0082,
-          timestamp: DateTime.now(),
-          accuracy: 0,
-          altitude: 0,
-          heading: 0,
-          speed: 0,
-          speedAccuracy: 0,
-          altitudeAccuracy: 0,
-          headingAccuracy: 0,
+    if (position == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(loc.locationFallbackMessage),
+            backgroundColor: Colors.orange,
+            duration: const Duration(seconds: 3),
+          ),
         );
       }
+      position = Position(
+        longitude: 28.9784,
+        latitude: 41.0082,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: 0,
+        heading: 0,
+        speed: 0,
+        speedAccuracy: 0,
+        altitudeAccuracy: 0,
+        headingAccuracy: 0,
+      );
+    }
 
-      // 4. Kıble Hesabı
+    try {
       double latUser = radians(position.latitude);
       double longUser = radians(position.longitude);
       double latMecca = radians(meccaLat);
@@ -122,6 +126,7 @@ class _QiblaViewState extends State<QiblaView> {
           _qiblaAngle = degrees;
           _isLoading = false;
         });
+        _startCompass();
       }
     } catch (e) {
       if (mounted) {
@@ -133,12 +138,48 @@ class _QiblaViewState extends State<QiblaView> {
     }
   }
 
+  void _startCompass() {
+    _compassSubscription = FlutterCompass.events?.listen((event) {
+      if (!mounted) return;
+
+      double heading = event.heading ?? 0;
+
+      // SİHİRLİ MATEMATİK: 359'dan 0'a geçerken yaşanan kopmayı engeller
+      double diff = heading - _lastHeading;
+      if (diff > 180) diff -= 360;
+      if (diff < -180) diff += 360;
+
+      _lastHeading = heading;
+      _smoothHeading +=
+          diff; // Asla sıfırlanmaz, sürekli eklenir (lag olmadan pürüzsüz dönüş)
+
+      double sapma = (heading - _qiblaAngle).abs();
+      if (sapma > 180) sapma = 360 - sapma;
+
+      bool nowAligned = sapma < 4;
+      if (nowAligned && !_isAligned) {
+        HapticFeedback.heavyImpact();
+      }
+
+      setState(() {
+        _isAligned = nowAligned;
+        _isCalibrationPoor = (event.accuracy != null && event.accuracy! > 15);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _compassSubscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF2d3436),
+      backgroundColor: const Color(0xFF1e272e),
       appBar: AppBar(
         title: Text(loc.qiblaTitle),
         backgroundColor: Colors.transparent,
@@ -156,10 +197,10 @@ class _QiblaViewState extends State<QiblaView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(color: Colors.teal),
+            const CircularProgressIndicator(color: Colors.tealAccent),
             const SizedBox(height: 20),
             Text(
-              "Konum alınıyor...", // Bunu dil dosyasına ekleyebilirsin: loc.fetchingLocation
+              loc.fetchingLocation,
               style: const TextStyle(color: Colors.white70),
             ),
           ],
@@ -187,16 +228,15 @@ class _QiblaViewState extends State<QiblaView> {
               ),
               const SizedBox(height: 30),
               ElevatedButton.icon(
-                onPressed: _initQibla,
+                onPressed: () {
+                  setState(() => _isLoading = true);
+                  _initQibla();
+                },
                 icon: const Icon(Icons.refresh),
                 label: Text(loc.retry),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 15,
-                  ),
                 ),
               ),
             ],
@@ -205,175 +245,139 @@ class _QiblaViewState extends State<QiblaView> {
       );
     }
 
-    return StreamBuilder<CompassEvent>(
-      stream: FlutterCompass.events,
-      builder: (context, snapshot) {
-        if (!_hasPermissions) {
-          return const Center(
-            child: CircularProgressIndicator(color: Colors.teal),
-          );
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              "Sensör Hatası: ${snapshot.error}",
-              style: const TextStyle(color: Colors.white),
+    if (!_hasPermissions) {
+      return const Center(child: CircularProgressIndicator(color: Colors.teal));
+    }
+
+    return Stack(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              loc.qiblaDirection,
+              style: const TextStyle(color: Colors.grey, fontSize: 16),
             ),
-          );
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(color: Colors.white),
-          );
-        }
-
-        double? direction = snapshot.data?.heading;
-        if (direction == null) {
-          return Center(
-            child: Text(
-              loc.noCompass,
-              style: const TextStyle(color: Colors.white),
+            const SizedBox(height: 5),
+            Text(
+              _isAligned
+                  ? loc.qiblaFound
+                  : "${(_smoothHeading % 360).toStringAsFixed(0)}°",
+              style: TextStyle(
+                color: _isAligned ? Colors.greenAccent : Colors.white,
+                fontSize: 45,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          );
-        }
+            const SizedBox(height: 40),
 
-        // Sapma ve Hizalama
-        double sapma = (direction - _qiblaAngle).abs();
-        if (sapma > 180) sapma = 360 - sapma;
-        bool isAligned = sapma < 4;
-
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "${direction.toStringAsFixed(0)}°",
-                style: TextStyle(
-                  color: isAligned ? Colors.greenAccent : Colors.white,
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                isAligned
-                    ? loc.qiblaFound
-                    : loc.qiblaAngle(_qiblaAngle.toStringAsFixed(0)),
-                style: const TextStyle(color: Colors.grey, fontSize: 16),
-              ),
-
-              const SizedBox(height: 40),
-
-              // --- PUSULA ---
-              SizedBox(
-                height: 300,
-                width: 300,
+            Center(
+              child: SizedBox(
+                height: 320,
+                width: 320,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // 1. DIŞ ÇEMBER
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFF1e272e),
-                        border: Border.all(
-                          color: isAligned
-                              ? Colors.greenAccent
-                              : Colors.white24,
-                          width: 3,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            blurRadius: 20,
-                            spreadRadius: 5,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // 2. DÖNEN KADRAN
+                    // GECİKMESİZ, ANLIK SAF HIZ - Transform.rotate
                     Transform.rotate(
-                      angle: (direction * (math.pi / 180) * -1),
+                      angle: -_smoothHeading * (math.pi / 180),
                       child: Container(
-                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: _isAligned
+                                ? Colors.greenAccent
+                                : Colors.white12,
+                            width: 3,
+                          ),
+                          color: const Color(0xFF2d3436),
+                        ),
                         child: Stack(
-                          children: const [
+                          children: [
                             Align(
                               alignment: Alignment.topCenter,
-                              child: Text(
-                                "N",
-                                style: TextStyle(
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  loc.directionNorth,
+                                  style: const TextStyle(
+                                    color: Colors.redAccent,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                             Align(
                               alignment: Alignment.bottomCenter,
-                              child: Text(
-                                "S",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  loc.directionSouth,
+                                  style: const TextStyle(
+                                    color: Colors.white54,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                             Align(
                               alignment: Alignment.centerRight,
-                              child: Text(
-                                "E",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  loc.directionEast,
+                                  style: const TextStyle(
+                                    color: Colors.white54,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                             Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(
-                                "W",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(
+                                  loc.directionWest,
+                                  style: const TextStyle(
+                                    color: Colors.white54,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                            // Ara Yönler
-                            Align(
-                              alignment: Alignment(0.7, -0.7),
-                              child: Icon(
-                                Icons.circle,
-                                size: 5,
-                                color: Colors.white24,
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment(-0.7, -0.7),
-                              child: Icon(
-                                Icons.circle,
-                                size: 5,
-                                color: Colors.white24,
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment(0.7, 0.7),
-                              child: Icon(
-                                Icons.circle,
-                                size: 5,
-                                color: Colors.white24,
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment(-0.7, 0.7),
-                              child: Icon(
-                                Icons.circle,
-                                size: 5,
-                                color: Colors.white24,
+
+                            // KIBLE OKU
+                            Transform.rotate(
+                              angle: _qiblaAngle * (math.pi / 180),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 40),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.navigation,
+                                        size: 60,
+                                        color: _isAligned
+                                            ? Colors.greenAccent
+                                            : Colors.tealAccent,
+                                      ),
+                                      const SizedBox(height: 5),
+                                      const Icon(
+                                        Icons.mosque,
+                                        size: 30,
+                                        color: Colors.white70,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -381,64 +385,97 @@ class _QiblaViewState extends State<QiblaView> {
                       ),
                     ),
 
-                    // 3. KIBLE İKONU
-                    Transform.rotate(
-                      angle: ((_qiblaAngle - direction) * (math.pi / 180)),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.mosque,
-                            size: 40,
-                            color: isAligned
-                                ? Colors.greenAccent
-                                : Colors.amber,
-                          ),
-                          Container(
-                            height: 80,
-                            width: 2,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  isAligned ? Colors.greenAccent : Colors.amber,
-                                  Colors.transparent,
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // 4. MERKEZ NOKTASI
-                    Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: isAligned ? Colors.greenAccent : Colors.red,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        width: 4,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _isAligned
+                              ? Colors.greenAccent
+                              : Colors.redAccent,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
+            ),
+            const SizedBox(height: 40),
 
-              const SizedBox(height: 50),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text(
-                  "${loc.keepAwayMetal}\n(Kalibrasyon için '8' çizin)",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white54, fontSize: 12),
+            // --- YENİ EKLENEN: ŞIK KALİBRASYON BİLGİ KARTI ---
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(
+                    0.05,
+                  ), // Hafif şeffaf arka plan
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.white12),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.screen_rotation,
+                      color: Colors.tealAccent,
+                      size: 28,
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Text(
+                        loc.qiblaCalibration, // Dil dosyasından çeviriyi çeker
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
+            // ------------------------------------------------
+          ],
+        ),
+
+        // EĞER SENSÖR AŞIRI SAPARSA ÇIKAN KIRMIZI ACİL DURUM UYARISI (Bozulmadı)
+        if (_isCalibrationPoor)
+          Positioned(
+            bottom: 30,
+            left: 20,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.redAccent.withValues(alpha: 0.9),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.warning_amber_rounded,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Text(
+                      loc.lowAccuracyWarning,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        );
-      },
+      ],
     );
   }
 }

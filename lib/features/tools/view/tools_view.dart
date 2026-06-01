@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // --- DİL VE TEMA İMPORTLARI ---
 import 'package:ezan_saati/l10n/app_localizations.dart';
-import '../../common/theme_provider.dart'; // <--- TEMA İÇİN EKLENDİ
+import '../../common/theme_provider.dart';
+// --- REKLAM HELPER İMPORTU EKLENDİ ---
+import '../../common/ad_helper.dart';
 // ------------------------------
 import '../../esmaul_husna/view/esmaul_husna_view.dart';
 import '../../religious_days/view/religious_days_view.dart';
@@ -18,24 +20,20 @@ class ToolsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Çeviri nesnesi
     final loc = AppLocalizations.of(context)!;
-    // Tema sağlayıcısını dinliyoruz
     final themeProvider = context.watch<ThemeProvider>();
     final bool hasImage = themeProvider.backgroundImage != null;
 
     const Color primaryColor = Colors.teal;
 
     return Scaffold(
-      // Arka plan rengi tema ile uyumlu olsun (Resim varsa şeffaf)
       backgroundColor: hasImage ? Colors.transparent : const Color(0xFFF5F7F9),
       appBar: AppBar(
         title: Text(
-          loc.navMenu, // "Menü"
+          loc.navMenu,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        // AppBar rengi: Resim varsa şeffaf, yoksa beyaz
         backgroundColor: hasImage ? Colors.transparent : Colors.white,
         foregroundColor: hasImage ? Colors.white : primaryColor,
         elevation: 0,
@@ -52,7 +50,6 @@ class ToolsView extends StatelessWidget {
                 mainAxisSpacing: 20,
                 childAspectRatio: 1.2,
                 children: [
-                  // 1. KAZA TAKİBİ
                   _buildSoftCard(
                     context,
                     hasImage: hasImage,
@@ -61,8 +58,6 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const MissedPrayersView(),
                   ),
-
-                  // 2. ESMAÜL HÜSNA
                   _buildSoftCard(
                     context,
                     hasImage: hasImage,
@@ -71,8 +66,6 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const EsmaulHusnaView(),
                   ),
-
-                  // 3. DİNİ GÜNLER
                   _buildSoftCard(
                     context,
                     hasImage: hasImage,
@@ -81,8 +74,6 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const ReligiousDaysView(),
                   ),
-
-                  // 4. CUMA MESAJLARI
                   _buildSoftCard(
                     context,
                     hasImage: hasImage,
@@ -91,8 +82,6 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const FridayMessagesView(),
                   ),
-
-                  // 5. ZEKAT HESAPLA
                   _buildSoftCard(
                     context,
                     hasImage: hasImage,
@@ -101,8 +90,6 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const ZakatView(),
                   ),
-
-                  // 6. AYARLAR
                   _buildSoftCard(
                     context,
                     hasImage: hasImage,
@@ -122,18 +109,16 @@ class ToolsView extends StatelessWidget {
 
   Widget _buildSoftCard(
     BuildContext context, {
-    required bool hasImage, // Resim var mı bilgisi
+    required bool hasImage,
     required String title,
     required IconData icon,
     required Color primaryColor,
     required Widget page,
   }) {
-    // Kart rengi: Resim varsa %85 şeffaf beyaz/siyah, yoksa tam beyaz
     Color cardColor = hasImage
         ? Theme.of(context).cardTheme.color!.withOpacity(0.85)
         : Colors.white;
 
-    // Yazı rengi: Resim varsa ve tema koyuysa açık renk, yoksa koyu
     Color textColor = hasImage
         ? Theme.of(context).textTheme.bodyLarge?.color ??
               Colors.blueGrey.shade800
@@ -141,6 +126,9 @@ class ToolsView extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
+        // İŞTE BURASI: Sayfaya geçmeden önce akıllı reklamı tetikliyoruz
+        AdHelper.instance.showInterstitialAd();
+
         Navigator.push(context, MaterialPageRoute(builder: (context) => page));
       },
       child: Container(
@@ -149,9 +137,7 @@ class ToolsView extends StatelessWidget {
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
-              color: primaryColor.withOpacity(
-                0.08,
-              ), // withValues yerine withOpacity
+              color: primaryColor.withOpacity(0.08),
               blurRadius: 15,
               offset: const Offset(0, 10),
             ),
@@ -163,7 +149,6 @@ class ToolsView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                // İkon arka planı
                 color: primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),

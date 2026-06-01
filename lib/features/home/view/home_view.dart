@@ -135,7 +135,8 @@ class _HomeViewState extends State<HomeView> {
       dialogStyle: UpgradeDialogStyle.cupertino,
       showIgnore: false,
       showLater: true,
-      upgrader: Upgrader(debugLogging: true, languageCode: loc.localeName),
+
+      upgrader: Upgrader(debugLogging: false, languageCode: loc.localeName),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         extendBodyBehindAppBar: true,

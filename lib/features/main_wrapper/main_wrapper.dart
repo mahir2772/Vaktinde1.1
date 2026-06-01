@@ -6,8 +6,11 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 // ---------------------------
 import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
+// --- ZİKİRMATİK İMPORTU EKLENDİ ---
+import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
+import 'package:ezan_saati/features/common/ad_helper.dart';
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -23,9 +26,11 @@ class _MainWrapperState extends State<MainWrapper> {
 
   final String _adUnitId = 'ca-app-pub-4975388193054410/3285554173';
 
+  // --- SAYFALAR GÜNCELLENDİ (Sıralama: Home -> Qibla -> Zikirmatik -> Tools) ---
   final List<Widget> _pages = [
     const HomeView(),
     const QiblaView(),
+    const ZikirView(), // 3. Sıraya Zikirmatik eklendi
     const ToolsView(),
   ];
 
@@ -33,6 +38,7 @@ class _MainWrapperState extends State<MainWrapper> {
   void initState() {
     super.initState();
     _loadAd();
+    AdHelper.instance.loadInterstitialAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final loc = AppLocalizations.of(context);
@@ -85,6 +91,8 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
@@ -102,12 +110,22 @@ class _MainWrapperState extends State<MainWrapper> {
           NavigationBar(
             selectedIndex: _currentIndex,
             onDestinationSelected: (int index) {
-              setState(() {
-                _currentIndex = index;
-              });
+              if (_currentIndex != index) {
+                // Sadece başka bir sekmeye geçiyorsa çalışsın
+
+                // REKLAMI ÇAĞIR (Süre dolmadıysa kendi içinde iptal olur zaten)
+                AdHelper.instance.showInterstitialAd();
+
+                setState(() {
+                  _currentIndex = index;
+                });
+              }
             },
-            backgroundColor: Colors.white,
-            indicatorColor: Colors.teal.shade100,
+            // Karanlık temaya uygun renk atamaları
+            backgroundColor:
+                theme.bottomNavigationBarTheme.backgroundColor ??
+                (isDark ? Colors.grey.shade900 : Colors.white),
+            indicatorColor: Colors.teal.withOpacity(isDark ? 0.3 : 0.2),
             destinations: [
               NavigationDestination(
                 icon: const Icon(Icons.home_outlined),
@@ -118,6 +136,14 @@ class _MainWrapperState extends State<MainWrapper> {
                 icon: const Icon(Icons.explore_outlined),
                 selectedIcon: const Icon(Icons.explore, color: Colors.teal),
                 label: loc.navQibla,
+              ),
+              // --- ZİKİRMATİK İKONU BURAYA EKLENDİ ---
+              NavigationDestination(
+                icon: const Icon(
+                  Icons.touch_app_outlined,
+                ), // Dokunma/Zikir ikonu
+                selectedIcon: const Icon(Icons.touch_app, color: Colors.teal),
+                label: loc.zikirmatikTitle,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.dashboard_outlined),

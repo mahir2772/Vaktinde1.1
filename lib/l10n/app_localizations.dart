@@ -907,6 +907,654 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'{city} seçildi'**
   String locationSelected(String city);
+
+  /// No description provided for @channelSoundPrefix.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses: {soundName}'**
+  String channelSoundPrefix(String soundName);
+
+  /// No description provided for @channelSilentPrayers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sessiz Ezan Bildirimleri'**
+  String get channelSilentPrayers;
+
+  /// No description provided for @tickerEzan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan Vakti'**
+  String get tickerEzan;
+
+  /// No description provided for @stickyChannelName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kalıcı Sayaç'**
+  String get stickyChannelName;
+
+  /// No description provided for @stickyChannelDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakte kalan süreyi gösterir'**
+  String get stickyChannelDesc;
+
+  /// No description provided for @timeLeftTo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktin Çıkmasına: '**
+  String get timeLeftTo;
+
+  /// No description provided for @locationFallbackMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum alınamadı, varsayılan değer kullanılıyor.'**
+  String get locationFallbackMessage;
+
+  /// No description provided for @fetchingLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum alınıyor...'**
+  String get fetchingLocation;
+
+  /// No description provided for @directionNorth.
+  ///
+  /// In tr, this message translates to:
+  /// **'K'**
+  String get directionNorth;
+
+  /// No description provided for @directionSouth.
+  ///
+  /// In tr, this message translates to:
+  /// **'G'**
+  String get directionSouth;
+
+  /// No description provided for @directionEast.
+  ///
+  /// In tr, this message translates to:
+  /// **'D'**
+  String get directionEast;
+
+  /// No description provided for @directionWest.
+  ///
+  /// In tr, this message translates to:
+  /// **'B'**
+  String get directionWest;
+
+  /// No description provided for @calibrationInstruction.
+  ///
+  /// In tr, this message translates to:
+  /// **'(Kalibrasyon için \'8\' çizin)'**
+  String get calibrationInstruction;
+
+  /// No description provided for @zakatDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre detaylı zekatınızı hesaplayın.'**
+  String get zakatDescription;
+
+  /// No description provided for @cashAndCurrencyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nakit ve Döviz Varlıklar'**
+  String get cashAndCurrencyTitle;
+
+  /// No description provided for @cashTurkishLira.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nakit Türk Lirası (TL)'**
+  String get cashTurkishLira;
+
+  /// No description provided for @goldAndSilverTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Altın ve Gümüş'**
+  String get goldAndSilverTitle;
+
+  /// No description provided for @silverGram.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gümüş (Gram)'**
+  String get silverGram;
+
+  /// No description provided for @unitPrice.
+  ///
+  /// In tr, this message translates to:
+  /// **'Birim Fiyatı'**
+  String get unitPrice;
+
+  /// No description provided for @commercialGoodsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ticari Mallar'**
+  String get commercialGoodsTitle;
+
+  /// No description provided for @commercialEvalCurrency.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değerlendirme Döviz Türü'**
+  String get commercialEvalCurrency;
+
+  /// No description provided for @commercialGoodsValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Malın Değeri'**
+  String get commercialGoodsValue;
+
+  /// No description provided for @exchangeRateValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur Değeri'**
+  String get exchangeRateValue;
+
+  /// No description provided for @receivablesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alacaklar (Tahsil Edilebilecek)'**
+  String get receivablesTitle;
+
+  /// No description provided for @receivableType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alacağın Cinsi (TL, Döviz, Altın)'**
+  String get receivableType;
+
+  /// No description provided for @amountOrCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Miktar / Adet'**
+  String get amountOrCount;
+
+  /// No description provided for @otherAssetsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Diğer Varlıklar'**
+  String get otherAssetsTitle;
+
+  /// No description provided for @assetType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Varlık Türü'**
+  String get assetType;
+
+  /// No description provided for @currencyLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Para Birimi'**
+  String get currencyLabel;
+
+  /// No description provided for @valueOrAmount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değeri / Miktarı'**
+  String get valueOrAmount;
+
+  /// No description provided for @agriProductsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zirai Ürünler (Öşür)'**
+  String get agriProductsTitle;
+
+  /// No description provided for @agriDiyanetNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zirai ürünlerin zekât hesaplamasında nisap miktarı aranmadığı için, beyan ettiğiniz tutar doğrudan zekât sepetine eklenir.'**
+  String get agriDiyanetNote;
+
+  /// No description provided for @harvestedProductValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hasat Edilen Ürün Değeri (TL)'**
+  String get harvestedProductValue;
+
+  /// No description provided for @irrigationMethod.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sulama Yöntemi'**
+  String get irrigationMethod;
+
+  /// No description provided for @debtsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Borçlar (Düşülecek)'**
+  String get debtsTitle;
+
+  /// No description provided for @debtType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Borcun Cinsi (TL, Döviz, Altın)'**
+  String get debtType;
+
+  /// No description provided for @zakatAgriIncluded.
+  ///
+  /// In tr, this message translates to:
+  /// **'İçindeki Zirai Ürün (Öşür) Zekatı'**
+  String get zakatAgriIncluded;
+
+  /// No description provided for @assetCheck.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çek'**
+  String get assetCheck;
+
+  /// No description provided for @assetBond.
+  ///
+  /// In tr, this message translates to:
+  /// **'Senet'**
+  String get assetBond;
+
+  /// No description provided for @assetSukuk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sukuk'**
+  String get assetSukuk;
+
+  /// No description provided for @assetLeaseCert.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kira Sertifikası'**
+  String get assetLeaseCert;
+
+  /// No description provided for @assetStock.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hisse Senedi'**
+  String get assetStock;
+
+  /// No description provided for @agriSoil.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zirai Ürün (Topraklı Tarım)'**
+  String get agriSoil;
+
+  /// No description provided for @agriSoilless.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zirai Ürün (Topraksız Tarım)'**
+  String get agriSoilless;
+
+  /// No description provided for @agriRateNoCost.
+  ///
+  /// In tr, this message translates to:
+  /// **'Masrafsız (Yağmur/Nehir) - %10'**
+  String get agriRateNoCost;
+
+  /// No description provided for @agriRateCostly.
+  ///
+  /// In tr, this message translates to:
+  /// **'Masraflı (Motor/Taşıma) - %5'**
+  String get agriRateCostly;
+
+  /// No description provided for @toImsak.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sabaha'**
+  String get toImsak;
+
+  /// No description provided for @toGunes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güneşe'**
+  String get toGunes;
+
+  /// No description provided for @toOgle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Öğleye'**
+  String get toOgle;
+
+  /// No description provided for @toIkindi.
+  ///
+  /// In tr, this message translates to:
+  /// **'İkindiye'**
+  String get toIkindi;
+
+  /// No description provided for @toAksam.
+  ///
+  /// In tr, this message translates to:
+  /// **'Akşama'**
+  String get toAksam;
+
+  /// No description provided for @toYatsi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatsıya'**
+  String get toYatsi;
+
+  /// No description provided for @lowAccuracyWarning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pusula kalibrasyonu zayıf. Lütfen telefonunuzla havada \'8\' çizin.'**
+  String get lowAccuracyWarning;
+
+  /// No description provided for @qiblaDirection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble Yönü'**
+  String get qiblaDirection;
+
+  /// No description provided for @zikirmatikTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikirmatik'**
+  String get zikirmatikTitle;
+
+  /// No description provided for @dhikrSubhanallah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sübhanallah'**
+  String get dhikrSubhanallah;
+
+  /// No description provided for @dhikrElhamdulillah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Elhamdülillah'**
+  String get dhikrElhamdulillah;
+
+  /// No description provided for @dhikrAllahuEkber.
+  ///
+  /// In tr, this message translates to:
+  /// **'Allahu Ekber'**
+  String get dhikrAllahuEkber;
+
+  /// No description provided for @dhikrKalima.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kelime-i Tevhid'**
+  String get dhikrKalima;
+
+  /// No description provided for @dhikrSalavat.
+  ///
+  /// In tr, this message translates to:
+  /// **'Salavat'**
+  String get dhikrSalavat;
+
+  /// No description provided for @targetReached.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefe Ulaştınız!'**
+  String get targetReached;
+
+  /// No description provided for @resetCounter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfırla'**
+  String get resetCounter;
+
+  /// No description provided for @targetCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef: {target}'**
+  String targetCount(int target);
+
+  /// No description provided for @setTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef Belirle'**
+  String get setTarget;
+
+  /// No description provided for @dhikrOther.
+  ///
+  /// In tr, this message translates to:
+  /// **'Diğer (Özel Zikir)'**
+  String get dhikrOther;
+
+  /// No description provided for @customDhikrTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Zikir Ekle'**
+  String get customDhikrTitle;
+
+  /// No description provided for @customDhikrHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çekeceğiniz zikri yazın'**
+  String get customDhikrHint;
+
+  /// No description provided for @zikirSettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar'**
+  String get zikirSettings;
+
+  /// No description provided for @vibration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Titreşim'**
+  String get vibration;
+
+  /// No description provided for @sound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses Efekti'**
+  String get sound;
+
+  /// No description provided for @keepAwake.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekran Uyanık Kalsın'**
+  String get keepAwake;
+
+  /// No description provided for @appearance.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görünüm'**
+  String get appearance;
+
+  /// No description provided for @themeModern.
+  ///
+  /// In tr, this message translates to:
+  /// **'Modern Düğme'**
+  String get themeModern;
+
+  /// No description provided for @themeClassic.
+  ///
+  /// In tr, this message translates to:
+  /// **'Klasik Tesbih'**
+  String get themeClassic;
+
+  /// No description provided for @introTitle1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde\'ye Hoş Geldiniz'**
+  String get introTitle1;
+
+  /// No description provided for @introDesc1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz vakitlerini, zikirlerinizi ve dini günleri en modern ve şık arayüzle kolayca takip edin.'**
+  String get introDesc1;
+
+  /// No description provided for @introTitle2.
+  ///
+  /// In tr, this message translates to:
+  /// **'Akıllı Bildirimler'**
+  String get introTitle2;
+
+  /// No description provided for @introDesc2.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan vakitlerinde dilediğiniz bildirim sesiyle uyarı alın. İbadetlerinizi asla kaçırmayın.'**
+  String get introDesc2;
+
+  /// No description provided for @introTitle3.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gelişmiş Araçlar'**
+  String get introTitle3;
+
+  /// No description provided for @introDesc3.
+  ///
+  /// In tr, this message translates to:
+  /// **'Animasyonlu Zikirmatik, Kaza Takibi, Esmaül Hüsna ve Zekat hesaplama ile maneviyatınızı güçlendirin.'**
+  String get introDesc3;
+
+  /// No description provided for @introSkip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geç'**
+  String get introSkip;
+
+  /// No description provided for @introNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'İleri'**
+  String get introNext;
+
+  /// No description provided for @introStart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hemen Başla'**
+  String get introStart;
+
+  /// No description provided for @dhikrListTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir Listesi'**
+  String get dhikrListTitle;
+
+  /// No description provided for @addCustomDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Özel Zikir Ekle'**
+  String get addCustomDhikr;
+
+  /// No description provided for @customDhikrAdded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir başarıyla eklendi.'**
+  String get customDhikrAdded;
+
+  /// No description provided for @customDhikrLimit.
+  ///
+  /// In tr, this message translates to:
+  /// **'En fazla 20 adet özel zikir ekleyebilirsiniz!'**
+  String get customDhikrLimit;
+
+  /// No description provided for @deleteDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get deleteDhikr;
+
+  /// No description provided for @statisticsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İstatistikler'**
+  String get statisticsTitle;
+
+  /// No description provided for @monthly.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aylık'**
+  String get monthly;
+
+  /// No description provided for @yearly.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yıllık'**
+  String get yearly;
+
+  /// No description provided for @totalDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam Çekilen Zikir'**
+  String get totalDhikr;
+
+  /// No description provided for @today.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün'**
+  String get today;
+
+  /// No description provided for @statsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz zikir verisi yok.'**
+  String get statsEmpty;
+
+  /// No description provided for @dhikrEstagfirullah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Estağfirullah'**
+  String get dhikrEstagfirullah;
+
+  /// No description provided for @dhikrLaHavle.
+  ///
+  /// In tr, this message translates to:
+  /// **'La Havle Vela Kuvvete'**
+  String get dhikrLaHavle;
+
+  /// No description provided for @dhikrHasbunallah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hasbünallah'**
+  String get dhikrHasbunallah;
+
+  /// No description provided for @dhikrSubhanallahi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Subhanallahi ve bihamdihi'**
+  String get dhikrSubhanallahi;
+
+  /// No description provided for @dhikrYunus.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hz. Yunus\'un Duası'**
+  String get dhikrYunus;
+
+  /// No description provided for @dhikrYaAllah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ya Allah (C.C.)'**
+  String get dhikrYaAllah;
+
+  /// No description provided for @dhikrYaRahman.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ya Rahman (C.C.)'**
+  String get dhikrYaRahman;
+
+  /// No description provided for @dhikrYaRahim.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ya Rahim (C.C.)'**
+  String get dhikrYaRahim;
+
+  /// No description provided for @dhikrYaSafi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ya Şafi (C.C.)'**
+  String get dhikrYaSafi;
+
+  /// No description provided for @dhikrYaRezzak.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ya Rezzak (C.C.)'**
+  String get dhikrYaRezzak;
+
+  /// No description provided for @dhikrYaFettah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ya Fettah (C.C.)'**
+  String get dhikrYaFettah;
+
+  /// No description provided for @mainDhikrs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Temel Zikirler'**
+  String get mainDhikrs;
+
+  /// No description provided for @esmaulHusnaTab.
+  ///
+  /// In tr, this message translates to:
+  /// **'Esmaül Hüsna'**
+  String get esmaulHusnaTab;
+
+  /// No description provided for @qiblaCalibration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pusulanın doğru çalışması için telefonunuzla havada \'8\' çizin.'**
+  String get qiblaCalibration;
 }
 
 class _AppLocalizationsDelegate

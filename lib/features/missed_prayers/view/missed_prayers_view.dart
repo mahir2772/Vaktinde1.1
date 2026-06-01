@@ -76,8 +76,16 @@ class _MissedPrayersViewState extends State<MissedPrayersView> {
   }
 
   void _showManualEntryDialog(String key, AppLocalizations loc) {
+    String currentValue = _missedPrayers[key].toString();
+
     TextEditingController controller = TextEditingController(
-      text: _missedPrayers[key].toString(),
+      text: currentValue,
+    );
+
+    // DÜZELTİLEN KISIM: Kutu açıldığında metnin tamamı seçili (highlight) olarak gelsin
+    controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: currentValue.length,
     );
 
     String displayTitle = _getLocalizedTitle(key, loc);

@@ -12,8 +12,22 @@ class ReligiousDaysView extends StatefulWidget {
 
 class _ReligiousDaysViewState extends State<ReligiousDaysView> {
   final JsonService jsonService = JsonService();
-  int _selectedYear = 2025;
-  final List<int> _years = [2025, 2026, 2027, 2028];
+
+  late int _selectedYear;
+  late List<int> _years;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedYear = DateTime.now().year;
+
+    _years = [2025, 2026, 2027, 2028, 2029, 2030];
+
+    if (!_years.contains(_selectedYear)) {
+      _years.add(_selectedYear);
+      _years.sort();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +59,10 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
                 items: _years.map<DropdownMenuItem<int>>((int year) {
                   return DropdownMenuItem<int>(
                     value: year,
-                    child: Text("$year", style: const TextStyle(fontSize: 16)),
+                    child: Text(
+                      year.toString(),
+                      style: const TextStyle(fontSize: 16),
+                    ),
                   );
                 }).toList(),
               ),
@@ -54,9 +71,7 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
           const SizedBox(width: 15),
         ],
       ),
-      // --- REKLAM ALANI EKLENDİ ---
       bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
-      // ---------------------------
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: jsonService.getReligiousDays(),
         builder: (context, snapshot) {

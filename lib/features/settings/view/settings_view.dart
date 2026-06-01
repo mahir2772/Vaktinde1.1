@@ -8,13 +8,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
-// --- DİL VE TEMA İMPORTLARI ---
+
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
-// ------------------------------
+
 import '../../home/view_model/home_view_model.dart';
-// --- REKLAM İMPORTU ---
+
 import '../../common/widgets/ad_banner_widget.dart';
 
 class SettingsView extends StatelessWidget {
@@ -293,55 +293,55 @@ class SettingsView extends StatelessWidget {
                     _buildBgOption(context, null, loc.bgDefault),
                     _buildBgOption(
                       context,
-                      "bg_mosque1.jpg",
+                      "bg_mosque1.webp",
                       "${loc.bgMosque} 1",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_mosque2.jpg",
+                      "bg_mosque2.webp",
                       "${loc.bgMosque} 2",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_mosque3.jpg",
+                      "bg_mosque3.webp",
                       "${loc.bgMosque} 3",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_mosque4.jpg",
+                      "bg_mosque4.webp",
                       "${loc.bgMosque} 4",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_mosque5.jpg",
+                      "bg_mosque5.webp",
                       "${loc.bgMosque} 5",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_mosque6.jpg",
+                      "bg_mosque6.webp",
                       "${loc.bgMosque} 6",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_kaaba1.jpg",
+                      "bg_kaaba1.webp",
                       "${loc.bgKaaba} 1",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_kaaba2.jpg",
+                      "bg_kaaba2.webp",
                       "${loc.bgKaaba} 2",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_kaaba3.jpg",
+                      "bg_kaaba3.webp",
                       "${loc.bgKaaba} 3",
                     ),
                     _buildBgOption(
                       context,
-                      "bg_kaaba4.jpg",
+                      "bg_kaaba4.webp",
                       "${loc.bgKaaba} 4",
                     ),
-                    _buildBgOption(context, "bg_quran.jpg", loc.bgQuran),
+                    _buildBgOption(context, "bg_quran.webp", loc.bgQuran),
                   ],
                 ),
               ),

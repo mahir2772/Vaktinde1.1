@@ -1,7 +1,7 @@
-import 'dart:convert'; // JSON işlemleri için şart
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/prayer_times_model.dart'; // Model yolunu kontrol et
-import '../models/hadith_model.dart'; //  --- YENİ EKLENDİ ---
+import '../models/prayer_times_model.dart';
+import '../models/hadith_model.dart';
 
 class StorageService {
   Future<void> saveSettings({
@@ -74,7 +74,6 @@ class StorageService {
     return prefs.getString('saved_city');
   }
 
-  // --- İLÇE KAYDETME/OKUMA ---
   Future<void> saveDistrict(String district) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('saved_district', district);
@@ -84,30 +83,23 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('saved_district');
   }
-  // ------------------------------------------------
 
-  // --- Vakitleri JSON Olarak Kaydetme ---
   Future<void> savePrayerTimesData(PrayerTimesModel data) async {
     final prefs = await SharedPreferences.getInstance();
     String jsonString = jsonEncode(data.toJson());
     await prefs.setString('cached_prayer_times', jsonString);
 
-    // Tarihi de kaydedelim ki eski veriyi göstermeyelim
     String today = DateTime.now().toIso8601String().split('T')[0];
     await prefs.setString('cached_prayer_date', today);
   }
 
-  // --- Kayıtlı Vakitleri Okuma ---
   Future<PrayerTimesModel?> loadPrayerTimesData() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Tarih kontrolü: Eğer kayıt bugüne ait değilse boş dön (Yenisini çeksin)
     String? savedDate = prefs.getString('cached_prayer_date');
     String today = DateTime.now().toIso8601String().split('T')[0];
 
-    if (savedDate != today) {
-      return null;
-    }
+    if (savedDate != today) return null;
 
     String? jsonString = prefs.getString('cached_prayer_times');
     if (jsonString != null) {
@@ -120,7 +112,6 @@ class StorageService {
     }
     return null;
   }
-  // ---------------------------------------------
 
   Future<Map<String, int>> loadMissedPrayers() async {
     final prefs = await SharedPreferences.getInstance();
@@ -140,25 +131,24 @@ class StorageService {
     await prefs.setInt('kaza_$key', value);
   }
 
-  Future<void> saveDailyHadith(HadithModel hadith) async {
+  Future<void> saveDailyHadith(HadithModel hadith, String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('daily_hadith_content', hadith.content ?? "");
     await prefs.setString('daily_hadith_source', hadith.source ?? "");
 
-    // Bugünü "YYYY-MM-DD" formatında kaydet (Örn: 2025-12-27)
     String today = DateTime.now().toIso8601String().split('T')[0];
     await prefs.setString('daily_hadith_date', today);
+    await prefs.setString('daily_hadith_lang', languageCode);
   }
 
-  Future<HadithModel?> loadDailyHadith() async {
+  Future<HadithModel?> loadDailyHadith(String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
 
     String? savedDate = prefs.getString('daily_hadith_date');
+    String? savedLang = prefs.getString('daily_hadith_lang');
     String today = DateTime.now().toIso8601String().split('T')[0];
 
-    if (savedDate != today) {
-      return null;
-    }
+    if (savedDate != today || savedLang != languageCode) return null;
 
     String? content = prefs.getString('daily_hadith_content');
     String? source = prefs.getString('daily_hadith_source');

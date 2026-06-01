@@ -42,14 +42,16 @@ class NotificationService {
     required String body,
     required DateTime scheduledTime,
     String? soundName,
+    // EKLENEN YENİ PARAMETRELER (Dil desteği için)
+    required String localizedChannelName,
+    required String localizedTicker,
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
     String channelId = soundName != null
         ? 'channel_$soundName'
         : 'channel_silent_prayer';
-    String channelName = soundName != null
-        ? 'Ses: $soundName'
-        : 'Sessiz Ezan Bildirimleri';
+
+    // Artık Türkçe kelime yok, gelen parametreyi kullanıyor
     bool playSound = soundName != null;
     RawResourceAndroidNotificationSound? soundSource = soundName != null
         ? RawResourceAndroidNotificationSound(soundName)
@@ -63,11 +65,11 @@ class NotificationService {
       NotificationDetails(
         android: AndroidNotificationDetails(
           channelId,
-          channelName,
+          localizedChannelName, // Parametreden geliyor
           importance: Importance.max,
           priority: Priority.high,
           playSound: playSound,
-          ticker: 'Ezan Vakti',
+          ticker: localizedTicker, // Parametreden geliyor
           icon: '@mipmap/launcher_icon',
           sound: soundSource,
           enableVibration: true,
@@ -85,30 +87,31 @@ class NotificationService {
 
   // --- 🔥 PRO TASARIM GÜNCELLEMESİ BURADA ---
   Future<void> showStickyNotification({
-    required String title, // Kapalıyken görünen başlık (Örn: Sıradaki: İmsak)
-    required String body, // Kapalıyken görünen metin (Örn: Kalan Süre...)
-    required String bigContent, // AÇILINCA görünen tablo metni
+    required String title,
+    required String body,
+    required String bigContent,
+    // EKLENEN YENİ PARAMETRELER (Dil desteği için)
+    required String localizedSummaryText,
+    required String localizedChannelName,
+    required String localizedChannelDesc,
     DateTime? endTime,
   }) async {
-    // Pro Tasarım: BigTextStyle
     final BigTextStyleInformation
     bigTextStyleInformation = BigTextStyleInformation(
-      bigContent, // Genişleyince çıkacak olan o tablo yapısı
+      bigContent,
       htmlFormatBigText: false,
-
-      contentTitle: title, // Genişleyince üstte kalan başlık
+      contentTitle: title,
       htmlFormatContentTitle: false,
-
       summaryText:
-          "Vaktin Çıkmasına: ", // Sağ üstte uygulama adının yanındaki küçük yazı
+          localizedSummaryText, // Artık hardcoded "Vaktin Çıkmasına: " değil
       htmlFormatSummaryText: false,
     );
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
           'vaktinde_sticky_channel',
-          'Kalıcı Sayaç',
-          channelDescription: 'Vakte kalan süreyi gösterir',
+          localizedChannelName, // Parametreden geliyor
+          channelDescription: localizedChannelDesc, // Parametreden geliyor
           importance: Importance.low,
           priority: Priority.low,
           ongoing: true,
@@ -116,8 +119,7 @@ class NotificationService {
           playSound: false,
           enableVibration: false,
           icon: '@mipmap/launcher_icon',
-          styleInformation: bigTextStyleInformation, // <-- Özel tasarım stili
-          // KRONOMETRE AYARLARI (Sağ üstte saniye sayar)
+          styleInformation: bigTextStyleInformation,
           usesChronometer: endTime != null,
           chronometerCountDown: endTime != null,
           when: endTime?.millisecondsSinceEpoch,

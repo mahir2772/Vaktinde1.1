@@ -8,8 +8,9 @@ class EconomyService {
     Map<String, double> rates = {};
 
     try {
-      print("💰 Ekonomi verileri çekiliyor...");
+      print("💰 Ekonomi verileri çekiliyor (Diyanet Fetva Algoritması)...");
 
+      // 1. ALTIN VERİLERİ
       final goldUrl = Uri.parse("https://api.collectapi.com/economy/goldPrice");
       final goldResponse = await http.get(
         goldUrl,
@@ -22,14 +23,34 @@ class EconomyService {
           print("✅ Altın verisi alındı!");
           List<dynamic> data = jsonBody['result'];
 
-          _addRate(rates, data, 'Gram Altın', 'Gram Altın (24 Ayar)');
-          _addRate(rates, data, 'Çeyrek Altın', 'Çeyrek Altın');
-          _addRate(rates, data, 'Tam Altın', 'Tam Altın');
+          var gramItem = data.firstWhere(
+            (e) => e['name'] == 'Gram Altın',
+            orElse: () => null,
+          );
+
+          if (gramItem != null) {
+            double gramFiyati = _parsePrice(gramItem['selling']);
+
+            // --- DİYANETİN TÜM ALTIN VE ZİYNET ORANLARI ---
+            rates['24 Ayar Gram Altın'] = gramFiyati;
+            rates['22 Ayar Gram Altın'] = gramFiyati * (22 / 24); // 0.9166
+            rates['Ata Toptan'] = gramFiyati * 6.6146;
+            rates['Ata Cumhuriyet'] = gramFiyati * 6.6146;
+            rates['22 Ayar Bilezik'] = gramFiyati * (22 / 24);
+            rates['18 Ayar Altın'] = gramFiyati * (18 / 24); // 0.7500
+            rates['14 Ayar Altın'] = gramFiyati * (14 / 24); // 0.5833
+            rates['Çeyrek Altın'] = gramFiyati * 1.6065;
+            rates['Yarım Altın'] = gramFiyati * 3.213;
+            rates['Teklik (Tam) Altın'] = gramFiyati * 6.426;
+            rates['Gremse Altın'] = gramFiyati * 16.065;
+            rates['Ata Beşli'] = gramFiyati * 33.073;
+            rates['Reşat Altın'] = gramFiyati * 6.6146;
+            rates['Hamit Altın'] = gramFiyati * 6.6146;
+          }
         }
-      } else {
-        print("❌ Altın API Hatası: ${goldResponse.statusCode}");
       }
 
+      // 2. DÖVİZ VERİLERİ
       final currencyUrl = Uri.parse(
         "https://api.collectapi.com/economy/allCurrency",
       );
@@ -44,31 +65,30 @@ class EconomyService {
           print("✅ Döviz verisi alındı!");
           List<dynamic> data = jsonBody['result'];
 
-          _addCurrencyRate(rates, data, 'USD', 'ABD Doları (USD)');
+          _addCurrencyRate(rates, data, 'USD', 'Amerikan Doları (USD)');
           _addCurrencyRate(rates, data, 'EUR', 'Euro (EUR)');
+          _addCurrencyRate(rates, data, 'CHF', 'İsviçre Frangı (CHF)');
           _addCurrencyRate(rates, data, 'GBP', 'İngiliz Sterlini (GBP)');
+          _addCurrencyRate(rates, data, 'JPY', 'Japon Yeni (JPY)');
+          _addCurrencyRate(rates, data, 'SAR', 'Suudi Arabistan Riyali (SAR)');
+          _addCurrencyRate(rates, data, 'AUD', 'Avustralya Doları (AUD)');
+          _addCurrencyRate(rates, data, 'CAD', 'Kanada Doları (CAD)');
+          _addCurrencyRate(rates, data, 'RUB', 'Rus Rublesi (RUB)');
+          _addCurrencyRate(rates, data, 'AZN', 'Azerbaycan Manatı (AZN)');
+          _addCurrencyRate(rates, data, 'CNY', 'Çin Yuanı (CNY)');
+          _addCurrencyRate(rates, data, 'RON', 'Romanya Leyi (RON)');
+          _addCurrencyRate(rates, data, 'AED', 'BAE Dirhemi (AED)');
+          _addCurrencyRate(rates, data, 'BGN', 'Bulgar Levası (BGN)');
+          _addCurrencyRate(rates, data, 'KWD', 'Kuveyt Dinarı (KWD)');
         }
-      } else {
-        print("❌ Döviz API Hatası: ${currencyResponse.statusCode}");
       }
+
+      print("📊 GÜNCEL KURLAR (DİYANET USULÜ): $rates");
     } catch (e) {
-      print("Ekonomi Servis Çökmesi: $e");
+      print("❌ Ekonomi Servis Çökmesi: $e");
     }
 
     return rates;
-  }
-
-  void _addRate(
-    Map<String, double> rates,
-    List<dynamic> data,
-    String apiName,
-    String myKey,
-  ) {
-    var item = data.firstWhere((e) => e['name'] == apiName, orElse: () => null);
-    if (item != null) {
-      rates[myKey] = _parsePrice(item['buying']);
-      print("   -> $myKey: ${rates[myKey]}");
-    }
   }
 
   void _addCurrencyRate(
@@ -79,8 +99,7 @@ class EconomyService {
   ) {
     var item = data.firstWhere((e) => e['code'] == code, orElse: () => null);
     if (item != null) {
-      rates[myKey] = _parsePrice(item['buying']);
-      print("   -> $myKey: ${rates[myKey]}");
+      rates[myKey] = _parsePrice(item['selling']);
     }
   }
 
@@ -89,7 +108,6 @@ class EconomyService {
     if (price is double) return price;
     if (price is int) return price.toDouble();
     if (price is String) {
-      // "2.450,50" -> Noktayı sil, virgülü nokta yap -> "2450.50"
       String clean = price.replaceAll('.', '').replaceAll(',', '.');
       return double.tryParse(clean) ?? 0.0;
     }

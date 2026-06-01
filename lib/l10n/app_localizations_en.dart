@@ -440,4 +440,341 @@ class AppLocalizationsEn extends AppLocalizations {
   String locationSelected(String city) {
     return '$city selected';
   }
+
+  @override
+  String channelSoundPrefix(String soundName) {
+    return 'Sound: $soundName';
+  }
+
+  @override
+  String get channelSilentPrayers => 'Silent Prayer Notifications';
+
+  @override
+  String get tickerEzan => 'Prayer Time';
+
+  @override
+  String get stickyChannelName => 'Persistent Timer';
+
+  @override
+  String get stickyChannelDesc => 'Shows the remaining time for the prayer';
+
+  @override
+  String get timeLeftTo => 'Time left to: ';
+
+  @override
+  String get locationFallbackMessage =>
+      'Location could not be retrieved, using default value.';
+
+  @override
+  String get fetchingLocation => 'Fetching location...';
+
+  @override
+  String get directionNorth => 'N';
+
+  @override
+  String get directionSouth => 'S';
+
+  @override
+  String get directionEast => 'E';
+
+  @override
+  String get directionWest => 'W';
+
+  @override
+  String get calibrationInstruction => '(Draw an \'8\' to calibrate)';
+
+  @override
+  String get zakatDescription =>
+      'Calculate your zakat in detail according to the fatwas of the Presidency of Religious Affairs and current market buy/sell rates.';
+
+  @override
+  String get cashAndCurrencyTitle => 'Cash and Currency Assets';
+
+  @override
+  String get cashTurkishLira => 'Cash Turkish Lira (TRY)';
+
+  @override
+  String get goldAndSilverTitle => 'Gold and Silver';
+
+  @override
+  String get silverGram => 'Silver (Gram)';
+
+  @override
+  String get unitPrice => 'Unit Price';
+
+  @override
+  String get commercialGoodsTitle => 'Commercial Goods';
+
+  @override
+  String get commercialEvalCurrency => 'Valuation Currency Type';
+
+  @override
+  String get commercialGoodsValue => 'Value of Goods';
+
+  @override
+  String get exchangeRateValue => 'Exchange Rate Value';
+
+  @override
+  String get receivablesTitle => 'Receivables (Collectible)';
+
+  @override
+  String get receivableType =>
+      'Type of Receivable (TRY, Foreign Currency, Gold)';
+
+  @override
+  String get amountOrCount => 'Amount / Count';
+
+  @override
+  String get otherAssetsTitle => 'Other Assets';
+
+  @override
+  String get assetType => 'Asset Type';
+
+  @override
+  String get currencyLabel => 'Currency';
+
+  @override
+  String get valueOrAmount => 'Value / Amount';
+
+  @override
+  String get agriProductsTitle => 'Agricultural Products (Ushr)';
+
+  @override
+  String get agriDiyanetNote =>
+      'Since the nisab amount is not required in the zakat calculation of agricultural products, the amount you declare is directly added to the zakat basket.';
+
+  @override
+  String get harvestedProductValue => 'Harvested Product Value (TRY)';
+
+  @override
+  String get irrigationMethod => 'Irrigation Method';
+
+  @override
+  String get debtsTitle => 'Debts (To be Deducted)';
+
+  @override
+  String get debtType => 'Debt Type (TRY, Foreign Currency, Gold)';
+
+  @override
+  String get zakatAgriIncluded => 'Agricultural Product (Ushr) Zakat Included';
+
+  @override
+  String get assetCheck => 'Cheque';
+
+  @override
+  String get assetBond => 'Bond';
+
+  @override
+  String get assetSukuk => 'Sukuk';
+
+  @override
+  String get assetLeaseCert => 'Lease Certificate';
+
+  @override
+  String get assetStock => 'Stock';
+
+  @override
+  String get agriSoil => 'Agricultural Product (Soil Farming)';
+
+  @override
+  String get agriSoilless => 'Agricultural Product (Soilless Farming)';
+
+  @override
+  String get agriRateNoCost => 'Costless (Rain/River) - 10%';
+
+  @override
+  String get agriRateCostly => 'Costly (Motor/Transport) - 5%';
+
+  @override
+  String get toImsak => 'To Fajr';
+
+  @override
+  String get toGunes => 'To Sunrise';
+
+  @override
+  String get toOgle => 'To Dhuhr';
+
+  @override
+  String get toIkindi => 'To Asr';
+
+  @override
+  String get toAksam => 'To Maghrib';
+
+  @override
+  String get toYatsi => 'To Isha';
+
+  @override
+  String get lowAccuracyWarning =>
+      'Compass calibration is poor. Please draw an \'8\' in the air.';
+
+  @override
+  String get qiblaDirection => 'Qibla Direction';
+
+  @override
+  String get zikirmatikTitle => 'Dhikr Counter';
+
+  @override
+  String get dhikrSubhanallah => 'Subhanallah';
+
+  @override
+  String get dhikrElhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get dhikrAllahuEkber => 'Allahu Akbar';
+
+  @override
+  String get dhikrKalima => 'Kalima Tayyibah';
+
+  @override
+  String get dhikrSalavat => 'Salawat';
+
+  @override
+  String get targetReached => 'Target Reached!';
+
+  @override
+  String get resetCounter => 'Reset';
+
+  @override
+  String targetCount(int target) {
+    return 'Target: $target';
+  }
+
+  @override
+  String get setTarget => 'Set Target';
+
+  @override
+  String get dhikrOther => 'Other (Custom Dhikr)';
+
+  @override
+  String get customDhikrTitle => 'Add Custom Dhikr';
+
+  @override
+  String get customDhikrHint => 'Enter your dhikr here';
+
+  @override
+  String get zikirSettings => 'Settings';
+
+  @override
+  String get vibration => 'Vibration';
+
+  @override
+  String get sound => 'Sound Effect';
+
+  @override
+  String get keepAwake => 'Keep Screen Awake';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get themeModern => 'Modern Button';
+
+  @override
+  String get themeClassic => 'Classic Tasbih';
+
+  @override
+  String get introTitle1 => 'Welcome to Vaktinde';
+
+  @override
+  String get introDesc1 =>
+      'Easily track prayer times, your dhikrs, and religious days with a modern and elegant interface.';
+
+  @override
+  String get introTitle2 => 'Smart Notifications';
+
+  @override
+  String get introDesc2 =>
+      'Get notified with your preferred sound at prayer times. Never miss your prayers.';
+
+  @override
+  String get introTitle3 => 'Advanced Tools';
+
+  @override
+  String get introDesc3 =>
+      'Strengthen your spirituality with tools like Animated Dhikr Counter, Missed Prayers, and Zakat Calculator.';
+
+  @override
+  String get introSkip => 'Skip';
+
+  @override
+  String get introNext => 'Next';
+
+  @override
+  String get introStart => 'Get Started';
+
+  @override
+  String get dhikrListTitle => 'Dhikr List';
+
+  @override
+  String get addCustomDhikr => 'Add Custom Dhikr';
+
+  @override
+  String get customDhikrAdded => 'Dhikr added successfully.';
+
+  @override
+  String get customDhikrLimit => 'You can add up to 20 custom dhikrs!';
+
+  @override
+  String get deleteDhikr => 'Delete';
+
+  @override
+  String get statisticsTitle => 'Statistics';
+
+  @override
+  String get monthly => 'Monthly';
+
+  @override
+  String get yearly => 'Yearly';
+
+  @override
+  String get totalDhikr => 'Total Dhikrs';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get statsEmpty => 'No dhikr data yet.';
+
+  @override
+  String get dhikrEstagfirullah => 'Astaghfirullah';
+
+  @override
+  String get dhikrLaHavle => 'La Hawla wa la Quwwata';
+
+  @override
+  String get dhikrHasbunallah => 'Hasbunallah';
+
+  @override
+  String get dhikrSubhanallahi => 'Subhanallahi wa bihamdihi';
+
+  @override
+  String get dhikrYunus => 'Prayer of Prophet Yunus';
+
+  @override
+  String get dhikrYaAllah => 'Ya Allah';
+
+  @override
+  String get dhikrYaRahman => 'Ya Rahman';
+
+  @override
+  String get dhikrYaRahim => 'Ya Rahim';
+
+  @override
+  String get dhikrYaSafi => 'Ya Shafi';
+
+  @override
+  String get dhikrYaRezzak => 'Ya Razzaq';
+
+  @override
+  String get dhikrYaFettah => 'Ya Fattah';
+
+  @override
+  String get mainDhikrs => 'Main Dhikrs';
+
+  @override
+  String get esmaulHusnaTab => 'Esmaul Husna';
+
+  @override
+  String get qiblaCalibration =>
+      'Draw an \'8\' in the air with your phone for accurate compass calibration.';
 }

@@ -2,10 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
-// --- DİL DESTEĞİ İÇİN ---
+
 import 'package:ezan_saati/l10n/app_localizations.dart';
-// -----------------------
-// ViewModel yolunu senin projene göre ayarladım
+
 import '../home/view_model/home_view_model.dart';
 
 class LocationSearchDialog extends StatefulWidget {

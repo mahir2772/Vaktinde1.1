@@ -1,0 +1,16 @@
+{
+    "flutterTranslator.config": {
+        "arbConfig": {
+            "sourcePath": "c:\\Users\\mhrdo\\flutter_projelerim\\ezan_saati\\lib\\l10n\\app_fr.arb",
+            "exclude": [],
+            "prefix": "",
+            "custom": {
+                "ar": "app_ar",
+                "de": "app_de",
+                "en": "app_en",
+                "tr": "app_tr",
+                "fr": "app_fr"
+            }
+        }
+    }
+}

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../common/language_provider.dart';
-import '../../main_wrapper/main_wrapper.dart';
+// --- YENİ EKLENEN İMPORT ---
+import 'intro_view.dart';
 
 class OnboardingLanguageView extends StatelessWidget {
   const OnboardingLanguageView({super.key});
@@ -75,9 +76,9 @@ class OnboardingLanguageView extends StatelessWidget {
           // 1. Dili güncelle ve hafızaya "seçildi" olarak kaydet
           context.read<LanguageProvider>().setLanguage(Locale(code));
 
-          // 2. Ana Sayfaya yönlendir (Geri dönülemez şekilde)
+          // 2. Ana Sayfa yerine ÖNCE TANITIM (INTRO) sayfasına yönlendir!
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const MainWrapper()),
+            MaterialPageRoute(builder: (context) => const IntroView()),
           );
         },
         child: Padding(

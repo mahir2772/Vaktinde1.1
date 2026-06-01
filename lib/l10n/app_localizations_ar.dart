@@ -437,4 +437,340 @@ class AppLocalizationsAr extends AppLocalizations {
   String locationSelected(String city) {
     return 'تم اختيار $city';
   }
+
+  @override
+  String channelSoundPrefix(String soundName) {
+    return 'الصوت: $soundName';
+  }
+
+  @override
+  String get channelSilentPrayers => 'إشعارات الصلاة الصامتة';
+
+  @override
+  String get tickerEzan => 'وقت الصلاة';
+
+  @override
+  String get stickyChannelName => 'مؤقت دائم';
+
+  @override
+  String get stickyChannelDesc => 'يعرض الوقت المتبقي للصلاة';
+
+  @override
+  String get timeLeftTo => 'الوقت المتبقي لـ: ';
+
+  @override
+  String get locationFallbackMessage =>
+      'تعذر الحصول على الموقع، يتم استخدام القيمة الافتراضية.';
+
+  @override
+  String get fetchingLocation => 'جاري الحصول على الموقع...';
+
+  @override
+  String get directionNorth => 'ش';
+
+  @override
+  String get directionSouth => 'ج';
+
+  @override
+  String get directionEast => 'ق';
+
+  @override
+  String get directionWest => 'غ';
+
+  @override
+  String get calibrationInstruction => '(ارسم \'8\' للمعايرة)';
+
+  @override
+  String get zakatDescription =>
+      'احسب زكاتك بالتفصيل وفقًا لفتاوى رئاسة الشؤون الدينية وأسعار الشراء / البيع الحالية في السوق.';
+
+  @override
+  String get cashAndCurrencyTitle => 'النقد والأصول بالعملات الأجنبية';
+
+  @override
+  String get cashTurkishLira => 'النقد بالليرة التركية (TRY)';
+
+  @override
+  String get goldAndSilverTitle => 'الذهب والفضة';
+
+  @override
+  String get silverGram => 'الفضة (جرام)';
+
+  @override
+  String get unitPrice => 'سعر الوحدة';
+
+  @override
+  String get commercialGoodsTitle => 'البضائع التجارية';
+
+  @override
+  String get commercialEvalCurrency => 'عملة التقييم';
+
+  @override
+  String get commercialGoodsValue => 'قيمة البضائع';
+
+  @override
+  String get exchangeRateValue => 'سعر الصرف';
+
+  @override
+  String get receivablesTitle => 'الذمم المدينة (القابلة للتحصيل)';
+
+  @override
+  String get receivableType => 'نوع الذمة (TRY، عملة أجنبية، ذهب)';
+
+  @override
+  String get amountOrCount => 'المبلغ / العدد';
+
+  @override
+  String get otherAssetsTitle => 'أصول أخرى';
+
+  @override
+  String get assetType => 'نوع الأصل';
+
+  @override
+  String get currencyLabel => 'العملة';
+
+  @override
+  String get valueOrAmount => 'القيمة / المبلغ';
+
+  @override
+  String get agriProductsTitle => 'المنتجات الزراعية (العشر)';
+
+  @override
+  String get agriDiyanetNote =>
+      'نظراً لعدم اشتراط بلوغ النصاب في زكاة المنتجات الزراعية، يُضاف المبلغ الذي تصرح به مباشرة إلى سلة الزكاة.';
+
+  @override
+  String get harvestedProductValue => 'قيمة المحصول المحصود (TRY)';
+
+  @override
+  String get irrigationMethod => 'طريقة الري';
+
+  @override
+  String get debtsTitle => 'الديون (التي سيتم خصمها)';
+
+  @override
+  String get debtType => 'نوع الدين (TRY، عملة أجنبية، ذهب)';
+
+  @override
+  String get zakatAgriIncluded => 'تتضمن زكاة المنتجات الزراعية (العشر)';
+
+  @override
+  String get assetCheck => 'شيك';
+
+  @override
+  String get assetBond => 'سند لأمر';
+
+  @override
+  String get assetSukuk => 'صكوك';
+
+  @override
+  String get assetLeaseCert => 'شهادة إجارة';
+
+  @override
+  String get assetStock => 'سهم';
+
+  @override
+  String get agriSoil => 'منتج زراعي (زراعة التربة)';
+
+  @override
+  String get agriSoilless => 'منتج زراعي (زراعة بدون تربة)';
+
+  @override
+  String get agriRateNoCost => 'بدون تكلفة (مطر / نهر) - 10%';
+
+  @override
+  String get agriRateCostly => 'بتكلفة (محرك / نقل) - 5%';
+
+  @override
+  String get toImsak => 'إلى الفجر';
+
+  @override
+  String get toGunes => 'إلى الشروق';
+
+  @override
+  String get toOgle => 'إلى الظهر';
+
+  @override
+  String get toIkindi => 'إلى العصر';
+
+  @override
+  String get toAksam => 'إلى المغرب';
+
+  @override
+  String get toYatsi => 'إلى العشاء';
+
+  @override
+  String get lowAccuracyWarning =>
+      'معايرة البوصلة ضعيفة. يرجى رسم رقم \'8\' في الهواء.';
+
+  @override
+  String get qiblaDirection => 'اتجاه القبلة';
+
+  @override
+  String get zikirmatikTitle => 'المسبحة الإلكترونية';
+
+  @override
+  String get dhikrSubhanallah => 'سبحان الله';
+
+  @override
+  String get dhikrElhamdulillah => 'الحمد لله';
+
+  @override
+  String get dhikrAllahuEkber => 'الله أكبر';
+
+  @override
+  String get dhikrKalima => 'كلمة التوحيد';
+
+  @override
+  String get dhikrSalavat => 'الصلوات';
+
+  @override
+  String get targetReached => 'اكتمل الهدف!';
+
+  @override
+  String get resetCounter => 'تصفير';
+
+  @override
+  String targetCount(int target) {
+    return 'الهدف: $target';
+  }
+
+  @override
+  String get setTarget => 'تحديد الهدف';
+
+  @override
+  String get dhikrOther => 'أخرى (ذكر مخصص)';
+
+  @override
+  String get customDhikrTitle => 'إضافة ذكر مخصص';
+
+  @override
+  String get customDhikrHint => 'أدخل الذكر الخاص بك هنا';
+
+  @override
+  String get zikirSettings => 'الإعدادات';
+
+  @override
+  String get vibration => 'اهتزاز';
+
+  @override
+  String get sound => 'تأثير الصوت';
+
+  @override
+  String get keepAwake => 'إبقاء الشاشة قيد التشغيل';
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get themeModern => 'زر حديث';
+
+  @override
+  String get themeClassic => 'تسبيح كلاسيكي';
+
+  @override
+  String get introTitle1 => 'مرحبًا بك في Vaktinde';
+
+  @override
+  String get introDesc1 =>
+      'تتبع أوقات الصلاة وأذكارك والأيام الدينية بسهولة من خلال واجهة حديثة وأنيقة.';
+
+  @override
+  String get introTitle2 => 'إشعارات ذكية';
+
+  @override
+  String get introDesc2 =>
+      'احصل على إشعار بالصوت المفضل لديك في أوقات الصلاة. لا تفوت صلواتك أبدًا.';
+
+  @override
+  String get introTitle3 => 'أدوات متقدمة';
+
+  @override
+  String get introDesc3 =>
+      'عزز روحانيتك باستخدام أدوات مثل عداد الأذكار المتحرك، والصلوات الفائتة، وحاسبة الزكاة.';
+
+  @override
+  String get introSkip => 'تخطي';
+
+  @override
+  String get introNext => 'التالي';
+
+  @override
+  String get introStart => 'البدء';
+
+  @override
+  String get dhikrListTitle => 'قائمة الأذكار';
+
+  @override
+  String get addCustomDhikr => 'إضافة ذكر مخصص';
+
+  @override
+  String get customDhikrAdded => 'تمت إضافة الذكر بنجاح.';
+
+  @override
+  String get customDhikrLimit => 'يمكنك إضافة ما يصل إلى 20 ذكراً مخصصاً!';
+
+  @override
+  String get deleteDhikr => 'حذف';
+
+  @override
+  String get statisticsTitle => 'الإحصائيات';
+
+  @override
+  String get monthly => 'شهري';
+
+  @override
+  String get yearly => 'سنوي';
+
+  @override
+  String get totalDhikr => 'مجموع الأذكار';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get statsEmpty => 'لا توجد بيانات للأذكار بعد.';
+
+  @override
+  String get dhikrEstagfirullah => 'أستغفر الله';
+
+  @override
+  String get dhikrLaHavle => 'لا حول ولا قوة إلا بالله';
+
+  @override
+  String get dhikrHasbunallah => 'حسبنا الله ونعم الوكيل';
+
+  @override
+  String get dhikrSubhanallahi => 'سبحان الله وبحمده';
+
+  @override
+  String get dhikrYunus => 'دعاء النبي يونس';
+
+  @override
+  String get dhikrYaAllah => 'يا الله';
+
+  @override
+  String get dhikrYaRahman => 'يا رحمن';
+
+  @override
+  String get dhikrYaRahim => 'يا رحيم';
+
+  @override
+  String get dhikrYaSafi => 'يا شافي';
+
+  @override
+  String get dhikrYaRezzak => 'يا رزاق';
+
+  @override
+  String get dhikrYaFettah => 'يا فتاح';
+
+  @override
+  String get mainDhikrs => 'الأذكار الرئيسية';
+
+  @override
+  String get esmaulHusnaTab => 'أسماء الله الحسنى';
+
+  @override
+  String get qiblaCalibration =>
+      'ارسم الرقم \'8\' في الهواء بهاتفك لمعايرة البوصلة بدقة.';
 }

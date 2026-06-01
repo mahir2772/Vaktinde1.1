@@ -440,4 +440,341 @@ class AppLocalizationsTr extends AppLocalizations {
   String locationSelected(String city) {
     return '$city seçildi';
   }
+
+  @override
+  String channelSoundPrefix(String soundName) {
+    return 'Ses: $soundName';
+  }
+
+  @override
+  String get channelSilentPrayers => 'Sessiz Ezan Bildirimleri';
+
+  @override
+  String get tickerEzan => 'Ezan Vakti';
+
+  @override
+  String get stickyChannelName => 'Kalıcı Sayaç';
+
+  @override
+  String get stickyChannelDesc => 'Vakte kalan süreyi gösterir';
+
+  @override
+  String get timeLeftTo => 'Vaktin Çıkmasına: ';
+
+  @override
+  String get locationFallbackMessage =>
+      'Konum alınamadı, varsayılan değer kullanılıyor.';
+
+  @override
+  String get fetchingLocation => 'Konum alınıyor...';
+
+  @override
+  String get directionNorth => 'K';
+
+  @override
+  String get directionSouth => 'G';
+
+  @override
+  String get directionEast => 'D';
+
+  @override
+  String get directionWest => 'B';
+
+  @override
+  String get calibrationInstruction => '(Kalibrasyon için \'8\' çizin)';
+
+  @override
+  String get zakatDescription =>
+      'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre detaylı zekatınızı hesaplayın.';
+
+  @override
+  String get cashAndCurrencyTitle => 'Nakit ve Döviz Varlıklar';
+
+  @override
+  String get cashTurkishLira => 'Nakit Türk Lirası (TL)';
+
+  @override
+  String get goldAndSilverTitle => 'Altın ve Gümüş';
+
+  @override
+  String get silverGram => 'Gümüş (Gram)';
+
+  @override
+  String get unitPrice => 'Birim Fiyatı';
+
+  @override
+  String get commercialGoodsTitle => 'Ticari Mallar';
+
+  @override
+  String get commercialEvalCurrency => 'Değerlendirme Döviz Türü';
+
+  @override
+  String get commercialGoodsValue => 'Malın Değeri';
+
+  @override
+  String get exchangeRateValue => 'Kur Değeri';
+
+  @override
+  String get receivablesTitle => 'Alacaklar (Tahsil Edilebilecek)';
+
+  @override
+  String get receivableType => 'Alacağın Cinsi (TL, Döviz, Altın)';
+
+  @override
+  String get amountOrCount => 'Miktar / Adet';
+
+  @override
+  String get otherAssetsTitle => 'Diğer Varlıklar';
+
+  @override
+  String get assetType => 'Varlık Türü';
+
+  @override
+  String get currencyLabel => 'Para Birimi';
+
+  @override
+  String get valueOrAmount => 'Değeri / Miktarı';
+
+  @override
+  String get agriProductsTitle => 'Zirai Ürünler (Öşür)';
+
+  @override
+  String get agriDiyanetNote =>
+      'Zirai ürünlerin zekât hesaplamasında nisap miktarı aranmadığı için, beyan ettiğiniz tutar doğrudan zekât sepetine eklenir.';
+
+  @override
+  String get harvestedProductValue => 'Hasat Edilen Ürün Değeri (TL)';
+
+  @override
+  String get irrigationMethod => 'Sulama Yöntemi';
+
+  @override
+  String get debtsTitle => 'Borçlar (Düşülecek)';
+
+  @override
+  String get debtType => 'Borcun Cinsi (TL, Döviz, Altın)';
+
+  @override
+  String get zakatAgriIncluded => 'İçindeki Zirai Ürün (Öşür) Zekatı';
+
+  @override
+  String get assetCheck => 'Çek';
+
+  @override
+  String get assetBond => 'Senet';
+
+  @override
+  String get assetSukuk => 'Sukuk';
+
+  @override
+  String get assetLeaseCert => 'Kira Sertifikası';
+
+  @override
+  String get assetStock => 'Hisse Senedi';
+
+  @override
+  String get agriSoil => 'Zirai Ürün (Topraklı Tarım)';
+
+  @override
+  String get agriSoilless => 'Zirai Ürün (Topraksız Tarım)';
+
+  @override
+  String get agriRateNoCost => 'Masrafsız (Yağmur/Nehir) - %10';
+
+  @override
+  String get agriRateCostly => 'Masraflı (Motor/Taşıma) - %5';
+
+  @override
+  String get toImsak => 'Sabaha';
+
+  @override
+  String get toGunes => 'Güneşe';
+
+  @override
+  String get toOgle => 'Öğleye';
+
+  @override
+  String get toIkindi => 'İkindiye';
+
+  @override
+  String get toAksam => 'Akşama';
+
+  @override
+  String get toYatsi => 'Yatsıya';
+
+  @override
+  String get lowAccuracyWarning =>
+      'Pusula kalibrasyonu zayıf. Lütfen telefonunuzla havada \'8\' çizin.';
+
+  @override
+  String get qiblaDirection => 'Kıble Yönü';
+
+  @override
+  String get zikirmatikTitle => 'Zikirmatik';
+
+  @override
+  String get dhikrSubhanallah => 'Sübhanallah';
+
+  @override
+  String get dhikrElhamdulillah => 'Elhamdülillah';
+
+  @override
+  String get dhikrAllahuEkber => 'Allahu Ekber';
+
+  @override
+  String get dhikrKalima => 'Kelime-i Tevhid';
+
+  @override
+  String get dhikrSalavat => 'Salavat';
+
+  @override
+  String get targetReached => 'Hedefe Ulaştınız!';
+
+  @override
+  String get resetCounter => 'Sıfırla';
+
+  @override
+  String targetCount(int target) {
+    return 'Hedef: $target';
+  }
+
+  @override
+  String get setTarget => 'Hedef Belirle';
+
+  @override
+  String get dhikrOther => 'Diğer (Özel Zikir)';
+
+  @override
+  String get customDhikrTitle => 'Özel Zikir Ekle';
+
+  @override
+  String get customDhikrHint => 'Çekeceğiniz zikri yazın';
+
+  @override
+  String get zikirSettings => 'Ayarlar';
+
+  @override
+  String get vibration => 'Titreşim';
+
+  @override
+  String get sound => 'Ses Efekti';
+
+  @override
+  String get keepAwake => 'Ekran Uyanık Kalsın';
+
+  @override
+  String get appearance => 'Görünüm';
+
+  @override
+  String get themeModern => 'Modern Düğme';
+
+  @override
+  String get themeClassic => 'Klasik Tesbih';
+
+  @override
+  String get introTitle1 => 'Vaktinde\'ye Hoş Geldiniz';
+
+  @override
+  String get introDesc1 =>
+      'Namaz vakitlerini, zikirlerinizi ve dini günleri en modern ve şık arayüzle kolayca takip edin.';
+
+  @override
+  String get introTitle2 => 'Akıllı Bildirimler';
+
+  @override
+  String get introDesc2 =>
+      'Ezan vakitlerinde dilediğiniz bildirim sesiyle uyarı alın. İbadetlerinizi asla kaçırmayın.';
+
+  @override
+  String get introTitle3 => 'Gelişmiş Araçlar';
+
+  @override
+  String get introDesc3 =>
+      'Animasyonlu Zikirmatik, Kaza Takibi, Esmaül Hüsna ve Zekat hesaplama ile maneviyatınızı güçlendirin.';
+
+  @override
+  String get introSkip => 'Geç';
+
+  @override
+  String get introNext => 'İleri';
+
+  @override
+  String get introStart => 'Hemen Başla';
+
+  @override
+  String get dhikrListTitle => 'Zikir Listesi';
+
+  @override
+  String get addCustomDhikr => 'Yeni Özel Zikir Ekle';
+
+  @override
+  String get customDhikrAdded => 'Zikir başarıyla eklendi.';
+
+  @override
+  String get customDhikrLimit =>
+      'En fazla 20 adet özel zikir ekleyebilirsiniz!';
+
+  @override
+  String get deleteDhikr => 'Sil';
+
+  @override
+  String get statisticsTitle => 'İstatistikler';
+
+  @override
+  String get monthly => 'Aylık';
+
+  @override
+  String get yearly => 'Yıllık';
+
+  @override
+  String get totalDhikr => 'Toplam Çekilen Zikir';
+
+  @override
+  String get today => 'Bugün';
+
+  @override
+  String get statsEmpty => 'Henüz zikir verisi yok.';
+
+  @override
+  String get dhikrEstagfirullah => 'Estağfirullah';
+
+  @override
+  String get dhikrLaHavle => 'La Havle Vela Kuvvete';
+
+  @override
+  String get dhikrHasbunallah => 'Hasbünallah';
+
+  @override
+  String get dhikrSubhanallahi => 'Subhanallahi ve bihamdihi';
+
+  @override
+  String get dhikrYunus => 'Hz. Yunus\'un Duası';
+
+  @override
+  String get dhikrYaAllah => 'Ya Allah (C.C.)';
+
+  @override
+  String get dhikrYaRahman => 'Ya Rahman (C.C.)';
+
+  @override
+  String get dhikrYaRahim => 'Ya Rahim (C.C.)';
+
+  @override
+  String get dhikrYaSafi => 'Ya Şafi (C.C.)';
+
+  @override
+  String get dhikrYaRezzak => 'Ya Rezzak (C.C.)';
+
+  @override
+  String get dhikrYaFettah => 'Ya Fettah (C.C.)';
+
+  @override
+  String get mainDhikrs => 'Temel Zikirler';
+
+  @override
+  String get esmaulHusnaTab => 'Esmaül Hüsna';
+
+  @override
+  String get qiblaCalibration =>
+      'Pusulanın doğru çalışması için telefonunuzla havada \'8\' çizin.';
 }

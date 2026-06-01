@@ -11,16 +11,12 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
-    // --- FIREBASE İÇİN BU SATIR EKLENDİ ---
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.mmdigital.vaktinde"
-    
-    
     compileSdk = 36
-    
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -29,18 +25,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-
     defaultConfig {
         applicationId = "com.mmdigital.vaktinde"
-        
         minSdk = flutter.minSdkVersion 
-        
-        
         targetSdk = 35
-        
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

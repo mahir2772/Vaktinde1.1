@@ -441,4 +441,344 @@ class AppLocalizationsDe extends AppLocalizations {
   String locationSelected(String city) {
     return '$city ausgewählt';
   }
+
+  @override
+  String channelSoundPrefix(String soundName) {
+    return 'Ton: $soundName';
+  }
+
+  @override
+  String get channelSilentPrayers => 'Stumme Gebetsbenachrichtigungen';
+
+  @override
+  String get tickerEzan => 'Gebetszeit';
+
+  @override
+  String get stickyChannelName => 'Dauerhafter Timer';
+
+  @override
+  String get stickyChannelDesc =>
+      'Zeigt die verbleibende Zeit für das Gebet an';
+
+  @override
+  String get timeLeftTo => 'Verbleibende Zeit bis: ';
+
+  @override
+  String get locationFallbackMessage =>
+      'Standort konnte nicht abgerufen werden, Standardwert wird verwendet.';
+
+  @override
+  String get fetchingLocation => 'Standort wird abgerufen...';
+
+  @override
+  String get directionNorth => 'N';
+
+  @override
+  String get directionSouth => 'S';
+
+  @override
+  String get directionEast => 'O';
+
+  @override
+  String get directionWest => 'W';
+
+  @override
+  String get calibrationInstruction =>
+      '(Zeichnen Sie eine \'8\' zur Kalibrierung)';
+
+  @override
+  String get zakatDescription =>
+      'Berechnen Sie Ihre Zakat detailliert nach den Fatwas des Präsidiums für Religionsangelegenheiten und den aktuellen Ankaufs-/Verkaufskursen des Marktes.';
+
+  @override
+  String get cashAndCurrencyTitle => 'Bargeld und Währungsvermögen';
+
+  @override
+  String get cashTurkishLira => 'Bargeld Türkische Lira (TRY)';
+
+  @override
+  String get goldAndSilverTitle => 'Gold und Silber';
+
+  @override
+  String get silverGram => 'Silber (Gramm)';
+
+  @override
+  String get unitPrice => 'Stückpreis';
+
+  @override
+  String get commercialGoodsTitle => 'Handelswaren';
+
+  @override
+  String get commercialEvalCurrency => 'Bewertungswährung';
+
+  @override
+  String get commercialGoodsValue => 'Warenwert';
+
+  @override
+  String get exchangeRateValue => 'Wechselkurs';
+
+  @override
+  String get receivablesTitle => 'Forderungen (Einbringlich)';
+
+  @override
+  String get receivableType => 'Art der Forderung (TRY, Fremdwährung, Gold)';
+
+  @override
+  String get amountOrCount => 'Menge / Anzahl';
+
+  @override
+  String get otherAssetsTitle => 'Sonstige Vermögenswerte';
+
+  @override
+  String get assetType => 'Anlageklasse';
+
+  @override
+  String get currencyLabel => 'Währung';
+
+  @override
+  String get valueOrAmount => 'Wert / Menge';
+
+  @override
+  String get agriProductsTitle => 'Landwirtschaftliche Produkte (Uschr)';
+
+  @override
+  String get agriDiyanetNote =>
+      'Da bei der Zakat-Berechnung landwirtschaftlicher Produkte kein Nisab-Betrag erforderlich ist, wird der von Ihnen deklarierte Betrag direkt zum Zakat-Korb hinzugefügt.';
+
+  @override
+  String get harvestedProductValue => 'Geernteter Produktwert (TRY)';
+
+  @override
+  String get irrigationMethod => 'Bewässerungsmethode';
+
+  @override
+  String get debtsTitle => 'Schulden (Abzuziehen)';
+
+  @override
+  String get debtType => 'Schuldenart (TRY, Fremdwährung, Gold)';
+
+  @override
+  String get zakatAgriIncluded =>
+      'Inklusive Zakat für landwirtschaftliche Produkte (Uschr)';
+
+  @override
+  String get assetCheck => 'Scheck';
+
+  @override
+  String get assetBond => 'Schuldschein';
+
+  @override
+  String get assetSukuk => 'Sukuk';
+
+  @override
+  String get assetLeaseCert => 'Leasingzertifikat';
+
+  @override
+  String get assetStock => 'Aktie';
+
+  @override
+  String get agriSoil => 'Landwirtschaftliches Produkt (Bodenbau)';
+
+  @override
+  String get agriSoilless => 'Landwirtschaftliches Produkt (Bodenloser Anbau)';
+
+  @override
+  String get agriRateNoCost => 'Kostenlos (Regen/Fluss) - 10%';
+
+  @override
+  String get agriRateCostly => 'Kostenpflichtig (Motor/Transport) - 5%';
+
+  @override
+  String get toImsak => 'Bis Fadschr';
+
+  @override
+  String get toGunes => 'Bis Sonnenaufgang';
+
+  @override
+  String get toOgle => 'Bis Duhur';
+
+  @override
+  String get toIkindi => 'Bis Asr';
+
+  @override
+  String get toAksam => 'Bis Maghrib';
+
+  @override
+  String get toYatsi => 'Bis Ischa';
+
+  @override
+  String get lowAccuracyWarning =>
+      'Kompasskalibrierung ist schwach. Bitte zeichnen Sie eine \'8\' in die Luft.';
+
+  @override
+  String get qiblaDirection => 'Qibla-Richtung';
+
+  @override
+  String get zikirmatikTitle => 'Dhikr Zähler';
+
+  @override
+  String get dhikrSubhanallah => 'Subhanallah';
+
+  @override
+  String get dhikrElhamdulillah => 'Alhamdulillah';
+
+  @override
+  String get dhikrAllahuEkber => 'Allahu Akbar';
+
+  @override
+  String get dhikrKalima => 'Kalima';
+
+  @override
+  String get dhikrSalavat => 'Salawat';
+
+  @override
+  String get targetReached => 'Ziel erreicht!';
+
+  @override
+  String get resetCounter => 'Zurücksetzen';
+
+  @override
+  String targetCount(int target) {
+    return 'Ziel: $target';
+  }
+
+  @override
+  String get setTarget => 'Ziel festlegen';
+
+  @override
+  String get dhikrOther => 'Andere (Eigener Dhikr)';
+
+  @override
+  String get customDhikrTitle => 'Eigenen Dhikr hinzufügen';
+
+  @override
+  String get customDhikrHint => 'Geben Sie hier Ihren Dhikr ein';
+
+  @override
+  String get zikirSettings => 'الإعدادات';
+
+  @override
+  String get vibration => 'اهتزاز';
+
+  @override
+  String get sound => 'تأثير الصوت';
+
+  @override
+  String get keepAwake => 'إبقاء الشاشة قيد التشغيل';
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get themeModern => 'زر حديث';
+
+  @override
+  String get themeClassic => 'تسبيح كلاسيكي';
+
+  @override
+  String get introTitle1 => 'Willkommen bei Vaktinde';
+
+  @override
+  String get introDesc1 =>
+      'Verfolgen Sie Gebetszeiten, Ihre Dhikrs und religiöse Tage ganz einfach mit einer modernen und eleganten Benutzeroberfläche.';
+
+  @override
+  String get introTitle2 => 'Intelligente Benachrichtigungen';
+
+  @override
+  String get introDesc2 =>
+      'Lassen Sie sich zu den Gebetszeiten mit Ihrem bevorzugten Ton benachrichtigen. Verpassen Sie nie wieder Ihre Gebete.';
+
+  @override
+  String get introTitle3 => 'Erweiterte Werkzeuge';
+
+  @override
+  String get introDesc3 =>
+      'Stärken Sie Ihre Spiritualität mit Werkzeugen wie dem animierten Dhikr-Zähler, verpassten Gebeten und dem Zakat-Rechner.';
+
+  @override
+  String get introSkip => 'Überspringen';
+
+  @override
+  String get introNext => 'Weiter';
+
+  @override
+  String get introStart => 'Loslegen';
+
+  @override
+  String get dhikrListTitle => 'Dhikr-Liste';
+
+  @override
+  String get addCustomDhikr => 'Benutzerdefinierten Dhikr hinzufügen';
+
+  @override
+  String get customDhikrAdded => 'Dhikr erfolgreich hinzugefügt.';
+
+  @override
+  String get customDhikrLimit =>
+      'Sie können bis zu 20 benutzerdefinierte Dhikrs hinzufügen!';
+
+  @override
+  String get deleteDhikr => 'Löschen';
+
+  @override
+  String get statisticsTitle => 'Statistiken';
+
+  @override
+  String get monthly => 'Monatlich';
+
+  @override
+  String get yearly => 'Jährlich';
+
+  @override
+  String get totalDhikr => 'Gesamte Dhikrs';
+
+  @override
+  String get today => 'Heute';
+
+  @override
+  String get statsEmpty => 'Noch keine Dhikr-Daten vorhanden.';
+
+  @override
+  String get dhikrEstagfirullah => 'Astaghfirullah';
+
+  @override
+  String get dhikrLaHavle => 'La Hawla wa la Quwwata';
+
+  @override
+  String get dhikrHasbunallah => 'Hasbunallah';
+
+  @override
+  String get dhikrSubhanallahi => 'Subhanallahi wa bihamdihi';
+
+  @override
+  String get dhikrYunus => 'Bittgebet des Propheten Yunus';
+
+  @override
+  String get dhikrYaAllah => 'Ya Allah';
+
+  @override
+  String get dhikrYaRahman => 'Ya Rahman';
+
+  @override
+  String get dhikrYaRahim => 'Ya Rahim';
+
+  @override
+  String get dhikrYaSafi => 'Ya Schafi';
+
+  @override
+  String get dhikrYaRezzak => 'Ya Razzak';
+
+  @override
+  String get dhikrYaFettah => 'Ya Fattah';
+
+  @override
+  String get mainDhikrs => 'Haupt-Dhikrs';
+
+  @override
+  String get esmaulHusnaTab => 'Esmaul Husna';
+
+  @override
+  String get qiblaCalibration =>
+      'Zeichnen Sie eine \'8\' in die Luft mit Ihrem Telefon, um den Kompass zu kalibrieren.';
 }

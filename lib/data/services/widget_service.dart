@@ -3,15 +3,16 @@ import 'package:home_widget/home_widget.dart';
 class WidgetService {
   static Future<void> widgetiGuncelle({
     required String baslik,
-    required String kalanSure,
+    required int hedefZamanMs,
     required Map<String, String> vakitler,
+    required String konum,
+    required Map<String, String> vakitIsimleri,
   }) async {
     try {
-      // Başlık ve Kalan Süre
       await HomeWidget.saveWidgetData<String>('title_text', baslik);
-      await HomeWidget.saveWidgetData<String>('countdown_text', kalanSure);
+      await HomeWidget.saveWidgetData<int>('target_time_ms', hedefZamanMs);
+      await HomeWidget.saveWidgetData<String>('location_text', konum);
 
-      // Tüm Vakitleri Kaydet (Key'ler Kotlin tarafıyla aynı olmalı)
       await HomeWidget.saveWidgetData<String>(
         'imsak_time',
         vakitler['İmsak'] ?? "",
@@ -37,13 +38,41 @@ class WidgetService {
         vakitler['Yatsı'] ?? "",
       );
 
-      await HomeWidget.updateWidget(
-        name: 'VaktindeWidgetProvider',
-        androidName: 'VaktindeWidgetProvider',
+      await HomeWidget.saveWidgetData<String>(
+        'label_imsak',
+        vakitIsimleri['İmsak'] ?? "",
       );
-      print("✅ Widget Tam Liste Olarak Güncellendi");
-    } catch (e) {
-      print("❌ Widget Hatası: $e");
-    }
+      await HomeWidget.saveWidgetData<String>(
+        'label_gunes',
+        vakitIsimleri['Güneş'] ?? "",
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'label_ogle',
+        vakitIsimleri['Öğle'] ?? "",
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'label_ikindi',
+        vakitIsimleri['İkindi'] ?? "",
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'label_aksam',
+        vakitIsimleri['Akşam'] ?? "",
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'label_yatsi',
+        vakitIsimleri['Yatsı'] ?? "",
+      );
+
+      await HomeWidget.updateWidget(
+        name: 'VaktindeWidgetSmallProvider',
+        androidName: 'VaktindeWidgetSmallProvider',
+      );
+
+      await HomeWidget.updateWidget(
+        name: 'VaktindeWidgetLargeProvider',
+        androidName: 'VaktindeWidgetLargeProvider',
+      );
+      // ignore: empty_catches
+    } catch (e) {}
   }
 }
