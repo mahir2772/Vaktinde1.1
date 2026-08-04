@@ -3,17 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-// --- YENİ EKLENDİ: Upgrader Paketi ---
 import 'package:upgrader/upgrader.dart';
-// ------------------------------------
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:story_view/story_view.dart';
+import 'package:showcaseview/showcaseview.dart'; // YENİ EKLENDİ
+
 import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/countdown_widget.dart';
-import '../../../data/models/hadith_model.dart';
+// YENİ: GLOBAL ANAHTARLARI İÇERİ ALIYORUZ
+import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -22,21 +22,35 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView>
+    with SingleTickerProviderStateMixin {
   String _nextVakitIsmi = "İmsak";
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final loc = AppLocalizations.of(context)!;
       final viewModel = context.read<HomeViewModel>();
       viewModel.initializeApp(loc);
 
-      // --- EKLENDİ: Başlangıçta mevcut dile göre hadisi çek ---
       final currentLocale = context.read<LanguageProvider>().locale;
       viewModel.getDailyHadith(currentLocale);
     });
+  }
+
+  // --- ÇEVİRİ YARDIMCI FONKSİYONU ---
+  String _t(AppLocalizations loc, String trText, String enText) {
+    return loc.localeName.startsWith('tr') ? trText : enText;
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   void _calculateNextPrayer(HomeViewModel viewModel) {
@@ -50,7 +64,6 @@ class _HomeViewState extends State<HomeView> {
       "Akşam": viewModel.prayerTimes!.aksam!,
       "Yatsı": viewModel.prayerTimes!.yatsi!,
     };
-
     String foundNext = "İmsak";
     for (var entry in vakitler.entries) {
       List<String> parts = entry.value.split(':');
@@ -71,7 +84,6 @@ class _HomeViewState extends State<HomeView> {
 
   LinearGradient? _getGradient(String vakit, bool hasImage) {
     if (hasImage) return null;
-
     switch (vakit) {
       case "İmsak":
         return const LinearGradient(
@@ -120,8 +132,6 @@ class _HomeViewState extends State<HomeView> {
     final loc = AppLocalizations.of(context)!;
     final themeProvider = context.watch<ThemeProvider>();
 
-    viewModel.updateLocalization(loc);
-
     if (viewModel.prayerTimes != null) {
       _calculateNextPrayer(viewModel);
     }
@@ -135,7 +145,6 @@ class _HomeViewState extends State<HomeView> {
       dialogStyle: UpgradeDialogStyle.cupertino,
       showIgnore: false,
       showLater: true,
-
       upgrader: Upgrader(debugLogging: false, languageCode: loc.localeName),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -152,40 +161,86 @@ class _HomeViewState extends State<HomeView> {
           foregroundColor: Colors.white,
           leading: Container(),
           actions: [
-            PopupMenuButton<Locale>(
-              onSelected: (Locale newLocale) {
-                context.read<LanguageProvider>().setLanguage(newLocale);
-                context.read<HomeViewModel>().getDailyHadith(newLocale);
-              },
-              icon: const Icon(Icons.language, color: Colors.white),
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: Locale('tr'),
-                  child: Text("Türkçe 🇹🇷"),
-                ),
-                const PopupMenuItem(
-                  value: Locale('en'),
-                  child: Text("English 🇬🇧"),
-                ),
-                const PopupMenuItem(
-                  value: Locale('de'),
-                  child: Text("Deutsch 🇩🇪"),
-                ),
-                const PopupMenuItem(
-                  value: Locale('fr'),
-                  child: Text("Français 🇫🇷"),
-                ),
-                const PopupMenuItem(
-                  value: Locale('ar'),
-                  child: Text("العربية 🇸🇦"),
-                ),
-              ],
+            // ADIM 1: DİL SEÇİM BUTONU
+            Showcase(
+              key: homeLangKey,
+              description: _t(
+                loc,
+                "Uygulama dilini buradan değiştirebilirsiniz.",
+                "You can change the app language from here.",
+              ),
+
+              overlayColor: Colors.black.withOpacity(0.8),
+              tooltipBackgroundColor: Colors.teal.shade800,
+              textColor: Colors.white,
+              child: PopupMenuButton<Locale>(
+                onSelected: (Locale newLocale) {
+                  context.read<LanguageProvider>().setLanguage(newLocale);
+                  context.read<HomeViewModel>().getDailyHadith(newLocale);
+                  context.read<HomeViewModel>().getDailyAyah(newLocale);
+                },
+                icon: const Icon(Icons.language, color: Colors.white),
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: Locale('tr'),
+                    child: Text("Türkçe 🇹🇷"),
+                  ),
+                  const PopupMenuItem(
+                    value: Locale('en'),
+                    child: Text("English 🇬🇧"),
+                  ),
+                  const PopupMenuItem(
+                    value: Locale('de'),
+                    child: Text("Deutsch 🇩🇪"),
+                  ),
+                  const PopupMenuItem(
+                    value: Locale('fr'),
+                    child: Text("Français 🇫🇷"),
+                  ),
+                  const PopupMenuItem(
+                    value: Locale('ar'),
+                    child: Text("العربية 🇸🇦"),
+                  ),
+                ],
+              ),
             ),
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () => viewModel.refreshLocationAndTimes(context),
             ),
           ],
+          // ADIM 3: SADECE ALARMLAR SEKMESİ PARLAYACAK
+          bottom: TabBar(
+            controller: _tabController,
+            indicatorColor: Colors.white,
+            indicatorWeight: 3,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+            tabs: [
+              const Tab(icon: Icon(Icons.access_time_filled), text: "Vakitler"),
+
+              // Showcase'i sadece ikinci Tab'ın üzerine yerleştiriyoruz
+              Showcase(
+                key: homeAlarmsKey,
+                description: _t(
+                  loc,
+                  "Vakitlere özel alarmları buradan ayarlayabilirsiniz.",
+                  "You can set custom alarms for prayer times from here.",
+                ),
+                overlayColor: Colors.black.withOpacity(0.8),
+                tooltipBackgroundColor: Colors.teal.shade800,
+                textColor: Colors.white,
+                child: const Tab(
+                  icon: Icon(Icons.access_alarms),
+                  text: "Alarmlar",
+                ),
+              ),
+            ],
+          ),
         ),
         body: Container(
           decoration: BoxDecoration(gradient: currentGradient),
@@ -269,6 +324,28 @@ class _HomeViewState extends State<HomeView> {
       );
     }
 
+    bool hasImage = themeProvider.backgroundImage != null;
+
+    return Column(
+      children: [
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildPanoTab(viewModel, loc, hasImage),
+              _buildAlarmsTab(viewModel, loc, hasImage),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPanoTab(
+    HomeViewModel viewModel,
+    AppLocalizations loc,
+    bool hasImage,
+  ) {
     String displayCity = viewModel.city ?? loc.waitingLocation;
     String displayDistrict = "";
     if (viewModel.district != null && viewModel.district!.isNotEmpty) {
@@ -295,327 +372,381 @@ class _HomeViewState extends State<HomeView> {
       currentLocaleCode,
     ).format(DateTime.now());
 
-    bool hasImage = themeProvider.backgroundImage != null;
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
-          child: Column(
-            children: [
-              Text(
-                locationText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  letterSpacing: 1.2,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black45,
-                      blurRadius: 10,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                formattedDate,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Transform.scale(
-                scale: 0.9,
-                child: CountdownWidget(prayerTimes: viewModel.prayerTimes!),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.only(top: 5),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: hasImage
-                  ? Theme.of(context).cardTheme.color!.withValues(alpha: 0.2)
-                  : Theme.of(context).cardTheme.color,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-              ),
-            ),
-            child: ListView(
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+            child: Column(
               children: [
-                if (viewModel.dailyHadith != null)
-                  _buildHadithCard(
-                    context,
-                    viewModel.dailyHadith!,
-                    loc,
-                    hasImage,
+                Text(
+                  locationText,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black45,
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
-
-                if (viewModel.dailyHadith != null) const SizedBox(height: 15),
-
-                _buildExpandableCard(
-                  viewModel,
-                  loc,
-                  "İmsak",
-                  loc.imsak,
-                  viewModel.prayerTimes!.imsak!,
-                  hasImage,
                 ),
-                _buildExpandableCard(
-                  viewModel,
-                  loc,
-                  "Güneş",
-                  loc.gunes,
-                  viewModel.prayerTimes!.gunes!,
-                  hasImage,
+                const SizedBox(height: 2),
+                Text(
+                  formattedDate,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-                _buildExpandableCard(
-                  viewModel,
-                  loc,
-                  "Öğle",
-                  loc.ogle,
-                  viewModel.prayerTimes!.ogle!,
-                  hasImage,
-                ),
-                _buildExpandableCard(
-                  viewModel,
-                  loc,
-                  "İkindi",
-                  loc.ikindi,
-                  viewModel.prayerTimes!.ikindi!,
-                  hasImage,
-                ),
-                _buildExpandableCard(
-                  viewModel,
-                  loc,
-                  "Akşam",
-                  loc.aksam,
-                  viewModel.prayerTimes!.aksam!,
-                  hasImage,
-                ),
-                _buildExpandableCard(
-                  viewModel,
-                  loc,
-                  "Yatsı",
-                  loc.yatsi,
-                  viewModel.prayerTimes!.yatsi!,
-                  hasImage,
+                const SizedBox(height: 10),
+                Transform.scale(
+                  scale: 0.9,
+                  child: CountdownWidget(prayerTimes: viewModel.prayerTimes!),
                 ),
               ],
             ),
           ),
-        ),
-      ],
+
+          // ADIM 2: HİKAYE BÖLÜMÜ
+          Showcase(
+            key: homeStoryKey,
+            description: _t(
+              loc,
+              "Günün ayet ve hadisini buradan okuyabilirsiniz.",
+              "You can read the daily ayah and hadith from here.",
+            ),
+            overlayColor: Colors.black.withOpacity(0.8),
+            tooltipBackgroundColor: Colors.teal.shade800,
+            textColor: Colors.white,
+            child: _buildStorySection(viewModel, loc),
+          ),
+
+          _buildSimplePrayerTimesList(viewModel, loc, hasImage),
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 
-  Widget _buildHadithCard(
-    BuildContext context,
-    HadithModel hadith,
+  Widget _buildAlarmsTab(
+    HomeViewModel viewModel,
     AppLocalizations loc,
     bool hasImage,
   ) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
+      margin: const EdgeInsets.only(top: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: hasImage
-            ? Theme.of(context).cardTheme.color!.withValues(alpha: 0.6)
+            ? Theme.of(context).cardTheme.color!.withValues(alpha: 0.2)
             : Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.teal.withValues(alpha: 0.3)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      child: ListView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 20, bottom: 20),
+        children: [
+          _buildExpandableCard(
+            viewModel,
+            loc,
+            "İmsak",
+            loc.imsak,
+            formatVakit(viewModel.prayerTimes!.imsak!, loc.localeName),
+            hasImage,
+          ),
+          _buildExpandableCard(
+            viewModel,
+            loc,
+            "Güneş",
+            loc.gunes,
+            formatVakit(viewModel.prayerTimes!.gunes!, loc.localeName),
+            hasImage,
+          ),
+          _buildExpandableCard(
+            viewModel,
+            loc,
+            "Öğle",
+            loc.ogle,
+            formatVakit(viewModel.prayerTimes!.ogle!, loc.localeName),
+            hasImage,
+          ),
+          _buildExpandableCard(
+            viewModel,
+            loc,
+            "İkindi",
+            loc.ikindi,
+            formatVakit(viewModel.prayerTimes!.ikindi!, loc.localeName),
+            hasImage,
+          ),
+          _buildExpandableCard(
+            viewModel,
+            loc,
+            "Akşam",
+            loc.aksam,
+            formatVakit(viewModel.prayerTimes!.aksam!, loc.localeName),
+            hasImage,
+          ),
+          _buildExpandableCard(
+            viewModel,
+            loc,
+            "Yatsı",
+            loc.yatsi,
+            formatVakit(viewModel.prayerTimes!.yatsi!, loc.localeName),
+            hasImage,
           ),
         ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(15),
-          onTap: () {
-            _showHadithDetailDialog(context, hadith, loc);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.format_quote_rounded,
-                          color: Colors.teal,
-                          size: 30,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          loc.hadithTitle,
-                          style: const TextStyle(
-                            color: Colors.teal,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 16,
-                      color: Colors.teal.withValues(alpha: 0.5),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  hadith.content ?? "",
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontStyle: FontStyle.italic,
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      loc.readMore,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.teal.shade400,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        "- ${hadith.source}",
-                        textAlign: TextAlign.end,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.teal.shade700,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
 
-  void _showHadithDetailDialog(
-    BuildContext context,
-    HadithModel hadith,
-    AppLocalizations loc,
-  ) {
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.format_quote_rounded,
-                  color: Colors.teal,
-                  size: 40,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  loc.hadithTitle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal,
-                  ),
-                ),
-                const Divider(height: 30, color: Colors.teal),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      hadith.content ?? "",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "- ${hadith.source}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        child: Text(
-                          loc.close,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          String textToShare =
-                              "\"${hadith.content}\"\n\n- ${hadith.source}\n\n(${loc.appTitle} ile Paylaşıldı)";
-                          Share.share(textToShare);
-                          FirebaseAnalytics.instance.logEvent(
-                            name: 'hadis_paylasildi',
-                          );
-                        },
-                        icon: const Icon(Icons.share, size: 18),
-                        label: Text(loc.share),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+  Widget _buildStorySection(HomeViewModel viewModel, AppLocalizations loc) {
+    if (viewModel.dailyAyah == null && viewModel.dailyHadith == null)
+      return const SizedBox();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (viewModel.dailyAyah != null)
+            _buildStoryBubble(
+              title: loc.localeName.startsWith('tr')
+                  ? "Günün Ayeti"
+                  : "Daily Ayah",
+              icon: Icons.menu_book_rounded,
+              onTap: () {
+                _openStoryScreen(
+                  title: loc.localeName.startsWith('tr')
+                      ? "Günün Ayeti"
+                      : "Ayah of the Day",
+                  content:
+                      "${viewModel.dailyAyah!.arabicText}\n\n${viewModel.dailyAyah!.translatedText}",
+                  source: viewModel.dailyAyah!.surahName,
+                );
+              },
+            ),
+          if (viewModel.dailyAyah != null && viewModel.dailyHadith != null)
+            const SizedBox(width: 30),
+          if (viewModel.dailyHadith != null)
+            _buildStoryBubble(
+              title: loc.localeName.startsWith('tr')
+                  ? "Günün Hadisi"
+                  : "Daily Hadith",
+              icon: Icons.format_quote_rounded,
+              onTap: () {
+                _openStoryScreen(
+                  title: loc.hadithTitle,
+                  content: viewModel.dailyHadith!.content ?? "",
+                  source: viewModel.dailyHadith!.source ?? "",
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoryBubble({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Colors.tealAccent, Colors.teal, Colors.blueGrey],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+              child: CircleAvatar(
+                radius: 35,
+                backgroundColor: Colors.teal.shade100,
+                child: Icon(icon, size: 30, color: Colors.teal.shade800),
+              ),
             ),
           ),
-        );
-      },
+          const SizedBox(height: 6),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+              shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  void _openStoryScreen({
+    required String title,
+    required String content,
+    required String source,
+  }) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            DailyStoryScreen(title: title, content: content, source: source),
+      ),
+    );
+  }
+
+  Widget _buildSimplePrayerTimesList(
+    HomeViewModel viewModel,
+    AppLocalizations loc,
+    bool hasImage,
+  ) {
+    Map<String, String> vakitler = {
+      "İmsak": viewModel.prayerTimes!.imsak!,
+      "Güneş": viewModel.prayerTimes!.gunes!,
+      "Öğle": viewModel.prayerTimes!.ogle!,
+      "İkindi": viewModel.prayerTimes!.ikindi!,
+      "Akşam": viewModel.prayerTimes!.aksam!,
+      "Yatsı": viewModel.prayerTimes!.yatsi!,
+    };
+    Map<String, String> vakitIsimleri = {
+      "İmsak": loc.imsak,
+      "Güneş": loc.gunes,
+      "Öğle": loc.ogle,
+      "İkindi": loc.ikindi,
+      "Akşam": loc.aksam,
+      "Yatsı": loc.yatsi,
+    };
+
+    Widget buildCell(String key) {
+      bool isNext = _nextVakitIsmi == key;
+      return Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isNext ? Colors.teal : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isNext ? Colors.teal : Colors.grey.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                vakitIsimleri[key]!,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: isNext ? FontWeight.bold : FontWeight.w500,
+                  color: isNext ? Colors.white : Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                formatVakit(vakitler[key]!, loc.localeName),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isNext
+                      ? Colors.white
+                      : Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: hasImage
+            ? Theme.of(context).cardTheme.color!.withValues(alpha: 0.85)
+            : Theme.of(context).cardTheme.color,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              buildCell("İmsak"),
+              const SizedBox(width: 10),
+              buildCell("Güneş"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              buildCell("Öğle"),
+              const SizedBox(width: 10),
+              buildCell("İkindi"),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              buildCell("Akşam"),
+              const SizedBox(width: 10),
+              buildCell("Yatsı"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String formatVakit(String vakit24, String langCode) {
+    if (vakit24.isEmpty || !vakit24.contains(':')) return vakit24;
+    bool use12Hour = langCode.startsWith('ar') || langCode.startsWith('en');
+    if (!use12Hour) return vakit24;
+    try {
+      final parts = vakit24.split(':');
+      int hour = int.parse(parts[0]);
+      String minute = parts[1];
+      String amPm = "";
+      if (langCode.startsWith('ar')) {
+        amPm = hour >= 12 ? "م" : "ص";
+      } else {
+        amPm = hour >= 12 ? "PM" : "AM";
+      }
+      if (hour == 0)
+        hour = 12;
+      else if (hour > 12)
+        hour -= 12;
+      return "${hour.toString().padLeft(2, '0')}:$minute $amPm";
+    } catch (e) {
+      return vakit24;
+    }
   }
 
   Widget _buildExpandableCard(
@@ -692,15 +823,28 @@ class _HomeViewState extends State<HomeView> {
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
-              time,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: isNext
-                    ? (hasImage ? Colors.white : Colors.teal.shade900)
-                    : Theme.of(context).textTheme.bodyLarge?.color,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  time,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isNext
+                        ? (hasImage ? Colors.white : Colors.teal.shade900)
+                        : Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: isNext
+                      ? (hasImage ? Colors.white70 : Colors.teal.shade700)
+                      : Colors.grey.shade500,
+                  size: 20,
+                ),
+              ],
             ),
           ),
           children: [
@@ -795,18 +939,14 @@ class _HomeViewState extends State<HomeView> {
     required bool isReminder,
   }) {
     String getSoundName(String id, AppLocalizations loc) {
-      if (id.startsWith("ezan")) {
-        String number = id.replaceAll("ezan", "");
-        return "${loc.soundEzan} $number";
-      } else if (id.startsWith("bildirim")) {
-        String number = id.replaceAll("bildirim", "");
-        return "${loc.soundBeep} $number";
-      }
+      if (id.startsWith("ezan"))
+        return "${loc.soundEzan} ${id.replaceAll("ezan", "")}";
+      if (id.startsWith("bildirim"))
+        return "${loc.soundBeep} ${id.replaceAll("bildirim", "")}";
       return id;
     }
 
     final loc = AppLocalizations.of(context)!;
-
     return Container(
       margin: const EdgeInsets.only(top: 5, bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -872,6 +1012,61 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class DailyStoryScreen extends StatefulWidget {
+  final String title;
+  final String content;
+  final String source;
+
+  const DailyStoryScreen({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.source,
+  });
+
+  @override
+  State<DailyStoryScreen> createState() => _DailyStoryScreenState();
+}
+
+class _DailyStoryScreenState extends State<DailyStoryScreen> {
+  final StoryController controller = StoryController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: StoryView(
+        storyItems: [
+          StoryItem.text(
+            title:
+                "${widget.title}\n\n\n${widget.content}\n\n\n- ${widget.source}",
+            backgroundColor: Colors.teal.shade800,
+            textStyle: const TextStyle(
+              fontSize: 22,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+              shadows: [Shadow(color: Colors.black45, blurRadius: 5)],
+            ),
+          ),
+        ],
+        controller: controller,
+        repeat: false,
+        onComplete: () => Navigator.pop(context),
+        onVerticalSwipeComplete: (direction) {
+          if (direction == Direction.down) Navigator.pop(context);
+        },
       ),
     );
   }

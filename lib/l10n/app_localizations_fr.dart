@@ -27,7 +27,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get close => 'Fermer';
 
   @override
-  String get loading => 'Calcul des horaires...';
+  String get loading => 'Calcul des Horaires...';
 
   @override
   String get error => 'Erreur';
@@ -57,20 +57,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get yatsi => 'Isha';
 
   @override
-  String get exactAlarm => 'Lire à l\'heure exacte';
+  String get exactAlarm => 'Notifier à l\'Heure Exacte';
 
   @override
   String get exactAlarmSub => 'Envoie une notification.';
 
   @override
-  String get silentNotif => 'Notification texte uniquement';
+  String get silentNotif => 'Notification Textuelle Uniquement';
 
   @override
-  String get silentNotifSub => 'Pas de son, juste une alerte.';
+  String get silentNotifSub =>
+      'Pas d\'Adhan/Son, uniquement une alerte visuelle.';
 
   @override
   String warningAlarm(String minute) {
-    return 'Alerter $minute min avant';
+    return 'Avertir $minute min Avant';
   }
 
   @override
@@ -80,51 +81,52 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings => 'Paramètres';
 
   @override
-  String get changeLanguage => 'Changer de langue';
+  String get changeLanguage => 'Changer de Langue';
 
   @override
-  String get waitingLocation => 'En attente de localisation...';
+  String get waitingLocation => 'En attente de la position...';
 
   @override
   String get noInternet =>
-      'Pas d\'Internet et aucune donnée enregistrée trouvée.';
+      'Pas de connexion internet et aucune donnée enregistrée trouvée.';
 
   @override
-  String get gpsOff => 'GPS désactivé. Veuillez activer la localisation.';
+  String get gpsOff =>
+      'Le GPS est désactivé. Veuillez activer la localisation.';
 
   @override
   String get permissionDenied => 'Permission de localisation refusée.';
 
   @override
-  String get locationError => 'Échec de l\'obtention de la localisation.';
+  String get locationError => 'Impossible d\'obtenir la localisation.';
 
   @override
-  String get internetNeeded => 'Connexion Internet requise.';
+  String get internetNeeded => 'Une connexion internet est requise.';
 
   @override
   String get soundEzan => 'Adhan';
 
   @override
-  String get soundBeep => 'Bip court';
+  String get soundBeep => 'Bip Court';
 
   @override
-  String get notifTitleTime => 'Heure de la Prière';
+  String get notifTitleTime => 'Heure de Prière';
 
   @override
   String notifBodyTime(String vakit) {
-    return 'C\'est l\'heure de la prière de $vakit.';
+    return 'C\'est l\'heure de $vakit.';
   }
 
   @override
-  String get notifTitleUpcoming => 'La prière approche';
+  String get notifTitleUpcoming => 'L\'Heure Approche';
 
   @override
   String notifBodyUpcoming(String vakit, int minute) {
-    return 'Il reste $minute minutes avant la prière de $vakit.';
+    return 'Il reste $minute minutes avant $vakit.';
   }
 
   @override
-  String get navPrayer => 'Prières';
+  String get navPrayer => 'Accueil';
 
   @override
   String get navQibla => 'Qibla';
@@ -136,16 +138,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get menuTitle => 'Paramètres';
 
   @override
-  String get sectionLocation => 'LOCALISATION ET HORAIRES';
+  String get sectionLocation => 'POSITION & HORAIRES';
 
   @override
-  String get changeLocation => 'Changer de Lieu';
+  String get changeLocation => 'Changer la Position';
 
   @override
-  String get citySelect => 'Sélectionnez la ville';
+  String get citySelect => 'Sélectionner la Ville';
 
   @override
-  String get districtSelect => 'Sélectionnez le quartier';
+  String get districtSelect => 'Sélectionner le Quartier';
 
   @override
   String get save => 'Enregistrer';
@@ -155,47 +157,47 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get locationWarning =>
-      'La sélection du district est importante pour des horaires précis.';
+      'Le choix du quartier est important pour des horaires précis.';
 
   @override
-  String get menuNotifications => 'Autorisations de Notification';
+  String get menuNotifications => 'Permissions de Notifications';
 
   @override
-  String get menuNotificationsSub => 'Vérifiez ici si aucun son n\'est émis.';
+  String get menuNotificationsSub =>
+      'Vérifiez ici si vous n\'entendez pas les sons.';
 
   @override
-  String get menuTroubleshoot => 'Pas de notifications ?';
+  String get menuTroubleshoot => 'Vous ne recevez pas de notifications ?';
 
   @override
-  String get menuTroubleshootSub =>
-      'Ajustez les paramètres de batterie pour Samsung/Xiaomi.';
+  String get menuTroubleshootSub => 'Réglez la batterie pour Samsung/Xiaomi.';
 
   @override
   String get sectionSupport => 'SUPPORT';
 
   @override
-  String get shareApp => 'Partager avec des amis';
+  String get shareApp => 'Partager avec un Ami';
 
   @override
   String get rateApp => 'Évaluez-nous';
 
   @override
-  String get contactUs => 'Contact & Signaler un bug';
+  String get contactUs => 'Contact & Signaler un Bug';
 
   @override
   String shareText(String link) {
-    return 'J\'ai trouvé une excellente application pour les heures de prière ! Téléchargez : $link';
+    return 'J\'ai trouvé une super application d\'heures de prière ! Téléchargez-la ici : $link';
   }
 
   @override
-  String get batteryDialogTitle => 'Solution au problème de notification';
+  String get batteryDialogTitle => 'Solution au Problème de Notification';
 
   @override
   String get batteryDialogBody =>
-      'Votre téléphone ferme peut-être l\'application pour économiser la batterie. Pour éviter cela :\n\n1. Ouvrez l\'écran des applications récentes.\n2. Appuyez et maintenez l\'application \'Vaktinde\' ou cliquez sur son logo.\n3. Verrouillez-la avec l\'icône de cadenas 🔒.\n\nAllez également dans Paramètres > Applications > Vaktinde > Batterie > Sans restriction.';
+      'Votre téléphone peut fermer l\'application pour économiser la batterie. Pour éviter cela :\n\n1. Ouvrez l\'écran des applications récentes.\n2. Appuyez longuement sur l\'application \'Vaktinde\' ou sur son logo.\n3. Appuyez sur l\'icône Cadenas 🔒 pour la verrouiller.\n\nAllez également dans Paramètres > Applications > Vaktinde > Batterie > Sélectionnez \'Non restreint\'.';
 
   @override
-  String get okUnderstood => 'D\'accord, compris';
+  String get okUnderstood => 'OK, J\'ai Compris';
 
   @override
   String get religiousDaysTitle => 'Jours Religieux';
@@ -215,23 +217,23 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String religiousDaysListTitle(int year) {
-    return 'Liste des jours religieux $year';
+    return 'Liste des Jours Religieux pour $year';
   }
 
   @override
-  String get missedPrayersTitle => 'Prières Manquées';
+  String get missedPrayersTitle => 'Suivi des Prières Manquées';
 
   @override
   String get missedPrayersInfo =>
-      'Vous pouvez noter vos prières manquées ici et les déduire au fur et à mesure que vous les accomplissez.\n(Cliquez sur le numéro pour entrer manuellement)';
+      'Notez ici vos prières manquées et déduisez-les au fur et à mesure.\n(Appuyez sur le nombre pour une saisie manuelle)';
 
   @override
   String editMissedTitle(String title) {
-    return 'Modifier la prière $title';
+    return 'Modifier la Prière de $title Manquée';
   }
 
   @override
-  String get missedCountLabel => 'Nombre manqué';
+  String get missedCountLabel => 'Nombre Manqué';
 
   @override
   String get missedCountHint => 'Ex : 150';
@@ -247,7 +249,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String timeLeftFor(String vakit) {
-    return 'Temps restant pour $vakit';
+    return 'Temps Restant pour $vakit';
   }
 
   @override
@@ -257,38 +259,38 @@ class AppLocalizationsFr extends AppLocalizations {
   String get fridayMessagesTitle => 'Messages du Vendredi';
 
   @override
-  String get esmaulHusnaTitle => 'Les Noms d\'Allah';
+  String get esmaulHusnaTitle => 'Noms d\'Allah';
 
   @override
   String get closeCaps => 'FERMER';
 
   @override
-  String get zakatTitle => 'Calculer la Zakat';
+  String get zakatTitle => 'Calculatrice de Zakat';
 
   @override
-  String get zakatCalculatorTitle => 'Calculateur Intelligent Zakat';
+  String get zakatCalculatorTitle => 'Calculatrice Intelligente de Zakat';
 
   @override
-  String get liveRatesLoading => 'Récupération des taux actuels...';
+  String get liveRatesLoading => 'Récupération des taux de change...';
 
   @override
   String get liveRatesInfo =>
       'Vous pouvez modifier manuellement les taux récupérés automatiquement.';
 
   @override
-  String get sectionGold => 'Actifs en Or';
+  String get sectionGold => 'Avoirs en Or';
 
   @override
   String get goldType => 'Type d\'Or';
 
   @override
-  String get goldAmount => 'Quantité / Gramme';
+  String get goldAmount => 'Quantité / Grammes';
 
   @override
   String get goldUnitPrice => 'Prix Unitaire';
 
   @override
-  String get sectionCurrency => 'Actifs en Devises';
+  String get sectionCurrency => 'Avoirs en Devises';
 
   @override
   String get currencyType => 'Type de Devise';
@@ -300,10 +302,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get currencyRate => 'Taux Actuel';
 
   @override
-  String get sectionCashDebt => 'Espèces et Dettes';
+  String get sectionCashDebt => 'Espèces & Dettes';
 
   @override
-  String get cashAmount => 'Espèces en Main et Banque';
+  String get cashAmount => 'Espèces en Main & en Banque';
 
   @override
   String get debtAmount => 'Total des Dettes (À déduire)';
@@ -312,10 +314,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get calculateButton => 'CALCULER';
 
   @override
-  String get zakatResultTitle => 'Zakat à Payer';
+  String get zakatResultTitle => 'Votre Zakat à Payer';
 
   @override
-  String get netAssets => 'Actif Net :';
+  String get netAssets => 'Actifs Nets :';
 
   @override
   String get qiblaTitle => 'Boussole Qibla';
@@ -329,15 +331,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get locationPermissionForever =>
-      'La permission de localisation est bloquée en permanence. Vous devez l\'activer dans les paramètres.';
+      'La permission de localisation est bloquée définitivement. Veuillez l\'activer dans les paramètres.';
 
   @override
   String compassError(String error) {
-    return 'Erreur de capteur : $error';
+    return 'Erreur du capteur : $error';
   }
 
   @override
-  String get noCompass => 'Pas de boussole sur l\'appareil.';
+  String get noCompass => 'Pas de boussole sur cet appareil.';
 
   @override
   String get qiblaFound => 'VOUS AVEZ TROUVÉ LA QIBLA !';
@@ -348,22 +350,22 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get keepAwayMetal => 'Tenir éloigné des objets métalliques.';
+  String get keepAwayMetal => 'Éloignez des objets métalliques.';
 
   @override
-  String get goldGram => 'Gramme d\'Or (24k)';
+  String get goldGram => 'Gramme d\'Or (24 Carats)';
 
   @override
   String get goldQuarter => 'Quart d\'Or';
 
   @override
-  String get goldFull => 'Or Entier';
+  String get goldFull => 'Or Complet';
 
   @override
   String get typeOther => 'Autre (Manuel)';
 
   @override
-  String get usd => 'Dollar Américain (USD)';
+  String get usd => 'Dollar US (USD)';
 
   @override
   String get eur => 'Euro (EUR)';
@@ -372,7 +374,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get gbp => 'Livre Sterling (GBP)';
 
   @override
-  String get sectionAppearance => 'APPARENCE ET LANGUE';
+  String get sectionAppearance => 'APPARENCE & LANGUE';
 
   @override
   String get appearanceSettings => 'Paramètres d\'Apparence';
@@ -381,7 +383,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appearanceSub => 'Thème et Arrière-plan';
 
   @override
-  String get themeMode => 'Mode Thème';
+  String get themeMode => 'Mode de Thème';
 
   @override
   String get themeSystem => 'Système';
@@ -411,29 +413,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get none => 'Aucun';
 
   @override
-  String get zakatEligible => 'Zakat Obligatoire';
+  String get zakatEligible => 'La Zakat est Requise';
 
   @override
-  String get zakatNotEligible => 'Zakat Non Requise';
+  String get zakatNotEligible => 'La Zakat N\'est Pas Requise';
 
   @override
-  String get nisabLimit => 'Limite de Nisab (80,18 g d\'or)';
+  String get nisabLimit => 'Limite du Nissab (80,18 g d\'Or)';
 
   @override
   String get belowNisabMessage =>
-      'La Zakat n\'est pas obligatoire car vos actifs nets sont en dessous de la quantité de Nisab (seuil de richesse).';
+      'Vos actifs nets étant inférieurs au montant du Nissab, la Zakat n\'est pas obligatoire.';
 
   @override
-  String get searchLocationTitle => 'Rechercher un Lieu (Monde Entier)';
+  String get searchLocationTitle => 'Rechercher une Position (Mondial)';
 
   @override
-  String get searchLocationHint => 'Ville ou Pays (Ex: Paris)';
+  String get searchLocationHint => 'Ville ou Pays (Ex : Paris)';
 
   @override
   String get searchInitial => 'Tapez le lieu que vous souhaitez rechercher...';
 
   @override
-  String get searchNotFound => 'Lieu introuvable.';
+  String get searchNotFound => 'Position introuvable.';
 
   @override
   String get searchError => 'Aucun résultat trouvé. Veuillez réessayer.';
@@ -449,26 +451,26 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get channelSilentPrayers => 'Notifications de Prière Silencieuses';
+  String get channelSilentPrayers => 'Notifications Silencieuses de l\'Adhan';
 
   @override
-  String get tickerEzan => 'Heure de la Prière';
+  String get tickerEzan => 'Heure de Prière';
 
   @override
-  String get stickyChannelName => 'Compteur Permanent';
+  String get stickyChannelName => 'Compteur Persistant';
 
   @override
-  String get stickyChannelDesc => 'Affiche le temps restant jusqu\'à la prière';
+  String get stickyChannelDesc => 'Affiche le temps restant';
 
   @override
-  String get timeLeftTo => 'Temps restant : ';
+  String get timeLeftTo => 'Temps Restant Jusqu\'à la Fin : ';
 
   @override
   String get locationFallbackMessage =>
-      'Impossible d\'obtenir la position, utilisation de la valeur par défaut.';
+      'Impossible d\'obtenir la position, valeurs par défaut utilisées.';
 
   @override
-  String get fetchingLocation => 'Obtention de la localisation...';
+  String get fetchingLocation => 'Obtention de la position...';
 
   @override
   String get directionNorth => 'N';
@@ -487,40 +489,40 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get zakatDescription =>
-      'Calculez votre zakat détaillée selon les fatwas de la Diyanet et les taux de marché actuels.';
+      'Calculez votre Zakat en détail selon les directives religieuses et les taux actuels du marché.';
 
   @override
   String get cashAndCurrencyTitle => 'Espèces et Devises';
 
   @override
-  String get cashTurkishLira => 'Livre Turque en espèces (TL)';
+  String get cashTurkishLira => 'Espèces (Monnaie Locale)';
 
   @override
   String get goldAndSilverTitle => 'Or et Argent';
 
   @override
-  String get silverGram => 'Argent (Gramme)';
+  String get silverGram => 'Argent (Grammes)';
 
   @override
   String get unitPrice => 'Prix Unitaire';
 
   @override
-  String get commercialGoodsTitle => 'Marchandises Commerciales';
+  String get commercialGoodsTitle => 'Biens Commerciaux';
 
   @override
   String get commercialEvalCurrency => 'Devise d\'Évaluation';
 
   @override
-  String get commercialGoodsValue => 'Valeur des Marchandises';
+  String get commercialGoodsValue => 'Valeur des Biens';
 
   @override
-  String get exchangeRateValue => 'Valeur du Taux de Change';
+  String get exchangeRateValue => 'Taux de Change';
 
   @override
-  String get receivablesTitle => 'Créances (Récupérables)';
+  String get receivablesTitle => 'Créances (Recouvrables)';
 
   @override
-  String get receivableType => 'Type de Créance (Devise, Or)';
+  String get receivableType => 'Type (Espèces, Devise, Or)';
 
   @override
   String get amountOrCount => 'Montant / Quantité';
@@ -538,11 +540,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get valueOrAmount => 'Valeur / Montant';
 
   @override
-  String get agriProductsTitle => 'Produits Agricoles (Oshr)';
+  String get agriProductsTitle => 'Produits Agricoles (Ouchr)';
 
   @override
   String get agriDiyanetNote =>
-      'Comme le montant du nisab n\'est pas requis pour les produits agricoles, le montant déclaré est directement ajouté à la zakat.';
+      'Comme le Nissab n\'est pas requis pour les produits agricoles, le montant déclaré est directement ajouté à votre total de Zakat.';
 
   @override
   String get harvestedProductValue => 'Valeur du Produit Récolté';
@@ -551,13 +553,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get irrigationMethod => 'Méthode d\'Irrigation';
 
   @override
-  String get debtsTitle => 'Dettes (À Déduire)';
+  String get debtsTitle => 'Dettes (À déduire)';
 
   @override
-  String get debtType => 'Type de Dette';
+  String get debtType => 'Type de Dette (Espèces, Devise, Or)';
 
   @override
-  String get zakatAgriIncluded => 'Zakat Agricole (Oshr) Inclus';
+  String get zakatAgriIncluded =>
+      'Incluant la Zakat des Produits Agricoles (Ouchr)';
 
   @override
   String get assetCheck => 'Chèque';
@@ -572,13 +575,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get assetLeaseCert => 'Certificat de Location';
 
   @override
-  String get assetStock => 'Action';
+  String get assetStock => 'Actions';
 
   @override
-  String get agriSoil => 'Produit Agricole (Avec Terre)';
+  String get agriSoil => 'Agriculture (En Terre)';
 
   @override
-  String get agriSoilless => 'Produit Agricole (Sans Terre)';
+  String get agriSoilless => 'Agriculture (Hors-Sol)';
 
   @override
   String get agriRateNoCost => 'Sans Frais (Pluie/Rivière) - 10%';
@@ -587,35 +590,35 @@ class AppLocalizationsFr extends AppLocalizations {
   String get agriRateCostly => 'Avec Frais (Moteur/Transport) - 5%';
 
   @override
-  String get toImsak => 'Avant Fajr';
+  String get toImsak => 'Vers Imsak';
 
   @override
-  String get toGunes => 'Avant Lever du soleil';
+  String get toGunes => 'Vers le Lever du Soleil';
 
   @override
-  String get toOgle => 'Avant Dhuhr';
+  String get toOgle => 'Vers Dhuhr';
 
   @override
-  String get toIkindi => 'Avant Asr';
+  String get toIkindi => 'Vers Asr';
 
   @override
-  String get toAksam => 'Avant Maghrib';
+  String get toAksam => 'Vers Maghrib';
 
   @override
-  String get toYatsi => 'Avant Isha';
+  String get toYatsi => 'Vers Isha';
 
   @override
   String get lowAccuracyWarning =>
-      'Étalonnage faible. Veuillez dessiner un \'8\' en l\'air avec votre téléphone.';
+      'L\'étalonnage de la boussole est faible. Veuillez dessiner un \'8\' en l\'air avec le téléphone.';
 
   @override
-  String get qiblaDirection => 'Direction Qibla';
+  String get qiblaDirection => 'Direction de la Qibla';
 
   @override
-  String get zikirmatikTitle => 'Dhikr Counter';
+  String get zikirmatikTitle => 'Compteur de Dhikr';
 
   @override
-  String get dhikrSubhanallah => 'Subhanallah';
+  String get dhikrSubhanallah => 'Soubhanallah';
 
   @override
   String get dhikrElhamdulillah => 'Alhamdulillah';
@@ -624,7 +627,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dhikrAllahuEkber => 'Allahu Akbar';
 
   @override
-  String get dhikrKalima => 'Kalimat at-Tawhid';
+  String get dhikrKalima => 'Kalimat At-Tawhid';
 
   @override
   String get dhikrSalavat => 'Salawat';
@@ -641,7 +644,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get setTarget => 'Fixer un Objectif';
+  String get setTarget => 'Définir l\'Objectif';
 
   @override
   String get dhikrOther => 'Autre (Dhikr Personnalisé)';
@@ -662,7 +665,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sound => 'Effet Sonore';
 
   @override
-  String get keepAwake => 'Garder l\'écran allumé';
+  String get keepAwake => 'Garder l\'Écran Allumé';
 
   @override
   String get appearance => 'Apparence';
@@ -671,28 +674,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get themeModern => 'Bouton Moderne';
 
   @override
-  String get themeClassic => 'Chapelet Classique';
+  String get themeClassic => 'Tasbih Classique';
 
   @override
   String get introTitle1 => 'Bienvenue sur Vaktinde';
 
   @override
   String get introDesc1 =>
-      'Suivez facilement les heures de prière, vos dhikrs et les jours religieux avec une interface moderne et élégante.';
+      'Suivez facilement les heures de prière, les dhikrs et les jours religieux avec notre interface moderne.';
 
   @override
   String get introTitle2 => 'Notifications Intelligentes';
 
   @override
   String get introDesc2 =>
-      'Soyez alerté avec le son de notification de votre choix aux heures de prière. Ne manquez jamais vos prières.';
+      'Recevez des alertes avec le son de votre choix. Ne manquez jamais vos actes d\'adoration.';
 
   @override
   String get introTitle3 => 'Outils Avancés';
 
   @override
   String get introDesc3 =>
-      'Renforcez votre spiritualité avec des outils tels que le compteur de Dhikr animé, les prières manquées et le calculateur de Zakat.';
+      'Renforcez votre spiritualité avec le Compteur Animé, le Suivi des Prières Manquées, les Noms d\'Allah et la Calculatrice de Zakat.';
 
   @override
   String get introSkip => 'Passer';
@@ -704,10 +707,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get introStart => 'Commencer';
 
   @override
-  String get dhikrListTitle => 'Liste de Dhikr';
+  String get dhikrListTitle => 'Liste de Dhikrs';
 
   @override
-  String get addCustomDhikr => 'Ajouter un Dhikr personnalisé';
+  String get addCustomDhikr => 'Ajouter un Nouveau Dhikr';
 
   @override
   String get customDhikrAdded => 'Dhikr ajouté avec succès.';
@@ -735,48 +738,206 @@ class AppLocalizationsFr extends AppLocalizations {
   String get today => 'Aujourd\'hui';
 
   @override
-  String get statsEmpty => 'Aucune donnée de dhikr pour le moment.';
+  String get statsEmpty => 'Pas encore de données de dhikr.';
 
   @override
-  String get dhikrEstagfirullah => 'Astaghfirullah';
+  String get dhikrEstagfirullah => 'Astaghfiroullah';
 
   @override
   String get dhikrLaHavle => 'La Hawla wa la Quwwata';
 
   @override
-  String get dhikrHasbunallah => 'Hasbunallah';
+  String get dhikrHasbunallah => 'Hasbounallah';
 
   @override
-  String get dhikrSubhanallahi => 'Subhanallahi wa bihamdihi';
+  String get dhikrSubhanallahi => 'Soubhanallahi wa bihamdihi';
 
   @override
-  String get dhikrYunus => 'Prière de Prophète Yunus';
+  String get dhikrYunus => 'Prière du Prophète Younous';
 
   @override
-  String get dhikrYaAllah => 'Ya Allah';
+  String get dhikrYaAllah => 'Ya Allah (J.J.)';
 
   @override
-  String get dhikrYaRahman => 'Ya Rahman';
+  String get dhikrYaRahman => 'Ya Rahman (J.J.)';
 
   @override
-  String get dhikrYaRahim => 'Ya Rahim';
+  String get dhikrYaRahim => 'Ya Rahim (J.J.)';
 
   @override
-  String get dhikrYaSafi => 'Ya Shafi';
+  String get dhikrYaSafi => 'Ya Shafi (J.J.)';
 
   @override
-  String get dhikrYaRezzak => 'Ya Razzaq';
+  String get dhikrYaRezzak => 'Ya Razzaq (J.J.)';
 
   @override
-  String get dhikrYaFettah => 'Ya Fattah';
+  String get dhikrYaFettah => 'Ya Fattah (J.J.)';
 
   @override
-  String get mainDhikrs => 'Dhikrs Principaux';
+  String get mainDhikrs => 'Dhikrs de Base';
 
   @override
-  String get esmaulHusnaTab => 'Les Noms d\'Allah';
+  String get esmaulHusnaTab => 'Noms d\'Allah';
 
   @override
   String get qiblaCalibration =>
-      'Dessinez un \'8\' dans les airs avec votre téléphone pour calibrer la boussole.';
+      'Pour que la boussole soit précise, dessinez un \'8\' en l\'air avec le téléphone.';
+
+  @override
+  String get hicriYilbasi => 'Nouvel An Islamique';
+
+  @override
+  String get asureGunu => 'Jour d\'Achoura';
+
+  @override
+  String get mevlidKandili => 'Mawlid';
+
+  @override
+  String get miracKandili => 'Isra et Mi\'raj';
+
+  @override
+  String get beratKandili => 'Nuit du Destin (Bara\'at)';
+
+  @override
+  String get ramazanBaslangici => 'Début du Ramadan';
+
+  @override
+  String get kadirGecesi => 'Nuit du Destin (Qadr)';
+
+  @override
+  String get ramazanBayrami => 'Aïd al-Fitr';
+
+  @override
+  String get kurbanBayrami => 'Aïd al-Adha';
+
+  @override
+  String get regaipKandili => 'Nuit du Raghaïb';
+
+  @override
+  String get tabTimes => 'Horaires';
+
+  @override
+  String get tabAlarms => 'Alarmes';
+
+  @override
+  String get locationFoundNoName => 'Position trouvée mais pas de nom.';
+
+  @override
+  String get dailyAyahTitle => 'Verset du Jour';
+
+  @override
+  String get remainingTime => 'Restant';
+
+  @override
+  String get onboardingWelcome => 'Hoş Geldiniz / Bienvenue';
+
+  @override
+  String get onboardingSelectLanguage =>
+      'Lütfen kullanmak istediğiniz dili seçin.\nVeuillez sélectionner votre langue.';
+
+  @override
+  String get turnRight => 'Tournez à droite ➔';
+
+  @override
+  String get turnSlightRight => 'Tournez légèrement à droite ➔';
+
+  @override
+  String get turnLeft => '⬅ Tournez à gauche';
+
+  @override
+  String get turnSlightLeft => '⬅ Tournez légèrement à gauche';
+
+  @override
+  String get calibrationRequired => 'Étalonnage Requis';
+
+  @override
+  String get gold22kGram => 'Gramme d\'Or 22 Carats';
+
+  @override
+  String get goldAtaToptan => 'Ata Gros';
+
+  @override
+  String get goldAtaCumhuriyet => 'Ata Cumhuriyet';
+
+  @override
+  String get gold22kBracelet => 'Bracelet 22 Carats';
+
+  @override
+  String get gold18k => 'Or 18 Carats';
+
+  @override
+  String get gold14k => 'Or 14 Carats';
+
+  @override
+  String get goldHalf => 'Demi-Or';
+
+  @override
+  String get goldGremse => 'Or Gremse';
+
+  @override
+  String get goldAtaBesli => 'Ata Besli';
+
+  @override
+  String get goldResat => 'Or Resat';
+
+  @override
+  String get goldHamit => 'Or Hamit';
+
+  @override
+  String get currencyChf => 'Franc Suisse';
+
+  @override
+  String get currencyJpy => 'Yen Japonais';
+
+  @override
+  String get currencySar => 'Riyal Saoudien';
+
+  @override
+  String get currencyAud => 'Dollar Australien';
+
+  @override
+  String get currencyCad => 'Dollar Canadien';
+
+  @override
+  String get currencyRub => 'Rouble Russe';
+
+  @override
+  String get currencyAzn => 'Manat Azerbaïdjanais';
+
+  @override
+  String get currencyCny => 'Yuan Chinois';
+
+  @override
+  String get currencyRon => 'Leu Roumain';
+
+  @override
+  String get currencyAed => 'Dirham des EAU';
+
+  @override
+  String get currencyBgn => 'Lev Bulgare';
+
+  @override
+  String get currencyKwd => 'Dinar Koweïtien';
+
+  @override
+  String get currencyTry => 'Livre Turque';
+
+  @override
+  String get holdToEdit => '(Maintenir pour modifier)';
+
+  @override
+  String get editCounterTitle => 'Modifier le Compteur';
+
+  @override
+  String get editCounterHint => 'Ex : 2000';
+
+  @override
+  String get editTargetHint => 'Ex : 99';
+
+  @override
+  String get resetCounterConfirm =>
+      'Êtes-vous sûr de vouloir réinitialiser le compteur ?';
+
+  @override
+  String get dhikrTarget => 'Objectif :';
 }

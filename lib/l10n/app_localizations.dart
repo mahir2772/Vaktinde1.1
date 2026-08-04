@@ -323,7 +323,7 @@ abstract class AppLocalizations {
   /// No description provided for @navPrayer.
   ///
   /// In tr, this message translates to:
-  /// **'Vakitler'**
+  /// **'Ana Sayfa'**
   String get navPrayer;
 
   /// No description provided for @navQibla.
@@ -1555,6 +1555,318 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Pusulanın doğru çalışması için telefonunuzla havada \'8\' çizin.'**
   String get qiblaCalibration;
+
+  /// No description provided for @hicriYilbasi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hicri Yılbaşı'**
+  String get hicriYilbasi;
+
+  /// No description provided for @asureGunu.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aşure Günü'**
+  String get asureGunu;
+
+  /// No description provided for @mevlidKandili.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mevlid Kandili'**
+  String get mevlidKandili;
+
+  /// No description provided for @miracKandili.
+  ///
+  /// In tr, this message translates to:
+  /// **'Miraç Kandili'**
+  String get miracKandili;
+
+  /// No description provided for @beratKandili.
+  ///
+  /// In tr, this message translates to:
+  /// **'Berat Kandili'**
+  String get beratKandili;
+
+  /// No description provided for @ramazanBaslangici.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Başlangıcı'**
+  String get ramazanBaslangici;
+
+  /// No description provided for @kadirGecesi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kadir Gecesi'**
+  String get kadirGecesi;
+
+  /// No description provided for @ramazanBayrami.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Bayramı'**
+  String get ramazanBayrami;
+
+  /// No description provided for @kurbanBayrami.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurban Bayramı'**
+  String get kurbanBayrami;
+
+  /// No description provided for @regaipKandili.
+  ///
+  /// In tr, this message translates to:
+  /// **'Regaip Kandili'**
+  String get regaipKandili;
+
+  /// No description provided for @tabTimes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler'**
+  String get tabTimes;
+
+  /// No description provided for @tabAlarms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarmlar'**
+  String get tabAlarms;
+
+  /// No description provided for @locationFoundNoName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum bulundu ama isim yok.'**
+  String get locationFoundNoName;
+
+  /// No description provided for @dailyAyahTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günün Ayeti'**
+  String get dailyAyahTitle;
+
+  /// No description provided for @remainingTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kalan'**
+  String get remainingTime;
+
+  /// No description provided for @onboardingWelcome.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hoş Geldiniz / Welcome'**
+  String get onboardingWelcome;
+
+  /// No description provided for @onboardingSelectLanguage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.'**
+  String get onboardingSelectLanguage;
+
+  /// No description provided for @turnRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağa dön ➔'**
+  String get turnRight;
+
+  /// No description provided for @turnSlightRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hafif sağa dön ➔'**
+  String get turnSlightRight;
+
+  /// No description provided for @turnLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'⬅ Sola dön'**
+  String get turnLeft;
+
+  /// No description provided for @turnSlightLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'⬅ Hafif sola dön'**
+  String get turnSlightLeft;
+
+  /// No description provided for @calibrationRequired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kalibrasyon Gerekli'**
+  String get calibrationRequired;
+
+  /// No description provided for @gold22kGram.
+  ///
+  /// In tr, this message translates to:
+  /// **'22 Ayar Gram Altın'**
+  String get gold22kGram;
+
+  /// No description provided for @goldAtaToptan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ata Toptan'**
+  String get goldAtaToptan;
+
+  /// No description provided for @goldAtaCumhuriyet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ata Cumhuriyet'**
+  String get goldAtaCumhuriyet;
+
+  /// No description provided for @gold22kBracelet.
+  ///
+  /// In tr, this message translates to:
+  /// **'22 Ayar Bilezik'**
+  String get gold22kBracelet;
+
+  /// No description provided for @gold18k.
+  ///
+  /// In tr, this message translates to:
+  /// **'18 Ayar Altın'**
+  String get gold18k;
+
+  /// No description provided for @gold14k.
+  ///
+  /// In tr, this message translates to:
+  /// **'14 Ayar Altın'**
+  String get gold14k;
+
+  /// No description provided for @goldHalf.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yarım Altın'**
+  String get goldHalf;
+
+  /// No description provided for @goldGremse.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gremse Altın'**
+  String get goldGremse;
+
+  /// No description provided for @goldAtaBesli.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ata Beşli'**
+  String get goldAtaBesli;
+
+  /// No description provided for @goldResat.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reşat Altın'**
+  String get goldResat;
+
+  /// No description provided for @goldHamit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hamit Altın'**
+  String get goldHamit;
+
+  /// No description provided for @currencyChf.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsviçre Frangı'**
+  String get currencyChf;
+
+  /// No description provided for @currencyJpy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Japon Yeni'**
+  String get currencyJpy;
+
+  /// No description provided for @currencySar.
+  ///
+  /// In tr, this message translates to:
+  /// **'Suudi Arabistan Riyali'**
+  String get currencySar;
+
+  /// No description provided for @currencyAud.
+  ///
+  /// In tr, this message translates to:
+  /// **'Avustralya Doları'**
+  String get currencyAud;
+
+  /// No description provided for @currencyCad.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kanada Doları'**
+  String get currencyCad;
+
+  /// No description provided for @currencyRub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rus Rublesi'**
+  String get currencyRub;
+
+  /// No description provided for @currencyAzn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Azerbaycan Manatı'**
+  String get currencyAzn;
+
+  /// No description provided for @currencyCny.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çin Yuanı'**
+  String get currencyCny;
+
+  /// No description provided for @currencyRon.
+  ///
+  /// In tr, this message translates to:
+  /// **'Romanya Leyi'**
+  String get currencyRon;
+
+  /// No description provided for @currencyAed.
+  ///
+  /// In tr, this message translates to:
+  /// **'BAE Dirhemi'**
+  String get currencyAed;
+
+  /// No description provided for @currencyBgn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bulgar Levası'**
+  String get currencyBgn;
+
+  /// No description provided for @currencyKwd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kuveyt Dinarı'**
+  String get currencyKwd;
+
+  /// No description provided for @currencyTry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Türk Lirası'**
+  String get currencyTry;
+
+  /// No description provided for @holdToEdit.
+  ///
+  /// In tr, this message translates to:
+  /// **'(Düzenlemek için basılı tutun)'**
+  String get holdToEdit;
+
+  /// No description provided for @editCounterTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayacı Düzenle'**
+  String get editCounterTitle;
+
+  /// No description provided for @editCounterHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: 2000'**
+  String get editCounterHint;
+
+  /// No description provided for @editTargetHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: 99'**
+  String get editTargetHint;
+
+  /// No description provided for @resetCounterConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayacı sıfırlamak istediğinize emin misiniz?'**
+  String get resetCounterConfirm;
+
+  /// No description provided for @dhikrTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef:'**
+  String get dhikrTarget;
 }
 
 class _AppLocalizationsDelegate

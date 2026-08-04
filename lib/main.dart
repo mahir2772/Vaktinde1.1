@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,6 +6,11 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:in_app_update/in_app_update.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:geolocator/geolocator.dart'; // YENİ EKLENDİ
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // YENİ EKLENDİ
+
 import 'features/main_wrapper/main_wrapper.dart';
 import 'features/home/view_model/home_view_model.dart';
 import 'features/common/language_provider.dart';
@@ -13,7 +19,6 @@ import 'data/services/background_manager.dart';
 import 'features/onboarding/view/onboarding_language_view.dart';
 import 'features/common/theme_provider.dart';
 import 'features/zikirmatik/view_model/zikir_view_model.dart';
-// --- REKLAM HELPER İMPORTU EKLENDİ ---
 import 'features/common/ad_helper.dart';
 
 final NotificationService notificationService = NotificationService();
@@ -28,11 +33,8 @@ void main() async {
   }
 
   MobileAds.instance.initialize();
-
-  // REKLAMI PUSUYA YATIRIYORUZ
   AdHelper.instance.loadInterstitialAd();
 
-  // Background servisi başlatıyoruz
   try {
     await BackgroundManager.initializeService();
   } catch (e) {
@@ -54,8 +56,66 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _checkForUpdate();
+  }
+
+  Future<void> _checkForUpdate() async {
+    try {
+      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+        await InAppUpdate.startFlexibleUpdate();
+        await InAppUpdate.completeFlexibleUpdate();
+      }
+    } catch (e) {
+      debugPrint("Güncelleme kontrol hatası: $e");
+    }
+  }
+
+  // --- YENİ: TANITIM TURU BİTER BİTMEZ İZİNLERİ İSTEYEN ZEKİ FONKSİYON ---
+  Future<void> _requestPermissionsAfterTutorial() async {
+    // 1. Önce Bildirim İznini İster
+    try {
+      final notificationsPlugin = FlutterLocalNotificationsPlugin();
+      if (Platform.isAndroid) {
+        await notificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.requestNotificationsPermission();
+      } else if (Platform.isIOS) {
+        await notificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >()
+            ?.requestPermissions(alert: true, badge: true, sound: true);
+      }
+    } catch (e) {
+      debugPrint("Bildirim izni hatası: $e");
+    }
+
+    // 2. Kullanıcı bildirim iznini geçer geçmez Konum İznini İster
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        await Geolocator.requestPermission();
+      }
+    } catch (e) {
+      debugPrint("Konum izni hatası: $e");
+    }
+  }
+  // -----------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +209,11 @@ class MyApp extends StatelessWidget {
         );
       },
       home: languageProvider.isLanguageSelected
-          ? const MainWrapper()
+          ? ShowCaseWidget(
+              onFinish:
+                  _requestPermissionsAfterTutorial, // TUR BİTİNCE İZİNLERİ TETİKLER
+              builder: (context) => const MainWrapper(),
+            )
           : const OnboardingLanguageView(),
     );
   }

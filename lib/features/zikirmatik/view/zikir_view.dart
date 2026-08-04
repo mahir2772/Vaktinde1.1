@@ -158,16 +158,29 @@ class ZikirView extends StatelessWidget {
                           ),
                           if (arabicText.isNotEmpty) ...[
                             const SizedBox(height: 5),
-                            Text(
-                              arabicText,
-                              style: TextStyle(
-                                color: primaryColor,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Amiri', // Varsa şık arapça fontu
+                            // --- BURASI GÜNCELLENDİ ---
+                            Container(
+                              // Kartın tasarımını bozmaması için maksimum bir yükseklik veriyoruz.
+                              // 100 değerini telefonunda test edip gözüne göre 120, 150 yapabilirsin.
+                              constraints: const BoxConstraints(maxHeight: 100),
+                              child: SingleChildScrollView(
+                                // İçeriği kaydırılabilir hale getiriyor
+                                physics:
+                                    const BouncingScrollPhysics(), // Aşağı/yukarı kaydırırken tatlı bir yaylanma efekti verir
+                                child: Text(
+                                  arabicText,
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily:
+                                        'Amiri', // Varsa şık arapça fontu
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
                               ),
-                              textDirection: TextDirection.rtl,
                             ),
+                            // ---------------------------
                           ],
                         ],
                       ),
@@ -176,48 +189,42 @@ class ZikirView extends StatelessWidget {
                     // SAĞ TARAF: Hedef Seçici (Kapsül Tasarım)
                     Expanded(
                       flex: 4,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
+                      child: GestureDetector(
+                        onTap: () => _showEditTargetDialog(
+                          context,
+                          viewModel,
+                          loc,
+                          cardColor,
+                          textColor,
+                          primaryColor,
                         ),
-                        decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<int>(
-                            value:
-                                viewModel.targetOptions.contains(
-                                  viewModel.target,
-                                )
-                                ? viewModel.target
-                                : viewModel.targetOptions.first,
-                            isExpanded: true,
-                            dropdownColor: cardColor,
-                            icon: Icon(
-                              Icons.flag,
-                              color: primaryColor,
-                              size: 20,
-                            ),
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            items: viewModel.targetOptions.map((
-                              int targetValue,
-                            ) {
-                              return DropdownMenuItem<int>(
-                                value: targetValue,
-                                child: Text("Hedef: $targetValue"),
-                              );
-                            }).toList(),
-                            onChanged: (int? newTarget) {
-                              if (newTarget != null) {
-                                viewModel.setTarget(newTarget);
-                              }
-                            },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical:
+                                12, // Dikey boşluğu biraz artırdık ki daha iyi tıklansın
+                          ),
+                          decoration: BoxDecoration(
+                            color: primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.flag, color: primaryColor, size: 20),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: Text(
+                                  "Hedef: ${viewModel.target}",
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -438,6 +445,66 @@ void _showEditCountDialog(
   );
 }
 
+// --- MANUEL HEDEF GİRME DİYALOĞU ---
+void _showEditTargetDialog(
+  BuildContext context,
+  ZikirViewModel viewModel,
+  AppLocalizations loc,
+  Color cardColor,
+  Color textColor,
+  Color primaryColor,
+) {
+  TextEditingController controller = TextEditingController(
+    text: viewModel.target.toString(),
+  );
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Text(
+        "Hedefi Belirle",
+        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+      ),
+      content: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number, // Sadece sayı klavyesi açılır
+        style: TextStyle(color: textColor),
+        decoration: InputDecoration(
+          hintText: "Örn: 99",
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: primaryColor),
+          ),
+        ),
+        autofocus: true, // Açılır açılmaz klavyeyi ekrana getirir
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(loc.cancel, style: const TextStyle(color: Colors.grey)),
+        ),
+        TextButton(
+          onPressed: () {
+            if (controller.text.isNotEmpty) {
+              int? newVal = int.tryParse(controller.text);
+              // Hedefin 0'dan büyük geçerli bir sayı olduğunu kontrol ediyoruz
+              if (newVal != null && newVal > 0) {
+                viewModel.setTarget(newVal);
+              }
+            }
+            Navigator.pop(context);
+          },
+          child: Text(
+            loc.save,
+            style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 // SIFIRLAMA DİYALOĞU
 void _showResetDialog(
   BuildContext context,
@@ -582,44 +649,67 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                // --- YENİ EKLENEN YAZI BURADA ---
+                const SizedBox(height: 8),
+                Text(
+                  "Düzenlemek için basılı tutun",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: textColor.withOpacity(0.5),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                // --------------------------------
               ],
             ),
           ),
         ),
         const SizedBox(height: 20),
 
-        // İP VE BONCUKLAR
+        // İP VE BONCUKLAR (KAYDIRMA ALANI DÜZELTİLDİ)
         Expanded(
           child: GestureDetector(
+            // --- EN ÖNEMLİ DÜZELTME BURADA ---
+            // opaque sayesinde ekranın neresine dokunulursa dokunulsun algılanır
+            behavior: HitTestBehavior.opaque,
             onVerticalDragEnd: (details) {
-              if (details.primaryVelocity! > 0) _pullBead();
+              // Aşağı doğru çekme hızı sıfırdan büyükse tesbih çek
+              if (details.primaryVelocity != null &&
+                  details.primaryVelocity! > 0) {
+                _pullBead();
+              }
             },
             onTap: _pullBead,
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return SizedBox(
-                  width: 150,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(width: 5, color: Colors.brown.shade800),
-                      for (int i = -1; i <= visibleBeads; i++)
-                        Positioned(
-                          top: (i + _controller.value) * beadHeight + 10,
-                          child: Opacity(
-                            opacity: (i == visibleBeads)
-                                ? 1.0 - _controller.value
-                                : (i == -1)
-                                ? _controller.value
-                                : 1.0,
-                            child: _buildBead(),
+            child: Container(
+              // Container'ı ekranın tamamına yayıyoruz (saydam renk ile)
+              width: double.infinity,
+              color: Colors.transparent,
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return SizedBox(
+                    width: 150,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(width: 5, color: Colors.brown.shade800),
+                        for (int i = -1; i <= visibleBeads; i++)
+                          Positioned(
+                            top: (i + _controller.value) * beadHeight + 10,
+                            child: Opacity(
+                              opacity: (i == visibleBeads)
+                                  ? 1.0 - _controller.value
+                                  : (i == -1)
+                                  ? _controller.value
+                                  : 1.0,
+                              child: _buildBead(),
+                            ),
                           ),
-                        ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),

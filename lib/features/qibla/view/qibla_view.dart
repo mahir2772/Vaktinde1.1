@@ -14,7 +14,7 @@ class QiblaView extends StatefulWidget {
   State<QiblaView> createState() => _QiblaViewState();
 }
 
-class _QiblaViewState extends State<QiblaView> {
+class _QiblaViewState extends State<QiblaView> with TickerProviderStateMixin {
   bool _hasPermissions = false;
   double _qiblaAngle = 0;
   bool _isLoading = true;
@@ -24,18 +24,30 @@ class _QiblaViewState extends State<QiblaView> {
 
   // EFSANE MATEMATİK İÇİN DEĞİŞKENLER
   double _lastHeading = 0;
-  double _smoothHeading =
-      0; // 360'ı aşsa bile katlanarak büyür (Titremeyi %100 keser)
+  double _smoothHeading = 0;
 
   bool _isAligned = false;
   bool _isCalibrationPoor = false;
 
+  // DİALOG KONTROLLERİ
+  bool _hasCheckedCalibrationOnce = false;
+  bool _showInPageDialog =
+      false; // YENİ: Kutu sadece bu sayfanın içinde açılacak
+
   final double meccaLat = 21.422487;
   final double meccaLong = 39.826206;
+
+  late AnimationController _calibController;
 
   @override
   void initState() {
     super.initState();
+
+    _calibController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) _initQibla();
@@ -49,11 +61,13 @@ class _QiblaViewState extends State<QiblaView> {
       if (!serviceEnabled) return null;
 
       LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) return null;
+
+      // PAT DİYE İZİN İSTEYEN KODLARI SİLDİK.
+      // İzni Showcase bittikten sonra main.dart bizzat isteyecek.
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return null;
       }
-      if (permission == LocationPermission.deniedForever) return null;
 
       return await Geolocator.getLastKnownPosition() ??
           await Geolocator.getCurrentPosition(
@@ -144,14 +158,12 @@ class _QiblaViewState extends State<QiblaView> {
 
       double heading = event.heading ?? 0;
 
-      // SİHİRLİ MATEMATİK: 359'dan 0'a geçerken yaşanan kopmayı engeller
       double diff = heading - _lastHeading;
       if (diff > 180) diff -= 360;
       if (diff < -180) diff += 360;
 
       _lastHeading = heading;
-      _smoothHeading +=
-          diff; // Asla sıfırlanmaz, sürekli eklenir (lag olmadan pürüzsüz dönüş)
+      _smoothHeading += diff;
 
       double sapma = (heading - _qiblaAngle).abs();
       if (sapma > 180) sapma = 360 - sapma;
@@ -161,16 +173,45 @@ class _QiblaViewState extends State<QiblaView> {
         HapticFeedback.heavyImpact();
       }
 
+      bool isPoor =
+          event.accuracy == null ||
+          event.accuracy! <= 0 ||
+          event.accuracy! > 15;
+
+      // Global showDialog yerine sadece bu sayfanın içinde tetiklenen kutuyu açıyoruz
+      if (isPoor && !_hasCheckedCalibrationOnce) {
+        _hasCheckedCalibrationOnce = true;
+        setState(() {
+          _showInPageDialog = true;
+        });
+      }
+
       setState(() {
         _isAligned = nowAligned;
-        _isCalibrationPoor = (event.accuracy != null && event.accuracy! > 15);
+        _isCalibrationPoor = isPoor;
       });
     });
+  }
+
+  String _getTurnInstruction() {
+    double current = _smoothHeading % 360;
+    if (current < 0) current += 360;
+
+    double diff = _qiblaAngle - current;
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+
+    if (diff > 15) return "Sağa dön ➔";
+    if (diff > 4) return "Hafif sağa dön ➔";
+    if (diff < -15) return "⬅ Sola dön";
+    if (diff < -4) return "⬅ Hafif sola dön";
+    return "";
   }
 
   @override
   void dispose() {
     _compassSubscription?.cancel();
+    _calibController.dispose();
     super.dispose();
   }
 
@@ -251,6 +292,7 @@ class _QiblaViewState extends State<QiblaView> {
 
     return Stack(
       children: [
+        // ANA KIBLE ARAYÜZÜ
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -270,7 +312,25 @@ class _QiblaViewState extends State<QiblaView> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 40),
+
+            SizedBox(
+              height: 30,
+              child: (!_isAligned && !_isCalibrationPoor)
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        _getTurnInstruction(),
+                        style: const TextStyle(
+                          color: Colors.amberAccent,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.1,
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+            ),
+            const SizedBox(height: 10),
 
             Center(
               child: SizedBox(
@@ -279,7 +339,6 @@ class _QiblaViewState extends State<QiblaView> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // GECİKMESİZ, ANLIK SAF HIZ - Transform.rotate
                     Transform.rotate(
                       angle: -_smoothHeading * (math.pi / 180),
                       child: Container(
@@ -352,7 +411,6 @@ class _QiblaViewState extends State<QiblaView> {
                               ),
                             ),
 
-                            // KIBLE OKU
                             Transform.rotate(
                               angle: _qiblaAngle * (math.pi / 180),
                               child: Align(
@@ -384,7 +442,6 @@ class _QiblaViewState extends State<QiblaView> {
                         ),
                       ),
                     ),
-
                     Align(
                       alignment: Alignment.topCenter,
                       child: Container(
@@ -404,15 +461,12 @@ class _QiblaViewState extends State<QiblaView> {
             ),
             const SizedBox(height: 40),
 
-            // --- YENİ EKLENEN: ŞIK KALİBRASYON BİLGİ KARTI ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Container(
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(
-                    0.05,
-                  ), // Hafif şeffaf arka plan
+                  color: Colors.white.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(color: Colors.white12),
                 ),
@@ -426,7 +480,7 @@ class _QiblaViewState extends State<QiblaView> {
                     const SizedBox(width: 15),
                     Expanded(
                       child: Text(
-                        loc.qiblaCalibration, // Dil dosyasından çeviriyi çeker
+                        loc.qiblaCalibration,
                         style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 13,
@@ -438,40 +492,158 @@ class _QiblaViewState extends State<QiblaView> {
                 ),
               ),
             ),
-            // ------------------------------------------------
           ],
         ),
 
-        // EĞER SENSÖR AŞIRI SAPARSA ÇIKAN KIRMIZI ACİL DURUM UYARISI (Bozulmadı)
+        // KIRMIZI KÜÇÜK ANİMASYON UYARISI
         if (_isCalibrationPoor)
           Positioned(
             bottom: 30,
             left: 20,
             right: 20,
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.redAccent.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.warning_amber_rounded,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Text(
-                      loc.lowAccuracyWarning,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+            child: AnimatedBuilder(
+              animation: _calibController,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: 0.95 + (_calibController.value * 0.05),
+                  child: Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.redAccent.withOpacity(
+                            0.6 * _calibController.value,
+                          ),
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Transform.rotate(
+                          angle:
+                              math.sin(_calibController.value * math.pi * 2) *
+                              0.4,
+                          child: const Icon(
+                            Icons.screen_rotation_rounded,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Text(
+                            loc.lowAccuracyWarning,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                );
+              },
+            ),
+          ),
+
+        // YENİ: EKRANA GÖMÜLÜ DİALOG (Asla diğer sayfalara taşmaz)
+        if (_showInPageDialog)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(
+                0.8,
+              ), // Arkadaki Kıbleyi hafif karartır
+              child: Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2d3436),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black54,
+                        blurRadius: 15,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            color: Colors.redAccent,
+                            size: 28,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            "Kalibrasyon Gerekli",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 25),
+                      const Icon(
+                        Icons.screen_rotation,
+                        color: Colors.tealAccent,
+                        size: 65,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        loc.lowAccuracyWarning,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 15,
+                          height: 1.4,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 45,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.teal,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _showInPageDialog =
+                                  false; // Tıklayınca kutuyu kapatır
+                            });
+                          },
+                          child: Text(
+                            loc.localeName.startsWith('tr')
+                                ? "Tamam, Anladım"
+                                : "OK",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

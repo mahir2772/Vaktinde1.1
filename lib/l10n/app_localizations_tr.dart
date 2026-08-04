@@ -124,7 +124,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get navPrayer => 'Vakitler';
+  String get navPrayer => 'Ana Sayfa';
 
   @override
   String get navQibla => 'Kıble';
@@ -777,4 +777,162 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get qiblaCalibration =>
       'Pusulanın doğru çalışması için telefonunuzla havada \'8\' çizin.';
+
+  @override
+  String get hicriYilbasi => 'Hicri Yılbaşı';
+
+  @override
+  String get asureGunu => 'Aşure Günü';
+
+  @override
+  String get mevlidKandili => 'Mevlid Kandili';
+
+  @override
+  String get miracKandili => 'Miraç Kandili';
+
+  @override
+  String get beratKandili => 'Berat Kandili';
+
+  @override
+  String get ramazanBaslangici => 'Ramazan Başlangıcı';
+
+  @override
+  String get kadirGecesi => 'Kadir Gecesi';
+
+  @override
+  String get ramazanBayrami => 'Ramazan Bayramı';
+
+  @override
+  String get kurbanBayrami => 'Kurban Bayramı';
+
+  @override
+  String get regaipKandili => 'Regaip Kandili';
+
+  @override
+  String get tabTimes => 'Vakitler';
+
+  @override
+  String get tabAlarms => 'Alarmlar';
+
+  @override
+  String get locationFoundNoName => 'Konum bulundu ama isim yok.';
+
+  @override
+  String get dailyAyahTitle => 'Günün Ayeti';
+
+  @override
+  String get remainingTime => 'Kalan';
+
+  @override
+  String get onboardingWelcome => 'Hoş Geldiniz / Welcome';
+
+  @override
+  String get onboardingSelectLanguage =>
+      'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.';
+
+  @override
+  String get turnRight => 'Sağa dön ➔';
+
+  @override
+  String get turnSlightRight => 'Hafif sağa dön ➔';
+
+  @override
+  String get turnLeft => '⬅ Sola dön';
+
+  @override
+  String get turnSlightLeft => '⬅ Hafif sola dön';
+
+  @override
+  String get calibrationRequired => 'Kalibrasyon Gerekli';
+
+  @override
+  String get gold22kGram => '22 Ayar Gram Altın';
+
+  @override
+  String get goldAtaToptan => 'Ata Toptan';
+
+  @override
+  String get goldAtaCumhuriyet => 'Ata Cumhuriyet';
+
+  @override
+  String get gold22kBracelet => '22 Ayar Bilezik';
+
+  @override
+  String get gold18k => '18 Ayar Altın';
+
+  @override
+  String get gold14k => '14 Ayar Altın';
+
+  @override
+  String get goldHalf => 'Yarım Altın';
+
+  @override
+  String get goldGremse => 'Gremse Altın';
+
+  @override
+  String get goldAtaBesli => 'Ata Beşli';
+
+  @override
+  String get goldResat => 'Reşat Altın';
+
+  @override
+  String get goldHamit => 'Hamit Altın';
+
+  @override
+  String get currencyChf => 'İsviçre Frangı';
+
+  @override
+  String get currencyJpy => 'Japon Yeni';
+
+  @override
+  String get currencySar => 'Suudi Arabistan Riyali';
+
+  @override
+  String get currencyAud => 'Avustralya Doları';
+
+  @override
+  String get currencyCad => 'Kanada Doları';
+
+  @override
+  String get currencyRub => 'Rus Rublesi';
+
+  @override
+  String get currencyAzn => 'Azerbaycan Manatı';
+
+  @override
+  String get currencyCny => 'Çin Yuanı';
+
+  @override
+  String get currencyRon => 'Romanya Leyi';
+
+  @override
+  String get currencyAed => 'BAE Dirhemi';
+
+  @override
+  String get currencyBgn => 'Bulgar Levası';
+
+  @override
+  String get currencyKwd => 'Kuveyt Dinarı';
+
+  @override
+  String get currencyTry => 'Türk Lirası';
+
+  @override
+  String get holdToEdit => '(Düzenlemek için basılı tutun)';
+
+  @override
+  String get editCounterTitle => 'Sayacı Düzenle';
+
+  @override
+  String get editCounterHint => 'Örn: 2000';
+
+  @override
+  String get editTargetHint => 'Örn: 99';
+
+  @override
+  String get resetCounterConfirm =>
+      'Sayacı sıfırlamak istediğinize emin misiniz?';
+
+  @override
+  String get dhikrTarget => 'Hedef:';
 }

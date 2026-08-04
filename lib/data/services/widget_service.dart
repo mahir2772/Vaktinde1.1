@@ -7,11 +7,16 @@ class WidgetService {
     required Map<String, String> vakitler,
     required String konum,
     required Map<String, String> vakitIsimleri,
+    required String hijriDateText, // 🔥 YENİ
   }) async {
     try {
       await HomeWidget.saveWidgetData<String>('title_text', baslik);
       await HomeWidget.saveWidgetData<int>('target_time_ms', hedefZamanMs);
       await HomeWidget.saveWidgetData<String>('location_text', konum);
+      await HomeWidget.saveWidgetData<String>(
+        'hijri_date_text',
+        hijriDateText,
+      ); // 🔥 YENİ
 
       await HomeWidget.saveWidgetData<String>(
         'imsak_time',
@@ -63,16 +68,30 @@ class WidgetService {
         vakitIsimleri['Yatsı'] ?? "",
       );
 
+      // 1x1 WIDGET GÜNCELLEMESİ
       await HomeWidget.updateWidget(
         name: 'VaktindeWidgetSmallProvider',
         androidName: 'VaktindeWidgetSmallProvider',
       );
 
+      // 3x2 WIDGET GÜNCELLEMESİ
       await HomeWidget.updateWidget(
         name: 'VaktindeWidgetLargeProvider',
         androidName: 'VaktindeWidgetLargeProvider',
       );
-      // ignore: empty_catches
-    } catch (e) {}
+
+      // YENİ 4x1 (İNCE) WIDGET GÜNCELLEMESİ
+      await HomeWidget.updateWidget(
+        name: 'VaktindeWidgetSmall2Provider',
+        androidName: 'VaktindeWidgetSmall2Provider',
+      );
+
+      await HomeWidget.updateWidget(
+        name: 'NotificationUpdater',
+        androidName: 'NotificationUpdater',
+      );
+    } catch (e) {
+      // Hata sessizce yutulur
+    }
   }
 }

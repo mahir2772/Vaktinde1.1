@@ -13,7 +13,7 @@ import es.antonborri.home_widget.HomeWidgetProvider
 import java.util.Calendar
 import kotlin.math.abs
 
-class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
+class VaktindeWidgetSmall2Provider : HomeWidgetProvider() {
 
     private fun getPrayerTimeMs(timeStr: String?, addDay: Boolean = false): Long {
         if (timeStr.isNullOrEmpty() || !timeStr.contains(":")) return 0L
@@ -31,10 +31,13 @@ class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, widgetData: SharedPreferences) {
         appWidgetIds.forEach { widgetId ->
-            val views = RemoteViews(context.packageName, R.layout.vaktinde_widget_small).apply {
+            val views = RemoteViews(context.packageName, R.layout.vaktinde_widget_small2).apply {
                 val intent = Intent(context, MainActivity::class.java)
                 val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 setOnClickPendingIntent(R.id.widget_root, pendingIntent)
+
+                setTextViewText(R.id.widget_location, widgetData.getString("location_text", ""))
+                setTextViewText(R.id.widget_hijri_date, widgetData.getString("hijri_date_text", ""))
 
                 val currentTime = System.currentTimeMillis()
                 
@@ -56,19 +59,19 @@ class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
 
                     val dartTargetTime = widgetData.getLong("target_time_ms", 0L)
                     if (abs(dartTargetTime - targetTime) < 60000) { 
-                        setTextViewText(R.id.tv_title_small, widgetData.getString("title_text", ""))
+                        setTextViewText(R.id.widget_next_prayer_name, widgetData.getString("title_text", ""))
                     } else {
-                        setTextViewText(R.id.tv_title_small, prayerName)
+                        setTextViewText(R.id.widget_next_prayer_name, prayerName)
                     }
 
                     val baseTime = SystemClock.elapsedRealtime() + (targetTime - currentTime)
-                    setChronometer(R.id.chronometer_small, baseTime, null, true)
-                    setBoolean(R.id.chronometer_small, "setCountDown", true)
+                    setChronometer(R.id.widget_countdown, baseTime, null, true)
+                    setBoolean(R.id.widget_countdown, "setCountDown", true)
 
-                    scheduleExactUpdate(context, widgetId, targetTime, VaktindeWidgetSmallProvider::class.java)
+                    scheduleExactUpdate(context, widgetId, targetTime, VaktindeWidgetSmall2Provider::class.java)
                 } else {
-                    setChronometer(R.id.chronometer_small, SystemClock.elapsedRealtime(), null, false)
-                    setBoolean(R.id.chronometer_small, "setCountDown", true)
+                    setChronometer(R.id.widget_countdown, SystemClock.elapsedRealtime(), null, false)
+                    setBoolean(R.id.widget_countdown, "setCountDown", true)
                 }
             }
             appWidgetManager.updateAppWidget(widgetId, views)
@@ -98,8 +101,8 @@ class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
             }
         } catch (e: SecurityException) {
             e.printStackTrace()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (e: Exception) { 
+            e.printStackTrace() 
         }
     }
 }

@@ -17,7 +17,9 @@ class _ZakatViewState extends State<ZakatView> {
   bool _isLoadingRates = true;
 
   InterstitialAd? _interstitialAd;
-  final String _adUnitId = 'ca-app-pub-4975388193054410/2151461471';
+  //Kendi reklam kodum
+  //final String _adUnitId = 'ca-app-pub-4975388193054410/2151461471';
+  final String _adUnitId = 'ca-app-pub-3940256099942544/1033173712';
 
   String _selectedGoldType = '24 Ayar Gram Altın';
   String _selectedCurrencyType = 'Amerikan Doları (USD)';
@@ -497,6 +499,7 @@ class _ZakatViewState extends State<ZakatView> {
                       Expanded(
                         child: TextField(
                           controller: _currencyRateController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: loc.currencyRate,
@@ -567,6 +570,7 @@ class _ZakatViewState extends State<ZakatView> {
                       Expanded(
                         child: TextField(
                           controller: _goldPriceController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: loc.goldUnitPrice,
@@ -594,6 +598,7 @@ class _ZakatViewState extends State<ZakatView> {
                       Expanded(
                         child: TextField(
                           controller: _silverPriceController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: loc.unitPrice,
@@ -664,6 +669,7 @@ class _ZakatViewState extends State<ZakatView> {
                       Expanded(
                         child: TextField(
                           controller: _commercialRateController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: loc.exchangeRateValue,
@@ -734,6 +740,7 @@ class _ZakatViewState extends State<ZakatView> {
                       Expanded(
                         child: TextField(
                           controller: _receivableRateController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: loc.exchangeRateValue,
@@ -829,6 +836,7 @@ class _ZakatViewState extends State<ZakatView> {
                       Expanded(
                         child: TextField(
                           controller: _otherAssetsRateController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: loc.exchangeRateValue,
@@ -1008,6 +1016,7 @@ class _ZakatViewState extends State<ZakatView> {
                       Expanded(
                         child: TextField(
                           controller: _debtRateController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: loc.exchangeRateValue,

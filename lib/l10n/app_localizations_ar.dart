@@ -33,13 +33,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error => 'خطأ';
 
   @override
-  String get retry => 'إعادة المحاولة';
+  String get retry => 'حاول مرة أخرى';
 
   @override
   String get noData => 'لا توجد بيانات.';
 
   @override
-  String get imsak => 'الفجر';
+  String get imsak => 'الإمساك';
 
   @override
   String get gunes => 'الشروق';
@@ -57,7 +57,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get yatsi => 'العشاء';
 
   @override
-  String get exactAlarm => 'تنبيه في الوقت بالضبط';
+  String get exactAlarm => 'إشعار في الوقت المحدد';
 
   @override
   String get exactAlarmSub => 'يرسل إشعاراً.';
@@ -66,15 +66,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get silentNotif => 'إشعار نصي فقط';
 
   @override
-  String get silentNotifSub => 'بدون صوت/أذان، فقط تنبيه.';
+  String get silentNotifSub => 'بدون أذان/صوت، تنبيه مرئي فقط.';
 
   @override
   String warningAlarm(String minute) {
-    return 'تذكير قبل $minute دقيقة';
+    return 'تنبيه قبل $minute دقيقة';
   }
 
   @override
-  String get warningAlarmSub => 'صوت تنبيه قصير.';
+  String get warningAlarmSub => 'صوت إشعار قصير.';
 
   @override
   String get settings => 'الإعدادات';
@@ -83,13 +83,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get changeLanguage => 'تغيير اللغة';
 
   @override
-  String get waitingLocation => 'جاري انتظار الموقع...';
+  String get waitingLocation => 'في انتظار الموقع...';
 
   @override
-  String get noInternet => 'لا يوجد اتصال بالإنترنت ولا توجد بيانات محفوظة.';
+  String get noInternet =>
+      'لا يوجد اتصال بالإنترنت ولم يتم العثور على بيانات محفوظة.';
 
   @override
-  String get gpsOff => 'نظام تحديد المواقع مغلق. يرجى تفعيله.';
+  String get gpsOff => 'الـ GPS مغلق. يرجى تفعيل الموقع.';
 
   @override
   String get permissionDenied => 'تم رفض إذن الموقع.';
@@ -98,7 +99,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get locationError => 'تعذر الحصول على الموقع.';
 
   @override
-  String get internetNeeded => 'يتطلب اتصالاً بالإنترنت.';
+  String get internetNeeded => 'يلزم الاتصال بالإنترنت.';
 
   @override
   String get soundEzan => 'أذان';
@@ -111,7 +112,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String notifBodyTime(String vakit) {
-    return 'ححان الآن موعد صلاة $vakit.';
+    return 'حان وقت $vakit.';
   }
 
   @override
@@ -119,11 +120,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String notifBodyUpcoming(String vakit, int minute) {
-    return 'متبقي $minute دقيقة على صلاة $vakit.';
+    return 'تبقى $minute دقيقة لوقت $vakit.';
   }
 
   @override
-  String get navPrayer => 'الأوقات';
+  String get navPrayer => 'الرئيسية';
 
   @override
   String get navQibla => 'القبلة';
@@ -153,43 +154,45 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
-  String get locationWarning => 'اختيار المنطقة مهم للحصول على أوقات دقيقة.';
+  String get locationWarning =>
+      'اختيار المنطقة مهم للحصول على أوقات دقيقة للصلاة.';
 
   @override
   String get menuNotifications => 'أذونات الإشعارات';
 
   @override
-  String get menuNotificationsSub => 'تحقق هنا إذا كنت لا تسمع صوتاً.';
+  String get menuNotificationsSub => 'تحقق هنا إذا لم تسمع أصواتًا.';
 
   @override
-  String get menuTroubleshoot => 'الإشعارات لا تعمل؟';
+  String get menuTroubleshoot => 'لا تصلك الإشعارات؟';
 
   @override
-  String get menuTroubleshootSub => 'إعدادات البطارية لأجهزة Samsung/Xiaomi.';
+  String get menuTroubleshootSub =>
+      'قم بضبط إعدادات البطارية لأجهزة Samsung/Xiaomi.';
 
   @override
   String get sectionSupport => 'الدعم';
 
   @override
-  String get shareApp => 'شارك مع الأصدقاء';
+  String get shareApp => 'شارك مع صديق';
 
   @override
   String get rateApp => 'قيمنا';
 
   @override
-  String get contactUs => 'تواصل معنا والإبلاغ عن خطأ';
+  String get contactUs => 'اتصل بنا والإبلاغ عن خطأ';
 
   @override
   String shareText(String link) {
-    return 'لقد وجدت تطبيقاً رائعاً لمواقيت الصلاة! حمل من: $link';
+    return 'وجدت تطبيقاً رائعاً لأوقات الصلاة! حمله من هنا: $link';
   }
 
   @override
-  String get batteryDialogTitle => 'إصلاح مشاكل الإشعارات';
+  String get batteryDialogTitle => 'حل مشكلة الإشعارات';
 
   @override
   String get batteryDialogBody =>
-      'قد يقوم هاتفك بإغلاق التطبيق لتوفير البطارية. لمنع ذلك:\n\n1. افتح التطبيقات الحديثة (الزر المربع).\n2. اضغط مطولاً على تطبيق \'Vaktinde\' أو انقر على الشعار.\n3. اضغط على رمز القفل 🔒 لقفل التطبيق.\n\nاذهب أيضاً إلى الإعدادات > التطبيقات > Vaktinde > البطارية > غير مقيد.';
+      'قد يقوم هاتفك بإغلاق التطبيق لتوفير البطارية. لمنع ذلك:\n\n1. افتح شاشة التطبيقات الحديثة.\n2. اضغط مطولاً على تطبيق \'Vaktinde\' أو انقر على شعاره.\n3. اضغط على أيقونة القفل 🔒 لقفله.\n\nأيضاً، اذهب إلى الإعدادات > التطبيقات > Vaktinde > البطارية > اختر غير مقيد.';
 
   @override
   String get okUnderstood => 'حسناً، فهمت';
@@ -203,11 +206,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get noDataFound => 'لا توجد بيانات.';
+  String get noDataFound => 'لم يتم العثور على بيانات.';
 
   @override
   String noDataForYear(int year) {
-    return 'لا توجد بيانات لعام $year.';
+    return 'لم يتم العثور على بيانات لعام $year.';
   }
 
   @override
@@ -216,19 +219,19 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get missedPrayersTitle => 'قضاء الصلوات';
+  String get missedPrayersTitle => 'تتبع الصلوات الفائتة';
 
   @override
   String get missedPrayersInfo =>
-      'تتبع صلواتك الفائتة هنا وقم بإنقاص العدد عند القضاء.\n(اضغط على الرقم للإدخال اليدوي)';
+      'سجل صلواتك الفائتة هنا واطرحها عند قضائها.\n(اضغط على الرقم للإدخال يدوياً)';
 
   @override
   String editMissedTitle(String title) {
-    return 'تعديل فائت $title';
+    return 'تعديل فائتة $title';
   }
 
   @override
-  String get missedCountLabel => 'العدد';
+  String get missedCountLabel => 'عدد الفوائت';
 
   @override
   String get missedCountHint => 'مثال: 150';
@@ -266,10 +269,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zakatCalculatorTitle => 'حاسبة الزكاة الذكية';
 
   @override
-  String get liveRatesLoading => 'جاري جلب الأسعار المباشرة...';
+  String get liveRatesLoading => 'جاري جلب أسعار الصرف الحالية...';
 
   @override
-  String get liveRatesInfo => 'يمكنك تعديل الأسعار يدوياً إذا لزم الأمر.';
+  String get liveRatesInfo =>
+      'يمكنك تعديل الأسعار المجلبة تلقائياً يدوياً إذا رغبت.';
 
   @override
   String get sectionGold => 'أصول الذهب';
@@ -278,13 +282,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goldType => 'نوع الذهب';
 
   @override
-  String get goldAmount => 'الكمية / جرام';
+  String get goldAmount => 'الكمية / الجرامات';
 
   @override
-  String get goldUnitPrice => 'سعر الوحدة (ليرة)';
+  String get goldUnitPrice => 'سعر الوحدة';
 
   @override
-  String get sectionCurrency => 'أصول العملات';
+  String get sectionCurrency => 'الأصول النقدية والعملات';
 
   @override
   String get currencyType => 'نوع العملة';
@@ -293,22 +297,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get currencyAmount => 'المبلغ';
 
   @override
-  String get currencyRate => 'السعر الحالي (ليرة)';
+  String get currencyRate => 'السعر الحالي';
 
   @override
   String get sectionCashDebt => 'النقد والديون';
 
   @override
-  String get cashAmount => 'النقد في اليد والبنك (ليرة)';
+  String get cashAmount => 'النقد المتوفر وفي البنك';
 
   @override
   String get debtAmount => 'إجمالي الديون (للخصم)';
 
   @override
-  String get calculateButton => 'حساب';
+  String get calculateButton => 'احسب';
 
   @override
-  String get zakatResultTitle => 'الزكاة المستحقة';
+  String get zakatResultTitle => 'الزكاة المستحقة عليك';
 
   @override
   String get netAssets => 'صافي الأصول:';
@@ -317,14 +321,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qiblaTitle => 'بوصلة القبلة';
 
   @override
-  String get locationServiceOff => 'خدمة الموقع معطلة. يرجى تفعيل الموقع.';
+  String get locationServiceOff => 'خدمة الموقع مغلقة. يرجى تفعيل الموقع.';
 
   @override
   String get locationPermissionDenied => 'تم رفض إذن الموقع.';
 
   @override
   String get locationPermissionForever =>
-      'تم رفض إذن الموقع بشكل دائم. قم بتفعيله من الإعدادات.';
+      'تم رفض إذن الموقع بشكل دائم. يرجى تفعيله من الإعدادات.';
 
   @override
   String compassError(String error) {
@@ -332,7 +336,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get noCompass => 'لا توجد بوصلة في الجهاز.';
+  String get noCompass => 'لا توجد بوصلة في هذا الجهاز.';
 
   @override
   String get qiblaFound => 'لقد وجدت القبلة!';
@@ -343,16 +347,16 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get keepAwayMetal => 'ابعد الجهاز عن المعادن.';
+  String get keepAwayMetal => 'ابعده عن الأشياء المعدنية.';
 
   @override
-  String get goldGram => 'جرام ذهب (24 قيراط)';
+  String get goldGram => 'جرام ذهب (عيار 24)';
 
   @override
-  String get goldQuarter => 'ربع ذهب';
+  String get goldQuarter => 'ربع ليرة ذهب';
 
   @override
-  String get goldFull => 'ذهب كامل';
+  String get goldFull => 'ليرة ذهب كاملة';
 
   @override
   String get typeOther => 'أخرى (يدوي)';
@@ -391,7 +395,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bgImage => 'صورة الخلفية';
 
   @override
-  String get bgDefault => 'افتراضي';
+  String get bgDefault => 'الافتراضي';
 
   @override
   String get bgMosque => 'مسجد';
@@ -403,7 +407,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bgQuran => 'القرآن';
 
   @override
-  String get none => 'لا يوجد';
+  String get none => 'لا شيء';
 
   @override
   String get zakatEligible => 'تجب الزكاة';
@@ -412,26 +416,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zakatNotEligible => 'لا تجب الزكاة';
 
   @override
-  String get nisabLimit => 'حد النصاب (80.18 جرام ذهب)';
+  String get nisabLimit => 'حد النصاب (80.18 جم ذهب)';
 
   @override
   String get belowNisabMessage =>
-      'الزكاة غير واجبة لأن صافي أصولك أقل من حد النصاب.';
+      'بما أن صافي أصولك أقل من حد النصاب، فلا تجب عليك الزكاة.';
 
   @override
-  String get searchLocationTitle => 'بحث عن موقع (جميع أنحاء العالم)';
+  String get searchLocationTitle => 'البحث عن موقع (حول العالم)';
 
   @override
-  String get searchLocationHint => 'المدينة أو البلد (مثال: باريس)';
+  String get searchLocationHint => 'مدينة أو دولة (مثل: باريس)';
 
   @override
-  String get searchInitial => 'اكتب للبحث...';
+  String get searchInitial => 'اكتب المكان الذي تريد البحث عنه...';
 
   @override
   String get searchNotFound => 'لم يتم العثور على الموقع.';
 
   @override
-  String get searchError => 'لم يتم العثور على نتائج. حاول مرة أخرى.';
+  String get searchError => 'لم يتم العثور على نتائج. يرجى المحاولة مرة أخرى.';
 
   @override
   String locationSelected(String city) {
@@ -444,23 +448,23 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get channelSilentPrayers => 'إشعارات الصلاة الصامتة';
+  String get channelSilentPrayers => 'إشعارات الأذان الصامتة';
 
   @override
   String get tickerEzan => 'وقت الصلاة';
 
   @override
-  String get stickyChannelName => 'مؤقت دائم';
+  String get stickyChannelName => 'عداد دائم';
 
   @override
-  String get stickyChannelDesc => 'يعرض الوقت المتبقي للصلاة';
+  String get stickyChannelDesc => 'يعرض الوقت المتبقي';
 
   @override
-  String get timeLeftTo => 'الوقت المتبقي لـ: ';
+  String get timeLeftTo => 'الوقت المتبقي لانتهاء الوقت: ';
 
   @override
   String get locationFallbackMessage =>
-      'تعذر الحصول على الموقع، يتم استخدام القيمة الافتراضية.';
+      'تعذر الحصول على الموقع، يتم استخدام القيم الافتراضية.';
 
   @override
   String get fetchingLocation => 'جاري الحصول على الموقع...';
@@ -478,47 +482,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String get directionWest => 'غ';
 
   @override
-  String get calibrationInstruction => '(ارسم \'8\' للمعايرة)';
+  String get calibrationInstruction => '(ارسم رقم \'8\' للمعايرة)';
 
   @override
   String get zakatDescription =>
-      'احسب زكاتك بالتفصيل وفقًا لفتاوى رئاسة الشؤون الدينية وأسعار الشراء / البيع الحالية في السوق.';
+      'احسب زكاتك بالتفصيل وفقاً للفتاوى وأسعار السوق الحالية.';
 
   @override
-  String get cashAndCurrencyTitle => 'النقد والأصول بالعملات الأجنبية';
+  String get cashAndCurrencyTitle => 'النقد والعملات';
 
   @override
-  String get cashTurkishLira => 'النقد بالليرة التركية (TRY)';
+  String get cashTurkishLira => 'النقد (بالعملة المحلية)';
 
   @override
   String get goldAndSilverTitle => 'الذهب والفضة';
 
   @override
-  String get silverGram => 'الفضة (جرام)';
+  String get silverGram => 'فضة (جرام)';
 
   @override
   String get unitPrice => 'سعر الوحدة';
 
   @override
-  String get commercialGoodsTitle => 'البضائع التجارية';
+  String get commercialGoodsTitle => 'عروض التجارة';
 
   @override
   String get commercialEvalCurrency => 'عملة التقييم';
 
   @override
-  String get commercialGoodsValue => 'قيمة البضائع';
+  String get commercialGoodsValue => 'قيمة البضاعة';
 
   @override
-  String get exchangeRateValue => 'سعر الصرف';
+  String get exchangeRateValue => 'قيمة الصرف';
 
   @override
-  String get receivablesTitle => 'الذمم المدينة (القابلة للتحصيل)';
+  String get receivablesTitle => 'الديون المستحقة (القابلة للتحصيل)';
 
   @override
-  String get receivableType => 'نوع الذمة (TRY، عملة أجنبية، ذهب)';
+  String get receivableType => 'نوع الدين (نقد، عملة أجنبية، ذهب)';
 
   @override
-  String get amountOrCount => 'المبلغ / العدد';
+  String get amountOrCount => 'المبلغ / الكمية';
 
   @override
   String get otherAssetsTitle => 'أصول أخرى';
@@ -537,28 +541,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get agriDiyanetNote =>
-      'نظراً لعدم اشتراط بلوغ النصاب في زكاة المنتجات الزراعية، يُضاف المبلغ الذي تصرح به مباشرة إلى سلة الزكاة.';
+      'نظراً لعدم اشتراط النصاب في المنتجات الزراعية، يتم إضافة المبلغ المصرح به مباشرة إلى إجمالي الزكاة.';
 
   @override
-  String get harvestedProductValue => 'قيمة المحصول المحصود (TRY)';
+  String get harvestedProductValue => 'قيمة المحصول (بالعملة المحلية)';
 
   @override
   String get irrigationMethod => 'طريقة الري';
 
   @override
-  String get debtsTitle => 'الديون (التي سيتم خصمها)';
+  String get debtsTitle => 'الديون (للخصم)';
 
   @override
-  String get debtType => 'نوع الدين (TRY، عملة أجنبية، ذهب)';
+  String get debtType => 'نوع الدين (نقد، عملة، ذهب)';
 
   @override
-  String get zakatAgriIncluded => 'تتضمن زكاة المنتجات الزراعية (العشر)';
+  String get zakatAgriIncluded => 'يتضمن زكاة المنتجات الزراعية (العشر)';
 
   @override
   String get assetCheck => 'شيك';
 
   @override
-  String get assetBond => 'سند لأمر';
+  String get assetBond => 'كمبيالة';
 
   @override
   String get assetSukuk => 'صكوك';
@@ -567,22 +571,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get assetLeaseCert => 'شهادة إجارة';
 
   @override
-  String get assetStock => 'سهم';
+  String get assetStock => 'أسهم';
 
   @override
-  String get agriSoil => 'منتج زراعي (زراعة التربة)';
+  String get agriSoil => 'منتج زراعي (زراعة تقليدية)';
 
   @override
-  String get agriSoilless => 'منتج زراعي (زراعة بدون تربة)';
+  String get agriSoilless => 'منتج زراعي (بدون تربة)';
 
   @override
-  String get agriRateNoCost => 'بدون تكلفة (مطر / نهر) - 10%';
+  String get agriRateNoCost => 'بدون تكلفة (مطر/نهر) - 10%';
 
   @override
-  String get agriRateCostly => 'بتكلفة (محرك / نقل) - 5%';
+  String get agriRateCostly => 'بتكلفة (محرك/نقل) - 5%';
 
   @override
-  String get toImsak => 'إلى الفجر';
+  String get toImsak => 'إلى الإمساك';
 
   @override
   String get toGunes => 'إلى الشروق';
@@ -601,13 +605,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get lowAccuracyWarning =>
-      'معايرة البوصلة ضعيفة. يرجى رسم رقم \'8\' في الهواء.';
+      'معايرة البوصلة ضعيفة. يرجى رسم رقم \'8\' في الهواء بهاتفك.';
 
   @override
   String get qiblaDirection => 'اتجاه القبلة';
 
   @override
-  String get zikirmatikTitle => 'المسبحة الإلكترونية';
+  String get zikirmatikTitle => 'مسبحة إلكترونية';
 
   @override
   String get dhikrSubhanallah => 'سبحان الله';
@@ -622,13 +626,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dhikrKalima => 'كلمة التوحيد';
 
   @override
-  String get dhikrSalavat => 'الصلوات';
+  String get dhikrSalavat => 'صلوات';
 
   @override
-  String get targetReached => 'اكتمل الهدف!';
+  String get targetReached => 'لقد وصلت إلى الهدف!';
 
   @override
-  String get resetCounter => 'تصفير';
+  String get resetCounter => 'إعادة تعيين';
 
   @override
   String targetCount(int target) {
@@ -645,7 +649,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get customDhikrTitle => 'إضافة ذكر مخصص';
 
   @override
-  String get customDhikrHint => 'أدخل الذكر الخاص بك هنا';
+  String get customDhikrHint => 'اكتب الذكر الخاص بك';
 
   @override
   String get zikirSettings => 'الإعدادات';
@@ -654,7 +658,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vibration => 'اهتزاز';
 
   @override
-  String get sound => 'تأثير الصوت';
+  String get sound => 'تأثير صوتي';
 
   @override
   String get keepAwake => 'إبقاء الشاشة قيد التشغيل';
@@ -666,28 +670,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get themeModern => 'زر حديث';
 
   @override
-  String get themeClassic => 'تسبيح كلاسيكي';
+  String get themeClassic => 'مسبحة كلاسيكية';
 
   @override
-  String get introTitle1 => 'مرحبًا بك في Vaktinde';
+  String get introTitle1 => 'مرحباً بك في Vaktinde';
 
   @override
   String get introDesc1 =>
-      'تتبع أوقات الصلاة وأذكارك والأيام الدينية بسهولة من خلال واجهة حديثة وأنيقة.';
+      'تتبع أوقات الصلاة، الأذكار، والأيام الدينية بسهولة مع واجهتنا الحديثة والأنيقة.';
 
   @override
   String get introTitle2 => 'إشعارات ذكية';
 
   @override
   String get introDesc2 =>
-      'احصل على إشعار بالصوت المفضل لديك في أوقات الصلاة. لا تفوت صلواتك أبدًا.';
+      'احصل على تنبيهات بصوت الإشعار الذي تختاره في أوقات الصلاة. لا تفوت عباداتك أبداً.';
 
   @override
   String get introTitle3 => 'أدوات متقدمة';
 
   @override
   String get introDesc3 =>
-      'عزز روحانيتك باستخدام أدوات مثل عداد الأذكار المتحرك، والصلوات الفائتة، وحاسبة الزكاة.';
+      'عزز روحانيتك مع المسبحة المتحركة، متتبع الصلوات الفائتة، أسماء الله الحسنى، وحاسبة الزكاة.';
 
   @override
   String get introSkip => 'تخطي';
@@ -696,19 +700,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get introNext => 'التالي';
 
   @override
-  String get introStart => 'البدء';
+  String get introStart => 'ابدأ الآن';
 
   @override
   String get dhikrListTitle => 'قائمة الأذكار';
 
   @override
-  String get addCustomDhikr => 'إضافة ذكر مخصص';
+  String get addCustomDhikr => 'إضافة ذكر مخصص جديد';
 
   @override
   String get customDhikrAdded => 'تمت إضافة الذكر بنجاح.';
 
   @override
-  String get customDhikrLimit => 'يمكنك إضافة ما يصل إلى 20 ذكراً مخصصاً!';
+  String get customDhikrLimit =>
+      'يمكنك إضافة ما يصل إلى 20 ذكراً مخصصاً كحد أقصى!';
 
   @override
   String get deleteDhikr => 'حذف';
@@ -717,13 +722,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statisticsTitle => 'الإحصائيات';
 
   @override
-  String get monthly => 'شهري';
+  String get monthly => 'شهرياً';
 
   @override
-  String get yearly => 'سنوي';
+  String get yearly => 'سنوياً';
 
   @override
-  String get totalDhikr => 'مجموع الأذكار';
+  String get totalDhikr => 'إجمالي الأذكار';
 
   @override
   String get today => 'اليوم';
@@ -738,39 +743,196 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dhikrLaHavle => 'لا حول ولا قوة إلا بالله';
 
   @override
-  String get dhikrHasbunallah => 'حسبنا الله ونعم الوكيل';
+  String get dhikrHasbunallah => 'حسبنا الله';
 
   @override
   String get dhikrSubhanallahi => 'سبحان الله وبحمده';
 
   @override
-  String get dhikrYunus => 'دعاء النبي يونس';
+  String get dhikrYunus => 'دعاء نبي الله يونس';
 
   @override
-  String get dhikrYaAllah => 'يا الله';
+  String get dhikrYaAllah => 'يا الله (جل جلاله)';
 
   @override
-  String get dhikrYaRahman => 'يا رحمن';
+  String get dhikrYaRahman => 'يا رحمن (جل جلاله)';
 
   @override
-  String get dhikrYaRahim => 'يا رحيم';
+  String get dhikrYaRahim => 'يا رحيم (جل جلاله)';
 
   @override
-  String get dhikrYaSafi => 'يا شافي';
+  String get dhikrYaSafi => 'يا شافي (جل جلاله)';
 
   @override
-  String get dhikrYaRezzak => 'يا رزاق';
+  String get dhikrYaRezzak => 'يا رزاق (جل جلاله)';
 
   @override
-  String get dhikrYaFettah => 'يا فتاح';
+  String get dhikrYaFettah => 'يا فتاح (جل جلاله)';
 
   @override
-  String get mainDhikrs => 'الأذكار الرئيسية';
+  String get mainDhikrs => 'الأذكار الأساسية';
 
   @override
   String get esmaulHusnaTab => 'أسماء الله الحسنى';
 
   @override
   String get qiblaCalibration =>
-      'ارسم الرقم \'8\' في الهواء بهاتفك لمعايرة البوصلة بدقة.';
+      'لتعمل البوصلة بدقة، يرجى رسم رقم \'8\' في الهواء بهاتفك.';
+
+  @override
+  String get hicriYilbasi => 'رأس السنة الهجرية';
+
+  @override
+  String get asureGunu => 'يوم عاشوراء';
+
+  @override
+  String get mevlidKandili => 'المولد النبوي';
+
+  @override
+  String get miracKandili => 'الإسراء والمعراج';
+
+  @override
+  String get beratKandili => 'ليلة النصف من شعبان';
+
+  @override
+  String get ramazanBaslangici => 'بداية شهر رمضان';
+
+  @override
+  String get kadirGecesi => 'ليلة القدر';
+
+  @override
+  String get ramazanBayrami => 'عيد الفطر';
+
+  @override
+  String get kurbanBayrami => 'عيد الأضحى';
+
+  @override
+  String get regaipKandili => 'ليلة الرغائب';
+
+  @override
+  String get tabTimes => 'الأوقات';
+
+  @override
+  String get tabAlarms => 'المنبهات';
+
+  @override
+  String get locationFoundNoName => 'تم العثور على الموقع ولكن بدون اسم.';
+
+  @override
+  String get dailyAyahTitle => 'آية اليوم';
+
+  @override
+  String get remainingTime => 'المتبقي';
+
+  @override
+  String get onboardingWelcome => 'Hoş Geldiniz / مرحباً بكم';
+
+  @override
+  String get onboardingSelectLanguage =>
+      'Lütfen kullanmak istediğiniz dili seçin.\nيرجى تحديد لغتك المفضلة.';
+
+  @override
+  String get turnRight => 'انعطف يميناً ➔';
+
+  @override
+  String get turnSlightRight => 'انعطف يميناً قليلاً ➔';
+
+  @override
+  String get turnLeft => '⬅ انعطف يساراً';
+
+  @override
+  String get turnSlightLeft => '⬅ انعطف يساراً قليلاً';
+
+  @override
+  String get calibrationRequired => 'المعايرة مطلوبة';
+
+  @override
+  String get gold22kGram => 'جرام ذهب عيار 22';
+
+  @override
+  String get goldAtaToptan => 'آتا بالجملة';
+
+  @override
+  String get goldAtaCumhuriyet => 'آتا جمهوريات';
+
+  @override
+  String get gold22kBracelet => 'سوار عيار 22';
+
+  @override
+  String get gold18k => 'ذهب عيار 18';
+
+  @override
+  String get gold14k => 'ذهب عيار 14';
+
+  @override
+  String get goldHalf => 'نصف ليرة ذهب';
+
+  @override
+  String get goldGremse => 'ذهب غريمسة';
+
+  @override
+  String get goldAtaBesli => 'آتا بيشلي';
+
+  @override
+  String get goldResat => 'ذهب رشاد';
+
+  @override
+  String get goldHamit => 'ذهب حامد';
+
+  @override
+  String get currencyChf => 'فرنك سويسري';
+
+  @override
+  String get currencyJpy => 'ين ياباني';
+
+  @override
+  String get currencySar => 'ريال سعودي';
+
+  @override
+  String get currencyAud => 'دولار أسترالي';
+
+  @override
+  String get currencyCad => 'دولار كندي';
+
+  @override
+  String get currencyRub => 'روبل روسي';
+
+  @override
+  String get currencyAzn => 'مانات أذربيجاني';
+
+  @override
+  String get currencyCny => 'يوان صيني';
+
+  @override
+  String get currencyRon => 'ليو روماني';
+
+  @override
+  String get currencyAed => 'درهم إماراتي';
+
+  @override
+  String get currencyBgn => 'ليف بلغاري';
+
+  @override
+  String get currencyKwd => 'دينار كويتي';
+
+  @override
+  String get currencyTry => 'ليرة تركية';
+
+  @override
+  String get holdToEdit => '(اضغط مطولاً للتعديل)';
+
+  @override
+  String get editCounterTitle => 'تعديل العداد';
+
+  @override
+  String get editCounterHint => 'مثال: 2000';
+
+  @override
+  String get editTargetHint => 'مثال: 99';
+
+  @override
+  String get resetCounterConfirm => 'هل أنت متأكد أنك تريد إعادة تعيين العداد؟';
+
+  @override
+  String get dhikrTarget => 'الهدف:';
 }

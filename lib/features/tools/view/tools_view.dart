@@ -31,7 +31,10 @@ class ToolsView extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           loc.navMenu,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
         ),
         centerTitle: true,
         backgroundColor: hasImage ? Colors.transparent : Colors.white,
@@ -40,17 +43,20 @@ class ToolsView extends StatelessWidget {
         automaticallyImplyLeading: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         child: Column(
           children: [
+            // --- 1. KISIM: ARAÇLAR BÖLÜMÜ (MODERN GRID) ---
             Expanded(
               child: GridView.count(
+                physics: const BouncingScrollPhysics(),
                 crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 1.2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio:
+                    1.1, // Kartları biraz daha yatay/kare arası modern formata çektik
                 children: [
-                  _buildSoftCard(
+                  _buildToolCard(
                     context,
                     hasImage: hasImage,
                     title: loc.missedPrayersTitle,
@@ -58,7 +64,7 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const MissedPrayersView(),
                   ),
-                  _buildSoftCard(
+                  _buildToolCard(
                     context,
                     hasImage: hasImage,
                     title: loc.esmaulHusnaTitle,
@@ -66,7 +72,7 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const EsmaulHusnaView(),
                   ),
-                  _buildSoftCard(
+                  _buildToolCard(
                     context,
                     hasImage: hasImage,
                     title: loc.religiousDaysTitle,
@@ -74,7 +80,7 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const ReligiousDaysView(),
                   ),
-                  _buildSoftCard(
+                  _buildToolCard(
                     context,
                     hasImage: hasImage,
                     title: loc.fridayMessagesTitle,
@@ -82,7 +88,7 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const FridayMessagesView(),
                   ),
-                  _buildSoftCard(
+                  _buildToolCard(
                     context,
                     hasImage: hasImage,
                     title: loc.zakatTitle,
@@ -90,24 +96,33 @@ class ToolsView extends StatelessWidget {
                     primaryColor: primaryColor,
                     page: const ZakatView(),
                   ),
-                  _buildSoftCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.menuTitle,
-                    icon: Icons.settings,
-                    primaryColor: primaryColor,
-                    page: const SettingsView(),
-                  ),
                 ],
               ),
             ),
+
+            const SizedBox(height: 15),
+
+            // --- 2. KISIM: SİSTEM/AYARLAR BÖLÜMÜ (GENİŞ KART) ---
+            _buildSettingsCard(
+              context,
+              hasImage: hasImage,
+              title: loc.menuTitle,
+              icon: Icons.settings_rounded,
+              primaryColor: Colors
+                  .blueGrey, // Ayarların sistem rengi olduğu hissini verir
+              page: const SettingsView(),
+            ),
+            const SizedBox(
+              height: 10,
+            ), // Cihazın altına çok yapışmaması için güvenli alan
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSoftCard(
+  // --- KARE ARAÇ KARTLARI İÇİN TASARIM ---
+  Widget _buildToolCard(
     BuildContext context, {
     required bool hasImage,
     required String title,
@@ -126,20 +141,18 @@ class ToolsView extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // İŞTE BURASI: Sayfaya geçmeden önce akıllı reklamı tetikliyoruz
         AdHelper.instance.showInterstitialAd();
-
         Navigator.push(context, MaterialPageRoute(builder: (context) => page));
       },
       child: Container(
         decoration: BoxDecoration(
           color: cardColor,
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(20), // Daha modern yuvarlama
           boxShadow: [
             BoxShadow(
-              color: primaryColor.withOpacity(0.08),
-              blurRadius: 15,
-              offset: const Offset(0, 10),
+              color: primaryColor.withOpacity(0.06), // Gölgeler yumuşatıldı
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -147,23 +160,94 @@ class ToolsView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: primaryColor.withOpacity(0.1),
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(
+                  16,
+                ), // İkon arka planı kare-oval arası yapıldı
               ),
-              child: Icon(icon, size: 32, color: primaryColor),
+              child: Icon(icon, size: 30, color: primaryColor),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             Text(
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: textColor,
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
+                letterSpacing: 0.3,
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- GENİŞ AYARLAR KARTI İÇİN TASARIM ---
+  Widget _buildSettingsCard(
+    BuildContext context, {
+    required bool hasImage,
+    required String title,
+    required IconData icon,
+    required Color primaryColor,
+    required Widget page,
+  }) {
+    Color cardColor = hasImage
+        ? Theme.of(context).cardTheme.color!.withOpacity(0.85)
+        : Colors.white;
+
+    Color textColor = hasImage
+        ? Theme.of(context).textTheme.bodyLarge?.color ??
+              Colors.blueGrey.shade800
+        : Colors.blueGrey.shade800;
+
+    return GestureDetector(
+      onTap: () {
+        AdHelper.instance.showInterstitialAd();
+        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: primaryColor.withOpacity(0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 24, color: primaryColor),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: Colors.grey.shade400,
+              size: 28,
             ),
           ],
         ),

@@ -1,7 +1,7 @@
 name: ezan_saati
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.0.0+9
+version: 1.0.0+12
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
@@ -43,6 +43,12 @@ dependencies:
   firebase_analytics: ^12.1.0
   upgrader: ^12.3.0
   wakelock_plus: ^1.5.2
+  in_app_update: ^4.2.5
+  flutter_timezone: ^5.1.0
+  workmanager: ^0.9.0+3
+  story_view: ^0.16.6
+  hijri: ^3.0.1
+  showcaseview: ^5.1.0
 
 dev_dependencies:
   flutter_test:

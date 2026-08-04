@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../common/language_provider.dart';
-// --- YENİ EKLENEN İMPORT ---
-import 'intro_view.dart';
+import '../../main_wrapper/main_wrapper.dart';
+import '../../home/view_model/home_view_model.dart'; // GERÇEK KONUM İÇİN EKLENDİ
+
+import 'package:showcaseview/showcaseview.dart';
+import 'dart:io';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:geolocator/geolocator.dart';
 
 class OnboardingLanguageView extends StatelessWidget {
   const OnboardingLanguageView({super.key});
@@ -73,12 +78,64 @@ class OnboardingLanguageView extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(15),
         onTap: () {
-          // 1. Dili güncelle ve hafızaya "seçildi" olarak kaydet
           context.read<LanguageProvider>().setLanguage(Locale(code));
 
-          // 2. Ana Sayfa yerine ÖNCE TANITIM (INTRO) sayfasına yönlendir!
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const IntroView()),
+            MaterialPageRoute(
+              builder: (context) => ShowCaseWidget(
+                onFinish: () async {
+                  // TUR BİTİNCE ZARİFÇE İZİNLERİ İSTER
+                  // 1. Önce Bildirim İzni
+                  try {
+                    final notificationsPlugin =
+                        FlutterLocalNotificationsPlugin();
+                    if (Platform.isAndroid) {
+                      await notificationsPlugin
+                          .resolvePlatformSpecificImplementation<
+                            AndroidFlutterLocalNotificationsPlugin
+                          >()
+                          ?.requestNotificationsPermission();
+                    } else if (Platform.isIOS) {
+                      await notificationsPlugin
+                          .resolvePlatformSpecificImplementation<
+                            IOSFlutterLocalNotificationsPlugin
+                          >()
+                          ?.requestPermissions(
+                            alert: true,
+                            badge: true,
+                            sound: true,
+                          );
+                    }
+                  } catch (e) {
+                    // Hata bilerek yoksayıldı
+                  }
+
+                  // 2. Sonra Konum İzni
+                  try {
+                    LocationPermission permission =
+                        await Geolocator.checkPermission();
+                    if (permission == LocationPermission.denied ||
+                        permission == LocationPermission.deniedForever) {
+                      // YALNIZCA BURADA İZİN İSTENİR!
+                      permission = await Geolocator.requestPermission();
+                    }
+
+                    // 3. EĞER İZİN VERİLDİYSE İSTANBUL'U SİL VE GERÇEK KONUMU ÇEK!
+                    if (permission == LocationPermission.whileInUse ||
+                        permission == LocationPermission.always) {
+                      if (context.mounted) {
+                        context.read<HomeViewModel>().refreshLocationAndTimes(
+                          context,
+                        );
+                      }
+                    }
+                  } catch (e) {
+                    // Hata bilerek yoksayıldı
+                  }
+                },
+                builder: (context) => const MainWrapper(),
+              ),
+            ),
           );
         },
         child: Padding(

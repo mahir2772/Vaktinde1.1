@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
-// --- DİL DESTEĞİ İMPORTU ---
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-// ---------------------------
+
 import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
-// --- ZİKİRMATİK İMPORTU EKLENDİ ---
 import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
+
+// --- 5 ADIMLIK TANITIM İÇİN GLOBAL ANAHTARLAR ---
+final GlobalKey homeLangKey = GlobalKey();
+final GlobalKey homeStoryKey = GlobalKey();
+final GlobalKey homeAlarmsKey = GlobalKey();
+final GlobalKey qiblaKey = GlobalKey();
+final GlobalKey zikirmatikKey = GlobalKey();
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -24,13 +31,15 @@ class _MainWrapperState extends State<MainWrapper> {
   BannerAd? _bannerAd;
   bool _isLoaded = false;
 
-  final String _adUnitId = 'ca-app-pub-4975388193054410/3285554173';
+  // 🔥 YENİ: Turun birden fazla kez başlamasını engellemek için güvenlik kilidi
+  bool _isTutorialChecked = false;
 
-  // --- SAYFALAR GÜNCELLENDİ (Sıralama: Home -> Qibla -> Zikirmatik -> Tools) ---
+  final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111';
+
   final List<Widget> _pages = [
     const HomeView(),
     const QiblaView(),
-    const ZikirView(), // 3. Sıraya Zikirmatik eklendi
+    const ZikirView(),
     const ToolsView(),
   ];
 
@@ -43,25 +52,47 @@ class _MainWrapperState extends State<MainWrapper> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final loc = AppLocalizations.of(context);
       if (loc != null) {
-        // Uygulama ilk açıldığında verileri yükle
         context.read<HomeViewModel>().initializeApp(loc);
       }
     });
   }
 
-  // --- EKLENEN KISIM: DİL DEĞİŞİKLİĞİNİ YAKALAR ---
+  // --- ÇEVİRİ YARDIMCI FONKSİYONU ---
+  String _t(AppLocalizations loc, String trText, String enText) {
+    return loc.localeName.startsWith('tr') ? trText : enText;
+  }
+
+  Future<void> _checkAndStartShowcase() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Testleri temiz yapmak için versiyonu v3 yaptık, sen test ettikçe silecek
+    bool isFirstTime = prefs.getBool('is_first_launch_showcase_v3') ?? true;
+
+    if (isFirstTime && mounted) {
+      // 5 adımlı turu sırayla başlatır
+      ShowCaseWidget.of(context).startShowCase([
+        homeLangKey,
+        homeStoryKey,
+        homeAlarmsKey,
+        qiblaKey,
+        zikirmatikKey,
+      ]);
+      await prefs.setBool('is_first_launch_showcase_v3', false);
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    // Uygulamanın dili her değiştiğinde burası çalışır
     final loc = AppLocalizations.of(context);
     if (loc != null) {
-      // ViewModel'e "Dil değişti, alarmları yeni dile göre ayarla" diyoruz
-      context.read<HomeViewModel>().updateLocalization(loc);
+      // 🔥 KESİN ÇÖZÜM: Build işlemi bittikten hemen sonra state güncellenecek
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.read<HomeViewModel>().updateLocalization(loc);
+        }
+      });
     }
   }
-  // ------------------------------------------------
 
   void _loadAd() {
     _bannerAd = BannerAd(
@@ -94,6 +125,19 @@ class _MainWrapperState extends State<MainWrapper> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    // 🔥 YENİ KUSURSUZ MİMARİ: View Model'i dinliyoruz.
+    final viewModel = context.watch<HomeViewModel>();
+
+    // Eğer yükleme bittiyse ve tur henüz başlamadıysa tetikle!
+    if (!viewModel.isLoading && !_isTutorialChecked) {
+      _isTutorialChecked = true; // Sadece 1 kez çalışması için kilidi kapat
+
+      // Çizim işlemlerinin tam bitmesi için çok ufak bir süre tanıyıp başlatıyoruz
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkAndStartShowcase();
+      });
+    }
+
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
 
@@ -111,17 +155,12 @@ class _MainWrapperState extends State<MainWrapper> {
             selectedIndex: _currentIndex,
             onDestinationSelected: (int index) {
               if (_currentIndex != index) {
-                // Sadece başka bir sekmeye geçiyorsa çalışsın
-
-                // REKLAMI ÇAĞIR (Süre dolmadıysa kendi içinde iptal olur zaten)
                 AdHelper.instance.showInterstitialAd();
-
                 setState(() {
                   _currentIndex = index;
                 });
               }
             },
-            // Karanlık temaya uygun renk atamaları
             backgroundColor:
                 theme.bottomNavigationBarTheme.backgroundColor ??
                 (isDark ? Colors.grey.shade900 : Colors.white),
@@ -132,18 +171,41 @@ class _MainWrapperState extends State<MainWrapper> {
                 selectedIcon: const Icon(Icons.home, color: Colors.teal),
                 label: loc.navPrayer,
               ),
-              NavigationDestination(
-                icon: const Icon(Icons.explore_outlined),
-                selectedIcon: const Icon(Icons.explore, color: Colors.teal),
-                label: loc.navQibla,
+
+              // ADIM 4: KIBLE SEKMESİ
+              Showcase(
+                key: qiblaKey,
+                description: _t(
+                  loc,
+                  "Kıble yönünü pusula ile bulabilirsiniz.",
+                  "You can find the Qibla direction using the compass.",
+                ),
+                overlayColor: Colors.black.withOpacity(0.8),
+                tooltipBackgroundColor: Colors.teal.shade800,
+                textColor: Colors.white,
+                child: NavigationDestination(
+                  icon: const Icon(Icons.explore_outlined),
+                  selectedIcon: const Icon(Icons.explore, color: Colors.teal),
+                  label: loc.navQibla,
+                ),
               ),
-              // --- ZİKİRMATİK İKONU BURAYA EKLENDİ ---
-              NavigationDestination(
-                icon: const Icon(
-                  Icons.touch_app_outlined,
-                ), // Dokunma/Zikir ikonu
-                selectedIcon: const Icon(Icons.touch_app, color: Colors.teal),
-                label: loc.zikirmatikTitle,
+
+              // ADIM 5: ZİKİRMATİK SEKMESİ
+              Showcase(
+                key: zikirmatikKey,
+                description: _t(
+                  loc,
+                  "Zikirlerinizi buradan takip edebilirsiniz.",
+                  "You can track your dhikrs from here.",
+                ),
+                overlayColor: Colors.black.withOpacity(0.8),
+                tooltipBackgroundColor: Colors.teal.shade800,
+                textColor: Colors.white,
+                child: NavigationDestination(
+                  icon: const Icon(Icons.touch_app_outlined),
+                  selectedIcon: const Icon(Icons.touch_app, color: Colors.teal),
+                  label: loc.zikirmatikTitle,
+                ),
               ),
               NavigationDestination(
                 icon: const Icon(Icons.dashboard_outlined),

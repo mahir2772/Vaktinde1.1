@@ -1,6 +1,7 @@
 // ignore_for_file: empty_catches
 
 import 'dart:async';
+import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -18,12 +19,16 @@ import '../../../data/models/prayer_times_model.dart';
 import '../../../data/models/hadith_model.dart';
 import '../../../main.dart';
 import '../../../data/services/widget_service.dart';
+import '../../../data/services/ayah_service.dart';
+import 'package:hijri/hijri_calendar.dart'; // 🔥 YENİ: Hicri Takvim Paketi
 
 class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final LocationService _locationService = LocationService();
   final PrayerTimeService _prayerTimeService = PrayerTimeService();
   final StorageService _storageService = StorageService();
   final HadithService _hadithService = HadithService();
+  final AyahService _ayahService = AyahService();
+  AyahModel? dailyAyah;
 
   AudioPlayer? _audioPlayer;
 
@@ -32,6 +37,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   String? city;
   String? district;
+  String hijriDateText = ""; // 🔥 YENİ: Hicri Tarih Metni
 
   bool isLoading = true;
   String errorMessageKey = "";
@@ -43,7 +49,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   Map<String, String> selectedSounds = {};
   Map<String, String> selectedReminderSounds = {};
   Map<String, bool> silentModeSettings = {};
-
   final List<String> soundIds = [
     "ezan1",
     "ezan2",
@@ -57,7 +62,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     "bildirim2",
     "bildirim3",
   ];
-
   final List<String> reminderSoundIds = ["bildirim1", "bildirim2", "bildirim3"];
   String? currentlyPlayingSound;
   AppLocalizations? _currentLoc;
@@ -67,11 +71,12 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void updateLocalization(AppLocalizations loc) {
-    _currentLoc = loc;
+    if (_currentLoc?.localeName == loc.localeName) return;
 
+    _currentLoc = loc;
     if (_isDataLoaded) {
+      _calculateHijriDate();
       _rescheduleAlarms();
-      // KRİTİK EKLENTİ: Dil değiştiği an arka plan servisine yeni çeviri paketini zorla gönderiyoruz!
       _sendTimesToBackgroundService();
       _updateHomeScreenWidget();
     }
@@ -81,10 +86,24 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (_isDataLoaded) {
+        _calculateHijriDate(); // Uygulama uyanınca tarihi kontrol et
         _sendTimesToBackgroundService();
         _updateHomeScreenWidget();
       }
     }
+  }
+
+  // 🔥 YENİ: Hicri Tarih Hesaplama Fonksiyonu
+  void _calculateHijriDate() {
+    if (_currentLoc == null) return;
+
+    // Uygulama diline göre Hicri paketin dilini ayarla
+    String langCode = _currentLoc!.localeName.substring(0, 2);
+    HijriCalendar.setLocal(langCode);
+
+    HijriCalendar today = HijriCalendar.now();
+    hijriDateText = today.toFormat("dd MMMM yyyy"); // Örn: 7 Safer 1448
+    notifyListeners();
   }
 
   Future<void> initializeApp(AppLocalizations loc) async {
@@ -95,14 +114,19 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       await initializeDateFormatting('tr_TR', null);
       await _loadSavedSettings();
       await notificationService.init();
+
       await _requestBatteryOptimization();
+
+      _calculateHijriDate(); // 🔥 İlk açılışta Hicri tarihi hesapla
 
       PrayerTimesModel? cachedTimes = await _storageService
           .loadPrayerTimesData();
       String? savedCity = await _storageService.loadLocation();
       String? savedDistrict = await _storageService.loadDistrict();
 
-      getDailyHadith(const Locale('tr'));
+      Locale currentLocale = Locale(loc.localeName.substring(0, 2));
+      getDailyHadith(currentLocale);
+      getDailyAyah(currentLocale);
 
       if (cachedTimes != null && savedCity != null) {
         prayerTimes = cachedTimes;
@@ -127,11 +151,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       }
 
       await Future.delayed(const Duration(milliseconds: 500));
-
       if (savedCity != null && savedCity.isNotEmpty) {
         await changeCityAndDistrict(savedCity, savedDistrict);
       } else {
-        await Future.wait([getPrayerTimes(loc: loc, isManualRefresh: false)]);
+        await changeCityAndDistrict("İstanbul", null);
       }
 
       _isDataLoaded = true;
@@ -163,7 +186,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         newCity,
         district: newDistrict,
       );
-
       if (apiResult != null) {
         prayerTimes = apiResult;
         city = newCity;
@@ -182,7 +204,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
         _sendTimesToBackgroundService();
         Future.microtask(() => _rescheduleAlarms());
-
         await FirebaseAnalytics.instance.logEvent(
           name: 'sehir_secildi',
           parameters: {'sehir': newCity, 'ilce': newDistrict ?? 'Merkez'},
@@ -225,8 +246,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
+        if (isManualRefresh) {
+          permission = await Geolocator.requestPermission();
+        }
+        if (permission == LocationPermission.denied ||
+            permission == LocationPermission.deniedForever) {
           if (prayerTimes == null) errorMessageKey = "permissionDenied";
           isLoading = false;
           notifyListeners();
@@ -241,7 +265,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
               position.latitude,
               position.longitude,
             );
-
         if (locationData != null) {
           String city = locationData['city']!;
           String? district = locationData['district'];
@@ -275,7 +298,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": prayerTimes!.aksam!,
         "Yatsı": prayerTimes!.yatsi!,
       };
-
       String langCode = _currentLoc!.localeName;
       String remainingText = "Kalan";
 
@@ -287,10 +309,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         remainingText = "Restant";
       else if (langCode.startsWith('ar'))
         remainingText = "الباقي";
-
       Map<String, String> displayTexts = {
         "next": _currentLoc!.nextPrayer,
         "remaining": remainingText,
+        "hijri_date":
+            hijriDateText, // 🔥 YENİ: Arka plan servisine Hicri tarihi de gönder
         "İmsak": _currentLoc!.imsak,
         "Güneş": _currentLoc!.gunes,
         "Öğle": _currentLoc!.ogle,
@@ -305,23 +328,18 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "to_Yatsı": _currentLoc!.toYatsi,
         "loading": _currentLoc!.loading,
       };
-
       FlutterBackgroundService().invoke("setPrayerTimes", {
         "times": times,
         "display": displayTexts,
       });
-
       _updateHomeScreenWidget();
-      // ignore: empty_catche
     } catch (e) {}
   }
 
   void _updateHomeScreenWidget() {
     if (prayerTimes == null) return;
-
     try {
       final now = DateTime.now();
-
       Map<String, String> vakitler = {
         "İmsak": prayerTimes!.imsak!,
         "Güneş": prayerTimes!.gunes!,
@@ -330,7 +348,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": prayerTimes!.aksam!,
         "Yatsı": prayerTimes!.yatsi!,
       };
-
       Map<String, String> vakitIsimleri = {
         "İmsak": _currentLoc?.imsak ?? "İmsak",
         "Güneş": _currentLoc?.gunes ?? "Güneş",
@@ -339,14 +356,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": _currentLoc?.aksam ?? "Akşam",
         "Yatsı": _currentLoc?.yatsi ?? "Yatsı",
       };
-
       String sonrakiVakitIsmi = "İmsak";
       DateTime? sonrakiVakitTarihi;
       bool bulundu = false;
-
       for (var entry in vakitler.entries) {
         if (entry.key == "Güneş") continue;
-
         List<String> parts = entry.value.split(':');
         DateTime vakitDate = DateTime(
           now.year,
@@ -355,7 +369,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
           int.parse(parts[0]),
           int.parse(parts[1]),
         );
-
         if (vakitDate.isAfter(now)) {
           sonrakiVakitIsmi = entry.key;
           sonrakiVakitTarihi = vakitDate;
@@ -411,8 +424,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         vakitler: vakitler,
         konum: guncelKonum,
         vakitIsimleri: vakitIsimleri,
+        hijriDateText:
+            hijriDateText, // 🔥 YENİ: Widget servisine Hicri tarihi de gönder
       );
-      // ignore: empty_catche
     } catch (e) {}
   }
 
@@ -438,11 +452,57 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     await getPrayerTimes(loc: loc, isManualRefresh: true);
   }
 
+  Future<void> _scheduleDailyContent() async {
+    if (_currentLoc == null) return;
+    try {
+      if (dailyAyah != null) {
+        String title = _currentLoc!.localeName.startsWith('tr')
+            ? "Günün Ayeti"
+            : "Ayah of the Day";
+        String content =
+            "${dailyAyah!.arabicText}\n\n${dailyAyah!.translatedText}";
+        await notificationService.scheduleDailyContent(
+          id: 1000,
+          title: title,
+          body: content,
+          hour: 10,
+          minute: 0,
+          channelId: 'daily_ayah_channel',
+          channelName: 'Günlük Ayet',
+        );
+      }
+      if (dailyHadith != null && dailyHadith!.content != null) {
+        String title = _currentLoc!.localeName.startsWith('tr')
+            ? "Günün Hadisi"
+            : "Hadith of the Day";
+        await notificationService.scheduleDailyContent(
+          id: 1900,
+          title: title,
+          body: dailyHadith!.content!,
+          hour: 19,
+          minute: 0,
+          channelId: 'daily_hadith_channel',
+          channelName: 'Günlük Hadis',
+        );
+      }
+    } catch (e) {}
+  }
+
   Future<void> getDailyHadith(Locale locale) async {
     final hadith = await _hadithService.getDailyHadith(locale);
     if (hadith != null) {
       dailyHadith = hadith;
       notifyListeners();
+      await _scheduleDailyContent();
+    }
+  }
+
+  Future<void> getDailyAyah(Locale locale) async {
+    final ayah = await _ayahService.getRandomAyah(locale.languageCode);
+    if (ayah != null) {
+      dailyAyah = ayah;
+      notifyListeners();
+      await _scheduleDailyContent();
     }
   }
 
@@ -478,7 +538,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
     _saveCurrentSettings();
     _rescheduleAlarms();
-
     if (value == true) {
       FirebaseAnalytics.instance.logEvent(
         name: 'alarm_acildi',
@@ -535,15 +594,13 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         currentlyPlayingSound = null;
         notifyListeners();
       });
-      // ignore: empty_catche
     } catch (e) {}
   }
 
   Future<void> _rescheduleAlarms() async {
     if (prayerTimes == null || _currentLoc == null) return;
     try {
-      await notificationService.requestPermissions();
-      await notificationService.cancelAllNotifications();
+      await notificationService.cancelSpecificAlarms();
 
       final now = DateTime.now();
       Map<String, String> vakitDisplayNames = {
@@ -554,7 +611,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": _currentLoc!.aksam,
         "Yatsı": _currentLoc!.yatsi,
       };
-
       Map<String, String> vakitler = {
         "İmsak": prayerTimes!.imsak!,
         "Güneş": prayerTimes!.gunes!,
@@ -563,7 +619,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": prayerTimes!.aksam!,
         "Yatsı": prayerTimes!.yatsi!,
       };
-
       int idCounter = 0;
       for (var entry in vakitler.entries) {
         String vakitLogicKey = entry.key;
@@ -576,7 +631,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
           int.parse(parts[0]),
           int.parse(parts[1]),
         );
-
         if (vakitDate.isBefore(now)) {
           vakitDate = vakitDate.add(const Duration(days: 1));
         }
@@ -586,11 +640,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
           String? soundToSend = isSilent
               ? null
               : (selectedSounds[vakitLogicKey] ?? "ezan1");
-
           String channelName = soundToSend != null
               ? _currentLoc!.channelSoundPrefix(soundToSend)
               : _currentLoc!.channelSilentPrayers;
-
           await notificationService.schedulePrayerNotification(
             id: idCounter,
             title: _currentLoc!.notifTitleTime,
@@ -602,21 +654,18 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
           );
         }
         idCounter++;
-
         if (reminderAlarms[vakitLogicKey] == true) {
           int dakikaOnce =
               (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş") ? 30 : 15;
           DateTime hatirlatmaZamani = vakitDate.subtract(
             Duration(minutes: dakikaOnce),
           );
-
           if (hatirlatmaZamani.isAfter(now)) {
             String reminderSound =
                 selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
             String channelNameReminder = _currentLoc!.channelSoundPrefix(
               reminderSound,
             );
-
             await notificationService.schedulePrayerNotification(
               id: idCounter,
               title: _currentLoc!.notifTitleUpcoming,
@@ -633,6 +682,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         }
         idCounter++;
       }
+
+      await _scheduleDailyContent();
     } catch (e) {}
   }
 

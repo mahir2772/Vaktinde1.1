@@ -1,3 +1,4 @@
+// countdown_widget.dart (Revize Edilmiş Hali)
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -15,15 +16,23 @@ class CountdownWidget extends StatefulWidget {
 class _CountdownWidgetState extends State<CountdownWidget> {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
-
   String _displayNextVakitIsmi = "";
+  AppLocalizations? _loc;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loc = AppLocalizations.of(context);
+    _calculateAndSetState(); // İlk açılışta hesapla
+  }
 
   @override
   void initState() {
     super.initState();
+    // Hesaplama mantığı build'den çıkarılıp timer'ın içine alındı
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted) {
-        setState(() {});
+      if (mounted && _loc != null) {
+        _calculateAndSetState();
       }
     });
   }
@@ -34,10 +43,11 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     super.dispose();
   }
 
-  void _calculateNextPrayer(AppLocalizations loc) {
-    if (widget.prayerTimes.imsak == null) return;
+  void _calculateAndSetState() {
+    if (widget.prayerTimes.imsak == null || _loc == null) return;
 
     final now = DateTime.now();
+    List<Map<String, dynamic>> allTimes = [];
 
     Map<String, String> vakitler = {
       "İmsak": widget.prayerTimes.imsak!,
@@ -48,48 +58,56 @@ class _CountdownWidgetState extends State<CountdownWidget> {
       "Yatsı": widget.prayerTimes.yatsi!,
     };
 
-    DateTime? targetDate;
-    String targetLogicKey = "";
-    bool isTomorrow = false;
-
     for (var entry in vakitler.entries) {
       List<String> parts = entry.value.split(':');
-      DateTime vakitDate = DateTime(
+      DateTime t = DateTime(
         now.year,
         now.month,
         now.day,
         int.parse(parts[0]),
         int.parse(parts[1]),
       );
+      allTimes.add({"key": entry.key, "time": t, "isTomorrow": false});
+    }
 
-      if (vakitDate.isAfter(now)) {
-        targetDate = vakitDate;
-        targetLogicKey = entry.key;
-        break;
+    List<String> imsakParts = widget.prayerTimes.imsak!.split(':');
+    DateTime tomorrowImsak = DateTime(
+      now.year,
+      now.month,
+      now.day + 1,
+      int.parse(imsakParts[0]),
+      int.parse(imsakParts[1]),
+    );
+    allTimes.add({"key": "İmsak", "time": tomorrowImsak, "isTomorrow": true});
+
+    // Geçmiş vakitleri at
+    allTimes.removeWhere((item) {
+      return (item["time"] as DateTime).difference(now).inSeconds <= 0;
+    });
+
+    allTimes.sort(
+      (a, b) => (a["time"] as DateTime).compareTo(b["time"] as DateTime),
+    );
+
+    if (allTimes.isNotEmpty) {
+      var next = allTimes.first;
+      var newRemainingTime = (next["time"] as DateTime).difference(now);
+
+      String translatedName = _getLocalizedName(next["key"], _loc!);
+      if (next["isTomorrow"] == true) {
+        translatedName = "$translatedName ${_loc!.tomorrow}";
       }
+
+      // Sadece veri değiştiğinde UI'ı güncelle
+      setState(() {
+        _remainingTime = newRemainingTime;
+        _displayNextVakitIsmi = translatedName;
+      });
+    } else {
+      setState(() {
+        _remainingTime = Duration.zero;
+      });
     }
-
-    if (targetDate == null) {
-      List<String> parts = widget.prayerTimes.imsak!.split(':');
-      targetDate = DateTime(
-        now.year,
-        now.month,
-        now.day + 1,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
-      targetLogicKey = "İmsak";
-      isTomorrow = true;
-    }
-
-    _remainingTime = targetDate.difference(now);
-
-    String translatedName = _getLocalizedName(targetLogicKey, loc);
-    if (isTomorrow) {
-      translatedName = "$translatedName ${loc.tomorrow}";
-    }
-
-    _displayNextVakitIsmi = translatedName;
   }
 
   String _getLocalizedName(String key, AppLocalizations loc) {
@@ -111,19 +129,20 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     }
   }
 
+  String _formatDuration(Duration d) {
+    int totalSeconds = d.inSeconds;
+    if (totalSeconds < 0) totalSeconds = 0; // Güvenlik kelepçesi
+
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String hours = twoDigits(totalSeconds ~/ 3600);
+    String minutes = twoDigits((totalSeconds % 3600) ~/ 60);
+    String seconds = twoDigits(totalSeconds % 60);
+    return "$hours:$minutes:$seconds";
+  }
+
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
-
-    _calculateNextPrayer(loc);
-
-    String formatDuration(Duration d) {
-      String twoDigits(int n) => n.toString().padLeft(2, "0");
-      String hours = twoDigits(d.inHours);
-      String minutes = twoDigits(d.inMinutes.remainder(60));
-      String seconds = twoDigits(d.inSeconds.remainder(60));
-      return "$hours:$minutes:$seconds";
-    }
+    if (_loc == null) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -135,12 +154,12 @@ class _CountdownWidgetState extends State<CountdownWidget> {
       child: Column(
         children: [
           Text(
-            loc.timeLeftFor(_displayNextVakitIsmi),
+            _loc!.timeLeftFor(_displayNextVakitIsmi),
             style: const TextStyle(color: Colors.white, fontSize: 14),
           ),
           const SizedBox(height: 5),
           Text(
-            formatDuration(_remainingTime),
+            _formatDuration(_remainingTime),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 32,

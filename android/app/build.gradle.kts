@@ -28,7 +28,7 @@ android {
     defaultConfig {
         applicationId = "com.mmdigital.vaktinde"
         minSdk = flutter.minSdkVersion 
-        targetSdk = 35
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

@@ -16,7 +16,10 @@ class AdHelper {
   // Platforma göre otomatik test reklamı seçen yapı
   String get _interstitialAdUnitId {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-4975388193054410/8232165658'; // Android Geçiş Test ID
+      //kendi kodum
+
+      //return 'ca-app-pub-4975388193054410/8232165658'; // Android Geçiş Test ID
+      return 'ca-app-pub-3940256099942544/1033173712';
     } else {
       throw UnsupportedError('Desteklenmeyen platform');
     }
