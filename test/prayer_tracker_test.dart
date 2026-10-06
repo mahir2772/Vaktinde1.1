@@ -68,6 +68,54 @@ void main() {
       expect(PrayerTracker.streak(log, today), 2);
     });
 
+    test('İmsak girmeden dünün yatsısı seriyi bozmaz, orana eksik yazılmaz', () {
+      final log = {
+        dk(d(-1)): all & ~bit('Yatsı'),
+        dk(d(-2)): all,
+        dk(d(-3)): all,
+      };
+      expect(PrayerTracker.streak(log, today), 0);
+      expect(
+        PrayerTracker.streak(log, today, yesterdayYatsiOngoing: true),
+        2,
+      );
+      // Dün yatsı da kılındıysa dün sayılır
+      final full = {...log, dk(d(-1)): all};
+      expect(PrayerTracker.streak(full, today, yesterdayYatsiOngoing: true), 3);
+      // Dün başka vakit eksikse seri biter
+      final missing = {...log, dk(d(-1)): all & ~bit('Öğle') & ~bit('Yatsı')};
+      expect(
+        PrayerTracker.streak(missing, today, yesterdayYatsiOngoing: true),
+        0,
+      );
+
+      // Oran: dün 4/4 (yatsı henüz paydada değil), bugün imsak öncesi 0/0
+      expect(
+        PrayerTracker.completionRate(
+          log,
+          today,
+          todayDue: 0,
+          since: d(-1),
+          yesterdayYatsiOngoing: true,
+        ),
+        1.0,
+      );
+      expect(
+        PrayerTracker.completionRate(log, today, todayDue: 0, since: d(-1)),
+        closeTo(4 / 5, 1e-9),
+      );
+      expect(
+        PrayerTracker.completionRate(
+          full,
+          today,
+          todayDue: 0,
+          since: d(-1),
+          yesterdayYatsiOngoing: true,
+        ),
+        1.0,
+      );
+    });
+
     test('30 günlük oran: takip başlangıcı ve bugün vakti girmiş farzlar', () {
       final log = {dk(d(-2)): all, dk(d(-1)): 7, dk(d(0)): 3};
       expect(
@@ -273,6 +321,31 @@ void main() {
       expect(log, {dk(yesterday): bit('Yatsı')});
       // Dünün yatsı hatırlatması bugüne aittir
       expect(cancelled, [PrayerTracker.endReminderId(now(), 'Yatsı')]);
+    });
+
+    test('Kazaya eklenmiş vakit sonradan "Kıldım" ile işaretlenmez', () async {
+      final yesterday = PrayerTracker.addDays(now(), -1);
+      SharedPreferences.setMockInitialValues({
+        'prayer_kaza_added': '{"${dk(yesterday)}":${bit('Yatsı')}}',
+      });
+      final service = PrayerTrackerService();
+      expect(await service.setPrayed(yesterday, 'Yatsı', true), isFalse);
+      expect(
+        await PrayerTrackerService.handleNotificationAction(
+          NotificationResponse(
+            notificationResponseType:
+                NotificationResponseType.selectedNotificationAction,
+            actionId: PrayerTracker.actionId,
+            payload: PrayerTracker.payload(yesterday, 'Yatsı'),
+          ),
+        ),
+        isFalse,
+      );
+      expect(await service.loadLog(), isEmpty);
+      expect(cancelled, isEmpty);
+      // Aynı günün diğer vakitleri işaretlenebilir
+      expect(await service.setPrayed(yesterday, 'Akşam', true), isTrue);
+      expect(await service.loadLog(), {dk(yesterday): bit('Akşam')});
     });
 
     test('kazaya ekleme: her vakit bir kez, sayaçlar artar', () async {

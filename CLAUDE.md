@@ -31,7 +31,7 @@ lib/
       prayer_tracker        saf: namaz takibi (tarih→5 vakit bit maskesi, seri, oran, kaza adayları), aksiyon yükü "prayed|yyyy-MM-dd|Öğle",
                             vakit çıkış ID'si (hatırlatma günü epochDay%5 → ID 100-124, günden bağımsız sabit)
       prayer_tracker_service kayıt + kaza ekleme (SerialQueue ile sıralı), "Kıldım" arka plan işleyicisi (ayrı isolate; prefs.reload şart),
-                            kılınan vaktin hatırlatmasını iptal eder
+                            kılınan vaktin hatırlatmasını iptal eder; kazaya eklenmiş vakit işaretlenmez. Ekranlar 30 sn'de bir kaydı yeniden okur
       background_manager    flutter_background_service foreground servisi; sadece ilk bildirim metni ('bg_display'), asıl içerik NotificationUpdater'da
       prayer_refresh_service BuildContext'siz ortak mantık: widget/kalıcı bildirim verisi, 5 günlük alarm planı (buildAlarmPlan),
                             günlük ayet/hadis bildirimi, hicri tarih (de/fr → en). runHeadless(): WorkManager görevi — bugünün
@@ -47,8 +47,9 @@ lib/
       dini_gunler_service   dini gün hesaplama (hijri paketi)
   features/<özellik>/{view,view_model,widgets}
     home/view_model/home_view_model.dart   ANA MANTIK: init (kayıtlı koordinattan hesapla → yoksa cache → yoksa geocode), gün değişince
-                                           yeniden hesaplama (resume + gece yarısı zamanlayıcısı; replaceOnly), konum,
-                                           alarm planlama (koordinat varsa 5 gün; üst üste gelen istekler tek koşuda birleşir),
+                                           yeniden hesaplama (resume + gece yarısı zamanlayıcısı; ayet/hadis de yenilenir), konum,
+                                           alarm planlama (koordinat varsa 5 gün; üst üste gelen istekler tek koşuda birleşir;
+                                           toplu iptal yok, sadece plandan çıkan bekleyenler iptal → çekmecedeki bildirimler kalır),
                                            arka plan servisine/widget'a veri gönderme, günlük hadis/ayet
                                            (widget/alarm/günlük içerik → PrayerRefreshService'e delege; applyTimeOffsets())
     settings/view/time_adjust_view.dart    vakit ince ayarı (-30..+30 dk) → StorageService.saveTimeOffsets + applyTimeOffsets

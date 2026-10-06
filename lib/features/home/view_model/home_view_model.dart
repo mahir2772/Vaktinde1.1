@@ -206,6 +206,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     if (_timesDate != null && DateUtils.isSameDay(_timesDate, DateTime.now())) {
       return;
     }
+    // Dünün ayet/hadisi tekrar kurulmasın: yenileri alınır (kendileri kurar)
+    _refreshDailyContent();
     final times = await _calculateFromSavedCoordinates();
     if (times == null) {
       // Eski sürümden gelen (koordinatsız) kullanıcı: konumu bir kez çözümle
@@ -218,8 +220,14 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
     _sendTimesToBackgroundService();
     _updateHomeScreenWidget();
-    // Toplu iptal yok: bildirim çekmecesindeki dünkü ezan ("Kıldım") silinmez
-    await _rescheduleAlarms(replaceOnly: true);
+    await _rescheduleAlarms();
+  }
+
+  void _refreshDailyContent() {
+    if (_currentLoc == null) return;
+    final locale = Locale(_currentLoc!.localeName.substring(0, 2));
+    getDailyHadith(locale).catchError((Object e) {});
+    getDailyAyah(locale).catchError((Object e) {});
   }
 
   /// Vakit ince ayarı kaydedildikten sonra: bugünün vakitleri, ekran, widget'lar,
@@ -427,13 +435,21 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     await getPrayerTimes(loc: loc, isManualRefresh: true);
   }
 
+  // Ayet/hadisin alındığı gün: eski gün içeriği bildirime kurulmaz (WorkManager tamamlar)
+  DateTime? _ayahDate;
+  DateTime? _hadithDate;
+
   Future<void> _scheduleDailyContent() async {
     if (_currentLoc == null) return;
+    final now = DateTime.now();
+    final ayah = DateUtils.isSameDay(_ayahDate, now) ? dailyAyah : null;
+    final hadith = DateUtils.isSameDay(_hadithDate, now) ? dailyHadith : null;
+    if (ayah == null && hadith == null) return;
     try {
       await _refreshService.scheduleDailyContent(
         localeName: _currentLoc!.localeName,
-        ayah: dailyAyah,
-        hadith: dailyHadith,
+        ayah: ayah,
+        hadith: hadith,
       );
     } catch (e) {}
   }
@@ -442,6 +458,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     final hadith = await _hadithService.getDailyHadith(locale);
     if (hadith != null) {
       dailyHadith = hadith;
+      _hadithDate = DateTime.now();
       notifyListeners();
       await _scheduleDailyContent();
     }
@@ -451,6 +468,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     final ayah = await _ayahService.getRandomAyah(locale.languageCode);
     if (ayah != null) {
       dailyAyah = ayah;
+      _ayahDate = DateTime.now();
       notifyListeners();
       await _scheduleDailyContent();
     }
@@ -573,12 +591,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   // Alarm kurma işleri üst üste binmez: çalışırken gelen istekler bitince tek seferde,
   // en güncel ayarlarla yeniden çalıştırılır (kapatılan alarm kurulu kalmasın).
+  // Toplu iptal yok: çekmecedeki ezan / "vakit çıkıyor" bildirimleri silinmez.
   Future<void>? _rescheduleRun;
   bool _rescheduleAgain = false;
-  bool _rescheduleFull = false;
 
-  Future<void> _rescheduleAlarms({bool replaceOnly = false}) {
-    if (!replaceOnly) _rescheduleFull = true;
+  Future<void> _rescheduleAlarms() {
     final running = _rescheduleRun;
     if (running != null) {
       _rescheduleAgain = true;
@@ -597,9 +614,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     try {
       do {
         _rescheduleAgain = false;
-        final full = _rescheduleFull;
-        _rescheduleFull = false;
-        await _doRescheduleAlarms(replaceOnly: !full);
+        await _doRescheduleAlarms();
       } while (_rescheduleAgain);
     } finally {
       _rescheduleRun = null;
@@ -607,7 +622,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // Koordinat varsa 5 günlük alarm kurulur: uygulama açılmasa da ezan gelir (ID 0-59)
-  Future<void> _doRescheduleAlarms({required bool replaceOnly}) async {
+  Future<void> _doRescheduleAlarms() async {
     if (prayerTimes == null || _currentLoc == null) return;
     try {
       await _refreshService.rescheduleAlarms(
@@ -618,7 +633,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         selectedSounds: selectedSounds,
         selectedReminderSounds: selectedReminderSounds,
         silentModeSettings: silentModeSettings,
-        replaceOnly: replaceOnly,
       );
 
       await _scheduleDailyContent();

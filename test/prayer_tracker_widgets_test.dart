@@ -150,4 +150,49 @@ void main() {
       expect(prefs.getInt('end_reminder_minutes'), 45);
     });
   }
+
+  testWidgets('Başka isolate\'te (bildirim) işaretlenen vakit 30 sn içinde yansır', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final times = PrayerTimesModel(
+      imsak: '00:00',
+      gunes: '00:00',
+      ogle: '00:00',
+      ikindi: '00:00',
+      aksam: '00:00',
+      yatsi: '00:00',
+    );
+    await pumpApp(
+      tester,
+      'tr',
+      Scaffold(
+        body: ListView(
+          children: [PrayerTrackerRow(prayerTimes: times, hasImage: false)],
+        ),
+      ),
+    );
+    expect(find.text('0/5'), findsOneWidget);
+
+    // Bildirim aksiyonu isolate'i kayda yazdı; bu isolate'e haber gelmez
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_log', '{"${dk(0)}":3}');
+    await tester.pump(const Duration(seconds: 31));
+    await tester.pumpAndSettle();
+    expect(find.text('2/5'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('Takip ekranı da kaydı düzenli yeniden okur', (tester) async {
+    SharedPreferences.setMockInitialValues({'prayer_log_since': dk(3)});
+    await pumpApp(tester, 'tr', const PrayerTrackerView());
+    expect(find.byIcon(Icons.check), findsNWidgets(1)); // açıklama
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_log', '{"${dk(1)}":31}');
+    await tester.pump(const Duration(seconds: 31));
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.check), findsNWidgets(6));
+    await tester.pumpWidget(const SizedBox());
+  });
 }

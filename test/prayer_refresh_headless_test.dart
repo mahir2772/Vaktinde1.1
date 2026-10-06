@@ -22,9 +22,11 @@ void main() {
   late List<MethodCall> notifCalls;
   late List<int> pending;
   late bool failSchedule;
+  late Future<void> Function(MethodCall call)? onSchedule;
 
   setUp(() {
     failSchedule = false;
+    onSchedule = null;
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     AndroidFlutterLocalNotificationsPlugin.registerWith();
     widgetCalls = [];
@@ -49,6 +51,7 @@ void main() {
             return true;
           case 'zonedSchedule':
             if (failSchedule) throw PlatformException(code: 'error');
+            await onSchedule?.call(call);
             return null;
           case 'pendingNotificationRequests':
             return [
@@ -287,5 +290,47 @@ void main() {
     expect(calendar.official, isNotEmpty);
     expect(calendar.dayOf(DateTime(2026, 3, 19)), 29);
     expect(calendar.dayOf(DateTime(2026, 3, 20)), isNull);
+  });
+
+  test('Kurulurken başka yerden "Kıldım" denen vaktin hatırlatması iptal edilir', () async {
+    SharedPreferences.setMockInitialValues({
+      'saved_lat': 41.0,
+      'saved_lng': 29.0,
+      'saved_city': 'İstanbul',
+      'end_reminder_enabled': true,
+    });
+    int? markedId;
+    onSchedule = (call) async {
+      final id = call.arguments['id'] as int;
+      if (markedId != null || !PrayerTracker.isEndReminderId(id)) return;
+      // Bildirim aksiyonu isolate'i bu sırada işaretliyor
+      final target = PrayerTracker.parsePayload(call.arguments['payload'])!;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        'prayer_log',
+        jsonEncode({
+          PrayerTracker.dateKey(target.date): PrayerTracker.bit(target.key),
+        }),
+      );
+      markedId = id;
+    };
+
+    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(markedId, isNotNull);
+    final scheduleIndex = notifCalls.indexWhere(
+      (c) => c.method == 'zonedSchedule' && c.arguments['id'] == markedId,
+    );
+    final cancelIndex = notifCalls.lastIndexWhere(
+      (c) => c.method == 'cancel' && c.arguments['id'] == markedId,
+    );
+    expect(cancelIndex, greaterThan(scheduleIndex));
+    // Diğer hatırlatmalar iptal edilmez
+    expect(
+      notifCalls
+          .where((c) => c.method == 'cancel')
+          .map((c) => c.arguments['id'])
+          .toSet(),
+      {markedId},
+    );
   });
 }

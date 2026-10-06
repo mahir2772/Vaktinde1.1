@@ -33,7 +33,7 @@ class PrayerTrackerService {
   static Future<T> runExclusive<T>(Future<T> Function() action) =>
       _queue.run(action);
 
-  /// Bildirim aksiyonunu işler; geçerli bir "Kıldım" ise true
+  /// Bildirim aksiyonunu işler; vakit işaretlendiyse true
   static Future<bool> handleNotificationAction(
     NotificationResponse response,
   ) async {
@@ -41,8 +41,11 @@ class PrayerTrackerService {
       if (response.actionId != PrayerTracker.actionId) return false;
       final target = PrayerTracker.parsePayload(response.payload);
       if (target == null) return false;
-      await PrayerTrackerService().setPrayed(target.date, target.key, true);
-      return true;
+      return await PrayerTrackerService().setPrayed(
+        target.date,
+        target.key,
+        true,
+      );
     } catch (e) {
       return false;
     }
@@ -58,14 +61,15 @@ class PrayerTrackerService {
   }
 
   /// [date] günündeki [key] vaktini işaretler/kaldırır. Kılındıysa o vaktin bekleyen
-  /// "vakit çıkıyor" hatırlatması iptal edilir. Güncel kaydı döner.
-  Future<Map<String, int>> setPrayed(
-    DateTime date,
-    String key,
-    bool prayed,
-  ) async {
+  /// "vakit çıkıyor" hatırlatması iptal edilir. Kazaya eklenmiş vakit işaretlenmez
+  /// (sayaç zaten artırıldı); değişiklik yapıldıysa true.
+  Future<bool> setPrayed(DateTime date, String key, bool prayed) async {
     final result = await runExclusive(() async {
       final now = DateTime.now();
+      if (prayed &&
+          PrayerTracker.isPrayed(await _storage.loadKazaAdded(), date, key)) {
+        return false;
+      }
       final log = PrayerTracker.withPrayed(
         await _storage.loadPrayerLog(),
         date,
@@ -86,7 +90,7 @@ class PrayerTrackerService {
           } catch (e) {}
         }
       }
-      return log;
+      return true;
     });
     changes.value++;
     return result;

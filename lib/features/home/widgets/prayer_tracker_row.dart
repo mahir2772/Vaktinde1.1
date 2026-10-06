@@ -32,8 +32,10 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     with WidgetsBindingObserver {
   final PrayerTrackerService _service = PrayerTrackerService();
   Map<String, int> _log = const {};
-  DateTime _day = PrayerTracker.day(DateTime.now());
   Timer? _timer;
+  // Kaydedilmemiş dokunuş varken okunan eski kayıt ekrana yazılmaz
+  int _saving = 0;
+  int _generation = 0;
 
   @override
   void initState() {
@@ -41,14 +43,10 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     WidgetsBinding.instance.addObserver(this);
     PrayerTrackerService.changes.addListener(_load);
     _load();
-    // Vakit girince işaret açılır, gün değişince kayıt yenilenir
+    // Vakit girince işaret açılır; bildirimden (başka isolate) işaretlenen vakit,
+    // gün değişimi de kayıttan yeniden okunarak yansır
     _timer = Timer.periodic(const Duration(seconds: 30), (_) {
-      if (!mounted) return;
-      if (PrayerTracker.day(DateTime.now()) != _day) {
-        _load();
-      } else {
-        setState(() {});
-      }
+      if (mounted) _load();
     });
   }
 
@@ -67,13 +65,12 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
   }
 
   Future<void> _load() async {
+    if (_saving > 0) return;
+    final generation = _generation;
     try {
       final log = await _service.loadLog();
-      if (!mounted) return;
-      setState(() {
-        _log = log;
-        _day = PrayerTracker.day(DateTime.now());
-      });
+      if (!mounted || _saving > 0 || generation != _generation) return;
+      setState(() => _log = log);
     } catch (e) {}
   }
 
@@ -105,16 +102,23 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     final today = PrayerTracker.day(now);
     final prayed = !PrayerTracker.isPrayed(_log, today, key);
     final viewModel = context.read<HomeViewModel>();
+    _saving++;
+    _generation++;
     setState(() {
       _log = PrayerTracker.withPrayed(_log, today, key, prayed, today: now);
-      _day = today;
     });
     try {
       await _service.setPrayed(today, key, prayed);
-      // Geri alınan vaktin "vakit çıkıyor" hatırlatması yeniden kurulur
-      if (!prayed) await viewModel.refreshEndReminders();
     } catch (e) {
-      _load();
+    } finally {
+      _saving--;
+    }
+    _load();
+    // Geri alınan vaktin "vakit çıkıyor" hatırlatması yeniden kurulur
+    if (!prayed) {
+      try {
+        await viewModel.refreshEndReminders();
+      } catch (e) {}
     }
   }
 

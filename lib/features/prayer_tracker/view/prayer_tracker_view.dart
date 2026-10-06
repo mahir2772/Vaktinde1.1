@@ -1,5 +1,6 @@
 // ignore_for_file: empty_catches
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +40,10 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   DateTime? _since;
   bool _isLoading = true;
   bool _busy = false;
+  Timer? _timer;
+  // Kaydedilmemiş dokunuş varken okunan eski kayıt ekrana yazılmaz
+  int _saving = 0;
+  int _generation = 0;
 
   @override
   void initState() {
@@ -46,12 +51,17 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     WidgetsBinding.instance.addObserver(this);
     PrayerTrackerService.changes.addListener(_load);
     _load();
+    // Bildirimden (başka isolate) işaretlenen vakit ve gün değişimi yansısın
+    _timer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted) _load();
+    });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     PrayerTrackerService.changes.removeListener(_load);
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -61,11 +71,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   }
 
   Future<void> _load() async {
+    if (_saving > 0) return;
+    final generation = _generation;
     try {
       final log = await _service.loadLog();
       final added = await _service.loadKazaAdded();
       final since = await _service.loadSince();
-      if (!mounted) return;
+      if (!mounted || _saving > 0 || generation != _generation) return;
       setState(() {
         _log = log;
         _kazaAdded = added;
@@ -132,6 +144,8 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     }
     final prayed = !PrayerTracker.isPrayed(_log, date, key);
     final viewModel = context.read<HomeViewModel>();
+    _saving++;
+    _generation++;
     setState(() {
       _log = PrayerTracker.withPrayed(
         _log,
@@ -143,9 +157,15 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     });
     try {
       await _service.setPrayed(date, key, prayed);
-      if (!prayed) await viewModel.refreshEndReminders();
     } catch (e) {
-      _load();
+    } finally {
+      _saving--;
+    }
+    _load();
+    if (!prayed) {
+      try {
+        await viewModel.refreshEndReminders();
+      } catch (e) {}
     }
   }
 
@@ -237,13 +257,19 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     for (final key in PrayerTracker.prayerKeys) {
       if (_isDue(now, key, times)) todayDue++;
     }
+    final ongoing = _yesterdayYatsiOngoing(times);
     final rate = PrayerTracker.completionRate(
       _log,
       now,
       todayDue: todayDue,
       since: _since,
+      yesterdayYatsiOngoing: ongoing,
     );
-    final streak = PrayerTracker.streak(_log, now);
+    final streak = PrayerTracker.streak(
+      _log,
+      now,
+      yesterdayYatsiOngoing: ongoing,
+    );
     final rateText = rate == null
         ? "–"
         : NumberFormat.percentPattern(loc.localeName).format(rate);

@@ -118,11 +118,25 @@ class PrayerTracker {
     };
   }
 
-  /// Beş vaktin tamamının kılındığı ardışık günler. Bugün sadece tamamsa sayılır.
-  static int streak(Map<String, int> log, DateTime today) {
+  /// Beş vaktin tamamının kılındığı ardışık günler. Bugün sadece tamamsa sayılır;
+  /// [yesterdayYatsiOngoing] (imsak girmedi) ise dünün yatsısı da henüz eksik sayılmaz.
+  static int streak(
+    Map<String, int> log,
+    DateTime today, {
+    bool yesterdayYatsiOngoing = false,
+  }) {
     int count = 0;
     if (maskOf(log, today) == fullMask) count++;
     DateTime d = addDays(today, -1);
+    if (yesterdayYatsiOngoing) {
+      final mask = maskOf(log, d);
+      if (mask == fullMask) {
+        count++;
+      } else if ((mask | bit("Yatsı")) != fullMask) {
+        return count;
+      }
+      d = addDays(d, -1);
+    }
     while (maskOf(log, d) == fullMask) {
       count++;
       d = addDays(d, -1);
@@ -132,12 +146,14 @@ class PrayerTracker {
 
   /// Son [statsDays] günde (bugün dahil, takibe başlanan [since] gününden itibaren)
   /// kılınan / vakti girmiş farz oranı (0-1). [todayDue]: bugün vakti girmiş farz sayısı.
+  /// [yesterdayYatsiOngoing]: dünün yatsısı kılınmadıysa henüz paydaya girmez.
   /// Değerlendirilecek vakit yoksa null.
   static double? completionRate(
     Map<String, int> log,
     DateTime today, {
     required int todayDue,
     DateTime? since,
+    bool yesterdayYatsiOngoing = false,
   }) {
     if (since == null) return null;
     int done = 0;
@@ -146,8 +162,11 @@ class PrayerTracker {
       final d = addDays(today, -i);
       if (daysBetween(since, d) < 0) break;
       final c = countOf(maskOf(log, d));
+      int due = prayerKeys.length;
+      if (i == 0) due = todayDue;
+      if (i == 1 && yesterdayYatsiOngoing) due = prayerKeys.length - 1;
       done += c;
-      total += i == 0 ? (c > todayDue ? c : todayDue) : prayerKeys.length;
+      total += c > due ? c : due;
     }
     if (total == 0) return null;
     return done / total;

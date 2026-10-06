@@ -505,6 +505,18 @@ class PrayerRefreshService {
           succeeded++;
         } catch (e) {}
       }
+      // Bu arada bildirimden "Kıldım" denmiş olabilir (ayrı isolate): o vaktin
+      // yeniden kurulan hatırlatması iptal edilir
+      if (plan.isNotEmpty) {
+        final fresh = await _storageService.loadPrayerLog();
+        for (final alarm in plan) {
+          final target = PrayerTracker.parsePayload(alarm.payload);
+          if (target != null &&
+              PrayerTracker.isPrayed(fresh, target.date, target.key)) {
+            await _notifications.cancel(alarm.id);
+          }
+        }
+      }
     } catch (e) {
       return false;
     }
@@ -520,8 +532,9 @@ class PrayerRefreshService {
 
   /// Ezan/hatırlatma alarmlarını kurar. Koordinat varsa 5 gün (uygulama açılmasa da ezan gelir),
   /// yoksa sadece [todayTimes] ile 1 gün.
-  /// [replaceOnly] (arka plan): toplu iptal yerine aynı ID'nin üzerine yazılır, sadece plandan
-  /// çıkan bekleyen alarmlar iptal edilir → ekrandaki ezan bildirimi silinmez, alarmda boşluk olmaz.
+  /// Toplu iptal yok: aynı ID'nin üzerine yazılır, sadece plandan çıkan bekleyen (henüz
+  /// çalmamış) alarmlar iptal edilir → ekrandaki ezan bildirimi ve "Kıldım" butonu silinmez,
+  /// alarmda boşluk olmaz.
   Future<void> rescheduleAlarms({
     required PrayerTimesModel todayTimes,
     required AppLocalizations loc,
@@ -530,7 +543,6 @@ class PrayerRefreshService {
     required Map<String, String> selectedSounds,
     required Map<String, String> selectedReminderSounds,
     required Map<String, bool> silentModeSettings,
-    bool replaceOnly = false,
   }) => _serializeAlarms(() async {
     final now = DateTime.now();
     final planDays = await _planDays(todayTimes, now);
@@ -547,15 +559,11 @@ class PrayerRefreshService {
       ramadan: ramadan,
     );
 
-    if (replaceOnly) {
-      final plannedIds = plan.map((a) => a.id).toSet();
-      for (final id in await _notifications.pendingIds()) {
-        if (id >= 0 && id < alarmDays * 12 && !plannedIds.contains(id)) {
-          await _notifications.cancel(id);
-        }
+    final plannedIds = plan.map((a) => a.id).toSet();
+    for (final id in await _notifications.pendingIds()) {
+      if (id >= 0 && id < alarmDays * 12 && !plannedIds.contains(id)) {
+        await _notifications.cancel(id);
       }
-    } else {
-      await _notifications.cancelSpecificAlarms();
     }
 
     int succeeded = 0;
@@ -702,7 +710,6 @@ class PrayerRefreshService {
           selectedSounds: settings['sounds'],
           selectedReminderSounds: settings['reminderSounds'],
           silentModeSettings: settings['silentMode'],
-          replaceOnly: true,
         );
       }
       await service._topUpDailyContent(loc);
