@@ -596,6 +596,30 @@ abstract class AppLocalizations {
   /// **'Vakit Çıkış Hatırlatmaları'**
   String get endReminderChannel;
 
+  /// No description provided for @ramadanIftarTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftar Vakti'**
+  String get ramadanIftarTitle;
+
+  /// No description provided for @ramadanIftarBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vakti girdi. Hayırlı iftarlar!'**
+  String ramadanIftarBody(String vakit);
+
+  /// No description provided for @ramadanImsakTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsak Vakti'**
+  String get ramadanImsakTitle;
+
+  /// No description provided for @ramadanImsakBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahur vakti sona erdi. Hayırlı oruçlar!'**
+  String get ramadanImsakBody;
+
   /// No description provided for @sectionSupport.
   ///
   /// In tr, this message translates to:

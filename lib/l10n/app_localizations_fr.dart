@@ -306,6 +306,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get endReminderChannel => 'Rappels de fin de prière';
 
   @override
+  String get ramadanIftarTitle => 'Heure de l\'iftar';
+
+  @override
+  String ramadanIftarBody(String vakit) {
+    return 'L\'heure de $vakit est arrivée. Bon iftar !';
+  }
+
+  @override
+  String get ramadanImsakTitle => 'Heure de l\'imsak';
+
+  @override
+  String get ramadanImsakBody => 'Le temps du suhoor est terminé. Bon jeûne !';
+
+  @override
   String get sectionSupport => 'SUPPORT';
 
   @override

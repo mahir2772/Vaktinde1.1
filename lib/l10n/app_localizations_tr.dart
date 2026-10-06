@@ -297,6 +297,20 @@ class AppLocalizationsTr extends AppLocalizations {
   String get endReminderChannel => 'Vakit Çıkış Hatırlatmaları';
 
   @override
+  String get ramadanIftarTitle => 'İftar Vakti';
+
+  @override
+  String ramadanIftarBody(String vakit) {
+    return '$vakit vakti girdi. Hayırlı iftarlar!';
+  }
+
+  @override
+  String get ramadanImsakTitle => 'İmsak Vakti';
+
+  @override
+  String get ramadanImsakBody => 'Sahur vakti sona erdi. Hayırlı oruçlar!';
+
+  @override
   String get sectionSupport => 'DESTEK';
 
   @override

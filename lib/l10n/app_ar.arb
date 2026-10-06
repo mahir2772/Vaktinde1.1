@@ -157,6 +157,17 @@
         }
     },
     "endReminderChannel": "تذكيرات خروج الوقت",
+    "ramadanIftarTitle": "حان وقت الإفطار",
+    "ramadanIftarBody": "دخل وقت {vakit}. إفطارًا هنيئًا!",
+    "@ramadanIftarBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakTitle": "حان وقت الإمساك",
+    "ramadanImsakBody": "انتهى وقت السحور. صومًا مقبولًا!",
     "sectionSupport": "الدعم",
     "shareApp": "شارك مع صديق",
     "rateApp": "قيمنا",

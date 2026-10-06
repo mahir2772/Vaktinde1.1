@@ -1,6 +1,7 @@
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,6 +26,7 @@ void main() {
     required DateTime now,
     bool reminders = true,
     bool silent = false,
+    RamadanCalendar? ramadan,
   }) => PrayerRefreshService.buildAlarmPlan(
     days: List.filled(dayCount, day),
     now: now,
@@ -34,6 +36,7 @@ void main() {
     selectedSounds: const {'Öğle': 'ezan3'},
     selectedReminderSounds: const {},
     silentModeSettings: all(silent),
+    ramadan: ramadan,
   );
 
   test('Hicri tarih tüm uygulama dillerinde hata vermez', () {
@@ -233,6 +236,83 @@ void main() {
         }
       }
       expect(shared, 4 * 5);
+    });
+  });
+
+  group('Ramazan ezan metinleri', () {
+    // Diyanet 1447: 19 Şubat - 19 Mart 2026, bayram 20 Mart
+    final calendar = RamadanCalendar.fromReligiousDays([
+      {'name': 'Ramazan Başlangıcı', 'date': '19 Şubat 2026'},
+      {'name': 'Ramazan Bayramı 1. Gün', 'date': '20 Mart 2026'},
+    ]);
+    final now = DateTime(2026, 3, 18, 0, 1); // 18-19 Mart Ramazan, 20-22 değil
+
+    test('Ramazan gününde imsak sahur, akşam iftar metni; diğer günler normal', () {
+      final alarms = plan(dayCount: 5, now: now, ramadan: calendar);
+      PlannedAlarm byId(int id) => alarms.firstWhere((a) => a.id == id);
+      for (final day in [0, 1]) {
+        final imsak = byId(12 * day);
+        expect(imsak.title, loc.ramadanImsakTitle);
+        expect(imsak.body, loc.ramadanImsakBody);
+        final aksam = byId(12 * day + 8);
+        expect(aksam.title, loc.ramadanIftarTitle);
+        expect(aksam.body, loc.ramadanIftarBody(loc.aksam));
+        // Diğer vakitler değişmez
+        expect(byId(12 * day + 4).body, loc.notifBodyTime(loc.ogle));
+        expect(byId(12 * day + 10).body, loc.notifBodyTime(loc.yatsi));
+      }
+      for (final day in [2, 3, 4]) {
+        expect(byId(12 * day).title, loc.notifTitleTime);
+        expect(byId(12 * day).body, loc.notifBodyTime(loc.imsak));
+        expect(byId(12 * day + 8).body, loc.notifBodyTime(loc.aksam));
+      }
+    });
+
+    test('Sadece başlık/metin değişir: ID, saat, ses, kanal, Kıldım aynı', () {
+      final normal = plan(dayCount: 5, now: now);
+      final ramadan = plan(dayCount: 5, now: now, ramadan: calendar);
+      expect(ramadan.length, normal.length);
+      int changed = 0;
+      for (int i = 0; i < normal.length; i++) {
+        final a = normal[i];
+        final b = ramadan[i];
+        expect(
+          (b.id, b.time, b.sound, b.channelName, b.payload, b.actionLabel),
+          (a.id, a.time, a.sound, a.channelName, a.payload, a.actionLabel),
+        );
+        if (a.title != b.title || a.body != b.body) changed++;
+      }
+      expect(changed, 4); // 2 gün x (imsak + akşam)
+      // Takvim verilmezse (ya da Ramazan dışı) metinler normal
+      expect(
+        normal.firstWhere((a) => a.id == 8).body,
+        loc.notifBodyTime(loc.aksam),
+      );
+    });
+
+    test('Tek gün modunda yarına kayan imsak yarının gününe göre', () {
+      // 19 Mart öğlen: yarının (20 Mart, bayram) imsakı normal, bugünün akşamı iftar
+      final alarms = plan(
+        dayCount: 1,
+        now: DateTime(2026, 3, 19, 12, 0),
+        reminders: false,
+        ramadan: calendar,
+      );
+      expect(alarms.first.time, DateTime(2026, 3, 20, 5, 0));
+      expect(alarms.first.body, loc.notifBodyTime(loc.imsak));
+      final aksam = alarms.firstWhere((a) => a.id == 8);
+      expect(aksam.time, DateTime(2026, 3, 19, 19, 0));
+      expect(aksam.title, loc.ramadanIftarTitle);
+    });
+
+    test('Ramazan dışında hijri yedeği de normal metin verir', () {
+      final alarms = plan(
+        dayCount: 5,
+        now: DateTime(2026, 6, 10, 0, 1),
+        ramadan: RamadanCalendar.hijriOnly,
+      );
+      expect(alarms.where((a) => a.title != loc.notifTitleTime &&
+          a.title != loc.notifTitleUpcoming), isEmpty);
     });
   });
 }

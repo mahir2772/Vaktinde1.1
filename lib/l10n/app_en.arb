@@ -157,6 +157,17 @@
         }
     },
     "endReminderChannel": "Prayer End Reminders",
+    "ramadanIftarTitle": "Iftar Time",
+    "ramadanIftarBody": "{vakit} time has begun. Have a blessed iftar!",
+    "@ramadanIftarBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakTitle": "Imsak Time",
+    "ramadanImsakBody": "Suhoor time has ended. Have a blessed fast!",
     "sectionSupport": "SUPPORT",
     "shareApp": "Share with a Friend",
     "rateApp": "Rate Us",

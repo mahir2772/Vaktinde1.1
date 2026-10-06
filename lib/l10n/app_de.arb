@@ -157,6 +157,17 @@
         }
     },
     "endReminderChannel": "Erinnerungen vor Gebetsende",
+    "ramadanIftarTitle": "Iftar-Zeit",
+    "ramadanIftarBody": "Die {vakit}-Zeit hat begonnen. Gesegnetes Iftar!",
+    "@ramadanIftarBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakTitle": "Imsak-Zeit",
+    "ramadanImsakBody": "Die Suhur-Zeit ist vorbei. Gesegnetes Fasten!",
     "sectionSupport": "SUPPORT",
     "shareApp": "Mit Freunden Teilen",
     "rateApp": "Bewerten Sie uns",

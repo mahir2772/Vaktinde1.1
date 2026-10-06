@@ -36,7 +36,8 @@ lib/
       prayer_refresh_service BuildContext'siz ortak mantık: widget/kalıcı bildirim verisi, 5 günlük alarm planı (buildAlarmPlan),
                             günlük ayet/hadis bildirimi, hicri tarih (de/fr → en). runHeadless(): WorkManager görevi — bugünün
                             vakitleri → cache + widget + bg_display; alarmlar günde bir ('alarms_scheduled_date', en az biri kurulunca), toplu iptal yok.
-                            buildEndReminderPlan/syncEndReminders: "vakit çıkmadan hatırlat" (ayar: end_reminder_*). Alarm işleri SerialQueue ile sıralı
+                            buildEndReminderPlan/syncEndReminders: "vakit çıkmadan hatırlat" (ayar: end_reminder_*). Alarm işleri SerialQueue ile sıralı.
+                            Ramazan günlerinde (gün gün, loadRamadanCalendar; olmazsa hijriOnly) imsak/akşam ezanı sahur/iftar metniyle
       widget_service        home_widget → Android widget'larına veri yazar
       hadith_service        hadeethenc.com API + yerel json fallback
       ayah_service          api.alquran.cloud

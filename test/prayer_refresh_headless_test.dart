@@ -4,6 +4,7 @@ import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -279,5 +280,12 @@ void main() {
         isNot(endsWith('T23:59:00')),
       );
     }
+  });
+
+  test('Ramazan takvimi (Diyanet tarihleri) widget olmadan da okunur', () async {
+    final calendar = await loadRamadanCalendar();
+    expect(calendar.official, isNotEmpty);
+    expect(calendar.dayOf(DateTime(2026, 3, 19)), 29);
+    expect(calendar.dayOf(DateTime(2026, 3, 20)), isNull);
   });
 }

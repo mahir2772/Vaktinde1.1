@@ -157,6 +157,17 @@
         }
     },
     "endReminderChannel": "Rappels de fin de prière",
+    "ramadanIftarTitle": "Heure de l'iftar",
+    "ramadanIftarBody": "L'heure de {vakit} est arrivée. Bon iftar !",
+    "@ramadanIftarBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakTitle": "Heure de l'imsak",
+    "ramadanImsakBody": "Le temps du suhoor est terminé. Bon jeûne !",
     "sectionSupport": "SUPPORT",
     "shareApp": "Partager avec un Ami",
     "rateApp": "Évaluez-nous",

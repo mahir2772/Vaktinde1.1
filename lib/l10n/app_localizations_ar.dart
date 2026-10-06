@@ -310,6 +310,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get endReminderChannel => 'تذكيرات خروج الوقت';
 
   @override
+  String get ramadanIftarTitle => 'حان وقت الإفطار';
+
+  @override
+  String ramadanIftarBody(String vakit) {
+    return 'دخل وقت $vakit. إفطارًا هنيئًا!';
+  }
+
+  @override
+  String get ramadanImsakTitle => 'حان وقت الإمساك';
+
+  @override
+  String get ramadanImsakBody => 'انتهى وقت السحور. صومًا مقبولًا!';
+
+  @override
   String get sectionSupport => 'الدعم';
 
   @override

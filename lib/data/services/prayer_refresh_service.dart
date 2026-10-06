@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
+import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../models/hadith_model.dart';
@@ -220,6 +222,7 @@ class PrayerRefreshService {
 
   /// Ezan (çift ID) ve hatırlatma (tek ID) planı; gün başına 12 ID.
   /// [days] bugünden başlayan günlerin vakitleri. Tek gün varsa geçmiş vakit yarına kayar.
+  /// [ramadan] verilirse Ramazan günlerinde imsak/akşam ezanı sahur/iftar metniyle gelir.
   static List<PlannedAlarm> buildAlarmPlan({
     required List<PrayerTimesModel> days,
     required DateTime now,
@@ -229,6 +232,7 @@ class PrayerRefreshService {
     required Map<String, String> selectedSounds,
     required Map<String, String> selectedReminderSounds,
     required Map<String, bool> silentModeSettings,
+    RamadanCalendar? ramadan,
   }) {
     final vakitDisplayNames = vakitNames(loc);
     final plan = <PlannedAlarm>[];
@@ -258,11 +262,24 @@ class PrayerRefreshService {
               : (selectedSounds[vakitLogicKey] ?? "ezan1");
           // Farz vakitlerde "Kıldım" butonu (Güneş hariç)
           final tracked = PrayerTracker.prayerKeys.contains(vakitLogicKey);
+          String title = loc.notifTitleTime;
+          String body = loc.notifBodyTime(vakitDisplayName);
+          // Ramazan günü (vaktin kendi gününe göre): imsak = sahur bitti, akşam = iftar
+          if ((vakitLogicKey == "İmsak" || vakitLogicKey == "Akşam") &&
+              _isRamadanDay(ramadan, vakitDate)) {
+            if (vakitLogicKey == "İmsak") {
+              title = loc.ramadanImsakTitle;
+              body = loc.ramadanImsakBody;
+            } else {
+              title = loc.ramadanIftarTitle;
+              body = loc.ramadanIftarBody(vakitDisplayName);
+            }
+          }
           plan.add(
             PlannedAlarm(
               id: idCounter,
-              title: loc.notifTitleTime,
-              body: loc.notifBodyTime(vakitDisplayName),
+              title: title,
+              body: body,
               time: vakitDate,
               sound: soundToSend,
               channelName: soundToSend != null
@@ -301,6 +318,24 @@ class PrayerRefreshService {
       }
     }
     return plan;
+  }
+
+  static bool _isRamadanDay(RamadanCalendar? ramadan, DateTime date) {
+    if (ramadan == null) return false;
+    try {
+      return ramadan.dayOf(date) != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Diyanet Ramazan takvimi (bir kez okunur); okunamazsa hijri hesabı
+  static Future<RamadanCalendar> _ramadanCalendar() async {
+    try {
+      return await loadRamadanCalendar().timeout(const Duration(seconds: 5));
+    } catch (e) {
+      return RamadanCalendar.hijriOnly;
+    }
   }
 
   /// "Vakit çıkmadan hatırlat" planı (ID 100-124). [days][0] bugün, [previous] dünün
@@ -499,6 +534,7 @@ class PrayerRefreshService {
   }) => _serializeAlarms(() async {
     final now = DateTime.now();
     final planDays = await _planDays(todayTimes, now);
+    final ramadan = await _ramadanCalendar();
     final plan = buildAlarmPlan(
       days: planDays.days,
       now: now,
@@ -508,6 +544,7 @@ class PrayerRefreshService {
       selectedSounds: selectedSounds,
       selectedReminderSounds: selectedReminderSounds,
       silentModeSettings: silentModeSettings,
+      ramadan: ramadan,
     );
 
     if (replaceOnly) {

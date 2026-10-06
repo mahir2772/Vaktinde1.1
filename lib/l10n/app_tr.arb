@@ -157,6 +157,17 @@
         }
     },
     "endReminderChannel": "Vakit Çıkış Hatırlatmaları",
+    "ramadanIftarTitle": "İftar Vakti",
+    "ramadanIftarBody": "{vakit} vakti girdi. Hayırlı iftarlar!",
+    "@ramadanIftarBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakTitle": "İmsak Vakti",
+    "ramadanImsakBody": "Sahur vakti sona erdi. Hayırlı oruçlar!",
     "sectionSupport": "DESTEK",
     "shareApp": "Arkadaşınla Paylaş",
     "rateApp": "Bize Puan Ver",
