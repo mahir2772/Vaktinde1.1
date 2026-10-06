@@ -940,4 +940,46 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dhikrTarget => 'Ziel:';
+
+  @override
+  String get imsakiyeTitle => 'Gebetskalender';
+
+  @override
+  String get imsakiyeRamadan => 'Ramadan';
+
+  @override
+  String imsakiyeRamadanTitle(int year) {
+    return 'Ramadan-Kalender $year';
+  }
+
+  @override
+  String get imsakiyeDay => 'Tag';
+
+  @override
+  String get imsakiyeSunriseShort => 'Sonne';
+
+  @override
+  String get imsakiyePrevMonth => 'Vorheriger Monat';
+
+  @override
+  String get imsakiyeNextMonth => 'Nächster Monat';
+
+  @override
+  String get imsakiyeNoLocation =>
+      'Bitte wählen Sie zuerst Ihren Standort, um den Gebetskalender zu sehen. Sie können ihn auf dem Startbildschirm oder in den Einstellungen festlegen.';
+
+  @override
+  String get imsakiyeShareError =>
+      'Der Gebetskalender konnte nicht geteilt werden. Bitte versuchen Sie es erneut.';
+
+  @override
+  String get ramadanSahurLeft => 'Zeit bis Sahur';
+
+  @override
+  String get ramadanIftarLeft => 'Zeit bis Iftar';
+
+  @override
+  String ramadanDayLabel(int day) {
+    return 'Ramadan, Tag $day';
+  }
 }

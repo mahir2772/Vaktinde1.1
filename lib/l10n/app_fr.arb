@@ -395,5 +395,31 @@
     "editCounterHint": "Ex : 2000",
     "editTargetHint": "Ex : 99",
     "resetCounterConfirm": "Êtes-vous sûr de vouloir réinitialiser le compteur ?",
-    "dhikrTarget": "Objectif :"
+    "dhikrTarget": "Objectif :",
+    "imsakiyeTitle": "Calendrier des prières",
+    "imsakiyeRamadan": "Ramadan",
+    "imsakiyeRamadanTitle": "Calendrier du Ramadan {year}",
+    "@imsakiyeRamadanTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "imsakiyeDay": "Jour",
+    "imsakiyeSunriseShort": "Lever",
+    "imsakiyePrevMonth": "Mois précédent",
+    "imsakiyeNextMonth": "Mois suivant",
+    "imsakiyeNoLocation": "Veuillez d'abord choisir votre position pour afficher le calendrier. Vous pouvez la définir sur l'écran d'accueil ou dans les Paramètres.",
+    "imsakiyeShareError": "Impossible de partager le calendrier. Veuillez réessayer.",
+    "ramadanSahurLeft": "Temps avant le Suhoor",
+    "ramadanIftarLeft": "Temps avant l'Iftar",
+    "ramadanDayLabel": "Ramadan, jour {day}",
+    "@ramadanDayLabel": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    }
 }

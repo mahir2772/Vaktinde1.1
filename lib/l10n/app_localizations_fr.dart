@@ -940,4 +940,46 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dhikrTarget => 'Objectif :';
+
+  @override
+  String get imsakiyeTitle => 'Calendrier des prières';
+
+  @override
+  String get imsakiyeRamadan => 'Ramadan';
+
+  @override
+  String imsakiyeRamadanTitle(int year) {
+    return 'Calendrier du Ramadan $year';
+  }
+
+  @override
+  String get imsakiyeDay => 'Jour';
+
+  @override
+  String get imsakiyeSunriseShort => 'Lever';
+
+  @override
+  String get imsakiyePrevMonth => 'Mois précédent';
+
+  @override
+  String get imsakiyeNextMonth => 'Mois suivant';
+
+  @override
+  String get imsakiyeNoLocation =>
+      'Veuillez d\'abord choisir votre position pour afficher le calendrier. Vous pouvez la définir sur l\'écran d\'accueil ou dans les Paramètres.';
+
+  @override
+  String get imsakiyeShareError =>
+      'Impossible de partager le calendrier. Veuillez réessayer.';
+
+  @override
+  String get ramadanSahurLeft => 'Temps avant le Suhoor';
+
+  @override
+  String get ramadanIftarLeft => 'Temps avant l\'Iftar';
+
+  @override
+  String ramadanDayLabel(int day) {
+    return 'Ramadan, jour $day';
+  }
 }

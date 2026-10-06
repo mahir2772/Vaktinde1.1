@@ -13,7 +13,7 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 `lib/main.dart` → Firebase init + Crashlytics hata yakalayıcıları → `MobileAds.initialize` + `AdHelper.loadInterstitialAd` → `BackgroundManager.initializeService` → `MultiProvider` (HomeViewModel, LanguageProvider, ThemeProvider, ZikirViewModel) → dil seçilmemişse `OnboardingLanguageView` → `IntroView`, yoksa `MainWrapper`.
 
 `MainWrapper` (alt menü + banner reklam + showcase turu): HomeView, QiblaView, ZikirView, ToolsView, SettingsView.
-`ToolsView` → Zakat, EsmaulHusna, FridayMessages, MissedPrayers, ReligiousDays, Dhikr list/stats.
+`ToolsView` → Imsakiye, Zakat, EsmaulHusna, FridayMessages, MissedPrayers, ReligiousDays, Dhikr list/stats.
 
 ## Klasörler
 ```
@@ -40,6 +40,9 @@ lib/
                                            arka plan servisine/widget'a veri gönderme, günlük hadis/ayet
     home/view/home_view.dart               vakit kartları, hata ekranları (errorMessageKey), sayaç
     home/widgets/countdown_widget.dart     "HH:mm" parse eder (split(':'))
+    home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (CountdownWidget altında)
+    imsakiye/imsakiye_logic.dart           saf hesaplar: Ramazan aralığı (hijri, düzeltmesiz), ay günleri, Ramazan sayacı
+    imsakiye/view/imsakiye_view.dart       aylık/Ramazan imsakiyesi (forDate ile); paylaşım = ekran dışı RepaintBoundary → PNG
     common/ad_helper.dart                  interstitial singleton (5 dk cooldown)
     common/widgets/ad_banner_widget.dart   banner
     common/{language,theme}_provider.dart

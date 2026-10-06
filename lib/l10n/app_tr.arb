@@ -395,5 +395,31 @@
     "editCounterHint": "Örn: 2000",
     "editTargetHint": "Örn: 99",
     "resetCounterConfirm": "Sayacı sıfırlamak istediğinize emin misiniz?",
-    "dhikrTarget": "Hedef:"
+    "dhikrTarget": "Hedef:",
+    "imsakiyeTitle": "İmsakiye",
+    "imsakiyeRamadan": "Ramazan",
+    "imsakiyeRamadanTitle": "Ramazan {year} İmsakiyesi",
+    "@imsakiyeRamadanTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "imsakiyeDay": "Gün",
+    "imsakiyeSunriseShort": "Güneş",
+    "imsakiyePrevMonth": "Önceki ay",
+    "imsakiyeNextMonth": "Sonraki ay",
+    "imsakiyeNoLocation": "İmsakiyeyi görmek için önce konumunuzu seçin. Konumu ana ekrandan veya Ayarlar'dan belirleyebilirsiniz.",
+    "imsakiyeShareError": "İmsakiye paylaşılamadı. Lütfen tekrar deneyin.",
+    "ramadanSahurLeft": "Sahura Kalan",
+    "ramadanIftarLeft": "İftara Kalan",
+    "ramadanDayLabel": "Ramazan'ın {day}. günü",
+    "@ramadanDayLabel": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    }
 }

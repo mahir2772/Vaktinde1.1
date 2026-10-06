@@ -935,4 +935,46 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dhikrTarget => 'Hedef:';
+
+  @override
+  String get imsakiyeTitle => 'İmsakiye';
+
+  @override
+  String get imsakiyeRamadan => 'Ramazan';
+
+  @override
+  String imsakiyeRamadanTitle(int year) {
+    return 'Ramazan $year İmsakiyesi';
+  }
+
+  @override
+  String get imsakiyeDay => 'Gün';
+
+  @override
+  String get imsakiyeSunriseShort => 'Güneş';
+
+  @override
+  String get imsakiyePrevMonth => 'Önceki ay';
+
+  @override
+  String get imsakiyeNextMonth => 'Sonraki ay';
+
+  @override
+  String get imsakiyeNoLocation =>
+      'İmsakiyeyi görmek için önce konumunuzu seçin. Konumu ana ekrandan veya Ayarlar\'dan belirleyebilirsiniz.';
+
+  @override
+  String get imsakiyeShareError =>
+      'İmsakiye paylaşılamadı. Lütfen tekrar deneyin.';
+
+  @override
+  String get ramadanSahurLeft => 'Sahura Kalan';
+
+  @override
+  String get ramadanIftarLeft => 'İftara Kalan';
+
+  @override
+  String ramadanDayLabel(int day) {
+    return 'Ramazan\'ın $day. günü';
+  }
 }

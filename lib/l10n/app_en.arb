@@ -395,5 +395,31 @@
     "editCounterHint": "E.g.: 2000",
     "editTargetHint": "E.g.: 99",
     "resetCounterConfirm": "Are you sure you want to reset the counter?",
-    "dhikrTarget": "Target:"
+    "dhikrTarget": "Target:",
+    "imsakiyeTitle": "Prayer Timetable",
+    "imsakiyeRamadan": "Ramadan",
+    "imsakiyeRamadanTitle": "Ramadan {year} Timetable",
+    "@imsakiyeRamadanTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "imsakiyeDay": "Day",
+    "imsakiyeSunriseShort": "Sunrise",
+    "imsakiyePrevMonth": "Previous month",
+    "imsakiyeNextMonth": "Next month",
+    "imsakiyeNoLocation": "Please select your location first to see the timetable. You can set it on the home screen or in Settings.",
+    "imsakiyeShareError": "Could not share the timetable. Please try again.",
+    "ramadanSahurLeft": "Time to Suhoor",
+    "ramadanIftarLeft": "Time to Iftar",
+    "ramadanDayLabel": "Ramadan, day {day}",
+    "@ramadanDayLabel": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    }
 }

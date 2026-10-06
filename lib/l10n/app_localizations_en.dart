@@ -934,4 +934,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dhikrTarget => 'Target:';
+
+  @override
+  String get imsakiyeTitle => 'Prayer Timetable';
+
+  @override
+  String get imsakiyeRamadan => 'Ramadan';
+
+  @override
+  String imsakiyeRamadanTitle(int year) {
+    return 'Ramadan $year Timetable';
+  }
+
+  @override
+  String get imsakiyeDay => 'Day';
+
+  @override
+  String get imsakiyeSunriseShort => 'Sunrise';
+
+  @override
+  String get imsakiyePrevMonth => 'Previous month';
+
+  @override
+  String get imsakiyeNextMonth => 'Next month';
+
+  @override
+  String get imsakiyeNoLocation =>
+      'Please select your location first to see the timetable. You can set it on the home screen or in Settings.';
+
+  @override
+  String get imsakiyeShareError =>
+      'Could not share the timetable. Please try again.';
+
+  @override
+  String get ramadanSahurLeft => 'Time to Suhoor';
+
+  @override
+  String get ramadanIftarLeft => 'Time to Iftar';
+
+  @override
+  String ramadanDayLabel(int day) {
+    return 'Ramadan, day $day';
+  }
 }

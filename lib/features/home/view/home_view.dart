@@ -12,6 +12,7 @@ import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/countdown_widget.dart';
+import '../widgets/ramadan_card.dart';
 // YENİ: GLOBAL ANAHTARLARI İÇERİ ALIYORUZ
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
 
@@ -411,6 +412,7 @@ class _HomeViewState extends State<HomeView>
                   scale: 0.9,
                   child: CountdownWidget(prayerTimes: viewModel.prayerTimes!),
                 ),
+                RamadanCard(prayerTimes: viewModel.prayerTimes!),
               ],
             ),
           ),
