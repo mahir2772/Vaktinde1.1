@@ -1,4 +1,4 @@
-# Vaktinde — Durum (v1.0.1+14)
+# Vaktinde — Durum (v1.1.0+14)
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
 
@@ -18,15 +18,28 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | 11 | Temizlik | Bozuk widget_test silindi, `android/build` + translator cache git'ten çıktı, `fromList` ölü kod, kullanılmayan `workmanager` kaldırıldı, Kotlin klasörü `com/mmdigital/vaktinde`, README, pubspec açıklaması, iOS'ta AdHelper çökmez |
 | 12 | İnternetsiz ilk açılışta font yok | Poppins `assets/google_fonts` içinde gömülü |
 
+## v1.1.0 yeni özellikler ✅
+| Özellik | Nerede |
+|---|---|
+| Vakit ince ayarı (±30 dk) | Ayarlar → `time_adjust_view.dart`; `forDate()` her yerde uygular |
+| Namaz takibi ("Kıldım" bildirim butonu, Bugün satırı, 7 gün/30 gün/seri, kazaya ekle) | `prayer_tracker_*`, araçlar kartı |
+| İmsakiye (aylık + Ramazan, PNG paylaşım) | `features/imsakiye/` (Ramazan tarihleri Diyanet `religious_days.json`, yoksa hijri) |
+| Ramazan sayacı + iftar/sahur bildirim metinleri | `ramadan_card.dart`, `buildAlarmPlan` |
+| Kerahat kartı + "vakit çıkıyor" hatırlatması (varsayılan kapalı, ID 100–124) | `kerahat_*`, `end_reminder_setting.dart` |
+| Arka plan günlük yenileme (WorkManager 6 saat; widget, kalıcı bildirim, 5 günlük alarm) | `prayer_refresh_service.dart` |
+| İnceleme düzeltmeleri: Avrupa yazında İmsak=Yatsı, de/fr ana ekran hatası, gece yarısı bayatlığı, alarm yarışları, tepsideki bildirimlerin silinmesi | — |
+
+## Ertelenenler
+- CollectAPI anahtarı: koda yazılamıyor; derlemede `--dart-define=COLLECT_API_KEY=...` verilmezse zekat ekranında canlı kur gelmez. Anahtar yenilenmeli (git geçmişinde açık).
+- Play Console: Veri güvenliği formuna Crashlytics (kilitlenme günlükleri, tanılama) eklenmeli.
+
 ## Bilinen sınırlar
-- ~~Kalıcı bildirim/widget uygulama açılmazsa eski günde kalıyordu~~ → WorkManager 6 saatte bir `PrayerRefreshService.runHeadless`; NotificationUpdater her vakitte kendini yeniler. Cihazda doğrulanmadı.
-- `test/`: vakit hesaplama, alarm planı, arka plan yenileme (platform kanalı taklidiyle), ince ayar ekranı.
+- Cihazda test edilmedi (bu ortamda Android SDK yok); `flutter analyze` temiz, 88 test geçiyor.
+- Yüksek enlemde (NL/BE/FR, Haziran) Yatsı gece yarısını geçebilir; "HH:mm" modeli tarihsiz → sayaç Yatsı'yı atlar (eski sürümde de aynıydı, alarm doğru saatte çalar).
+- Konum telefonun saat diliminde gösterilir (başka ülkedeki şehir seçilirse saat farkı kadar kayar).
+- 2029+ Ramazan tarihleri `religious_days.json`'a eklenmezse hijri paketinden (±1 gün) gelir.
 
-## Yayın öncesi kontrol (cihazda)
-1. Ana ekranda vakitler, şehir değiştirme, internetsiz açılış.
-2. Ezan bildirimi geliyor mu (bir vakti 2 dk sonraya denk getirip bekle).
-3. Zekat ekranında canlı kur (dart-define ile derlendiyse).
-4. Firebase konsolunda Crashlytics'in ilk açılışı görmesi.
-
-## Öneriler (onay bekliyor)
-Bkz. sohbet; onaylananlar buraya taşınır.
+## Yayın öncesi kontrol (cihazda, önerilen)
+1. Ana ekran vakitleri, şehir değiştirme, internetsiz açılış.
+2. Ezan bildirimi + "Kıldım" butonu (uygulama kapalıyken) → Bugün satırında görünmeli.
+3. Ana ekran widget'ı ve kalıcı bildirim ertesi gün güncel mi.
