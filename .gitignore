@@ -47,3 +47,4 @@ app.*.map.json
 # Gradle çıktıları ve editör önbellekleri
 android/build/
 .vscode/flutter-translator/
+.claude/worktrees/
