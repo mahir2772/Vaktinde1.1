@@ -143,6 +143,7 @@ class BackgroundManager {
         initialNotificationTitle: '', //'Vaktinde',
         initialNotificationContent: '', //'Hesaplanıyor...',
         foregroundServiceNotificationId: 888,
+        foregroundServiceTypes: [AndroidForegroundType.specialUse],
       ),
       iosConfiguration: IosConfiguration(
         autoStart: true,

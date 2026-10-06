@@ -216,9 +216,9 @@ class NotificationService {
 
   // 🔥 İŞTE HAYAT KURTARAN YENİ FONKSİYONUMUZ
   Future<void> cancelSpecificAlarms() async {
-    // Sadece namaz (0-20 arası) ve günlük (1000, 1900) alarmları siler.
+    // Sadece namaz (0-59 arası, 5 gün x 12) ve günlük (1000, 1900) alarmları siler.
     // 888 ID'Lİ ARKA PLAN YAPIŞKAN BİLDİRİMİNE ASLA DOKUNMAZ!
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 60; i++) {
       await _notificationsPlugin.cancel(i);
     }
     await _notificationsPlugin.cancel(1000);

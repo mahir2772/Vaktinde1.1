@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
-import 'package:http/http.dart' as http;
+import 'http_client.dart';
 
 class AyahService {
   // Kurandaki toplam ayet sayısı
@@ -38,7 +38,7 @@ class AyahService {
         'https://api.alquran.cloud/v1/ayah/$randomAyahNumber/editions/quran-uthmani,$edition';
 
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await httpGet(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final decodedData = json.decode(utf8.decode(response.bodyBytes));

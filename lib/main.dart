@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:in_app_update/in_app_update.dart';
@@ -28,6 +31,15 @@ void main() async {
 
   try {
     await Firebase.initializeApp();
+    // Sahadaki hatalar Crashlytics'e raporlanır (debug'da kapalı)
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+      !kDebugMode,
+    );
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
   } catch (e) {
     debugPrint("Firebase hatası: $e");
   }
@@ -41,7 +53,12 @@ void main() async {
     debugPrint("Background Service Başlatılamadı: $e");
   }
 
+  // Poppins assets/google_fonts içinde gömülü (internetsiz ilk açılış); eksik ağırlık olursa indirilir
   GoogleFonts.config.allowRuntimeFetching = true;
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('assets/google_fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['google_fonts'], license);
+  });
 
   runApp(
     MultiProvider(

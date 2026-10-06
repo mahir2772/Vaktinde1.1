@@ -665,76 +665,93 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         "Akşam": _currentLoc!.aksam,
         "Yatsı": _currentLoc!.yatsi,
       };
-      Map<String, String> vakitler = {
-        "İmsak": prayerTimes!.imsak!,
-        "Güneş": prayerTimes!.gunes!,
-        "Öğle": prayerTimes!.ogle!,
-        "İkindi": prayerTimes!.ikindi!,
-        "Akşam": prayerTimes!.aksam!,
-        "Yatsı": prayerTimes!.yatsi!,
-      };
+      // Koordinat varsa 5 günlük alarm kurulur: uygulama açılmasa da ezan gelir.
+      // (ID'ler gün başına 12: 0-59, cancelSpecificAlarms ile uyumlu)
+      final coords = await _storageService.loadCoordinates();
+      final int dayCount = coords != null ? 5 : 1;
       int idCounter = 0;
-      for (var entry in vakitler.entries) {
-        String vakitLogicKey = entry.key;
-        String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
-        List<String> parts = entry.value.split(':');
-        DateTime vakitDate = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          int.parse(parts[0]),
-          int.parse(parts[1]),
-        );
-        if (vakitDate.isBefore(now)) {
-          vakitDate = vakitDate.add(const Duration(days: 1));
-        }
+      for (int day = 0; day < dayCount; day++) {
+        final dayDate = DateTime(now.year, now.month, now.day + day);
+        final dayTimes = day == 0
+            ? prayerTimes!
+            : _prayerTimeService.calculate(
+                coords!.lat,
+                coords.lng,
+                date: dayDate,
+              );
+        Map<String, String> vakitler = {
+          "İmsak": dayTimes.imsak!,
+          "Güneş": dayTimes.gunes!,
+          "Öğle": dayTimes.ogle!,
+          "İkindi": dayTimes.ikindi!,
+          "Akşam": dayTimes.aksam!,
+          "Yatsı": dayTimes.yatsi!,
+        };
+        for (var entry in vakitler.entries) {
+          String vakitLogicKey = entry.key;
+          String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
+          List<String> parts = entry.value.split(':');
+          DateTime vakitDate = DateTime(
+            dayDate.year,
+            dayDate.month,
+            dayDate.day,
+            int.parse(parts[0]),
+            int.parse(parts[1]),
+          );
+          // Tek günlük modda geçmiş vakit yarına kayar; çok günlükte zaten yarın da kurulu
+          if (dayCount == 1 && vakitDate.isBefore(now)) {
+            vakitDate = vakitDate.add(const Duration(days: 1));
+          }
 
-        if (onTimeAlarms[vakitLogicKey] == true) {
-          bool isSilent = silentModeSettings[vakitLogicKey] ?? false;
-          String? soundToSend = isSilent
-              ? null
-              : (selectedSounds[vakitLogicKey] ?? "ezan1");
-          String channelName = soundToSend != null
-              ? _currentLoc!.channelSoundPrefix(soundToSend)
-              : _currentLoc!.channelSilentPrayers;
-          await notificationService.schedulePrayerNotification(
-            id: idCounter,
-            title: _currentLoc!.notifTitleTime,
-            body: _currentLoc!.notifBodyTime(vakitDisplayName),
-            scheduledTime: vakitDate,
-            soundName: soundToSend,
-            localizedChannelName: channelName,
-            localizedTicker: _currentLoc!.tickerEzan,
-          );
-        }
-        idCounter++;
-        if (reminderAlarms[vakitLogicKey] == true) {
-          int dakikaOnce =
-              (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş") ? 30 : 15;
-          DateTime hatirlatmaZamani = vakitDate.subtract(
-            Duration(minutes: dakikaOnce),
-          );
-          if (hatirlatmaZamani.isAfter(now)) {
-            String reminderSound =
-                selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
-            String channelNameReminder = _currentLoc!.channelSoundPrefix(
-              reminderSound,
-            );
+          if (onTimeAlarms[vakitLogicKey] == true) {
+            bool isSilent = silentModeSettings[vakitLogicKey] ?? false;
+            String? soundToSend = isSilent
+                ? null
+                : (selectedSounds[vakitLogicKey] ?? "ezan1");
+            String channelName = soundToSend != null
+                ? _currentLoc!.channelSoundPrefix(soundToSend)
+                : _currentLoc!.channelSilentPrayers;
             await notificationService.schedulePrayerNotification(
               id: idCounter,
-              title: _currentLoc!.notifTitleUpcoming,
-              body: _currentLoc!.notifBodyUpcoming(
-                vakitDisplayName,
-                dakikaOnce,
-              ),
-              scheduledTime: hatirlatmaZamani,
-              soundName: reminderSound,
-              localizedChannelName: channelNameReminder,
+              title: _currentLoc!.notifTitleTime,
+              body: _currentLoc!.notifBodyTime(vakitDisplayName),
+              scheduledTime: vakitDate,
+              soundName: soundToSend,
+              localizedChannelName: channelName,
               localizedTicker: _currentLoc!.tickerEzan,
             );
           }
+          idCounter++;
+          if (reminderAlarms[vakitLogicKey] == true) {
+            int dakikaOnce =
+                (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş")
+                ? 30
+                : 15;
+            DateTime hatirlatmaZamani = vakitDate.subtract(
+              Duration(minutes: dakikaOnce),
+            );
+            if (hatirlatmaZamani.isAfter(now)) {
+              String reminderSound =
+                  selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
+              String channelNameReminder = _currentLoc!.channelSoundPrefix(
+                reminderSound,
+              );
+              await notificationService.schedulePrayerNotification(
+                id: idCounter,
+                title: _currentLoc!.notifTitleUpcoming,
+                body: _currentLoc!.notifBodyUpcoming(
+                  vakitDisplayName,
+                  dakikaOnce,
+                ),
+                scheduledTime: hatirlatmaZamani,
+                soundName: reminderSound,
+                localizedChannelName: channelNameReminder,
+                localizedTicker: _currentLoc!.tickerEzan,
+              );
+            }
+          }
+          idCounter++;
         }
-        idCounter++;
       }
 
       await _scheduleDailyContent();

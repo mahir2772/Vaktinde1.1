@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'dart:math';
-import 'package:http/http.dart' as http;
+import 'http_client.dart';
 import '../models/hadith_model.dart';
 import 'storage_service.dart';
 
@@ -45,7 +45,7 @@ class HadithService {
       // Sayfa sınırını aşmamak için 1 ile 3 arası rastgele bir sayfa seçiyoruz
       int randomPage = random.nextInt(3) + 1;
 
-      var listResponse = await http.get(
+      var listResponse = await httpGet(
         Uri.parse(
           "$_baseUrl/hadeeths/list/?language=$langCode&category_id=${_categoryIds[langCode] ?? '2'}&per_page=20&page=$randomPage",
         ),
@@ -56,7 +56,7 @@ class HadithService {
 
       // PLAN B: Eğer o sayfada hadis yoksa veya API boş döndüyse, hemen %100 GARANTİLİ olan 1. sayfaya dön!
       if (hadiths.isEmpty) {
-        listResponse = await http.get(
+        listResponse = await httpGet(
           Uri.parse(
             "$_baseUrl/hadeeths/list/?language=$langCode&category_id=${_categoryIds[langCode] ?? '2'}&per_page=50&page=1",
           ),
@@ -70,7 +70,7 @@ class HadithService {
         int randomIndex = random.nextInt(hadiths.length);
         String hadithId = hadiths[randomIndex]['id'].toString();
 
-        final detailResponse = await http.get(
+        final detailResponse = await httpGet(
           Uri.parse("$_baseUrl/hadeeths/one/?language=$langCode&id=$hadithId"),
         );
 

@@ -36,15 +36,14 @@ class AdHelper {
   // SOĞUMA SÜRESİ: 5 dakika geçmeden 2. kez tam ekran reklam ÇIKMAZ.
   final int _cooldownMinutes = 5;
 
-  String get _interstitialAdUnitId {
-    if (Platform.isAndroid) return AdIds.interstitial;
-    throw UnsupportedError('Desteklenmeyen platform');
-  }
+  // Şimdilik sadece Android'de reklam var
+  bool get _isSupported => Platform.isAndroid;
 
   // Arka planda reklamı önceden yükler
   void loadInterstitialAd() {
+    if (!_isSupported) return;
     InterstitialAd.load(
-      adUnitId: _interstitialAdUnitId,
+      adUnitId: AdIds.interstitial,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {

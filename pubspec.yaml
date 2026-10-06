@@ -1,5 +1,5 @@
 name: ezan_saati
-description: "A new Flutter project."
+description: "Vaktinde - Ezan vakitleri, kıble ve zikirmatik uygulaması."
 publish_to: 'none'
 version: 1.0.1+14
 
@@ -41,11 +41,11 @@ dependencies:
   flutter_background_service: ^5.1.0
   firebase_core: ^4.3.0
   firebase_analytics: ^12.1.0
+  firebase_crashlytics: ^5.2.7
   upgrader: ^12.3.0
   wakelock_plus: ^1.5.2
   in_app_update: ^4.2.5
   flutter_timezone: ^5.1.0
-  workmanager: ^0.9.0+3
   story_view: ^0.16.6
   hijri: ^3.0.1
   adhan_dart: ^2.0.1
@@ -70,6 +70,7 @@ flutter:
     - assets/icon/
     - assets/data/
     - assets/images/backgrounds/
+    - assets/google_fonts/
     
 
 flutter_launcher_icons:
