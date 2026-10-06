@@ -252,8 +252,8 @@ class RamadanCountdown {
   });
 }
 
-/// Bugün Ramazan değilse null. İmsak öncesi sahur, imsak-akşam arası iftar,
-/// akşamdan sonra (yarın da Ramazan ise) yarının imsakına sahur sayacı.
+/// Ramazan dışında null. İmsak öncesi sahur, imsak-akşam arası iftar,
+/// akşamdan sonra (yarın Ramazan ise; ilk sahur gecesi dahil) yarının imsakına sahur sayacı.
 /// [tomorrow] yoksa bugünün imsak saati yarına uygulanır.
 RamadanCountdown? ramadanCountdown({
   required DateTime now,
@@ -263,25 +263,28 @@ RamadanCountdown? ramadanCountdown({
 }) {
   final day = dateOnly(now);
   final todayRamadan = calendar.dayOf(day);
-  if (todayRamadan == null) return null;
 
   final imsak = timeOnDate(today.imsak, day);
   final aksam = timeOnDate(today.aksam, day);
   if (imsak == null || aksam == null) return null;
 
-  if (now.isBefore(imsak)) {
-    return RamadanCountdown(
-      phase: RamadanPhase.sahur,
-      target: imsak,
-      fastDay: todayRamadan,
-    );
-  }
-  if (now.isBefore(aksam)) {
-    return RamadanCountdown(
-      phase: RamadanPhase.iftar,
-      target: aksam,
-      fastDay: todayRamadan,
-    );
+  if (todayRamadan != null) {
+    if (now.isBefore(imsak)) {
+      return RamadanCountdown(
+        phase: RamadanPhase.sahur,
+        target: imsak,
+        fastDay: todayRamadan,
+      );
+    }
+    if (now.isBefore(aksam)) {
+      return RamadanCountdown(
+        phase: RamadanPhase.iftar,
+        target: aksam,
+        fastDay: todayRamadan,
+      );
+    }
+  } else if (now.isBefore(aksam)) {
+    return null; // Ramazan değil (arife akşamına kadar)
   }
 
   final nextDay = DateTime(day.year, day.month, day.day + 1);

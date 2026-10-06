@@ -162,6 +162,15 @@ void main() {
       );
     });
 
+    test('Ramazan arifesi: akşamdan önce null, akşamdan sonra ilk sahur', () {
+      final eve = _plusDays(r.start, -1);
+      expect(ramadanCountdown(now: at(eve, 12, 0), today: _times()), isNull);
+      final c = ramadanCountdown(now: at(eve, 21, 0), today: _times())!;
+      expect(c.phase, RamadanPhase.sahur);
+      expect(c.target, at(r.start, 5, 0));
+      expect(c.fastDay, 1);
+    });
+
     test('ilk gün imsaktan önce sahur', () {
       final c = ramadanCountdown(now: at(r.start, 0, 30), today: _times())!;
       expect(c.phase, RamadanPhase.sahur);
@@ -301,7 +310,9 @@ void main() {
         today: _times(),
         calendar: calendar,
       );
-      expect(eve, isNull); // bugün Ramazan değil -> gizli
+      expect(eve!.phase, RamadanPhase.sahur); // ilk sahur gecesi
+      expect(eve.fastDay, 1);
+      expect(eve.target, DateTime(2026, 2, 19, 5, 0));
       final first = ramadanCountdown(
         now: DateTime(2026, 2, 19, 3),
         today: _times(),

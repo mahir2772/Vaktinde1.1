@@ -35,6 +35,17 @@ void main() {
     });
   }, skip: isTurkeyTz ? false : 'TZ=Europe/Istanbul ile çalıştırın');
 
+  test('Yüksek enlemde (Berlin, 21 Haziran) İmsak ile Yatsı birleşmez', () {
+    final t = PrayerTimeService().calculate(
+      52.52,
+      13.405,
+      date: DateTime(2026, 6, 21),
+    );
+    // Saat diliminden bağımsız: Yatsı'dan İmsak'a en az 2 saat olmalı
+    final gap = (_minutes(t.imsak!) - _minutes(t.yatsi!)) % 1440;
+    expect(gap, greaterThan(120), reason: 'İmsak ${t.imsak}, Yatsı ${t.yatsi}');
+  });
+
   test('İnce ayar dakikaları vakte eklenir', () {
     final service = PrayerTimeService();
     final base = service.calculate(41.0, 29.0, date: DateTime(2026, 1, 15));

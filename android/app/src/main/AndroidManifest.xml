@@ -17,6 +17,9 @@
     
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- workmanager eklentisinin eklediği FGS izinleri: uzun süreli worker kullanılmıyor -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" tools:node="remove" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" tools:node="remove" />
     
     
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
@@ -109,7 +112,11 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
         </receiver>
-        
+
+        <!-- WorkManager'ın dataSync tipli ön plan servisi kullanılmıyor (Play FGS beyanı gerekmesin) -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            tools:node="remove" />
     </application>
 
     <queries>

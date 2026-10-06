@@ -66,7 +66,9 @@ class _RamadanCardState extends State<RamadanCard> {
     final today = dateOnly(now);
     final tomorrow = DateTime(today.year, today.month, today.day + 1);
 
-    final inRamadan = calendar.dayOf(today) != null;
+    // Ramazan'dan önceki akşam da (ilk sahur) dahil
+    final inRamadan =
+        calendar.dayOf(today) != null || calendar.dayOf(tomorrow) != null;
     if (inRamadan && _tomorrowRequested != tomorrow) {
       _loadTomorrow(tomorrow);
     }

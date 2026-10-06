@@ -17,7 +17,10 @@ class PrayerTimeService {
     final times = PrayerTimes(
       date: date ?? DateTime.now(),
       coordinates: Coordinates(latitude, longitude),
-      calculationParameters: CalculationMethodParameters.turkiye(),
+      // Yüksek enlem (Avrupa yazı): açı tabanlı kural; eski Aladhan varsayılanıyla aynı.
+      // Varsayılan middleOfTheNight İmsak ve Yatsı'yı gece yarısında birleştiriyordu.
+      calculationParameters: CalculationMethodParameters.turkiye()
+        ..highLatitudeRule = HighLatitudeRule.twilightAngle,
     );
     String hhmm(DateTime t, String key) => DateFormat(
       'HH:mm',
