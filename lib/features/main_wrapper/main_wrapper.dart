@@ -34,7 +34,7 @@ class _MainWrapperState extends State<MainWrapper> {
   // 🔥 YENİ: Turun birden fazla kez başlamasını engellemek için güvenlik kilidi
   bool _isTutorialChecked = false;
 
-  final String _adUnitId = 'ca-app-pub-3940256099942544/6300978111';
+  final String _adUnitId = AdIds.mainBanner;
 
   final List<Widget> _pages = [
     const HomeView(),

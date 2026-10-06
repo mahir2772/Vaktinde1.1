@@ -84,6 +84,26 @@ class StorageService {
     return prefs.getString('saved_district');
   }
 
+  Future<void> saveCoordinates(double lat, double lng) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('saved_lat', lat);
+    await prefs.setDouble('saved_lng', lng);
+  }
+
+  Future<void> clearCoordinates() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('saved_lat');
+    await prefs.remove('saved_lng');
+  }
+
+  Future<({double lat, double lng})?> loadCoordinates() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lat = prefs.getDouble('saved_lat');
+    final lng = prefs.getDouble('saved_lng');
+    if (lat == null || lng == null) return null;
+    return (lat: lat, lng: lng);
+  }
+
   Future<void> savePrayerTimesData(PrayerTimesModel data) async {
     final prefs = await SharedPreferences.getInstance();
     String jsonString = jsonEncode(data.toJson());

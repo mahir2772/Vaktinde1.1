@@ -1,6 +1,29 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+/// Reklam birimleri: debug/profile'da Google test ID'leri, release'de gerçek ID'ler.
+/// (Geliştirirken kendi reklamına tıklayıp AdMob'dan ban yememek için otomatik seçilir.)
+class AdIds {
+  static const String _testBanner = 'ca-app-pub-3940256099942544/6300978111';
+  static const String _testInterstitial =
+      'ca-app-pub-3940256099942544/1033173712';
+
+  // Alt menü banner'ı (banner kodu)
+  static String get mainBanner =>
+      kReleaseMode ? 'ca-app-pub-4975388193054410/3285554173' : _testBanner;
+  // İç ekranlar banner'ı
+  static String get innerBanner =>
+      kReleaseMode ? 'ca-app-pub-4975388193054410/6543014509' : _testBanner;
+  // Genel geçiş reklamı (Zikirmatik_Sifirlama_Gecis)
+  static String get interstitial => kReleaseMode
+      ? 'ca-app-pub-4975388193054410/8232165658'
+      : _testInterstitial;
+  // Zekat geçiş reklamı
+  static String get zakatInterstitial => kReleaseMode
+      ? 'ca-app-pub-4975388193054410/2151461471'
+      : _testInterstitial;
+}
 
 class AdHelper {
   // Singleton yapısı: Uygulama boyunca sadece 1 tane AdHelper yaşar
@@ -13,16 +36,9 @@ class AdHelper {
   // SOĞUMA SÜRESİ: 5 dakika geçmeden 2. kez tam ekran reklam ÇIKMAZ.
   final int _cooldownMinutes = 5;
 
-  // Platforma göre otomatik test reklamı seçen yapı
   String get _interstitialAdUnitId {
-    if (Platform.isAndroid) {
-      //kendi kodum
-
-      //return 'ca-app-pub-4975388193054410/8232165658'; // Android Geçiş Test ID
-      return 'ca-app-pub-3940256099942544/1033173712';
-    } else {
-      throw UnsupportedError('Desteklenmeyen platform');
-    }
+    if (Platform.isAndroid) return AdIds.interstitial;
+    throw UnsupportedError('Desteklenmeyen platform');
   }
 
   // Arka planda reklamı önceden yükler

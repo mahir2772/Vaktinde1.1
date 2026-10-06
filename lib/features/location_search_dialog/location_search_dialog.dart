@@ -17,6 +17,7 @@ class LocationSearchDialog extends StatefulWidget {
 class _LocationSearchDialogState extends State<LocationSearchDialog> {
   final TextEditingController _searchController = TextEditingController();
   List<Placemark> _searchResults = [];
+  List<Location> _resultLocations = [];
   bool _isLoading = false;
   String _error = ''; // Hata durumunu kod olarak tutacağız (örn: 'NOT_FOUND')
   Timer? _debounce;
@@ -42,6 +43,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
 
       if (locations.isNotEmpty) {
         List<Placemark> tempResults = [];
+        List<Location> tempLocations = [];
         int limit = locations.length > 5 ? 5 : locations.length;
 
         for (int i = 0; i < limit; i++) {
@@ -52,6 +54,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
             );
             if (placemarks.isNotEmpty) {
               tempResults.add(placemarks.first);
+              tempLocations.add(locations[i]);
             }
           } catch (e) {
             continue;
@@ -59,14 +62,21 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
         }
 
         final uniqueResults = <String>{};
-        final filteredResults = tempResults.where((element) {
+        final filteredResults = <Placemark>[];
+        final filteredLocations = <Location>[];
+        for (int i = 0; i < tempResults.length; i++) {
+          final element = tempResults[i];
           final key =
               "${element.name}-${element.administrativeArea}-${element.country}";
-          return uniqueResults.add(key);
-        }).toList();
+          if (uniqueResults.add(key)) {
+            filteredResults.add(element);
+            filteredLocations.add(tempLocations[i]);
+          }
+        }
 
         setState(() {
           _searchResults = filteredResults;
+          _resultLocations = filteredLocations;
         });
       } else {
         // Hata mesajını direkt yazmıyoruz, kod atıyoruz. Build'de çevireceğiz.
@@ -212,9 +222,12 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
                           if (cityToSend.isEmpty)
                             cityToSend = _searchController.text;
 
+                          final selected = _resultLocations[index];
                           context.read<HomeViewModel>().changeCityAndDistrict(
                             cityToSend,
                             districtToSend,
+                            lat: selected.latitude,
+                            lng: selected.longitude,
                           );
 
                           ScaffoldMessenger.of(context).showSnackBar(

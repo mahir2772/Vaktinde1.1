@@ -43,6 +43,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   String errorMessageKey = "";
   String? errorDetail;
   bool _isDataLoaded = false;
+  DateTime? _timesDate; // Ekrandaki vakitlerin ait olduğu gün
 
   Map<String, bool> onTimeAlarms = {};
   Map<String, bool> reminderAlarms = {};
@@ -86,6 +87,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (_isDataLoaded) {
+        _refreshTimesIfNewDay();
         _calculateHijriDate(); // Uygulama uyanınca tarihi kontrol et
         _sendTimesToBackgroundService();
         _updateHomeScreenWidget();
@@ -119,10 +121,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
       _calculateHijriDate(); // 🔥 İlk açılışta Hicri tarihi hesapla
 
-      PrayerTimesModel? cachedTimes = await _storageService
-          .loadPrayerTimesData();
       String? savedCity = await _storageService.loadLocation();
       String? savedDistrict = await _storageService.loadDistrict();
+      // Koordinat kayıtlıysa vakitler internetsiz hesaplanır; yoksa bugünün cache'i
+      PrayerTimesModel? cachedTimes = await _calculateFromSavedCoordinates();
+      cachedTimes ??= await _storageService.loadPrayerTimesData();
 
       Locale currentLocale = Locale(loc.localeName.substring(0, 2));
       getDailyHadith(currentLocale);
@@ -134,6 +137,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         district = savedDistrict;
         isLoading = false;
         _isDataLoaded = true;
+        _timesDate = DateTime.now();
 
         _sendTimesToBackgroundService();
         await _rescheduleAlarms();
@@ -166,27 +170,73 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+  Future<PrayerTimesModel?> _calculateFromSavedCoordinates() async {
+    final coords = await _storageService.loadCoordinates();
+    if (coords == null) return null;
+    final times = _prayerTimeService.calculate(coords.lat, coords.lng);
+    _timesDate = DateTime.now();
+    await _storageService.savePrayerTimesData(times);
+    return times;
+  }
+
+  // Gün değiştiyse (uygulama arka plandan dönünce) vakitleri yeniden hesapla
+  Future<void> _refreshTimesIfNewDay() async {
+    if (_timesDate != null && DateUtils.isSameDay(_timesDate, DateTime.now())) {
+      return;
+    }
+    final times = await _calculateFromSavedCoordinates();
+    if (times == null) {
+      // Eski sürümden gelen (koordinatsız) kullanıcı: konumu bir kez çözümle
+      if (city != null && !isLoading) {
+        await changeCityAndDistrict(city!, district);
+      }
+      return;
+    }
+    prayerTimes = times;
+    notifyListeners();
+    _sendTimesToBackgroundService();
+    _updateHomeScreenWidget();
+    await _rescheduleAlarms();
+  }
+
   Future<void> changeCityAndDistrict(
     String newCity,
-    String? newDistrict,
-  ) async {
+    String? newDistrict, {
+    double? lat,
+    double? lng,
+  }) async {
     isLoading = true;
     notifyListeners();
 
     try {
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        if (prayerTimes == null) errorMessageKey = "internetNeeded";
-        isLoading = false;
-        notifyListeners();
-        return;
+      if (lat == null || lng == null) {
+        var connectivityResult = await (Connectivity().checkConnectivity());
+        if (connectivityResult.contains(ConnectivityResult.none)) {
+          if (prayerTimes == null) errorMessageKey = "internetNeeded";
+          return;
+        }
+        final coords = await _locationService.getCoordinatesFromAddress(
+          newCity,
+          newDistrict,
+        );
+        lat = coords?.lat;
+        lng = coords?.lng;
       }
 
-      final apiResult = await _prayerTimeService.getPrayerTimes(
-        newCity,
-        district: newDistrict,
-      );
+      // Öncelik: cihazda hesaplama. Koordinat bulunamazsa yedek: Aladhan API
+      final PrayerTimesModel? apiResult = (lat != null && lng != null)
+          ? _prayerTimeService.calculate(lat, lng)
+          : await _prayerTimeService.getPrayerTimes(
+              newCity,
+              district: newDistrict,
+            );
       if (apiResult != null) {
+        if (lat != null && lng != null) {
+          await _storageService.saveCoordinates(lat, lng);
+        } else {
+          await _storageService.clearCoordinates();
+        }
+        _timesDate = DateTime.now();
         prayerTimes = apiResult;
         city = newCity;
         district = newDistrict;
@@ -265,14 +315,18 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
               position.latitude,
               position.longitude,
             );
-        if (locationData != null) {
-          String city = locationData['city']!;
-          String? district = locationData['district'];
-          if (district != null && district.isEmpty) district = null;
-          await changeCityAndDistrict(city, district);
-        } else {
-          if (prayerTimes == null) errorMessageKey = "locationFoundNoName";
-        }
+        // Yer adı bulunamasa da vakitler koordinatla hesaplanır
+        String city =
+            locationData?['city'] ??
+            '${position.latitude.toStringAsFixed(2)}, ${position.longitude.toStringAsFixed(2)}';
+        String? district = locationData?['district'];
+        if (district != null && district.isEmpty) district = null;
+        await changeCityAndDistrict(
+          city,
+          district,
+          lat: position.latitude,
+          lng: position.longitude,
+        );
       } else {
         if (prayerTimes == null) errorMessageKey = "locationError";
       }

@@ -3,6 +3,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/services/economy_service.dart';
 import '../../common/widgets/ad_banner_widget.dart';
+import '../../common/ad_helper.dart';
 
 class ZakatView extends StatefulWidget {
   const ZakatView({super.key});
@@ -17,9 +18,7 @@ class _ZakatViewState extends State<ZakatView> {
   bool _isLoadingRates = true;
 
   InterstitialAd? _interstitialAd;
-  //Kendi reklam kodum
-  //final String _adUnitId = 'ca-app-pub-4975388193054410/2151461471';
-  final String _adUnitId = 'ca-app-pub-3940256099942544/1033173712';
+  final String _adUnitId = AdIds.zakatInterstitial;
 
   String _selectedGoldType = '24 Ayar Gram Altın';
   String _selectedCurrencyType = 'Amerikan Doları (USD)';
