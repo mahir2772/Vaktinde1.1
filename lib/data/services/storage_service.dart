@@ -104,6 +104,25 @@ class StorageService {
     return (lat: lat, lng: lng);
   }
 
+  /// Vakit ince ayarı (dakika). Anahtarlar: İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı
+  Future<void> saveTimeOffsets(Map<String, int> offsets) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('time_offsets', jsonEncode(offsets));
+  }
+
+  Future<Map<String, int>> loadTimeOffsets() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('time_offsets');
+    if (raw == null) return {};
+    try {
+      return Map<String, dynamic>.from(
+        jsonDecode(raw),
+      ).map((k, v) => MapEntry(k, (v as num).toInt()));
+    } catch (e) {
+      return {};
+    }
+  }
+
   Future<void> savePrayerTimesData(PrayerTimesModel data) async {
     final prefs = await SharedPreferences.getInstance();
     String jsonString = jsonEncode(data.toJson());

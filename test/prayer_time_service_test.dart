@@ -34,4 +34,18 @@ void main() {
       );
     });
   }, skip: isTurkeyTz ? false : 'TZ=Europe/Istanbul ile çalıştırın');
+
+  test('İnce ayar dakikaları vakte eklenir', () {
+    final service = PrayerTimeService();
+    final base = service.calculate(41.0, 29.0, date: DateTime(2026, 1, 15));
+    final adjusted = service.calculate(
+      41.0,
+      29.0,
+      date: DateTime(2026, 1, 15),
+      offsets: {'Öğle': 2, 'Yatsı': -3},
+    );
+    expect(_minutes(adjusted.ogle!) - _minutes(base.ogle!), 2);
+    expect(_minutes(adjusted.yatsi!) - _minutes(base.yatsi!), -3);
+    expect(adjusted.imsak, base.imsak);
+  });
 }
