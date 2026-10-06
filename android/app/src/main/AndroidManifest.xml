@@ -71,9 +71,14 @@
                 android:value="Prayer times continuous countdown" />
         </service>
             
-        <receiver 
+        <receiver
             android:exported="false"
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+
+        <!-- Bildirimdeki "Kıldım" butonu için (eklenti bu alıcıyı kendisi tanımlamıyor) -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
             
         <receiver 
             android:exported="true"
