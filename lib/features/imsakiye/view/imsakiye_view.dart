@@ -13,6 +13,7 @@ import '../../../data/services/prayer_time_service.dart';
 import '../../../data/services/storage_service.dart';
 import '../../common/widgets/ad_banner_widget.dart';
 import '../imsakiye_logic.dart';
+import '../ramadan_calendar_loader.dart';
 
 enum ImsakiyeMode { monthly, ramadan }
 
@@ -58,7 +59,8 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
   final ScrollController _scroll = ScrollController();
   late ImsakiyeMode _mode;
   late DateTime _month; // ayın 1'i
-  late final RamadanRange _ramadan;
+  RamadanRange? _ramadan; // Diyanet takvimi yüklenince belirlenir
+  bool _modeTouched = false;
 
   List<_DayRow>? _rows;
   bool _loading = true;
@@ -73,12 +75,22 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
     super.initState();
     final now = DateTime.now();
     _month = DateTime(now.year, now.month);
-    _ramadan = currentOrNextRamadan(now);
-    // Ramazan içindeysek doğrudan Ramazan imsakiyesi açılır
-    _mode = ramadanDayOf(dateOnly(now)) != null
-        ? ImsakiyeMode.ramadan
-        : ImsakiyeMode.monthly;
+    _mode = ImsakiyeMode.monthly;
     _loadCity();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final calendar = await loadRamadanCalendar();
+    if (!mounted) return;
+    final now = DateTime.now();
+    setState(() {
+      _ramadan ??= calendar.currentOrNext(now);
+      // Ramazan içindeysek doğrudan Ramazan imsakiyesi açılır
+      if (!_modeTouched && calendar.dayOf(now) != null) {
+        _mode = ImsakiyeMode.ramadan;
+      }
+    });
     _load();
   }
 
@@ -110,11 +122,14 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
 
   Future<void> _load() async {
     final id = ++_loadId;
-    final mode = _mode;
-    final days = mode == ImsakiyeMode.ramadan
-        ? _ramadan.days
-        : daysOfMonth(_month.year, _month.month);
     try {
+      final calendar = await loadRamadanCalendar();
+      if (!mounted || id != _loadId) return;
+      final ramadan = _ramadan ??= calendar.currentOrNext(DateTime.now());
+      final mode = _mode;
+      final days = mode == ImsakiyeMode.ramadan
+          ? ramadan.days
+          : daysOfMonth(_month.year, _month.month);
       final service = PrayerTimeService();
       final rows = <_DayRow>[];
       for (var i = 0; i < days.length; i++) {
@@ -174,20 +189,25 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
   }
 
   void _setMode(ImsakiyeMode mode) {
+    _modeTouched = true;
     if (mode == _mode) return;
     _mode = mode;
     _reload();
   }
 
-  String _title(AppLocalizations loc, String lc) =>
-      _mode == ImsakiyeMode.ramadan
-      ? loc.imsakiyeRamadanTitle(_ramadan.hijriYear)
-      : DateFormat('MMMM yyyy', lc).format(_month);
+  String _title(AppLocalizations loc, String lc) {
+    if (_mode == ImsakiyeMode.monthly) {
+      return DateFormat('MMMM yyyy', lc).format(_month);
+    }
+    final ramadan = _ramadan;
+    return ramadan == null ? '' : loc.imsakiyeRamadanTitle(ramadan.hijriYear);
+  }
 
   String? _rangeText(String lc) {
-    if (_mode != ImsakiyeMode.ramadan) return null;
-    final start = _ramadan.start;
-    final end = _ramadan.end;
+    final ramadan = _ramadan;
+    if (_mode != ImsakiyeMode.ramadan || ramadan == null) return null;
+    final start = ramadan.start;
+    final end = ramadan.end;
     final startFormat = start.year == end.year ? 'd MMMM' : 'd MMMM yyyy';
     return '${DateFormat(startFormat, lc).format(start)} – '
         '${DateFormat('d MMMM yyyy', lc).format(end)}';
