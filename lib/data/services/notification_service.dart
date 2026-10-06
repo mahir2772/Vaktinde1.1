@@ -214,6 +214,14 @@ class NotificationService {
     );
   }
 
+  /// Kurulu (henüz çalmamış) bildirimlerin ID'leri
+  Future<Set<int>> pendingIds() async {
+    final pending = await _notificationsPlugin.pendingNotificationRequests();
+    return pending.map((p) => p.id).toSet();
+  }
+
+  Future<void> cancel(int id) => _notificationsPlugin.cancel(id);
+
   // 🔥 İŞTE HAYAT KURTARAN YENİ FONKSİYONUMUZ
   Future<void> cancelSpecificAlarms() async {
     // Sadece namaz (0-59 arası, 5 gün x 12) ve günlük (1000, 1900) alarmları siler.

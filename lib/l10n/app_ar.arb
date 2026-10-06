@@ -74,6 +74,19 @@
     "menuNotificationsSub": "تحقق هنا إذا لم تسمع أصواتًا.",
     "menuTroubleshoot": "لا تصلك الإشعارات؟",
     "menuTroubleshootSub": "قم بضبط إعدادات البطارية لأجهزة Samsung/Xiaomi.",
+    "timeAdjustTitle": "ضبط أوقات الصلاة",
+    "timeAdjustSub": "تعديل الأوقات بالدقيقة",
+    "timeAdjustInfo": "تُحسب الأوقات حسب موقعك وفق طريقة رئاسة الشؤون الدينية التركية (ديانت). إذا كانت تختلف قليلاً عن أوقات المسجد في منطقتك، يمكنك تقديم كل وقت أو تأخيره بالدقائق. يُطبَّق التعديل على الشاشة الرئيسية والودجت وإشعارات الصلاة.",
+    "timeAdjustReset": "إعادة تعيين",
+    "timeAdjustMinutes": "{value} دقيقة",
+    "@timeAdjustMinutes": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "timeAdjustSaved": "تم تحديث أوقات الصلاة",
     "sectionSupport": "الدعم",
     "shareApp": "شارك مع صديق",
     "rateApp": "قيمنا",

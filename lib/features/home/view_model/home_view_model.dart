@@ -18,9 +18,8 @@ import '../../../data/services/hadith_service.dart';
 import '../../../data/models/prayer_times_model.dart';
 import '../../../data/models/hadith_model.dart';
 import '../../../main.dart';
-import '../../../data/services/widget_service.dart';
 import '../../../data/services/ayah_service.dart';
-import 'package:hijri/hijri_calendar.dart'; // 🔥 YENİ: Hicri Takvim Paketi
+import '../../../data/services/prayer_refresh_service.dart';
 
 class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final LocationService _locationService = LocationService();
@@ -28,6 +27,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final StorageService _storageService = StorageService();
   final HadithService _hadithService = HadithService();
   final AyahService _ayahService = AyahService();
+  final PrayerRefreshService _refreshService = PrayerRefreshService(
+    notificationService,
+  );
   AyahModel? dailyAyah;
 
   AudioPlayer? _audioPlayer;
@@ -99,12 +101,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   void _calculateHijriDate() {
     if (_currentLoc == null) return;
 
-    // Uygulama diline göre Hicri paketin dilini ayarla
+    // Uygulama diline göre, örn: 7 Safer 1448 (hijri paketinde olmayan de/fr için İngilizce)
     String langCode = _currentLoc!.localeName.substring(0, 2);
-    HijriCalendar.setLocal(langCode);
-
-    HijriCalendar today = HijriCalendar.now();
-    hijriDateText = today.toFormat("dd MMMM yyyy"); // Örn: 7 Safer 1448
+    hijriDateText = PrayerRefreshService.hijriDateText(langCode);
     notifyListeners();
   }
 
@@ -170,10 +169,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+  // Kayıtlı koordinat + vakit ince ayarı ile bugünün vakitleri (koordinat yoksa null)
   Future<PrayerTimesModel?> _calculateFromSavedCoordinates() async {
-    final coords = await _storageService.loadCoordinates();
-    if (coords == null) return null;
-    final times = _prayerTimeService.calculate(coords.lat, coords.lng);
+    final times = await _prayerTimeService.forDate(DateTime.now());
+    if (times == null) return null;
     _timesDate = DateTime.now();
     await _storageService.savePrayerTimesData(times);
     return times;
@@ -196,6 +195,18 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
     _sendTimesToBackgroundService();
     _updateHomeScreenWidget();
+    await _rescheduleAlarms();
+  }
+
+  /// Vakit ince ayarı kaydedildikten sonra: bugünün vakitleri, ekran, widget'lar,
+  /// kalıcı bildirim ve alarmlar yeniden hesaplanır.
+  /// Koordinat yoksa (yedek API vakitleri) ince ayar uygulanmaz.
+  Future<void> applyTimeOffsets() async {
+    final times = await _calculateFromSavedCoordinates();
+    if (times == null) return;
+    prayerTimes = times;
+    notifyListeners();
+    _sendTimesToBackgroundService();
     await _rescheduleAlarms();
   }
 
@@ -225,7 +236,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
       // Öncelik: cihazda hesaplama. Koordinat bulunamazsa yedek: Aladhan API
       final PrayerTimesModel? apiResult = (lat != null && lng != null)
-          ? _prayerTimeService.calculate(lat, lng)
+          ? _prayerTimeService.calculate(
+              lat,
+              lng,
+              offsets: await _storageService.loadTimeOffsets(),
+            )
           : await _prayerTimeService.getPrayerTimes(
               newCity,
               district: newDistrict,
@@ -344,47 +359,12 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   void _sendTimesToBackgroundService() {
     if (prayerTimes == null || _currentLoc == null) return;
     try {
-      Map<String, String> times = {
-        "İmsak": prayerTimes!.imsak!,
-        "Güneş": prayerTimes!.gunes!,
-        "Öğle": prayerTimes!.ogle!,
-        "İkindi": prayerTimes!.ikindi!,
-        "Akşam": prayerTimes!.aksam!,
-        "Yatsı": prayerTimes!.yatsi!,
-      };
-      String langCode = _currentLoc!.localeName;
-      String remainingText = "Kalan";
-
-      if (langCode.startsWith('en'))
-        remainingText = "Left";
-      else if (langCode.startsWith('de'))
-        remainingText = "Übrig";
-      else if (langCode.startsWith('fr'))
-        remainingText = "Restant";
-      else if (langCode.startsWith('ar'))
-        remainingText = "الباقي";
-      Map<String, String> displayTexts = {
-        "next": _currentLoc!.nextPrayer,
-        "remaining": remainingText,
-        "hijri_date":
-            hijriDateText, // 🔥 YENİ: Arka plan servisine Hicri tarihi de gönder
-        "İmsak": _currentLoc!.imsak,
-        "Güneş": _currentLoc!.gunes,
-        "Öğle": _currentLoc!.ogle,
-        "İkindi": _currentLoc!.ikindi,
-        "Akşam": _currentLoc!.aksam,
-        "Yatsı": _currentLoc!.yatsi,
-        "to_İmsak": _currentLoc!.toImsak,
-        "to_Güneş": _currentLoc!.toGunes,
-        "to_Öğle": _currentLoc!.toOgle,
-        "to_İkindi": _currentLoc!.toIkindi,
-        "to_Akşam": _currentLoc!.toAksam,
-        "to_Yatsı": _currentLoc!.toYatsi,
-        "loading": _currentLoc!.loading,
-      };
       FlutterBackgroundService().invoke("setPrayerTimes", {
-        "times": times,
-        "display": displayTexts,
+        "times": PrayerRefreshService.timesMap(prayerTimes!),
+        "display": PrayerRefreshService.displayTexts(
+          _currentLoc!,
+          hijriDateText,
+        ),
       });
       _updateHomeScreenWidget();
     } catch (e) {}
@@ -392,96 +372,13 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   void _updateHomeScreenWidget() {
     if (prayerTimes == null) return;
-    try {
-      final now = DateTime.now();
-      Map<String, String> vakitler = {
-        "İmsak": prayerTimes!.imsak!,
-        "Güneş": prayerTimes!.gunes!,
-        "Öğle": prayerTimes!.ogle!,
-        "İkindi": prayerTimes!.ikindi!,
-        "Akşam": prayerTimes!.aksam!,
-        "Yatsı": prayerTimes!.yatsi!,
-      };
-      Map<String, String> vakitIsimleri = {
-        "İmsak": _currentLoc?.imsak ?? "İmsak",
-        "Güneş": _currentLoc?.gunes ?? "Güneş",
-        "Öğle": _currentLoc?.ogle ?? "Öğle",
-        "İkindi": _currentLoc?.ikindi ?? "İkindi",
-        "Akşam": _currentLoc?.aksam ?? "Akşam",
-        "Yatsı": _currentLoc?.yatsi ?? "Yatsı",
-      };
-      String sonrakiVakitIsmi = "İmsak";
-      DateTime? sonrakiVakitTarihi;
-      bool bulundu = false;
-      for (var entry in vakitler.entries) {
-        if (entry.key == "Güneş") continue;
-        List<String> parts = entry.value.split(':');
-        DateTime vakitDate = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          int.parse(parts[0]),
-          int.parse(parts[1]),
-        );
-        if (vakitDate.isAfter(now)) {
-          sonrakiVakitIsmi = entry.key;
-          sonrakiVakitTarihi = vakitDate;
-          bulundu = true;
-          break;
-        }
-      }
-
-      if (!bulundu) {
-        sonrakiVakitIsmi = "İmsak";
-        List<String> parts = vakitler["İmsak"]!.split(':');
-        sonrakiVakitTarihi = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          int.parse(parts[0]),
-          int.parse(parts[1]),
-        ).add(const Duration(days: 1));
-      }
-
-      String dinamikBaslik = "";
-      switch (sonrakiVakitIsmi) {
-        case "İmsak":
-          dinamikBaslik = _currentLoc?.toImsak ?? "Sabaha";
-          break;
-        case "Güneş":
-          dinamikBaslik = _currentLoc?.toGunes ?? "Güneşe";
-          break;
-        case "Öğle":
-          dinamikBaslik = _currentLoc?.toOgle ?? "Öğleye";
-          break;
-        case "İkindi":
-          dinamikBaslik = _currentLoc?.toIkindi ?? "İkindiye";
-          break;
-        case "Akşam":
-          dinamikBaslik = _currentLoc?.toAksam ?? "Akşama";
-          break;
-        case "Yatsı":
-          dinamikBaslik = _currentLoc?.toYatsi ?? "Yatsıya";
-          break;
-        default:
-          dinamikBaslik = "Kalan";
-      }
-
-      String guncelKonum = city ?? "Konum Bekleniyor";
-      if (city != null && district != null && district!.isNotEmpty) {
-        guncelKonum = "$city, $district";
-      }
-
-      WidgetService.widgetiGuncelle(
-        baslik: dinamikBaslik,
-        hedefZamanMs: sonrakiVakitTarihi!.millisecondsSinceEpoch,
-        vakitler: vakitler,
-        konum: guncelKonum,
-        vakitIsimleri: vakitIsimleri,
-        hijriDateText:
-            hijriDateText, // 🔥 YENİ: Widget servisine Hicri tarihi de gönder
-      );
-    } catch (e) {}
+    _refreshService.updateHomeWidget(
+      times: prayerTimes!,
+      loc: _currentLoc,
+      city: city,
+      district: district,
+      hijriDateText: hijriDateText,
+    );
   }
 
   Future<void> refreshLocationAndTimes(BuildContext context) async {
@@ -509,36 +406,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> _scheduleDailyContent() async {
     if (_currentLoc == null) return;
     try {
-      if (dailyAyah != null) {
-        String title = _currentLoc!.localeName.startsWith('tr')
-            ? "Günün Ayeti"
-            : "Ayah of the Day";
-        String content =
-            "${dailyAyah!.arabicText}\n\n${dailyAyah!.translatedText}";
-        await notificationService.scheduleDailyContent(
-          id: 1000,
-          title: title,
-          body: content,
-          hour: 10,
-          minute: 0,
-          channelId: 'daily_ayah_channel',
-          channelName: 'Günlük Ayet',
-        );
-      }
-      if (dailyHadith != null && dailyHadith!.content != null) {
-        String title = _currentLoc!.localeName.startsWith('tr')
-            ? "Günün Hadisi"
-            : "Hadith of the Day";
-        await notificationService.scheduleDailyContent(
-          id: 1900,
-          title: title,
-          body: dailyHadith!.content!,
-          hour: 19,
-          minute: 0,
-          channelId: 'daily_hadith_channel',
-          channelName: 'Günlük Hadis',
-        );
-      }
+      await _refreshService.scheduleDailyContent(
+        localeName: _currentLoc!.localeName,
+        ayah: dailyAyah,
+        hadith: dailyHadith,
+      );
     } catch (e) {}
   }
 
@@ -651,108 +523,19 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     } catch (e) {}
   }
 
+  // Koordinat varsa 5 günlük alarm kurulur: uygulama açılmasa da ezan gelir (ID 0-59)
   Future<void> _rescheduleAlarms() async {
     if (prayerTimes == null || _currentLoc == null) return;
     try {
-      await notificationService.cancelSpecificAlarms();
-
-      final now = DateTime.now();
-      Map<String, String> vakitDisplayNames = {
-        "İmsak": _currentLoc!.imsak,
-        "Güneş": _currentLoc!.gunes,
-        "Öğle": _currentLoc!.ogle,
-        "İkindi": _currentLoc!.ikindi,
-        "Akşam": _currentLoc!.aksam,
-        "Yatsı": _currentLoc!.yatsi,
-      };
-      // Koordinat varsa 5 günlük alarm kurulur: uygulama açılmasa da ezan gelir.
-      // (ID'ler gün başına 12: 0-59, cancelSpecificAlarms ile uyumlu)
-      final coords = await _storageService.loadCoordinates();
-      final int dayCount = coords != null ? 5 : 1;
-      int idCounter = 0;
-      for (int day = 0; day < dayCount; day++) {
-        final dayDate = DateTime(now.year, now.month, now.day + day);
-        final dayTimes = day == 0
-            ? prayerTimes!
-            : _prayerTimeService.calculate(
-                coords!.lat,
-                coords.lng,
-                date: dayDate,
-              );
-        Map<String, String> vakitler = {
-          "İmsak": dayTimes.imsak!,
-          "Güneş": dayTimes.gunes!,
-          "Öğle": dayTimes.ogle!,
-          "İkindi": dayTimes.ikindi!,
-          "Akşam": dayTimes.aksam!,
-          "Yatsı": dayTimes.yatsi!,
-        };
-        for (var entry in vakitler.entries) {
-          String vakitLogicKey = entry.key;
-          String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
-          List<String> parts = entry.value.split(':');
-          DateTime vakitDate = DateTime(
-            dayDate.year,
-            dayDate.month,
-            dayDate.day,
-            int.parse(parts[0]),
-            int.parse(parts[1]),
-          );
-          // Tek günlük modda geçmiş vakit yarına kayar; çok günlükte zaten yarın da kurulu
-          if (dayCount == 1 && vakitDate.isBefore(now)) {
-            vakitDate = vakitDate.add(const Duration(days: 1));
-          }
-
-          if (onTimeAlarms[vakitLogicKey] == true) {
-            bool isSilent = silentModeSettings[vakitLogicKey] ?? false;
-            String? soundToSend = isSilent
-                ? null
-                : (selectedSounds[vakitLogicKey] ?? "ezan1");
-            String channelName = soundToSend != null
-                ? _currentLoc!.channelSoundPrefix(soundToSend)
-                : _currentLoc!.channelSilentPrayers;
-            await notificationService.schedulePrayerNotification(
-              id: idCounter,
-              title: _currentLoc!.notifTitleTime,
-              body: _currentLoc!.notifBodyTime(vakitDisplayName),
-              scheduledTime: vakitDate,
-              soundName: soundToSend,
-              localizedChannelName: channelName,
-              localizedTicker: _currentLoc!.tickerEzan,
-            );
-          }
-          idCounter++;
-          if (reminderAlarms[vakitLogicKey] == true) {
-            int dakikaOnce =
-                (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş")
-                ? 30
-                : 15;
-            DateTime hatirlatmaZamani = vakitDate.subtract(
-              Duration(minutes: dakikaOnce),
-            );
-            if (hatirlatmaZamani.isAfter(now)) {
-              String reminderSound =
-                  selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
-              String channelNameReminder = _currentLoc!.channelSoundPrefix(
-                reminderSound,
-              );
-              await notificationService.schedulePrayerNotification(
-                id: idCounter,
-                title: _currentLoc!.notifTitleUpcoming,
-                body: _currentLoc!.notifBodyUpcoming(
-                  vakitDisplayName,
-                  dakikaOnce,
-                ),
-                scheduledTime: hatirlatmaZamani,
-                soundName: reminderSound,
-                localizedChannelName: channelNameReminder,
-                localizedTicker: _currentLoc!.tickerEzan,
-              );
-            }
-          }
-          idCounter++;
-        }
-      }
+      await _refreshService.rescheduleAlarms(
+        todayTimes: prayerTimes!,
+        loc: _currentLoc!,
+        onTimeAlarms: onTimeAlarms,
+        reminderAlarms: reminderAlarms,
+        selectedSounds: selectedSounds,
+        selectedReminderSounds: selectedReminderSounds,
+        silentModeSettings: silentModeSettings,
+      );
 
       await _scheduleDailyContent();
     } catch (e) {}

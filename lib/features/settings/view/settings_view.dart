@@ -14,6 +14,7 @@ import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 
 import '../../home/view_model/home_view_model.dart';
+import 'time_adjust_view.dart';
 
 import '../../common/widgets/ad_banner_widget.dart';
 
@@ -98,6 +99,17 @@ class SettingsView extends StatelessWidget {
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               // --- GÜNCELLENEN KISIM: YENİ ARAMA PENCERESİNİ AÇAR ---
               onTap: () => _showCityDistrictDialog(context, loc),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.tune, color: Colors.teal),
+              title: Text(loc.timeAdjustTitle),
+              subtitle: Text(loc.timeAdjustSub),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TimeAdjustView()),
+              ),
             ),
             const Divider(height: 1),
             ListTile(

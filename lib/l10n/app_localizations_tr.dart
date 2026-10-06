@@ -170,6 +170,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get menuTroubleshootSub => 'Samsung/Xiaomi için pil ayarı yapın.';
 
   @override
+  String get timeAdjustTitle => 'Vakit İnce Ayarı';
+
+  @override
+  String get timeAdjustSub => 'Vakitleri dakika dakika düzeltin';
+
+  @override
+  String get timeAdjustInfo =>
+      'Vakitler konumunuza göre Diyanet yöntemiyle hesaplanır. Bölgenizdeki caminin vakitleriyle küçük farklar varsa her vakti dakika olarak ileri veya geri alabilirsiniz. Ayar ana ekrana, widget\'lara ve ezan bildirimlerine uygulanır.';
+
+  @override
+  String get timeAdjustReset => 'Sıfırla';
+
+  @override
+  String timeAdjustMinutes(String value) {
+    return '$value dk';
+  }
+
+  @override
+  String get timeAdjustSaved => 'Vakitler güncellendi';
+
+  @override
   String get sectionSupport => 'DESTEK';
 
   @override

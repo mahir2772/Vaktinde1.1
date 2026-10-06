@@ -1,10 +1,13 @@
 package com.mmdigital.vaktinde
 
+import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.SystemClock
 import android.widget.RemoteViews
 import java.util.Calendar
@@ -26,6 +29,8 @@ class NotificationUpdater : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        // Notification.Builder(context, kanal) API 26+ ister; eski sürümde servisin kendi bildirimi kalır
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         try {
             // Dart'ın sisteme kaydettiği verileri okuyoruz
             val widgetData = context.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
@@ -63,6 +68,9 @@ class NotificationUpdater : BroadcastReceiver() {
                 // Native Sayacı (Chronometer) başlatıyoruz
                 val baseTime = SystemClock.elapsedRealtime() + (targetTime - currentTime)
                 views.setChronometer(R.id.notif_countdown, baseTime, null, true)
+
+                // Vakit gelince bildirim kendini yeniler (uygulama açılmasa da sayaç eksiye düşmez)
+                scheduleNextUpdate(context, targetTime)
             } else {
                 views.setChronometer(R.id.notif_countdown, SystemClock.elapsedRealtime(), null, false)
             }
@@ -83,6 +91,26 @@ class NotificationUpdater : BroadcastReceiver() {
                 .setContentIntent(pendingIntent)
             
             notificationManager.notify(888, builder.build())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    // Widget sağlayıcılarındaki scheduleExactUpdate ile aynı mantık; sabit requestCode ile tek alarm
+    private fun scheduleNextUpdate(context: Context, targetTime: Long) {
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, NotificationUpdater::class.java).apply {
+                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            }
+            val pendingIntent = PendingIntent.getBroadcast(context, 888, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+                val alarmClockInfo = AlarmManager.AlarmClockInfo(targetTime, pendingIntent)
+                alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

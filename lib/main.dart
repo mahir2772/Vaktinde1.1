@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,18 +14,48 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:geolocator/geolocator.dart'; // YENİ EKLENDİ
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // YENİ EKLENDİ
+import 'package:workmanager/workmanager.dart';
 
 import 'features/main_wrapper/main_wrapper.dart';
 import 'features/home/view_model/home_view_model.dart';
 import 'features/common/language_provider.dart';
 import 'data/services/notification_service.dart';
 import 'data/services/background_manager.dart';
+import 'data/services/prayer_refresh_service.dart';
 import 'features/onboarding/view/onboarding_language_view.dart';
 import 'features/common/theme_provider.dart';
 import 'features/zikirmatik/view_model/zikir_view_model.dart';
 import 'features/common/ad_helper.dart';
 
 final NotificationService notificationService = NotificationService();
+
+const String _refreshTaskName = 'vaktinde_daily_refresh';
+
+// WorkManager arka plan görevi: uygulama günlerce açılmasa da widget'lar,
+// kalıcı bildirim ve 5 günlük ezan alarmları güncel kalır
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  DartPluginRegistrant.ensureInitialized();
+  Workmanager().executeTask((taskName, inputData) async {
+    return PrayerRefreshService.runHeadless();
+  });
+}
+
+Future<void> _registerBackgroundRefresh() async {
+  if (!Platform.isAndroid) return;
+  try {
+    await Workmanager().initialize(callbackDispatcher);
+    // keep: her açılışta yeniden kaydetmek periyodu sıfırlamaz; ilk kayıtta hemen bir kez çalışır
+    await Workmanager().registerPeriodicTask(
+      _refreshTaskName,
+      _refreshTaskName,
+      frequency: const Duration(hours: 6),
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+    );
+  } catch (e) {
+    debugPrint("Workmanager başlatılamadı: $e");
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +83,8 @@ void main() async {
   } catch (e) {
     debugPrint("Background Service Başlatılamadı: $e");
   }
+
+  await _registerBackgroundRefresh();
 
   // Poppins assets/google_fonts içinde gömülü (internetsiz ilk açılış); eksik ağırlık olursa indirilir
   GoogleFonts.config.allowRuntimeFetching = true;

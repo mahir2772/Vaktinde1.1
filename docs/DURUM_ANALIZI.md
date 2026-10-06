@@ -19,8 +19,8 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | 12 | İnternetsiz ilk açılışta font yok | Poppins `assets/google_fonts` içinde gömülü |
 
 ## Bilinen sınırlar
-- Kalıcı bildirim ve ana ekran widget'ı, uygulama günlerce açılmazsa son açılıştaki vakitleri gösterir (alarmlar etkilenmez). Çözüm önerisi aşağıda.
-- `test/` sadece vakit hesaplama testi içeriyor.
+- ~~Kalıcı bildirim/widget uygulama açılmazsa eski günde kalıyordu~~ → WorkManager 6 saatte bir `PrayerRefreshService.runHeadless`; NotificationUpdater her vakitte kendini yeniler. Cihazda doğrulanmadı.
+- `test/`: vakit hesaplama, alarm planı, arka plan yenileme (platform kanalı taklidiyle), ince ayar ekranı.
 
 ## Yayın öncesi kontrol (cihazda)
 1. Ana ekranda vakitler, şehir değiştirme, internetsiz açılış.

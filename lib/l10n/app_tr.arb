@@ -74,6 +74,19 @@
     "menuNotificationsSub": "Ses gelmiyorsa buradan kontrol et.",
     "menuTroubleshoot": "Bildirim Gelmiyor mu?",
     "menuTroubleshootSub": "Samsung/Xiaomi için pil ayarı yapın.",
+    "timeAdjustTitle": "Vakit İnce Ayarı",
+    "timeAdjustSub": "Vakitleri dakika dakika düzeltin",
+    "timeAdjustInfo": "Vakitler konumunuza göre Diyanet yöntemiyle hesaplanır. Bölgenizdeki caminin vakitleriyle küçük farklar varsa her vakti dakika olarak ileri veya geri alabilirsiniz. Ayar ana ekrana, widget'lara ve ezan bildirimlerine uygulanır.",
+    "timeAdjustReset": "Sıfırla",
+    "timeAdjustMinutes": "{value} dk",
+    "@timeAdjustMinutes": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "timeAdjustSaved": "Vakitler güncellendi",
     "sectionSupport": "DESTEK",
     "shareApp": "Arkadaşınla Paylaş",
     "rateApp": "Bize Puan Ver",

@@ -410,6 +410,42 @@ abstract class AppLocalizations {
   /// **'Samsung/Xiaomi için pil ayarı yapın.'**
   String get menuTroubleshootSub;
 
+  /// No description provided for @timeAdjustTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit İnce Ayarı'**
+  String get timeAdjustTitle;
+
+  /// No description provided for @timeAdjustSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitleri dakika dakika düzeltin'**
+  String get timeAdjustSub;
+
+  /// No description provided for @timeAdjustInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler konumunuza göre Diyanet yöntemiyle hesaplanır. Bölgenizdeki caminin vakitleriyle küçük farklar varsa her vakti dakika olarak ileri veya geri alabilirsiniz. Ayar ana ekrana, widget\'lara ve ezan bildirimlerine uygulanır.'**
+  String get timeAdjustInfo;
+
+  /// No description provided for @timeAdjustReset.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıfırla'**
+  String get timeAdjustReset;
+
+  /// No description provided for @timeAdjustMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{value} dk'**
+  String timeAdjustMinutes(String value);
+
+  /// No description provided for @timeAdjustSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler güncellendi'**
+  String get timeAdjustSaved;
+
   /// No description provided for @sectionSupport.
   ///
   /// In tr, this message translates to:
