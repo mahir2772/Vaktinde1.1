@@ -169,6 +169,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuTroubleshootSub => 'Set battery settings for Samsung/Xiaomi.';
 
   @override
+  String get timeAdjustTitle => 'Prayer Time Adjustment';
+
+  @override
+  String get timeAdjustSub => 'Fine-tune times by the minute';
+
+  @override
+  String get timeAdjustInfo =>
+      'Times are calculated for your location using the Diyanet method. If they differ slightly from your local mosque, you can move each time forward or back by minutes. The adjustment applies to the home screen, widgets and prayer notifications.';
+
+  @override
+  String get timeAdjustReset => 'Reset';
+
+  @override
+  String timeAdjustMinutes(String value) {
+    return '$value min';
+  }
+
+  @override
+  String get timeAdjustSaved => 'Prayer times updated';
+
+  @override
   String get sectionSupport => 'SUPPORT';
 
   @override

@@ -74,6 +74,19 @@
     "menuNotificationsSub": "Check here if you don't hear sounds.",
     "menuTroubleshoot": "Not Getting Notifications?",
     "menuTroubleshootSub": "Set battery settings for Samsung/Xiaomi.",
+    "timeAdjustTitle": "Prayer Time Adjustment",
+    "timeAdjustSub": "Fine-tune times by the minute",
+    "timeAdjustInfo": "Times are calculated for your location using the Diyanet method. If they differ slightly from your local mosque, you can move each time forward or back by minutes. The adjustment applies to the home screen, widgets and prayer notifications.",
+    "timeAdjustReset": "Reset",
+    "timeAdjustMinutes": "{value} min",
+    "@timeAdjustMinutes": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "timeAdjustSaved": "Prayer times updated",
     "sectionSupport": "SUPPORT",
     "shareApp": "Share with a Friend",
     "rateApp": "Rate Us",

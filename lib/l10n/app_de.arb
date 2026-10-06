@@ -74,6 +74,19 @@
     "menuNotificationsSub": "Hier prüfen, falls Sie keine Töne hören.",
     "menuTroubleshoot": "Keine Benachrichtigungen?",
     "menuTroubleshootSub": "Batterieeinstellungen für Samsung/Xiaomi anpassen.",
+    "timeAdjustTitle": "Gebetszeiten anpassen",
+    "timeAdjustSub": "Zeiten minutengenau korrigieren",
+    "timeAdjustInfo": "Die Zeiten werden für Ihren Standort nach der Diyanet-Methode berechnet. Wenn sie leicht von Ihrer örtlichen Moschee abweichen, können Sie jede Zeit um einige Minuten vor- oder zurückstellen. Die Anpassung gilt für den Startbildschirm, die Widgets und die Gebetsbenachrichtigungen.",
+    "timeAdjustReset": "Zurücksetzen",
+    "timeAdjustMinutes": "{value} Min.",
+    "@timeAdjustMinutes": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "timeAdjustSaved": "Gebetszeiten aktualisiert",
     "sectionSupport": "SUPPORT",
     "shareApp": "Mit Freunden Teilen",
     "rateApp": "Bewerten Sie uns",

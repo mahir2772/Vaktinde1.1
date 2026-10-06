@@ -171,6 +171,27 @@ class AppLocalizationsAr extends AppLocalizations {
       'قم بضبط إعدادات البطارية لأجهزة Samsung/Xiaomi.';
 
   @override
+  String get timeAdjustTitle => 'ضبط أوقات الصلاة';
+
+  @override
+  String get timeAdjustSub => 'تعديل الأوقات بالدقيقة';
+
+  @override
+  String get timeAdjustInfo =>
+      'تُحسب الأوقات حسب موقعك وفق طريقة رئاسة الشؤون الدينية التركية (ديانت). إذا كانت تختلف قليلاً عن أوقات المسجد في منطقتك، يمكنك تقديم كل وقت أو تأخيره بالدقائق. يُطبَّق التعديل على الشاشة الرئيسية والودجت وإشعارات الصلاة.';
+
+  @override
+  String get timeAdjustReset => 'إعادة تعيين';
+
+  @override
+  String timeAdjustMinutes(String value) {
+    return '$value دقيقة';
+  }
+
+  @override
+  String get timeAdjustSaved => 'تم تحديث أوقات الصلاة';
+
+  @override
   String get sectionSupport => 'الدعم';
 
   @override

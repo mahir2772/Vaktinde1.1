@@ -171,6 +171,27 @@ class AppLocalizationsDe extends AppLocalizations {
       'Batterieeinstellungen für Samsung/Xiaomi anpassen.';
 
   @override
+  String get timeAdjustTitle => 'Gebetszeiten anpassen';
+
+  @override
+  String get timeAdjustSub => 'Zeiten minutengenau korrigieren';
+
+  @override
+  String get timeAdjustInfo =>
+      'Die Zeiten werden für Ihren Standort nach der Diyanet-Methode berechnet. Wenn sie leicht von Ihrer örtlichen Moschee abweichen, können Sie jede Zeit um einige Minuten vor- oder zurückstellen. Die Anpassung gilt für den Startbildschirm, die Widgets und die Gebetsbenachrichtigungen.';
+
+  @override
+  String get timeAdjustReset => 'Zurücksetzen';
+
+  @override
+  String timeAdjustMinutes(String value) {
+    return '$value Min.';
+  }
+
+  @override
+  String get timeAdjustSaved => 'Gebetszeiten aktualisiert';
+
+  @override
   String get sectionSupport => 'SUPPORT';
 
   @override

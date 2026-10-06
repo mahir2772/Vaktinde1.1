@@ -74,6 +74,19 @@
     "menuNotificationsSub": "Vérifiez ici si vous n'entendez pas les sons.",
     "menuTroubleshoot": "Vous ne recevez pas de notifications ?",
     "menuTroubleshootSub": "Réglez la batterie pour Samsung/Xiaomi.",
+    "timeAdjustTitle": "Ajustement des horaires",
+    "timeAdjustSub": "Corriger les horaires à la minute près",
+    "timeAdjustInfo": "Les horaires sont calculés pour votre position selon la méthode Diyanet. S'ils diffèrent légèrement de ceux de votre mosquée, vous pouvez avancer ou retarder chaque horaire de quelques minutes. Le réglage s'applique à l'écran d'accueil, aux widgets et aux notifications de prière.",
+    "timeAdjustReset": "Réinitialiser",
+    "timeAdjustMinutes": "{value} min",
+    "@timeAdjustMinutes": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "timeAdjustSaved": "Horaires mis à jour",
     "sectionSupport": "SUPPORT",
     "shareApp": "Partager avec un Ami",
     "rateApp": "Évaluez-nous",

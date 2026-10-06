@@ -173,6 +173,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get menuTroubleshootSub => 'Réglez la batterie pour Samsung/Xiaomi.';
 
   @override
+  String get timeAdjustTitle => 'Ajustement des horaires';
+
+  @override
+  String get timeAdjustSub => 'Corriger les horaires à la minute près';
+
+  @override
+  String get timeAdjustInfo =>
+      'Les horaires sont calculés pour votre position selon la méthode Diyanet. S\'ils diffèrent légèrement de ceux de votre mosquée, vous pouvez avancer ou retarder chaque horaire de quelques minutes. Le réglage s\'applique à l\'écran d\'accueil, aux widgets et aux notifications de prière.';
+
+  @override
+  String get timeAdjustReset => 'Réinitialiser';
+
+  @override
+  String timeAdjustMinutes(String value) {
+    return '$value min';
+  }
+
+  @override
+  String get timeAdjustSaved => 'Horaires mis à jour';
+
+  @override
   String get sectionSupport => 'SUPPORT';
 
   @override
