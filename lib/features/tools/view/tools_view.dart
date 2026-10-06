@@ -14,6 +14,7 @@ import '../../friday_messages/view/friday_messages_view.dart';
 import '../../zakat/view/zakat_view.dart';
 import '../../settings/view/settings_view.dart';
 import '../../missed_prayers/view/missed_prayers_view.dart';
+import '../../imsakiye/view/imsakiye_view.dart';
 
 class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
@@ -56,6 +57,14 @@ class ToolsView extends StatelessWidget {
                 childAspectRatio:
                     1.1, // Kartları biraz daha yatay/kare arası modern formata çektik
                 children: [
+                  _buildToolCard(
+                    context,
+                    hasImage: hasImage,
+                    title: loc.imsakiyeTitle,
+                    icon: Icons.calendar_month,
+                    primaryColor: primaryColor,
+                    page: const ImsakiyeView(),
+                  ),
                   _buildToolCard(
                     context,
                     hasImage: hasImage,

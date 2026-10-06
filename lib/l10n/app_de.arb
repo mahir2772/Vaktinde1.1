@@ -395,5 +395,31 @@
     "editCounterHint": "Z.B.: 2000",
     "editTargetHint": "Z.B.: 99",
     "resetCounterConfirm": "Sind Sie sicher, dass Sie den Zähler zurücksetzen möchten?",
-    "dhikrTarget": "Ziel:"
+    "dhikrTarget": "Ziel:",
+    "imsakiyeTitle": "Gebetskalender",
+    "imsakiyeRamadan": "Ramadan",
+    "imsakiyeRamadanTitle": "Ramadan-Kalender {year}",
+    "@imsakiyeRamadanTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "imsakiyeDay": "Tag",
+    "imsakiyeSunriseShort": "Sonne",
+    "imsakiyePrevMonth": "Vorheriger Monat",
+    "imsakiyeNextMonth": "Nächster Monat",
+    "imsakiyeNoLocation": "Bitte wählen Sie zuerst Ihren Standort, um den Gebetskalender zu sehen. Sie können ihn auf dem Startbildschirm oder in den Einstellungen festlegen.",
+    "imsakiyeShareError": "Der Gebetskalender konnte nicht geteilt werden. Bitte versuchen Sie es erneut.",
+    "ramadanSahurLeft": "Zeit bis Sahur",
+    "ramadanIftarLeft": "Zeit bis Iftar",
+    "ramadanDayLabel": "Ramadan, Tag {day}",
+    "@ramadanDayLabel": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    }
 }

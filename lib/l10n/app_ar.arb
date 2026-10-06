@@ -395,5 +395,31 @@
     "editCounterHint": "مثال: 2000",
     "editTargetHint": "مثال: 99",
     "resetCounterConfirm": "هل أنت متأكد أنك تريد إعادة تعيين العداد؟",
-    "dhikrTarget": "الهدف:"
+    "dhikrTarget": "الهدف:",
+    "imsakiyeTitle": "جدول المواقيت",
+    "imsakiyeRamadan": "رمضان",
+    "imsakiyeRamadanTitle": "إمساكية رمضان {year}",
+    "@imsakiyeRamadanTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "imsakiyeDay": "اليوم",
+    "imsakiyeSunriseShort": "الشروق",
+    "imsakiyePrevMonth": "الشهر السابق",
+    "imsakiyeNextMonth": "الشهر التالي",
+    "imsakiyeNoLocation": "يرجى تحديد موقعك أولاً لعرض جدول المواقيت. يمكنك تحديده من الشاشة الرئيسية أو من الإعدادات.",
+    "imsakiyeShareError": "تعذّرت مشاركة الجدول. يرجى المحاولة مرة أخرى.",
+    "ramadanSahurLeft": "الوقت المتبقي للسحور",
+    "ramadanIftarLeft": "الوقت المتبقي للإفطار",
+    "ramadanDayLabel": "اليوم {day} من رمضان",
+    "@ramadanDayLabel": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    }
 }

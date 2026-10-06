@@ -1867,6 +1867,78 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Hedef:'**
   String get dhikrTarget;
+
+  /// No description provided for @imsakiyeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsakiye'**
+  String get imsakiyeTitle;
+
+  /// No description provided for @imsakiyeRamadan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan'**
+  String get imsakiyeRamadan;
+
+  /// No description provided for @imsakiyeRamadanTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan {year} İmsakiyesi'**
+  String imsakiyeRamadanTitle(int year);
+
+  /// No description provided for @imsakiyeDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gün'**
+  String get imsakiyeDay;
+
+  /// No description provided for @imsakiyeSunriseShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güneş'**
+  String get imsakiyeSunriseShort;
+
+  /// No description provided for @imsakiyePrevMonth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki ay'**
+  String get imsakiyePrevMonth;
+
+  /// No description provided for @imsakiyeNextMonth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki ay'**
+  String get imsakiyeNextMonth;
+
+  /// No description provided for @imsakiyeNoLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsakiyeyi görmek için önce konumunuzu seçin. Konumu ana ekrandan veya Ayarlar\'dan belirleyebilirsiniz.'**
+  String get imsakiyeNoLocation;
+
+  /// No description provided for @imsakiyeShareError.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsakiye paylaşılamadı. Lütfen tekrar deneyin.'**
+  String get imsakiyeShareError;
+
+  /// No description provided for @ramadanSahurLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahura Kalan'**
+  String get ramadanSahurLeft;
+
+  /// No description provided for @ramadanIftarLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftara Kalan'**
+  String get ramadanIftarLeft;
+
+  /// No description provided for @ramadanDayLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan\'ın {day}. günü'**
+  String ramadanDayLabel(int day);
 }
 
 class _AppLocalizationsDelegate

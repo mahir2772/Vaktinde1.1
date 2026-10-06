@@ -935,4 +935,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dhikrTarget => 'الهدف:';
+
+  @override
+  String get imsakiyeTitle => 'جدول المواقيت';
+
+  @override
+  String get imsakiyeRamadan => 'رمضان';
+
+  @override
+  String imsakiyeRamadanTitle(int year) {
+    return 'إمساكية رمضان $year';
+  }
+
+  @override
+  String get imsakiyeDay => 'اليوم';
+
+  @override
+  String get imsakiyeSunriseShort => 'الشروق';
+
+  @override
+  String get imsakiyePrevMonth => 'الشهر السابق';
+
+  @override
+  String get imsakiyeNextMonth => 'الشهر التالي';
+
+  @override
+  String get imsakiyeNoLocation =>
+      'يرجى تحديد موقعك أولاً لعرض جدول المواقيت. يمكنك تحديده من الشاشة الرئيسية أو من الإعدادات.';
+
+  @override
+  String get imsakiyeShareError =>
+      'تعذّرت مشاركة الجدول. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get ramadanSahurLeft => 'الوقت المتبقي للسحور';
+
+  @override
+  String get ramadanIftarLeft => 'الوقت المتبقي للإفطار';
+
+  @override
+  String ramadanDayLabel(int day) {
+    return 'اليوم $day من رمضان';
+  }
 }
