@@ -5,6 +5,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/models/prayer_times_model.dart';
 import '../../../data/services/prayer_time_service.dart';
 import '../../imsakiye/imsakiye_logic.dart';
+import '../../imsakiye/ramadan_calendar_loader.dart';
 
 /// Sadece Ramazan'da görünen sahur/iftar sayacı (CountdownWidget'ın altında).
 class RamadanCard extends StatefulWidget {
@@ -21,6 +22,9 @@ class _RamadanCardState extends State<RamadanCard> {
   RamadanCountdown? _countdown;
   Duration _remaining = Duration.zero;
 
+  // Diyanet tarihleri bir kez yüklenir; yüklenene kadar kart gizli
+  RamadanCalendar? _calendar;
+
   // Yarının vakitleri (akşamdan sonraki sahur sayacı için)
   PrayerTimesModel? _tomorrowTimes;
   DateTime? _tomorrowTimesDate;
@@ -29,8 +33,12 @@ class _RamadanCardState extends State<RamadanCard> {
   @override
   void initState() {
     super.initState();
-    _tick(rebuild: false);
     _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    loadRamadanCalendar().then((calendar) {
+      if (!mounted) return;
+      _calendar = calendar;
+      _tick();
+    });
   }
 
   @override
@@ -52,12 +60,13 @@ class _RamadanCardState extends State<RamadanCard> {
   }
 
   void _tick({bool rebuild = true}) {
-    if (!mounted) return;
+    final calendar = _calendar;
+    if (!mounted || calendar == null) return;
     final now = DateTime.now();
     final today = dateOnly(now);
     final tomorrow = DateTime(today.year, today.month, today.day + 1);
 
-    final inRamadan = ramadanDayOf(today) != null;
+    final inRamadan = calendar.dayOf(today) != null;
     if (inRamadan && _tomorrowRequested != tomorrow) {
       _loadTomorrow(tomorrow);
     }
@@ -67,6 +76,7 @@ class _RamadanCardState extends State<RamadanCard> {
             now: now,
             today: widget.prayerTimes,
             tomorrow: _tomorrowTimesDate == tomorrow ? _tomorrowTimes : null,
+            calendar: calendar,
           )
         : null;
     if (countdown == null && _countdown == null) return;
