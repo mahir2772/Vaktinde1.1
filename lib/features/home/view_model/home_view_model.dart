@@ -20,6 +20,7 @@ import '../../../data/models/hadith_model.dart';
 import '../../../main.dart';
 import '../../../data/services/ayah_service.dart';
 import '../../../data/services/prayer_refresh_service.dart';
+import '../../../data/services/prayer_tracker.dart';
 
 class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final LocationService _locationService = LocationService();
@@ -52,6 +53,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   Map<String, String> selectedSounds = {};
   Map<String, String> selectedReminderSounds = {};
   Map<String, bool> silentModeSettings = {};
+  // "Vakit çıkmadan hatırlat"
+  bool endReminderEnabled = false;
+  int endReminderMinutes = PrayerTracker.defaultEndReminderMinutes;
   final List<String> soundIds = [
     "ezan1",
     "ezan2",
@@ -71,6 +75,25 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   HomeViewModel() {
     WidgetsBinding.instance.addObserver(this);
+    _armMidnightTimer();
+  }
+
+  Timer? _midnightTimer;
+
+  // Uygulama açık kalsa da gece yarısından hemen sonra vakitler yenilenir
+  void _armMidnightTimer() {
+    _midnightTimer?.cancel();
+    final now = DateTime.now();
+    final next = DateTime(now.year, now.month, now.day + 1, 0, 0, 30);
+    _midnightTimer = Timer(next.difference(now), () {
+      if (_isDataLoaded) {
+        try {
+          _calculateHijriDate();
+          _refreshTimesIfNewDay().catchError((Object e) {});
+        } catch (e) {}
+      }
+      _armMidnightTimer();
+    });
   }
 
   void updateLocalization(AppLocalizations loc) {
@@ -195,7 +218,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
     _sendTimesToBackgroundService();
     _updateHomeScreenWidget();
-    await _rescheduleAlarms();
+    // Toplu iptal yok: bildirim çekmecesindeki dünkü ezan ("Kıldım") silinmez
+    await _rescheduleAlarms(replaceOnly: true);
   }
 
   /// Vakit ince ayarı kaydedildikten sonra: bugünün vakitleri, ekran, widget'lar,
@@ -439,7 +463,31 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     selectedSounds = savedData['sounds'];
     selectedReminderSounds = savedData['reminderSounds'];
     silentModeSettings = savedData['silentMode'];
+    final endReminder = await _storageService.loadEndReminderSettings();
+    endReminderEnabled = endReminder.enabled;
+    endReminderMinutes = endReminder.minutes;
     notifyListeners();
+  }
+
+  /// Vakit çıkış hatırlatması ayarı; sadece bu hatırlatmalar (ID 100-124) yeniden kurulur
+  Future<void> setEndReminder({bool? enabled, int? minutes}) async {
+    if (enabled != null) endReminderEnabled = enabled;
+    if (minutes != null) endReminderMinutes = minutes;
+    notifyListeners();
+    await _storageService.saveEndReminderSettings(
+      enabled: endReminderEnabled,
+      minutes: endReminderMinutes,
+    );
+    await refreshEndReminders();
+  }
+
+  /// Takipte bir vakit geri alınınca ya da ayar değişince hatırlatmalar eşitlenir
+  Future<void> refreshEndReminders() async {
+    if (prayerTimes == null || _currentLoc == null) return;
+    await _refreshService.syncEndReminders(
+      todayTimes: prayerTimes!,
+      loc: _currentLoc!,
+    );
   }
 
   void _saveCurrentSettings() {
@@ -523,8 +571,43 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     } catch (e) {}
   }
 
+  // Alarm kurma işleri üst üste binmez: çalışırken gelen istekler bitince tek seferde,
+  // en güncel ayarlarla yeniden çalıştırılır (kapatılan alarm kurulu kalmasın).
+  Future<void>? _rescheduleRun;
+  bool _rescheduleAgain = false;
+  bool _rescheduleFull = false;
+
+  Future<void> _rescheduleAlarms({bool replaceOnly = false}) {
+    if (!replaceOnly) _rescheduleFull = true;
+    final running = _rescheduleRun;
+    if (running != null) {
+      _rescheduleAgain = true;
+      return running;
+    }
+    final run = _runRescheduleLoop();
+    _rescheduleRun = run;
+    return run;
+  }
+
+  /// Süren alarm kurma işi (ve bekleyen tekrarı) bitince tamamlanır
+  @visibleForTesting
+  Future<void> get alarmsSettled => _rescheduleRun ?? Future<void>.value();
+
+  Future<void> _runRescheduleLoop() async {
+    try {
+      do {
+        _rescheduleAgain = false;
+        final full = _rescheduleFull;
+        _rescheduleFull = false;
+        await _doRescheduleAlarms(replaceOnly: !full);
+      } while (_rescheduleAgain);
+    } finally {
+      _rescheduleRun = null;
+    }
+  }
+
   // Koordinat varsa 5 günlük alarm kurulur: uygulama açılmasa da ezan gelir (ID 0-59)
-  Future<void> _rescheduleAlarms() async {
+  Future<void> _doRescheduleAlarms({required bool replaceOnly}) async {
     if (prayerTimes == null || _currentLoc == null) return;
     try {
       await _refreshService.rescheduleAlarms(
@@ -535,6 +618,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         selectedSounds: selectedSounds,
         selectedReminderSounds: selectedReminderSounds,
         silentModeSettings: silentModeSettings,
+        replaceOnly: replaceOnly,
       );
 
       await _scheduleDailyContent();
@@ -553,6 +637,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _midnightTimer?.cancel();
     _audioPlayer?.dispose();
     super.dispose();
   }

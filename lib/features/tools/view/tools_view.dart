@@ -15,6 +15,7 @@ import '../../zakat/view/zakat_view.dart';
 import '../../settings/view/settings_view.dart';
 import '../../missed_prayers/view/missed_prayers_view.dart';
 import '../../imsakiye/view/imsakiye_view.dart';
+import '../../prayer_tracker/view/prayer_tracker_view.dart';
 
 class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
@@ -72,6 +73,14 @@ class ToolsView extends StatelessWidget {
                     icon: Icons.history_edu,
                     primaryColor: primaryColor,
                     page: const MissedPrayersView(),
+                  ),
+                  _buildToolCard(
+                    context,
+                    hasImage: hasImage,
+                    title: loc.trackerTitle,
+                    icon: Icons.task_alt,
+                    primaryColor: primaryColor,
+                    page: const PrayerTrackerView(),
                   ),
                   _buildToolCard(
                     context,

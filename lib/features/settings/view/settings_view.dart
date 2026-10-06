@@ -15,6 +15,7 @@ import '../../common/theme_provider.dart';
 
 import '../../home/view_model/home_view_model.dart';
 import 'time_adjust_view.dart';
+import 'end_reminder_setting.dart';
 
 import '../../common/widgets/ad_banner_widget.dart';
 
@@ -111,6 +112,8 @@ class SettingsView extends StatelessWidget {
                 MaterialPageRoute(builder: (_) => const TimeAdjustView()),
               ),
             ),
+            const Divider(height: 1),
+            const EndReminderSetting(),
             const Divider(height: 1),
             ListTile(
               leading: const Icon(

@@ -87,6 +87,76 @@
         }
     },
     "timeAdjustSaved": "Horaires mis à jour",
+    "trackerTitle": "Suivi des prières",
+    "trackerToday": "Aujourd'hui",
+    "trackerYesterday": "Hier",
+    "trackerPrayedAction": "J'ai prié",
+    "trackerLast7Days": "7 derniers jours",
+    "trackerCompletion": "Taux sur 30 jours",
+    "trackerStreak": "Série",
+    "trackerStreakDays": "{count, plural, =0{0 jour} =1{1 jour} other{{count} jours}}",
+    "@trackerStreakDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerNotYet": "L'heure de cette prière n'est pas encore arrivée.",
+    "trackerKazaButton": "Ajouter les prières non faites au qada",
+    "trackerKazaInfo": "Les prières non cochées des 30 derniers jours (depuis le début du suivi) sont ajoutées aux compteurs de qada. Chaque prière n'est ajoutée qu'une fois.",
+    "trackerKazaConfirm": "{count, plural, =1{1 prière non cochée sera ajoutée aux compteurs de qada. Continuer ?} other{{count} prières non cochées seront ajoutées aux compteurs de qada. Continuer ?}}",
+    "@trackerKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaAdd": "Ajouter",
+    "trackerKazaDone": "{count, plural, =1{1 prière ajoutée au qada.} other{{count} prières ajoutées au qada.}}",
+    "@trackerKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaNone": "Aucune prière à ajouter au qada.",
+    "trackerKazaLocked": "Cette prière a été ajoutée au qada. Une fois rattrapée, diminuez-la dans le suivi des prières manquées.",
+    "trackerLegendPrayed": "Accomplie",
+    "trackerLegendKaza": "Ajoutée au qada",
+    "kerahatActive": "Temps makruh en cours : {range}",
+    "@kerahatActive": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "kerahatUpcoming": "Temps makruh bientôt : {range}",
+    "@kerahatUpcoming": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitle": "Rappel avant la fin de la prière",
+    "endReminderSub": "Vous avertit avant la fin du temps d'une prière non cochée.",
+    "endReminderNotifTitle": "Fin du temps de prière",
+    "endReminderNotifBody": "Il reste {minute} minutes avant la fin du temps de {vakit}.",
+    "@endReminderNotifBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "endReminderChannel": "Rappels de fin de prière",
     "sectionSupport": "SUPPORT",
     "shareApp": "Partager avec un Ami",
     "rateApp": "Évaluez-nous",

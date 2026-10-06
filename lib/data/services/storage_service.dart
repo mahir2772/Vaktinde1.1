@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prayer_times_model.dart';
 import '../models/hadith_model.dart';
+import 'prayer_tracker.dart';
 
 class StorageService {
   Future<void> saveSettings({
@@ -168,6 +169,74 @@ class StorageService {
   Future<void> updateMissedPrayer(String key, int value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('kaza_$key', value);
+  }
+
+  // --- Namaz takibi: tarih (yyyy-MM-dd) → vakit bit maskesi (PrayerTracker) ---
+  // Bildirim aksiyonu ayrı isolate'te yazar; okumadan önce reload şart.
+
+  Future<Map<String, int>> loadPrayerLog() => _loadMaskMap('prayer_log');
+
+  Future<void> savePrayerLog(Map<String, int> log) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_log', jsonEncode(log));
+  }
+
+  /// Kazaya eklenmiş (tarih, vakit) çiftleri; aynı vakit iki kez eklenmez
+  Future<Map<String, int>> loadKazaAdded() =>
+      _loadMaskMap('prayer_kaza_added');
+
+  Future<void> saveKazaAdded(Map<String, int> added) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_kaza_added', jsonEncode(added));
+  }
+
+  /// Takibin başladığı gün (ilk işaretlenen en eski tarih)
+  Future<String?> loadTrackerSince() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('prayer_log_since');
+  }
+
+  Future<void> saveTrackerSince(String dateKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_log_since', dateKey);
+  }
+
+  Future<Map<String, int>> _loadMaskMap(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final raw = prefs.getString(key);
+    if (raw == null) return {};
+    try {
+      final result = <String, int>{};
+      Map<String, dynamic>.from(jsonDecode(raw)).forEach((k, v) {
+        if (v is num) result[k] = v.toInt();
+      });
+      return result;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  // --- "Vakit çıkmadan hatırlat" ayarı (varsayılan kapalı, 30 dk) ---
+
+  Future<({bool enabled, int minutes})> loadEndReminderSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final minutes = prefs.getInt('end_reminder_minutes');
+    return (
+      enabled: prefs.getBool('end_reminder_enabled') ?? false,
+      minutes: PrayerTracker.endReminderMinuteOptions.contains(minutes)
+          ? minutes!
+          : PrayerTracker.defaultEndReminderMinutes,
+    );
+  }
+
+  Future<void> saveEndReminderSettings({
+    required bool enabled,
+    required int minutes,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('end_reminder_enabled', enabled);
+    await prefs.setInt('end_reminder_minutes', minutes);
   }
 
   Future<void> saveDailyHadith(HadithModel hadith, String languageCode) async {

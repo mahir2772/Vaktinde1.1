@@ -446,6 +446,156 @@ abstract class AppLocalizations {
   /// **'Vakitler güncellendi'**
   String get timeAdjustSaved;
 
+  /// No description provided for @trackerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Takibi'**
+  String get trackerTitle;
+
+  /// No description provided for @trackerToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün'**
+  String get trackerToday;
+
+  /// No description provided for @trackerYesterday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dün'**
+  String get trackerYesterday;
+
+  /// No description provided for @trackerPrayedAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldım'**
+  String get trackerPrayedAction;
+
+  /// No description provided for @trackerLast7Days.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 7 Gün'**
+  String get trackerLast7Days;
+
+  /// No description provided for @trackerCompletion.
+  ///
+  /// In tr, this message translates to:
+  /// **'30 günlük oran'**
+  String get trackerCompletion;
+
+  /// No description provided for @trackerStreak.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seri'**
+  String get trackerStreak;
+
+  /// No description provided for @trackerStreakDays.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} gün}}'**
+  String trackerStreakDays(int count);
+
+  /// No description provided for @trackerNotYet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu vakit henüz girmedi.'**
+  String get trackerNotYet;
+
+  /// No description provided for @trackerKazaButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılınmayanları kazaya ekle'**
+  String get trackerKazaButton;
+
+  /// No description provided for @trackerKazaInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Takibe başladığınız günden itibaren son 30 günde işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.'**
+  String get trackerKazaInfo;
+
+  /// No description provided for @trackerKazaConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{İşaretlenmemiş {count} vakit kaza sayaçlarına eklenecek. Devam edilsin mi?}}'**
+  String trackerKazaConfirm(int count);
+
+  /// No description provided for @trackerKazaAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekle'**
+  String get trackerKazaAdd;
+
+  /// No description provided for @trackerKazaDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} vakit kazaya eklendi.}}'**
+  String trackerKazaDone(int count);
+
+  /// No description provided for @trackerKazaNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklenecek vakit yok.'**
+  String get trackerKazaNone;
+
+  /// No description provided for @trackerKazaLocked.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu vakit kazaya eklendi. Kıldığınızda Kaza Takibi\'nden düşebilirsiniz.'**
+  String get trackerKazaLocked;
+
+  /// No description provided for @trackerLegendPrayed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılındı'**
+  String get trackerLegendPrayed;
+
+  /// No description provided for @trackerLegendKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklendi'**
+  String get trackerLegendKaza;
+
+  /// No description provided for @kerahatActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şu an kerahat vakti: {range}'**
+  String kerahatActive(String range);
+
+  /// No description provided for @kerahatUpcoming.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kerahat vakti yaklaşıyor: {range}'**
+  String kerahatUpcoming(String range);
+
+  /// No description provided for @endReminderTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit çıkmadan hatırlat'**
+  String get endReminderTitle;
+
+  /// No description provided for @endReminderSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılındı işaretlenmemiş namazın vakti çıkmadan bildirim gönderir.'**
+  String get endReminderSub;
+
+  /// No description provided for @endReminderNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Çıkıyor'**
+  String get endReminderNotifTitle;
+
+  /// No description provided for @endReminderNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vaktinin çıkmasına {minute} dakika kaldı.'**
+  String endReminderNotifBody(String vakit, int minute);
+
+  /// No description provided for @endReminderChannel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Çıkış Hatırlatmaları'**
+  String get endReminderChannel;
+
   /// No description provided for @sectionSupport.
   ///
   /// In tr, this message translates to:

@@ -87,6 +87,76 @@
         }
     },
     "timeAdjustSaved": "Vakitler güncellendi",
+    "trackerTitle": "Namaz Takibi",
+    "trackerToday": "Bugün",
+    "trackerYesterday": "Dün",
+    "trackerPrayedAction": "Kıldım",
+    "trackerLast7Days": "Son 7 Gün",
+    "trackerCompletion": "30 günlük oran",
+    "trackerStreak": "Seri",
+    "trackerStreakDays": "{count, plural, other{{count} gün}}",
+    "@trackerStreakDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerNotYet": "Bu vakit henüz girmedi.",
+    "trackerKazaButton": "Kılınmayanları kazaya ekle",
+    "trackerKazaInfo": "Takibe başladığınız günden itibaren son 30 günde işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.",
+    "trackerKazaConfirm": "{count, plural, other{İşaretlenmemiş {count} vakit kaza sayaçlarına eklenecek. Devam edilsin mi?}}",
+    "@trackerKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaAdd": "Ekle",
+    "trackerKazaDone": "{count, plural, other{{count} vakit kazaya eklendi.}}",
+    "@trackerKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaNone": "Kazaya eklenecek vakit yok.",
+    "trackerKazaLocked": "Bu vakit kazaya eklendi. Kıldığınızda Kaza Takibi'nden düşebilirsiniz.",
+    "trackerLegendPrayed": "Kılındı",
+    "trackerLegendKaza": "Kazaya eklendi",
+    "kerahatActive": "Şu an kerahat vakti: {range}",
+    "@kerahatActive": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "kerahatUpcoming": "Kerahat vakti yaklaşıyor: {range}",
+    "@kerahatUpcoming": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitle": "Vakit çıkmadan hatırlat",
+    "endReminderSub": "Kılındı işaretlenmemiş namazın vakti çıkmadan bildirim gönderir.",
+    "endReminderNotifTitle": "Vakit Çıkıyor",
+    "endReminderNotifBody": "{vakit} vaktinin çıkmasına {minute} dakika kaldı.",
+    "@endReminderNotifBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "endReminderChannel": "Vakit Çıkış Hatırlatmaları",
     "sectionSupport": "DESTEK",
     "shareApp": "Arkadaşınla Paylaş",
     "rateApp": "Bize Puan Ver",

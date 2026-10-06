@@ -12,6 +12,9 @@ import 'ayah_service.dart';
 import 'hadith_service.dart';
 import 'notification_service.dart';
 import 'prayer_time_service.dart';
+import 'prayer_tracker.dart';
+import 'prayer_tracker_service.dart';
+import 'serial_queue.dart';
 import 'storage_service.dart';
 import 'widget_service.dart';
 
@@ -23,6 +26,8 @@ class PlannedAlarm {
   final DateTime time;
   final String? sound; // null: sessiz (sadece yazılı) bildirim
   final String channelName;
+  final String? payload; // "Kıldım" aksiyonu için tarih + vakit
+  final String? actionLabel; // null: aksiyon butonu yok
 
   const PlannedAlarm({
     required this.id,
@@ -31,6 +36,8 @@ class PlannedAlarm {
     required this.time,
     required this.sound,
     required this.channelName,
+    this.payload,
+    this.actionLabel,
   });
 }
 
@@ -249,6 +256,8 @@ class PrayerRefreshService {
           String? soundToSend = isSilent
               ? null
               : (selectedSounds[vakitLogicKey] ?? "ezan1");
+          // Farz vakitlerde "Kıldım" butonu (Güneş hariç)
+          final tracked = PrayerTracker.prayerKeys.contains(vakitLogicKey);
           plan.add(
             PlannedAlarm(
               id: idCounter,
@@ -259,6 +268,10 @@ class PrayerRefreshService {
               channelName: soundToSend != null
                   ? loc.channelSoundPrefix(soundToSend)
                   : loc.channelSilentPrayers,
+              payload: tracked
+                  ? PrayerTracker.payload(vakitDate, vakitLogicKey)
+                  : null,
+              actionLabel: tracked ? loc.trackerPrayedAction : null,
             ),
           );
         }
@@ -290,6 +303,186 @@ class PrayerRefreshService {
     return plan;
   }
 
+  /// "Vakit çıkmadan hatırlat" planı (ID 100-124). [days][0] bugün, [previous] dünün
+  /// vakitleri (dünkü yatsının süresi için). Hatırlatma günü d: dünkü yatsı (d'nin
+  /// imsakında biter), sabah (güneşte), öğle (ikindide), ikindi (akşamda), akşam (yatsıda).
+  /// Geçmiş, [minutes] >= vakit süresi veya kılındı işaretli vakitler atlanır.
+  static List<PlannedAlarm> buildEndReminderPlan({
+    required PrayerTimesModel previous,
+    required List<PrayerTimesModel> days,
+    required DateTime now,
+    required AppLocalizations loc,
+    required int minutes,
+    required Map<String, int> prayerLog,
+  }) {
+    final names = {
+      "İmsak": loc.sabah,
+      "Öğle": loc.ogle,
+      "İkindi": loc.ikindi,
+      "Akşam": loc.aksam,
+      "Yatsı": loc.yatsi,
+    };
+    DateTime at(DateTime date, String hhmm) {
+      final parts = hhmm.split(':');
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+    }
+
+    final plan = <PlannedAlarm>[];
+    for (int d = 0; d < days.length && d < PrayerTracker.endReminderDays; d++) {
+      final date = PrayerTracker.addDays(now, d);
+      final prevDate = PrayerTracker.addDays(now, d - 1);
+      final t = days[d];
+      final prev = d == 0 ? previous : days[d - 1];
+      // (vakit, namazın günü, başlangıç, bitiş)
+      final windows = [
+        ("Yatsı", prevDate, at(prevDate, prev.yatsi!), at(date, t.imsak!)),
+        ("İmsak", date, at(date, t.imsak!), at(date, t.gunes!)),
+        ("Öğle", date, at(date, t.ogle!), at(date, t.ikindi!)),
+        ("İkindi", date, at(date, t.ikindi!), at(date, t.aksam!)),
+        ("Akşam", date, at(date, t.aksam!), at(date, t.yatsi!)),
+      ];
+      for (final (key, prayerDate, start, end) in windows) {
+        if (minutes >= end.difference(start).inMinutes) continue;
+        final remindAt = end.subtract(Duration(minutes: minutes));
+        if (!remindAt.isAfter(now)) continue;
+        if (PrayerTracker.isPrayed(prayerLog, prayerDate, key)) continue;
+        plan.add(
+          PlannedAlarm(
+            id: PrayerTracker.endReminderId(date, key),
+            title: loc.endReminderNotifTitle,
+            body: loc.endReminderNotifBody(names[key]!, minutes),
+            time: remindAt,
+            sound: null,
+            channelName: loc.endReminderChannel,
+            payload: PrayerTracker.payload(prayerDate, key),
+            actionLabel: loc.trackerPrayedAction,
+          ),
+        );
+      }
+    }
+    return plan;
+  }
+
+  /// Alarm planı için günlerin vakitleri. Koordinat varsa bugün + 4 gün ve dün yeniden
+  /// hesaplanır ([todayTimes] gece yarısından kalma olabilir); yoksa sadece [todayTimes]
+  /// (dün/yarın yerine bugünkü vakitler yaklaşık kullanılır).
+  Future<
+    ({
+      List<PrayerTimesModel> days,
+      PrayerTimesModel previous,
+      List<PrayerTimesModel> reminderDays,
+    })
+  >
+  _planDays(PrayerTimesModel todayTimes, DateTime now) async {
+    final coords = await _storageService.loadCoordinates();
+    if (coords == null) {
+      return (
+        days: [todayTimes],
+        previous: todayTimes,
+        reminderDays: [todayTimes, todayTimes],
+      );
+    }
+    final offsets = await _storageService.loadTimeOffsets();
+    final days = <PrayerTimesModel>[];
+    for (int day = 0; day < alarmDays; day++) {
+      days.add(
+        _prayerTimeService.calculate(
+          coords.lat,
+          coords.lng,
+          date: DateTime(now.year, now.month, now.day + day),
+          offsets: offsets,
+        ),
+      );
+    }
+    final previous = _prayerTimeService.calculate(
+      coords.lat,
+      coords.lng,
+      date: DateTime(now.year, now.month, now.day - 1),
+      offsets: offsets,
+    );
+    return (days: days, previous: previous, reminderDays: days);
+  }
+
+  /// "Vakit çıkıyor" hatırlatmalarını ayara ve takip kaydına göre eşitler (sadece
+  /// 100-124): plandan çıkan bekleyenler iptal, plandakiler aynı ID'nin üzerine kurulur.
+  /// Ayar kapalıysa hepsi iptal edilir. Hata fırlatmaz.
+  Future<void> syncEndReminders({
+    required PrayerTimesModel todayTimes,
+    required AppLocalizations loc,
+  }) => _serializeAlarms(() async {
+    final now = DateTime.now();
+    try {
+      final planDays = await _planDays(todayTimes, now);
+      await _syncEndReminders(
+        previous: planDays.previous,
+        days: planDays.reminderDays,
+        now: now,
+        loc: loc,
+      );
+    } catch (e) {}
+  });
+
+  /// Plan boşsa ya da en az bir hatırlatma kurulduysa true
+  Future<bool> _syncEndReminders({
+    required PrayerTimesModel previous,
+    required List<PrayerTimesModel> days,
+    required DateTime now,
+    required AppLocalizations loc,
+  }) => PrayerTrackerService.runExclusive(() async {
+    int succeeded = 0;
+    List<PlannedAlarm> plan = const [];
+    try {
+      // Plan çıkarılamazsa (okuma hatası) kurulu hatırlatmalara dokunulmaz
+      final settings = await _storageService.loadEndReminderSettings();
+      if (settings.enabled) {
+        plan = buildEndReminderPlan(
+          previous: previous,
+          days: days,
+          now: now,
+          loc: loc,
+          minutes: settings.minutes,
+          prayerLog: await _storageService.loadPrayerLog(),
+        );
+      }
+      final plannedIds = plan.map((a) => a.id).toSet();
+      for (final id in await _notifications.pendingIds()) {
+        if (PrayerTracker.isEndReminderId(id) && !plannedIds.contains(id)) {
+          await _notifications.cancel(id);
+        }
+      }
+      for (final alarm in plan) {
+        try {
+          await _notifications.scheduleEndReminder(
+            id: alarm.id,
+            title: alarm.title,
+            body: alarm.body,
+            scheduledTime: alarm.time,
+            localizedChannelName: alarm.channelName,
+            actionLabel: alarm.actionLabel!,
+            payload: alarm.payload!,
+          );
+          succeeded++;
+        } catch (e) {}
+      }
+    } catch (e) {
+      return false;
+    }
+    return plan.isEmpty || succeeded > 0;
+  });
+
+  // Uygulama içinde alarm kurma işleri üst üste binmez (iptal/kur sırası karışmasın).
+  // Arka plan görevi ayrı isolate'tedir.
+  static final SerialQueue _alarmQueue = SerialQueue();
+
+  static Future<T> _serializeAlarms<T>(Future<T> Function() action) =>
+      _alarmQueue.run(action);
+
   /// Ezan/hatırlatma alarmlarını kurar. Koordinat varsa 5 gün (uygulama açılmasa da ezan gelir),
   /// yoksa sadece [todayTimes] ile 1 gün.
   /// [replaceOnly] (arka plan): toplu iptal yerine aynı ID'nin üzerine yazılır, sadece plandan
@@ -303,25 +496,11 @@ class PrayerRefreshService {
     required Map<String, String> selectedReminderSounds,
     required Map<String, bool> silentModeSettings,
     bool replaceOnly = false,
-  }) async {
+  }) => _serializeAlarms(() async {
     final now = DateTime.now();
-    final days = <PrayerTimesModel>[todayTimes];
-    final coords = await _storageService.loadCoordinates();
-    if (coords != null) {
-      final offsets = await _storageService.loadTimeOffsets();
-      for (int day = 1; day < alarmDays; day++) {
-        days.add(
-          _prayerTimeService.calculate(
-            coords.lat,
-            coords.lng,
-            date: DateTime(now.year, now.month, now.day + day),
-            offsets: offsets,
-          ),
-        );
-      }
-    }
+    final planDays = await _planDays(todayTimes, now);
     final plan = buildAlarmPlan(
-      days: days,
+      days: planDays.days,
       now: now,
       loc: loc,
       onTimeAlarms: onTimeAlarms,
@@ -342,6 +521,7 @@ class PrayerRefreshService {
       await _notifications.cancelSpecificAlarms();
     }
 
+    int succeeded = 0;
     for (final alarm in plan) {
       try {
         await _notifications.schedulePrayerNotification(
@@ -352,13 +532,26 @@ class PrayerRefreshService {
           soundName: alarm.sound,
           localizedChannelName: alarm.channelName,
           localizedTicker: loc.tickerEzan,
+          payload: alarm.payload,
+          actionLabel: alarm.actionLabel,
         );
+        succeeded++;
       } catch (e) {}
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_alarmsDateKey, _dateKey(now));
-  }
+    final remindersOk = await _syncEndReminders(
+      previous: planDays.previous,
+      days: planDays.reminderDays,
+      now: now,
+      loc: loc,
+    );
+
+    // Hiçbiri kurulamadıysa tarih yazılmaz: arka plan görevi aynı gün yeniden dener
+    if ((plan.isEmpty || succeeded > 0) && remindersOk) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_alarmsDateKey, _dateKey(now));
+    }
+  });
 
   /// Günlük ayet (10:00, ID 1000) ve hadis (19:00, ID 1900) bildirimi
   Future<void> scheduleDailyContent({

@@ -194,6 +194,118 @@ class AppLocalizationsFr extends AppLocalizations {
   String get timeAdjustSaved => 'Horaires mis à jour';
 
   @override
+  String get trackerTitle => 'Suivi des prières';
+
+  @override
+  String get trackerToday => 'Aujourd\'hui';
+
+  @override
+  String get trackerYesterday => 'Hier';
+
+  @override
+  String get trackerPrayedAction => 'J\'ai prié';
+
+  @override
+  String get trackerLast7Days => '7 derniers jours';
+
+  @override
+  String get trackerCompletion => 'Taux sur 30 jours';
+
+  @override
+  String get trackerStreak => 'Série';
+
+  @override
+  String trackerStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours',
+      one: '1 jour',
+      zero: '0 jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerNotYet =>
+      'L\'heure de cette prière n\'est pas encore arrivée.';
+
+  @override
+  String get trackerKazaButton => 'Ajouter les prières non faites au qada';
+
+  @override
+  String get trackerKazaInfo =>
+      'Les prières non cochées des 30 derniers jours (depuis le début du suivi) sont ajoutées aux compteurs de qada. Chaque prière n\'est ajoutée qu\'une fois.';
+
+  @override
+  String trackerKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count prières non cochées seront ajoutées aux compteurs de qada. Continuer ?',
+      one:
+          '1 prière non cochée sera ajoutée aux compteurs de qada. Continuer ?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaAdd => 'Ajouter';
+
+  @override
+  String trackerKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count prières ajoutées au qada.',
+      one: '1 prière ajoutée au qada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaNone => 'Aucune prière à ajouter au qada.';
+
+  @override
+  String get trackerKazaLocked =>
+      'Cette prière a été ajoutée au qada. Une fois rattrapée, diminuez-la dans le suivi des prières manquées.';
+
+  @override
+  String get trackerLegendPrayed => 'Accomplie';
+
+  @override
+  String get trackerLegendKaza => 'Ajoutée au qada';
+
+  @override
+  String kerahatActive(String range) {
+    return 'Temps makruh en cours : $range';
+  }
+
+  @override
+  String kerahatUpcoming(String range) {
+    return 'Temps makruh bientôt : $range';
+  }
+
+  @override
+  String get endReminderTitle => 'Rappel avant la fin de la prière';
+
+  @override
+  String get endReminderSub =>
+      'Vous avertit avant la fin du temps d\'une prière non cochée.';
+
+  @override
+  String get endReminderNotifTitle => 'Fin du temps de prière';
+
+  @override
+  String endReminderNotifBody(String vakit, int minute) {
+    return 'Il reste $minute minutes avant la fin du temps de $vakit.';
+  }
+
+  @override
+  String get endReminderChannel => 'Rappels de fin de prière';
+
+  @override
   String get sectionSupport => 'SUPPORT';
 
   @override

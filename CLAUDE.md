@@ -26,11 +26,17 @@ lib/
                             getPrayerTimes(city): yedek Aladhan API (timingsByCity, 10 sn timeout)
       storage_service       SharedPreferences sarmalayıcı (konum adı + koordinat 'saved_lat/lng', günlük cache 'cached_prayer_times'+'cached_prayer_date', ayarlar, kaza, hadis)
       location_service      geolocator + geocoding → {city: administrativeArea, district: subAdministrativeArea|locality}; getCoordinatesFromAddress(il, ilçe)
-      notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (alarmClock modu; namaz ID 0-59, günlük içerik 1000/1900, kalıcı 888)
+      notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (alarmClock modu; namaz ID 0-59, vakit çıkış 100-124, günlük içerik 1000/1900, kalıcı 888).
+                            Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım")
+      prayer_tracker        saf: namaz takibi (tarih→5 vakit bit maskesi, seri, oran, kaza adayları), aksiyon yükü "prayed|yyyy-MM-dd|Öğle",
+                            vakit çıkış ID'si (hatırlatma günü epochDay%5 → ID 100-124, günden bağımsız sabit)
+      prayer_tracker_service kayıt + kaza ekleme (SerialQueue ile sıralı), "Kıldım" arka plan işleyicisi (ayrı isolate; prefs.reload şart),
+                            kılınan vaktin hatırlatmasını iptal eder
       background_manager    flutter_background_service foreground servisi; sadece ilk bildirim metni ('bg_display'), asıl içerik NotificationUpdater'da
       prayer_refresh_service BuildContext'siz ortak mantık: widget/kalıcı bildirim verisi, 5 günlük alarm planı (buildAlarmPlan),
                             günlük ayet/hadis bildirimi, hicri tarih (de/fr → en). runHeadless(): WorkManager görevi — bugünün
-                            vakitleri → cache + widget + bg_display; alarmlar günde bir ('alarms_scheduled_date'), toplu iptal yok
+                            vakitleri → cache + widget + bg_display; alarmlar günde bir ('alarms_scheduled_date', en az biri kurulunca), toplu iptal yok.
+                            buildEndReminderPlan/syncEndReminders: "vakit çıkmadan hatırlat" (ayar: end_reminder_*). Alarm işleri SerialQueue ile sıralı
       widget_service        home_widget → Android widget'larına veri yazar
       hadith_service        hadeethenc.com API + yerel json fallback
       ayah_service          api.alquran.cloud
@@ -40,13 +46,18 @@ lib/
       dini_gunler_service   dini gün hesaplama (hijri paketi)
   features/<özellik>/{view,view_model,widgets}
     home/view_model/home_view_model.dart   ANA MANTIK: init (kayıtlı koordinattan hesapla → yoksa cache → yoksa geocode), gün değişince
-                                           yeniden hesaplama (resume), konum, alarm planlama (koordinat varsa 5 gün),
+                                           yeniden hesaplama (resume + gece yarısı zamanlayıcısı; replaceOnly), konum,
+                                           alarm planlama (koordinat varsa 5 gün; üst üste gelen istekler tek koşuda birleşir),
                                            arka plan servisine/widget'a veri gönderme, günlük hadis/ayet
                                            (widget/alarm/günlük içerik → PrayerRefreshService'e delege; applyTimeOffsets())
     settings/view/time_adjust_view.dart    vakit ince ayarı (-30..+30 dk) → StorageService.saveTimeOffsets + applyTimeOffsets
     home/view/home_view.dart               vakit kartları, hata ekranları (errorMessageKey), sayaç
     home/widgets/countdown_widget.dart     "HH:mm" parse eder (split(':'))
     home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (CountdownWidget altında)
+    home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse vakit listesinin altında
+    home/widgets/prayer_tracker_row.dart   "Bugün" 5 vakit işareti (resume'da yenilenir) → prayer_tracker/view/prayer_tracker_view.dart
+                                           (7 gün ızgara, 30 gün oran, seri, kılınmayanları kazaya ekle; araçlarda da kart)
+    settings/view/end_reminder_setting.dart vakit çıkış hatırlatması anahtarı + 15/30/45 dk
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
     imsakiye/view/imsakiye_view.dart       aylık/Ramazan imsakiyesi (forDate ile); paylaşım = ekran dışı RepaintBoundary → PNG

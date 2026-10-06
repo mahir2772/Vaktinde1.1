@@ -87,6 +87,76 @@
         }
     },
     "timeAdjustSaved": "Gebetszeiten aktualisiert",
+    "trackerTitle": "Gebetstracker",
+    "trackerToday": "Heute",
+    "trackerYesterday": "Gestern",
+    "trackerPrayedAction": "Gebetet",
+    "trackerLast7Days": "Letzte 7 Tage",
+    "trackerCompletion": "30-Tage-Quote",
+    "trackerStreak": "Serie",
+    "trackerStreakDays": "{count, plural, =1{1 Tag} other{{count} Tage}}",
+    "@trackerStreakDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerNotYet": "Diese Gebetszeit hat noch nicht begonnen.",
+    "trackerKazaButton": "Nicht verrichtete zu Qada hinzufügen",
+    "trackerKazaInfo": "Nicht markierte Gebete der letzten 30 Tage (ab Beginn der Erfassung) werden zu den Qada-Zählern hinzugefügt. Jedes Gebet wird nur einmal hinzugefügt.",
+    "trackerKazaConfirm": "{count, plural, =1{1 nicht markiertes Gebet wird zu den Qada-Zählern hinzugefügt. Fortfahren?} other{{count} nicht markierte Gebete werden zu den Qada-Zählern hinzugefügt. Fortfahren?}}",
+    "@trackerKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaAdd": "Hinzufügen",
+    "trackerKazaDone": "{count, plural, =1{1 Gebet zu Qada hinzugefügt.} other{{count} Gebete zu Qada hinzugefügt.}}",
+    "@trackerKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaNone": "Keine Gebete zum Hinzufügen.",
+    "trackerKazaLocked": "Dieses Gebet wurde zu Qada hinzugefügt. Nach dem Nachholen im Tracker für verpasste Gebete reduzieren.",
+    "trackerLegendPrayed": "Verrichtet",
+    "trackerLegendKaza": "Zu Qada hinzugefügt",
+    "kerahatActive": "Jetzt Makruh-Zeit: {range}",
+    "@kerahatActive": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "kerahatUpcoming": "Bald Makruh-Zeit: {range}",
+    "@kerahatUpcoming": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitle": "Vor Ende der Gebetszeit erinnern",
+    "endReminderSub": "Benachrichtigt vor dem Ende der Zeit eines nicht als verrichtet markierten Gebets.",
+    "endReminderNotifTitle": "Gebetszeit endet bald",
+    "endReminderNotifBody": "Noch {minute} Minuten bis zum Ende der {vakit}-Zeit.",
+    "@endReminderNotifBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "endReminderChannel": "Erinnerungen vor Gebetsende",
     "sectionSupport": "SUPPORT",
     "shareApp": "Mit Freunden Teilen",
     "rateApp": "Bewerten Sie uns",

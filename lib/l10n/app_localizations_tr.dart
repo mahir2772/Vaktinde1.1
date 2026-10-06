@@ -191,6 +191,112 @@ class AppLocalizationsTr extends AppLocalizations {
   String get timeAdjustSaved => 'Vakitler güncellendi';
 
   @override
+  String get trackerTitle => 'Namaz Takibi';
+
+  @override
+  String get trackerToday => 'Bugün';
+
+  @override
+  String get trackerYesterday => 'Dün';
+
+  @override
+  String get trackerPrayedAction => 'Kıldım';
+
+  @override
+  String get trackerLast7Days => 'Son 7 Gün';
+
+  @override
+  String get trackerCompletion => '30 günlük oran';
+
+  @override
+  String get trackerStreak => 'Seri';
+
+  @override
+  String trackerStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gün',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerNotYet => 'Bu vakit henüz girmedi.';
+
+  @override
+  String get trackerKazaButton => 'Kılınmayanları kazaya ekle';
+
+  @override
+  String get trackerKazaInfo =>
+      'Takibe başladığınız günden itibaren son 30 günde işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.';
+
+  @override
+  String trackerKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'İşaretlenmemiş $count vakit kaza sayaçlarına eklenecek. Devam edilsin mi?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaAdd => 'Ekle';
+
+  @override
+  String trackerKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count vakit kazaya eklendi.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaNone => 'Kazaya eklenecek vakit yok.';
+
+  @override
+  String get trackerKazaLocked =>
+      'Bu vakit kazaya eklendi. Kıldığınızda Kaza Takibi\'nden düşebilirsiniz.';
+
+  @override
+  String get trackerLegendPrayed => 'Kılındı';
+
+  @override
+  String get trackerLegendKaza => 'Kazaya eklendi';
+
+  @override
+  String kerahatActive(String range) {
+    return 'Şu an kerahat vakti: $range';
+  }
+
+  @override
+  String kerahatUpcoming(String range) {
+    return 'Kerahat vakti yaklaşıyor: $range';
+  }
+
+  @override
+  String get endReminderTitle => 'Vakit çıkmadan hatırlat';
+
+  @override
+  String get endReminderSub =>
+      'Kılındı işaretlenmemiş namazın vakti çıkmadan bildirim gönderir.';
+
+  @override
+  String get endReminderNotifTitle => 'Vakit Çıkıyor';
+
+  @override
+  String endReminderNotifBody(String vakit, int minute) {
+    return '$vakit vaktinin çıkmasına $minute dakika kaldı.';
+  }
+
+  @override
+  String get endReminderChannel => 'Vakit Çıkış Hatırlatmaları';
+
+  @override
   String get sectionSupport => 'DESTEK';
 
   @override

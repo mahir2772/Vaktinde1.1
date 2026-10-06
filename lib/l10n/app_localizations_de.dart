@@ -192,6 +192,116 @@ class AppLocalizationsDe extends AppLocalizations {
   String get timeAdjustSaved => 'Gebetszeiten aktualisiert';
 
   @override
+  String get trackerTitle => 'Gebetstracker';
+
+  @override
+  String get trackerToday => 'Heute';
+
+  @override
+  String get trackerYesterday => 'Gestern';
+
+  @override
+  String get trackerPrayedAction => 'Gebetet';
+
+  @override
+  String get trackerLast7Days => 'Letzte 7 Tage';
+
+  @override
+  String get trackerCompletion => '30-Tage-Quote';
+
+  @override
+  String get trackerStreak => 'Serie';
+
+  @override
+  String trackerStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tage',
+      one: '1 Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerNotYet => 'Diese Gebetszeit hat noch nicht begonnen.';
+
+  @override
+  String get trackerKazaButton => 'Nicht verrichtete zu Qada hinzufügen';
+
+  @override
+  String get trackerKazaInfo =>
+      'Nicht markierte Gebete der letzten 30 Tage (ab Beginn der Erfassung) werden zu den Qada-Zählern hinzugefügt. Jedes Gebet wird nur einmal hinzugefügt.';
+
+  @override
+  String trackerKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count nicht markierte Gebete werden zu den Qada-Zählern hinzugefügt. Fortfahren?',
+      one:
+          '1 nicht markiertes Gebet wird zu den Qada-Zählern hinzugefügt. Fortfahren?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaAdd => 'Hinzufügen';
+
+  @override
+  String trackerKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Gebete zu Qada hinzugefügt.',
+      one: '1 Gebet zu Qada hinzugefügt.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaNone => 'Keine Gebete zum Hinzufügen.';
+
+  @override
+  String get trackerKazaLocked =>
+      'Dieses Gebet wurde zu Qada hinzugefügt. Nach dem Nachholen im Tracker für verpasste Gebete reduzieren.';
+
+  @override
+  String get trackerLegendPrayed => 'Verrichtet';
+
+  @override
+  String get trackerLegendKaza => 'Zu Qada hinzugefügt';
+
+  @override
+  String kerahatActive(String range) {
+    return 'Jetzt Makruh-Zeit: $range';
+  }
+
+  @override
+  String kerahatUpcoming(String range) {
+    return 'Bald Makruh-Zeit: $range';
+  }
+
+  @override
+  String get endReminderTitle => 'Vor Ende der Gebetszeit erinnern';
+
+  @override
+  String get endReminderSub =>
+      'Benachrichtigt vor dem Ende der Zeit eines nicht als verrichtet markierten Gebets.';
+
+  @override
+  String get endReminderNotifTitle => 'Gebetszeit endet bald';
+
+  @override
+  String endReminderNotifBody(String vakit, int minute) {
+    return 'Noch $minute Minuten bis zum Ende der $vakit-Zeit.';
+  }
+
+  @override
+  String get endReminderChannel => 'Erinnerungen vor Gebetsende';
+
+  @override
   String get sectionSupport => 'SUPPORT';
 
   @override

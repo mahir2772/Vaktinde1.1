@@ -87,6 +87,76 @@
         }
     },
     "timeAdjustSaved": "Prayer times updated",
+    "trackerTitle": "Prayer Tracker",
+    "trackerToday": "Today",
+    "trackerYesterday": "Yesterday",
+    "trackerPrayedAction": "Prayed",
+    "trackerLast7Days": "Last 7 Days",
+    "trackerCompletion": "30-day rate",
+    "trackerStreak": "Streak",
+    "trackerStreakDays": "{count, plural, =1{1 day} other{{count} days}}",
+    "@trackerStreakDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerNotYet": "This prayer time has not started yet.",
+    "trackerKazaButton": "Add unprayed to qada",
+    "trackerKazaInfo": "Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once.",
+    "trackerKazaConfirm": "{count, plural, =1{1 unmarked prayer will be added to your qada counters. Continue?} other{{count} unmarked prayers will be added to your qada counters. Continue?}}",
+    "@trackerKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaAdd": "Add",
+    "trackerKazaDone": "{count, plural, =1{1 prayer added to qada.} other{{count} prayers added to qada.}}",
+    "@trackerKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaNone": "No prayers to add to qada.",
+    "trackerKazaLocked": "This prayer was added to qada. Once you make it up, reduce it in the Missed Prayers Tracker.",
+    "trackerLegendPrayed": "Prayed",
+    "trackerLegendKaza": "Added to qada",
+    "kerahatActive": "Makruh time now: {range}",
+    "@kerahatActive": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "kerahatUpcoming": "Makruh time soon: {range}",
+    "@kerahatUpcoming": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitle": "Remind before prayer time ends",
+    "endReminderSub": "Notifies you before the time of a prayer not marked as prayed ends.",
+    "endReminderNotifTitle": "Prayer Time Ending",
+    "endReminderNotifBody": "{minute} minutes left until {vakit} time ends.",
+    "@endReminderNotifBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "endReminderChannel": "Prayer End Reminders",
     "sectionSupport": "SUPPORT",
     "shareApp": "Share with a Friend",
     "rateApp": "Rate Us",
