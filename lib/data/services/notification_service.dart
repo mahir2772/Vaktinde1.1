@@ -3,6 +3,8 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:io';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'prayer_tracker.dart';
+import 'prayer_tracker_service.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -40,8 +42,20 @@ class NotificationService {
       android: androidSettings,
       iOS: iosSettings,
     );
-    await _notificationsPlugin.initialize(initSettings);
+    // "Kıldım" aksiyonu için arka plan işleyicisi (her initialize'da aynı)
+    await _notificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground,
+    );
   }
+
+  static AndroidNotificationAction prayedAction(String label) =>
+      AndroidNotificationAction(
+        PrayerTracker.actionId,
+        label,
+        showsUserInterface: false,
+        cancelNotification: true,
+      );
 
   Future<void> requestPermissions() async {
     if (Platform.isAndroid) {
@@ -63,6 +77,8 @@ class NotificationService {
     String? soundName,
     required String localizedChannelName,
     required String localizedTicker,
+    String? payload,
+    String? actionLabel, // verilirse "Kıldım" butonu eklenir
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
     String channelId = soundName != null
@@ -90,6 +106,7 @@ class NotificationService {
           icon: '@mipmap/launcher_icon',
           sound: soundSource,
           enableVibration: true,
+          actions: actionLabel != null ? [prayedAction(actionLabel)] : null,
         ),
         iOS: DarwinNotificationDetails(
           presentSound: playSound,
@@ -99,6 +116,41 @@ class NotificationService {
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.alarmClock,
+      payload: payload,
+    );
+  }
+
+  /// "Vakit çıkıyor" hatırlatması (ID 100-124): ayrı kanal, normal önem, varsayılan ses
+  Future<void> scheduleEndReminder({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledTime,
+    required String localizedChannelName,
+    required String actionLabel,
+    required String payload,
+  }) async {
+    if (scheduledTime.isBefore(DateTime.now())) return;
+    await _notificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(scheduledTime, tz.local),
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'channel_end_reminder',
+          localizedChannelName,
+          importance: Importance.defaultImportance,
+          priority: Priority.defaultPriority,
+          icon: '@mipmap/launcher_icon',
+          actions: [prayedAction(actionLabel)],
+        ),
+        iOS: const DarwinNotificationDetails(),
+      ),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.alarmClock,
+      payload: payload,
     );
   }
 
@@ -224,9 +276,13 @@ class NotificationService {
 
   // 🔥 İŞTE HAYAT KURTARAN YENİ FONKSİYONUMUZ
   Future<void> cancelSpecificAlarms() async {
-    // Sadece namaz (0-59 arası, 5 gün x 12) ve günlük (1000, 1900) alarmları siler.
+    // Sadece namaz (0-59 arası, 5 gün x 12), vakit çıkış hatırlatması (100-124) ve
+    // günlük (1000, 1900) alarmları siler.
     // 888 ID'Lİ ARKA PLAN YAPIŞKAN BİLDİRİMİNE ASLA DOKUNMAZ!
     for (int i = 0; i < 60; i++) {
+      await _notificationsPlugin.cancel(i);
+    }
+    for (int i = 100; i < 125; i++) {
       await _notificationsPlugin.cancel(i);
     }
     await _notificationsPlugin.cancel(1000);

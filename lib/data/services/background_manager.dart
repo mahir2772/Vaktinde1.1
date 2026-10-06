@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'prayer_tracker_service.dart';
 
 class NextVakitInfo {
   final String internalName;
@@ -71,8 +73,10 @@ void onStart(ServiceInstance service) async {
   }
 
   const androidInit = AndroidInitializationSettings('@mipmap/launcher_icon');
+  // NotificationService.init ile aynı işleyici: "Kıldım" aksiyonu kaybolmasın
   await notifications.initialize(
     const InitializationSettings(android: androidInit),
+    onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground,
   );
 
   Map<String, String> display = {};
@@ -114,6 +118,22 @@ void onStart(ServiceInstance service) async {
       debugPrint("Arka plan dinleme hatası: $e");
     }
   });
+
+  // Yer tutucu bildirim gerçek sayacı ezmesin (soğuk başlangıç, yeniden başlatma, güncelleme):
+  // kayıtlı vakit varsa NotificationUpdater 888'i hemen asıl içerikle yeniden çizer
+  if (service is AndroidServiceInstance) {
+    try {
+      final imsak = await HomeWidget.getWidgetData<String>('imsak_time');
+      if (imsak != null && imsak.isNotEmpty) {
+        await HomeWidget.updateWidget(
+          name: 'NotificationUpdater',
+          androidName: 'NotificationUpdater',
+        );
+      }
+    } catch (e) {
+      debugPrint("Kalıcı bildirim yenilenemedi: $e");
+    }
+  }
 }
 
 class BackgroundManager {

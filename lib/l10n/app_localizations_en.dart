@@ -190,6 +190,115 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeAdjustSaved => 'Prayer times updated';
 
   @override
+  String get trackerTitle => 'Prayer Tracker';
+
+  @override
+  String get trackerToday => 'Today';
+
+  @override
+  String get trackerYesterday => 'Yesterday';
+
+  @override
+  String get trackerPrayedAction => 'Prayed';
+
+  @override
+  String get trackerLast7Days => 'Last 7 Days';
+
+  @override
+  String get trackerCompletion => '30-day rate';
+
+  @override
+  String get trackerStreak => 'Streak';
+
+  @override
+  String trackerStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerNotYet => 'This prayer time has not started yet.';
+
+  @override
+  String get trackerKazaButton => 'Add unprayed to qada';
+
+  @override
+  String get trackerKazaInfo =>
+      'Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once.';
+
+  @override
+  String trackerKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count unmarked prayers will be added to your qada counters. Continue?',
+      one: '1 unmarked prayer will be added to your qada counters. Continue?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaAdd => 'Add';
+
+  @override
+  String trackerKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count prayers added to qada.',
+      one: '1 prayer added to qada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaNone => 'No prayers to add to qada.';
+
+  @override
+  String get trackerKazaLocked =>
+      'This prayer was added to qada. Once you make it up, reduce it in the Missed Prayers Tracker.';
+
+  @override
+  String get trackerLegendPrayed => 'Prayed';
+
+  @override
+  String get trackerLegendKaza => 'Added to qada';
+
+  @override
+  String kerahatActive(String range) {
+    return 'Makruh time now: $range';
+  }
+
+  @override
+  String kerahatUpcoming(String range) {
+    return 'Makruh time soon: $range';
+  }
+
+  @override
+  String get endReminderTitle => 'Remind before prayer time ends';
+
+  @override
+  String get endReminderSub =>
+      'Notifies you before the time of a prayer not marked as prayed ends.';
+
+  @override
+  String get endReminderNotifTitle => 'Prayer Time Ending';
+
+  @override
+  String endReminderNotifBody(String vakit, int minute) {
+    return '$minute minutes left until $vakit time ends.';
+  }
+
+  @override
+  String get endReminderChannel => 'Prayer End Reminders';
+
+  @override
   String get sectionSupport => 'SUPPORT';
 
   @override

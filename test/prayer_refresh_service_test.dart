@@ -1,5 +1,6 @@
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
+import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -95,5 +96,143 @@ void main() {
     );
     expect(alarms.every((a) => a.sound == null), isTrue);
     expect(alarms.first.channelName, loc.channelSilentPrayers);
+  });
+
+  test('Ezan bildiriminde "Kıldım" (Güneş ve hatırlatma hariç), doğru gün', () {
+    final alarms = plan(dayCount: 5, now: DateTime(2026, 3, 10, 0, 1));
+    PlannedAlarm byId(int id) => alarms.firstWhere((a) => a.id == id);
+    expect(byId(0).payload, 'prayed|2026-03-10|İmsak');
+    expect(byId(0).actionLabel, loc.trackerPrayedAction);
+    expect(byId(1).payload, isNull); // vakit yaklaşıyor hatırlatması
+    expect(byId(2).payload, isNull); // güneş
+    expect(byId(2).actionLabel, isNull);
+    expect(byId(12 + 10).payload, 'prayed|2026-03-11|Yatsı');
+
+    // Tek gün modunda yarına kayan vakit yarının tarihini taşır
+    final single = plan(
+      dayCount: 1,
+      now: DateTime(2026, 3, 10, 12, 0),
+      reminders: false,
+    );
+    expect(single.first.payload, 'prayed|2026-03-11|İmsak');
+    expect(single[2].payload, 'prayed|2026-03-10|Öğle');
+  });
+
+  group('Vakit çıkmadan hatırlatma planı', () {
+    final previous = PrayerTimesModel(
+      imsak: '05:01',
+      gunes: '06:31',
+      ogle: '13:00',
+      ikindi: '16:30',
+      aksam: '18:59',
+      yatsi: '20:28',
+    );
+    final d0 = DateTime(2026, 3, 10);
+    String payload(DateTime date, String key) =>
+        PrayerTracker.payload(date, key);
+
+    List<PlannedAlarm> endPlan({
+      required DateTime now,
+      int minutes = 30,
+      Map<String, int> log = const {},
+      PrayerTimesModel? times,
+    }) => PrayerRefreshService.buildEndReminderPlan(
+      previous: previous,
+      days: List.filled(5, times ?? day),
+      now: now,
+      loc: loc,
+      minutes: minutes,
+      prayerLog: log,
+    );
+
+    test('ID 100-124; bitiş: sabah→güneş, öğle→ikindi, ikindi→akşam, '
+        'akşam→yatsı, yatsı→ertesi imsak', () {
+      final now = DateTime(2026, 3, 10, 0, 1);
+      final alarms = endPlan(now: now);
+      expect(alarms.length, 25);
+      expect(alarms.map((a) => a.id).toSet().length, 25);
+      expect(alarms.every((a) => a.id >= 100 && a.id <= 124), isTrue);
+
+      PlannedAlarm find(DateTime date, String key) =>
+          alarms.singleWhere((a) => a.payload == payload(date, key));
+      expect(find(d0, 'İmsak').time, DateTime(2026, 3, 10, 6, 0));
+      expect(find(d0, 'Öğle').time, DateTime(2026, 3, 10, 16, 0));
+      expect(find(d0, 'İkindi').time, DateTime(2026, 3, 10, 18, 30));
+      expect(find(d0, 'Akşam').time, DateTime(2026, 3, 10, 20, 0));
+      // Bugünün yatsısı yarın imsakta biter
+      expect(find(d0, 'Yatsı').time, DateTime(2026, 3, 11, 4, 30));
+      // Dünün yatsısı bugün imsakta biter
+      expect(find(DateTime(2026, 3, 9), 'Yatsı').time, DateTime(2026, 3, 10, 4, 30));
+      // 5. günün yatsısı 6. güne ait, sonraki planda kurulur
+      expect(
+        alarms.where((a) => a.payload == payload(DateTime(2026, 3, 14), 'Yatsı')),
+        isEmpty,
+      );
+
+      // Kılındı işaretlenince iptal edilen ID, kurulan ID ile aynı
+      for (final a in alarms) {
+        final target = PrayerTracker.parsePayload(a.payload)!;
+        expect(
+          PrayerTracker.endReminderIdToCancel(target.date, target.key, now),
+          a.id,
+        );
+      }
+
+      final ogle = find(d0, 'Öğle');
+      expect(ogle.title, loc.endReminderNotifTitle);
+      expect(ogle.body, loc.endReminderNotifBody(loc.ogle, 30));
+      expect(ogle.channelName, loc.endReminderChannel);
+      expect(ogle.actionLabel, loc.trackerPrayedAction);
+      expect(find(d0, 'İmsak').body, loc.endReminderNotifBody(loc.sabah, 30));
+    });
+
+    test('Geçmiş, kılınmış ve süreden uzun hatırlatmalar atlanır', () {
+      final alarms = endPlan(
+        now: DateTime(2026, 3, 10, 16, 5),
+        log: {PrayerTracker.dateKey(d0): PrayerTracker.bit('İkindi')},
+      );
+      final payloads = alarms.map((a) => a.payload).toSet();
+      expect(payloads.contains(payload(DateTime(2026, 3, 9), 'Yatsı')), isFalse);
+      expect(payloads.contains(payload(d0, 'İmsak')), isFalse);
+      expect(payloads.contains(payload(d0, 'Öğle')), isFalse); // 16:00 geçti
+      expect(payloads.contains(payload(d0, 'İkindi')), isFalse); // kılındı
+      expect(payloads.contains(payload(d0, 'Akşam')), isTrue);
+      expect(alarms.length, 1 + 4 * 5);
+
+      // Sabah 30 dk sürüyor: 30 dk önce hatırlatma kurulmaz, 15 dk kurulur
+      final shortFajr = PrayerTimesModel(
+        imsak: '06:00',
+        gunes: '06:30',
+        ogle: '13:00',
+        ikindi: '16:30',
+        aksam: '19:00',
+        yatsi: '20:30',
+      );
+      final now = DateTime(2026, 3, 10, 0, 1);
+      bool hasFajr(List<PlannedAlarm> p) =>
+          p.any((a) => a.payload!.endsWith('|İmsak'));
+      expect(hasFajr(endPlan(now: now, times: shortFajr)), isFalse);
+      final fifteen = endPlan(now: now, times: shortFajr, minutes: 15);
+      expect(fifteen.where((a) => a.payload!.endsWith('|İmsak')).length, 5);
+      expect(
+        fifteen.firstWhere((a) => a.payload == payload(d0, 'İmsak')).time,
+        DateTime(2026, 3, 10, 6, 15),
+      );
+    });
+
+    test('Farklı günlerde kurulan planlar aynı hatırlatmaya aynı ID verir', () {
+      final first = {
+        for (final a in endPlan(now: DateTime(2026, 3, 10, 0, 1)))
+          a.payload: a.id,
+      };
+      int shared = 0;
+      for (final a in endPlan(now: DateTime(2026, 3, 11, 0, 1))) {
+        if (first.containsKey(a.payload)) {
+          expect(a.id, first[a.payload], reason: a.payload);
+          shared++;
+        }
+      }
+      expect(shared, 4 * 5);
+    });
   });
 }

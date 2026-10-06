@@ -87,6 +87,76 @@
         }
     },
     "timeAdjustSaved": "تم تحديث أوقات الصلاة",
+    "trackerTitle": "متابعة الصلوات",
+    "trackerToday": "اليوم",
+    "trackerYesterday": "أمس",
+    "trackerPrayedAction": "صلّيت",
+    "trackerLast7Days": "آخر 7 أيام",
+    "trackerCompletion": "نسبة 30 يومًا",
+    "trackerStreak": "أيام متتالية",
+    "trackerStreakDays": "{count, plural, =0{0 يوم} =1{يوم واحد} =2{يومان} few{{count} أيام} many{{count} يومًا} other{{count} يوم}}",
+    "@trackerStreakDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerNotYet": "لم يدخل وقت هذه الصلاة بعد.",
+    "trackerKazaButton": "إضافة غير المؤداة إلى القضاء",
+    "trackerKazaInfo": "تُضاف الصلوات غير المعلَّمة خلال آخر 30 يومًا (منذ بدء المتابعة) إلى عدادات القضاء. تُضاف كل صلاة مرة واحدة فقط.",
+    "trackerKazaConfirm": "{count, plural, =1{ستُضاف صلاة واحدة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟} =2{ستُضاف صلاتان غير معلَّمتين إلى عدادات القضاء. هل تريد المتابعة؟} few{ستُضاف {count} صلوات غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟} other{ستُضاف {count} صلاة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟}}",
+    "@trackerKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaAdd": "إضافة",
+    "trackerKazaDone": "{count, plural, =1{أُضيفت صلاة واحدة إلى القضاء.} =2{أُضيفت صلاتان إلى القضاء.} few{أُضيفت {count} صلوات إلى القضاء.} other{أُضيفت {count} صلاة إلى القضاء.}}",
+    "@trackerKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaNone": "لا توجد صلوات لإضافتها إلى القضاء.",
+    "trackerKazaLocked": "أُضيفت هذه الصلاة إلى القضاء. بعد قضائها، أنقِصها من متابعة الصلوات الفائتة.",
+    "trackerLegendPrayed": "مؤداة",
+    "trackerLegendKaza": "أُضيفت إلى القضاء",
+    "kerahatActive": "وقت كراهة الآن: {range}",
+    "@kerahatActive": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "kerahatUpcoming": "وقت الكراهة يقترب: {range}",
+    "@kerahatUpcoming": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitle": "التذكير قبل خروج الوقت",
+    "endReminderSub": "يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.",
+    "endReminderNotifTitle": "الوقت يوشك على الخروج",
+    "endReminderNotifBody": "تبقّى {minute} دقيقة على خروج وقت {vakit}.",
+    "@endReminderNotifBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "endReminderChannel": "تذكيرات خروج الوقت",
     "sectionSupport": "الدعم",
     "shareApp": "شارك مع صديق",
     "rateApp": "قيمنا",

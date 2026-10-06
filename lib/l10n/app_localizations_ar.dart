@@ -192,6 +192,124 @@ class AppLocalizationsAr extends AppLocalizations {
   String get timeAdjustSaved => 'تم تحديث أوقات الصلاة';
 
   @override
+  String get trackerTitle => 'متابعة الصلوات';
+
+  @override
+  String get trackerToday => 'اليوم';
+
+  @override
+  String get trackerYesterday => 'أمس';
+
+  @override
+  String get trackerPrayedAction => 'صلّيت';
+
+  @override
+  String get trackerLast7Days => 'آخر 7 أيام';
+
+  @override
+  String get trackerCompletion => 'نسبة 30 يومًا';
+
+  @override
+  String get trackerStreak => 'أيام متتالية';
+
+  @override
+  String trackerStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      many: '$count يومًا',
+      few: '$count أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+      zero: '0 يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerNotYet => 'لم يدخل وقت هذه الصلاة بعد.';
+
+  @override
+  String get trackerKazaButton => 'إضافة غير المؤداة إلى القضاء';
+
+  @override
+  String get trackerKazaInfo =>
+      'تُضاف الصلوات غير المعلَّمة خلال آخر 30 يومًا (منذ بدء المتابعة) إلى عدادات القضاء. تُضاف كل صلاة مرة واحدة فقط.';
+
+  @override
+  String trackerKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'ستُضاف $count صلاة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟',
+      few:
+          'ستُضاف $count صلوات غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟',
+      two: 'ستُضاف صلاتان غير معلَّمتين إلى عدادات القضاء. هل تريد المتابعة؟',
+      one: 'ستُضاف صلاة واحدة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaAdd => 'إضافة';
+
+  @override
+  String trackerKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'أُضيفت $count صلاة إلى القضاء.',
+      few: 'أُضيفت $count صلوات إلى القضاء.',
+      two: 'أُضيفت صلاتان إلى القضاء.',
+      one: 'أُضيفت صلاة واحدة إلى القضاء.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaNone => 'لا توجد صلوات لإضافتها إلى القضاء.';
+
+  @override
+  String get trackerKazaLocked =>
+      'أُضيفت هذه الصلاة إلى القضاء. بعد قضائها، أنقِصها من متابعة الصلوات الفائتة.';
+
+  @override
+  String get trackerLegendPrayed => 'مؤداة';
+
+  @override
+  String get trackerLegendKaza => 'أُضيفت إلى القضاء';
+
+  @override
+  String kerahatActive(String range) {
+    return 'وقت كراهة الآن: $range';
+  }
+
+  @override
+  String kerahatUpcoming(String range) {
+    return 'وقت الكراهة يقترب: $range';
+  }
+
+  @override
+  String get endReminderTitle => 'التذكير قبل خروج الوقت';
+
+  @override
+  String get endReminderSub =>
+      'يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.';
+
+  @override
+  String get endReminderNotifTitle => 'الوقت يوشك على الخروج';
+
+  @override
+  String endReminderNotifBody(String vakit, int minute) {
+    return 'تبقّى $minute دقيقة على خروج وقت $vakit.';
+  }
+
+  @override
+  String get endReminderChannel => 'تذكيرات خروج الوقت';
+
+  @override
   String get sectionSupport => 'الدعم';
 
   @override

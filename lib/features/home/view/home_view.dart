@@ -13,6 +13,8 @@ import '../../common/theme_provider.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/countdown_widget.dart';
 import '../widgets/ramadan_card.dart';
+import '../widgets/kerahat_card.dart';
+import '../widgets/prayer_tracker_row.dart';
 // YENİ: GLOBAL ANAHTARLARI İÇERİ ALIYORUZ
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
 
@@ -432,6 +434,11 @@ class _HomeViewState extends State<HomeView>
           ),
 
           _buildSimplePrayerTimesList(viewModel, loc, hasImage),
+          KerahatCard(prayerTimes: viewModel.prayerTimes!, hasImage: hasImage),
+          PrayerTrackerRow(
+            prayerTimes: viewModel.prayerTimes!,
+            hasImage: hasImage,
+          ),
           const SizedBox(height: 20),
         ],
       ),
