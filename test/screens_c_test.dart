@@ -466,6 +466,9 @@ void main() {
       _compassAccuracy = null;
       await _pumpScreen(tester, const QiblaView());
       final loc = _loc('tr');
+      // Pencere ve uyarı ancak 2 sn süren zayıf doğrulukta açılır
+      expect(find.text(loc.calibrationRequired), findsNothing);
+      await tester.pump(const Duration(seconds: 2));
       expect(find.text(loc.calibrationRequired), findsOneWidget);
       await tester.tap(find.text(loc.okUnderstood));
       await _settle(tester);

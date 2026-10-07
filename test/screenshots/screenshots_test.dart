@@ -707,6 +707,9 @@ void main() {
       _mockCompass(heading: 150, accuracy: -1);
       await _pumpApp(tester, lang: 'tr', homeVm: _homeVm('tr'));
       await _tapTab(tester, 1);
+      // Uyarı 2 sn süren zayıf doğrulukta açılır
+      await tester.pump(const Duration(seconds: 2));
+      await _settle(tester, steps: 2);
       await _shot(tester, 'tr_21_qibla_calibration');
       await _finish(tester);
     });

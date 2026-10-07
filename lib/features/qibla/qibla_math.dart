@@ -22,6 +22,12 @@ double signedDelta(double from, double to) {
   return diff;
 }
 
+/// Pusula doğruluğu (± derece) zayıf ya da bilinmiyor mu. Android eklentisi
+/// yüksek/orta/düşük için 15/30/45 verir, güvenilmez/bilinmeyende null;
+/// sadece "yüksek" (≤15°) yeterli sayılır.
+bool compassAccuracyPoor(double? accuracy) =>
+    accuracy == null || accuracy <= 0 || accuracy > 15;
+
 enum QiblaTurn { aligned, slightRight, right, slightLeft, left }
 
 /// Telefon yönü [heading] iken kıbleye ([bearing]) dönmek için yönerge.
