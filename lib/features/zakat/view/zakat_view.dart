@@ -1,9 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:intl/intl.dart' show NumberFormat;
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+
 import '../../../data/services/economy_service.dart';
-import '../../common/widgets/ad_banner_widget.dart';
+import '../../common/ad_consent.dart';
 import '../../common/ad_helper.dart';
+
+/// "1.234,56", "2500,50", "2500.5" → sayı. Tek ayraç ondalık sayılır; aynı
+/// ayraç birden çok geçerse binlik ayracıdır; iki farklı ayraç varsa sonuncusu
+/// ondalıktır. Okunamazsa 0.
+double parseAmount(String text) {
+  final s = text.replaceAll(RegExp(r'[\s₺]'), '');
+  if (s.isEmpty) return 0;
+  final lastComma = s.lastIndexOf(',');
+  final lastDot = s.lastIndexOf('.');
+  var decimalAt = lastComma > lastDot ? lastComma : lastDot;
+  if (decimalAt >= 0) {
+    final sep = s[decimalAt];
+    final hasOther = s.contains(sep == ',' ? '.' : ',');
+    if (!hasOther && sep.allMatches(s).length > 1) decimalAt = -1;
+  }
+  final String normalized;
+  if (decimalAt < 0) {
+    normalized = s.replaceAll(RegExp(r'[.,]'), '');
+  } else {
+    final whole = s.substring(0, decimalAt).replaceAll(RegExp(r'[.,]'), '');
+    final fraction = s.substring(decimalAt + 1);
+    normalized = '${whole.isEmpty ? '0' : whole}.$fraction';
+  }
+  return double.tryParse(normalized) ?? 0;
+}
+
+// Servis/hesap anahtarları (ekranda yerelleştirilmiş adları gösterilir)
+const String _tryKey = 'Türk Lirası (TRY)';
+const String _manualKey = 'Diğer (Manuel)';
+const String _gold24Key = '24 Ayar Gram Altın';
+
+/// Diğer varlık ve tarım ürünü türleri: sadece etiket, hesabı etkilemez
+enum _OtherAsset { check, bond, sukuk, leaseCert, stock }
+
+enum _AgriType { soil, soilless }
 
 class ZakatView extends StatefulWidget {
   const ZakatView({super.key});
@@ -18,18 +57,24 @@ class _ZakatViewState extends State<ZakatView> {
   bool _isLoadingRates = true;
 
   InterstitialAd? _interstitialAd;
-  final String _adUnitId = AdIds.zakatInterstitial;
+  bool _adShown = false;
 
-  String _selectedGoldType = '24 Ayar Gram Altın';
+  final GlobalKey _resultKey = GlobalKey();
+
+  String _selectedGoldType = _gold24Key;
   String _selectedCurrencyType = 'Amerikan Doları (USD)';
-  String _selectedCommercialCurrencyType = 'Türk Lirası (TRY)';
-  String _selectedOtherAssetType = 'Hisse Senedi';
-  String _selectedOtherCurrencyType = 'Türk Lirası (TRY)';
-  String _selectedReceivableAssetType = 'Türk Lirası (TRY)';
-  String _selectedDebtAssetType = 'Türk Lirası (TRY)';
+  String _selectedCommercialCurrencyType = _tryKey;
+  _OtherAsset _selectedOtherAssetType = _OtherAsset.stock;
+  String _selectedOtherCurrencyType = _tryKey;
+  String _selectedReceivableAssetType = _tryKey;
+  String _selectedDebtAssetType = _tryKey;
 
-  String _selectedAgriType = 'Zirai Ürün (Topraklı Tarım)';
+  _AgriType _selectedAgriType = _AgriType.soil;
   double _agriculturalRate = 0.10;
+
+  // Canlı fiyat yoksa nisab için elle girilen 24 ayar gram altın fiyatı
+  final TextEditingController _nisabGoldPriceController =
+      TextEditingController();
 
   final TextEditingController _goldCountController = TextEditingController();
   final TextEditingController _goldPriceController = TextEditingController();
@@ -81,25 +126,21 @@ class _ZakatViewState extends State<ZakatView> {
   }
 
   void _loadInterstitialAd() {
+    if (!AdConsent.canRequestAds.value) return;
     InterstitialAd.load(
-      adUnitId: _adUnitId,
+      adUnitId: AdIds.zakatInterstitial,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
+          if (!mounted) {
+            ad.dispose();
+            return;
+          }
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) => ad.dispose(),
+            onAdFailedToShowFullScreenContent: (ad, err) => ad.dispose(),
+          );
           _interstitialAd = ad;
-          _interstitialAd!.fullScreenContentCallback =
-              FullScreenContentCallback(
-                onAdDismissedFullScreenContent: (ad) {
-                  ad.dispose();
-                  _performCalculation();
-                  _loadInterstitialAd();
-                },
-                onAdFailedToShowFullScreenContent: (ad, err) {
-                  ad.dispose();
-                  _performCalculation();
-                  _loadInterstitialAd();
-                },
-              );
         },
         onAdFailedToLoad: (err) {
           debugPrint('Reklam yüklenemedi: $err');
@@ -109,134 +150,148 @@ class _ZakatViewState extends State<ZakatView> {
     );
   }
 
+  // Sonuç reklamı beklemez; reklam (varsa) ziyaret başına bir kez gösterilir
+  void _maybeShowAd() {
+    if (!AdConsent.canRequestAds.value) return;
+    final ad = _interstitialAd;
+    if (ad == null || _adShown) return;
+    _adShown = true;
+    _interstitialAd = null;
+    ad.show();
+  }
+
+  void _refreshRates() {
+    if (_isLoadingRates) return;
+    setState(() => _isLoadingRates = true);
+    _fetchLiveRates();
+  }
+
   Future<void> _fetchLiveRates() async {
-    final rates = await _economyService.getLiveRates();
-    if (mounted) {
-      setState(() {
-        _liveRates = rates;
-        _isLoadingRates = false;
-        _updateGoldPriceField();
-        _updateCurrencyRateField();
-        _updateCommercialRateField();
-        _updateOtherAssetsRateField();
-        _updateReceivableRateField();
-        _updateDebtRateField();
-      });
+    Map<String, double> rates;
+    try {
+      rates = await _economyService.getLiveRates();
+    } catch (_) {
+      rates = {};
     }
+    if (!mounted) return;
+    setState(() {
+      _liveRates = rates;
+      _isLoadingRates = false;
+      // Yenilemede canlı değeri olmayan alanlardaki elle girilen değer korunur
+      _applyRate(_goldPriceController, _selectedGoldType, keepManual: true);
+      _applyRate(
+        _currencyRateController,
+        _selectedCurrencyType,
+        keepManual: true,
+      );
+      _applyRate(
+        _commercialRateController,
+        _selectedCommercialCurrencyType,
+        keepManual: true,
+      );
+      _applyRate(
+        _otherAssetsRateController,
+        _selectedOtherCurrencyType,
+        keepManual: true,
+      );
+      _applyRate(
+        _receivableRateController,
+        _selectedReceivableAssetType,
+        keepManual: true,
+      );
+      _applyRate(
+        _debtRateController,
+        _selectedDebtAssetType,
+        keepManual: true,
+      );
+    });
   }
 
-  void _updateGoldPriceField() {
-    if (_liveRates.containsKey(_selectedGoldType)) {
-      _goldPriceController.text = _liveRates[_selectedGoldType]!
-          .toStringAsFixed(2);
-    } else {
-      _goldPriceController.clear();
+  bool get _hasLiveGold => _liveRates.containsKey(_gold24Key);
+
+  /// Seçilen türün TL karşılığını alana yazar: TL → 1.00, canlı kur varsa o;
+  /// yoksa (tür değiştiyse) alan boşalır ve elle girilir.
+  void _applyRate(
+    TextEditingController controller,
+    String key, {
+    bool keepManual = false,
+  }) {
+    if (key == _tryKey) {
+      controller.text = "1.00";
+      return;
     }
+    final live = _liveRates[key];
+    if (live != null) {
+      controller.text = live.toStringAsFixed(2);
+      return;
+    }
+    // Canlı fiyat yok: 24 ayar için nisab alanına girilen fiyat kullanılır
+    if (key == _gold24Key && _nisabGoldPriceController.text.trim().isNotEmpty) {
+      controller.text = _nisabGoldPriceController.text.trim();
+      return;
+    }
+    if (!keepManual) controller.clear();
   }
 
-  void _updateCurrencyRateField() {
-    if (_liveRates.containsKey(_selectedCurrencyType)) {
-      _currencyRateController.text = _liveRates[_selectedCurrencyType]!
-          .toStringAsFixed(2);
-    } else {
-      _currencyRateController.clear();
-    }
-  }
-
-  void _updateCommercialRateField() {
-    if (_selectedCommercialCurrencyType == 'Türk Lirası (TRY)') {
-      _commercialRateController.text = "1.00";
-    } else if (_liveRates.containsKey(_selectedCommercialCurrencyType)) {
-      _commercialRateController.text =
-          _liveRates[_selectedCommercialCurrencyType]!.toStringAsFixed(2);
-    } else {
-      _commercialRateController.clear();
-    }
-  }
-
-  void _updateOtherAssetsRateField() {
-    if (_selectedOtherCurrencyType == 'Türk Lirası (TRY)') {
-      _otherAssetsRateController.text = "1.00";
-    } else if (_liveRates.containsKey(_selectedOtherCurrencyType)) {
-      _otherAssetsRateController.text = _liveRates[_selectedOtherCurrencyType]!
-          .toStringAsFixed(2);
-    } else {
-      _otherAssetsRateController.clear();
-    }
-  }
-
-  void _updateReceivableRateField() {
-    if (_selectedReceivableAssetType == 'Türk Lirası (TRY)') {
-      _receivableRateController.text = "1.00";
-    } else if (_liveRates.containsKey(_selectedReceivableAssetType)) {
-      _receivableRateController.text = _liveRates[_selectedReceivableAssetType]!
-          .toStringAsFixed(2);
-    } else {
-      _receivableRateController.clear();
-    }
-  }
-
-  void _updateDebtRateField() {
-    if (_selectedDebtAssetType == 'Türk Lirası (TRY)') {
-      _debtRateController.text = "1.00";
-    } else if (_liveRates.containsKey(_selectedDebtAssetType)) {
-      _debtRateController.text = _liveRates[_selectedDebtAssetType]!
-          .toStringAsFixed(2);
-    } else {
-      _debtRateController.clear();
+  void _onNisabGoldPriceChanged(String value) {
+    if (_selectedGoldType == _gold24Key && !_hasLiveGold) {
+      _goldPriceController.text = value.trim();
     }
   }
 
   void _handleCalculateButton() {
     FocusScope.of(context).unfocus();
-    if (_interstitialAd != null) {
-      _interstitialAd!.show();
-    } else {
-      _performCalculation();
-    }
+    _performCalculation();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _resultKey.currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 300),
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      }
+    });
+    _maybeShowAd();
   }
 
   void _performCalculation() {
-    double goldCount = double.tryParse(_goldCountController.text) ?? 0;
-    double goldPrice = double.tryParse(_goldPriceController.text) ?? 0;
+    double goldCount = parseAmount(_goldCountController.text);
+    double goldPrice = parseAmount(_goldPriceController.text);
     double totalGoldValue = goldCount * goldPrice;
 
-    double silverCount = double.tryParse(_silverCountController.text) ?? 0;
-    double silverPrice = double.tryParse(_silverPriceController.text) ?? 0;
+    double silverCount = parseAmount(_silverCountController.text);
+    double silverPrice = parseAmount(_silverPriceController.text);
     double totalSilverValue = silverCount * silverPrice;
 
-    double currencyAmount =
-        double.tryParse(_currencyAmountController.text) ?? 0;
-    double currencyRate = double.tryParse(_currencyRateController.text) ?? 0;
+    double currencyAmount = parseAmount(_currencyAmountController.text);
+    double currencyRate = parseAmount(_currencyRateController.text);
     double totalCurrencyValue = currencyAmount * currencyRate;
 
-    double commercialAmount =
-        double.tryParse(_commercialGoodsController.text) ?? 0;
-    double commercialRate =
-        double.tryParse(_commercialRateController.text) ?? 0;
+    double commercialAmount = parseAmount(_commercialGoodsController.text);
+    double commercialRate = parseAmount(_commercialRateController.text);
     double totalCommercialValue = commercialAmount * commercialRate;
 
-    double otherAssetsValue =
-        double.tryParse(_otherAssetsValueController.text) ?? 0;
-    double otherAssetsRate =
-        double.tryParse(_otherAssetsRateController.text) ?? 0;
+    double otherAssetsValue = parseAmount(_otherAssetsValueController.text);
+    double otherAssetsRate = parseAmount(_otherAssetsRateController.text);
     double totalOtherAssetsValue = otherAssetsValue * otherAssetsRate;
 
-    double receivableAmount =
-        double.tryParse(_receivableAmountController.text) ?? 0;
-    double receivableRate =
-        double.tryParse(_receivableRateController.text) ?? 0;
+    double receivableAmount = parseAmount(_receivableAmountController.text);
+    double receivableRate = parseAmount(_receivableRateController.text);
     double totalReceivablesValue = receivableAmount * receivableRate;
 
-    double debtAmount = double.tryParse(_debtAmountController.text) ?? 0;
-    double debtRate = double.tryParse(_debtRateController.text) ?? 0;
+    double debtAmount = parseAmount(_debtAmountController.text);
+    double debtRate = parseAmount(_debtRateController.text);
     double totalDebtValue = debtAmount * debtRate;
 
-    double cash = double.tryParse(_cashController.text) ?? 0;
+    double cash = parseAmount(_cashController.text);
 
-    double current24kPrice = _liveRates['24 Ayar Gram Altın'] ?? 0;
+    double current24kPrice = _liveRates[_gold24Key] ?? 0;
+    if (current24kPrice == 0) {
+      current24kPrice = parseAmount(_nisabGoldPriceController.text);
+    }
     if (current24kPrice == 0 &&
-        _selectedGoldType == '24 Ayar Gram Altın' &&
+        _selectedGoldType == _gold24Key &&
         goldPrice > 0) {
       current24kPrice = goldPrice;
     }
@@ -261,7 +316,7 @@ class _ZakatViewState extends State<ZakatView> {
       isEligibleForWealth = true;
     }
 
-    double agriValue = double.tryParse(_agriculturalValueController.text) ?? 0;
+    double agriValue = parseAmount(_agriculturalValueController.text);
     double agriZakat = agriValue * _agriculturalRate;
 
     setState(() {
@@ -278,901 +333,614 @@ class _ZakatViewState extends State<ZakatView> {
   @override
   void dispose() {
     _interstitialAd?.dispose();
-    _goldCountController.dispose();
-    _goldPriceController.dispose();
-    _silverCountController.dispose();
-    _silverPriceController.dispose();
-    _currencyAmountController.dispose();
-    _currencyRateController.dispose();
-    _cashController.dispose();
-    _commercialGoodsController.dispose();
-    _commercialRateController.dispose();
-    _otherAssetsValueController.dispose();
-    _otherAssetsRateController.dispose();
-    _receivableAmountController.dispose();
-    _receivableRateController.dispose();
-    _debtAmountController.dispose();
-    _debtRateController.dispose();
-    _agriculturalValueController.dispose();
+    for (final c in [
+      _nisabGoldPriceController,
+      _goldCountController,
+      _goldPriceController,
+      _silverCountController,
+      _silverPriceController,
+      _currencyAmountController,
+      _currencyRateController,
+      _cashController,
+      _commercialGoodsController,
+      _commercialRateController,
+      _otherAssetsValueController,
+      _otherAssetsRateController,
+      _receivableAmountController,
+      _receivableRateController,
+      _debtAmountController,
+      _debtRateController,
+      _agriculturalValueController,
+    ]) {
+      c.dispose();
+    }
     super.dispose();
+  }
+
+  // --- Etiketler ---
+
+  Map<String, String> _goldLabels(AppLocalizations loc) => {
+    _gold24Key: loc.goldGram,
+    '22 Ayar Gram Altın': loc.gold22kGram,
+    'Ata Toptan': loc.goldAtaToptan,
+    'Ata Cumhuriyet': loc.goldAtaCumhuriyet,
+    '22 Ayar Bilezik': loc.gold22kBracelet,
+    '18 Ayar Altın': loc.gold18k,
+    '14 Ayar Altın': loc.gold14k,
+    'Çeyrek Altın': loc.goldQuarter,
+    'Yarım Altın': loc.goldHalf,
+    'Teklik (Tam) Altın': loc.goldFull,
+    'Gremse Altın': loc.goldGremse,
+    'Ata Beşli': loc.goldAtaBesli,
+    'Reşat Altın': loc.goldResat,
+    'Hamit Altın': loc.goldHamit,
+  };
+
+  Map<String, String> _currencyLabels(AppLocalizations loc) => {
+    'Amerikan Doları (USD)': loc.usd,
+    'Euro (EUR)': loc.eur,
+    'İsviçre Frangı (CHF)': '${loc.currencyChf} (CHF)',
+    'İngiliz Sterlini (GBP)': loc.gbp,
+    'Japon Yeni (JPY)': '${loc.currencyJpy} (JPY)',
+    'Suudi Arabistan Riyali (SAR)': '${loc.currencySar} (SAR)',
+    'Avustralya Doları (AUD)': '${loc.currencyAud} (AUD)',
+    'Kanada Doları (CAD)': '${loc.currencyCad} (CAD)',
+    'Rus Rublesi (RUB)': '${loc.currencyRub} (RUB)',
+    'Azerbaycan Manatı (AZN)': '${loc.currencyAzn} (AZN)',
+    'Çin Yuanı (CNY)': '${loc.currencyCny} (CNY)',
+    'Romanya Leyi (RON)': '${loc.currencyRon} (RON)',
+    'BAE Dirhemi (AED)': '${loc.currencyAed} (AED)',
+    'Bulgar Levası (BGN)': '${loc.currencyBgn} (BGN)',
+    'Kuveyt Dinarı (KWD)': '${loc.currencyKwd} (KWD)',
+  };
+
+  String _otherAssetLabel(_OtherAsset type, AppLocalizations loc) =>
+      switch (type) {
+        _OtherAsset.check => loc.assetCheck,
+        _OtherAsset.bond => loc.assetBond,
+        _OtherAsset.sukuk => loc.assetSukuk,
+        _OtherAsset.leaseCert => loc.assetLeaseCert,
+        _OtherAsset.stock => loc.assetStock,
+      };
+
+  String _formatTry(double value, String localeName) {
+    try {
+      return '${NumberFormat.decimalPatternDigits(locale: localeName, decimalDigits: 2).format(value)} ₺';
+    } catch (_) {
+      return '${value.toStringAsFixed(2)} ₺';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
-    // Burada Map'in KEY kısmı servisle uyuşması için orijinal kalmalı,
-    // VALUE kısmı ise arayüzde görüneceği için loc. olarak güncellendi.
-    final Map<String, String> goldTypeMap = {
-      '24 Ayar Gram Altın': loc.goldGram,
-      '22 Ayar Gram Altın': '22 Ayar Gram Altın',
-      'Ata Toptan': 'Ata Toptan',
-      'Ata Cumhuriyet': 'Ata Cumhuriyet',
-      '22 Ayar Bilezik': '22 Ayar Bilezik',
-      '18 Ayar Altın': '18 Ayar Altın',
-      '14 Ayar Altın': '14 Ayar Altın',
-      'Çeyrek Altın': loc.goldQuarter,
-      'Yarım Altın': 'Yarım Altın',
-      'Teklik (Tam) Altın': loc.goldFull,
-      'Gremse Altın': 'Gremse Altın',
-      'Ata Beşli': 'Ata Beşli',
-      'Reşat Altın': 'Reşat Altın',
-      'Hamit Altın': 'Hamit Altın',
+    final goldLabels = _goldLabels(loc);
+    final currencyLabels = _currencyLabels(loc);
+    final tryLabel = '${loc.currencyTry} (TRY)';
+
+    final generalCurrencyMap = {
+      _tryKey: tryLabel,
+      ...currencyLabels,
+      _manualKey: loc.typeOther,
     };
-
-    final Map<String, String> currencyTypeMap = {
-      'Amerikan Doları (USD)': loc.usd,
-      'Euro (EUR)': loc.eur,
-      'İsviçre Frangı (CHF)': 'İsviçre Frangı',
-      'İngiliz Sterlini (GBP)': loc.gbp,
-      'Japon Yeni (JPY)': 'Japon Yeni',
-      'Suudi Arabistan Riyali (SAR)': 'Suudi Arabistan Riyali',
-      'Avustralya Doları (AUD)': 'Avustralya Doları',
-      'Kanada Doları (CAD)': 'Kanada Doları',
-      'Rus Rublesi (RUB)': 'Rus Rublesi',
-      'Azerbaycan Manatı (AZN)': 'Azerbaycan Manatı',
-      'Çin Yuanı (CNY)': 'Çin Yuanı',
-      'Romanya Leyi (RON)': 'Romanya Leyi',
-      'BAE Dirhemi (AED)': 'BAE Dirhemi',
-      'Bulgar Levası (BGN)': 'Bulgar Levası',
-      'Kuveyt Dinarı (KWD)': 'Kuveyt Dinarı',
+    final multiAssetMap = {
+      _tryKey: tryLabel,
+      ...currencyLabels,
+      ...goldLabels,
+      _manualKey: loc.typeOther,
     };
+    final goldDropdownMap = {...goldLabels, _manualKey: loc.typeOther};
+    final currencyDropdownMap = {...currencyLabels, _manualKey: loc.typeOther};
 
-    final Map<String, String> generalCurrencyMap = {
-      'Türk Lirası (TRY)': 'Türk Lirası',
-      ...currencyTypeMap,
-      'Diğer (Manuel)': loc.typeOther,
-    };
-
-    final Map<String, String> multiAssetMap = {
-      'Türk Lirası (TRY)': 'Türk Lirası',
-      ...currencyTypeMap,
-      ...goldTypeMap,
-      'Diğer (Manuel)': loc.typeOther,
-    };
-
-    final List<String> otherAssetsList = [
-      loc.assetCheck,
-      loc.assetBond,
-      loc.assetSukuk,
-      loc.assetLeaseCert,
-      loc.assetStock,
-    ];
-
-    final List<String> agriTypesList = [loc.agriSoil, loc.agriSoilless];
-
-    final Map<String, String> goldDropdownMap = {
-      ...goldTypeMap,
-      'Diğer (Manuel)': loc.typeOther,
-    };
-
-    final Map<String, String> currencyDropdownMap = {
-      ...currencyTypeMap,
-      'Diğer (Manuel)': loc.typeOther,
-    };
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.zakatCalculatorTitle),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: _isLoadingRates
-                ? const SizedBox(
-                    width: 15,
-                    height: 15,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.refresh),
-            onPressed: _fetchLiveRates,
-            tooltip: loc.retry,
-          ),
-        ],
-      ),
-      bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
+    return AppScaffold(
+      title: loc.zakatCalculatorTitle,
+      actions: [
+        IconButton(
+          icon: _isLoadingRates
+              ? SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    color: theme.appBarTheme.foregroundColor,
+                    strokeWidth: 2,
+                  ),
+                )
+              : const Icon(Icons.refresh),
+          onPressed: _isLoadingRates ? null : _refreshRates,
+          tooltip: loc.retry,
+        ),
+      ],
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (_isLoadingRates)
-              Container(
-                margin: const EdgeInsets.only(bottom: 15),
-                padding: const EdgeInsets.all(10),
-                color: Colors.orange.shade50,
-                child: Row(
-                  children: [
-                    const Icon(Icons.downloading, color: Colors.orange),
-                    const SizedBox(width: 10),
-                    Text(
-                      loc.liveRatesLoading,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.teal.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.teal.shade200),
-              ),
-              child: Text(
-                loc.zakatDescription,
-                style: const TextStyle(fontSize: 13, color: Colors.black87),
-              ),
+            InfoBanner(
+              message: '${loc.zakatDescription} ${loc.zakatCurrencyNote}',
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: AppSpacing.md),
+            ..._buildRatesStatus(loc),
 
-            // --- 1. NAKİT VE DÖVİZ ---
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ExpansionTile(
-                leading: const Icon(
-                  Icons.account_balance_wallet,
-                  color: Colors.teal,
+            _ZakatSection(
+              icon: Icons.account_balance_wallet_outlined,
+              title: loc.cashAndCurrencyTitle,
+              children: [
+                _amountField(_cashController, loc.zakatCashTry),
+                const SizedBox(height: AppSpacing.md),
+                _dropdown<String>(
+                  label: loc.currencyType,
+                  value: _selectedCurrencyType,
+                  items: currencyDropdownMap,
+                  onChanged: (val) => setState(() {
+                    _selectedCurrencyType = val;
+                    _applyRate(_currencyRateController, val);
+                  }),
                 ),
-                title: Text(
-                  loc.cashAndCurrencyTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                const SizedBox(height: AppSpacing.md),
+                _pair(
+                  _amountField(_currencyAmountController, loc.currencyAmount),
+                  _amountField(
+                    _currencyRateController,
+                    loc.currencyRate,
+                    suffix: '₺',
+                  ),
                 ),
-                childrenPadding: const EdgeInsets.all(15),
-                children: [
-                  TextField(
-                    controller: _cashController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: loc.cashTurkishLira,
-                      border: const OutlineInputBorder(),
-                      suffixText: "₺",
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.currencyType,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedCurrencyType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: currencyDropdownMap.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedCurrencyType = val!;
-                            _updateCurrencyRateField();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _currencyAmountController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.currencyAmount,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _currencyRateController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.currencyRate,
-                            border: const OutlineInputBorder(),
-                            suffixText: "₺",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              ],
             ),
 
-            // --- 2. ALTIN VE GÜMÜŞ ---
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ExpansionTile(
-                leading: const Icon(Icons.monetization_on, color: Colors.amber),
-                title: Text(
-                  loc.goldAndSilverTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+            _ZakatSection(
+              icon: Icons.monetization_on_outlined,
+              title: loc.goldAndSilverTitle,
+              children: [
+                _dropdown<String>(
+                  label: loc.goldType,
+                  value: _selectedGoldType,
+                  items: goldDropdownMap,
+                  onChanged: (val) => setState(() {
+                    _selectedGoldType = val;
+                    _applyRate(_goldPriceController, val);
+                  }),
                 ),
-                childrenPadding: const EdgeInsets.all(15),
-                children: [
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.goldType,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedGoldType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: goldDropdownMap.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedGoldType = val!;
-                            _updateGoldPriceField();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _goldCountController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.goldAmount,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _goldPriceController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.goldUnitPrice,
-                            border: const OutlineInputBorder(),
-                            suffixText: "₺",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Divider(height: 30),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _silverCountController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.silverGram,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _silverPriceController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.unitPrice,
-                            border: const OutlineInputBorder(),
-                            suffixText: "₺",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // --- 3. TİCARİ MALLAR ---
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ExpansionTile(
-                leading: const Icon(Icons.storefront, color: Colors.blue),
-                title: Text(
-                  loc.commercialGoodsTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                childrenPadding: const EdgeInsets.all(15),
-                children: [
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.commercialEvalCurrency,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedCommercialCurrencyType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: generalCurrencyMap.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedCommercialCurrencyType = val!;
-                            _updateCommercialRateField();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _commercialGoodsController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.commercialGoodsValue,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _commercialRateController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.exchangeRateValue,
-                            border: const OutlineInputBorder(),
-                            suffixText: "₺",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // --- 4. ALACAKLAR ---
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ExpansionTile(
-                leading: const Icon(Icons.receipt_long, color: Colors.orange),
-                title: Text(
-                  loc.receivablesTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                childrenPadding: const EdgeInsets.all(15),
-                children: [
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.receivableType,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedReceivableAssetType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: multiAssetMap.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedReceivableAssetType = val!;
-                            _updateReceivableRateField();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _receivableAmountController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.amountOrCount,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _receivableRateController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.exchangeRateValue,
-                            border: const OutlineInputBorder(),
-                            suffixText: "₺",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // --- 5. DİĞER VARLIKLAR ---
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ExpansionTile(
-                leading: const Icon(Icons.pie_chart, color: Colors.deepPurple),
-                title: Text(
-                  loc.otherAssetsTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                childrenPadding: const EdgeInsets.all(15),
-                children: [
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.assetType,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedOtherAssetType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: otherAssetsList.map((asset) {
-                          return DropdownMenuItem<String>(
-                            value: asset,
-                            child: Text(asset),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedOtherAssetType = val!;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.currencyLabel,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedOtherCurrencyType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: generalCurrencyMap.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedOtherCurrencyType = val!;
-                            _updateOtherAssetsRateField();
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _otherAssetsValueController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.valueOrAmount,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _otherAssetsRateController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.exchangeRateValue,
-                            border: const OutlineInputBorder(),
-                            suffixText: "₺",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // --- 6. ZİRAİ ÜRÜNLER (ÖŞÜR) ---
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ExpansionTile(
-                leading: const Icon(Icons.agriculture, color: Colors.green),
-                title: Text(
-                  loc.agriProductsTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                childrenPadding: const EdgeInsets.all(15),
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                      color: Colors.cyan.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.cyan.shade200),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.info, color: Colors.cyan.shade700, size: 20),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            loc.agriDiyanetNote,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.cyan.shade900,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.assetType,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedAgriType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: agriTypesList.map((type) {
-                          return DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedAgriType = val!;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextField(
-                    controller: _agriculturalValueController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: loc.harvestedProductValue,
-                      border: const OutlineInputBorder(),
-                      suffixText: "₺",
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.irrigationMethod,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<double>(
-                        value: _agriculturalRate,
-                        isDense: true,
-                        isExpanded: true,
-                        items: [
-                          DropdownMenuItem(
-                            value: 0.10,
-                            child: Text(loc.agriRateNoCost),
-                          ),
-                          DropdownMenuItem(
-                            value: 0.05,
-                            child: Text(loc.agriRateCostly),
-                          ),
-                        ],
-                        onChanged: (val) {
-                          setState(() {
-                            _agriculturalRate = val!;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // --- 7. BORÇLAR ---
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ExpansionTile(
-                leading: const Icon(Icons.money_off, color: Colors.red),
-                title: Text(
-                  loc.debtsTitle,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
+                const SizedBox(height: AppSpacing.md),
+                _pair(
+                  _amountField(_goldCountController, loc.goldAmount),
+                  _amountField(
+                    _goldPriceController,
+                    loc.goldUnitPrice,
+                    suffix: '₺',
                   ),
                 ),
-                childrenPadding: const EdgeInsets.all(15),
-                children: [
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: loc.debtType,
-                      border: const OutlineInputBorder(),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedDebtAssetType,
-                        isDense: true,
-                        isExpanded: true,
-                        items: multiAssetMap.entries.map((entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedDebtAssetType = val!;
-                            _updateDebtRateField();
-                          });
-                        },
-                      ),
-                    ),
+                const Divider(height: AppSpacing.xxl),
+                _pair(
+                  _amountField(_silverCountController, loc.silverGram),
+                  _amountField(
+                    _silverPriceController,
+                    loc.unitPrice,
+                    suffix: '₺',
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _debtAmountController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.amountOrCount,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _debtRateController,
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: loc.exchangeRateValue,
-                            border: const OutlineInputBorder(),
-                            suffixText: "₺",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 25),
+            _ZakatSection(
+              icon: Icons.storefront_outlined,
+              title: loc.commercialGoodsTitle,
+              children: [
+                _dropdown<String>(
+                  label: loc.commercialEvalCurrency,
+                  value: _selectedCommercialCurrencyType,
+                  items: generalCurrencyMap,
+                  onChanged: (val) => setState(() {
+                    _selectedCommercialCurrencyType = val;
+                    _applyRate(_commercialRateController, val);
+                  }),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _pair(
+                  _amountField(
+                    _commercialGoodsController,
+                    loc.commercialGoodsValue,
+                  ),
+                  _amountField(
+                    _commercialRateController,
+                    loc.exchangeRateValue,
+                    suffix: '₺',
+                    readOnly: _selectedCommercialCurrencyType == _tryKey,
+                  ),
+                ),
+              ],
+            ),
 
-            // --- HESAPLA BUTONU ---
-            ElevatedButton(
+            _ZakatSection(
+              icon: Icons.receipt_long_outlined,
+              title: loc.receivablesTitle,
+              children: [
+                _dropdown<String>(
+                  label: loc.receivableType,
+                  value: _selectedReceivableAssetType,
+                  items: multiAssetMap,
+                  onChanged: (val) => setState(() {
+                    _selectedReceivableAssetType = val;
+                    _applyRate(_receivableRateController, val);
+                  }),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _pair(
+                  _amountField(_receivableAmountController, loc.amountOrCount),
+                  _amountField(
+                    _receivableRateController,
+                    loc.exchangeRateValue,
+                    suffix: '₺',
+                    readOnly: _selectedReceivableAssetType == _tryKey,
+                  ),
+                ),
+              ],
+            ),
+
+            _ZakatSection(
+              icon: Icons.pie_chart_outline,
+              title: loc.otherAssetsTitle,
+              children: [
+                _dropdown<_OtherAsset>(
+                  label: loc.assetType,
+                  value: _selectedOtherAssetType,
+                  items: {
+                    for (final type in _OtherAsset.values)
+                      type: _otherAssetLabel(type, loc),
+                  },
+                  onChanged: (val) =>
+                      setState(() => _selectedOtherAssetType = val),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _dropdown<String>(
+                  label: loc.currencyLabel,
+                  value: _selectedOtherCurrencyType,
+                  items: generalCurrencyMap,
+                  onChanged: (val) => setState(() {
+                    _selectedOtherCurrencyType = val;
+                    _applyRate(_otherAssetsRateController, val);
+                  }),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _pair(
+                  _amountField(_otherAssetsValueController, loc.valueOrAmount),
+                  _amountField(
+                    _otherAssetsRateController,
+                    loc.exchangeRateValue,
+                    suffix: '₺',
+                    readOnly: _selectedOtherCurrencyType == _tryKey,
+                  ),
+                ),
+              ],
+            ),
+
+            _ZakatSection(
+              icon: Icons.agriculture_outlined,
+              title: loc.agriProductsTitle,
+              children: [
+                InfoBanner(message: loc.agriDiyanetNote),
+                const SizedBox(height: AppSpacing.md),
+                _dropdown<_AgriType>(
+                  label: loc.assetType,
+                  value: _selectedAgriType,
+                  items: {
+                    _AgriType.soil: loc.agriSoil,
+                    _AgriType.soilless: loc.agriSoilless,
+                  },
+                  onChanged: (val) => setState(() => _selectedAgriType = val),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _amountField(
+                  _agriculturalValueController,
+                  loc.harvestedProductValue,
+                  suffix: '₺',
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _dropdown<double>(
+                  label: loc.irrigationMethod,
+                  value: _agriculturalRate,
+                  items: {0.10: loc.agriRateNoCost, 0.05: loc.agriRateCostly},
+                  onChanged: (val) => setState(() => _agriculturalRate = val),
+                ),
+              ],
+            ),
+
+            _ZakatSection(
+              icon: Icons.money_off,
+              title: loc.debtsTitle,
+              children: [
+                _dropdown<String>(
+                  label: loc.debtType,
+                  value: _selectedDebtAssetType,
+                  items: multiAssetMap,
+                  onChanged: (val) => setState(() {
+                    _selectedDebtAssetType = val;
+                    _applyRate(_debtRateController, val);
+                  }),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _pair(
+                  _amountField(_debtAmountController, loc.amountOrCount),
+                  _amountField(
+                    _debtRateController,
+                    loc.exchangeRateValue,
+                    suffix: '₺',
+                    readOnly: _selectedDebtAssetType == _tryKey,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+            FilledButton.icon(
               onPressed: _handleCalculateButton,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                loc.calculateButton,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              icon: const Icon(Icons.calculate_outlined),
+              label: Text(loc.calculateButton),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: AppSpacing.lg),
 
-            // --- SONUÇ EKRANI ---
-            if (_isCalculated)
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _isEligible
-                          ? Colors.teal.withValues(alpha: 0.2)
-                          : Colors.orange.withValues(alpha: 0.2),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                  border: Border.all(
-                    color: _isEligible ? Colors.teal : Colors.orange,
-                    width: 2,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          _isEligible ? Icons.check_circle : Icons.info,
-                          color: _isEligible ? Colors.teal : Colors.orange,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          _isEligible
-                              ? loc.zakatEligible
-                              : loc.zakatNotEligible,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: _isEligible ? Colors.teal : Colors.orange,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(height: 20),
-                    Text(
-                      loc.zakatResultTitle,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "${_zakatAmount.toStringAsFixed(2)} ₺",
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: _isEligible ? Colors.teal : Colors.grey,
-                      ),
-                    ),
-                    const Divider(height: 30),
-                    _buildResultRow(
-                      loc.netAssets,
-                      "${_totalAssets.toStringAsFixed(2)} ₺",
-                    ),
-                    const SizedBox(height: 8),
-                    _buildResultRow(
-                      loc.nisabLimit,
-                      "${_nisabThreshold.toStringAsFixed(2)} ₺",
-                      isSubtle: true,
-                    ),
-
-                    if (_agriZakatAmount > 0) ...[
-                      const SizedBox(height: 8),
-                      _buildResultRow(
-                        loc.zakatAgriIncluded,
-                        "${_agriZakatAmount.toStringAsFixed(2)} ₺",
-                        isSubtle: true,
-                      ),
-                    ],
-
-                    if (!_isEligible)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Text(
-                          loc.belowNisabMessage,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.orange,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 50),
+            if (_isCalculated) _buildResult(loc),
+            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildResultRow(String label, String value, {bool isSubtle = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: isSubtle ? Colors.grey : Colors.black87,
-            fontSize: isSubtle ? 13 : 14,
+  List<Widget> _buildRatesStatus(AppLocalizations loc) {
+    if (_isLoadingRates) {
+      return [
+        InfoBanner(icon: Icons.downloading, message: loc.liveRatesLoading),
+        const SizedBox(height: AppSpacing.md),
+      ];
+    }
+    if (_hasLiveGold) {
+      return [
+        InfoBanner(
+          tone: InfoTone.success,
+          message: loc.liveRatesInfo,
+        ),
+        const SizedBox(height: AppSpacing.md),
+      ];
+    }
+    // Canlı kur yok (anahtar/ağ yok): fiyatlar elle; nisab için gram altın
+    return [
+      InfoBanner(tone: InfoTone.warning, message: loc.zakatRatesUnavailable),
+      const SizedBox(height: AppSpacing.md),
+      AppCard(
+        margin: const EdgeInsets.only(bottom: AppSpacing.md),
+        child: TextField(
+          controller: _nisabGoldPriceController,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [_amountFormatter],
+          onChanged: _onNisabGoldPriceChanged,
+          decoration: InputDecoration(
+            labelText: loc.zakatGoldGramPrice,
+            helperText: loc.zakatGoldGramPriceHelp,
+            helperMaxLines: 3,
+            prefixIcon: const Icon(Icons.monetization_on_outlined),
+            suffixText: '₺',
           ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: isSubtle ? Colors.grey : Colors.black,
-            fontSize: isSubtle ? 13 : 14,
+      ),
+    ];
+  }
+
+  Widget _buildResult(AppLocalizations loc) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final localeName = loc.localeName;
+    final nisabUnknown = _nisabThreshold <= 0;
+
+    Widget resultRow(String label, double value, {bool subtle = false}) {
+      final color = subtle ? scheme.onSurfaceVariant : scheme.onSurface;
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: theme.textTheme.bodyMedium!.copyWith(color: color),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              _formatTry(value, localeName),
+              textDirection: TextDirection.ltr,
+              style: theme.textTheme.bodyMedium!.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return AppCard(
+      key: _resultKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            liveRegion: true,
+            child: InfoBanner(
+              tone: _isEligible ? InfoTone.success : InfoTone.info,
+              icon: _isEligible ? Icons.check_circle_outline : null,
+              message: _isEligible ? loc.zakatEligible : loc.zakatNotEligible,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            loc.zakatResultTitle,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge!.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              _formatTry(_zakatAmount, localeName),
+              textDirection: TextDirection.ltr,
+              style: theme.textTheme.headlineMedium!.copyWith(
+                color: _isEligible ? scheme.primary : scheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const Divider(height: AppSpacing.xxl),
+          resultRow(loc.netAssets, _totalAssets),
+          resultRow(loc.nisabLimit, _nisabThreshold, subtle: true),
+          if (_agriZakatAmount > 0)
+            resultRow(loc.zakatAgriIncluded, _agriZakatAmount, subtle: true),
+          if (nisabUnknown) ...[
+            const SizedBox(height: AppSpacing.md),
+            InfoBanner(tone: InfoTone.warning, message: loc.zakatNisabUnknown),
+          ] else if (!_isEligible) ...[
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              loc.belowNisabMessage,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium!.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // --- Form parçaları ---
+
+  static final TextInputFormatter _amountFormatter =
+      FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'));
+
+  Widget _amountField(
+    TextEditingController controller,
+    String label, {
+    String? suffix,
+    bool readOnly = false,
+  }) {
+    return TextField(
+      controller: controller,
+      readOnly: readOnly,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [_amountFormatter],
+      decoration: InputDecoration(labelText: label, suffixText: suffix),
+    );
+  }
+
+  /// Dar ekranda / büyük yazıda iki alan alt alta
+  Widget _pair(Widget first, Widget second) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scale = MediaQuery.textScalerOf(context).scale(1);
+        if (constraints.maxWidth < 300 * scale) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [first, const SizedBox(height: AppSpacing.md), second],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: first),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(child: second),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _dropdown<T>({
+    required String label,
+    required T value,
+    required Map<T, String> items,
+    required ValueChanged<T> onChanged,
+  }) {
+    final theme = Theme.of(context);
+    return InputDecorator(
+      decoration: InputDecoration(labelText: label),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: items.containsKey(value) ? value : null,
+          isDense: true,
+          isExpanded: true,
+          menuMaxHeight: 420,
+          style: theme.textTheme.bodyLarge,
+          items: [
+            for (final entry in items.entries)
+              DropdownMenuItem<T>(
+                value: entry.key,
+                child: Text(entry.value, overflow: TextOverflow.ellipsis),
+              ),
+          ],
+          onChanged: (val) {
+            if (val != null) onChanged(val);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Açılır kapanır bölüm kartı (tek ikon rengi)
+class _ZakatSection extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final List<Widget> children;
+
+  const _ZakatSection({
+    required this.icon,
+    required this.title,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      padding: EdgeInsets.zero,
+      child: ExpansionTile(
+        shape: const Border(),
+        collapsedShape: const Border(),
+        tilePadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.xs,
+        ),
+        leading: Container(
+          width: AppSizes.iconBox,
+          height: AppSizes.iconBox,
+          decoration: BoxDecoration(
+            color: scheme.primaryContainer,
+            borderRadius: BorderRadius.circular(AppRadius.md),
+          ),
+          child: Icon(icon, size: 22, color: scheme.onPrimaryContainer),
+        ),
+        title: Text(
+          title,
+          style: theme.textTheme.bodyLarge!.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
-      ],
+        childrenPadding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.xs,
+          AppSpacing.lg,
+          AppSpacing.lg,
+        ),
+        expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
     );
   }
 }
