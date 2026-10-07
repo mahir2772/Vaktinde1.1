@@ -2,14 +2,14 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import 'package:provider/provider.dart';
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/models/prayer_times_model.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../../../data/services/prayer_tracker_service.dart';
-import '../../common/widgets/ad_banner_widget.dart';
 import '../../home/view_model/home_view_model.dart';
 
 /// Takip edilen vakitlerin ekran adları ("İmsak" anahtarı = sabah namazı)
@@ -32,7 +32,8 @@ class PrayerTrackerView extends StatefulWidget {
 class _PrayerTrackerViewState extends State<PrayerTrackerView>
     with WidgetsBindingObserver {
   static const int _gridDays = 7;
-  static const double _labelWidth = 80;
+  static const double _minLabelWidth = 60;
+  static const double _maxLabelWidth = 96;
 
   final PrayerTrackerService _service = PrayerTrackerService();
   Map<String, int> _log = const {};
@@ -188,28 +189,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
       _snack(loc.trackerKazaNone);
       return;
     }
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(loc.trackerKazaButton),
-        content: Text(loc.trackerKazaConfirm(count)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(loc.cancel, style: const TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(loc.trackerKazaAdd),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: loc.trackerKazaButton,
+      message: loc.trackerKazaConfirm(count),
+      confirmLabel: loc.trackerKazaAdd,
     );
-    if (confirmed != true || !mounted) return;
+    if (!confirmed || !mounted) return;
     setState(() => _busy = true);
     try {
       final added = await _service.addMissedToKaza(
@@ -229,22 +215,17 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     final loc = AppLocalizations.of(context)!;
     final times = context.watch<HomeViewModel>().prayerTimes;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.trackerTitle),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-      ),
-      bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
+    return AppScaffold(
+      title: loc.trackerTitle,
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const LoadingState()
           : ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
                 _buildStats(times, loc),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 _buildGrid(times, loc),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 _buildKazaSection(times, loc),
               ],
             ),
@@ -274,68 +255,36 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
         ? "–"
         : NumberFormat.percentPattern(loc.localeName).format(rate);
 
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
-            icon: Icons.pie_chart_outline,
-            title: loc.trackerCompletion,
-            value: rateText,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
-            icon: Icons.local_fire_department_outlined,
-            title: loc.trackerStreak,
-            value: loc.trackerStreakDays(streak),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard({
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        child: Column(
-          children: [
-            Icon(icon, color: Colors.teal, size: 26),
-            const SizedBox(height: 6),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal,
-                ),
-              ),
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: StatTile(
+              icon: Icons.pie_chart_outline,
+              label: loc.trackerCompletion,
+              value: rateText,
             ),
-            const SizedBox(height: 2),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: StatTile(
+              icon: Icons.local_fire_department_outlined,
+              label: loc.trackerStreak,
+              value: loc.trackerStreakDays(streak),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildGrid(PrayerTimesModel? times, AppLocalizations loc) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final names = trackerPrayerNames(loc);
     final now = DateTime.now();
     final localeCode = Localizations.localeOf(context).toString();
-    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
 
     String dayLabel(int daysAgo, DateTime date) {
       if (daysAgo == 0) return loc.trackerToday;
@@ -347,62 +296,89 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
       }
     }
 
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 14, 12, 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              loc.trackerLast7Days,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: textColor,
+    return AppCard(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.md,
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Gün etiketi sütunu: dar ekranda daralır, hücreler genişler
+          final labelWidth = (constraints.maxWidth * 0.24).clamp(
+            _minLabelWidth,
+            _maxLabelWidth,
+          );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    loc.trackerLast7Days,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const SizedBox(width: _labelWidth),
-                for (final key in PrayerTracker.prayerKeys)
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        names[key]!,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade600,
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  SizedBox(width: labelWidth),
+                  for (final key in PrayerTracker.prayerKeys)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 1),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            names[key]!,
+                            maxLines: 1,
+                            style: theme.textTheme.labelMedium!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            for (int i = 0; i < _gridDays; i++)
-              _buildGridRow(
-                PrayerTracker.addDays(now, -i),
-                dayLabel(i, PrayerTracker.addDays(now, -i)),
-                times,
-                loc,
-                textColor,
+                ],
               ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 16,
-              runSpacing: 6,
-              children: [
-                _legend(Colors.teal, Icons.check, loc.trackerLegendPrayed),
-                _legend(Colors.orange, Icons.history, loc.trackerLegendKaza),
-              ],
-            ),
-          ],
-        ),
+              for (int i = 0; i < _gridDays; i++)
+                _buildGridRow(
+                  PrayerTracker.addDays(now, -i),
+                  dayLabel(i, PrayerTracker.addDays(now, -i)),
+                  times,
+                  loc,
+                  labelWidth,
+                ),
+              const SizedBox(height: AppSpacing.sm),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                child: Wrap(
+                  spacing: AppSpacing.lg,
+                  runSpacing: AppSpacing.sm,
+                  children: [
+                    _legend(
+                      scheme.primary,
+                      scheme.onPrimary,
+                      Icons.check,
+                      loc.trackerLegendPrayed,
+                    ),
+                    _legend(
+                      scheme.tertiary,
+                      scheme.onTertiary,
+                      Icons.history,
+                      loc.trackerLegendKaza,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -412,41 +388,41 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     String label,
     PrayerTimesModel? times,
     AppLocalizations loc,
-    Color? textColor,
+    double labelWidth,
   ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        children: [
-          SizedBox(
-            width: _labelWidth,
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        SizedBox(
+          width: labelWidth,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(
+              start: AppSpacing.xs,
+              end: AppSpacing.xs,
+            ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: AlignmentDirectional.centerStart,
               child: Text(
                 label,
                 maxLines: 1,
-                style: TextStyle(
-                  fontSize: 13,
+                style: theme.textTheme.bodyMedium!.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: textColor,
                 ),
               ),
             ),
           ),
-          for (final key in PrayerTracker.prayerKeys)
-            Expanded(
-              child: Center(
-                child: _buildCell(
-                  prayed: PrayerTracker.isPrayed(_log, date, key),
-                  kaza: PrayerTracker.isPrayed(_kazaAdded, date, key),
-                  due: _isDue(date, key, times),
-                  onTap: () => _toggle(date, key, times, loc),
-                ),
-              ),
+        ),
+        for (final key in PrayerTracker.prayerKeys)
+          Expanded(
+            child: _buildCell(
+              prayed: PrayerTracker.isPrayed(_log, date, key),
+              kaza: PrayerTracker.isPrayed(_kazaAdded, date, key),
+              due: _isDue(date, key, times),
+              onTap: () => _toggle(date, key, times, loc),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
@@ -456,101 +432,83 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     required bool due,
     required VoidCallback onTap,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     Color fill = Colors.transparent;
-    Color border = Colors.grey.shade400;
+    Color border = due ? scheme.outline : scheme.outlineVariant;
     Widget? icon;
     if (prayed) {
-      fill = Colors.teal;
-      border = Colors.teal;
-      icon = const Icon(Icons.check, color: Colors.white, size: 18);
+      fill = scheme.primary;
+      border = scheme.primary;
+      icon = Icon(Icons.check, color: scheme.onPrimary, size: 18);
     } else if (kaza) {
-      fill = Colors.orange;
-      border = Colors.orange;
-      icon = const Icon(Icons.history, color: Colors.white, size: 16);
+      fill = scheme.tertiary;
+      border = scheme.tertiary;
+      icon = Icon(Icons.history, color: scheme.onTertiary, size: 16);
     } else if (!due) {
-      icon = Icon(Icons.schedule, color: Colors.grey.shade400, size: 14);
+      icon = Icon(Icons.schedule, color: scheme.outline, size: 14);
     }
-    return InkWell(
-      onTap: onTap,
-      customBorder: const CircleBorder(),
-      child: Opacity(
-        opacity: due || prayed ? 1 : 0.5,
-        child: Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: fill,
-            shape: BoxShape.circle,
-            border: Border.all(color: border, width: 2),
+    // Dokunma alanı hücrenin tamamı (en az 48dp yükseklik)
+    return Semantics(
+      checked: prayed,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        child: SizedBox(
+          height: AppSizes.minTouch,
+          child: Center(
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: fill,
+                shape: BoxShape.circle,
+                border: Border.all(color: border, width: 2),
+              ),
+              child: icon,
+            ),
           ),
-          child: icon,
         ),
       ),
     );
   }
 
-  Widget _legend(Color color, IconData icon, String text) {
+  Widget _legend(Color color, Color onColor, IconData icon, String text) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 18,
-          height: 18,
+          width: 20,
+          height: 20,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          child: Icon(icon, color: Colors.white, size: 12),
+          child: Icon(icon, color: onColor, size: 14),
         ),
-        const SizedBox(width: 6),
-        Text(
-          text,
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+        const SizedBox(width: AppSpacing.sm),
+        Flexible(
+          child: Text(
+            text,
+            style: theme.textTheme.bodySmall!.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ),
       ],
     );
   }
 
   Widget _buildKazaSection(PrayerTimesModel? times, AppLocalizations loc) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.info_outline, color: Colors.teal, size: 20),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    loc.trackerKazaInfo,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: isDark
-                          ? Colors.tealAccent.shade100
-                          : Colors.teal.shade800,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              onPressed: _busy ? null : () => _addToKaza(times, loc),
-              icon: const Icon(Icons.playlist_add),
-              label: Text(loc.trackerKazaButton, textAlign: TextAlign.center),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        ),
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InfoBanner(message: loc.trackerKazaInfo),
+          const SizedBox(height: AppSpacing.md),
+          FilledButton.icon(
+            onPressed: _busy ? null : () => _addToKaza(times, loc),
+            icon: const Icon(Icons.playlist_add),
+            label: Text(loc.trackerKazaButton, textAlign: TextAlign.center),
+          ),
+        ],
       ),
     );
   }
