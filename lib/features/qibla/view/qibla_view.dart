@@ -1,12 +1,24 @@
 import 'dart:async';
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:vector_math/vector_math.dart' show radians;
-import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../../data/services/storage_service.dart';
+import '../qibla_math.dart';
+
+/// Konum alınamazsa gösterilen hata türü
+enum _LocationProblem { serviceOff, permissionDenied, unavailable }
+
+/// Kıble pusulası: konumdan Kâbe yönü (açı) + telefonun yönü.
+///
+/// Konum: önce GPS (izin istemez; izin tanıtım turundan sonra istenir), olmazsa
+/// kayıtlı koordinat. Pusula ve konum sadece ekran görünürken çalışır.
 class QiblaView extends StatefulWidget {
   const QiblaView({super.key});
 
@@ -14,640 +26,670 @@ class QiblaView extends StatefulWidget {
   State<QiblaView> createState() => _QiblaViewState();
 }
 
-class _QiblaViewState extends State<QiblaView> with TickerProviderStateMixin {
-  bool _hasPermissions = false;
-  double _qiblaAngle = 0;
-  bool _isLoading = true;
-  String? _errorMessage;
+class _QiblaViewState extends State<QiblaView> {
+  static const String _calibrationSeenKey = 'qibla_calibration_dialog_seen';
+  static const Duration _noSensorTimeout = Duration(seconds: 4);
 
+  bool _loading = true;
+  bool _initStarted = false;
+  _LocationProblem? _problem;
+  double? _bearing;
+  bool _usingSavedLocation = false;
+
+  bool _active = false;
   StreamSubscription<CompassEvent>? _compassSubscription;
+  Timer? _noSensorTimer;
+  bool _noCompass = false;
+  bool _hasHeading = false;
 
-  // EFSANE MATEMATİK İÇİN DEĞİŞKENLER
-  double _lastHeading = 0;
-  double _smoothHeading = 0;
+  /// Son okunan yön (0..360) ve kadranın yumuşak dönüşü için sarılmamış yön
+  double _heading = 0;
+  double _unwrappedHeading = 0;
+  bool _aligned = false;
+  bool _calibrationPoor = false;
 
-  bool _isAligned = false;
-  bool _isCalibrationPoor = false;
-
-  // DİALOG KONTROLLERİ
-  bool _hasCheckedCalibrationOnce = false;
-  bool _showInPageDialog =
-      false; // YENİ: Kutu sadece bu sayfanın içinde açılacak
-
-  final double meccaLat = 21.422487;
-  final double meccaLong = 39.826206;
-
-  late AnimationController _calibController;
+  bool _calibrationDialogSeen = true;
+  bool _showCalibrationDialog = false;
 
   @override
-  void initState() {
-    super.initState();
-
-    _calibController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) _initQibla();
-      });
-    });
-  }
-
-  Future<Position?> _fetchPositionSafe() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return null;
-
-      LocationPermission permission = await Geolocator.checkPermission();
-
-      // PAT DİYE İZİN İSTEYEN KODLARI SİLDİK.
-      // İzni Showcase bittikten sonra main.dart bizzat isteyecek.
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        return null;
-      }
-
-      return await Geolocator.getLastKnownPosition() ??
-          await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.medium,
-          );
-    } catch (_) {
-      return null;
-    }
-  }
-
-  Future<void> _initQibla() async {
-    if (!mounted) return;
-    final loc = AppLocalizations.of(context)!;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    Position? position;
-
-    try {
-      position = await _fetchPositionSafe().timeout(const Duration(seconds: 5));
-    } catch (_) {
-      position = null;
-    }
-
-    if (position == null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(loc.locationFallbackMessage),
-            backgroundColor: Colors.orange,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-      position = Position(
-        longitude: 28.9784,
-        latitude: 41.0082,
-        timestamp: DateTime.now(),
-        accuracy: 0,
-        altitude: 0,
-        heading: 0,
-        speed: 0,
-        speedAccuracy: 0,
-        altitudeAccuracy: 0,
-        headingAccuracy: 0,
-      );
-    }
-
-    try {
-      double latUser = radians(position.latitude);
-      double longUser = radians(position.longitude);
-      double latMecca = radians(meccaLat);
-      double longMecca = radians(meccaLong);
-
-      double longDiff = longMecca - longUser;
-      double y = math.sin(longDiff) * math.cos(latMecca);
-      double x =
-          math.cos(latUser) * math.sin(latMecca) -
-          math.sin(latUser) * math.cos(latMecca) * math.cos(longDiff);
-
-      double result = math.atan2(y, x);
-      double degrees = (result * 180 / math.pi + 360) % 360;
-
-      if (mounted) {
-        setState(() {
-          _hasPermissions = true;
-          _qiblaAngle = degrees;
-          _isLoading = false;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Sekme gizliyken (IndexedStack) veya üstüne sayfa açılınca pusula durur
+    final active = Visibility.of(context) && TickerMode.of(context);
+    if (active == _active) return;
+    _active = active;
+    if (active) {
+      if (!_initStarted) {
+        _initStarted = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _init();
         });
+      } else if (_bearing != null) {
         _startCompass();
       }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = e.toString().replaceAll("Exception:", "").trim();
-        });
-      }
+    } else {
+      _stopCompass();
     }
-  }
-
-  void _startCompass() {
-    _compassSubscription = FlutterCompass.events?.listen((event) {
-      if (!mounted) return;
-
-      double heading = event.heading ?? 0;
-
-      double diff = heading - _lastHeading;
-      if (diff > 180) diff -= 360;
-      if (diff < -180) diff += 360;
-
-      _lastHeading = heading;
-      _smoothHeading += diff;
-
-      double sapma = (heading - _qiblaAngle).abs();
-      if (sapma > 180) sapma = 360 - sapma;
-
-      bool nowAligned = sapma < 4;
-      if (nowAligned && !_isAligned) {
-        HapticFeedback.heavyImpact();
-      }
-
-      bool isPoor =
-          event.accuracy == null ||
-          event.accuracy! <= 0 ||
-          event.accuracy! > 15;
-
-      // Global showDialog yerine sadece bu sayfanın içinde tetiklenen kutuyu açıyoruz
-      if (isPoor && !_hasCheckedCalibrationOnce) {
-        _hasCheckedCalibrationOnce = true;
-        setState(() {
-          _showInPageDialog = true;
-        });
-      }
-
-      setState(() {
-        _isAligned = nowAligned;
-        _isCalibrationPoor = isPoor;
-      });
-    });
-  }
-
-  String _getTurnInstruction() {
-    double current = _smoothHeading % 360;
-    if (current < 0) current += 360;
-
-    double diff = _qiblaAngle - current;
-    if (diff > 180) diff -= 360;
-    if (diff < -180) diff += 360;
-
-    if (diff > 15) return "Sağa dön ➔";
-    if (diff > 4) return "Hafif sağa dön ➔";
-    if (diff < -15) return "⬅ Sola dön";
-    if (diff < -4) return "⬅ Hafif sola dön";
-    return "";
   }
 
   @override
   void dispose() {
-    _compassSubscription?.cancel();
-    _calibController.dispose();
+    _stopCompass();
     super.dispose();
+  }
+
+  Future<void> _init() async {
+    if (!mounted) return;
+    setState(() {
+      _loading = true;
+      _problem = null;
+    });
+
+    var problem = _LocationProblem.unavailable;
+    ({double lat, double lng})? coords;
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        problem = _LocationProblem.serviceOff;
+      } else {
+        // İzin burada istenmez: tanıtım turu bitince bir kez istenir
+        final permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied ||
+            permission == LocationPermission.deniedForever) {
+          problem = _LocationProblem.permissionDenied;
+        } else {
+          final position =
+              await Geolocator.getLastKnownPosition() ??
+              await Geolocator.getCurrentPosition(
+                desiredAccuracy: LocationAccuracy.medium,
+              ).timeout(const Duration(seconds: 8));
+          coords = (lat: position.latitude, lng: position.longitude);
+        }
+      }
+    } catch (_) {
+      coords = null;
+    }
+
+    var usingSaved = false;
+    if (coords == null) {
+      try {
+        coords = await StorageService().loadCoordinates();
+        usingSaved = coords != null;
+      } catch (_) {
+        coords = null;
+      }
+    }
+
+    var seen = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      seen = prefs.getBool(_calibrationSeenKey) ?? false;
+    } catch (_) {}
+
+    if (!mounted) return;
+    setState(() {
+      _loading = false;
+      _calibrationDialogSeen = seen;
+      if (coords == null) {
+        _bearing = null;
+        _problem = problem;
+      } else {
+        _bearing = qiblaBearing(coords.lat, coords.lng);
+        _usingSavedLocation = usingSaved;
+      }
+    });
+    if (_bearing != null && _active) _startCompass();
+  }
+
+  void _startCompass() {
+    if (_compassSubscription != null) return;
+    final events = FlutterCompass.events;
+    if (events == null) {
+      setState(() => _noCompass = true);
+      return;
+    }
+    _noSensorTimer?.cancel();
+    if (!_hasHeading) {
+      // Sensörü olmayan cihazda hiç olay gelmez
+      _noSensorTimer = Timer(_noSensorTimeout, () {
+        if (mounted && !_hasHeading) setState(() => _noCompass = true);
+      });
+    }
+    _compassSubscription = events.listen(
+      _onCompassEvent,
+      onError: (Object _) {
+        if (mounted && !_hasHeading) setState(() => _noCompass = true);
+      },
+    );
+  }
+
+  void _stopCompass() {
+    _noSensorTimer?.cancel();
+    _noSensorTimer = null;
+    _compassSubscription?.cancel();
+    _compassSubscription = null;
+  }
+
+  void _onCompassEvent(CompassEvent event) {
+    if (!mounted || _bearing == null) return;
+    final raw = event.heading;
+    if (raw == null) {
+      if (!_hasHeading) setState(() => _noCompass = true);
+      return;
+    }
+    _noSensorTimer?.cancel();
+    final heading = normalizeDegrees(raw);
+    final step = _hasHeading ? signedDelta(_heading, heading) : heading;
+    final aligned = qiblaTurnFor(heading, _bearing!) == QiblaTurn.aligned;
+    if (aligned && !_aligned) HapticFeedback.heavyImpact();
+
+    final accuracy = event.accuracy;
+    final poor = accuracy == null || accuracy <= 0 || accuracy > 15;
+    var showDialog = _showCalibrationDialog;
+    if (poor && !_calibrationDialogSeen) {
+      // Kalibrasyon penceresi sadece ilk seferde (kalıcı olarak hatırlanır)
+      _calibrationDialogSeen = true;
+      showDialog = true;
+      SharedPreferences.getInstance()
+          .then((prefs) => prefs.setBool(_calibrationSeenKey, true))
+          .catchError((Object _) => false);
+    }
+
+    setState(() {
+      _hasHeading = true;
+      _noCompass = false;
+      _heading = heading;
+      _unwrappedHeading += step;
+      _aligned = aligned;
+      _calibrationPoor = poor;
+      _showCalibrationDialog = showDialog;
+    });
+  }
+
+  String _deg(double value) => '${normalizeDegrees(value).round() % 360}';
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(loc.qiblaTitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+        automaticallyImplyLeading: false,
+      ),
+      body: SafeArea(child: _buildBody(context, loc)),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, AppLocalizations loc) {
+    if (_loading) return LoadingState(message: loc.fetchingLocation);
+
+    final bearing = _bearing;
+    if (bearing == null) {
+      final message = switch (_problem) {
+        _LocationProblem.serviceOff => loc.locationServiceOff,
+        _LocationProblem.permissionDenied => loc.locationPermissionDenied,
+        _ => loc.locationError,
+      };
+      return ErrorState(message: message, onRetry: _init);
+    }
+
+    final savedBanner = _usingSavedLocation
+        ? Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              0,
+            ),
+            child: InfoBanner(
+              message: loc.usingSavedLocation,
+              icon: Icons.location_history,
+            ),
+          )
+        : null;
+
+    if (_noCompass) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ?savedBanner,
+          Expanded(
+            child: EmptyState(
+              icon: Icons.explore_off_outlined,
+              title: loc.noCompass,
+              message: loc.qiblaAngle(_deg(bearing)),
+            ),
+          ),
+        ],
+      );
+    }
+
+    final content = LayoutBuilder(
+      builder: (context, constraints) {
+        final dialSize = math.max(
+          180.0,
+          math.min(
+            300.0,
+            math.min(
+              constraints.maxWidth - 2 * AppSpacing.xl,
+              constraints.maxHeight * 0.5,
+            ),
+          ),
+        );
+        return SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ?savedBanner,
+              const SizedBox(height: AppSpacing.lg),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                child: _QiblaStatus(
+                  hasHeading: _hasHeading,
+                  turn: _hasHeading ? qiblaTurnFor(_heading, bearing) : null,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Center(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(end: _unwrappedHeading),
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  builder: (context, heading, _) => _CompassDial(
+                    size: dialSize,
+                    heading: heading,
+                    bearing: bearing,
+                    aligned: _aligned,
+                    semanticLabel: [
+                      loc.qiblaDirection,
+                      loc.qiblaAngle(_deg(bearing)),
+                      if (_hasHeading) loc.phoneHeading(_deg(_heading)),
+                    ].join('. '),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              _Readouts(
+                bearingText: loc.qiblaAngle(_deg(bearing)),
+                headingText: _hasHeading
+                    ? loc.phoneHeading(_deg(_heading))
+                    : null,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: _calibrationPoor
+                    ? InfoBanner(
+                        message: loc.lowAccuracyWarning,
+                        icon: Icons.screen_rotation,
+                        tone: InfoTone.warning,
+                      )
+                    : InfoBanner(
+                        message:
+                            '${loc.qiblaCalibration} ${loc.keepAwayMetal}',
+                        icon: Icons.screen_rotation,
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (!_showCalibrationDialog) return content;
+    return Stack(
+      children: [
+        Positioned.fill(child: content),
+        // Sayfaya gömülü pencere: diğer sekmelerin üstüne taşmaz
+        Positioned.fill(
+          child: ModalBarrier(
+            color: Colors.black54,
+            dismissible: false,
+            semanticsLabel: loc.calibrationRequired,
+          ),
+        ),
+        Center(
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              icon: const Icon(Icons.screen_rotation, size: 40),
+              title: Text(loc.calibrationRequired, textAlign: TextAlign.center),
+              content: Text(
+                loc.lowAccuracyWarning,
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                FilledButton(
+                  onPressed: () =>
+                      setState(() => _showCalibrationDialog = false),
+                  child: Text(loc.okUnderstood),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Üstteki yönerge: "Sağa dönün" (ok fiziksel yönde) veya "Kıbleyi buldunuz"
+class _QiblaStatus extends StatelessWidget {
+  final bool hasHeading;
+  final QiblaTurn? turn;
+
+  const _QiblaStatus({required this.hasHeading, required this.turn});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final style = theme.textTheme.titleLarge!.copyWith(
+      fontWeight: FontWeight.w700,
+    );
+
+    Widget child;
+    if (!hasHeading || turn == null) {
+      child = Text(
+        loc.qiblaDirection,
+        textAlign: TextAlign.center,
+        style: style.copyWith(color: scheme.onSurfaceVariant),
+      );
+    } else if (turn == QiblaTurn.aligned) {
+      child = Semantics(
+        liveRegion: true,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check_circle, color: colors.success, size: 28),
+            const SizedBox(width: AppSpacing.sm),
+            Flexible(
+              child: Text(
+                loc.qiblaFound,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: style.copyWith(color: colors.success),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      final (String label, IconData icon, bool right) = switch (turn!) {
+        QiblaTurn.right => (loc.qiblaTurnRight, Icons.turn_right, true),
+        QiblaTurn.slightRight => (
+          loc.qiblaTurnSlightRight,
+          Icons.turn_slight_right,
+          true,
+        ),
+        QiblaTurn.left => (loc.qiblaTurnLeft, Icons.turn_left, false),
+        _ => (loc.qiblaTurnSlightLeft, Icons.turn_slight_left, false),
+      };
+      // Ok her dilde fiziksel dönüş tarafında durur (Arapçada da sağ = sağ)
+      final arrow = ExcludeSemantics(
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Icon(icon, color: scheme.primary, size: 30),
+        ),
+      );
+      final text = Flexible(
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: style.copyWith(color: scheme.primary),
+        ),
+      );
+      child = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        textDirection: TextDirection.ltr,
+        children: right
+            ? [text, const SizedBox(width: AppSpacing.sm), arrow]
+            : [arrow, const SizedBox(width: AppSpacing.sm), text],
+      );
+    }
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 64),
+      child: Center(child: child),
+    );
+  }
+}
+
+/// Kıble açısı (büyük) ve telefon yönü (küçük), ayrı satırlarda
+class _Readouts extends StatelessWidget {
+  final String bearingText;
+  final String? headingText;
+
+  const _Readouts({required this.bearingText, required this.headingText});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: Column(
+        children: [
+          Text(
+            bearingText,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleLarge!.copyWith(
+              color: scheme.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (headingText != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              headingText!,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyLarge!.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Pusula kadranı: telefon yönüne göre döner; harfler ve Kâbe simgesi dik kalır.
+/// Üstteki sabit işaret telefonun baktığı yöndür. Sağdan sola dillerde
+/// aynalanmaz (doğu her zaman sağda).
+class _CompassDial extends StatelessWidget {
+  final double size;
+  final double heading;
+  final double bearing;
+  final bool aligned;
+  final String semanticLabel;
+
+  const _CompassDial({
+    required this.size,
+    required this.heading,
+    required this.bearing,
+    required this.aligned,
+    required this.semanticLabel,
+  });
+
+  /// Kadran üzerindeki [angle] (kuzeyden derece) noktasına, merkezden [radius]
+  /// uzaklıkta yerleştirir; içerik döndürülmez
+  Widget _polar(double angle, double radius, Widget child) {
+    final radians = (angle - heading) * math.pi / 180;
+    return Transform.translate(
+      offset: Offset(radius * math.sin(radians), -radius * math.cos(radians)),
+      child: child,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-
-    return Scaffold(
-      backgroundColor: const Color(0xFF1e272e),
-      appBar: AppBar(
-        title: Text(loc.qiblaTitle),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        foregroundColor: Colors.white,
-      ),
-      body: _buildBody(loc),
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final accent = aligned ? colors.success : scheme.primary;
+    final radius = size / 2;
+    final letterStyle = theme.textTheme.titleMedium!.copyWith(
+      fontWeight: FontWeight.w700,
+      color: scheme.onSurfaceVariant,
     );
-  }
+    final cardinals = <(double, String, Color?)>[
+      (0, loc.directionNorth, scheme.error),
+      (90, loc.directionEast, null),
+      (180, loc.directionSouth, null),
+      (270, loc.directionWest, null),
+    ];
 
-  Widget _buildBody(AppLocalizations loc) {
-    if (_isLoading) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircularProgressIndicator(color: Colors.tealAccent),
-            const SizedBox(height: 20),
-            Text(
-              loc.fetchingLocation,
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Semantics(
+      label: semanticLabel,
+      image: true,
+      excludeSemantics: true,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
             children: [
-              const Icon(
-                Icons.location_off,
-                size: 80,
-                color: Colors.orangeAccent,
+              CustomPaint(
+                size: Size.square(size),
+                painter: _DialPainter(
+                  heading: heading,
+                  bearing: bearing,
+                  face: scheme.surfaceContainerLowest,
+                  ring: aligned ? colors.success : scheme.outlineVariant,
+                  ticks: scheme.onSurfaceVariant,
+                  needle: accent,
+                  lubber: aligned ? colors.success : scheme.onSurface,
+                ),
               ),
-              const SizedBox(height: 20),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, fontSize: 18),
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton.icon(
-                onPressed: () {
-                  setState(() => _isLoading = true);
-                  _initQibla();
-                },
-                icon: const Icon(Icons.refresh),
-                label: Text(loc.retry),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  foregroundColor: Colors.white,
+              for (final (angle, letter, color) in cardinals)
+                _polar(
+                  angle,
+                  radius - 34,
+                  Text(
+                    letter,
+                    style: color == null
+                        ? letterStyle
+                        : letterStyle.copyWith(color: color),
+                  ),
+                ),
+              _polar(
+                bearing,
+                radius * 0.62 + 22,
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: accent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.mosque,
+                    size: 22,
+                    color: aligned ? Colors.white : scheme.onPrimary,
+                  ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _DialPainter extends CustomPainter {
+  final double heading;
+  final double bearing;
+  final Color face;
+  final Color ring;
+  final Color ticks;
+  final Color needle;
+  final Color lubber;
+
+  _DialPainter({
+    required this.heading,
+    required this.bearing,
+    required this.face,
+    required this.ring,
+    required this.ticks,
+    required this.needle,
+    required this.lubber,
+  });
+
+  Offset _point(Offset center, double angleDeg, double radius) {
+    final r = (angleDeg - heading) * math.pi / 180;
+    return center + Offset(radius * math.sin(r), -radius * math.cos(r));
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final radius = size.shortestSide / 2;
+    final dialRadius = radius - 6;
+
+    canvas.drawCircle(center, dialRadius, Paint()..color = face);
+    canvas.drawCircle(
+      center,
+      dialRadius,
+      Paint()
+        ..color = ring
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3,
+    );
+
+    // Derece çizgileri (her 10°; 30°'lerde uzun)
+    final tickPaint = Paint()
+      ..color = ticks
+      ..strokeCap = StrokeCap.round;
+    for (var a = 0; a < 360; a += 10) {
+      final major = a % 30 == 0;
+      tickPaint.strokeWidth = major ? 2.5 : 1.2;
+      canvas.drawLine(
+        _point(center, a.toDouble(), dialRadius - 4),
+        _point(center, a.toDouble(), dialRadius - (major ? 16 : 10)),
+        tickPaint,
       );
     }
 
-    if (!_hasPermissions) {
-      return const Center(child: CircularProgressIndicator(color: Colors.teal));
-    }
-
-    return Stack(
-      children: [
-        // ANA KIBLE ARAYÜZÜ
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              loc.qiblaDirection,
-              style: const TextStyle(color: Colors.grey, fontSize: 16),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              _isAligned
-                  ? loc.qiblaFound
-                  : "${(_smoothHeading % 360).toStringAsFixed(0)}°",
-              style: TextStyle(
-                color: _isAligned ? Colors.greenAccent : Colors.white,
-                fontSize: 45,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            SizedBox(
-              height: 30,
-              child: (!_isAligned && !_isCalibrationPoor)
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Text(
-                        _getTurnInstruction(),
-                        style: const TextStyle(
-                          color: Colors.amberAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.1,
-                        ),
-                      ),
-                    )
-                  : const SizedBox(),
-            ),
-            const SizedBox(height: 10),
-
-            Center(
-              child: SizedBox(
-                height: 320,
-                width: 320,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Transform.rotate(
-                      angle: -_smoothHeading * (math.pi / 180),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: _isAligned
-                                ? Colors.greenAccent
-                                : Colors.white12,
-                            width: 3,
-                          ),
-                          color: const Color(0xFF2d3436),
-                        ),
-                        child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  loc.directionNorth,
-                                  style: const TextStyle(
-                                    color: Colors.redAccent,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  loc.directionSouth,
-                                  style: const TextStyle(
-                                    color: Colors.white54,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  loc.directionEast,
-                                  style: const TextStyle(
-                                    color: Colors.white54,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Text(
-                                  loc.directionWest,
-                                  style: const TextStyle(
-                                    color: Colors.white54,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            Transform.rotate(
-                              angle: _qiblaAngle * (math.pi / 180),
-                              child: Align(
-                                alignment: Alignment.topCenter,
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 40),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.navigation,
-                                        size: 60,
-                                        color: _isAligned
-                                            ? Colors.greenAccent
-                                            : Colors.tealAccent,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      const Icon(
-                                        Icons.mosque,
-                                        size: 30,
-                                        color: Colors.white70,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        width: 4,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: _isAligned
-                              ? Colors.greenAccent
-                              : Colors.redAccent,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.white12),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.screen_rotation,
-                      color: Colors.tealAccent,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Text(
-                        loc.qiblaCalibration,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 13,
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        // KIRMIZI KÜÇÜK ANİMASYON UYARISI
-        if (_isCalibrationPoor)
-          Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
-            child: AnimatedBuilder(
-              animation: _calibController,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: 0.95 + (_calibController.value * 0.05),
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent.withOpacity(0.95),
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.redAccent.withOpacity(
-                            0.6 * _calibController.value,
-                          ),
-                          blurRadius: 20,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Transform.rotate(
-                          angle:
-                              math.sin(_calibController.value * math.pi * 2) *
-                              0.4,
-                          child: const Icon(
-                            Icons.screen_rotation_rounded,
-                            color: Colors.white,
-                            size: 32,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Text(
-                            loc.lowAccuracyWarning,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-        // YENİ: EKRANA GÖMÜLÜ DİALOG (Asla diğer sayfalara taşmaz)
-        if (_showInPageDialog)
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(
-                0.8,
-              ), // Arkadaki Kıbleyi hafif karartır
-              child: Center(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 30),
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2d3436),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 15,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.warning_amber_rounded,
-                            color: Colors.redAccent,
-                            size: 28,
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            "Kalibrasyon Gerekli",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 25),
-                      const Icon(
-                        Icons.screen_rotation,
-                        color: Colors.tealAccent,
-                        size: 65,
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        loc.lowAccuracyWarning,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 15,
-                          height: 1.4,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 45,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _showInPageDialog =
-                                  false; // Tıklayınca kutuyu kapatır
-                            });
-                          },
-                          child: Text(
-                            loc.localeName.startsWith('tr')
-                                ? "Tamam, Anladım"
-                                : "OK",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
+    // Kıble iğnesi: merkezden Kâbe simgesine
+    final needleEnd = _point(center, bearing, radius * 0.62);
+    canvas.drawLine(
+      center,
+      needleEnd,
+      Paint()
+        ..color = needle
+        ..strokeWidth = 5
+        ..strokeCap = StrokeCap.round,
     );
+    canvas.drawCircle(center, 9, Paint()..color = needle);
+    canvas.drawCircle(center, 4, Paint()..color = face);
+
+    // Telefonun baktığı yön: üstte sabit üçgen
+    final top = Offset(center.dx, center.dy - radius);
+    final path = Path()
+      ..moveTo(top.dx - 10, top.dy)
+      ..lineTo(top.dx + 10, top.dy)
+      ..lineTo(top.dx, top.dy + 16)
+      ..close();
+    canvas.drawPath(path, Paint()..color = lubber);
   }
+
+  @override
+  bool shouldRepaint(_DialPainter old) =>
+      old.heading != heading ||
+      old.bearing != bearing ||
+      old.face != face ||
+      old.ring != ring ||
+      old.ticks != ticks ||
+      old.needle != needle ||
+      old.lubber != lubber;
 }
