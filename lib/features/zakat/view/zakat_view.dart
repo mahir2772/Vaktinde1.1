@@ -9,9 +9,13 @@ import '../../../data/services/economy_service.dart';
 import '../../common/ad_consent.dart';
 import '../../common/ad_helper.dart';
 
-/// "1.234,56", "2500,50", "2500.5" → sayı. Tek ayraç ondalık sayılır; aynı
-/// ayraç birden çok geçerse binlik ayracıdır; iki farklı ayraç varsa sonuncusu
-/// ondalıktır. Okunamazsa 0.
+/// Kullanıcının yazdığı tutar → sayı (okunamazsa 0). Kurallar:
+/// - İki farklı ayraç varsa sonuncusu ondalık: "2.500,50", "1,234.56".
+/// - Aynı ayraç birden çok kez geçerse binlik: "1.234.567".
+/// - Tek ayraç, ardından tam 3 rakam ve önünde 1-3 rakam (0 ile başlamayan)
+///   varsa binlik: "10.000" → 10000, "1,500" → 1500.
+/// - Diğer tek ayraçlar ondalık: "2500,50", "2500.5", "0,750", "2500.500".
+///   (Uygulamanın yazdığı kurlar 2 ondalıklıdır: "2500.00".)
 double parseAmount(String text) {
   final s = text.replaceAll(RegExp(r'[\s₺]'), '');
   if (s.isEmpty) return 0;
@@ -21,7 +25,13 @@ double parseAmount(String text) {
   if (decimalAt >= 0) {
     final sep = s[decimalAt];
     final hasOther = s.contains(sep == ',' ? '.' : ',');
-    if (!hasOther && sep.allMatches(s).length > 1) decimalAt = -1;
+    if (!hasOther) {
+      if (sep.allMatches(s).length > 1) {
+        decimalAt = -1;
+      } else if (RegExp(r'^[1-9]\d{0,2}[.,]\d{3}$').hasMatch(s)) {
+        decimalAt = -1;
+      }
+    }
   }
   final String normalized;
   if (decimalAt < 0) {
@@ -29,9 +39,11 @@ double parseAmount(String text) {
   } else {
     final whole = s.substring(0, decimalAt).replaceAll(RegExp(r'[.,]'), '');
     final fraction = s.substring(decimalAt + 1);
-    normalized = '${whole.isEmpty ? '0' : whole}.$fraction';
+    normalized =
+        '${whole.isEmpty ? '0' : whole}${fraction.isEmpty ? '' : '.$fraction'}';
   }
-  return double.tryParse(normalized) ?? 0;
+  final value = double.tryParse(normalized);
+  return (value == null || value.isNaN || value.isInfinite) ? 0 : value;
 }
 
 // Servis/hesap anahtarları (ekranda yerelleştirilmiş adları gösterilir)
@@ -150,13 +162,17 @@ class _ZakatViewState extends State<ZakatView> {
     );
   }
 
-  // Sonuç reklamı beklemez; reklam (varsa) ziyaret başına bir kez gösterilir
+  // Sonuç reklamı beklemez; reklam (varsa) ziyaret başına en çok bir kez ve
+  // genel geçiş reklamıyla ortak soğuma süresine uyarak gösterilir (Araçlar'dan
+  // açılışta reklam çıktıysa hemen ardından ikinci reklam çıkmaz)
   void _maybeShowAd() {
     if (!AdConsent.canRequestAds.value) return;
     final ad = _interstitialAd;
     if (ad == null || _adShown) return;
+    if (AdHelper.instance.isCoolingDown()) return;
     _adShown = true;
     _interstitialAd = null;
+    AdHelper.instance.markInterstitialShown();
     ad.show();
   }
 
@@ -761,6 +777,30 @@ class _ZakatViewState extends State<ZakatView> {
       );
     }
 
+    // Nisab bilinmiyor (altın fiyatı yok): "zekat gerekir" / %2,5 tutarı
+    // gösterilmez, önce altın fiyatı istenir. Öşür nisaba bağlı değildir.
+    if (nisabUnknown) {
+      return AppCard(
+        key: _resultKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Semantics(
+              liveRegion: true,
+              child: InfoBanner(
+                tone: InfoTone.warning,
+                message: loc.zakatNisabUnknown,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            resultRow(loc.netAssets, _totalAssets),
+            if (_agriZakatAmount > 0)
+              resultRow(loc.zakatAgriIncluded, _agriZakatAmount),
+          ],
+        ),
+      );
+    }
+
     return AppCard(
       key: _resultKey,
       child: Column(
@@ -798,10 +838,7 @@ class _ZakatViewState extends State<ZakatView> {
           resultRow(loc.nisabLimit, _nisabThreshold, subtle: true),
           if (_agriZakatAmount > 0)
             resultRow(loc.zakatAgriIncluded, _agriZakatAmount, subtle: true),
-          if (nisabUnknown) ...[
-            const SizedBox(height: AppSpacing.md),
-            InfoBanner(tone: InfoTone.warning, message: loc.zakatNisabUnknown),
-          ] else if (!_isEligible) ...[
+          if (!_isEligible) ...[
             const SizedBox(height: AppSpacing.md),
             Text(
               loc.belowNisabMessage,

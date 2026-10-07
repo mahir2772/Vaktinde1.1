@@ -90,13 +90,26 @@ class AdHelper {
     );
   }
 
+  /// Son tam ekran reklamdan bu yana soğuma süresi dolmadı mı. Uygulamadaki
+  /// tüm geçiş reklamları (genel + zekat) bu ortak süreye uyar.
+  bool isCoolingDown([DateTime? now]) {
+    final last = _lastAdShowTime;
+    if (last == null) return false;
+    return (now ?? DateTime.now()).difference(last).inMinutes <
+        _cooldownMinutes;
+  }
+
+  /// Başka bir geçiş reklamı (ör. zekat) gösterildi: ortak süre başlar
+  void markInterstitialShown([DateTime? at]) {
+    _lastAdShowTime = at ?? DateTime.now();
+  }
+
   // Reklam gösterme fonksiyonu (Süreyi kontrol eder)
   void showInterstitialAd() {
     final now = DateTime.now();
 
     // Soğuma süresi kontrolü
-    if (_lastAdShowTime != null &&
-        now.difference(_lastAdShowTime!).inMinutes < _cooldownMinutes) {
+    if (isCoolingDown(now)) {
       debugPrint('Reklam soğuma süresinde. Kullanıcıyı darlamıyoruz.');
       return;
     }

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/esmaul_husna/view/esmaul_husna_view.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
@@ -199,14 +200,56 @@ void main() {
 
   group('Zekat', () {
     test('virgüllü ve noktalı tutarlar okunur', () {
-      expect(parseAmount('2500,50'), 2500.5);
-      expect(parseAmount('2500.50'), 2500.5);
-      expect(parseAmount('2.500,50'), 2500.5);
-      expect(parseAmount('2,500.50'), 2500.5);
-      expect(parseAmount('1.234.567'), 1234567);
-      expect(parseAmount(' 3000 ₺'), 3000);
-      expect(parseAmount(''), 0);
-      expect(parseAmount('abc'), 0);
+      const cases = <String, double>{
+        // Tek ayraç + tam 3 rakam (önünde 1-3 rakam): binlik
+        '10.000': 10000,
+        '250.000': 250000,
+        '1.500': 1500,
+        '1,500': 1500,
+        '10,000': 10000,
+        '999.999': 999999,
+        // Tek ayraç, diğer durumlar: ondalık
+        '2500,50': 2500.5,
+        '2500.50': 2500.5,
+        '2500.5': 2500.5,
+        '2500,5': 2500.5,
+        '1.5': 1.5,
+        '1,25': 1.25,
+        '0,750': 0.75,
+        '0.500': 0.5,
+        '2500.500': 2500.5,
+        '1.2345': 1.2345,
+        ',5': 0.5,
+        '2500,': 2500,
+        // Uygulamanın yazdığı kurlar (2 ondalık) etkilenmez
+        '1.00': 1,
+        '2500.00': 2500,
+        '38.45': 38.45,
+        '123.45': 123.45,
+        // İki farklı ayraç: sonuncusu ondalık
+        '2.500,50': 2500.5,
+        '2,500.50': 2500.5,
+        '1,234.56': 1234.56,
+        '1.234.567,89': 1234567.89,
+        '1,234,567.8': 1234567.8,
+        // Aynı ayraç birden çok: binlik
+        '1.234.567': 1234567,
+        '1,234,567': 1234567,
+        '10.000.000': 10000000,
+        // Boşluk, ₺, düz sayı, okunamayan
+        ' 3000 ₺': 3000,
+        '3 000': 3000,
+        '₺1.500': 1500,
+        '3000': 3000,
+        '0': 0,
+        '': 0,
+        'abc': 0,
+        '.': 0,
+        ',': 0,
+      };
+      cases.forEach((input, expected) {
+        expect(parseAmount(input), closeTo(expected, 1e-9), reason: input);
+      });
     });
 
     for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
@@ -267,7 +310,9 @@ void main() {
       await _dispose(tester);
     });
 
-    testWidgets('altın fiyatı yoksa nisab uyarısı', (tester) async {
+    testWidgets('altın fiyatı yoksa "zekat gerekir" yerine nisab uyarısı', (
+      tester,
+    ) async {
       await _pumpScreen(tester, const ZakatView(), textScale: 1);
       final loc = lookupAppLocalizations(const Locale('tr'));
       await tester.tap(find.text(loc.goldAndSilverTitle));
@@ -287,7 +332,23 @@ void main() {
       await _settle(tester);
       expect(find.text(loc.zakatNisabUnknown), findsOneWidget);
       expect(find.text('4.050,00 ₺'), findsOneWidget); // net varlık
+      // Nisab bilinmeden "zekat gerekir" ve %2,5 tutarı (101,25 ₺) yok
+      expect(find.text(loc.zakatEligible), findsNothing);
+      expect(find.text(loc.zakatResultTitle), findsNothing);
+      expect(find.text('101,25 ₺'), findsNothing);
       await _dispose(tester);
+    });
+  });
+
+  group('Reklam', () {
+    test('zekat ve genel geçiş reklamı ortak soğuma süresine uyar', () {
+      final ads = AdHelper.instance;
+      final t = DateTime(2026, 1, 1, 12);
+      ads.markInterstitialShown(t);
+      expect(ads.isCoolingDown(t.add(const Duration(minutes: 1))), isTrue);
+      expect(ads.isCoolingDown(t.add(const Duration(minutes: 4))), isTrue);
+      expect(ads.isCoolingDown(t.add(const Duration(minutes: 5))), isFalse);
+      expect(ads.isCoolingDown(t.add(const Duration(hours: 1))), isFalse);
     });
   });
 
