@@ -477,8 +477,13 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
     final isRamadan = _mode == ImsakiyeMode.ramadan;
     final dateFlex = isRamadan ? 22 : 16;
     final today = dateOnly(DateTime.now());
+    // Koyu temada başlık, bugünün satırıyla (sıradaki vakit rengi) karışmasın
+    final isLight = theme.brightness == Brightness.light;
+    final headerBackground = isLight
+        ? scheme.primaryContainer
+        : scheme.surfaceContainerHigh;
     final headerStyle = theme.textTheme.labelMedium!.copyWith(
-      color: scheme.onPrimaryContainer,
+      color: isLight ? scheme.onPrimaryContainer : scheme.primary,
       fontWeight: FontWeight.w600,
     );
 
@@ -494,7 +499,7 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
         children: [
           Container(
             constraints: const BoxConstraints(minHeight: 40),
-            color: scheme.primaryContainer,
+            color: headerBackground,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
             child: Row(
               children: [
