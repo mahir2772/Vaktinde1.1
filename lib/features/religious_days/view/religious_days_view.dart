@@ -6,8 +6,10 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/services/dini_gunler_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 
-/// Dini günler: yıl seçici + liste. Sıradaki gün "x gün kaldı" ile vurgulanır
-/// (açılışta ona kaydırılır), geçmiş günler soluk gösterilir.
+/// Dini günler: yıl seçici + liste. Tarihler Diyanet listesinden
+/// (religious_days.json), listede olmayan yıl/günler hicri hesaptan.
+/// Sıradaki gün "x gün kaldı" ile vurgulanır (açılışta ona kaydırılır),
+/// geçmiş günler soluk gösterilir.
 class ReligiousDaysView extends StatefulWidget {
   const ReligiousDaysView({super.key});
 
@@ -21,6 +23,8 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
   late int _maxYear;
   final GlobalKey _nextKey = GlobalKey();
   bool _scrolledToNext = false;
+  // Diyanet tarihleri yüklenene kadar null (yükleniyor)
+  List<ResmiDiniGun>? _resmi;
 
   @override
   void initState() {
@@ -29,6 +33,9 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
     _selectedYear = year;
     _minYear = year - 1;
     _maxYear = year + 4;
+    DiniGunlerService.loadResmiGunler().then((resmi) {
+      if (mounted) setState(() => _resmi = resmi);
+    });
   }
 
   void _changeYear(int delta) {
@@ -38,9 +45,17 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
   }
 
   /// Bugün ya da sonrasındaki ilk dini gün (yılın kalanı boşsa gelecek yıl)
-  DiniGunModel? _nextDay(AppLocalizations loc, DateTime today) {
+  DiniGunModel? _nextDay(
+    AppLocalizations loc,
+    DateTime today,
+    List<ResmiDiniGun> resmi,
+  ) {
     for (final year in [today.year, today.year + 1]) {
-      for (final day in DiniGunlerService.getYilinDiniGunleri(loc, year)) {
+      for (final day in DiniGunlerService.getYilinDiniGunleri(
+        loc,
+        year,
+        resmi: resmi,
+      )) {
         if (PrayerTracker.daysBetween(today, day.tarih) >= 0) return day;
       }
     }
@@ -66,8 +81,7 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
     final loc = AppLocalizations.of(context)!;
     final localeCode = Localizations.localeOf(context).languageCode;
     final today = DateTime.now();
-    final days = DiniGunlerService.getYilinDiniGunleri(loc, _selectedYear);
-    final next = _nextDay(loc, today);
+    final resmi = _resmi;
 
     final switcher = Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -85,8 +99,19 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
       ),
     );
 
+    final days = resmi == null
+        ? const <DiniGunModel>[]
+        : DiniGunlerService.getYilinDiniGunleri(
+            loc,
+            _selectedYear,
+            resmi: resmi,
+          );
+    final next = resmi == null ? null : _nextDay(loc, today, resmi);
+
     final Widget list;
-    if (days.isEmpty) {
+    if (resmi == null) {
+      list = const LoadingState();
+    } else if (days.isEmpty) {
       list = EmptyState(
         icon: Icons.event_busy,
         title: loc.noDataForYear(_selectedYear),

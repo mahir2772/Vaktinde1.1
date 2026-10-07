@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/esmaul_husna/view/esmaul_husna_view.dart';
@@ -130,6 +131,7 @@ void main() {
     // ilk testin sahte zaman bölgesinde oluşursa sonraki testlerde
     // tamamlanmaz; gerçek bölgede önceden yüklenir
     await loadRamadanCalendar();
+    await DiniGunlerService.loadResmiGunler();
     for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
       await rootBundle.loadString('assets/data/esmaul_husna_$lang.json');
       await rootBundle.loadString('assets/data/friday_messages_$lang.json');
