@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -26,6 +25,8 @@ import 'features/onboarding/view/onboarding_language_view.dart';
 import 'features/common/theme_provider.dart';
 import 'features/zikirmatik/view_model/zikir_view_model.dart';
 import 'features/common/ad_helper.dart';
+import 'features/common/ad_consent.dart';
+import 'core/ui/app_theme.dart';
 
 final NotificationService notificationService = NotificationService();
 
@@ -75,7 +76,7 @@ void main() async {
     debugPrint("Firebase hatası: $e");
   }
 
-  MobileAds.instance.initialize();
+  // Reklamlar AdMob rızası (UMP) alındıktan sonra başlar; açılışı bekletmez
   AdHelper.instance.loadInterstitialAd();
 
   try {
@@ -86,11 +87,12 @@ void main() async {
 
   await _registerBackgroundRefresh();
 
-  // Poppins assets/google_fonts içinde gömülü (internetsiz ilk açılış); eksik ağırlık olursa indirilir
-  GoogleFonts.config.allowRuntimeFetching = true;
+  // Poppins ve Amiri pubspec'te gömülü (internetsiz ilk açılış)
   LicenseRegistry.addLicense(() async* {
-    final license = await rootBundle.loadString('assets/google_fonts/OFL.txt');
-    yield LicenseEntryWithLineBreaks(['google_fonts'], license);
+    final poppins = await rootBundle.loadString('assets/google_fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['Poppins'], poppins);
+    final amiri = await rootBundle.loadString('assets/fonts/amiri/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['Amiri'], amiri);
   });
 
   runApp(
@@ -104,6 +106,9 @@ void main() async {
       child: const MyApp(),
     ),
   );
+
+  // AB'de rıza formu gerekiyorsa ilk kare çizildikten sonra gösterilir
+  unawaited(AdConsent.gatherAndStartAds());
 }
 
 class MyApp extends StatefulWidget {
@@ -171,6 +176,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final hasBackground = themeProvider.backgroundImage != null;
 
     return MaterialApp(
       title: 'Vaktinde',
@@ -190,53 +196,8 @@ class _MyAppState extends State<MyApp> {
         Locale('ar'),
       ],
       themeMode: themeProvider.themeMode,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.teal,
-        useMaterial3: true,
-        scaffoldBackgroundColor: themeProvider.backgroundImage != null
-            ? Colors.transparent
-            : Colors.grey[100],
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.teal,
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
-        cardTheme: CardThemeData(
-          color: Colors.white.withOpacity(0.9),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.teal,
-        useMaterial3: true,
-        scaffoldBackgroundColor: themeProvider.backgroundImage != null
-            ? Colors.transparent
-            : const Color(0xFF121212),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1F1F1F),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
-        cardTheme: CardThemeData(
-          color: const Color(0xFF1E1E1E).withOpacity(0.9),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF1F1F1F),
-          selectedItemColor: Colors.tealAccent,
-          unselectedItemColor: Colors.grey,
-        ),
-      ),
+      theme: AppTheme.light(hasBackgroundImage: hasBackground),
+      darkTheme: AppTheme.dark(hasBackgroundImage: hasBackground),
       builder: (context, child) {
         return Stack(
           children: [

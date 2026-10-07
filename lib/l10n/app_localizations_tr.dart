@@ -12,6 +12,114 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get showcaseLanguage => 'Uygulama dilini buradan değiştirebilirsiniz.';
+
+  @override
+  String get showcaseStory =>
+      'Günün ayetini ve hadisini buradan okuyabilirsiniz.';
+
+  @override
+  String get showcaseAlarms =>
+      'Her vakit için ezan ve hatırlatma alarmlarını buradan ayarlayabilirsiniz.';
+
+  @override
+  String get showcaseQibla => 'Kıble yönünü pusula ile bulabilirsiniz.';
+
+  @override
+  String get showcaseZikir => 'Zikirlerinizi buradan takip edebilirsiniz.';
+
+  @override
+  String get refreshLocation => 'Konumu yenile';
+
+  @override
+  String get navTools => 'Araçlar';
+
+  @override
+  String get hadithNotFound => 'Hadis metni bulunamadı.';
+
+  @override
+  String get timesLoadError => 'Vakitler yüklenemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get sunriseNotPrayer => 'Güneşin doğuşu, namaz vakti değildir';
+
+  @override
+  String get currentPrayer => 'Şu anki vakit';
+
+  @override
+  String get textCopied => 'Metin kopyalandı';
+
+  @override
+  String get updateDownloaded => 'Yeni sürüm indirildi.';
+
+  @override
+  String get restartAction => 'Yeniden başlat';
+
+  @override
+  String get qiblaTurnRight => 'Sağa dönün';
+
+  @override
+  String get qiblaTurnSlightRight => 'Biraz sağa dönün';
+
+  @override
+  String get qiblaTurnLeft => 'Sola dönün';
+
+  @override
+  String get qiblaTurnSlightLeft => 'Biraz sola dönün';
+
+  @override
+  String phoneHeading(String deg) {
+    return 'Telefon yönü: $deg°';
+  }
+
+  @override
+  String get usingSavedLocation => 'Kayıtlı konum kullanılıyor.';
+
+  @override
+  String exampleHint(int n) {
+    return 'Örn: $n';
+  }
+
+  @override
+  String get noCustomDhikr => 'Henüz özel zikir eklemediniz.';
+
+  @override
+  String get messagesShuffled => 'Mesajlar karıştırıldı';
+
+  @override
+  String get shuffle => 'Karıştır';
+
+  @override
+  String get copy => 'Kopyala';
+
+  @override
+  String get messageCopied => 'Mesaj kopyalandı';
+
+  @override
+  String versionLabel(String v) {
+    return 'Sürüm $v';
+  }
+
+  @override
+  String get supportMailSubject => 'Vaktinde - Destek';
+
+  @override
+  String get madeBy => 'mmdigital tarafından ❤️ ile yapıldı';
+
+  @override
+  String get permissionPrimingTitle => 'Ezan vakitlerini kaçırmayın';
+
+  @override
+  String get permissionPrimingBody =>
+      'Ezan bildirimleri için bildirim iznine, vakitleri bulunduğunuz yere göre hesaplamak için konum iznine ihtiyacımız var.';
+
+  @override
+  String get continueAction => 'Devam';
+
+  @override
+  String get ok => 'Tamam';
+
+  @override
   String get nextPrayer => 'Sıradaki Vakit';
 
   @override
@@ -1059,7 +1167,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get currencyTry => 'Türk Lirası';
 
   @override
-  String get holdToEdit => '(Düzenlemek için basılı tutun)';
+  String get holdToEdit => 'Düzenlemek için basılı tutun';
 
   @override
   String get editCounterTitle => 'Sayacı Düzenle';

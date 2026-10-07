@@ -1,5 +1,59 @@
 {
     "appTitle": "Vaktinde",
+    "showcaseLanguage": "Uygulama dilini buradan değiştirebilirsiniz.",
+    "showcaseStory": "Günün ayetini ve hadisini buradan okuyabilirsiniz.",
+    "showcaseAlarms": "Her vakit için ezan ve hatırlatma alarmlarını buradan ayarlayabilirsiniz.",
+    "showcaseQibla": "Kıble yönünü pusula ile bulabilirsiniz.",
+    "showcaseZikir": "Zikirlerinizi buradan takip edebilirsiniz.",
+    "refreshLocation": "Konumu yenile",
+    "navTools": "Araçlar",
+    "hadithNotFound": "Hadis metni bulunamadı.",
+    "timesLoadError": "Vakitler yüklenemedi. Lütfen tekrar deneyin.",
+    "sunriseNotPrayer": "Güneşin doğuşu, namaz vakti değildir",
+    "currentPrayer": "Şu anki vakit",
+    "textCopied": "Metin kopyalandı",
+    "updateDownloaded": "Yeni sürüm indirildi.",
+    "restartAction": "Yeniden başlat",
+    "qiblaTurnRight": "Sağa dönün",
+    "qiblaTurnSlightRight": "Biraz sağa dönün",
+    "qiblaTurnLeft": "Sola dönün",
+    "qiblaTurnSlightLeft": "Biraz sola dönün",
+    "phoneHeading": "Telefon yönü: {deg}°",
+    "@phoneHeading": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "usingSavedLocation": "Kayıtlı konum kullanılıyor.",
+    "exampleHint": "Örn: {n}",
+    "@exampleHint": {
+        "placeholders": {
+            "n": {
+                "type": "int"
+            }
+        }
+    },
+    "noCustomDhikr": "Henüz özel zikir eklemediniz.",
+    "messagesShuffled": "Mesajlar karıştırıldı",
+    "shuffle": "Karıştır",
+    "copy": "Kopyala",
+    "messageCopied": "Mesaj kopyalandı",
+    "versionLabel": "Sürüm {v}",
+    "@versionLabel": {
+        "placeholders": {
+            "v": {
+                "type": "String"
+            }
+        }
+    },
+    "supportMailSubject": "Vaktinde - Destek",
+    "madeBy": "mmdigital tarafından ❤️ ile yapıldı",
+    "permissionPrimingTitle": "Ezan vakitlerini kaçırmayın",
+    "permissionPrimingBody": "Ezan bildirimleri için bildirim iznine, vakitleri bulunduğunuz yere göre hesaplamak için konum iznine ihtiyacımız var.",
+    "continueAction": "Devam",
+    "ok": "Tamam",
     "nextPrayer": "Sıradaki Vakit",
     "hadithTitle": "Günün Hadisi",
     "readMore": "Devamını Oku...",
@@ -484,7 +538,7 @@
     "currencyBgn": "Bulgar Levası",
     "currencyKwd": "Kuveyt Dinarı",
     "currencyTry": "Türk Lirası",
-    "holdToEdit": "(Düzenlemek için basılı tutun)",
+    "holdToEdit": "Düzenlemek için basılı tutun",
     "editCounterTitle": "Sayacı Düzenle",
     "editCounterHint": "Örn: 2000",
     "editTargetHint": "Örn: 99",
