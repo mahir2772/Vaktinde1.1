@@ -2384,6 +2384,12 @@ abstract class AppLocalizations {
   /// **'{name} kaza sayısı {from} yerine {to} olacak. Kaydedilsin mi?'**
   String missedChangeConfirm(String name, int from, int to);
 
+  /// No description provided for @shareFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem yapılamadı. Lütfen tekrar deneyin.'**
+  String get shareFailed;
+
   /// No description provided for @zakatCurrencyNote.
   ///
   /// In tr, this message translates to:

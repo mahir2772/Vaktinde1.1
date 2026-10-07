@@ -561,6 +561,7 @@
             }
         }
     },
+    "shareFailed": "L'opération a échoué. Veuillez réessayer.",
     "zakatCurrencyNote": "Tous les montants sont en livres turques (₺).",
     "zakatCashTry": "Espèces (₺)",
     "zakatRatesUnavailable": "Les prix de l'or et les taux de change actuels sont indisponibles. Veuillez saisir les prix vous-même.",

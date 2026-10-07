@@ -561,6 +561,7 @@
             }
         }
     },
+    "shareFailed": "That did not work. Please try again.",
     "zakatCurrencyNote": "All amounts are in Turkish lira (₺).",
     "zakatCashTry": "Cash (₺)",
     "zakatRatesUnavailable": "Live gold prices and exchange rates are unavailable. Please enter the prices manually.",

@@ -1265,6 +1265,9 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get shareFailed => 'تعذّر إتمام العملية. يُرجى المحاولة مرة أخرى.';
+
+  @override
   String get zakatCurrencyNote => 'جميع المبالغ بالليرة التركية (₺).';
 
   @override
