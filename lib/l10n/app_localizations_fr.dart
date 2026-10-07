@@ -1203,6 +1203,89 @@ class AppLocalizationsFr extends AppLocalizations {
   String get imsakiyeTitle => 'Calendrier des prières';
 
   @override
+  String get toolsGroupPrayer => 'Prière';
+
+  @override
+  String get toolsGroupInfo => 'Connaissances';
+
+  @override
+  String get toolsGroupCalc => 'Calculs';
+
+  @override
+  String get toolImsakiyeDesc => 'Horaires du mois et du Ramadan';
+
+  @override
+  String get toolTrackerDesc => 'Cochez les prières accomplies';
+
+  @override
+  String get toolKazaDesc => 'Compteur des prières et jeûnes manqués';
+
+  @override
+  String get toolReligiousDaysDesc => 'Nuits bénies et fêtes';
+
+  @override
+  String get toolEsmaDesc => 'Les 99 noms et leur sens';
+
+  @override
+  String get toolFridayDesc => 'Messages prêts à partager';
+
+  @override
+  String get toolZakatDesc => 'Calcul de la zakat et de l\'ouchr';
+
+  @override
+  String get toolSettingsDesc => 'Position, notifications, apparence';
+
+  @override
+  String daysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Dans $count jours',
+      one: 'Demain',
+      zero: 'Aujourd\'hui',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previousYear => 'Année précédente';
+
+  @override
+  String get nextYear => 'Année suivante';
+
+  @override
+  String get previousItem => 'Précédent';
+
+  @override
+  String get nextItem => 'Suivant';
+
+  @override
+  String missedChangeConfirm(String name, int from, int to) {
+    return 'Le nombre pour $name passera de $from à $to. Enregistrer ?';
+  }
+
+  @override
+  String get zakatCurrencyNote =>
+      'Tous les montants sont en livres turques (₺).';
+
+  @override
+  String get zakatCashTry => 'Espèces (₺)';
+
+  @override
+  String get zakatRatesUnavailable =>
+      'Les prix de l\'or et les taux de change actuels sont indisponibles. Veuillez saisir les prix vous-même.';
+
+  @override
+  String get zakatGoldGramPrice => 'Prix d\'1 g d\'or 24 carats (₺)';
+
+  @override
+  String get zakatGoldGramPriceHelp => 'Sert à calculer le seuil du nisab.';
+
+  @override
+  String get zakatNisabUnknown =>
+      'Sans prix de l\'or, le seuil du nisab ne peut pas être calculé. Saisissez le prix de l\'or pour un résultat correct.';
+
+  @override
   String get imsakiyeRamadan => 'Ramadan';
 
   @override

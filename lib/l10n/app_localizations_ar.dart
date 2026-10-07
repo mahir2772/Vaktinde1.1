@@ -1200,6 +1200,91 @@ class AppLocalizationsAr extends AppLocalizations {
   String get imsakiyeTitle => 'جدول المواقيت';
 
   @override
+  String get toolsGroupPrayer => 'الصلاة';
+
+  @override
+  String get toolsGroupInfo => 'معلومات';
+
+  @override
+  String get toolsGroupCalc => 'الحساب';
+
+  @override
+  String get toolImsakiyeDesc => 'مواقيت الشهر ورمضان';
+
+  @override
+  String get toolTrackerDesc => 'سجّل الصلوات التي أدّيتها';
+
+  @override
+  String get toolKazaDesc => 'عدّاد الصلوات والصيام الفائت';
+
+  @override
+  String get toolReligiousDaysDesc => 'الليالي المباركة والأعياد';
+
+  @override
+  String get toolEsmaDesc => 'الأسماء الحسنى ومعانيها';
+
+  @override
+  String get toolFridayDesc => 'رسائل جاهزة للمشاركة';
+
+  @override
+  String get toolZakatDesc => 'حساب الزكاة والعُشر';
+
+  @override
+  String get toolSettingsDesc => 'الموقع والإشعارات والمظهر';
+
+  @override
+  String daysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'بعد $count يوم',
+      many: 'بعد $count يومًا',
+      few: 'بعد $count أيام',
+      two: 'بعد يومين',
+      one: 'غدًا',
+      zero: 'اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previousYear => 'السنة السابقة';
+
+  @override
+  String get nextYear => 'السنة التالية';
+
+  @override
+  String get previousItem => 'السابق';
+
+  @override
+  String get nextItem => 'التالي';
+
+  @override
+  String missedChangeConfirm(String name, int from, int to) {
+    return 'سيتغيّر عدد $name من $from إلى $to. هل تريد الحفظ؟';
+  }
+
+  @override
+  String get zakatCurrencyNote => 'جميع المبالغ بالليرة التركية (₺).';
+
+  @override
+  String get zakatCashTry => 'النقد (₺)';
+
+  @override
+  String get zakatRatesUnavailable =>
+      'تعذّر جلب أسعار الذهب وأسعار الصرف الحالية. يُرجى إدخال الأسعار يدويًا.';
+
+  @override
+  String get zakatGoldGramPrice => 'سعر غرام الذهب عيار 24 (₺)';
+
+  @override
+  String get zakatGoldGramPriceHelp => 'يُستخدم لحساب حدّ النصاب.';
+
+  @override
+  String get zakatNisabUnknown =>
+      'لا يمكن حساب حدّ النصاب بدون سعر الذهب. أدخل سعر الذهب للحصول على نتيجة صحيحة.';
+
+  @override
   String get imsakiyeRamadan => 'رمضان';
 
   @override

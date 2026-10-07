@@ -1201,6 +1201,88 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imsakiyeTitle => 'Gebetskalender';
 
   @override
+  String get toolsGroupPrayer => 'Gebet';
+
+  @override
+  String get toolsGroupInfo => 'Wissen';
+
+  @override
+  String get toolsGroupCalc => 'Rechner';
+
+  @override
+  String get toolImsakiyeDesc => 'Monats- und Ramadan-Zeiten';
+
+  @override
+  String get toolTrackerDesc => 'Verrichtete Gebete abhaken';
+
+  @override
+  String get toolKazaDesc => 'Zähler für versäumte Gebete und Fasten';
+
+  @override
+  String get toolReligiousDaysDesc => 'Heilige Nächte und Feste';
+
+  @override
+  String get toolEsmaDesc => 'Die 99 Namen und ihre Bedeutung';
+
+  @override
+  String get toolFridayDesc => 'Nachrichten zum Teilen';
+
+  @override
+  String get toolZakatDesc => 'Zakat und Ernteabgabe (Uschr) berechnen';
+
+  @override
+  String get toolSettingsDesc => 'Standort, Benachrichtigungen, Darstellung';
+
+  @override
+  String daysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Noch $count Tage',
+      one: 'Morgen',
+      zero: 'Heute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previousYear => 'Vorheriges Jahr';
+
+  @override
+  String get nextYear => 'Nächstes Jahr';
+
+  @override
+  String get previousItem => 'Vorherige';
+
+  @override
+  String get nextItem => 'Nächste';
+
+  @override
+  String missedChangeConfirm(String name, int from, int to) {
+    return 'Die Anzahl für $name ändert sich von $from auf $to. Speichern?';
+  }
+
+  @override
+  String get zakatCurrencyNote => 'Alle Beträge sind in Türkischer Lira (₺).';
+
+  @override
+  String get zakatCashTry => 'Bargeld (₺)';
+
+  @override
+  String get zakatRatesUnavailable =>
+      'Aktuelle Goldpreise und Wechselkurse sind nicht verfügbar. Bitte geben Sie die Preise selbst ein.';
+
+  @override
+  String get zakatGoldGramPrice => 'Preis für 1 g Gold, 24 Karat (₺)';
+
+  @override
+  String get zakatGoldGramPriceHelp => 'Damit wird die Nisab-Grenze berechnet.';
+
+  @override
+  String get zakatNisabUnknown =>
+      'Ohne Goldpreis kann die Nisab-Grenze nicht berechnet werden. Geben Sie den Goldpreis für ein korrektes Ergebnis ein.';
+
+  @override
   String get imsakiyeRamadan => 'Ramadan';
 
   @override

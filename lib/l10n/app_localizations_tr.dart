@@ -1189,6 +1189,88 @@ class AppLocalizationsTr extends AppLocalizations {
   String get imsakiyeTitle => 'İmsakiye';
 
   @override
+  String get toolsGroupPrayer => 'Namaz';
+
+  @override
+  String get toolsGroupInfo => 'Bilgi';
+
+  @override
+  String get toolsGroupCalc => 'Hesap';
+
+  @override
+  String get toolImsakiyeDesc => 'Aylık ve Ramazan vakitleri';
+
+  @override
+  String get toolTrackerDesc => 'Kıldığınız vakitleri işaretleyin';
+
+  @override
+  String get toolKazaDesc => 'Kaza namazı ve oruç sayacı';
+
+  @override
+  String get toolReligiousDaysDesc => 'Kandiller ve bayramlar';
+
+  @override
+  String get toolEsmaDesc => 'Allah\'ın 99 ismi ve anlamları';
+
+  @override
+  String get toolFridayDesc => 'Paylaşmaya hazır mesajlar';
+
+  @override
+  String get toolZakatDesc => 'Zekat ve öşür hesabı';
+
+  @override
+  String get toolSettingsDesc => 'Konum, bildirimler, görünüm';
+
+  @override
+  String daysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gün kaldı',
+      one: 'Yarın',
+      zero: 'Bugün',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previousYear => 'Önceki yıl';
+
+  @override
+  String get nextYear => 'Sonraki yıl';
+
+  @override
+  String get previousItem => 'Önceki';
+
+  @override
+  String get nextItem => 'Sonraki';
+
+  @override
+  String missedChangeConfirm(String name, int from, int to) {
+    return '$name kaza sayısı $from yerine $to olacak. Kaydedilsin mi?';
+  }
+
+  @override
+  String get zakatCurrencyNote => 'Tüm tutarlar Türk lirası (₺) cinsindendir.';
+
+  @override
+  String get zakatCashTry => 'Nakit (₺)';
+
+  @override
+  String get zakatRatesUnavailable =>
+      'Güncel altın fiyatı ve kurlar alınamadı. Lütfen fiyatları elle girin.';
+
+  @override
+  String get zakatGoldGramPrice => '24 ayar gram altın fiyatı (₺)';
+
+  @override
+  String get zakatGoldGramPriceHelp => 'Nisab sınırı bu fiyatla hesaplanır.';
+
+  @override
+  String get zakatNisabUnknown =>
+      'Gram altın fiyatı olmadan nisab sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.';
+
+  @override
   String get imsakiyeRamadan => 'Ramazan';
 
   @override
