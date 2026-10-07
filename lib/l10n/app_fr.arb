@@ -524,6 +524,49 @@
     "resetCounterConfirm": "Êtes-vous sûr de vouloir réinitialiser le compteur ?",
     "dhikrTarget": "Objectif :",
     "imsakiyeTitle": "Calendrier des prières",
+    "toolsGroupPrayer": "Prière",
+    "toolsGroupInfo": "Connaissances",
+    "toolsGroupCalc": "Calculs",
+    "toolImsakiyeDesc": "Horaires du mois et du Ramadan",
+    "toolTrackerDesc": "Cochez les prières accomplies",
+    "toolKazaDesc": "Compteur des prières et jeûnes manqués",
+    "toolReligiousDaysDesc": "Nuits bénies et fêtes",
+    "toolEsmaDesc": "Les 99 noms et leur sens",
+    "toolFridayDesc": "Messages prêts à partager",
+    "toolZakatDesc": "Calcul de la zakat et de l'ouchr",
+    "toolSettingsDesc": "Position, notifications, apparence",
+    "daysLeft": "{count, plural, =0{Aujourd'hui} =1{Demain} other{Dans {count} jours}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "previousYear": "Année précédente",
+    "nextYear": "Année suivante",
+    "previousItem": "Précédent",
+    "nextItem": "Suivant",
+    "missedChangeConfirm": "Le nombre pour {name} passera de {from} à {to}. Enregistrer ?",
+    "@missedChangeConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "zakatCurrencyNote": "Tous les montants sont en livres turques (₺).",
+    "zakatCashTry": "Espèces (₺)",
+    "zakatRatesUnavailable": "Les prix de l'or et les taux de change actuels sont indisponibles. Veuillez saisir les prix vous-même.",
+    "zakatGoldGramPrice": "Prix d'1 g d'or 24 carats (₺)",
+    "zakatGoldGramPriceHelp": "Sert à calculer le seuil du nisab.",
+    "zakatNisabUnknown": "Sans prix de l'or, le seuil du nisab ne peut pas être calculé. Saisissez le prix de l'or pour un résultat correct.",
     "imsakiyeRamadan": "Ramadan",
     "imsakiyeRamadanTitle": "Calendrier du Ramadan {year}",
     "@imsakiyeRamadanTitle": {

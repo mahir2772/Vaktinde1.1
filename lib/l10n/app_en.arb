@@ -524,6 +524,49 @@
     "resetCounterConfirm": "Are you sure you want to reset the counter?",
     "dhikrTarget": "Target:",
     "imsakiyeTitle": "Prayer Timetable",
+    "toolsGroupPrayer": "Prayer",
+    "toolsGroupInfo": "Knowledge",
+    "toolsGroupCalc": "Calculators",
+    "toolImsakiyeDesc": "Monthly and Ramadan times",
+    "toolTrackerDesc": "Mark the prayers you performed",
+    "toolKazaDesc": "Counter for missed prayers and fasts",
+    "toolReligiousDaysDesc": "Holy nights and Eids",
+    "toolEsmaDesc": "The 99 names and their meanings",
+    "toolFridayDesc": "Messages ready to share",
+    "toolZakatDesc": "Zakat and harvest (ushr) calculation",
+    "toolSettingsDesc": "Location, notifications, appearance",
+    "daysLeft": "{count, plural, =0{Today} =1{Tomorrow} other{{count} days left}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "previousItem": "Previous",
+    "nextItem": "Next",
+    "missedChangeConfirm": "The {name} count will change from {from} to {to}. Save it?",
+    "@missedChangeConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "zakatCurrencyNote": "All amounts are in Turkish lira (₺).",
+    "zakatCashTry": "Cash (₺)",
+    "zakatRatesUnavailable": "Live gold prices and exchange rates are unavailable. Please enter the prices manually.",
+    "zakatGoldGramPrice": "Price of 1 g 24-carat gold (₺)",
+    "zakatGoldGramPriceHelp": "Used to calculate the nisab threshold.",
+    "zakatNisabUnknown": "Without a gold price the nisab threshold cannot be calculated. Enter the gold price for a correct result.",
     "imsakiyeRamadan": "Ramadan",
     "imsakiyeRamadanTitle": "Ramadan {year} Timetable",
     "@imsakiyeRamadanTitle": {

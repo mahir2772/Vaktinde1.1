@@ -1191,6 +1191,88 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imsakiyeTitle => 'Prayer Timetable';
 
   @override
+  String get toolsGroupPrayer => 'Prayer';
+
+  @override
+  String get toolsGroupInfo => 'Knowledge';
+
+  @override
+  String get toolsGroupCalc => 'Calculators';
+
+  @override
+  String get toolImsakiyeDesc => 'Monthly and Ramadan times';
+
+  @override
+  String get toolTrackerDesc => 'Mark the prayers you performed';
+
+  @override
+  String get toolKazaDesc => 'Counter for missed prayers and fasts';
+
+  @override
+  String get toolReligiousDaysDesc => 'Holy nights and Eids';
+
+  @override
+  String get toolEsmaDesc => 'The 99 names and their meanings';
+
+  @override
+  String get toolFridayDesc => 'Messages ready to share';
+
+  @override
+  String get toolZakatDesc => 'Zakat and harvest (ushr) calculation';
+
+  @override
+  String get toolSettingsDesc => 'Location, notifications, appearance';
+
+  @override
+  String daysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days left',
+      one: 'Tomorrow',
+      zero: 'Today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previousYear => 'Previous year';
+
+  @override
+  String get nextYear => 'Next year';
+
+  @override
+  String get previousItem => 'Previous';
+
+  @override
+  String get nextItem => 'Next';
+
+  @override
+  String missedChangeConfirm(String name, int from, int to) {
+    return 'The $name count will change from $from to $to. Save it?';
+  }
+
+  @override
+  String get zakatCurrencyNote => 'All amounts are in Turkish lira (₺).';
+
+  @override
+  String get zakatCashTry => 'Cash (₺)';
+
+  @override
+  String get zakatRatesUnavailable =>
+      'Live gold prices and exchange rates are unavailable. Please enter the prices manually.';
+
+  @override
+  String get zakatGoldGramPrice => 'Price of 1 g 24-carat gold (₺)';
+
+  @override
+  String get zakatGoldGramPriceHelp => 'Used to calculate the nisab threshold.';
+
+  @override
+  String get zakatNisabUnknown =>
+      'Without a gold price the nisab threshold cannot be calculated. Enter the gold price for a correct result.';
+
+  @override
   String get imsakiyeRamadan => 'Ramadan';
 
   @override

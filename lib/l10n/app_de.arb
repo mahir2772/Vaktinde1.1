@@ -524,6 +524,49 @@
     "resetCounterConfirm": "Sind Sie sicher, dass Sie den Zähler zurücksetzen möchten?",
     "dhikrTarget": "Ziel:",
     "imsakiyeTitle": "Gebetskalender",
+    "toolsGroupPrayer": "Gebet",
+    "toolsGroupInfo": "Wissen",
+    "toolsGroupCalc": "Rechner",
+    "toolImsakiyeDesc": "Monats- und Ramadan-Zeiten",
+    "toolTrackerDesc": "Verrichtete Gebete abhaken",
+    "toolKazaDesc": "Zähler für versäumte Gebete und Fasten",
+    "toolReligiousDaysDesc": "Heilige Nächte und Feste",
+    "toolEsmaDesc": "Die 99 Namen und ihre Bedeutung",
+    "toolFridayDesc": "Nachrichten zum Teilen",
+    "toolZakatDesc": "Zakat und Ernteabgabe (Uschr) berechnen",
+    "toolSettingsDesc": "Standort, Benachrichtigungen, Darstellung",
+    "daysLeft": "{count, plural, =0{Heute} =1{Morgen} other{Noch {count} Tage}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "previousYear": "Vorheriges Jahr",
+    "nextYear": "Nächstes Jahr",
+    "previousItem": "Vorherige",
+    "nextItem": "Nächste",
+    "missedChangeConfirm": "Die Anzahl für {name} ändert sich von {from} auf {to}. Speichern?",
+    "@missedChangeConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "zakatCurrencyNote": "Alle Beträge sind in Türkischer Lira (₺).",
+    "zakatCashTry": "Bargeld (₺)",
+    "zakatRatesUnavailable": "Aktuelle Goldpreise und Wechselkurse sind nicht verfügbar. Bitte geben Sie die Preise selbst ein.",
+    "zakatGoldGramPrice": "Preis für 1 g Gold, 24 Karat (₺)",
+    "zakatGoldGramPriceHelp": "Damit wird die Nisab-Grenze berechnet.",
+    "zakatNisabUnknown": "Ohne Goldpreis kann die Nisab-Grenze nicht berechnet werden. Geben Sie den Goldpreis für ein korrektes Ergebnis ein.",
     "imsakiyeRamadan": "Ramadan",
     "imsakiyeRamadanTitle": "Ramadan-Kalender {year}",
     "@imsakiyeRamadanTitle": {

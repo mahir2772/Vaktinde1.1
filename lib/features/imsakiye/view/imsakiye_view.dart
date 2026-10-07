@@ -6,12 +6,12 @@ import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../data/models/prayer_times_model.dart';
 import '../../../data/services/prayer_time_service.dart';
 import '../../../data/services/storage_service.dart';
-import '../../common/widgets/ad_banner_widget.dart';
 import '../imsakiye_logic.dart';
 import '../ramadan_calendar_loader.dart';
 
@@ -53,8 +53,9 @@ class ImsakiyeView extends StatefulWidget {
 }
 
 class _ImsakiyeViewState extends State<ImsakiyeView> {
-  static const double _rowHeight = 46;
+  static const double _baseRowHeight = 48;
   static const double _shareWidth = 440;
+  double _rowHeight = _baseRowHeight;
 
   final ScrollController _scroll = ScrollController();
   late ImsakiyeMode _mode;
@@ -306,43 +307,46 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final lc = Localizations.localeOf(context).languageCode;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    // Büyük yazıda iki satırlı tarih hücresi sığsın (kaydırma hedefi de buna göre)
+    _rowHeight = MediaQuery.textScalerOf(context).scale(_baseRowHeight);
+    if (_rowHeight < _baseRowHeight) _rowHeight = _baseRowHeight;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.imsakiyeTitle),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-        actions: [
-          if (_sharing)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
+    return AppScaffold(
+      title: loc.imsakiyeTitle,
+      actions: [
+        if (_sharing)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: theme.appBarTheme.foregroundColor,
                 ),
               ),
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.share),
-              tooltip: loc.share,
-              onPressed: (_rows == null || _loading)
-                  ? null
-                  : () => _share(loc, lc),
             ),
-        ],
-      ),
-      bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
+          )
+        else
+          IconButton(
+            icon: const Icon(Icons.share),
+            tooltip: loc.share,
+            onPressed: (_rows == null || _loading)
+                ? null
+                : () => _share(loc, lc),
+          ),
+      ],
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.xs,
+            ),
             child: SizedBox(
               width: double.infinity,
               child: SegmentedButton<ImsakiyeMode>(
@@ -362,145 +366,136 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
                 showSelectedIcon: false,
                 onSelectionChanged: (s) => _setMode(s.first),
                 style: SegmentedButton.styleFrom(
-                  backgroundColor: Theme.of(context).cardTheme.color,
-                  foregroundColor: isDark
-                      ? Colors.white70
-                      : Colors.teal.shade800,
-                  selectedBackgroundColor: Colors.teal,
-                  selectedForegroundColor: Colors.white,
+                  minimumSize: const Size(0, AppSizes.minTouch),
+                  backgroundColor: theme.cardTheme.color,
+                  foregroundColor: theme.colorScheme.onSurface,
+                  selectedBackgroundColor: theme.colorScheme.primary,
+                  selectedForegroundColor: theme.colorScheme.onPrimary,
+                  side: BorderSide(color: theme.colorScheme.outlineVariant),
                 ),
               ),
             ),
           ),
-          _buildHeader(loc, lc, isDark),
-          Expanded(child: _buildBody(loc, lc, isDark)),
+          _buildHeader(loc, lc),
+          Expanded(child: _buildBody(loc, lc)),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(AppLocalizations loc, String lc, bool isDark) {
+  Widget _buildHeader(AppLocalizations loc, String lc) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final isMonthly = _mode == ImsakiyeMode.monthly;
     final range = _rangeText(lc);
-    final subColor = isDark ? Colors.white70 : Colors.blueGrey.shade600;
+    final subStyle = theme.textTheme.bodySmall!.copyWith(
+      color: scheme.onSurfaceVariant,
+    );
 
     Widget navButton(IconData icon, String tooltip, int delta) => IconButton(
       icon: Icon(icon),
       tooltip: tooltip,
-      color: isDark ? Colors.tealAccent : Colors.teal,
+      color: scheme.primary,
       onPressed: () => _shiftMonth(delta),
     );
 
-    return Card(
-      margin: const EdgeInsets.fromLTRB(6, 6, 6, 4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            if (isMonthly)
-              navButton(Icons.chevron_left, loc.imsakiyePrevMonth, -1)
-            else
-              const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    _title(loc, lc),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : Colors.teal.shade800,
+    return AppCard(
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.sm,
+        AppSpacing.md,
+        AppSpacing.xs,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+      child: Row(
+        children: [
+          if (isMonthly)
+            navButton(Icons.chevron_left, loc.imsakiyePrevMonth, -1)
+          else
+            const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _title(loc, lc),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium,
+                ),
+                if (range != null)
+                  Text(range, textAlign: TextAlign.center, style: subStyle),
+                if (_city.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: 16,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 2),
+                        Flexible(
+                          child: Text(
+                            _city,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: subStyle,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  if (range != null)
-                    Text(
-                      range,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: subColor),
-                    ),
-                  if (_city.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.location_on, size: 14, color: subColor),
-                          const SizedBox(width: 2),
-                          Flexible(
-                            child: Text(
-                              _city,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 12, color: subColor),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
+              ],
             ),
-            if (isMonthly)
-              navButton(Icons.chevron_right, loc.imsakiyeNextMonth, 1)
-            else
-              const SizedBox(width: 12),
-          ],
-        ),
+          ),
+          if (isMonthly)
+            navButton(Icons.chevron_right, loc.imsakiyeNextMonth, 1)
+          else
+            const SizedBox(width: AppSpacing.md),
+        ],
       ),
     );
   }
 
-  Widget _buildBody(AppLocalizations loc, String lc, bool isDark) {
-    if (_loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  Widget _buildBody(AppLocalizations loc, String lc) {
+    if (_loading) return const LoadingState();
     final rows = _rows;
-    if (_noLocation || _failed || rows == null) {
-      return Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                _noLocation ? Icons.location_off : Icons.error_outline,
-                size: 48,
-                color: Colors.grey,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                _noLocation ? loc.imsakiyeNoLocation : loc.noData,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  color: isDark ? Colors.white70 : Colors.blueGrey.shade700,
-                ),
-              ),
-              if (!_noLocation) ...[
-                const SizedBox(height: 12),
-                TextButton(onPressed: _reload, child: Text(loc.retry)),
-              ],
-            ],
-          ),
-        ),
+    if (_noLocation) {
+      return EmptyState(
+        icon: Icons.location_off_outlined,
+        title: loc.imsakiyeNoLocation,
       );
     }
+    if (_failed || rows == null) {
+      return ErrorState(message: loc.noData, onRetry: _reload);
+    }
 
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final isRamadan = _mode == ImsakiyeMode.ramadan;
-    final dateFlex = isRamadan ? 22 : 15;
+    final dateFlex = isRamadan ? 22 : 16;
     final today = dateOnly(DateTime.now());
+    final headerStyle = theme.textTheme.labelMedium!.copyWith(
+      color: scheme.onPrimaryContainer,
+      fontWeight: FontWeight.w600,
+    );
 
-    return Card(
-      margin: const EdgeInsets.fromLTRB(6, 4, 6, 8),
-      clipBehavior: Clip.antiAlias,
+    return AppCard(
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.xs,
+        AppSpacing.md,
+        AppSpacing.sm,
+      ),
+      padding: EdgeInsets.zero,
       child: Column(
         children: [
           Container(
-            height: 34,
-            color: Colors.teal,
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            constraints: const BoxConstraints(minHeight: 40),
+            color: scheme.primaryContainer,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
             child: Row(
               children: [
                 Expanded(
@@ -508,7 +503,7 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
                   child: Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: _fit(
-                      Text(loc.imsakiyeDay, style: _headerStyle),
+                      Text(loc.imsakiyeDay, style: headerStyle),
                       AlignmentDirectional.centerStart,
                     ),
                   ),
@@ -518,7 +513,7 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
                     flex: 10,
                     child: Center(
                       child: _fit(
-                        Text(h, style: _headerStyle),
+                        Text(h, style: headerStyle),
                         Alignment.center,
                       ),
                     ),
@@ -535,7 +530,6 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
                 rows[i],
                 i,
                 lc,
-                isDark,
                 dateFlex,
                 rows[i].date == today,
               ),
@@ -545,12 +539,6 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
       ),
     );
   }
-
-  static const TextStyle _headerStyle = TextStyle(
-    color: Colors.white,
-    fontSize: 11,
-    fontWeight: FontWeight.w600,
-  );
 
   // Dar ekranlarda / büyük yazı boyutunda taşma olmasın diye küçültür
   // (yan boşluk: dar ekranda sütunlar birbirine yapışmasın)
@@ -563,23 +551,39 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
     _DayRow row,
     int index,
     String lc,
-    bool isDark,
     int dateFlex,
     bool isToday,
   ) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final isLight = theme.brightness == Brightness.light;
+
+    // Bugün: ana ekrandaki "sıradaki vakit" renkleri
     Color? background;
     if (isToday) {
-      background = Colors.teal.withValues(alpha: isDark ? 0.35 : 0.15);
+      background = colors.nextContainer;
     } else if (index.isOdd) {
-      background = isDark
-          ? Colors.white.withValues(alpha: 0.04)
-          : Colors.teal.withValues(alpha: 0.05);
+      background = isLight
+          ? scheme.surfaceContainerLow
+          : scheme.surfaceContainer;
     }
-    final textColor = isToday
-        ? (isDark ? Colors.tealAccent : Colors.teal.shade800)
-        : (isDark ? Colors.white : Colors.blueGrey.shade900);
+    final textColor = isToday ? colors.onNextContainer : scheme.onSurface;
+    final subColor = isToday ? colors.onNextContainer : scheme.onSurfaceVariant;
     final weight = isToday ? FontWeight.w700 : FontWeight.w500;
-    final subColor = isDark ? Colors.white60 : Colors.blueGrey.shade500;
+    final dateStyle = theme.textTheme.bodyMedium!.copyWith(
+      fontWeight: weight,
+      color: textColor,
+      height: 1.25,
+    );
+    final weekdayStyle = theme.textTheme.bodySmall!.copyWith(
+      color: subColor,
+      height: 1.25,
+    );
+    final timeStyle = theme.textTheme.bodyMedium!.copyWith(
+      fontWeight: weight,
+      color: textColor,
+    );
 
     final ramadanDay = row.ramadanDay;
     final dateCell = Row(
@@ -587,14 +591,12 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
       children: [
         if (ramadanDay != null) ...[
           Container(
-            width: 24,
-            height: 24,
+            width: 26,
+            height: 26,
             padding: const EdgeInsets.all(3),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: isToday
-                  ? Colors.teal
-                  : Colors.teal.withValues(alpha: isDark ? 0.3 : 0.12),
+              color: isToday ? colors.onNextContainer : scheme.primaryContainer,
               shape: BoxShape.circle,
             ),
             child: FittedBox(
@@ -602,12 +604,11 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
               child: Text(
                 '$ramadanDay',
                 softWrap: false,
-                style: TextStyle(
-                  fontSize: 11,
+                style: theme.textTheme.labelMedium!.copyWith(
                   fontWeight: FontWeight.w700,
                   color: isToday
-                      ? Colors.white
-                      : (isDark ? Colors.tealAccent : Colors.teal.shade800),
+                      ? colors.nextContainer
+                      : scheme.onPrimaryContainer,
                 ),
               ),
             ),
@@ -618,54 +619,42 @@ class _ImsakiyeViewState extends State<ImsakiyeView> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              DateFormat('d MMM', lc).format(row.date),
-              style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: weight,
-                color: textColor,
-              ),
-            ),
-            Text(
-              DateFormat('EEE', lc).format(row.date),
-              style: TextStyle(fontSize: 10.5, color: subColor),
-            ),
+            Text(DateFormat('d MMM', lc).format(row.date), style: dateStyle),
+            Text(DateFormat('EEE', lc).format(row.date), style: weekdayStyle),
           ],
         ),
       ],
     );
 
-    return Container(
-      color: background,
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-      child: Row(
-        children: [
-          Expanded(
-            flex: dateFlex,
-            child: Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: _fit(dateCell, AlignmentDirectional.centerStart),
-            ),
-          ),
-          for (final t in row.times)
+    return Semantics(
+      selected: isToday,
+      child: Container(
+        color: background,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.xs,
+          vertical: 3,
+        ),
+        child: Row(
+          children: [
             Expanded(
-              flex: 10,
-              child: Center(
-                child: _fit(
-                  Text(
-                    t,
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: weight,
-                      color: textColor,
-                      fontFeatures: _tabular,
-                    ),
-                  ),
-                  Alignment.center,
-                ),
+              flex: dateFlex,
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _fit(dateCell, AlignmentDirectional.centerStart),
               ),
             ),
-        ],
+            for (final t in row.times)
+              Expanded(
+                flex: 10,
+                child: Center(
+                  child: _fit(
+                    TabularText(t, style: timeStyle),
+                    Alignment.center,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

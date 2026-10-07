@@ -524,6 +524,49 @@
     "resetCounterConfirm": "هل أنت متأكد أنك تريد إعادة تعيين العداد؟",
     "dhikrTarget": "الهدف:",
     "imsakiyeTitle": "جدول المواقيت",
+    "toolsGroupPrayer": "الصلاة",
+    "toolsGroupInfo": "معلومات",
+    "toolsGroupCalc": "الحساب",
+    "toolImsakiyeDesc": "مواقيت الشهر ورمضان",
+    "toolTrackerDesc": "سجّل الصلوات التي أدّيتها",
+    "toolKazaDesc": "عدّاد الصلوات والصيام الفائت",
+    "toolReligiousDaysDesc": "الليالي المباركة والأعياد",
+    "toolEsmaDesc": "الأسماء الحسنى ومعانيها",
+    "toolFridayDesc": "رسائل جاهزة للمشاركة",
+    "toolZakatDesc": "حساب الزكاة والعُشر",
+    "toolSettingsDesc": "الموقع والإشعارات والمظهر",
+    "daysLeft": "{count, plural, =0{اليوم} =1{غدًا} =2{بعد يومين} few{بعد {count} أيام} many{بعد {count} يومًا} other{بعد {count} يوم}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "previousYear": "السنة السابقة",
+    "nextYear": "السنة التالية",
+    "previousItem": "السابق",
+    "nextItem": "التالي",
+    "missedChangeConfirm": "سيتغيّر عدد {name} من {from} إلى {to}. هل تريد الحفظ؟",
+    "@missedChangeConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "zakatCurrencyNote": "جميع المبالغ بالليرة التركية (₺).",
+    "zakatCashTry": "النقد (₺)",
+    "zakatRatesUnavailable": "تعذّر جلب أسعار الذهب وأسعار الصرف الحالية. يُرجى إدخال الأسعار يدويًا.",
+    "zakatGoldGramPrice": "سعر غرام الذهب عيار 24 (₺)",
+    "zakatGoldGramPriceHelp": "يُستخدم لحساب حدّ النصاب.",
+    "zakatNisabUnknown": "لا يمكن حساب حدّ النصاب بدون سعر الذهب. أدخل سعر الذهب للحصول على نتيجة صحيحة.",
     "imsakiyeRamadan": "رمضان",
     "imsakiyeRamadanTitle": "إمساكية رمضان {year}",
     "@imsakiyeRamadanTitle": {

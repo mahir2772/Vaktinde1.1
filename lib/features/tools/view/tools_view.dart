@@ -1,273 +1,220 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// --- DİL VE TEMA İMPORTLARI ---
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-import '../../common/theme_provider.dart';
-// --- REKLAM HELPER İMPORTU EKLENDİ ---
-import '../../common/ad_helper.dart';
-// ------------------------------
-import '../../esmaul_husna/view/esmaul_husna_view.dart';
-import '../../religious_days/view/religious_days_view.dart';
-import '../../friday_messages/view/friday_messages_view.dart';
-import '../../zakat/view/zakat_view.dart';
-import '../../settings/view/settings_view.dart';
-import '../../missed_prayers/view/missed_prayers_view.dart';
-import '../../imsakiye/view/imsakiye_view.dart';
-import '../../prayer_tracker/view/prayer_tracker_view.dart';
 
+import '../../common/ad_helper.dart';
+import '../../common/theme_provider.dart';
+import '../../esmaul_husna/view/esmaul_husna_view.dart';
+import '../../friday_messages/view/friday_messages_view.dart';
+import '../../imsakiye/view/imsakiye_view.dart';
+import '../../missed_prayers/view/missed_prayers_view.dart';
+import '../../prayer_tracker/view/prayer_tracker_view.dart';
+import '../../religious_days/view/religious_days_view.dart';
+import '../../settings/view/settings_view.dart';
+import '../../zakat/view/zakat_view.dart';
+
+/// Araçlar sekmesi: gruplanmış araç kutucukları + en altta Ayarlar satırı.
+/// Tek kaydırılabilir liste (sabitlenmiş öğe yok); büyük yazıda kutucuklar uzar.
 class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
+
+  // Açılışta geçiş reklamı (AdHelper 5 dk soğuma süresini kendisi uygular)
+  static void _open(BuildContext context, Widget page) {
+    AdHelper.instance.showInterstitialAd();
+    Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+  }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final themeProvider = context.watch<ThemeProvider>();
-    final bool hasImage = themeProvider.backgroundImage != null;
+    final hasImage = context.watch<ThemeProvider>().backgroundImage != null;
 
-    const Color primaryColor = Colors.teal;
-
-    return Scaffold(
-      backgroundColor: hasImage ? Colors.transparent : const Color(0xFFF5F7F9),
-      appBar: AppBar(
-        title: Text(
-          loc.navMenu,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
+    final groups = <(String, List<_ToolItem>)>[
+      (
+        loc.toolsGroupPrayer,
+        [
+          _ToolItem(
+            Icons.calendar_month,
+            loc.imsakiyeTitle,
+            loc.toolImsakiyeDesc,
+            () => const ImsakiyeView(),
           ),
-        ),
-        centerTitle: true,
-        backgroundColor: hasImage ? Colors.transparent : Colors.white,
-        foregroundColor: hasImage ? Colors.white : primaryColor,
-        elevation: 0,
-        automaticallyImplyLeading: false,
+          _ToolItem(
+            Icons.task_alt,
+            loc.trackerTitle,
+            loc.toolTrackerDesc,
+            () => const PrayerTrackerView(),
+          ),
+          _ToolItem(
+            Icons.history_edu,
+            loc.missedPrayersTitle,
+            loc.toolKazaDesc,
+            () => const MissedPrayersView(),
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        child: Column(
-          children: [
-            // --- 1. KISIM: ARAÇLAR BÖLÜMÜ (MODERN GRID) ---
-            Expanded(
-              child: GridView.count(
-                physics: const BouncingScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio:
-                    1.1, // Kartları biraz daha yatay/kare arası modern formata çektik
+      (
+        loc.toolsGroupInfo,
+        [
+          _ToolItem(
+            Icons.event_note,
+            loc.religiousDaysTitle,
+            loc.toolReligiousDaysDesc,
+            () => const ReligiousDaysView(),
+          ),
+          _ToolItem(
+            Icons.menu_book,
+            loc.esmaulHusnaTitle,
+            loc.toolEsmaDesc,
+            () => const EsmaulHusnaView(),
+          ),
+          _ToolItem(
+            Icons.forum_outlined,
+            loc.fridayMessagesTitle,
+            loc.toolFridayDesc,
+            () => const FridayMessagesView(),
+          ),
+        ],
+      ),
+      (
+        loc.toolsGroupCalc,
+        [
+          _ToolItem(
+            Icons.calculate_outlined,
+            loc.zakatTitle,
+            loc.toolZakatDesc,
+            () => const ZakatView(),
+          ),
+        ],
+      ),
+    ];
+
+    return AppScaffold(
+      title: loc.navTools,
+      showBanner: false, // alt menüde zaten banner var
+      automaticallyImplyLeading: false,
+      body: ListView(
+        padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+        children: [
+          for (final (title, items) in groups) ...[
+            _GroupHeader(title: title, onImage: hasImage),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: _ToolGrid(
                 children: [
-                  _buildToolCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.imsakiyeTitle,
-                    icon: Icons.calendar_month,
-                    primaryColor: primaryColor,
-                    page: const ImsakiyeView(),
-                  ),
-                  _buildToolCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.missedPrayersTitle,
-                    icon: Icons.history_edu,
-                    primaryColor: primaryColor,
-                    page: const MissedPrayersView(),
-                  ),
-                  _buildToolCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.trackerTitle,
-                    icon: Icons.task_alt,
-                    primaryColor: primaryColor,
-                    page: const PrayerTrackerView(),
-                  ),
-                  _buildToolCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.esmaulHusnaTitle,
-                    icon: Icons.menu_book,
-                    primaryColor: primaryColor,
-                    page: const EsmaulHusnaView(),
-                  ),
-                  _buildToolCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.religiousDaysTitle,
-                    icon: Icons.event_note,
-                    primaryColor: primaryColor,
-                    page: const ReligiousDaysView(),
-                  ),
-                  _buildToolCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.fridayMessagesTitle,
-                    icon: Icons.share,
-                    primaryColor: primaryColor,
-                    page: const FridayMessagesView(),
-                  ),
-                  _buildToolCard(
-                    context,
-                    hasImage: hasImage,
-                    title: loc.zakatTitle,
-                    icon: Icons.calculate,
-                    primaryColor: primaryColor,
-                    page: const ZakatView(),
-                  ),
+                  for (final item in items)
+                    ToolTile(
+                      icon: item.icon,
+                      title: item.title,
+                      subtitle: item.subtitle,
+                      onTap: () => _open(context, item.page()),
+                    ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 15),
-
-            // --- 2. KISIM: SİSTEM/AYARLAR BÖLÜMÜ (GENİŞ KART) ---
-            _buildSettingsCard(
-              context,
-              hasImage: hasImage,
-              title: loc.menuTitle,
-              icon: Icons.settings_rounded,
-              primaryColor: Colors
-                  .blueGrey, // Ayarların sistem rengi olduğu hissini verir
-              page: const SettingsView(),
-            ),
-            const SizedBox(
-              height: 10,
-            ), // Cihazın altına çok yapışmaması için güvenli alan
           ],
-        ),
+          const SizedBox(height: AppSpacing.xl),
+          AppListSection(
+            children: [
+              AppListTile(
+                leadingIcon: Icons.settings_outlined,
+                title: loc.menuTitle,
+                subtitle: loc.toolSettingsDesc,
+                onTap: () => _open(context, const SettingsView()),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
+}
 
-  // --- KARE ARAÇ KARTLARI İÇİN TASARIM ---
-  Widget _buildToolCard(
-    BuildContext context, {
-    required bool hasImage,
-    required String title,
-    required IconData icon,
-    required Color primaryColor,
-    required Widget page,
-  }) {
-    Color cardColor = hasImage
-        ? Theme.of(context).cardTheme.color!.withOpacity(0.85)
-        : Colors.white;
+class _ToolItem {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget Function() page;
 
-    Color textColor = hasImage
-        ? Theme.of(context).textTheme.bodyLarge?.color ??
-              Colors.blueGrey.shade800
-        : Colors.blueGrey.shade800;
+  const _ToolItem(this.icon, this.title, this.subtitle, this.page);
+}
 
-    return GestureDetector(
-      onTap: () {
-        AdHelper.instance.showInterstitialAd();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: cardColor,
-          borderRadius: BorderRadius.circular(20), // Daha modern yuvarlama
-          boxShadow: [
-            BoxShadow(
-              color: primaryColor.withOpacity(0.06), // Gölgeler yumuşatıldı
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(
-                  16,
-                ), // İkon arka planı kare-oval arası yapıldı
+/// İki sütunlu esnek ızgara: satırdaki kutucuklar en uzununa eşitlenir,
+/// yükseklik içerikten gelir (büyük yazıda/dar ekranda taşmaz).
+class _ToolGrid extends StatelessWidget {
+  final List<Widget> children;
+
+  const _ToolGrid({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <Widget>[];
+    for (var i = 0; i < children.length; i += 2) {
+      if (i > 0) rows.add(const SizedBox(height: AppSpacing.md));
+      rows.add(
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: children[i]),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: i + 1 < children.length
+                    ? children[i + 1]
+                    : const SizedBox.shrink(),
               ),
-              child: Icon(icon, size: 30, color: primaryColor),
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: rows,
+    );
+  }
+}
+
+/// Grup başlığı; arka plan görseli seçiliyse okunur kalsın diye opak kapsül içinde
+class _GroupHeader extends StatelessWidget {
+  final String title;
+  final bool onImage;
+
+  const _GroupHeader({required this.title, required this.onImage});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!onImage) return SectionHeader(title);
+    final theme = Theme.of(context);
+    final colors = PrayerColors.of(context);
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.sm,
+      ),
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Semantics(
+          header: true,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs,
             ),
-            const SizedBox(height: 14),
-            Text(
+            decoration: BoxDecoration(
+              color: colors.heroChip,
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+            ),
+            child: Text(
               title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
+              style: theme.textTheme.titleSmall!.copyWith(
+                color: colors.onHero,
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // --- GENİŞ AYARLAR KARTI İÇİN TASARIM ---
-  Widget _buildSettingsCard(
-    BuildContext context, {
-    required bool hasImage,
-    required String title,
-    required IconData icon,
-    required Color primaryColor,
-    required Widget page,
-  }) {
-    Color cardColor = hasImage
-        ? Theme.of(context).cardTheme.color!.withOpacity(0.85)
-        : Colors.white;
-
-    Color textColor = hasImage
-        ? Theme.of(context).textTheme.bodyLarge?.color ??
-              Colors.blueGrey.shade800
-        : Colors.blueGrey.shade800;
-
-    return GestureDetector(
-      onTap: () {
-        AdHelper.instance.showInterstitialAd();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: BoxDecoration(
-          color: cardColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: primaryColor.withOpacity(0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, size: 24, color: primaryColor),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: Colors.grey.shade400,
-              size: 28,
-            ),
-          ],
+          ),
         ),
       ),
     );

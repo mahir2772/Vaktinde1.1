@@ -2282,6 +2282,144 @@ abstract class AppLocalizations {
   /// **'İmsakiye'**
   String get imsakiyeTitle;
 
+  /// No description provided for @toolsGroupPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz'**
+  String get toolsGroupPrayer;
+
+  /// No description provided for @toolsGroupInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bilgi'**
+  String get toolsGroupInfo;
+
+  /// No description provided for @toolsGroupCalc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesap'**
+  String get toolsGroupCalc;
+
+  /// No description provided for @toolImsakiyeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aylık ve Ramazan vakitleri'**
+  String get toolImsakiyeDesc;
+
+  /// No description provided for @toolTrackerDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldığınız vakitleri işaretleyin'**
+  String get toolTrackerDesc;
+
+  /// No description provided for @toolKazaDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza namazı ve oruç sayacı'**
+  String get toolKazaDesc;
+
+  /// No description provided for @toolReligiousDaysDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kandiller ve bayramlar'**
+  String get toolReligiousDaysDesc;
+
+  /// No description provided for @toolEsmaDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Allah\'ın 99 ismi ve anlamları'**
+  String get toolEsmaDesc;
+
+  /// No description provided for @toolFridayDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Paylaşmaya hazır mesajlar'**
+  String get toolFridayDesc;
+
+  /// No description provided for @toolZakatDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zekat ve öşür hesabı'**
+  String get toolZakatDesc;
+
+  /// No description provided for @toolSettingsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum, bildirimler, görünüm'**
+  String get toolSettingsDesc;
+
+  /// No description provided for @daysLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =0{Bugün} =1{Yarın} other{{count} gün kaldı}}'**
+  String daysLeft(int count);
+
+  /// No description provided for @previousYear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki yıl'**
+  String get previousYear;
+
+  /// No description provided for @nextYear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki yıl'**
+  String get nextYear;
+
+  /// No description provided for @previousItem.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki'**
+  String get previousItem;
+
+  /// No description provided for @nextItem.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki'**
+  String get nextItem;
+
+  /// No description provided for @missedChangeConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{name} kaza sayısı {from} yerine {to} olacak. Kaydedilsin mi?'**
+  String missedChangeConfirm(String name, int from, int to);
+
+  /// No description provided for @zakatCurrencyNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm tutarlar Türk lirası (₺) cinsindendir.'**
+  String get zakatCurrencyNote;
+
+  /// No description provided for @zakatCashTry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nakit (₺)'**
+  String get zakatCashTry;
+
+  /// No description provided for @zakatRatesUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güncel altın fiyatı ve kurlar alınamadı. Lütfen fiyatları elle girin.'**
+  String get zakatRatesUnavailable;
+
+  /// No description provided for @zakatGoldGramPrice.
+  ///
+  /// In tr, this message translates to:
+  /// **'24 ayar gram altın fiyatı (₺)'**
+  String get zakatGoldGramPrice;
+
+  /// No description provided for @zakatGoldGramPriceHelp.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nisab sınırı bu fiyatla hesaplanır.'**
+  String get zakatGoldGramPriceHelp;
+
+  /// No description provided for @zakatNisabUnknown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gram altın fiyatı olmadan nisab sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.'**
+  String get zakatNisabUnknown;
+
   /// No description provided for @imsakiyeRamadan.
   ///
   /// In tr, this message translates to:

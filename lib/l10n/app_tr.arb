@@ -545,6 +545,49 @@
     "resetCounterConfirm": "Sayacı sıfırlamak istediğinize emin misiniz?",
     "dhikrTarget": "Hedef:",
     "imsakiyeTitle": "İmsakiye",
+    "toolsGroupPrayer": "Namaz",
+    "toolsGroupInfo": "Bilgi",
+    "toolsGroupCalc": "Hesap",
+    "toolImsakiyeDesc": "Aylık ve Ramazan vakitleri",
+    "toolTrackerDesc": "Kıldığınız vakitleri işaretleyin",
+    "toolKazaDesc": "Kaza namazı ve oruç sayacı",
+    "toolReligiousDaysDesc": "Kandiller ve bayramlar",
+    "toolEsmaDesc": "Allah'ın 99 ismi ve anlamları",
+    "toolFridayDesc": "Paylaşmaya hazır mesajlar",
+    "toolZakatDesc": "Zekat ve öşür hesabı",
+    "toolSettingsDesc": "Konum, bildirimler, görünüm",
+    "daysLeft": "{count, plural, =0{Bugün} =1{Yarın} other{{count} gün kaldı}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "previousYear": "Önceki yıl",
+    "nextYear": "Sonraki yıl",
+    "previousItem": "Önceki",
+    "nextItem": "Sonraki",
+    "missedChangeConfirm": "{name} kaza sayısı {from} yerine {to} olacak. Kaydedilsin mi?",
+    "@missedChangeConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "zakatCurrencyNote": "Tüm tutarlar Türk lirası (₺) cinsindendir.",
+    "zakatCashTry": "Nakit (₺)",
+    "zakatRatesUnavailable": "Güncel altın fiyatı ve kurlar alınamadı. Lütfen fiyatları elle girin.",
+    "zakatGoldGramPrice": "24 ayar gram altın fiyatı (₺)",
+    "zakatGoldGramPriceHelp": "Nisab sınırı bu fiyatla hesaplanır.",
+    "zakatNisabUnknown": "Gram altın fiyatı olmadan nisab sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.",
     "imsakiyeRamadan": "Ramazan",
     "imsakiyeRamadanTitle": "Ramazan {year} İmsakiyesi",
     "@imsakiyeRamadanTitle": {
