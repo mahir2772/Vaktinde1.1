@@ -51,7 +51,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 final String? _outDir = Platform.environment['SCREENSHOT_DIR'];
 
 // Tipik telefon: 411x891 dp; PNG'ler küçük kalsın diye 1.5x çizilir
-const Size _logicalSize = Size(411, 891);
 const double _deviceRatio = 2.625;
 const double _outRatio = 1.5;
 
@@ -210,6 +209,8 @@ Map<String, Object> _prefs({
     'theme_mode': themeMode,
     'background_image': ?background,
     'is_first_launch_showcase_v3': false,
+    // İzin açıklama penceresi ekran görüntülerini kapatmasın
+    'permissions_primed': true,
     'saved_city': 'İstanbul',
     'saved_district': 'Kadıköy',
     'saved_lat': _istanbulLat,
@@ -366,11 +367,12 @@ void _mockCompass({required double heading, required double accuracy}) {
       );
 }
 
-Future<void> _setViewport(WidgetTester tester, {double height = 891}) async {
-  tester.view.physicalSize = Size(
-    _logicalSize.width * _deviceRatio,
-    height * _deviceRatio,
-  );
+Future<void> _setViewport(
+  WidgetTester tester, {
+  double height = 891, // tipik telefon 411x891 dp
+  double width = 411,
+}) async {
+  tester.view.physicalSize = Size(width * _deviceRatio, height * _deviceRatio);
   tester.view.devicePixelRatio = _deviceRatio;
 }
 
@@ -775,7 +777,7 @@ void main() {
     });
   });
 
-  for (final lang in ['de', 'ar']) {
+  for (final lang in ['de', 'ar', 'fr']) {
     testWidgets(
       '$lang: ana ekran, araçlar, ayarlar',
       skip: skip,
@@ -819,4 +821,24 @@ void main() {
       },
     );
   }
+
+  // Küçük telefon (320dp) + %130 yazı: ana ekran, alt menü etiketleri, alarmlar
+  testWidgets('320dp %130: ana ekran', skip: skip, variant: _android, (
+    tester,
+  ) async {
+    await _run(tester, () async {
+      tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+      try {
+        for (final lang in ['tr', 'de', 'fr', 'ar']) {
+          _currentScreen = '${lang}_16_home_320_text130';
+          await _setViewport(tester, width: 320, height: 640);
+          await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
+          await _shot(tester, '${lang}_16_home_320_text130');
+          await _finish(tester);
+        }
+      } finally {
+        tester.platformDispatcher.clearTextScaleFactorTestValue();
+      }
+    });
+  });
 }

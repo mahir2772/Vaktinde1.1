@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
@@ -107,10 +108,88 @@ class OnboardingLanguageView extends StatelessWidget {
   }
 }
 
+/// İzin akışı (açıklama + bildirim + konum) bir kez tamamlandı mı
+const String permissionsPrimedKey = 'permissions_primed';
+
+bool _primingRunning = false;
+bool _primedThisSession = false;
+
+@visibleForTesting
+void debugResetPermissionPriming() {
+  _primingRunning = false;
+  _primedThisSession = false;
+}
+
+/// Sonraki açılışlarda (tanıtım turu çalışmıyorken): izin akışı hiç
+/// tamamlanmadıysa (ör. uygulama tur sırasında kapatıldı) bir kez çalıştırılır.
+/// İzinler zaten verilmişse pencere göstermeden tamamlandı sayılır.
+Future<void> primePermissionsIfNeeded(BuildContext context) async {
+  if (_primingRunning || _primedThisSession) return;
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(permissionsPrimedKey) ?? false) return;
+    if (await _permissionsAlreadyGranted()) {
+      _primedThisSession = true;
+      await prefs.setBool(permissionsPrimedKey, true);
+      return;
+    }
+  } catch (e) {
+    debugPrint("İzin durumu okunamadı: $e");
+  }
+  if (!context.mounted) return;
+  await requestPermissionsWithPriming(context, onlyDefaultLocation: true);
+}
+
+Future<bool> _permissionsAlreadyGranted() async {
+  try {
+    var notifications = true;
+    if (Platform.isAndroid) {
+      notifications =
+          await FlutterLocalNotificationsPlugin()
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >()
+              ?.areNotificationsEnabled() ??
+          false;
+    }
+    final location = await Geolocator.checkPermission();
+    return notifications &&
+        (location == LocationPermission.whileInUse ||
+            location == LocationPermission.always);
+  } catch (e) {
+    return false;
+  }
+}
+
 /// Sistem izin pencerelerinden önce neden gerektiklerini anlatan kısa pencere,
 /// sonra önce bildirim, ardından konum izni. Konum izni verilirse vakitler
-/// gerçek konumla yenilenir.
-Future<void> requestPermissionsWithPriming(BuildContext context) async {
+/// gerçek konumla yenilenir ([onlyDefaultLocation]: sadece konum hâlâ
+/// varsayılan İstanbul ise; elle seçilen şehir ezilmez). Bir oturumda bir kez
+/// çalışır; bitince [permissionsPrimedKey] kaydedilir.
+Future<void> requestPermissionsWithPriming(
+  BuildContext context, {
+  bool onlyDefaultLocation = false,
+}) async {
+  if (_primingRunning || _primedThisSession) return;
+  _primingRunning = true;
+  try {
+    await _runPermissionPriming(context, onlyDefaultLocation);
+    _primedThisSession = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(permissionsPrimedKey, true);
+    } catch (e) {
+      debugPrint("İzin kaydı yazılamadı: $e");
+    }
+  } finally {
+    _primingRunning = false;
+  }
+}
+
+Future<void> _runPermissionPriming(
+  BuildContext context,
+  bool onlyDefaultLocation,
+) async {
   if (context.mounted) {
     await showDialog<void>(
       context: context,
@@ -164,7 +243,13 @@ Future<void> requestPermissionsWithPriming(BuildContext context) async {
     if ((permission == LocationPermission.whileInUse ||
             permission == LocationPermission.always) &&
         context.mounted) {
-      context.read<HomeViewModel>().refreshLocationAndTimes(context);
+      final viewModel = context.read<HomeViewModel>();
+      final isDefault =
+          viewModel.city == null ||
+          (viewModel.city == 'İstanbul' && (viewModel.district ?? '').isEmpty);
+      if (!onlyDefaultLocation || isDefault) {
+        viewModel.refreshLocationAndTimes(context);
+      }
     }
   } catch (e) {
     debugPrint("Konum izni hatası: $e");

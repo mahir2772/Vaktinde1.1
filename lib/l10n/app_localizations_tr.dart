@@ -12,6 +12,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get navZikir => 'Zikir';
+
+  @override
+  String get adPrivacySettings => 'Reklam gizlilik ayarları';
+
+  @override
+  String get adPrivacySettingsSub =>
+      'Kişiselleştirilmiş reklam iznini değiştirin';
+
+  @override
   String get showcaseLanguage => 'Uygulama dilini buradan değiştirebilirsiniz.';
 
   @override

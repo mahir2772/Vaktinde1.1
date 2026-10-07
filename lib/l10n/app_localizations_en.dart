@@ -12,6 +12,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get navZikir => 'Dhikr';
+
+  @override
+  String get adPrivacySettings => 'Ad privacy settings';
+
+  @override
+  String get adPrivacySettingsSub => 'Change your consent for personalised ads';
+
+  @override
   String get showcaseLanguage => 'You can change the app language here.';
 
   @override

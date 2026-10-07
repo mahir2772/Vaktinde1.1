@@ -1,5 +1,8 @@
 {
     "appTitle": "Vaktinde",
+    "navZikir": "الذكر",
+    "adPrivacySettings": "إعدادات خصوصية الإعلانات",
+    "adPrivacySettingsSub": "غيّر موافقتك على الإعلانات المخصصة",
     "showcaseLanguage": "يمكنك تغيير لغة التطبيق من هنا.",
     "showcaseStory": "اقرأ آية اليوم وحديث اليوم من هنا.",
     "showcaseAlarms": "اضبط منبهات الأذان والتذكير لكل صلاة من هنا.",

@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../common/ad_consent.dart';
 import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 import '../../home/view_model/home_view_model.dart';
@@ -88,25 +89,36 @@ class SettingsView extends StatelessWidget {
               ),
             ],
           ),
-          AppListSection(
-            title: loc.sectionSupport,
-            children: [
-              AppListTile(
-                leadingIcon: Icons.share_outlined,
-                title: loc.shareApp,
-                onTap: () => Share.share(loc.shareText(appLink)),
-              ),
-              AppListTile(
-                leadingIcon: Icons.star_outline,
-                title: loc.rateApp,
-                onTap: _openStoreListing,
-              ),
-              AppListTile(
-                leadingIcon: Icons.mail_outline,
-                title: loc.contactUs,
-                onTap: () => _sendSupportMail(loc),
-              ),
-            ],
+          // AB/EEA'da reklam rızası buradan sonradan değiştirilebilir (UMP zorunlu kılarsa)
+          ValueListenableBuilder<bool>(
+            valueListenable: AdConsent.privacyOptionsRequired,
+            builder: (context, privacyRequired, _) => AppListSection(
+              title: loc.sectionSupport,
+              children: [
+                AppListTile(
+                  leadingIcon: Icons.share_outlined,
+                  title: loc.shareApp,
+                  onTap: () => Share.share(loc.shareText(appLink)),
+                ),
+                AppListTile(
+                  leadingIcon: Icons.star_outline,
+                  title: loc.rateApp,
+                  onTap: _openStoreListing,
+                ),
+                AppListTile(
+                  leadingIcon: Icons.mail_outline,
+                  title: loc.contactUs,
+                  onTap: () => _sendSupportMail(loc),
+                ),
+                if (privacyRequired)
+                  AppListTile(
+                    leadingIcon: Icons.privacy_tip_outlined,
+                    title: loc.adPrivacySettings,
+                    subtitle: loc.adPrivacySettingsSub,
+                    onTap: AdConsent.showPrivacyOptions,
+                  ),
+              ],
+            ),
           ),
           const SizedBox(height: AppSpacing.xl),
           const _AboutFooter(),

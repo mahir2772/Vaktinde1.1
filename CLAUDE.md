@@ -14,15 +14,16 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 - `app_tokens.dart`: `AppSpacing` (xs4 sm8 md12 lg16 xl24 xxl32), `AppRadius` (sm8 md12 lg16 xl24), `AppSizes` (dokunma 48, satır 56, buton 52), `AppColors` (palet; ekranlarda doğrudan değil tema üzerinden).
 - `app_theme.dart`: `AppTheme.light()/dark({hasBackgroundImage})` — `ColorScheme.fromSeed(#00796B)` + copyWith (mor M3 yedeği yok), Poppins tip ölçeği (en küçük 13sp, yedek `sans-serif` = sistem fontu, Arapça arayüz metni buna düşer), tek AppBar stili (açıkta teal, koyuda #161D1C), opak kartlar (r16, açıkta 1px çerçeve), NavigationBar, Switch, FilledButton (52dp), input, yüzen SnackBar. TabBar teması AppBar.bottom içindir. Arka plan resmi seçiliyse Scaffold şeffaf, resim `MaterialApp.builder`'da.
 - `prayer_colors.dart`: `PrayerColors.of(context)` tema uzantısı — hero yazı/karartma, sıradaki/şu anki/geçmiş vakit, Güneş, uyarı (kerahat), başarı.
-- Bileşenler: `AppScaffold` (AppBar + altta banner), `AppCard`, `SectionHeader`, `AppListTile`/`AppListSection`, `PrayerTimeRow` (+`PrayerRowState`), `EmptyState`/`ErrorState`/`LoadingState`, `InfoBanner` (+`InfoTone`), `StatTile`, `ToolTile`, `CounterStepper`, `showConfirmDialog`, `TabularText` (Poppins'te tnum yok → sayaçlar bununla), `app_format.dart` (`formatPrayerTime`: en/ar 12 saat sıfırsız, diğerleri 24 saat; `formatClockTime`; `formatCountdown`).
+- Bileşenler: `AppScaffold` (AppBar + altta banner), `AppCard`, `SectionHeader` (arka plan resminde koyu kapsül + beyaz yazı; `onImage` ile zorlanabilir), `AppListTile`/`AppListSection`, `PrayerTimeRow` (+`PrayerRowState`), `EmptyState`/`ErrorState`/`LoadingState`, `InfoBanner` (+`InfoTone`), `StatTile`, `ToolTile`, `CounterStepper`, `showConfirmDialog`, `TabularText` (Poppins'te tnum yok → sayaçlar bununla), `app_format.dart` (`formatPrayerTime`: en/ar 12 saat sıfırsız, diğerleri 24 saat; `formatClockTime`; `formatCountdown`).
 - Kurallar: sabit renk/boyut yazma (token + `Theme.of(context)`), yazı ≥13sp, fotoğraf üstünde opak kart/karartma, RTL için `EdgeInsetsDirectional`, %130 yazıda taşma yok. Test: `test/core_ui_test.dart`.
 
 ## Giriş akışı
 `lib/main.dart` → Firebase init + Crashlytics hata yakalayıcıları → `AdHelper.loadInterstitialAd` (rıza gelince yükler) → `BackgroundManager.initializeService` → Workmanager periyodik görev (6 sa, `keep`; `callbackDispatcher` → `PrayerRefreshService.runHeadless`) → `MultiProvider` (HomeViewModel, LanguageProvider, ThemeProvider, ZikirViewModel) → `runApp` → `AdConsent.gatherAndStartAds()` (beklemez) → dil seçilmemişse `OnboardingLanguageView` → `MainWrapper`, yoksa `ShowCaseWidget(MainWrapper)` (tur bitince bildirim + konum izni).
-- Reklam rızası: `common/ad_consent.dart` — AdMob UMP (`requestConsentInfoUpdate` 10 sn zaman aşımı → `loadAndShowConsentFormIfRequired`), `canRequestAds()` true ise `MobileAds.initialize` (10 sn) ve `AdConsent.canRequestAds` (ValueNotifier) true; banner'lar/interstitial bunu bekler. Hata/ağ yokluğu açılışı bekletmez.
+- Reklam rızası: `common/ad_consent.dart` — AdMob UMP (`requestConsentInfoUpdate` 10 sn zaman aşımı → `loadAndShowConsentFormIfRequired`), `canRequestAds()` true ise `MobileAds.initialize` (10 sn) ve `AdConsent.canRequestAds` (ValueNotifier) true; banner'lar/interstitial bunu bekler (`whenAdsStarted`; rıza geri çekilirse yeniden verilene kadar bekler). `getPrivacyOptionsRequirementStatus` → `AdConsent.privacyOptionsRequired`; gerekliyse Ayarlar > Destek'te "Reklam gizlilik ayarları" satırı (`AdConsent.showPrivacyOptions` → `ConsentForm.showPrivacyOptionsForm`). Hata/ağ yokluğu açılışı bekletmez, çökertmez.
 - Güncelleme: tek akış, Play esnek güncelleme (`_checkForUpdate`): iner, "Yeniden başlat" SnackBar'ı (`scaffoldMessengerKey`) ile kullanıcı onaylayınca `completeFlexibleUpdate`. UpgradeAlert yok.
 
-`MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). SettingsView araçlar ekranındaki karttan açılır.
+`MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
+Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. SettingsView araçlar ekranındaki karttan açılır.
 `ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar) → Imsakiye, PrayerTracker, MissedPrayers, ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
 
 ## Klasörler
@@ -62,8 +63,8 @@ lib/
                                            toplu iptal yok, sadece plandan çıkan bekleyenler iptal → çekmecedeki bildirimler kalır),
                                            arka plan servisine/widget'a veri gönderme, günlük hadis/ayet
                                            (widget/alarm/günlük içerik → PrayerRefreshService'e delege; applyTimeOffsets())
-                                           initializeApp tek sefer; pil optimizasyonu izni en fazla bir kez ('battery_optimization_asked',
-                                           tanıtım turundan sonraki açılışta)
+                                           initializeApp tek sefer; pil optimizasyonu izni en fazla bir kez ('battery_optimization_asked';
+                                           MainWrapper izin akışından sonra çağırır)
     settings/view/time_adjust_view.dart    vakit ince ayarı (-30..+30 dk) → StorageService.saveTimeOffsets + applyTimeOffsets
     home/view/home_view.dart               hero (sıradaki vakte göre gradyan + karartma; dokunulabilir konum → LocationSearchDialog,
                                            miladi · hicri tarih, sayaç, kerahat/Ramazan kapsülleri) + tek parça zemin (DecoratedSliver)
@@ -84,14 +85,15 @@ lib/
     settings/view/language_sheet.dart      dil seçimi (Ayarlar'da ilk satır); sürüm package_info_plus ile
     qibla/qibla_math.dart                  kıble açısı (adhan_dart Qibla) + dönüş yönü yardımcıları; pusula sadece sekme görünürken
     zikirmatik/view/dhikr_names.dart       zikir adları/Arapça metinleri (Amiri)
-    onboarding/view/onboarding_language_view.dart  dil seçimi + requestPermissionsWithPriming (açıklama penceresi → bildirim → konum);
+    onboarding/view/onboarding_language_view.dart  dil seçimi + requestPermissionsWithPriming (açıklama penceresi → bildirim → konum;
+                                           oturumda bir kez, bitince 'permissions_primed') + primePermissionsIfNeeded;
                                            main.dart turu da aynı fonksiyonu navigatorKey bağlamıyla kullanır
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
     imsakiye/view/imsakiye_view.dart       aylık/Ramazan imsakiyesi (forDate ile); paylaşım = ekran dışı RepaintBoundary → PNG
     common/ad_helper.dart                  interstitial singleton (5 dk cooldown; rıza yoksa AdConsent.whenAdsStarted ile bekler)
-    common/ad_consent.dart                 AdMob UMP rızası + MobileAds.initialize; kendi reklamını yükleyen ekran
-                                           önce AdConsent.canRequestAds.value'ya bakmalı
+    common/ad_consent.dart                 AdMob UMP rızası + MobileAds.initialize + gizlilik seçenekleri formu; kendi
+                                           reklamını yükleyen ekran önce AdConsent.canRequestAds.value'ya bakmalı
     common/widgets/ad_banner_widget.dart   banner (adUnitId; varsayılan innerBanner), rıza gelince yüklenir
     main_wrapper/app_showcase.dart         tanıtım turu anahtarları + AppShowcase (marka renkli balon)
     common/{language,theme}_provider.dart

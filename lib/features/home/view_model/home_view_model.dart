@@ -144,20 +144,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     if (_isDataLoaded) return;
 
     try {
-      // Tanıtım turu daha önce bitmişse (ilk açılış değilse) pil izni bir kez sorulur
-      final onboarded = await _wasOnboarded();
       await initializeDateFormatting('tr_TR', null);
       await _loadSavedSettings();
       await notificationService.init();
 
       _calculateHijriDate(); // İlk açılışta Hicri tarih
-      if (onboarded) {
-        // Vakitler ekrana gelsin, sonra sistem penceresi açılsın
-        Future.delayed(
-          const Duration(seconds: 2),
-          requestBatteryOptimizationOnce,
-        );
-      }
 
       String? savedCity = await _storageService.loadLocation();
       String? savedDistrict = await _storageService.loadDistrict();
@@ -657,16 +648,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   static const String _batteryAskedKey = 'battery_optimization_asked';
 
-  Future<bool> _wasOnboarded() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      return !(prefs.getBool('is_first_launch_showcase_v3') ?? true);
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /// Pil optimizasyonu muafiyeti en fazla bir kez istenir (her açılışta değil)
+  /// Pil optimizasyonu muafiyeti en fazla bir kez istenir (her açılışta değil);
+  /// MainWrapper izin akışından sonra çağırır
   Future<void> requestBatteryOptimizationOnce() async {
     try {
       final prefs = await SharedPreferences.getInstance();
