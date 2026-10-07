@@ -55,9 +55,14 @@ void main() {
       of: find.ancestor(of: find.text(name), matching: find.byType(Row)).first,
       matching: find.byIcon(icon),
     );
-    await tester.tap(rowButton('Öğle', Icons.add_circle_outline));
-    await tester.tap(rowButton('Öğle', Icons.add_circle_outline));
-    await tester.tap(rowButton('İmsak', Icons.remove_circle_outline));
+    // Satırlar bilgi kutusunun altında; kaydet düğmesinin arkasında kalmasın
+    await tester.ensureVisible(rowButton('Öğle', Icons.add));
+    await tester.pumpAndSettle();
+    await tester.tap(rowButton('Öğle', Icons.add));
+    await tester.tap(rowButton('Öğle', Icons.add));
+    await tester.ensureVisible(rowButton('İmsak', Icons.remove));
+    await tester.pumpAndSettle();
+    await tester.tap(rowButton('İmsak', Icons.remove));
     await tester.pump();
     expect(find.text(value('+2')), findsOneWidget);
     expect(find.text(value('-1')), findsOneWidget);
@@ -96,7 +101,11 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      expect(find.byIcon(Icons.add_circle_outline), findsWidgets);
+      // Uzun bilgi metninde satırlar kaydırınca görünür
+      await tester.drag(find.byType(ListView), const Offset(0, -300));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.add), findsWidgets);
+      expect(tester.takeException(), isNull);
     });
   }
 }

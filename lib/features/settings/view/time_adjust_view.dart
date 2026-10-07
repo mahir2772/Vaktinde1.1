@@ -1,9 +1,8 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_time_service.dart';
@@ -56,6 +55,8 @@ class _TimeAdjustViewState extends State<TimeAdjustView> {
 
   bool get _allZero => _offsets.values.every((v) => v == 0);
 
+  /// Ayarlayıcı her dokunuşta ±1 ister; art arda hızlı dokunuşlar kaybolmasın
+  /// diye fark güncel değere eklenir
   void _change(String key, int delta) {
     setState(() {
       _offsets[key] = (_offsets[key]! + delta).clamp(-_limit, _limit);
@@ -112,100 +113,76 @@ class _TimeAdjustViewState extends State<TimeAdjustView> {
       }
     }
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(title: Text(loc.timeAdjustTitle), centerTitle: true),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-          child: SizedBox(
-            height: 48,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: _loading || _saving || !_changed
-                  ? null
-                  : () => _save(loc),
-              child: _saving
-                  ? const SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Text(loc.save),
-            ),
-          ),
-        ),
-      ),
+    return AppScaffold(
+      title: loc.timeAdjustTitle,
+      showBanner: false,
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.all(16),
+          ? const LoadingState()
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.teal.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
                     children: [
-                      const Icon(Icons.info_outline, color: Colors.teal),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          loc.timeAdjustInfo,
-                          style: const TextStyle(fontSize: 13),
+                      InfoBanner(message: loc.timeAdjustInfo),
+                      const SizedBox(height: AppSpacing.lg),
+                      AbsorbPointer(
+                        absorbing: _saving,
+                        child: AppCard(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [
+                              for (final key
+                                  in PrayerRefreshService.vakitKeys) ...[
+                                if (key != PrayerRefreshService.vakitKeys.first)
+                                  const Divider(
+                                    height: 1,
+                                    indent: AppSpacing.lg,
+                                    endIndent: AppSpacing.lg,
+                                  ),
+                                _buildRow(
+                                  context,
+                                  loc,
+                                  key,
+                                  names[key]!,
+                                  preview?[key],
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Center(
+                        child: TextButton.icon(
+                          onPressed: _saving || _allZero ? null : _reset,
+                          icon: const Icon(Icons.restart_alt),
+                          label: Text(loc.timeAdjustReset),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardTheme.color,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      for (final key in PrayerRefreshService.vakitKeys) ...[
-                        if (key != PrayerRefreshService.vakitKeys.first)
-                          const Divider(height: 1),
-                        _buildRow(
-                          context,
-                          loc,
-                          key,
-                          names[key]!,
-                          preview?[key],
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Center(
-                  child: TextButton.icon(
-                    onPressed: _saving || _allZero ? null : _reset,
-                    icon: const Icon(Icons.restart_alt),
-                    label: Text(loc.timeAdjustReset),
-                    style: TextButton.styleFrom(foregroundColor: Colors.teal),
+                SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.sm,
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                    ),
+                    child: FilledButton(
+                      onPressed: _saving || !_changed ? null : () => _save(loc),
+                      child: _saving
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(loc.save),
+                    ),
                   ),
                 ),
               ],
@@ -220,58 +197,55 @@ class _TimeAdjustViewState extends State<TimeAdjustView> {
     String name,
     String? time,
   ) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final value = _offsets[key]!;
-    final valueText = value > 0 ? "+$value" : "$value";
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (time != null)
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: AppSizes.listTileMinHeight),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          AppSpacing.lg,
+          AppSpacing.sm,
+          AppSpacing.sm,
+          AppSpacing.sm,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    time,
-                    style: TextStyle(color: Theme.of(context).hintColor),
+                    name,
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.remove_circle_outline),
-            color: Colors.teal,
-            onPressed: _saving || value <= -_limit
-                ? null
-                : () => _change(key, -1),
-          ),
-          SizedBox(
-            width: 80,
-            child: Text(
-              // İşaret RTL (Arapça) metinde yer değiştirmesin
-              loc.timeAdjustMinutes('${Unicode.LRI}$valueText${Unicode.PDI}'),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: value == 0 ? Theme.of(context).hintColor : Colors.teal,
+                  if (time != null)
+                    Text(
+                      formatPrayerTime(time, loc.localeName),
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: value == 0
+                            ? scheme.onSurfaceVariant
+                            : scheme.primary,
+                      ),
+                    ),
+                ],
               ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            color: Colors.teal,
-            onPressed: _saving || value >= _limit
-                ? null
-                : () => _change(key, 1),
-          ),
-        ],
+            CounterStepper(
+              value: value,
+              min: -_limit,
+              max: _limit,
+              semanticLabel: name,
+              // İşaret RTL (Arapça) metinde yer değiştirmesin
+              format: (v) => loc.timeAdjustMinutes(
+                '${Unicode.LRI}${v > 0 ? '+$v' : '$v'}${Unicode.PDI}',
+              ),
+              onChanged: (v) => _change(key, v - value),
+            ),
+          ],
+        ),
       ),
     );
   }
