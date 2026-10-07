@@ -110,6 +110,24 @@ abstract class AppLocalizations {
   /// **'Vaktinde'**
   String get appTitle;
 
+  /// No description provided for @navZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir'**
+  String get navZikir;
+
+  /// No description provided for @adPrivacySettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklam gizlilik ayarları'**
+  String get adPrivacySettings;
+
+  /// No description provided for @adPrivacySettingsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişiselleştirilmiş reklam iznini değiştirin'**
+  String get adPrivacySettingsSub;
+
   /// No description provided for @showcaseLanguage.
   ///
   /// In tr, this message translates to:

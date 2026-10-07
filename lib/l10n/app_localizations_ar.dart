@@ -12,6 +12,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get navZikir => 'الذكر';
+
+  @override
+  String get adPrivacySettings => 'إعدادات خصوصية الإعلانات';
+
+  @override
+  String get adPrivacySettingsSub => 'غيّر موافقتك على الإعلانات المخصصة';
+
+  @override
   String get showcaseLanguage => 'يمكنك تغيير لغة التطبيق من هنا.';
 
   @override

@@ -222,13 +222,19 @@ abstract final class AppTheme {
         surfaceTintColor: Colors.transparent,
         indicatorColor: scheme.primaryContainer,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        // Tek satır + üç nokta: uzun etiket kelime ortasından bölünmez, ikonlar
+        // hizalı kalır (TextStyle.overflow, maxLines verilmeyince tek satır yapar)
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
               ? text.labelMedium!.copyWith(
                   color: scheme.onSurface,
                   fontWeight: FontWeight.w600,
+                  overflow: TextOverflow.ellipsis,
                 )
-              : text.labelMedium!.copyWith(color: scheme.onSurfaceVariant),
+              : text.labelMedium!.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  overflow: TextOverflow.ellipsis,
+                ),
         ),
         iconTheme: WidgetStateProperty.resolveWith(
           (states) => IconThemeData(

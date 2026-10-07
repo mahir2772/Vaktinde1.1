@@ -11,11 +11,15 @@ import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
+import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 
 import 'app_showcase.dart';
 
 export 'app_showcase.dart'
     show homeLangKey, homeStoryKey, homeAlarmsKey, qiblaKey, zikirmatikKey;
+
+/// Tanıtım turu görüldü mü (false = görüldü; tur başlarken yazılır)
+const String tourSeenKey = 'is_first_launch_showcase_v3';
 
 /// Alt menü (Ana Sayfa, Kıble, Zikirmatik, Araçlar) + banner + tanıtım turu.
 /// Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada başlatır.
@@ -49,24 +53,42 @@ class _MainWrapperState extends State<MainWrapper> {
     });
   }
 
-  Future<void> _checkAndStartShowcase() async {
+  /// Açılış sırası: ilk kez → tanıtım turu (izinler turun sonunda); sonraki
+  /// açılışlarda tur yoksa → izin akışı hiç tamamlanmadıysa izinler (ör. tur
+  /// yarıda kaldı), ardından pil optimizasyonu (en fazla bir kez). Pencereler
+  /// üst üste binmez.
+  Future<void> _runStartupFlow() async {
     final prefs = await SharedPreferences.getInstance();
-    final isFirstTime = prefs.getBool('is_first_launch_showcase_v3') ?? true;
-    if (!isFirstTime || !mounted) return;
-    // Günün ayeti/hadisi yüklenmediyse o adım atlanır
-    final keys = [
-      homeLangKey,
-      if (homeStoryKey.currentContext != null) homeStoryKey,
-      homeAlarmsKey,
-      qiblaKey,
-      zikirmatikKey,
-    ];
+    final isFirstTime = prefs.getBool(tourSeenKey) ?? true;
+    if (!mounted) return;
+    if (isFirstTime && _startTour()) {
+      await prefs.setBool(tourSeenKey, false);
+      return;
+    }
+    await primePermissionsIfNeeded(context);
+    if (!mounted) return;
+    await context.read<HomeViewModel>().requestBatteryOptimizationOnce();
+  }
+
+  /// Turu ekranda olan hedeflerle başlatır (5.x'te eksik hedef turu erken
+  /// bitirir; günün ayeti/hadisi yüklenmediyse o adım atlanır)
+  bool _startTour() {
     try {
-      ShowCaseWidget.of(context).startShowCase(keys);
+      final view = ShowcaseView.get();
+      final keys = [
+        homeLangKey,
+        homeStoryKey,
+        homeAlarmsKey,
+        qiblaKey,
+        zikirmatikKey,
+      ].where(view.isTargetRendered).toList();
+      if (keys.isEmpty) return false;
+      view.startShowCase(keys);
+      return true;
     } catch (e) {
       debugPrint('Tanıtım turu başlatılamadı: $e');
+      return false;
     }
-    await prefs.setBool('is_first_launch_showcase_v3', false);
   }
 
   @override
@@ -101,7 +123,7 @@ class _MainWrapperState extends State<MainWrapper> {
     if (!viewModel.isLoading && !_isTutorialChecked) {
       _isTutorialChecked = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkAndStartShowcase();
+        _runStartupFlow();
       });
     }
 
@@ -144,7 +166,7 @@ class _MainWrapperState extends State<MainWrapper> {
                 child: NavigationDestination(
                   icon: const Icon(Icons.touch_app_outlined),
                   selectedIcon: const Icon(Icons.touch_app),
-                  label: loc.zikirmatikTitle,
+                  label: loc.navZikir,
                 ),
               ),
               NavigationDestination(

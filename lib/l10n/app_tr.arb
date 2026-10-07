@@ -1,5 +1,8 @@
 {
     "appTitle": "Vaktinde",
+    "navZikir": "Zikir",
+    "adPrivacySettings": "Reklam gizlilik ayarları",
+    "adPrivacySettingsSub": "Kişiselleştirilmiş reklam iznini değiştirin",
     "showcaseLanguage": "Uygulama dilini buradan değiştirebilirsiniz.",
     "showcaseStory": "Günün ayetini ve hadisini buradan okuyabilirsiniz.",
     "showcaseAlarms": "Her vakit için ezan ve hatırlatma alarmlarını buradan ayarlayabilirsiniz.",

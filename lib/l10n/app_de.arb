@@ -1,5 +1,8 @@
 {
     "appTitle": "Vaktinde",
+    "navZikir": "Dhikr",
+    "adPrivacySettings": "Werbe-Datenschutzeinstellungen",
+    "adPrivacySettingsSub": "Einwilligung für personalisierte Werbung ändern",
     "showcaseLanguage": "Hier können Sie die App-Sprache ändern.",
     "showcaseStory": "Hier lesen Sie den Vers und den Hadith des Tages.",
     "showcaseAlarms": "Hier stellen Sie Adhan- und Erinnerungsalarme für jede Gebetszeit ein.",
