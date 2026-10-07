@@ -139,6 +139,36 @@ void main() {
       expect(regaib2025, [DateTime(2025, 1, 2), DateTime(2025, 12, 25)]);
     });
 
+    test('yedek hicri hesap 2025-2028 Diyanet tarihleriyle aynı '
+        '(kandiller bir gün önce)', () {
+      // Kadir Gecesi ve Ramazan başlangıcı listede tutarlı değil (±1 gün)
+      const tutarli = [
+        DiniGunTuru.miracKandili,
+        DiniGunTuru.beratKandili,
+        DiniGunTuru.mevlidKandili,
+        DiniGunTuru.regaipKandili,
+        DiniGunTuru.hicriYilbasi,
+        DiniGunTuru.asureGunu,
+        DiniGunTuru.ramazanBayrami,
+        DiniGunTuru.kurbanBayrami,
+      ];
+      for (final year in [2025, 2026, 2027, 2028]) {
+        final hijri = DiniGunlerService.hicriGunler(year);
+        for (final tur in tutarli) {
+          final hesap = [
+            for (final h in hijri)
+              if (h.$1 == tur) h.$2,
+          ];
+          final diyanet = [
+            for (final r in resmi)
+              if (r.tur == tur && r.tarih.year == year) r.tarih,
+          ]..sort();
+          expect(diyanet, isNotEmpty, reason: '$year $tur');
+          expect(hesap, diyanet, reason: '$year $tur');
+        }
+      }
+    });
+
     test('listede olmayan yıl (2030) tamamen hicri hesaptır', () {
       final days = DiniGunlerService.yilinGunleri(2030, resmi: resmi);
       expect(days, isNotEmpty);

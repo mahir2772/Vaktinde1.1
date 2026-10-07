@@ -224,7 +224,11 @@ class DiniGunlerService {
       ),
   ];
 
-  /// Yalnız hijri paketiyle hesaplanan günler (önceki davranış)
+  /// Yalnız hijri paketiyle hesaplanan günler (Diyanet listesinde olmayan
+  /// yıllar için yedek). Kandiller, gününden önceki gece (arife akşamı)
+  /// kutlanır: Diyanet Miraç, Berat ve Mevlid'i hicri tarihin bir gün öncesi
+  /// olarak verir (2025-2028 listesinde her yıl tutarlı; testli). Kadir
+  /// Gecesi listede tutarlı değil, olduğu gibi bırakıldı.
   static List<(DiniGunTuru, DateTime)> hicriGunler(int miladiYil) {
     final liste = <(DiniGunTuru, DateTime)>[];
 
@@ -234,9 +238,33 @@ class DiniGunlerService {
     for (int hYil = baslangicHicri.hYear; hYil <= bitisHicri.hYear; hYil++) {
       _addIfMatches(liste, miladiYil, DiniGunTuru.hicriYilbasi, hYil, 1, 1);
       _addIfMatches(liste, miladiYil, DiniGunTuru.asureGunu, hYil, 1, 10);
-      _addIfMatches(liste, miladiYil, DiniGunTuru.mevlidKandili, hYil, 3, 12);
-      _addIfMatches(liste, miladiYil, DiniGunTuru.miracKandili, hYil, 7, 27);
-      _addIfMatches(liste, miladiYil, DiniGunTuru.beratKandili, hYil, 8, 15);
+      _addIfMatches(
+        liste,
+        miladiYil,
+        DiniGunTuru.mevlidKandili,
+        hYil,
+        3,
+        12,
+        gunFarki: -1,
+      );
+      _addIfMatches(
+        liste,
+        miladiYil,
+        DiniGunTuru.miracKandili,
+        hYil,
+        7,
+        27,
+        gunFarki: -1,
+      );
+      _addIfMatches(
+        liste,
+        miladiYil,
+        DiniGunTuru.beratKandili,
+        hYil,
+        8,
+        15,
+        gunFarki: -1,
+      );
       _addIfMatches(
         liste,
         miladiYil,
@@ -271,9 +299,15 @@ class DiniGunlerService {
     DiniGunTuru tur,
     int hYil,
     int hAy,
-    int hGun,
-  ) {
-    DateTime miladiTarih = HijriCalendar().hijriToGregorian(hYil, hAy, hGun);
+    int hGun, {
+    int gunFarki = 0,
+  }) {
+    final hesap = HijriCalendar().hijriToGregorian(hYil, hAy, hGun);
+    final miladiTarih = DateTime(
+      hesap.year,
+      hesap.month,
+      hesap.day + gunFarki,
+    );
     if (miladiTarih.year == miladiYil) {
       liste.add((tur, miladiTarih));
     }
