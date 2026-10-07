@@ -10,9 +10,9 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 - Fontlar: Poppins `assets/google_fonts/` içinde gömülü (google_fonts önce asset'e bakar).
 
 ## Giriş akışı
-`lib/main.dart` → Firebase init + Crashlytics hata yakalayıcıları → `MobileAds.initialize` + `AdHelper.loadInterstitialAd` → `BackgroundManager.initializeService` → Workmanager periyodik görev (6 sa, `keep`; `callbackDispatcher` → `PrayerRefreshService.runHeadless`) → `MultiProvider` (HomeViewModel, LanguageProvider, ThemeProvider, ZikirViewModel) → dil seçilmemişse `OnboardingLanguageView` → `IntroView`, yoksa `MainWrapper`.
+`lib/main.dart` → Firebase init + Crashlytics hata yakalayıcıları → `MobileAds.initialize` + `AdHelper.loadInterstitialAd` → `BackgroundManager.initializeService` → Workmanager periyodik görev (6 sa, `keep`; `callbackDispatcher` → `PrayerRefreshService.runHeadless`) → `MultiProvider` (HomeViewModel, LanguageProvider, ThemeProvider, ZikirViewModel) → dil seçilmemişse `OnboardingLanguageView` → `MainWrapper` (`IntroView` hiçbir yerden açılmıyor, ölü kod), yoksa `MainWrapper`.
 
-`MainWrapper` (alt menü + banner reklam + showcase turu): HomeView, QiblaView, ZikirView, ToolsView, SettingsView.
+`MainWrapper` (alt menü + banner reklam + showcase turu; IndexedStack → 4 sekme açılışta birlikte kurulur): HomeView, QiblaView, ZikirView, ToolsView. SettingsView araçlar (Menü) ekranındaki karttan açılır.
 `ToolsView` → Imsakiye, Zakat, EsmaulHusna, FridayMessages, MissedPrayers, ReligiousDays, Dhikr list/stats.
 
 ## Klasörler
@@ -89,6 +89,7 @@ Tüm ID'ler `common/ad_helper.dart` → `AdIds` içinde; `kReleaseMode` ile debu
 - İmza: `android/key.properties` (+ .jks) git'te yok, yerelde olmalı. `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<anahtar>` (README).
 - Crashlytics gradle plugin: root `build.gradle.kts` classpath + app `plugins`.
 - Test: `TZ=Europe/Istanbul flutter test test/prayer_time_service_test.dart` (Diyanet referansıyla ±1 dk). Tüm testler: `TZ=Europe/Istanbul flutter test`.
+- Ekran görüntüleri: `SCREENSHOT_DIR=<klasör> TZ=Europe/Istanbul flutter test test/screenshots/` → tüm ana ekranlar PNG (tr açık/koyu/arka plan/%130 yazı, de, ar) + `_errors.txt`. Env yoksa atlanır.
 - Bulut ortamında Flutter SDK hazır gelmiyor (gerekirse scratchpad'e indirilir); Android SDK indirilemiyor (dl.google.com kapalı) → APK derlenemez. api.aladhan.com ve diyanet.gov.tr erişimi kapalı.
 - `flutter pub get` farklı SDK ile SDK-pinli paketleri (characters, meta, intl…) değiştirir; lock'a sadece gerçek bağımlılık değişikliklerini al. `flutter analyze` analysis_options.yaml'a exclude ekler → geri al.
 
