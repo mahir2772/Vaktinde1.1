@@ -12,6 +12,114 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get showcaseLanguage => 'You can change the app language here.';
+
+  @override
+  String get showcaseStory => 'Read the verse and hadith of the day here.';
+
+  @override
+  String get showcaseAlarms =>
+      'Set adhan and reminder alarms for each prayer here.';
+
+  @override
+  String get showcaseQibla => 'Find the Qibla direction with the compass.';
+
+  @override
+  String get showcaseZikir => 'Keep track of your dhikr here.';
+
+  @override
+  String get refreshLocation => 'Refresh location';
+
+  @override
+  String get navTools => 'Tools';
+
+  @override
+  String get hadithNotFound => 'Hadith text not found.';
+
+  @override
+  String get timesLoadError =>
+      'Prayer times could not be loaded. Please try again.';
+
+  @override
+  String get sunriseNotPrayer => 'Sunrise, not a prayer time';
+
+  @override
+  String get currentPrayer => 'Current prayer';
+
+  @override
+  String get textCopied => 'Text copied';
+
+  @override
+  String get updateDownloaded => 'A new version has been downloaded.';
+
+  @override
+  String get restartAction => 'Restart';
+
+  @override
+  String get qiblaTurnRight => 'Turn right';
+
+  @override
+  String get qiblaTurnSlightRight => 'Turn slightly right';
+
+  @override
+  String get qiblaTurnLeft => 'Turn left';
+
+  @override
+  String get qiblaTurnSlightLeft => 'Turn slightly left';
+
+  @override
+  String phoneHeading(String deg) {
+    return 'Phone heading: $deg°';
+  }
+
+  @override
+  String get usingSavedLocation => 'Using your saved location.';
+
+  @override
+  String exampleHint(int n) {
+    return 'E.g. $n';
+  }
+
+  @override
+  String get noCustomDhikr => 'You haven\'t added a custom dhikr yet.';
+
+  @override
+  String get messagesShuffled => 'Messages shuffled';
+
+  @override
+  String get shuffle => 'Shuffle';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get messageCopied => 'Message copied';
+
+  @override
+  String versionLabel(String v) {
+    return 'Version $v';
+  }
+
+  @override
+  String get supportMailSubject => 'Vaktinde - Support';
+
+  @override
+  String get madeBy => 'Made with ❤️ by mmdigital';
+
+  @override
+  String get permissionPrimingTitle => 'Never miss a prayer time';
+
+  @override
+  String get permissionPrimingBody =>
+      'We need notification permission for adhan alerts and location permission to calculate prayer times where you are.';
+
+  @override
+  String get continueAction => 'Continue';
+
+  @override
+  String get ok => 'OK';
+
+  @override
   String get nextPrayer => 'Next Prayer';
 
   @override
@@ -1061,7 +1169,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currencyTry => 'Turkish Lira';
 
   @override
-  String get holdToEdit => '(Hold to edit)';
+  String get holdToEdit => 'Hold to edit';
 
   @override
   String get editCounterTitle => 'Edit Counter';

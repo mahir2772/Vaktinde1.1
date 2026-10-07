@@ -29,7 +29,8 @@ void main() {
     // Banner reklam kanalı
     messenger.setMockMessageHandler(
       'plugins.flutter.io/google_mobile_ads',
-      (message) async => const StandardMethodCodec().encodeSuccessEnvelope(null),
+      (message) async =>
+          const StandardMethodCodec().encodeSuccessEnvelope(null),
     );
     await tester.pumpWidget(
       ChangeNotifierProvider(
@@ -65,8 +66,8 @@ void main() {
         Scaffold(
           body: ListView(
             children: [
-              KerahatCard(prayerTimes: times, hasImage: true),
-              PrayerTrackerRow(prayerTimes: times, hasImage: false),
+              KerahatCard(prayerTimes: times),
+              PrayerTrackerRow(prayerTimes: times),
             ],
           ),
         ),
@@ -151,38 +152,39 @@ void main() {
     });
   }
 
-  testWidgets('Başka isolate\'te (bildirim) işaretlenen vakit 30 sn içinde yansır', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final times = PrayerTimesModel(
-      imsak: '00:00',
-      gunes: '00:00',
-      ogle: '00:00',
-      ikindi: '00:00',
-      aksam: '00:00',
-      yatsi: '00:00',
-    );
-    await pumpApp(
-      tester,
-      'tr',
-      Scaffold(
-        body: ListView(
-          children: [PrayerTrackerRow(prayerTimes: times, hasImage: false)],
+  testWidgets(
+    'Başka isolate\'te (bildirim) işaretlenen vakit 30 sn içinde yansır',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final times = PrayerTimesModel(
+        imsak: '00:00',
+        gunes: '00:00',
+        ogle: '00:00',
+        ikindi: '00:00',
+        aksam: '00:00',
+        yatsi: '00:00',
+      );
+      await pumpApp(
+        tester,
+        'tr',
+        Scaffold(
+          body: ListView(
+            children: [PrayerTrackerRow(prayerTimes: times)],
+          ),
         ),
-      ),
-    );
-    expect(find.text('0/5'), findsOneWidget);
+      );
+      expect(find.text('0/5'), findsOneWidget);
 
-    // Bildirim aksiyonu isolate'i kayda yazdı; bu isolate'e haber gelmez
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('prayer_log', '{"${dk(0)}":3}');
-    await tester.pump(const Duration(seconds: 31));
-    await tester.pumpAndSettle();
-    expect(find.text('2/5'), findsOneWidget);
+      // Bildirim aksiyonu isolate'i kayda yazdı; bu isolate'e haber gelmez
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('prayer_log', '{"${dk(0)}":3}');
+      await tester.pump(const Duration(seconds: 31));
+      await tester.pumpAndSettle();
+      expect(find.text('2/5'), findsOneWidget);
 
-    await tester.pumpWidget(const SizedBox());
-  });
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
   testWidgets('Takip ekranı da kaydı düzenli yeniden okur', (tester) async {
     SharedPreferences.setMockInitialValues({'prayer_log_since': dk(3)});

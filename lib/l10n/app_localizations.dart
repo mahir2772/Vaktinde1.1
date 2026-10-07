@@ -110,6 +110,204 @@ abstract class AppLocalizations {
   /// **'Vaktinde'**
   String get appTitle;
 
+  /// No description provided for @showcaseLanguage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama dilini buradan değiştirebilirsiniz.'**
+  String get showcaseLanguage;
+
+  /// No description provided for @showcaseStory.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günün ayetini ve hadisini buradan okuyabilirsiniz.'**
+  String get showcaseStory;
+
+  /// No description provided for @showcaseAlarms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit için ezan ve hatırlatma alarmlarını buradan ayarlayabilirsiniz.'**
+  String get showcaseAlarms;
+
+  /// No description provided for @showcaseQibla.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble yönünü pusula ile bulabilirsiniz.'**
+  String get showcaseQibla;
+
+  /// No description provided for @showcaseZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikirlerinizi buradan takip edebilirsiniz.'**
+  String get showcaseZikir;
+
+  /// No description provided for @refreshLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konumu yenile'**
+  String get refreshLocation;
+
+  /// No description provided for @navTools.
+  ///
+  /// In tr, this message translates to:
+  /// **'Araçlar'**
+  String get navTools;
+
+  /// No description provided for @hadithNotFound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hadis metni bulunamadı.'**
+  String get hadithNotFound;
+
+  /// No description provided for @timesLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler yüklenemedi. Lütfen tekrar deneyin.'**
+  String get timesLoadError;
+
+  /// No description provided for @sunriseNotPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güneşin doğuşu, namaz vakti değildir'**
+  String get sunriseNotPrayer;
+
+  /// No description provided for @currentPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şu anki vakit'**
+  String get currentPrayer;
+
+  /// No description provided for @textCopied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metin kopyalandı'**
+  String get textCopied;
+
+  /// No description provided for @updateDownloaded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni sürüm indirildi.'**
+  String get updateDownloaded;
+
+  /// No description provided for @restartAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeniden başlat'**
+  String get restartAction;
+
+  /// No description provided for @qiblaTurnRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağa dönün'**
+  String get qiblaTurnRight;
+
+  /// No description provided for @qiblaTurnSlightRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Biraz sağa dönün'**
+  String get qiblaTurnSlightRight;
+
+  /// No description provided for @qiblaTurnLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sola dönün'**
+  String get qiblaTurnLeft;
+
+  /// No description provided for @qiblaTurnSlightLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Biraz sola dönün'**
+  String get qiblaTurnSlightLeft;
+
+  /// No description provided for @phoneHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon yönü: {deg}°'**
+  String phoneHeading(String deg);
+
+  /// No description provided for @usingSavedLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kayıtlı konum kullanılıyor.'**
+  String get usingSavedLocation;
+
+  /// No description provided for @exampleHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: {n}'**
+  String exampleHint(int n);
+
+  /// No description provided for @noCustomDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz özel zikir eklemediniz.'**
+  String get noCustomDhikr;
+
+  /// No description provided for @messagesShuffled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mesajlar karıştırıldı'**
+  String get messagesShuffled;
+
+  /// No description provided for @shuffle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Karıştır'**
+  String get shuffle;
+
+  /// No description provided for @copy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kopyala'**
+  String get copy;
+
+  /// No description provided for @messageCopied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mesaj kopyalandı'**
+  String get messageCopied;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürüm {v}'**
+  String versionLabel(String v);
+
+  /// No description provided for @supportMailSubject.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde - Destek'**
+  String get supportMailSubject;
+
+  /// No description provided for @madeBy.
+  ///
+  /// In tr, this message translates to:
+  /// **'mmdigital tarafından ❤️ ile yapıldı'**
+  String get madeBy;
+
+  /// No description provided for @permissionPrimingTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan vakitlerini kaçırmayın'**
+  String get permissionPrimingTitle;
+
+  /// No description provided for @permissionPrimingBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan bildirimleri için bildirim iznine, vakitleri bulunduğunuz yere göre hesaplamak için konum iznine ihtiyacımız var.'**
+  String get permissionPrimingBody;
+
+  /// No description provided for @continueAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam'**
+  String get continueAction;
+
+  /// No description provided for @ok.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamam'**
+  String get ok;
+
   /// No description provided for @nextPrayer.
   ///
   /// In tr, this message translates to:
@@ -2045,7 +2243,7 @@ abstract class AppLocalizations {
   /// No description provided for @holdToEdit.
   ///
   /// In tr, this message translates to:
-  /// **'(Düzenlemek için basılı tutun)'**
+  /// **'Düzenlemek için basılı tutun'**
   String get holdToEdit;
 
   /// No description provided for @editCounterTitle.

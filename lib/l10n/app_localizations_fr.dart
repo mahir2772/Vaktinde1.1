@@ -12,6 +12,117 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get showcaseLanguage =>
+      'Vous pouvez changer la langue de l\'application ici.';
+
+  @override
+  String get showcaseStory => 'Lisez ici le verset et le hadith du jour.';
+
+  @override
+  String get showcaseAlarms =>
+      'Réglez ici les alarmes d\'adhan et de rappel pour chaque prière.';
+
+  @override
+  String get showcaseQibla =>
+      'Trouvez la direction de la Qibla avec la boussole.';
+
+  @override
+  String get showcaseZikir => 'Comptez vos dhikr ici.';
+
+  @override
+  String get refreshLocation => 'Actualiser la position';
+
+  @override
+  String get navTools => 'Outils';
+
+  @override
+  String get hadithNotFound => 'Texte du hadith introuvable.';
+
+  @override
+  String get timesLoadError =>
+      'Les horaires de prière n\'ont pas pu être chargés. Veuillez réessayer.';
+
+  @override
+  String get sunriseNotPrayer => 'Lever du soleil, pas une prière';
+
+  @override
+  String get currentPrayer => 'Prière en cours';
+
+  @override
+  String get textCopied => 'Texte copié';
+
+  @override
+  String get updateDownloaded => 'Une nouvelle version a été téléchargée.';
+
+  @override
+  String get restartAction => 'Redémarrer';
+
+  @override
+  String get qiblaTurnRight => 'Tournez à droite';
+
+  @override
+  String get qiblaTurnSlightRight => 'Tournez légèrement à droite';
+
+  @override
+  String get qiblaTurnLeft => 'Tournez à gauche';
+
+  @override
+  String get qiblaTurnSlightLeft => 'Tournez légèrement à gauche';
+
+  @override
+  String phoneHeading(String deg) {
+    return 'Orientation du téléphone : $deg°';
+  }
+
+  @override
+  String get usingSavedLocation => 'Position enregistrée utilisée.';
+
+  @override
+  String exampleHint(int n) {
+    return 'Ex. : $n';
+  }
+
+  @override
+  String get noCustomDhikr =>
+      'Vous n\'avez pas encore ajouté de dhikr personnalisé.';
+
+  @override
+  String get messagesShuffled => 'Messages mélangés';
+
+  @override
+  String get shuffle => 'Mélanger';
+
+  @override
+  String get copy => 'Copier';
+
+  @override
+  String get messageCopied => 'Message copié';
+
+  @override
+  String versionLabel(String v) {
+    return 'Version $v';
+  }
+
+  @override
+  String get supportMailSubject => 'Vaktinde - Assistance';
+
+  @override
+  String get madeBy => 'Fait avec ❤️ par mmdigital';
+
+  @override
+  String get permissionPrimingTitle => 'Ne manquez aucune prière';
+
+  @override
+  String get permissionPrimingBody =>
+      'Nous avons besoin de l\'autorisation des notifications pour les alertes d\'adhan et de la localisation pour calculer les horaires là où vous êtes.';
+
+  @override
+  String get continueAction => 'Continuer';
+
+  @override
+  String get ok => 'OK';
+
+  @override
   String get nextPrayer => 'Prochaine Prière';
 
   @override
@@ -1070,7 +1181,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get currencyTry => 'Livre Turque';
 
   @override
-  String get holdToEdit => '(Maintenir pour modifier)';
+  String get holdToEdit => 'Maintenir pour modifier';
 
   @override
   String get editCounterTitle => 'Modifier le Compteur';

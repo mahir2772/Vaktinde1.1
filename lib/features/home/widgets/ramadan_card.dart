@@ -6,8 +6,13 @@ import '../../../data/models/prayer_times_model.dart';
 import '../../../data/services/prayer_time_service.dart';
 import '../../imsakiye/imsakiye_logic.dart';
 import '../../imsakiye/ramadan_calendar_loader.dart';
+import '../../../core/ui/app_format.dart';
+import '../../../core/ui/app_tokens.dart';
+import '../../../core/ui/prayer_colors.dart';
+import '../../../core/ui/tabular_text.dart';
+import 'hero_chip.dart';
 
-/// Sadece Ramazan'da görünen sahur/iftar sayacı (CountdownWidget'ın altında).
+/// Sadece Ramazan'da görünen sahur/iftar sayacı (ana ekran hero'sunda kapsül).
 class RamadanCard extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
 
@@ -112,14 +117,6 @@ class _RamadanCardState extends State<RamadanCard> {
     }
   }
 
-  String _formatDuration(Duration d) {
-    final totalSeconds = d.inSeconds < 0 ? 0 : d.inSeconds;
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    return "${twoDigits(totalSeconds ~/ 3600)}:"
-        "${twoDigits((totalSeconds % 3600) ~/ 60)}:"
-        "${twoDigits(totalSeconds % 60)}";
-  }
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
@@ -127,61 +124,52 @@ class _RamadanCardState extends State<RamadanCard> {
     if (loc == null || countdown == null) return const SizedBox.shrink();
 
     final isSahur = countdown.phase == RamadanPhase.sahur;
+    final theme = Theme.of(context);
+    final colors = PrayerColors.of(context);
+    final label = isSahur ? loc.ramadanSahurLeft : loc.ramadanIftarLeft;
+    final remaining = formatCountdown(_remaining);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white30, width: 1),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isSahur ? Icons.nightlight_round : Icons.wb_twilight,
-              color: Colors.amberAccent,
-              size: 22,
-            ),
-            const SizedBox(width: 10),
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    isSahur ? loc.ramadanSahurLeft : loc.ramadanIftarLeft,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: Semantics(
+        container: true,
+        label: '$label $remaining. ${loc.ramadanDayLabel(countdown.fastDay)}',
+        excludeSemantics: true,
+        child: HeroChip(
+          icon: isSahur ? Icons.nightlight_round : Icons.wb_twilight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                  ),
-                  Text(
-                    loc.ramadanDayLabel(countdown.fastDay),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.white70, fontSize: 11),
-                  ),
-                ],
+                    Text(
+                      loc.ramadanDayLabel(countdown.fastDay),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: colors.onHeroMuted),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              _formatDuration(_remaining),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Courier",
-                fontFeatures: [FontFeature.tabularFigures()],
+              const SizedBox(width: AppSpacing.md),
+              TabularText(
+                remaining,
+                style: theme.textTheme.titleLarge!.copyWith(
+                  color: colors.onHero,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

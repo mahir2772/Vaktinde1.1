@@ -28,7 +28,6 @@ import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
 import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
-import 'package:ezan_saati/features/onboarding/view/intro_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
@@ -246,7 +245,21 @@ Future<void> _loadFont(String family, List<String> paths) async {
 }
 
 Future<void> _loadFonts() async {
-  // google_fonts aile adları: Poppins_regular, Poppins_500 ... (fallback: Poppins)
+  // Uygulama teması: pubspec'teki "Poppins" ailesi (400-900) ve Amiri
+  await _loadFont('Poppins', [
+    for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold'])
+      'assets/google_fonts/Poppins-$w.ttf',
+    for (final w in ['ExtraBold', 'Black'])
+      'assets/google_fonts/Poppins-$w.ttf',
+  ]);
+  await _loadFont('Amiri', ['assets/fonts/amiri/Amiri-Regular.ttf']);
+  // Poppins'te Arapça yok: temadaki "sans-serif" yedeği cihazda sistem fontu,
+  // testte DejaVu Sans
+  await _loadFont('sans-serif', [
+    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+    '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+  ]);
+  // google_fonts aile adları: Poppins_regular, Poppins_500 ...
   const poppins = {
     'regular': 'Regular',
     '500': 'Medium',
@@ -260,14 +273,6 @@ Future<void> _loadFonts() async {
       'assets/google_fonts/Poppins-${e.value}.ttf',
     ]);
   }
-  // "Poppins" yedek ailesi: gömülü olmayan ağırlıklar (300, italik) ve Arapça
-  // karakterler için (Poppins'te Arapça yok; cihazda sistem fontuna düşer)
-  await _loadFont('Poppins', [
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
-  ]);
-  // Kodda adı geçen ama pakette olmayan 'Amiri' cihazda sistem Arapça fontuna düşer
-  await _loadFont('Amiri', ['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf']);
   final root = _flutterRoot();
   if (root == null) return;
   final material = '$root/bin/cache/artifacts/material_fonts';
@@ -538,7 +543,7 @@ void main() {
     tester,
   ) async {
     await _run(tester, () async {
-      // Dil seçimi ve tanıtım
+      // Dil seçimi
       _currentScreen = 'tr_01_onboarding_language';
       await _pumpApp(
         tester,
@@ -547,12 +552,6 @@ void main() {
         languageSelected: false,
       );
       await _shot(tester, 'tr_01_onboarding_language');
-      _currentScreen = 'tr_02_intro';
-      _navigator(
-        tester,
-      ).push(MaterialPageRoute<void>(builder: (_) => const IntroView()));
-      await _settle(tester);
-      await _shot(tester, 'tr_02_intro');
       await _finish(tester);
 
       _currentScreen = 'tr_10_home';

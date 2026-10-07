@@ -12,6 +12,116 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get showcaseLanguage => 'Hier können Sie die App-Sprache ändern.';
+
+  @override
+  String get showcaseStory =>
+      'Hier lesen Sie den Vers und den Hadith des Tages.';
+
+  @override
+  String get showcaseAlarms =>
+      'Hier stellen Sie Adhan- und Erinnerungsalarme für jede Gebetszeit ein.';
+
+  @override
+  String get showcaseQibla => 'Finden Sie die Qibla-Richtung mit dem Kompass.';
+
+  @override
+  String get showcaseZikir => 'Hier zählen Sie Ihren Dhikr.';
+
+  @override
+  String get refreshLocation => 'Standort aktualisieren';
+
+  @override
+  String get navTools => 'Werkzeuge';
+
+  @override
+  String get hadithNotFound => 'Hadith-Text nicht gefunden.';
+
+  @override
+  String get timesLoadError =>
+      'Gebetszeiten konnten nicht geladen werden. Bitte versuchen Sie es erneut.';
+
+  @override
+  String get sunriseNotPrayer => 'Sonnenaufgang, keine Gebetszeit';
+
+  @override
+  String get currentPrayer => 'Aktuelle Gebetszeit';
+
+  @override
+  String get textCopied => 'Text kopiert';
+
+  @override
+  String get updateDownloaded => 'Eine neue Version wurde heruntergeladen.';
+
+  @override
+  String get restartAction => 'Neu starten';
+
+  @override
+  String get qiblaTurnRight => 'Nach rechts drehen';
+
+  @override
+  String get qiblaTurnSlightRight => 'Etwas nach rechts drehen';
+
+  @override
+  String get qiblaTurnLeft => 'Nach links drehen';
+
+  @override
+  String get qiblaTurnSlightLeft => 'Etwas nach links drehen';
+
+  @override
+  String phoneHeading(String deg) {
+    return 'Telefonrichtung: $deg°';
+  }
+
+  @override
+  String get usingSavedLocation => 'Gespeicherter Standort wird verwendet.';
+
+  @override
+  String exampleHint(int n) {
+    return 'Z. B. $n';
+  }
+
+  @override
+  String get noCustomDhikr =>
+      'Sie haben noch keinen eigenen Dhikr hinzugefügt.';
+
+  @override
+  String get messagesShuffled => 'Nachrichten gemischt';
+
+  @override
+  String get shuffle => 'Mischen';
+
+  @override
+  String get copy => 'Kopieren';
+
+  @override
+  String get messageCopied => 'Nachricht kopiert';
+
+  @override
+  String versionLabel(String v) {
+    return 'Version $v';
+  }
+
+  @override
+  String get supportMailSubject => 'Vaktinde - Support';
+
+  @override
+  String get madeBy => 'Mit ❤️ gemacht von mmdigital';
+
+  @override
+  String get permissionPrimingTitle => 'Verpassen Sie keine Gebetszeit';
+
+  @override
+  String get permissionPrimingBody =>
+      'Für Adhan-Benachrichtigungen benötigen wir die Mitteilungsberechtigung und für die Gebetszeiten an Ihrem Ort die Standortberechtigung.';
+
+  @override
+  String get continueAction => 'Weiter';
+
+  @override
+  String get ok => 'OK';
+
+  @override
   String get nextPrayer => 'Nächste Gebetszeit';
 
   @override
@@ -1069,7 +1179,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get currencyTry => 'Türkische Lira';
 
   @override
-  String get holdToEdit => '(Gedrückt halten zum Bearbeiten)';
+  String get holdToEdit => 'Gedrückt halten zum Bearbeiten';
 
   @override
   String get editCounterTitle => 'Zähler Bearbeiten';

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'ad_consent.dart';
+
 /// Reklam birimleri: debug/profile'da Google test ID'leri, release'de gerçek ID'ler.
 /// (Geliştirirken kendi reklamına tıklayıp AdMob'dan ban yememek için otomatik seçilir.)
 class AdIds {
@@ -31,6 +33,7 @@ class AdHelper {
   AdHelper._internal();
 
   InterstitialAd? _interstitialAd;
+  bool _loading = false;
   DateTime? _lastAdShowTime;
 
   // SOĞUMA SÜRESİ: 5 dakika geçmeden 2. kez tam ekran reklam ÇIKMAZ.
@@ -39,14 +42,29 @@ class AdHelper {
   // Şimdilik sadece Android'de reklam var
   bool get _isSupported => Platform.isAndroid;
 
-  // Arka planda reklamı önceden yükler
+  bool _waitingForConsent = false;
+
+  // Arka planda reklamı önceden yükler (rıza/SDK hazır değilse hazır olunca)
   void loadInterstitialAd() {
     if (!_isSupported) return;
+    if (!AdConsent.canRequestAds.value) {
+      if (!_waitingForConsent) {
+        _waitingForConsent = true;
+        AdConsent.whenAdsStarted(() {
+          _waitingForConsent = false;
+          loadInterstitialAd();
+        });
+      }
+      return;
+    }
+    if (_interstitialAd != null || _loading) return;
+    _loading = true;
     InterstitialAd.load(
       adUnitId: AdIds.interstitial,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
+          _loading = false;
           _interstitialAd = ad;
           debugPrint('Tam ekran reklam hazırda bekliyor.');
 
@@ -64,6 +82,7 @@ class AdHelper {
           );
         },
         onAdFailedToLoad: (err) {
+          _loading = false;
           debugPrint('Tam ekran reklam yüklenemedi: $err');
           _interstitialAd = null;
         },

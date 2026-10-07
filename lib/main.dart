@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -12,8 +11,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:geolocator/geolocator.dart'; // YENİ EKLENDİ
-import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // YENİ EKLENDİ
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'features/main_wrapper/main_wrapper.dart';
@@ -26,6 +25,8 @@ import 'features/onboarding/view/onboarding_language_view.dart';
 import 'features/common/theme_provider.dart';
 import 'features/zikirmatik/view_model/zikir_view_model.dart';
 import 'features/common/ad_helper.dart';
+import 'features/common/ad_consent.dart';
+import 'core/ui/app_theme.dart';
 
 final NotificationService notificationService = NotificationService();
 
@@ -75,7 +76,7 @@ void main() async {
     debugPrint("Firebase hatası: $e");
   }
 
-  MobileAds.instance.initialize();
+  // Reklamlar AdMob rızası (UMP) alındıktan sonra başlar; açılışı bekletmez
   AdHelper.instance.loadInterstitialAd();
 
   try {
@@ -86,11 +87,12 @@ void main() async {
 
   await _registerBackgroundRefresh();
 
-  // Poppins assets/google_fonts içinde gömülü (internetsiz ilk açılış); eksik ağırlık olursa indirilir
-  GoogleFonts.config.allowRuntimeFetching = true;
+  // Poppins ve Amiri pubspec'te gömülü (internetsiz ilk açılış)
   LicenseRegistry.addLicense(() async* {
-    final license = await rootBundle.loadString('assets/google_fonts/OFL.txt');
-    yield LicenseEntryWithLineBreaks(['google_fonts'], license);
+    final poppins = await rootBundle.loadString('assets/google_fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['Poppins'], poppins);
+    final amiri = await rootBundle.loadString('assets/fonts/amiri/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['Amiri'], amiri);
   });
 
   runApp(
@@ -104,6 +106,9 @@ void main() async {
       child: const MyApp(),
     ),
   );
+
+  // AB'de rıza formu gerekiyorsa ilk kare çizildikten sonra gösterilir
+  unawaited(AdConsent.gatherAndStartAds());
 }
 
 class MyApp extends StatefulWidget {
@@ -114,25 +119,60 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<ScaffoldMessengerState> _messengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
     _checkForUpdate();
   }
 
+  // Play esnek güncelleme: arka planda iner, uygulama ancak kullanıcı
+  // "Yeniden başlat" deyince yeniden başlar
   Future<void> _checkForUpdate() async {
+    if (!Platform.isAndroid) return;
     try {
-      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.startFlexibleUpdate();
-        await InAppUpdate.completeFlexibleUpdate();
+      final info = await InAppUpdate.checkForUpdate();
+      if (info.installStatus == InstallStatus.downloaded) {
+        _showUpdateReady();
+        return;
+      }
+      if (info.updateAvailability == UpdateAvailability.updateAvailable &&
+          info.flexibleUpdateAllowed) {
+        final result = await InAppUpdate.startFlexibleUpdate();
+        if (result == AppUpdateResult.success) _showUpdateReady();
       }
     } catch (e) {
       debugPrint("Güncelleme kontrol hatası: $e");
     }
   }
 
-  // --- YENİ: TANITIM TURU BİTER BİTMEZ İZİNLERİ İSTEYEN ZEKİ FONKSİYON ---
+  void _showUpdateReady() {
+    if (!mounted) return;
+    final AppLocalizations loc;
+    try {
+      loc = lookupAppLocalizations(context.read<LanguageProvider>().locale);
+    } catch (e) {
+      return;
+    }
+    _messengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(loc.updateDownloaded),
+        duration: const Duration(minutes: 1),
+        action: SnackBarAction(
+          label: loc.restartAction,
+          onPressed: () {
+            InAppUpdate.completeFlexibleUpdate().catchError((Object e) {
+              debugPrint("Güncelleme kurulamadı: $e");
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  // Tanıtım turu bitince önce bildirim, sonra konum izni istenir
   Future<void> _requestPermissionsAfterTutorial() async {
     // 1. Önce Bildirim İznini İster
     try {
@@ -165,15 +205,16 @@ class _MyAppState extends State<MyApp> {
       debugPrint("Konum izni hatası: $e");
     }
   }
-  // -----------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final hasBackground = themeProvider.backgroundImage != null;
 
     return MaterialApp(
       title: 'Vaktinde',
+      scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       locale: languageProvider.locale,
       localizationsDelegates: const [
@@ -190,53 +231,8 @@ class _MyAppState extends State<MyApp> {
         Locale('ar'),
       ],
       themeMode: themeProvider.themeMode,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.teal,
-        useMaterial3: true,
-        scaffoldBackgroundColor: themeProvider.backgroundImage != null
-            ? Colors.transparent
-            : Colors.grey[100],
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.teal,
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
-        cardTheme: CardThemeData(
-          color: Colors.white.withOpacity(0.9),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.teal,
-        useMaterial3: true,
-        scaffoldBackgroundColor: themeProvider.backgroundImage != null
-            ? Colors.transparent
-            : const Color(0xFF121212),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1F1F1F),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
-        cardTheme: CardThemeData(
-          color: const Color(0xFF1E1E1E).withOpacity(0.9),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF1F1F1F),
-          selectedItemColor: Colors.tealAccent,
-          unselectedItemColor: Colors.grey,
-        ),
-      ),
+      theme: AppTheme.light(hasBackgroundImage: hasBackground),
+      darkTheme: AppTheme.dark(hasBackgroundImage: hasBackground),
       builder: (context, child) {
         return Stack(
           children: [
@@ -260,8 +256,7 @@ class _MyAppState extends State<MyApp> {
       },
       home: languageProvider.isLanguageSelected
           ? ShowCaseWidget(
-              onFinish:
-                  _requestPermissionsAfterTutorial, // TUR BİTİNCE İZİNLERİ TETİKLER
+              onFinish: _requestPermissionsAfterTutorial,
               builder: (context) => const MainWrapper(),
             )
           : const OnboardingLanguageView(),

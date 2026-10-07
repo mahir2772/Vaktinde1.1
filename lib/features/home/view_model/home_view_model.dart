@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/services/location_service.dart';
 import '../../../data/services/prayer_time_service.dart';
@@ -130,18 +131,33 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  Future<void> initializeApp(AppLocalizations loc) async {
+  Future<void>? _initRun;
+
+  /// Uygulama verisini bir kez yükler; tekrar çağrılar aynı işi döndürür
+  /// (MainWrapper başlatır).
+  Future<void> initializeApp(AppLocalizations loc) {
     _currentLoc = loc;
+    return _initRun ??= _initialize(loc);
+  }
+
+  Future<void> _initialize(AppLocalizations loc) async {
     if (_isDataLoaded) return;
 
     try {
+      // Tanıtım turu daha önce bitmişse (ilk açılış değilse) pil izni bir kez sorulur
+      final onboarded = await _wasOnboarded();
       await initializeDateFormatting('tr_TR', null);
       await _loadSavedSettings();
       await notificationService.init();
 
-      await _requestBatteryOptimization();
-
-      _calculateHijriDate(); // 🔥 İlk açılışta Hicri tarihi hesapla
+      _calculateHijriDate(); // İlk açılışta Hicri tarih
+      if (onboarded) {
+        // Vakitler ekrana gelsin, sonra sistem penceresi açılsın
+        Future.delayed(
+          const Duration(seconds: 2),
+          requestBatteryOptimizationOnce,
+        );
+      }
 
       String? savedCity = await _storageService.loadLocation();
       String? savedDistrict = await _storageService.loadDistrict();
@@ -423,7 +439,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(loc.gpsOff),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
           duration: const Duration(seconds: 3),
         ),
       );
@@ -639,9 +655,24 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     } catch (e) {}
   }
 
-  Future<void> _requestBatteryOptimization() async {
+  static const String _batteryAskedKey = 'battery_optimization_asked';
+
+  Future<bool> _wasOnboarded() async {
     try {
-      var status = await Permission.ignoreBatteryOptimizations.status;
+      final prefs = await SharedPreferences.getInstance();
+      return !(prefs.getBool('is_first_launch_showcase_v3') ?? true);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Pil optimizasyonu muafiyeti en fazla bir kez istenir (her açılışta değil)
+  Future<void> requestBatteryOptimizationOnce() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool(_batteryAskedKey) ?? false) return;
+      await prefs.setBool(_batteryAskedKey, true);
+      final status = await Permission.ignoreBatteryOptimizations.status;
       if (!status.isGranted) {
         await Permission.ignoreBatteryOptimizations.request();
       }
