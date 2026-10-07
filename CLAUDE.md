@@ -7,12 +7,22 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 - Dil: tr/en/de/fr/ar — `lib/l10n/*.arb` → `flutter gen-l10n` (`generate: true`), çıktı `lib/l10n/app_localizations*.dart` (elle düzenleme yok).
 - Android-only fiilen (`AdHelper` iOS'ta `UnsupportedError` atar). iOS/macOS klasörleri şablon.
 - Firebase (core + analytics + crashlytics), AdMob (`google_mobile_ads`), home_widget, flutter_background_service (sadece `specialUse` FGS), flutter_local_notifications, adhan_dart, workmanager (arka plan yenileme).
-- Fontlar: Poppins `assets/google_fonts/` içinde gömülü (google_fonts önce asset'e bakar).
+- Fontlar: pubspec `fonts:` ile gömülü — `Poppins` (400-900, `assets/google_fonts/`, italik yok) ve Arapça metin için `Amiri` (`assets/fonts/amiri/`); OFL lisansları main.dart'ta LicenseRegistry'ye kayıtlı. Tema `google_fonts` kullanmaz.
+
+## Arayüz (lib/core/ui) — her ekran buradan beslenir
+- Tek import: `package:ezan_saati/core/ui/ui.dart`.
+- `app_tokens.dart`: `AppSpacing` (xs4 sm8 md12 lg16 xl24 xxl32), `AppRadius` (sm8 md12 lg16 xl24), `AppSizes` (dokunma 48, satır 56, buton 52), `AppColors` (palet; ekranlarda doğrudan değil tema üzerinden).
+- `app_theme.dart`: `AppTheme.light()/dark({hasBackgroundImage})` — `ColorScheme.fromSeed(#00796B)` + copyWith (mor M3 yedeği yok), Poppins tip ölçeği (en küçük 13sp, yedek `sans-serif` = sistem fontu, Arapça arayüz metni buna düşer), tek AppBar stili (açıkta teal, koyuda #161D1C), opak kartlar (r16, açıkta 1px çerçeve), NavigationBar, Switch, FilledButton (52dp), input, yüzen SnackBar. TabBar teması AppBar.bottom içindir. Arka plan resmi seçiliyse Scaffold şeffaf, resim `MaterialApp.builder`'da.
+- `prayer_colors.dart`: `PrayerColors.of(context)` tema uzantısı — hero yazı/karartma, sıradaki/şu anki/geçmiş vakit, Güneş, uyarı (kerahat), başarı.
+- Bileşenler: `AppScaffold` (AppBar + altta banner), `AppCard`, `SectionHeader`, `AppListTile`/`AppListSection`, `PrayerTimeRow` (+`PrayerRowState`), `EmptyState`/`ErrorState`/`LoadingState`, `InfoBanner` (+`InfoTone`), `StatTile`, `ToolTile`, `CounterStepper`, `showConfirmDialog`, `TabularText` (Poppins'te tnum yok → sayaçlar bununla), `app_format.dart` (`formatPrayerTime`: en/ar 12 saat sıfırsız, diğerleri 24 saat; `formatClockTime`; `formatCountdown`).
+- Kurallar: sabit renk/boyut yazma (token + `Theme.of(context)`), yazı ≥13sp, fotoğraf üstünde opak kart/karartma, RTL için `EdgeInsetsDirectional`, %130 yazıda taşma yok. Test: `test/core_ui_test.dart`.
 
 ## Giriş akışı
-`lib/main.dart` → Firebase init + Crashlytics hata yakalayıcıları → `MobileAds.initialize` + `AdHelper.loadInterstitialAd` → `BackgroundManager.initializeService` → Workmanager periyodik görev (6 sa, `keep`; `callbackDispatcher` → `PrayerRefreshService.runHeadless`) → `MultiProvider` (HomeViewModel, LanguageProvider, ThemeProvider, ZikirViewModel) → dil seçilmemişse `OnboardingLanguageView` → `MainWrapper` (`IntroView` hiçbir yerden açılmıyor, ölü kod), yoksa `MainWrapper`.
+`lib/main.dart` → Firebase init + Crashlytics hata yakalayıcıları → `AdHelper.loadInterstitialAd` (rıza gelince yükler) → `BackgroundManager.initializeService` → Workmanager periyodik görev (6 sa, `keep`; `callbackDispatcher` → `PrayerRefreshService.runHeadless`) → `MultiProvider` (HomeViewModel, LanguageProvider, ThemeProvider, ZikirViewModel) → `runApp` → `AdConsent.gatherAndStartAds()` (beklemez) → dil seçilmemişse `OnboardingLanguageView` → `MainWrapper`, yoksa `ShowCaseWidget(MainWrapper)` (tur bitince bildirim + konum izni).
+- Reklam rızası: `common/ad_consent.dart` — AdMob UMP (`requestConsentInfoUpdate` 10 sn zaman aşımı → `loadAndShowConsentFormIfRequired`), `canRequestAds()` true ise `MobileAds.initialize` (10 sn) ve `AdConsent.canRequestAds` (ValueNotifier) true; banner'lar/interstitial bunu bekler. Hata/ağ yokluğu açılışı bekletmez.
+- Güncelleme: tek akış, Play esnek güncelleme (`_checkForUpdate`): iner, "Yeniden başlat" SnackBar'ı (`scaffoldMessengerKey`) ile kullanıcı onaylayınca `completeFlexibleUpdate`. UpgradeAlert yok.
 
-`MainWrapper` (alt menü + banner reklam + showcase turu; IndexedStack → 4 sekme açılışta birlikte kurulur): HomeView, QiblaView, ZikirView, ToolsView. SettingsView araçlar (Menü) ekranındaki karttan açılır.
+`MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). SettingsView araçlar ekranındaki karttan açılır.
 `ToolsView` → Imsakiye, Zakat, EsmaulHusna, FridayMessages, MissedPrayers, ReligiousDays, Dhikr list/stats.
 
 ## Klasörler
@@ -52,19 +62,33 @@ lib/
                                            toplu iptal yok, sadece plandan çıkan bekleyenler iptal → çekmecedeki bildirimler kalır),
                                            arka plan servisine/widget'a veri gönderme, günlük hadis/ayet
                                            (widget/alarm/günlük içerik → PrayerRefreshService'e delege; applyTimeOffsets())
+                                           initializeApp tek sefer; pil optimizasyonu izni en fazla bir kez ('battery_optimization_asked',
+                                           tanıtım turundan sonraki açılışta)
     settings/view/time_adjust_view.dart    vakit ince ayarı (-30..+30 dk) → StorageService.saveTimeOffsets + applyTimeOffsets
-    home/view/home_view.dart               vakit kartları, hata ekranları (errorMessageKey), sayaç
-    home/widgets/countdown_widget.dart     "HH:mm" parse eder (split(':'))
-    home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (CountdownWidget altında)
-    home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse vakit listesinin altında
+    home/view/home_view.dart               hero (sıradaki vakte göre gradyan + karartma; dokunulabilir konum → LocationSearchDialog,
+                                           miladi · hicri tarih, sayaç, kerahat/Ramazan kapsülleri) + tek parça zemin (DecoratedSliver)
+                                           üstünde ızgara, Bugün, günün ayet/hadisi; "Alarmlar" sekmesi; yükleniyor/hata/veri yok
+                                           durumları (çevirili ErrorState + "Konum Değiştir")
+    home/prayer_schedule.dart              saf: upcomingPrayer (yatsıdan sonra yarının imsakı), prayerRowStates (sıradaki/şu an/
+                                           geçmiş; güneşten öğleye "şu an" yok), localizedPrayerName — test/prayer_schedule_test.dart
+    home/widgets/countdown_widget.dart     sıradaki vakit adı + saati + 44sp TabularText sayaç (saniyelik)
+    home/widgets/prayer_times_grid.dart    2×3 ızgara (Güneş ikonla ayrık, 5 sn'de bir durum kontrolü)
+    home/widgets/daily_content.dart        ayet/hadis tek kart + okuma alt sayfası (Amiri, kopyala/paylaş; kendiliğinden kapanmaz)
+    home/widgets/alarm_settings_list.dart  vakit başına açılır alarm kartı (ezan/sessiz/ses seçimi/önceden uyar)
+    home/widgets/hero_chip.dart            hero bilgi kapsülü
+    home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (hero kapsülü)
+    home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse; onHero: kapsül, değilse InfoBanner
     home/widgets/prayer_tracker_row.dart   "Bugün" 5 vakit işareti (resume'da yenilenir) → prayer_tracker/view/prayer_tracker_view.dart
                                            (7 gün ızgara, 30 gün oran, seri, kılınmayanları kazaya ekle; araçlarda da kart)
     settings/view/end_reminder_setting.dart vakit çıkış hatırlatması anahtarı + 15/30/45 dk
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
     imsakiye/view/imsakiye_view.dart       aylık/Ramazan imsakiyesi (forDate ile); paylaşım = ekran dışı RepaintBoundary → PNG
-    common/ad_helper.dart                  interstitial singleton (5 dk cooldown)
-    common/widgets/ad_banner_widget.dart   banner
+    common/ad_helper.dart                  interstitial singleton (5 dk cooldown; rıza yoksa AdConsent.whenAdsStarted ile bekler)
+    common/ad_consent.dart                 AdMob UMP rızası + MobileAds.initialize; kendi reklamını yükleyen ekran
+                                           önce AdConsent.canRequestAds.value'ya bakmalı
+    common/widgets/ad_banner_widget.dart   banner (adUnitId; varsayılan innerBanner), rıza gelince yüklenir
+    main_wrapper/app_showcase.dart         tanıtım turu anahtarları + AppShowcase (marka renkli balon)
     common/{language,theme}_provider.dart
 android/app/src/main/
   AndroidManifest.xml   AdMob APP ID, izinler, servis/receiver/widget tanımları
@@ -72,6 +96,7 @@ android/app/src/main/
                                    HomeWidgetPreferences'tan çizer, her vakitte exact alarmla kendini yeniler)
   res/layout/vaktinde_widget_*.xml, custom_notification.xml
 assets/data/  esma/cuma mesajları (dil başına json), religious_days.json
+assets/google_fonts/ (Poppins), assets/fonts/amiri/ (Amiri + OFL)
 ```
 
 ## Reklam birimleri (AdMob, yayıncı ca-app-pub-4975388193054410)

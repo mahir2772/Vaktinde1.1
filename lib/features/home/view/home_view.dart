@@ -247,48 +247,61 @@ class _HomeViewState extends State<HomeView>
         viewModel.dailyAyah != null ||
         (viewModel.dailyHadith?.content ?? '').isNotEmpty;
 
+    final content = Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.xl,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PrayerTimesGrid(prayerTimes: times),
+          const SizedBox(height: AppSpacing.md),
+          PrayerTrackerRow(prayerTimes: times),
+          if (hasDaily) ...[
+            const SizedBox(height: AppSpacing.md),
+            AppShowcase(
+              showcaseKey: homeStoryKey,
+              description: loc.showcaseStory,
+              autoScroll: true,
+              child: DailyContentRow(
+                ayah: viewModel.dailyAyah,
+                hadith: viewModel.dailyHadith,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+
+    // Zemin tek parça çizilir (içerik + ekranın kalanı): dilim sınırında çizgi olmaz
+    final Widget sheet = hasImage
+        ? SliverToBoxAdapter(child: content)
+        : DecoratedSliver(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppRadius.xl),
+              ),
+            ),
+            sliver: SliverMainAxisGroup(
+              slivers: [
+                SliverToBoxAdapter(child: content),
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: SizedBox.shrink(),
+                ),
+              ],
+            ),
+          );
+
     return CustomScrollView(
       physics: const ClampingScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(child: _buildHero(viewModel, loc)),
-        SliverToBoxAdapter(
-          child: _SheetSurface(
-            opaque: !hasImage,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.lg,
-                AppSpacing.lg,
-                AppSpacing.lg,
-                AppSpacing.xl,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  PrayerTimesGrid(prayerTimes: times),
-                  const SizedBox(height: AppSpacing.md),
-                  PrayerTrackerRow(prayerTimes: times),
-                  if (hasDaily) ...[
-                    const SizedBox(height: AppSpacing.md),
-                    AppShowcase(
-                      showcaseKey: homeStoryKey,
-                      description: loc.showcaseStory,
-                      autoScroll: true,
-                      child: DailyContentRow(
-                        ayah: viewModel.dailyAyah,
-                        hadith: viewModel.dailyHadith,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ),
-        if (!hasImage)
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: ColoredBox(color: Theme.of(context).colorScheme.surface),
-          ),
+        sheet,
       ],
     );
   }
@@ -316,7 +329,10 @@ class _HomeViewState extends State<HomeView>
       gregorian = DateFormat('dd.MM.yyyy').format(DateTime.now());
     }
     final hijri = viewModel.hijriDateText.trim();
-    return hijri.isEmpty ? gregorian : '$gregorian · $hijri';
+    if (hijri.isEmpty) return gregorian;
+    // Arapça rakamlarda sıfır (٠) noktaya benzer: ayraç olarak virgül
+    final separator = loc.localeName.startsWith('ar') ? '، ' : ' · ';
+    return '$gregorian$separator$hijri';
   }
 
   Widget _buildHero(HomeViewModel viewModel, AppLocalizations loc) {

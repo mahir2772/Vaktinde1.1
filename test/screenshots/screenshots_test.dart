@@ -102,15 +102,17 @@ DateTime _parse(DateTime day, String hhmm) {
 PrayerTimesModel _istanbulTimes() =>
     PrayerTimeService().calculate(_istanbulLat, _istanbulLng);
 
-/// Gerçek vakitler, akşam 50 dk sonra olacak şekilde kaydırılır: kerahat kartı
-/// ("yaklaşıyor") ve işaretlenebilir vakitler görünür. Gece yarısını aşarsa null.
+/// Gerçek vakitler, akşam 50 dk sonra olacak şekilde kaydırılır: kerahat
+/// ("yaklaşıyor") ve işaretlenebilir vakitler görünür. Gece yarısını aşarsa
+/// sıkıştırılmış vakitler (güneş 10 dk önce doğmuş: kerahat sürüyor); o da
+/// sığmazsa null.
 PrayerTimesModel? _busyTimes() {
   final real = _istanbulTimes();
   final now = DateTime.now();
   final shift = now
       .add(const Duration(minutes: 50))
       .difference(_parse(now, real.aksam!));
-  final out = <String>[];
+  var out = <String>[];
   for (final v in [
     real.imsak!,
     real.gunes!,
@@ -120,8 +122,18 @@ PrayerTimesModel? _busyTimes() {
     real.yatsi!,
   ]) {
     final t = _parse(now, v).add(shift);
-    if (!DateUtils.isSameDay(t, now)) return null;
+    if (!DateUtils.isSameDay(t, now)) {
+      out = [];
+      break;
+    }
     out.add(_hhmm(t));
+  }
+  if (out.isEmpty) {
+    for (final minutes in [-30, -10, 20, 25, 30, 35]) {
+      final t = now.add(Duration(minutes: minutes));
+      if (!DateUtils.isSameDay(t, now)) return null;
+      out.add(_hhmm(t));
+    }
   }
   return PrayerTimesModel(
     imsak: out[0],
