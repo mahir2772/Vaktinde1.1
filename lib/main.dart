@@ -11,8 +11,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:geolocator/geolocator.dart'; // YENİ EKLENDİ
-import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // YENİ EKLENDİ
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'features/main_wrapper/main_wrapper.dart';
@@ -119,25 +119,60 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<ScaffoldMessengerState> _messengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
     _checkForUpdate();
   }
 
+  // Play esnek güncelleme: arka planda iner, uygulama ancak kullanıcı
+  // "Yeniden başlat" deyince yeniden başlar
   Future<void> _checkForUpdate() async {
+    if (!Platform.isAndroid) return;
     try {
-      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.startFlexibleUpdate();
-        await InAppUpdate.completeFlexibleUpdate();
+      final info = await InAppUpdate.checkForUpdate();
+      if (info.installStatus == InstallStatus.downloaded) {
+        _showUpdateReady();
+        return;
+      }
+      if (info.updateAvailability == UpdateAvailability.updateAvailable &&
+          info.flexibleUpdateAllowed) {
+        final result = await InAppUpdate.startFlexibleUpdate();
+        if (result == AppUpdateResult.success) _showUpdateReady();
       }
     } catch (e) {
       debugPrint("Güncelleme kontrol hatası: $e");
     }
   }
 
-  // --- YENİ: TANITIM TURU BİTER BİTMEZ İZİNLERİ İSTEYEN ZEKİ FONKSİYON ---
+  void _showUpdateReady() {
+    if (!mounted) return;
+    final AppLocalizations loc;
+    try {
+      loc = lookupAppLocalizations(context.read<LanguageProvider>().locale);
+    } catch (e) {
+      return;
+    }
+    _messengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(loc.updateDownloaded),
+        duration: const Duration(minutes: 1),
+        action: SnackBarAction(
+          label: loc.restartAction,
+          onPressed: () {
+            InAppUpdate.completeFlexibleUpdate().catchError((Object e) {
+              debugPrint("Güncelleme kurulamadı: $e");
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  // Tanıtım turu bitince önce bildirim, sonra konum izni istenir
   Future<void> _requestPermissionsAfterTutorial() async {
     // 1. Önce Bildirim İznini İster
     try {
@@ -170,7 +205,6 @@ class _MyAppState extends State<MyApp> {
       debugPrint("Konum izni hatası: $e");
     }
   }
-  // -----------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +214,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       title: 'Vaktinde',
+      scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       locale: languageProvider.locale,
       localizationsDelegates: const [
@@ -221,8 +256,7 @@ class _MyAppState extends State<MyApp> {
       },
       home: languageProvider.isLanguageSelected
           ? ShowCaseWidget(
-              onFinish:
-                  _requestPermissionsAfterTutorial, // TUR BİTİNCE İZİNLERİ TETİKLER
+              onFinish: _requestPermissionsAfterTutorial,
               builder: (context) => const MainWrapper(),
             )
           : const OnboardingLanguageView(),

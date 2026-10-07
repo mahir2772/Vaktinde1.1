@@ -1,9 +1,14 @@
-// countdown_widget.dart (Revize Edilmiş Hali)
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../../core/ui/app_format.dart';
+import '../../../core/ui/prayer_colors.dart';
+import '../../../core/ui/tabular_text.dart';
 import '../../../data/models/prayer_times_model.dart';
+import '../prayer_schedule.dart';
 
+/// Ana ekranın odak noktası: sıradaki vakit adı, saati ve geri sayım.
+/// Hero (gradyan/fotoğraf) üzerinde beyaz yazıyla çizilir; saniyede bir yenilenir.
 class CountdownWidget extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
 
@@ -15,25 +20,13 @@ class CountdownWidget extends StatefulWidget {
 
 class _CountdownWidgetState extends State<CountdownWidget> {
   Timer? _timer;
-  Duration _remainingTime = Duration.zero;
-  String _displayNextVakitIsmi = "";
-  AppLocalizations? _loc;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loc = AppLocalizations.of(context);
-    _calculateAndSetState(); // İlk açılışta hesapla
-  }
+  DateTime _now = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    // Hesaplama mantığı build'den çıkarılıp timer'ın içine alındı
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted && _loc != null) {
-        _calculateAndSetState();
-      }
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() => _now = DateTime.now());
     });
   }
 
@@ -43,128 +36,70 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     super.dispose();
   }
 
-  void _calculateAndSetState() {
-    if (widget.prayerTimes.imsak == null || _loc == null) return;
-
-    final now = DateTime.now();
-    List<Map<String, dynamic>> allTimes = [];
-
-    Map<String, String> vakitler = {
-      "İmsak": widget.prayerTimes.imsak!,
-      "Güneş": widget.prayerTimes.gunes!,
-      "Öğle": widget.prayerTimes.ogle!,
-      "İkindi": widget.prayerTimes.ikindi!,
-      "Akşam": widget.prayerTimes.aksam!,
-      "Yatsı": widget.prayerTimes.yatsi!,
-    };
-
-    for (var entry in vakitler.entries) {
-      List<String> parts = entry.value.split(':');
-      DateTime t = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
-      allTimes.add({"key": entry.key, "time": t, "isTomorrow": false});
-    }
-
-    List<String> imsakParts = widget.prayerTimes.imsak!.split(':');
-    DateTime tomorrowImsak = DateTime(
-      now.year,
-      now.month,
-      now.day + 1,
-      int.parse(imsakParts[0]),
-      int.parse(imsakParts[1]),
-    );
-    allTimes.add({"key": "İmsak", "time": tomorrowImsak, "isTomorrow": true});
-
-    // Geçmiş vakitleri at
-    allTimes.removeWhere((item) {
-      return (item["time"] as DateTime).difference(now).inSeconds <= 0;
-    });
-
-    allTimes.sort(
-      (a, b) => (a["time"] as DateTime).compareTo(b["time"] as DateTime),
-    );
-
-    if (allTimes.isNotEmpty) {
-      var next = allTimes.first;
-      var newRemainingTime = (next["time"] as DateTime).difference(now);
-
-      String translatedName = _getLocalizedName(next["key"], _loc!);
-      if (next["isTomorrow"] == true) {
-        translatedName = "$translatedName ${_loc!.tomorrow}";
-      }
-
-      // Sadece veri değiştiğinde UI'ı güncelle
-      setState(() {
-        _remainingTime = newRemainingTime;
-        _displayNextVakitIsmi = translatedName;
-      });
-    } else {
-      setState(() {
-        _remainingTime = Duration.zero;
-      });
-    }
-  }
-
-  String _getLocalizedName(String key, AppLocalizations loc) {
-    switch (key) {
-      case "İmsak":
-        return loc.imsak;
-      case "Güneş":
-        return loc.gunes;
-      case "Öğle":
-        return loc.ogle;
-      case "İkindi":
-        return loc.ikindi;
-      case "Akşam":
-        return loc.aksam;
-      case "Yatsı":
-        return loc.yatsi;
-      default:
-        return key;
-    }
-  }
-
-  String _formatDuration(Duration d) {
-    int totalSeconds = d.inSeconds;
-    if (totalSeconds < 0) totalSeconds = 0; // Güvenlik kelepçesi
-
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String hours = twoDigits(totalSeconds ~/ 3600);
-    String minutes = twoDigits((totalSeconds % 3600) ~/ 60);
-    String seconds = twoDigits(totalSeconds % 60);
-    return "$hours:$minutes:$seconds";
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_loc == null) return const SizedBox.shrink();
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final colors = PrayerColors.of(context);
+    final next = upcomingPrayer(widget.prayerTimes, _now);
+    if (next == null) return const SizedBox.shrink();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white30, width: 1),
-      ),
+    final name = localizedPrayerName(next.key, loc);
+    final time = formatPrayerTime(
+      prayerTimeOf(widget.prayerTimes, next.key),
+      loc.localeName,
+    );
+    final remaining = formatCountdown(next.time.difference(_now));
+    final timeLabel = next.isTomorrow ? '$time ${loc.tomorrow}' : time;
+
+    return Semantics(
+      container: true,
+      label:
+          '${loc.nextPrayer}: $name $timeLabel. '
+          '${loc.timeLeftFor(name)} $remaining',
+      excludeSemantics: true,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            _loc!.timeLeftFor(_displayNextVakitIsmi),
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            loc.nextPrayer,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleSmall!.copyWith(
+              color: colors.onHeroMuted,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-          const SizedBox(height: 5),
-          Text(
-            _formatDuration(_remainingTime),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              fontFamily: "Courier",
+          const SizedBox(height: 2),
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.end,
+            spacing: 10,
+            children: [
+              Text(
+                name,
+                style: theme.textTheme.headlineMedium!.copyWith(
+                  color: colors.onHero,
+                  height: 1.15,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Text(
+                  timeLabel,
+                  style: theme.textTheme.titleLarge!.copyWith(
+                    color: colors.onHeroMuted,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          TabularText(
+            remaining,
+            style: theme.textTheme.displayMedium!.copyWith(
+              color: colors.onHero,
+              height: 1.1,
             ),
           ),
         ],

@@ -102,7 +102,17 @@ class ErrorState extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
 
-  const ErrorState({super.key, required this.message, this.onRetry});
+  /// İsteğe bağlı ikinci yol (ör. "Konum Değiştir")
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
+
+  const ErrorState({
+    super.key,
+    required this.message,
+    this.onRetry,
+    this.secondaryLabel,
+    this.onSecondary,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +137,10 @@ class ErrorState extends StatelessWidget {
             icon: const Icon(Icons.refresh),
             label: Text(retry),
           ),
+        ],
+        if (secondaryLabel != null && onSecondary != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          TextButton(onPressed: onSecondary, child: Text(secondaryLabel!)),
         ],
       ],
     );

@@ -8,7 +8,9 @@ import '../../../data/models/prayer_times_model.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../../../data/services/prayer_tracker_service.dart';
-import '../../common/ad_helper.dart';
+import '../../../core/ui/app_card.dart';
+import '../../../core/ui/app_tokens.dart';
+import '../../../core/ui/prayer_colors.dart';
 import '../../prayer_tracker/view/prayer_tracker_view.dart';
 import '../view_model/home_view_model.dart';
 
@@ -16,13 +18,8 @@ import '../view_model/home_view_model.dart';
 /// Vakti girmemiş namaz işaretlenemez. Başlığa dokununca takip ekranı açılır.
 class PrayerTrackerRow extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
-  final bool hasImage;
 
-  const PrayerTrackerRow({
-    super.key,
-    required this.prayerTimes,
-    required this.hasImage,
-  });
+  const PrayerTrackerRow({super.key, required this.prayerTimes});
 
   @override
   State<PrayerTrackerRow> createState() => _PrayerTrackerRowState();
@@ -76,8 +73,9 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
 
   bool _isDue(String key, DateTime now) {
     try {
-      final parts = PrayerRefreshService.timesMap(widget.prayerTimes)[key]!
-          .split(':');
+      final parts = PrayerRefreshService.timesMap(
+        widget.prayerTimes,
+      )[key]!.split(':');
       final time = DateTime(
         now.year,
         now.month,
@@ -123,7 +121,6 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
   }
 
   void _openTracker() {
-    AdHelper.instance.showInterstitialAd();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const PrayerTrackerView()),
@@ -133,62 +130,67 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final names = trackerPrayerNames(loc);
     final now = DateTime.now();
     final today = PrayerTracker.day(now);
-    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
-    final cardColor = Theme.of(context).cardTheme.color;
     final doneCount = PrayerTracker.countOf(PrayerTracker.maskOf(_log, today));
+    final total = PrayerTracker.prayerKeys.length;
 
-    return Container(
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-      padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-      decoration: BoxDecoration(
-        color: widget.hasImage ? cardColor?.withValues(alpha: 0.85) : cardColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 5)),
-        ],
+    return AppCard(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.sm,
+        AppSpacing.xs,
+        AppSpacing.sm,
+        AppSpacing.sm,
       ),
       child: Column(
         children: [
-          InkWell(
-            onTap: _openTracker,
-            borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-              child: Row(
-                children: [
-                  const Icon(Icons.task_alt, color: Colors.teal, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      loc.trackerToday,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: textColor,
-                      ),
+          MergeSemantics(
+            child: Semantics(
+              button: true,
+              child: InkWell(
+                onTap: _openTracker,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minHeight: AppSizes.minTouch,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.task_alt, color: scheme.primary, size: 22),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            loc.trackerToday,
+                            style: theme.textTheme.titleSmall,
+                          ),
+                        ),
+                        Text(
+                          "$doneCount/$total",
+                          style: theme.textTheme.labelLarge!.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right,
+                          color: scheme.onSurfaceVariant,
+                          size: 22,
+                        ),
+                      ],
                     ),
                   ),
-                  Text(
-                    "$doneCount/${PrayerTracker.prayerKeys.length}",
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    color: Colors.grey.shade500,
-                    size: 22,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (final key in PrayerTracker.prayerKeys)
                 Expanded(
@@ -212,47 +214,52 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     required bool due,
     required VoidCallback onTap,
   }) {
-    final Color circleColor = prayed ? Colors.teal : Colors.transparent;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
     final Color borderColor = prayed
-        ? Colors.teal
-        : (due ? Colors.teal.withValues(alpha: 0.6) : Colors.grey.shade400);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Opacity(
-        opacity: due || prayed ? 1 : 0.45,
+        ? scheme.primary
+        : (due ? scheme.primary : scheme.outlineVariant);
+    return Semantics(
+      button: true,
+      toggled: prayed,
+      enabled: due || prayed,
+      label: label,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
           child: Column(
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
-                  color: circleColor,
+                  color: prayed ? scheme.primary : Colors.transparent,
                   shape: BoxShape.circle,
                   border: Border.all(color: borderColor, width: 2),
                 ),
                 child: prayed
-                    ? const Icon(Icons.check, color: Colors.white, size: 20)
+                    ? Icon(Icons.check, color: scheme.onPrimary, size: 20)
                     : (due
                           ? null
                           : Icon(
                               Icons.schedule,
-                              color: Colors.grey.shade500,
+                              color: scheme.onSurfaceVariant,
                               size: 16,
                             )),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
                   label,
                   maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: theme.textTheme.bodySmall!.copyWith(
+                    color: due || prayed ? scheme.onSurface : colors.past,
                     fontWeight: FontWeight.w500,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
               ),

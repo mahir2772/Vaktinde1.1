@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -11,14 +10,15 @@ import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
+import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
 
-// --- 5 ADIMLIK TANITIM İÇİN GLOBAL ANAHTARLAR ---
-final GlobalKey homeLangKey = GlobalKey();
-final GlobalKey homeStoryKey = GlobalKey();
-final GlobalKey homeAlarmsKey = GlobalKey();
-final GlobalKey qiblaKey = GlobalKey();
-final GlobalKey zikirmatikKey = GlobalKey();
+import 'app_showcase.dart';
 
+export 'app_showcase.dart'
+    show homeLangKey, homeStoryKey, homeAlarmsKey, qiblaKey, zikirmatikKey;
+
+/// Alt menü (Ana Sayfa, Kıble, Zikirmatik, Araçlar) + banner + tanıtım turu.
+/// Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada başlatır.
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
 
@@ -28,28 +28,20 @@ class MainWrapper extends StatefulWidget {
 
 class _MainWrapperState extends State<MainWrapper> {
   int _currentIndex = 0;
-  BannerAd? _bannerAd;
-  bool _isLoaded = false;
 
-  // 🔥 YENİ: Turun birden fazla kez başlamasını engellemek için güvenlik kilidi
+  // Sekmeler ilk ziyarette kurulur: pusula/konum açılışta başlamaz
+  final Set<int> _visited = {0};
+
+  // Tur birden fazla kez başlamasın
   bool _isTutorialChecked = false;
-
-  final String _adUnitId = AdIds.mainBanner;
-
-  final List<Widget> _pages = [
-    const HomeView(),
-    const QiblaView(),
-    const ZikirView(),
-    const ToolsView(),
-  ];
 
   @override
   void initState() {
     super.initState();
-    _loadAd();
     AdHelper.instance.loadInterstitialAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final loc = AppLocalizations.of(context);
       if (loc != null) {
         context.read<HomeViewModel>().initializeApp(loc);
@@ -57,27 +49,24 @@ class _MainWrapperState extends State<MainWrapper> {
     });
   }
 
-  // --- ÇEVİRİ YARDIMCI FONKSİYONU ---
-  String _t(AppLocalizations loc, String trText, String enText) {
-    return loc.localeName.startsWith('tr') ? trText : enText;
-  }
-
   Future<void> _checkAndStartShowcase() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // Testleri temiz yapmak için versiyonu v3 yaptık, sen test ettikçe silecek
-    bool isFirstTime = prefs.getBool('is_first_launch_showcase_v3') ?? true;
-
-    if (isFirstTime && mounted) {
-      // 5 adımlı turu sırayla başlatır
-      ShowCaseWidget.of(context).startShowCase([
-        homeLangKey,
-        homeStoryKey,
-        homeAlarmsKey,
-        qiblaKey,
-        zikirmatikKey,
-      ]);
-      await prefs.setBool('is_first_launch_showcase_v3', false);
+    final prefs = await SharedPreferences.getInstance();
+    final isFirstTime = prefs.getBool('is_first_launch_showcase_v3') ?? true;
+    if (!isFirstTime || !mounted) return;
+    // Günün ayeti/hadisi yüklenmediyse o adım atlanır
+    final keys = [
+      homeLangKey,
+      if (homeStoryKey.currentContext != null) homeStoryKey,
+      homeAlarmsKey,
+      qiblaKey,
+      zikirmatikKey,
+    ];
+    try {
+      ShowCaseWidget.of(context).startShowCase(keys);
+    } catch (e) {
+      debugPrint('Tanıtım turu başlatılamadı: $e');
     }
+    await prefs.setBool('is_first_launch_showcase_v3', false);
   }
 
   @override
@@ -85,7 +74,6 @@ class _MainWrapperState extends State<MainWrapper> {
     super.didChangeDependencies();
     final loc = AppLocalizations.of(context);
     if (loc != null) {
-      // 🔥 KESİN ÇÖZÜM: Build işlemi bittikten hemen sonra state güncellenecek
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           context.read<HomeViewModel>().updateLocalization(loc);
@@ -94,123 +82,75 @@ class _MainWrapperState extends State<MainWrapper> {
     }
   }
 
-  void _loadAd() {
-    _bannerAd = BannerAd(
-      adUnitId: _adUnitId,
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          setState(() {
-            _isLoaded = true;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          ad.dispose();
-          debugPrint('Reklam yüklenemedi: ${err.message}');
-        },
-      ),
-    )..load();
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
+  Widget _page(int index) {
+    if (!_visited.contains(index)) return const SizedBox.shrink();
+    return switch (index) {
+      0 => const HomeView(),
+      1 => const QiblaView(),
+      2 => const ZikirView(),
+      _ => const ToolsView(),
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    // 🔥 YENİ KUSURSUZ MİMARİ: View Model'i dinliyoruz.
     final viewModel = context.watch<HomeViewModel>();
 
-    // Eğer yükleme bittiyse ve tur henüz başlamadıysa tetikle!
+    // Yükleme bitince tur bir kez denenir
     if (!viewModel.isLoading && !_isTutorialChecked) {
-      _isTutorialChecked = true; // Sadece 1 kez çalışması için kilidi kapat
-
-      // Çizim işlemlerinin tam bitmesi için çok ufak bir süre tanıyıp başlatıyoruz
+      _isTutorialChecked = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _checkAndStartShowcase();
       });
     }
 
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
-
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [for (var i = 0; i < 4; i++) _page(i)],
+      ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (_isLoaded && _bannerAd != null)
-            SizedBox(
-              height: _bannerAd!.size.height.toDouble(),
-              width: _bannerAd!.size.width.toDouble(),
-              child: AdWidget(ad: _bannerAd!),
-            ),
-
+          AdBannerWidget(adUnitId: AdIds.mainBanner),
           NavigationBar(
             selectedIndex: _currentIndex,
             onDestinationSelected: (int index) {
-              if (_currentIndex != index) {
-                AdHelper.instance.showInterstitialAd();
-                setState(() {
-                  _currentIndex = index;
-                });
-              }
+              if (_currentIndex == index) return;
+              setState(() {
+                _visited.add(index);
+                _currentIndex = index;
+              });
             },
-            backgroundColor:
-                theme.bottomNavigationBarTheme.backgroundColor ??
-                (isDark ? Colors.grey.shade900 : Colors.white),
-            indicatorColor: Colors.teal.withOpacity(isDark ? 0.3 : 0.2),
             destinations: [
               NavigationDestination(
                 icon: const Icon(Icons.home_outlined),
-                selectedIcon: const Icon(Icons.home, color: Colors.teal),
+                selectedIcon: const Icon(Icons.home),
                 label: loc.navPrayer,
               ),
-
-              // ADIM 4: KIBLE SEKMESİ
-              Showcase(
-                key: qiblaKey,
-                description: _t(
-                  loc,
-                  "Kıble yönünü pusula ile bulabilirsiniz.",
-                  "You can find the Qibla direction using the compass.",
-                ),
-                overlayColor: Colors.black.withOpacity(0.8),
-                tooltipBackgroundColor: Colors.teal.shade800,
-                textColor: Colors.white,
+              AppShowcase(
+                showcaseKey: qiblaKey,
+                description: loc.showcaseQibla,
                 child: NavigationDestination(
                   icon: const Icon(Icons.explore_outlined),
-                  selectedIcon: const Icon(Icons.explore, color: Colors.teal),
+                  selectedIcon: const Icon(Icons.explore),
                   label: loc.navQibla,
                 ),
               ),
-
-              // ADIM 5: ZİKİRMATİK SEKMESİ
-              Showcase(
-                key: zikirmatikKey,
-                description: _t(
-                  loc,
-                  "Zikirlerinizi buradan takip edebilirsiniz.",
-                  "You can track your dhikrs from here.",
-                ),
-                overlayColor: Colors.black.withOpacity(0.8),
-                tooltipBackgroundColor: Colors.teal.shade800,
-                textColor: Colors.white,
+              AppShowcase(
+                showcaseKey: zikirmatikKey,
+                description: loc.showcaseZikir,
                 child: NavigationDestination(
                   icon: const Icon(Icons.touch_app_outlined),
-                  selectedIcon: const Icon(Icons.touch_app, color: Colors.teal),
+                  selectedIcon: const Icon(Icons.touch_app),
                   label: loc.zikirmatikTitle,
                 ),
               ),
               NavigationDestination(
-                icon: const Icon(Icons.dashboard_outlined),
-                selectedIcon: const Icon(Icons.dashboard, color: Colors.teal),
-                label: loc.navMenu,
+                icon: const Icon(Icons.grid_view_outlined),
+                selectedIcon: const Icon(Icons.grid_view_rounded),
+                label: loc.navTools,
               ),
             ],
           ),

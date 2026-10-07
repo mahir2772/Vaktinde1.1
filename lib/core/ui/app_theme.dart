@@ -13,6 +13,9 @@ abstract final class AppTheme {
   static const String fontFamily = 'Poppins';
   static const String arabicFamily = 'Amiri';
 
+  /// Poppins'te olmayan karakterler (Arapça arayüz metni) için sistem yazı tipi
+  static const List<String> fontFallback = ['sans-serif'];
+
   /// Saat/sayaç gibi rakam hizası önemli metinler için
   static const List<FontFeature> tabularFigures = [
     FontFeature.tabularFigures(),
@@ -103,6 +106,7 @@ abstract final class AppTheme {
   static TextTheme _textTheme(ColorScheme scheme) {
     TextStyle s(double size, FontWeight weight, double height) => TextStyle(
       fontFamily: fontFamily,
+      fontFamilyFallback: fontFallback,
       fontSize: size,
       fontWeight: weight,
       height: height,
@@ -156,6 +160,7 @@ abstract final class AppTheme {
       brightness: scheme.brightness,
       colorScheme: scheme,
       fontFamily: fontFamily,
+      fontFamilyFallback: fontFallback,
       textTheme: text,
       scaffoldBackgroundColor: hasBackgroundImage
           ? Colors.transparent
