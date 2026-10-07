@@ -193,7 +193,27 @@ void main() {
         await tester.scrollUntilVisible(find.text(title), 200);
         expect(find.text(title), findsOneWidget);
       }
-      expect(find.byType(ToolTile), findsWidgets);
+      expect(find.byType(AppListTile), findsWidgets);
+      await _dispose(tester);
+    });
+
+    testWidgets('411×891 ekranda Zekat ve Ayarlar kaydırmadan görünür', (
+      tester,
+    ) async {
+      // Alt menü yüksekliği kadar (≈ 80dp) kısaltılmış gövde
+      await _pumpScreen(
+        tester,
+        const ToolsView(),
+        width: 411,
+        height: 891 - 80,
+        textScale: 1,
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      final screen = tester.getRect(find.byType(ToolsView));
+      for (final title in [loc.zakatTitle, loc.menuTitle]) {
+        final rect = tester.getRect(find.text(title));
+        expect(rect.bottom, lessThanOrEqualTo(screen.bottom), reason: title);
+      }
       await _dispose(tester);
     });
   });

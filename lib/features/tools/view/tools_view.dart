@@ -14,8 +14,9 @@ import '../../religious_days/view/religious_days_view.dart';
 import '../../settings/view/settings_view.dart';
 import '../../zakat/view/zakat_view.dart';
 
-/// Araçlar sekmesi: gruplanmış araç kutucukları + en altta Ayarlar satırı.
-/// Tek kaydırılabilir liste (sabitlenmiş öğe yok); büyük yazıda kutucuklar uzar.
+/// Araçlar sekmesi: Ayarlar ile aynı dikey liste stili (ikon kutusu + başlık +
+/// kısa açıklama, ≥56dp satırlar), Namaz / Bilgi / Hesap grupları ve en altta
+/// Ayarlar satırı. Tek kaydırılabilir liste; büyük yazıda satırlar uzar.
 class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
 
@@ -99,19 +100,16 @@ class ToolsView extends StatelessWidget {
         children: [
           for (final (title, items) in groups) ...[
             _GroupHeader(title: title, onImage: hasImage),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: _ToolGrid(
-                children: [
-                  for (final item in items)
-                    ToolTile(
-                      icon: item.icon,
-                      title: item.title,
-                      subtitle: item.subtitle,
-                      onTap: () => _open(context, item.page()),
-                    ),
-                ],
-              ),
+            AppListSection(
+              children: [
+                for (final item in items)
+                  AppListTile(
+                    leadingIcon: item.icon,
+                    title: item.title,
+                    subtitle: item.subtitle,
+                    onTap: () => _open(context, item.page()),
+                  ),
+              ],
             ),
           ],
           const SizedBox(height: AppSpacing.xl),
@@ -138,42 +136,6 @@ class _ToolItem {
   final Widget Function() page;
 
   const _ToolItem(this.icon, this.title, this.subtitle, this.page);
-}
-
-/// İki sütunlu esnek ızgara: satırdaki kutucuklar en uzununa eşitlenir,
-/// yükseklik içerikten gelir (büyük yazıda/dar ekranda taşmaz).
-class _ToolGrid extends StatelessWidget {
-  final List<Widget> children;
-
-  const _ToolGrid({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    final rows = <Widget>[];
-    for (var i = 0; i < children.length; i += 2) {
-      if (i > 0) rows.add(const SizedBox(height: AppSpacing.md));
-      rows.add(
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: children[i]),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: i + 1 < children.length
-                    ? children[i + 1]
-                    : const SizedBox.shrink(),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: rows,
-    );
-  }
 }
 
 /// Grup başlığı; arka plan görseli seçiliyse okunur kalsın diye opak kapsül içinde
