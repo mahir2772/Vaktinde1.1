@@ -208,12 +208,30 @@ class _QiblaViewState extends State<QiblaView> {
 
   String _deg(double value) => '${normalizeDegrees(value).round() % 360}';
 
+  /// "152°" sağdan sola metinde de "152°" okunsun (° sayının solunda kalmasın)
+  static String _isolateDegrees(String text, String value) =>
+      text.replaceFirst('$value°', '\u2066$value°\u2069');
+
+  String _angleText(AppLocalizations loc, double bearing) {
+    final value = _deg(bearing);
+    return _isolateDegrees(loc.qiblaAngle(value), value);
+  }
+
+  String _headingText(AppLocalizations loc, double heading) {
+    final value = _deg(heading);
+    return _isolateDegrees(loc.phoneHeading(value), value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc.qiblaTitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+        title: Text(
+          loc.qiblaTitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(child: _buildBody(context, loc)),
@@ -257,14 +275,14 @@ class _QiblaViewState extends State<QiblaView> {
             child: EmptyState(
               icon: Icons.explore_off_outlined,
               title: loc.noCompass,
-              message: loc.qiblaAngle(_deg(bearing)),
+              message: _angleText(loc, bearing),
             ),
           ),
         ],
       );
     }
 
-    final content = LayoutBuilder(
+    final scroll = LayoutBuilder(
       builder: (context, constraints) {
         final dialSize = math.max(
           180.0,
@@ -277,64 +295,78 @@ class _QiblaViewState extends State<QiblaView> {
           ),
         );
         return SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ?savedBanner,
-              const SizedBox(height: AppSpacing.lg),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                child: _QiblaStatus(
-                  hasHeading: _hasHeading,
-                  turn: _hasHeading ? qiblaTurnFor(_heading, bearing) : null,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Center(
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween<double>(end: _unwrappedHeading),
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeOut,
-                  builder: (context, heading, _) => _CompassDial(
-                    size: dialSize,
-                    heading: heading,
-                    bearing: bearing,
-                    aligned: _aligned,
-                    semanticLabel: [
-                      loc.qiblaDirection,
-                      loc.qiblaAngle(_deg(bearing)),
-                      if (_hasHeading) loc.phoneHeading(_deg(_heading)),
-                    ].join('. '),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          child: ConstrainedBox(
+            // Uzun ekranda içerik dikeyde ortalanır
+            constraints: BoxConstraints(
+              minHeight: math.max(0, constraints.maxHeight - 2 * AppSpacing.lg),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                  ),
+                  child: _QiblaStatus(
+                    hasHeading: _hasHeading,
+                    turn: _hasHeading ? qiblaTurnFor(_heading, bearing) : null,
                   ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              _Readouts(
-                bearingText: loc.qiblaAngle(_deg(bearing)),
-                headingText: _hasHeading
-                    ? loc.phoneHeading(_deg(_heading))
-                    : null,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: _calibrationPoor
-                    ? InfoBanner(
-                        message: loc.lowAccuracyWarning,
-                        icon: Icons.screen_rotation,
-                        tone: InfoTone.warning,
-                      )
-                    : InfoBanner(
-                        message:
-                            '${loc.qiblaCalibration} ${loc.keepAwayMetal}',
-                        icon: Icons.screen_rotation,
-                      ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.lg),
+                Center(
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween<double>(end: _unwrappedHeading),
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOut,
+                    builder: (context, heading, _) => _CompassDial(
+                      size: dialSize,
+                      heading: heading,
+                      bearing: bearing,
+                      aligned: _aligned,
+                      semanticLabel: [
+                        loc.qiblaDirection,
+                        _angleText(loc, bearing),
+                        if (_hasHeading) _headingText(loc, _heading),
+                      ].join('. '),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                _Readouts(
+                  bearingText: _angleText(loc, bearing),
+                  headingText: _hasHeading ? _headingText(loc, _heading) : null,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
+                  child: _calibrationPoor
+                      ? InfoBanner(
+                          message: loc.lowAccuracyWarning,
+                          icon: Icons.screen_rotation,
+                          tone: InfoTone.warning,
+                        )
+                      : InfoBanner(
+                          message:
+                              '${loc.qiblaCalibration} ${loc.keepAwayMetal}',
+                          icon: Icons.screen_rotation,
+                        ),
+                ),
+              ],
+            ),
           ),
         );
       },
+    );
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ?savedBanner,
+        Expanded(child: scroll),
+      ],
     );
 
     if (!_showCalibrationDialog) return content;
