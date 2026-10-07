@@ -11,8 +11,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'features/main_wrapper/main_wrapper.dart';
@@ -121,6 +119,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<ScaffoldMessengerState> _messengerKey =
       GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -172,38 +171,12 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  // Tanıtım turu bitince önce bildirim, sonra konum izni istenir
+  // Tanıtım turu bitince: kısa açıklama penceresi, sonra bildirim ve konum izni
+  // (yeni kullanıcı akışıyla aynı; MaterialApp altındaki bağlam navigator anahtarından)
   Future<void> _requestPermissionsAfterTutorial() async {
-    // 1. Önce Bildirim İznini İster
-    try {
-      final notificationsPlugin = FlutterLocalNotificationsPlugin();
-      if (Platform.isAndroid) {
-        await notificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >()
-            ?.requestNotificationsPermission();
-      } else if (Platform.isIOS) {
-        await notificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin
-            >()
-            ?.requestPermissions(alert: true, badge: true, sound: true);
-      }
-    } catch (e) {
-      debugPrint("Bildirim izni hatası: $e");
-    }
-
-    // 2. Kullanıcı bildirim iznini geçer geçmez Konum İznini İster
-    try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        await Geolocator.requestPermission();
-      }
-    } catch (e) {
-      debugPrint("Konum izni hatası: $e");
-    }
+    final context = _navigatorKey.currentContext;
+    if (context == null) return;
+    await requestPermissionsWithPriming(context);
   }
 
   @override
@@ -215,6 +188,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Vaktinde',
       scaffoldMessengerKey: _messengerKey,
+      navigatorKey: _navigatorKey,
       debugShowCheckedModeBanner: false,
       locale: languageProvider.locale,
       localizationsDelegates: const [

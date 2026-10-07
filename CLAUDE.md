@@ -23,7 +23,7 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 - Güncelleme: tek akış, Play esnek güncelleme (`_checkForUpdate`): iner, "Yeniden başlat" SnackBar'ı (`scaffoldMessengerKey`) ile kullanıcı onaylayınca `completeFlexibleUpdate`. UpgradeAlert yok.
 
 `MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). SettingsView araçlar ekranındaki karttan açılır.
-`ToolsView` → Imsakiye, Zakat, EsmaulHusna, FridayMessages, MissedPrayers, ReligiousDays, Dhikr list/stats.
+`ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar) → Imsakiye, PrayerTracker, MissedPrayers, ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
 
 ## Klasörler
 ```
@@ -54,7 +54,7 @@ lib/
       economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır
       http_client           httpGet(): tüm dış isteklerde 10 sn timeout
       json_service          assets/data/*.json (esma, dini günler, cuma mesajları)
-      dini_gunler_service   dini gün hesaplama (hijri paketi)
+      dini_gunler_service   dini günler: religious_days.json (Diyanet, 2025-2028) öncelikli, yoksa hijri hesap (turFromName, parseResmiGunler, yilinGunleri)
   features/<özellik>/{view,view_model,widgets}
     home/view_model/home_view_model.dart   ANA MANTIK: init (kayıtlı koordinattan hesapla → yoksa cache → yoksa geocode), gün değişince
                                            yeniden hesaplama (resume + gece yarısı zamanlayıcısı; ayet/hadis de yenilenir), konum,
@@ -81,6 +81,11 @@ lib/
     home/widgets/prayer_tracker_row.dart   "Bugün" 5 vakit işareti (resume'da yenilenir) → prayer_tracker/view/prayer_tracker_view.dart
                                            (7 gün ızgara, 30 gün oran, seri, kılınmayanları kazaya ekle; araçlarda da kart)
     settings/view/end_reminder_setting.dart vakit çıkış hatırlatması anahtarı + 15/30/45 dk
+    settings/view/language_sheet.dart      dil seçimi (Ayarlar'da ilk satır); sürüm package_info_plus ile
+    qibla/qibla_math.dart                  kıble açısı (adhan_dart Qibla) + dönüş yönü yardımcıları; pusula sadece sekme görünürken
+    zikirmatik/view/dhikr_names.dart       zikir adları/Arapça metinleri (Amiri)
+    onboarding/view/onboarding_language_view.dart  dil seçimi + requestPermissionsWithPriming (açıklama penceresi → bildirim → konum);
+                                           main.dart turu da aynı fonksiyonu navigatorKey bağlamıyla kullanır
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
     imsakiye/view/imsakiye_view.dart       aylık/Ramazan imsakiyesi (forDate ile); paylaşım = ekran dışı RepaintBoundary → PNG
