@@ -1,560 +1,496 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../view_model/zikir_view_model.dart';
-import 'zikir_settings_view.dart';
 import 'dhikr_list_view.dart';
+import 'dhikr_names.dart';
 import 'dhikr_stats_view.dart';
+import 'zikir_settings_view.dart';
 
+/// Zikirmatik sekmesi: seçili zikir + hedef, büyük sayaç (modern düğme veya
+/// klasik tesbih), altta düzenle / sıfırla.
 class ZikirView extends StatelessWidget {
   const ZikirView({super.key});
 
-  // --- EKSİK OLAN ÇEVİRİ FONKSİYONU BURAYA EKLENDİ ---
-  String _getTranslatedName(String id, AppLocalizations loc) {
-    switch (id) {
-      case "Sübhanallah":
-        return loc.dhikrSubhanallah;
-      case "Elhamdülillah":
-        return loc.dhikrElhamdulillah;
-      case "Allahu Ekber":
-        return loc.dhikrAllahuEkber;
-      case "Kelime-i Tevhid":
-        return loc.dhikrKalima;
-      case "Salavat":
-        return loc.dhikrSalavat;
-      case "Estağfirullah":
-        return loc.dhikrEstagfirullah;
-      case "La Havle":
-        return loc.dhikrLaHavle;
-      case "Hasbünallah":
-        return loc.dhikrHasbunallah;
-      case "Subhanallahi":
-        return loc.dhikrSubhanallahi;
-      case "Hz. Yunus":
-        return loc.dhikrYunus;
-      case "Ya Allah":
-        return loc.dhikrYaAllah;
-      case "Ya Rahman":
-        return loc.dhikrYaRahman;
-      case "Ya Rahim":
-        return loc.dhikrYaRahim;
-      case "Ya Şafi":
-        return loc.dhikrYaSafi;
-      case "Ya Rezzak":
-        return loc.dhikrYaRezzak;
-      case "Ya Fettah":
-        return loc.dhikrYaFettah;
-      default:
-        return id; // Özel zikirse kullanıcının yazdığı gibi döner
-    }
+  void _open(BuildContext context, Widget page) {
+    Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final backgroundColor = theme.scaffoldBackgroundColor;
-    final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black87;
-    const primaryColor = Colors.teal;
-    final cardColor = theme.cardColor;
-
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text(loc.zikirmatikTitle),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: false, // İkonlara yer kalsın diye başlığı sola yasladık
-        foregroundColor: textColor,
+        title: Text(
+          loc.zikirmatikTitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        automaticallyImplyLeading: false,
+        centerTitle: false,
         actions: [
-          // 1. ZİKİR LİSTESİ BUTONU
           IconButton(
             icon: const Icon(Icons.list_alt_rounded),
             tooltip: loc.dhikrListTitle,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DhikrListView()),
-              );
-            },
+            onPressed: () => _open(context, const DhikrListView()),
           ),
-          // 2. İSTATİSTİKLER (GRAFİK) BUTONU
           IconButton(
             icon: const Icon(Icons.bar_chart_rounded),
             tooltip: loc.statisticsTitle,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DhikrStatsView()),
-              );
-            },
+            onPressed: () => _open(context, const DhikrStatsView()),
           ),
-          // 3. AYARLAR BUTONU
           IconButton(
-            icon: const Icon(Icons.settings_rounded),
+            icon: const Icon(Icons.settings_outlined),
             tooltip: loc.zikirSettings,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ZikirSettingsView(),
-                ),
-              );
-            },
+            onPressed: () => _open(context, const ZikirSettingsView()),
           ),
-          const SizedBox(width: 5),
         ],
       ),
-      body: Consumer<ZikirViewModel>(
-        builder: (context, viewModel, child) {
-          String arabicText = viewModel.getArabicForDhikr(
-            viewModel.selectedDhikr,
-          );
-          // --- ÇEVİRİ BURADA UYGULANDI ---
-          String translatedDhikrName = _getTranslatedName(
-            viewModel.selectedDhikr,
-            loc,
-          );
+      body: SafeArea(
+        child: Consumer<ZikirViewModel>(
+          builder: (context, viewModel, child) {
+            final name = dhikrDisplayName(viewModel.selectedDhikr, loc);
+            final arabic = viewModel.getArabicForDhikr(viewModel.selectedDhikr);
+            void editCount() => _editCount(context, viewModel, loc);
 
-          return Column(
-            children: [
-              // --- ÜST BİLGİ PANELİ (ZİKİR VE HEDEF) ---
-              Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                    AppSpacing.lg,
+                    0,
+                  ),
+                  child: _DhikrHeader(
+                    name: name,
+                    arabic: arabic,
+                    targetLabel: loc.targetCount(viewModel.target),
+                    onEditTarget: () => _editTarget(context, viewModel, loc),
+                  ),
                 ),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: cardColor,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
+                Expanded(
+                  child: viewModel.viewMode == 0
+                      ? _ModernCounter(
+                          viewModel: viewModel,
+                          dhikrName: name,
+                          onEdit: editCount,
+                        )
+                      : _ClassicTasbihView(
+                          viewModel: viewModel,
+                          dhikrName: name,
+                          onEdit: editCount,
+                        ),
+                ),
+                _ActionRow(
+                  onEdit: editCount,
+                  onReset: () => _confirmReset(context, viewModel, loc),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+bool _targetReached(ZikirViewModel viewModel) =>
+    viewModel.target > 0 &&
+    viewModel.count > 0 &&
+    viewModel.count % viewModel.target == 0;
+
+Future<void> _editCount(
+  BuildContext context,
+  ZikirViewModel viewModel,
+  AppLocalizations loc,
+) async {
+  final value = await _askNumber(
+    context,
+    title: loc.editCounterTitle,
+    initial: viewModel.count,
+    hint: loc.exampleHint(2000),
+    min: 0,
+  );
+  if (value != null) await viewModel.setCount(value);
+}
+
+Future<void> _editTarget(
+  BuildContext context,
+  ZikirViewModel viewModel,
+  AppLocalizations loc,
+) async {
+  final value = await _askNumber(
+    context,
+    title: loc.setTarget,
+    initial: viewModel.target,
+    hint: loc.exampleHint(99),
+    min: 1,
+  );
+  if (value != null) await viewModel.setTarget(value);
+}
+
+Future<void> _confirmReset(
+  BuildContext context,
+  ZikirViewModel viewModel,
+  AppLocalizations loc,
+) async {
+  final confirmed = await showConfirmDialog(
+    context,
+    title: loc.resetCounter,
+    message: loc.resetCounterConfirm,
+    confirmLabel: loc.resetCounter,
+    destructive: true,
+  );
+  if (confirmed) await viewModel.reset();
+}
+
+/// Sayı girişi; geçersiz/boş giriş değişiklik yapmadan kapanır (null)
+Future<int?> _askNumber(
+  BuildContext context, {
+  required String title,
+  required int initial,
+  required String hint,
+  required int min,
+}) {
+  return showDialog<int>(
+    context: context,
+    builder: (_) => _NumberInputDialog(
+      title: title,
+      initial: initial,
+      hint: hint,
+      min: min,
+    ),
+  );
+}
+
+class _NumberInputDialog extends StatefulWidget {
+  final String title;
+  final int initial;
+  final String hint;
+  final int min;
+
+  const _NumberInputDialog({
+    required this.title,
+    required this.initial,
+    required this.hint,
+    required this.min,
+  });
+
+  @override
+  State<_NumberInputDialog> createState() => _NumberInputDialogState();
+}
+
+class _NumberInputDialogState extends State<_NumberInputDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    final text = '${widget.initial}';
+    // Değer seçili gelir: yazınca yerine geçer
+    _controller = TextEditingController(text: text)
+      ..selection = TextSelection(baseOffset: 0, extentOffset: text.length);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final value = int.tryParse(_controller.text.trim());
+    Navigator.pop(context, value != null && value >= widget.min ? value : null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(widget.title),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.done,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(9),
+        ],
+        decoration: InputDecoration(hintText: widget.hint),
+        onSubmitted: (_) => _submit(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(loc.cancel),
+        ),
+        FilledButton(onPressed: _submit, child: Text(loc.save)),
+      ],
+    );
+  }
+}
+
+/// Seçili zikir (ad + Arapça) ve hedef düğmesi
+class _DhikrHeader extends StatelessWidget {
+  final String name;
+  final String arabic;
+  final String targetLabel;
+  final VoidCallback onEditTarget;
+
+  const _DhikrHeader({
+    required this.name,
+    required this.arabic,
+    required this.targetLabel,
+    required this.onEditTarget,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AppCard(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.lg,
+        AppSpacing.md,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (arabic.isNotEmpty)
+            ConstrainedBox(
+              // Uzun dualar kartı büyütmez, kayar
+              constraints: const BoxConstraints(maxHeight: 84),
+              child: SingleChildScrollView(
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    arabic,
+                    textDirection: TextDirection.rtl,
+                    style: arabicDhikrStyle(context, fontSize: 24),
+                  ),
+                ),
+              ),
+            ),
+          const SizedBox(height: AppSpacing.sm),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: FilledButton.tonalIcon(
+              onPressed: onEditTarget,
+              icon: const Icon(Icons.flag_outlined),
+              label: Text(targetLabel),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Modern görünüm: dokunarak sayılan büyük daire (basılı tutunca düzenlenir)
+class _ModernCounter extends StatelessWidget {
+  final ZikirViewModel viewModel;
+  final String dhikrName;
+  final VoidCallback onEdit;
+
+  const _ModernCounter({
+    required this.viewModel,
+    required this.dhikrName,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final reached = _targetReached(viewModel);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = math.max(
+          0.0,
+          math.min(
+            300.0,
+            math.min(constraints.maxWidth - 48, constraints.maxHeight - 32),
+          ),
+        );
+        return Center(
+          child: Semantics(
+            container: true,
+            button: true,
+            label: dhikrName,
+            value: '${viewModel.count}',
+            hint: loc.tapToCount,
+            onLongPressHint: loc.editCounterTitle,
+            onTap: viewModel.increment,
+            onLongPress: onEdit,
+            excludeSemantics: true,
+            child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: scheme.primary.withValues(
+                      alpha: isDark ? 0.18 : 0.25,
                     ),
-                  ],
+                    blurRadius: 40,
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: Material(
+                color: theme.cardTheme.color ?? scheme.surfaceContainerLowest,
+                shape: CircleBorder(
+                  side: BorderSide(
+                    color: reached
+                        ? colors.success
+                        : scheme.primary.withValues(alpha: 0.5),
+                    width: 8,
+                  ),
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // SOL TARAF: Zikir Adı ve Arapçası
-                    Expanded(
-                      flex: 6,
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: viewModel.increment,
+                  onLongPress: onEdit,
+                  child: Padding(
+                    padding: EdgeInsets.all(size * 0.16),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            translatedDhikrName, // Dinamik çevrilmiş hali yazdırılır
+                          TabularText(
+                            '${viewModel.count}',
                             style: TextStyle(
-                              color: textColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 88,
+                              fontWeight: FontWeight.w700,
+                              height: 1.1,
+                              color: reached
+                                  ? colors.success
+                                  : scheme.onSurface,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                          if (arabicText.isNotEmpty) ...[
-                            const SizedBox(height: 5),
-                            // --- BURASI GÜNCELLENDİ ---
-                            Container(
-                              // Kartın tasarımını bozmaması için maksimum bir yükseklik veriyoruz.
-                              // 100 değerini telefonunda test edip gözüne göre 120, 150 yapabilirsin.
-                              constraints: const BoxConstraints(maxHeight: 100),
-                              child: SingleChildScrollView(
-                                // İçeriği kaydırılabilir hale getiriyor
-                                physics:
-                                    const BouncingScrollPhysics(), // Aşağı/yukarı kaydırırken tatlı bir yaylanma efekti verir
-                                child: Text(
-                                  arabicText,
-                                  style: TextStyle(
-                                    color: primaryColor,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily:
-                                        'Amiri', // Varsa şık arapça fontu
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                              ),
-                            ),
-                            // ---------------------------
+                          if (reached) ...[
+                            const SizedBox(height: AppSpacing.sm),
+                            _ReachedChip(text: loc.targetReached),
                           ],
                         ],
                       ),
                     ),
-
-                    // SAĞ TARAF: Hedef Seçici (Kapsül Tasarım)
-                    Expanded(
-                      flex: 4,
-                      child: GestureDetector(
-                        onTap: () => _showEditTargetDialog(
-                          context,
-                          viewModel,
-                          loc,
-                          cardColor,
-                          textColor,
-                          primaryColor,
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical:
-                                12, // Dikey boşluğu biraz artırdık ki daha iyi tıklansın
-                          ),
-                          decoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.flag, color: primaryColor, size: 20),
-                              const SizedBox(width: 5),
-                              Flexible(
-                                child: Text(
-                                  "Hedef: ${viewModel.target}",
-                                  style: TextStyle(
-                                    color: primaryColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // --- ORTA ALAN: GÖRÜNÜM SEÇİMİNE GÖRE (DEV BUTON VEYA TESBİH) ---
-              Expanded(
-                child: Center(
-                  child: viewModel.viewMode == 0
-                      ? _buildModernView(
-                          context,
-                          viewModel,
-                          loc,
-                          cardColor,
-                          textColor,
-                          primaryColor,
-                          isDark,
-                        )
-                      : _ClassicTasbihView(viewModel: viewModel, loc: loc),
-                ),
-              ),
-
-              // --- ALT PANEL: Sıfırlama Butonu ---
-              if (viewModel.viewMode == 0)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 30),
-                  child: ElevatedButton.icon(
-                    onPressed: () => _showResetDialog(
-                      context,
-                      viewModel,
-                      loc,
-                      cardColor,
-                      textColor,
-                    ),
-                    icon: const Icon(Icons.refresh),
-                    label: Text(loc.resetCounter),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent.withOpacity(0.1),
-                      foregroundColor: Colors.redAccent,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 30,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
                   ),
                 ),
-            ],
-          );
-        },
-      ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
+}
 
-  // --- MODERN GÖRÜNÜM (DEV BUTON) ---
-  Widget _buildModernView(
-    BuildContext context, // Context eklendi
-    ZikirViewModel viewModel,
-    AppLocalizations loc,
-    Color cardColor,
-    Color textColor,
-    Color primaryColor,
-    bool isDark,
-  ) {
-    bool targetReached =
-        viewModel.count > 0 && viewModel.count % viewModel.target == 0;
+class _ReachedChip extends StatelessWidget {
+  final String text;
 
-    return GestureDetector(
-      onTap: () => viewModel.increment(),
-      onLongPress: () => _showEditCountDialog(
-        context,
-        viewModel,
-        loc,
-        cardColor,
-        textColor,
-        primaryColor,
-      ), // BASILI TUTUNCA AÇILIR
-      child: Container(
-        width: 300,
-        height: 300,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: cardColor,
-          boxShadow: [
-            BoxShadow(
-              color: primaryColor.withOpacity(isDark ? 0.15 : 0.3),
-              blurRadius: 50,
-              spreadRadius: 10,
-            ),
-          ],
-          border: Border.all(
-            color: targetReached ? Colors.green : primaryColor.withOpacity(0.5),
-            width: 8,
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // SAYININ TAŞMASINI ENGELLEYEN VE EKRANA SIĞDIRAN KUTU (FittedBox)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    '${viewModel.count}',
-                    style: TextStyle(
-                      fontSize: 90,
-                      fontWeight: FontWeight.bold,
-                      color: targetReached ? Colors.green : textColor,
-                      height: 1.1,
-                    ),
-                  ),
-                ),
-              ),
-              if (targetReached)
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Text(
-                      loc.targetReached,
-                      style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              // KULLANICIYA GİZLİ İPUCU
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  "(Düzenlemek için basılı tutun)",
-                  style: TextStyle(
-                    color: textColor.withOpacity(0.3),
-                    fontSize: 10,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+  const _ReachedChip({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = PrayerColors.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colors.successContainer,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(
+          context,
+        ).textTheme.labelLarge!.copyWith(color: colors.onSuccessContainer),
       ),
     );
   }
 }
 
-// --- MANUEL SAYI GİRME DİYALOĞU ---
-void _showEditCountDialog(
-  BuildContext context,
-  ZikirViewModel viewModel,
-  AppLocalizations loc,
-  Color cardColor,
-  Color textColor,
-  Color primaryColor,
-) {
-  TextEditingController controller = TextEditingController(
-    text: viewModel.count.toString(),
-  );
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text(
-        "Sayacı Düzenle",
-        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-      ),
-      content: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number, // Sadece klavye sayıları çıkar
-        style: TextStyle(color: textColor),
-        decoration: InputDecoration(
-          hintText: "Örn: 2000",
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: primaryColor),
-          ),
-        ),
-        autofocus: true,
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(loc.cancel, style: const TextStyle(color: Colors.grey)),
-        ),
-        TextButton(
-          onPressed: () {
-            if (controller.text.isNotEmpty) {
-              int? newVal = int.tryParse(controller.text);
-              if (newVal != null && newVal >= 0) {
-                viewModel.setCount(newVal); // YENİ SAYIYI BEYNE GÖNDER
-              }
-            }
-            Navigator.pop(context);
-          },
-          child: Text(
-            loc.save,
-            style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+/// Altta görünür "Sayacı Düzenle" ve "Sıfırla" (dar ekranda alt alta)
+class _ActionRow extends StatelessWidget {
+  final VoidCallback onEdit;
+  final VoidCallback onReset;
 
-// --- MANUEL HEDEF GİRME DİYALOĞU ---
-void _showEditTargetDialog(
-  BuildContext context,
-  ZikirViewModel viewModel,
-  AppLocalizations loc,
-  Color cardColor,
-  Color textColor,
-  Color primaryColor,
-) {
-  TextEditingController controller = TextEditingController(
-    text: viewModel.target.toString(),
-  );
+  const _ActionRow({required this.onEdit, required this.onReset});
 
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text(
-        "Hedefi Belirle",
-        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        AppSpacing.lg,
       ),
-      content: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number, // Sadece sayı klavyesi açılır
-        style: TextStyle(color: textColor),
-        decoration: InputDecoration(
-          hintText: "Örn: 99",
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: primaryColor),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: AppSpacing.md,
+        runSpacing: AppSpacing.sm,
+        children: [
+          OutlinedButton.icon(
+            onPressed: onEdit,
+            icon: const Icon(Icons.edit_outlined),
+            label: Text(loc.editCounterTitle),
           ),
-        ),
-        autofocus: true, // Açılır açılmaz klavyeyi ekrana getirir
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(loc.cancel, style: const TextStyle(color: Colors.grey)),
-        ),
-        TextButton(
-          onPressed: () {
-            if (controller.text.isNotEmpty) {
-              int? newVal = int.tryParse(controller.text);
-              // Hedefin 0'dan büyük geçerli bir sayı olduğunu kontrol ediyoruz
-              if (newVal != null && newVal > 0) {
-                viewModel.setTarget(newVal);
-              }
-            }
-            Navigator.pop(context);
-          },
-          child: Text(
-            loc.save,
-            style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-// SIFIRLAMA DİYALOĞU
-void _showResetDialog(
-  BuildContext context,
-  ZikirViewModel viewModel,
-  AppLocalizations loc,
-  Color cardColor,
-  Color textColor,
-) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text(
-        loc.resetCounter,
-        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-      ),
-      content: Text(
-        "Sayacı sıfırlamak istediğinize emin misiniz?",
-        style: TextStyle(color: textColor.withOpacity(0.8)),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(loc.cancel, style: const TextStyle(color: Colors.grey)),
-        ),
-        TextButton(
-          onPressed: () {
-            viewModel.reset();
-            Navigator.pop(context);
-          },
-          child: const Text(
-            "Sıfırla",
-            style: TextStyle(
-              color: Colors.redAccent,
-              fontWeight: FontWeight.bold,
+          OutlinedButton.icon(
+            onPressed: onReset,
+            icon: const Icon(Icons.refresh),
+            label: Text(loc.resetCounter),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: scheme.error,
+              side: BorderSide(color: scheme.error.withValues(alpha: 0.6)),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
-// --- AŞAĞI ÇEKMELİ KLASİK TESBİH ANİMASYONU ---
+/// Klasik görünüm: aşağı çekilen (veya dokunulan) tesbih boncukları
 class _ClassicTasbihView extends StatefulWidget {
   final ZikirViewModel viewModel;
-  final AppLocalizations loc;
+  final String dhikrName;
+  final VoidCallback onEdit;
 
-  const _ClassicTasbihView({required this.viewModel, required this.loc});
+  const _ClassicTasbihView({
+    required this.viewModel,
+    required this.dhikrName,
+    required this.onEdit,
+  });
 
   @override
   State<_ClassicTasbihView> createState() => _ClassicTasbihViewState();
@@ -562,9 +498,15 @@ class _ClassicTasbihView extends StatefulWidget {
 
 class _ClassicTasbihViewState extends State<_ClassicTasbihView>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  final int visibleBeads = 6;
-  final double beadHeight = 65.0;
+  static const int _visibleBeads = 6;
+  static const double _beadHeight = 65.0;
+
+  // Tesbih görseli (temadan bağımsız ahşap tonları)
+  static const Color _cord = Color(0xFF4E342E);
+  static const Color _beadLight = Color(0xFFFFB74D);
+  static const Color _beadDark = Color(0xFF5D4037);
+
+  late final AnimationController _controller;
 
   @override
   void initState() {
@@ -589,156 +531,127 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
 
   @override
   Widget build(BuildContext context) {
-    bool targetReached =
-        widget.viewModel.count > 0 &&
-        widget.viewModel.count % widget.viewModel.target == 0;
-    final textColor =
-        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final reached = _targetReached(widget.viewModel);
+    final count = widget.viewModel.count;
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // SAYAÇ GÖSTERGESİ
-        GestureDetector(
-          onLongPress: () => _showEditCountDialog(
-            context,
-            widget.viewModel,
-            widget.loc,
-            Theme.of(context).cardColor,
-            textColor,
-            Colors.teal,
-          ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-              border: Border.all(
-                color: targetReached
-                    ? Colors.green
-                    : Colors.teal.withOpacity(0.3),
+        const SizedBox(height: AppSpacing.lg),
+        // Sayaç (basılı tutunca düzenlenir)
+        Semantics(
+          container: true,
+          label: widget.dhikrName,
+          value: '$count',
+          onLongPressHint: loc.editCounterTitle,
+          onLongPress: widget.onEdit,
+          excludeSemantics: true,
+          child: Material(
+            color: theme.cardTheme.color ?? scheme.surfaceContainerLowest,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+              side: BorderSide(
+                color: reached
+                    ? colors.success
+                    : scheme.primary.withValues(alpha: 0.35),
                 width: 3,
               ),
             ),
-            child: Column(
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    '${widget.viewModel.count}',
-                    style: TextStyle(
-                      fontSize: 60,
-                      fontWeight: FontWeight.bold,
-                      color: targetReached ? Colors.green : textColor,
-                      height: 1.0,
-                    ),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onLongPress: widget.onEdit,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 160),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xxl,
+                    vertical: AppSpacing.md,
                   ),
-                ),
-                if (targetReached)
-                  Text(
-                    widget.loc.targetReached,
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                // --- YENİ EKLENEN YAZI BURADA ---
-                const SizedBox(height: 8),
-                Text(
-                  "Düzenlemek için basılı tutun",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: textColor.withOpacity(0.5),
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                // --------------------------------
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-
-        // İP VE BONCUKLAR (KAYDIRMA ALANI DÜZELTİLDİ)
-        Expanded(
-          child: GestureDetector(
-            // --- EN ÖNEMLİ DÜZELTME BURADA ---
-            // opaque sayesinde ekranın neresine dokunulursa dokunulsun algılanır
-            behavior: HitTestBehavior.opaque,
-            onVerticalDragEnd: (details) {
-              // Aşağı doğru çekme hızı sıfırdan büyükse tesbih çek
-              if (details.primaryVelocity != null &&
-                  details.primaryVelocity! > 0) {
-                _pullBead();
-              }
-            },
-            onTap: _pullBead,
-            child: Container(
-              // Container'ı ekranın tamamına yayıyoruz (saydam renk ile)
-              width: double.infinity,
-              color: Colors.transparent,
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return SizedBox(
-                    width: 150,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(width: 5, color: Colors.brown.shade800),
-                        for (int i = -1; i <= visibleBeads; i++)
-                          Positioned(
-                            top: (i + _controller.value) * beadHeight + 10,
-                            child: Opacity(
-                              opacity: (i == visibleBeads)
-                                  ? 1.0 - _controller.value
-                                  : (i == -1)
-                                  ? _controller.value
-                                  : 1.0,
-                              child: _buildBead(),
-                            ),
-                          ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TabularText(
+                        '$count',
+                        style: TextStyle(
+                          fontSize: 56,
+                          fontWeight: FontWeight.w700,
+                          height: 1.1,
+                          color: reached ? colors.success : scheme.onSurface,
+                        ),
+                      ),
+                      if (reached) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        _ReachedChip(text: loc.targetReached),
                       ],
-                    ),
-                  );
-                },
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
         ),
-
-        // SIFIRLA BUTONU
-        Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 30),
-                child: IconButton(
-                  onPressed: () => _showResetDialog(
-                    context,
-                    widget.viewModel,
-                    widget.loc,
-                    Theme.of(context).cardColor,
-                    textColor,
-                  ),
-                  icon: const Icon(Icons.refresh, size: 30),
-                  color: Colors.redAccent,
-                  style: IconButton.styleFrom(
-                    backgroundColor: Colors.redAccent.withOpacity(0.1),
-                    padding: const EdgeInsets.all(12),
+        const SizedBox(height: AppSpacing.md),
+        // İp ve boncuklar: dokun veya aşağı çek
+        Expanded(
+          child: Semantics(
+            container: true,
+            button: true,
+            label: loc.tapToCount,
+            onTap: _pullBead,
+            excludeSemantics: true,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onVerticalDragEnd: (details) {
+                final velocity = details.primaryVelocity;
+                if (velocity != null && velocity > 0) _pullBead();
+              },
+              onTap: _pullBead,
+              child: SizedBox(
+                width: double.infinity,
+                child: ClipRect(
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return Center(
+                        child: SizedBox(
+                          width: 150,
+                          child: Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              const Positioned.fill(
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 5,
+                                    child: ColoredBox(color: _cord),
+                                  ),
+                                ),
+                              ),
+                              for (int i = -1; i <= _visibleBeads; i++)
+                                Positioned(
+                                  top:
+                                      (i + _controller.value) * _beadHeight +
+                                      10,
+                                  child: Opacity(
+                                    opacity: (i == _visibleBeads)
+                                        ? 1.0 - _controller.value
+                                        : (i == -1)
+                                        ? _controller.value
+                                        : 1.0,
+                                    child: _buildBead(),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ],
@@ -750,22 +663,21 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
       width: 55,
       height: 45,
       decoration: BoxDecoration(
-        color: Colors.brown.shade600,
         borderRadius: BorderRadius.circular(25),
         boxShadow: const [
           BoxShadow(color: Colors.black45, blurRadius: 4, offset: Offset(0, 5)),
         ],
-        gradient: RadialGradient(
-          colors: [Colors.orange.shade300, Colors.brown.shade700],
-          center: const Alignment(-0.3, -0.3),
+        gradient: const RadialGradient(
+          colors: [_beadLight, _beadDark],
+          center: Alignment(-0.3, -0.3),
           radius: 0.8,
         ),
       ),
-      child: Center(
-        child: Container(
+      child: const Center(
+        child: SizedBox(
           width: 8,
           height: 45,
-          decoration: BoxDecoration(color: Colors.black.withOpacity(0.3)),
+          child: ColoredBox(color: Color(0x4D000000)),
         ),
       ),
     );

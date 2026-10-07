@@ -129,6 +129,7 @@
     "menuTroubleshoot": "Bildirim Gelmiyor mu?",
     "menuTroubleshootSub": "Samsung/Xiaomi için pil ayarı yapın.",
     "timeAdjustTitle": "Vakit İnce Ayarı",
+    "tapToCount": "Saymak için dokunun",
     "timeAdjustSub": "Vakitleri dakika dakika düzeltin",
     "timeAdjustInfo": "Vakitler konumunuza göre Diyanet yöntemiyle hesaplanır. Bölgenizdeki caminin vakitleriyle küçük farklar varsa her vakti dakika olarak ileri veya geri alabilirsiniz. Ayar ana ekrana, widget'lara ve ezan bildirimlerine uygulanır.",
     "timeAdjustReset": "Sıfırla",

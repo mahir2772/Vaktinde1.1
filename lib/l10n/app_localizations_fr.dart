@@ -287,6 +287,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get timeAdjustTitle => 'Ajustement des horaires';
 
   @override
+  String get tapToCount => 'Touchez pour compter';
+
+  @override
   String get timeAdjustSub => 'Corriger les horaires à la minute près';
 
   @override

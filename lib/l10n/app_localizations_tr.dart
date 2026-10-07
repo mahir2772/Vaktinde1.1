@@ -281,6 +281,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get timeAdjustTitle => 'Vakit İnce Ayarı';
 
   @override
+  String get tapToCount => 'Saymak için dokunun';
+
+  @override
   String get timeAdjustSub => 'Vakitleri dakika dakika düzeltin';
 
   @override

@@ -280,6 +280,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeAdjustTitle => 'Prayer Time Adjustment';
 
   @override
+  String get tapToCount => 'Tap to count';
+
+  @override
   String get timeAdjustSub => 'Fine-tune times by the minute';
 
   @override

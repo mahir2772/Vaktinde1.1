@@ -108,6 +108,7 @@
     "menuTroubleshoot": "Vous ne recevez pas de notifications ?",
     "menuTroubleshootSub": "Réglez la batterie pour Samsung/Xiaomi.",
     "timeAdjustTitle": "Ajustement des horaires",
+    "tapToCount": "Touchez pour compter",
     "timeAdjustSub": "Corriger les horaires à la minute près",
     "timeAdjustInfo": "Les horaires sont calculés pour votre position selon la méthode Diyanet. S'ils diffèrent légèrement de ceux de votre mosquée, vous pouvez avancer ou retarder chaque horaire de quelques minutes. Le réglage s'applique à l'écran d'accueil, aux widgets et aux notifications de prière.",
     "timeAdjustReset": "Réinitialiser",

@@ -1,186 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../view_model/zikir_view_model.dart';
-import '../../common/widgets/ad_banner_widget.dart';
+import 'dhikr_names.dart';
 
+/// Zikir seçimi: temel + özel zikirler ve Esmâ-ül Hüsnâ (iki sekme)
 class DhikrListView extends StatelessWidget {
   const DhikrListView({super.key});
 
-  // Hazır zikirlerin çevirilerini eşleştirmek için yardımcı fonksiyon
-  String _getTranslatedName(String id, AppLocalizations loc) {
-    switch (id) {
-      case "Sübhanallah":
-        return loc.dhikrSubhanallah;
-      case "Elhamdülillah":
-        return loc.dhikrElhamdulillah;
-      case "Allahu Ekber":
-        return loc.dhikrAllahuEkber;
-      case "Kelime-i Tevhid":
-        return loc.dhikrKalima;
-      case "Salavat":
-        return loc.dhikrSalavat;
-      case "Estağfirullah":
-        return loc.dhikrEstagfirullah;
-      case "La Havle":
-        return loc.dhikrLaHavle;
-      case "Hasbünallah":
-        return loc.dhikrHasbunallah;
-      case "Subhanallahi":
-        return loc.dhikrSubhanallahi;
-      case "Hz. Yunus":
-        return loc.dhikrYunus;
-      default:
-        return id;
-    }
-  }
+  static const int _customLimit = 20;
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black87;
-    const primaryColor = Colors.teal;
-
-    // DefaultTabController ile listeyi 2 sekmeye (Tab) ayırıyoruz
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          title: Text(loc.dhikrListTitle),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          foregroundColor: textColor,
-          bottom: TabBar(
-            labelColor: primaryColor,
-            unselectedLabelColor: textColor.withOpacity(0.5),
-            indicatorColor: primaryColor,
-            tabs: [
-              Tab(text: loc.mainDhikrs),
-              Tab(text: loc.esmaulHusnaTab),
-            ],
-          ),
+      child: AppScaffold(
+        title: loc.dhikrListTitle,
+        bottom: TabBar(
+          tabs: [
+            Tab(text: loc.mainDhikrs),
+            Tab(text: loc.esmaulHusnaTab),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _showAddDialog(context),
+          icon: const Icon(Icons.add),
+          label: Text(loc.addCustomDhikr),
         ),
         body: Consumer<ZikirViewModel>(
           builder: (context, viewModel, child) {
+            void select(String id) {
+              viewModel.changeDhikr(id);
+              Navigator.pop(context);
+            }
+
+            final langCode = Localizations.localeOf(context).languageCode;
             return TabBarView(
               children: [
-                // --- 1. SEKME: TEMEL ZİKİRLER VE ÖZEL ZİKİRLER ---
+                // 1. sekme: temel ve özel zikirler
                 ListView(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                    AppSpacing.lg,
+                    96, // FAB üstüne binmesin
+                  ),
                   children: [
-                    ...viewModel.predefinedDhikrsList.map((dhikrMap) {
-                      String id = dhikrMap["id"]!;
-                      String ar = dhikrMap["ar"]!;
-                      String displayName = _getTranslatedName(id, loc);
-                      bool isSelected = viewModel.selectedDhikr == id;
-
-                      return _buildDhikrCard(
-                        context: context,
-                        title: displayName,
-                        arabic: ar,
-                        subtitle: "",
-                        isSelected: isSelected,
-                        primaryColor: primaryColor,
-                        textColor: textColor,
-                        onTap: () {
-                          viewModel.changeDhikr(id);
-                          Navigator.pop(context);
-                        },
-                      );
-                    }),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          loc.dhikrOther.toUpperCase(),
-                          style: TextStyle(
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        Text(
-                          "${viewModel.customDhikrs.length}/20",
-                          style: TextStyle(
-                            color: textColor.withOpacity(0.5),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    if (viewModel.customDhikrs.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Center(
-                          child: Text(
-                            loc.statsEmpty,
-                            style: TextStyle(color: textColor.withOpacity(0.5)),
-                          ),
+                    for (final dhikr in viewModel.predefinedDhikrsList)
+                      _DhikrTile(
+                        title: dhikrDisplayName(dhikr["id"]!, loc),
+                        arabic: dhikr["ar"] ?? "",
+                        isSelected: viewModel.selectedDhikr == dhikr["id"],
+                        onTap: () => select(dhikr["id"]!),
+                      ),
+                    SectionHeader(
+                      loc.dhikrOther,
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                        AppSpacing.xs,
+                        AppSpacing.lg,
+                        AppSpacing.xs,
+                        AppSpacing.sm,
+                      ),
+                      trailing: Text(
+                        '${viewModel.customDhikrs.length}/$_customLimit',
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
-                    ...viewModel.customDhikrs.map((customName) {
-                      bool isSelected = viewModel.selectedDhikr == customName;
-                      return _buildDhikrCard(
-                        context: context,
-                        title: customName,
-                        arabic: "",
-                        subtitle: "",
-                        isSelected: isSelected,
-                        primaryColor: primaryColor,
-                        textColor: textColor,
-                        onDelete: () => viewModel.removeCustomDhikr(customName),
-                        onTap: () {
-                          viewModel.changeDhikr(customName);
-                          Navigator.pop(context);
-                        },
-                      );
-                    }),
-                    const SizedBox(
-                      height: 80,
-                    ), // Fab butonu üstüne binmesin diye boşluk
+                    ),
+                    if (viewModel.customDhikrs.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.lg,
+                        ),
+                        child: Text(
+                          loc.noCustomDhikr,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ),
+                    for (final custom in viewModel.customDhikrs)
+                      _DhikrTile(
+                        title: custom,
+                        isSelected: viewModel.selectedDhikr == custom,
+                        onTap: () => select(custom),
+                        onDelete: () =>
+                            _confirmDelete(context, viewModel, custom),
+                      ),
                   ],
                 ),
 
-                // --- 2. SEKME: ESMAÜL HÜSNA (99 İSİM) ---
+                // 2. sekme: Esmâ-ül Hüsnâ
                 ListView.builder(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                    AppSpacing.lg,
+                    96,
+                  ),
                   itemCount: viewModel.esmaulHusnaList.length,
                   itemBuilder: (context, index) {
-                    final dhikrMap = viewModel.esmaulHusnaList[index];
-                    String id = dhikrMap["id"]!;
-                    String ar = dhikrMap["ar"]!;
-
-                    // DİNAMİK DİL SEÇİCİ (Cihazın dil kodunu alır: tr, en, fr, de, ar)
-                    String langCode = Localizations.localeOf(
-                      context,
-                    ).languageCode;
-
-                    // Varsa o dili al, yoksa İngilizceyi al, o da yoksa Türkçeyi ver
-                    String meaning =
-                        dhikrMap[langCode] ??
-                        dhikrMap["en"] ??
-                        dhikrMap["tr"] ??
-                        "";
-
-                    bool isSelected = viewModel.selectedDhikr == id;
-
-                    return _buildDhikrCard(
-                      context: context,
+                    final dhikr = viewModel.esmaulHusnaList[index];
+                    final id = dhikr["id"]!;
+                    // Seçili dilde anlam yoksa İngilizce, o da yoksa Türkçe
+                    final meaning =
+                        dhikr[langCode] ?? dhikr["en"] ?? dhikr["tr"] ?? "";
+                    return _DhikrTile(
                       title: id,
-                      arabic: ar,
-                      subtitle: meaning, // Çevrilmiş dinamik anlam
-                      isSelected: isSelected,
-                      primaryColor: primaryColor,
-                      textColor: textColor,
-                      onTap: () {
-                        viewModel.changeDhikr(id);
-                        Navigator.pop(context);
-                      },
+                      arabic: dhikr["ar"] ?? "",
+                      subtitle: meaning,
+                      isSelected: viewModel.selectedDhikr == id,
+                      onTap: () => select(id),
                     );
                   },
                 ),
@@ -188,158 +126,199 @@ class DhikrListView extends StatelessWidget {
             );
           },
         ),
-
-        // YENİ EKLE BUTONU (FAB)
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _showAddDialog(context),
-          backgroundColor: primaryColor,
-          icon: const Icon(Icons.add, color: Colors.white),
-          label: Text(
-            loc.addCustomDhikr,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
       ),
     );
   }
 
-  // Zikir Kartı Tasarımı (Anlam kısmı eklendi)
-  Widget _buildDhikrCard({
-    required BuildContext context,
-    required String title,
-    required String arabic,
-    required String subtitle,
-    required bool isSelected,
-    required Color primaryColor,
-    required Color textColor,
-    required VoidCallback onTap,
-    VoidCallback? onDelete,
-  }) {
-    return Card(
-      elevation: isSelected ? 4 : 1,
-      margin: const EdgeInsets.only(bottom: 10),
-      color: isSelected
-          ? primaryColor.withOpacity(0.1)
-          : Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: BorderSide(
-          color: isSelected ? primaryColor : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        title: Text(
-          title,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        subtitle: subtitle.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: textColor.withOpacity(0.6),
-                    fontSize: 12,
-                  ),
-                ),
-              )
-            : null,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (arabic.isNotEmpty)
-              Text(
-                arabic,
-                style: TextStyle(
-                  color: primaryColor,
-                  fontSize: 20,
-                  fontFamily: 'Amiri',
-                ),
-              ),
-            if (arabic.isNotEmpty && isSelected) const SizedBox(width: 10),
-            if (isSelected) Icon(Icons.check_circle, color: primaryColor),
-            if (onDelete != null)
-              IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                onPressed: onDelete,
-              ),
-          ],
-        ),
-      ),
+  Future<void> _confirmDelete(
+    BuildContext context,
+    ZikirViewModel viewModel,
+    String name,
+  ) async {
+    final loc = AppLocalizations.of(context)!;
+    final confirmed = await showConfirmDialog(
+      context,
+      title: loc.deleteDhikr,
+      message: name,
+      confirmLabel: loc.deleteDhikr,
+      destructive: true,
     );
+    if (confirmed) await viewModel.removeCustomDhikr(name);
   }
 
-  // Özel Zikir Ekleme Penceresi
   void _showAddDialog(BuildContext context) {
     final viewModel = context.read<ZikirViewModel>();
     final loc = AppLocalizations.of(context)!;
-    TextEditingController controller = TextEditingController();
+    final messenger = ScaffoldMessenger.of(context);
 
-    if (viewModel.customDhikrs.length >= 20) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(loc.customDhikrLimit)));
+    if (viewModel.customDhikrs.length >= _customLimit) {
+      messenger.showSnackBar(SnackBar(content: Text(loc.customDhikrLimit)));
       return;
     }
-
-    showDialog(
+    showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
-        title: Text(
-          loc.addCustomDhikr,
-          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
-        ),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: loc.customDhikrHint,
-            focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.teal),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(loc.cancel, style: const TextStyle(color: Colors.grey)),
-          ),
-          TextButton(
-            onPressed: () async {
-              if (controller.text.trim().isNotEmpty) {
-                bool added = await viewModel.addCustomDhikr(
-                  controller.text.trim(),
-                );
-                if (added && context.mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(loc.customDhikrAdded)));
-                }
-              }
-            },
-            child: Text(
-              loc.save,
-              style: const TextStyle(
-                color: Colors.teal,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+      builder: (_) => _AddDhikrDialog(
+        onSave: (name) async {
+          final added = await viewModel.addCustomDhikr(name);
+          if (added) {
+            messenger.showSnackBar(
+              SnackBar(content: Text(loc.customDhikrAdded)),
+            );
+          }
+          return added;
+        },
       ),
+    );
+  }
+}
+
+/// Zikir kartı: ad, altında (tam genişlikte, satır kırarak) Arapça metin ve
+/// anlam. Arapça artık sağ köşeye sıkıştırılmaz (uzun dualarda düzen bozuluyordu).
+class _DhikrTile extends StatelessWidget {
+  final String title;
+  final String arabic;
+  final String subtitle;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final VoidCallback? onDelete;
+
+  const _DhikrTile({
+    required this.title,
+    this.arabic = "",
+    this.subtitle = "",
+    required this.isSelected,
+    required this.onTap,
+    this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Semantics(
+        selected: isSelected,
+        child: AppCard(
+          onTap: onTap,
+          color: isSelected ? scheme.primaryContainer : null,
+          padding: EdgeInsetsDirectional.fromSTEB(
+            AppSpacing.lg,
+            AppSpacing.md,
+            onDelete == null ? AppSpacing.lg : AppSpacing.xs,
+            AppSpacing.md,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium!.copyWith(
+                        color: isSelected
+                            ? scheme.onPrimaryContainer
+                            : scheme.onSurface,
+                      ),
+                    ),
+                    if (arabic.isNotEmpty)
+                      Text(
+                        arabic,
+                        textDirection: TextDirection.rtl,
+                        style: arabicDhikrStyle(context).copyWith(
+                          color: isSelected
+                              ? scheme.onPrimaryContainer
+                              : scheme.primary,
+                        ),
+                      ),
+                    if (subtitle.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          subtitle,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: isSelected
+                                ? scheme.onPrimaryContainer
+                                : scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (isSelected) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Icon(Icons.check_circle, color: scheme.primary),
+              ],
+              if (onDelete != null)
+                IconButton(
+                  icon: Icon(Icons.delete_outline, color: scheme.error),
+                  tooltip: loc.deleteDhikr,
+                  onPressed: onDelete,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AddDhikrDialog extends StatefulWidget {
+  /// true dönerse pencere kapanır (eklenemezse açık kalır)
+  final Future<bool> Function(String name) onSave;
+
+  const _AddDhikrDialog({required this.onSave});
+
+  @override
+  State<_AddDhikrDialog> createState() => _AddDhikrDialogState();
+}
+
+class _AddDhikrDialogState extends State<_AddDhikrDialog> {
+  final TextEditingController _controller = TextEditingController();
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final name = _controller.text.trim();
+    if (name.isEmpty || _saving) return;
+    setState(() => _saving = true);
+    final added = await widget.onSave(name);
+    if (!mounted) return;
+    if (added) {
+      Navigator.pop(context);
+    } else {
+      setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(loc.addCustomDhikr),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        textCapitalization: TextCapitalization.sentences,
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(hintText: loc.customDhikrHint),
+        onSubmitted: (_) => _save(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(loc.cancel),
+        ),
+        FilledButton(onPressed: _saving ? null : _save, child: Text(loc.save)),
+      ],
     );
   }
 }

@@ -281,6 +281,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get timeAdjustTitle => 'ضبط أوقات الصلاة';
 
   @override
+  String get tapToCount => 'انقر للعدّ';
+
+  @override
   String get timeAdjustSub => 'تعديل الأوقات بالدقيقة';
 
   @override
