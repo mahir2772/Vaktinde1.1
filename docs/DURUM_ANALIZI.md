@@ -33,25 +33,30 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 - CollectAPI anahtarı: koda yazılamıyor; derlemede `--dart-define=COLLECT_API_KEY=...` verilmezse zekat ekranında canlı kur gelmez. Anahtar yenilenmeli (git geçmişinde açık).
 - Play Console: Veri güvenliği formuna Crashlytics (kilitlenme günlükleri, tanılama) eklenmeli.
 
-## ⏸ DURAKLATILDI — Arayüz yenilemesi (yarım, bu dalda DEĞİL)
-Kullanıcı isteğiyle durduruldu (2026-10-07). Bu dal (v1.1.0+14) kararlı ve cihazda denendi; yarım arayüz işi koda karışmadı.
-- Yarım iş arşivi: `docs/wip/ui-yenileme-wip.bundle` (taban `287cfaa`). Geri yükleme:
-  `git fetch docs/wip/ui-yenileme-wip.bundle 'refs/heads/wip/*:refs/heads/wip/*'` → dallar `wip/ui-wpa`, `wip/ui-wpb`, `wip/ui-wpc`.
-  İş bitince bundle dosyası silinecek.
-- Plan (UX denetimi): evrimsel yenileme, ortak tasarım `lib/core/ui/` (`ui.dart`), 3 iş paketi, dosya sahipliği ayrık.
-  - **WP-A** TAMAM (wip/ui-int üstünde): ortak tasarım `lib/core/ui/` (tema, `PrayerColors`, bileşenler, `test/core_ui_test.dart`); ana ekran (sayaç odaklı hero, dokunulabilir şehir, miladi · hicri tarih, kerahat/Ramazan kapsülleri, 2×3 ızgarada sıradaki/şu an/geçmiş + Güneş işareti, Bugün ekranda kaydırmadan görünür, ayet/hadis okunabilir alt sayfa (Amiri), koyu modda sabit açık renk yok, çevirili hata ekranı); alt menü ("Araçlar", sekme reklamı yok, sekmeler ilk ziyarette kurulur); initializeApp tek sefer; pil izni en fazla bir kez; tek güncelleme akışı (esnek + "Yeniden başlat"); AdMob UMP rızası (`AdConsent`); ölü `intro_view` silindi; `test/prayer_schedule_test.dart`. Ekran görüntüleri tr açık/koyu/arka plan, de, ar, %130'da kontrol edildi. KALAN (merkezde): kullanılmayan `story_view` + `upgrader` bağımlılıklarını pubspec'ten kaldır; zekat'ın kendi interstitial'ı `AdConsent.canRequestAds` kontrolü (WP-B).
-  - **WP-B** `wip/ui-wpb` 88389d6: Araçlar listesi (gruplu, kesilen kart düzeldi) + İmsakiye + 23 çeviri anahtarı. KALAN: Zekat (sonuç reklama bağlı; 'Hisse Senedi' ve tarım türü varsayılanları en/de/fr/ar'da hatalı; gümüş/manuel fiyat alanı yazılamıyor; "2500,50" virgüllü sayı 0 okunuyor; ₺ etiketi; `AdConsent.canRequestAds` kontrolü), Esmâ, Cuma (çeviri, italik yok), Dini Günler (x gün kaldı), Kaza, Namaz Takibi (`test/prayer_tracker_widgets_test.dart` kısıtlarına dikkat), `test/tools_widgets_test.dart`.
-  - **WP-C** `wip/ui-wpc` c346a83: Kıble (gerçek kıble açısı + telefon yönü ayrı, harfler dik, kayıtlı konum yedeği, pusulasız ekran, tek kalibrasyon uyarısı). KALAN: Zikirmatik (çeviriler, düzenle butonu, sıfırlama onayı, mor tonlar, zikir listesinde Arapça taşma hatası), Ayarlar (gerçek sürüm package_info_plus, dalgalanma efekti, bg_quran.webp yok, dil seçimi), konum arama, onboarding izin adımı, `test/screens_c_test.dart` (İstanbul kıble ≈151–152°).
-- Devam sırası: üç dalı birleştir (çakışan arb'ler: anahtar birleşimi + `flutter gen-l10n`), kalanları ajanlara böl, ekran görüntüsü düzeneği (`SCREENSHOT_DIR=... flutter test test/screenshots/`) ile önce/sonra karşılaştır, inceleme ajanı, cihaz testi.
+## v1.1.0 arayüz yenilemesi ✅ (evrimsel, aynı düzen)
+| Alan | Ne değişti |
+|---|---|
+| Ortak tasarım | `lib/core/ui/` (tema açık/koyu, `PrayerColors`, AppScaffold/AppCard/AppListSection/CounterStepper… ), mor M3 renkleri gitti, en küçük yazı 13sp, Poppins + Amiri gömülü |
+| Ana ekran | Sıradaki vakit + sayaç odakta, dokunulabilir şehir, miladi · hicri tarih, kerahat/Ramazan kapsülleri, Bugün satırı ekrana sığar, ayet/hadis okunabilir sayfa (3 sn'de kapanmıyor) |
+| Alt menü / açılış | "Araçlar", sekme geçişinde reklam yok, sekmeler ilk ziyarette kurulur, initializeApp tek sefer, tek güncelleme akışı, AdMob UMP rızası + Ayarlar'da gizlilik seçeneği, izin açıklama penceresi (tur yarıda kalsa da sonraki açılışta sorulur), pil izni en fazla bir kez |
+| Araçlar | Ayarlar ile aynı dikey liste (Namaz/Bilgi/Hesap), tek ekrana sığar |
+| Zekat | Sonuç reklamı beklemez; varsayılan seçim çökmesi (en/de/fr/ar) düzeldi; "10.000" / "2500,50" doğru okunur; altın fiyatı yoksa "zekat gerekir" denmez; gümüş/manuel kur yazılabilir; reklamlar ortak 5 dk soğuma |
+| Diğer araçlar | İmsakiye, Esmâ, Cuma (çeviri), Dini Günler (Diyanet tarihleri, "x gün kaldı", 2029+ kandil düzeltmesi), Kaza (±48dp), Namaz Takibi (istatistik kutuları) |
+| Kıble | Gerçek kıble açısı (İstanbul 152°) + telefon yönü ayrı, harfler dik, kayıtlı konum yedeği, pusulasız cihaz ekranı |
+| Zikirmatik | Çeviriler, görünür "Sayacı Düzenle", sıfırlama onayı, zikir listesi Arapça taşma hatası düzeldi |
+| Ayarlar | Dil ilk satır, gerçek sürüm, tutarlı satırlar, arka plan resminde okunur başlıklar |
+| Bağımlılık | story_view + upgrader kaldırıldı (16 paket az), package_info_plus doğrudan |
+- Test: 221 geçiyor (+10 ekran görüntüsü testi env ile). Ekran görüntüsü düzeneğinde tr/de/fr/ar, açık/koyu/arka plan, 320dp + %130'da düzen hatası yok.
+- AdMob: AB kullanıcıları için AdMob panelinde "Gizlilik ve mesajlaşma → GDPR mesajı" yayınlanmış olmalı; yoksa AB'de reklam gösterilmeyebilir (ertelendi, kullanıcı işi).
 
 ## Bilinen sınırlar
-- Cihazda kısa test edildi (vakitler, ince ayar, imsakiye paylaşımı OK); "Kıldım" bildirim butonu henüz denenmedi. `flutter analyze` temiz, 111 test geçiyor.
-- Yeni arayüz cihazda denenmedi: AB rıza formu (UMP) ve Play esnek güncelleme yalnızca gerçek cihaz/Play sürümünde görülebilir.
+- Önceki sürüm cihazda kısa test edildi (vakitler, ince ayar, imsakiye paylaşımı OK). Yeni arayüz henüz cihazda denenmedi; "Kıldım" butonu, AB rıza formu ve Play esnek güncelleme yalnızca gerçek cihaz/Play sürümünde görülebilir.
 - Yüksek enlemde (NL/BE/FR, Haziran) Yatsı gece yarısını geçebilir; "HH:mm" modeli tarihsiz → sayaç Yatsı'yı atlar (eski sürümde de aynıydı, alarm doğru saatte çalar).
 - Konum telefonun saat diliminde gösterilir (başka ülkedeki şehir seçilirse saat farkı kadar kayar).
-- 2029+ Ramazan tarihleri `religious_days.json`'a eklenmezse hijri paketinden (±1 gün) gelir.
+- 2029+ Ramazan/Kadir tarihleri `religious_days.json`'a eklenmezse hijri paketinden (±1 gün) gelir; kandiller düzeltilmiş.
 
 ## Yayın öncesi kontrol (cihazda, önerilen)
 1. Ana ekran vakitleri, şehir değiştirme, internetsiz açılış.
 2. Ezan bildirimi + "Kıldım" butonu (uygulama kapalıyken) → Bugün satırında görünmeli.
 3. Ana ekran widget'ı ve kalıcı bildirim ertesi gün güncel mi.
+4. Yeni ekranlar: ana ekran, Araçlar, Zekat (10.000 yaz → doğru), Kıble, Zikirmatik, Ayarlar; koyu tema.
