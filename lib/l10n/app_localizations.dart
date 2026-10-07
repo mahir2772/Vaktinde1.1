@@ -614,6 +614,12 @@ abstract class AppLocalizations {
   /// **'Vakit İnce Ayarı'**
   String get timeAdjustTitle;
 
+  /// No description provided for @tapToCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Saymak için dokunun'**
+  String get tapToCount;
+
   /// No description provided for @timeAdjustSub.
   ///
   /// In tr, this message translates to:

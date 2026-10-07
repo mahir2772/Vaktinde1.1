@@ -1,499 +1,171 @@
-// ignore_for_file: deprecated_member_use
-
-// --- DİKKAT: Dosya yolun doğru mu kontrol et ---
-import 'package:ezan_saati/features/location_search_dialog/location_search_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:in_app_review/in_app_review.dart';
 
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
-
 import '../../home/view_model/home_view_model.dart';
-import 'time_adjust_view.dart';
+import '../../location_search_dialog/location_search_dialog.dart';
 import 'end_reminder_setting.dart';
+import 'language_sheet.dart';
+import 'time_adjust_view.dart';
 
-import '../../common/widgets/ad_banner_widget.dart';
-
+/// Ayarlar: dil ve görünüm, konum ve vakitler, destek, sürüm
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
-  final String appLink =
+  static const String appLink =
       "https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde";
+  static const String _supportMail = 'mmdigitall.dev@gmail.com';
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final languageCode = context.watch<LanguageProvider>().locale.languageCode;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(title: Text(loc.menuTitle), centerTitle: true),
-      // --- REKLAM ALANI ---
-      bottomNavigationBar: const SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 5.0),
-          child: AdBannerWidget(),
-        ),
-      ),
-      // --------------------
+    return AppScaffold(
+      title: loc.menuTitle,
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(bottom: AppSpacing.xl),
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 10),
-            child: Text(
-              loc.sectionAppearance,
-              style: TextStyle(
-                color: Theme.of(context).hintColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+          AppListSection(
+            title: loc.sectionAppearance,
+            children: [
+              AppListTile(
+                leadingIcon: Icons.language,
+                title: loc.changeLanguage,
+                subtitle: languageNativeName(languageCode),
+                onTap: () => showLanguageSheet(context),
               ),
-            ),
+              AppListTile(
+                leadingIcon: Icons.palette_outlined,
+                title: loc.appearanceSettings,
+                subtitle: loc.appearanceSub,
+                onTap: () => _showAppearanceSettings(context),
+              ),
+            ],
           ),
-          _buildSettingsCard(context, [
-            ListTile(
-              leading: const Icon(Icons.palette, color: Colors.purple),
-              title: Text(loc.appearanceSettings),
-              subtitle: Text(loc.appearanceSub),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () => _showAppearanceSettings(context, loc),
-            ),
-            const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.language, color: Colors.teal),
-              title: Text(loc.changeLanguage),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () => _showLanguageDialog(context),
-            ),
-          ]),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 10),
-            child: Text(
-              loc.sectionLocation,
-              style: TextStyle(
-                color: Theme.of(context).hintColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+          AppListSection(
+            title: loc.sectionLocation,
+            children: [
+              Consumer<HomeViewModel>(
+                builder: (context, viewModel, child) => AppListTile(
+                  leadingIcon: Icons.location_on_outlined,
+                  title: loc.changeLocation,
+                  subtitle: _locationText(viewModel, loc),
+                  onTap: () => _showLocationSearch(context),
+                ),
               ),
-            ),
-          ),
-          _buildSettingsCard(context, [
-            ListTile(
-              leading: const Icon(Icons.location_city, color: Colors.blue),
-              title: Text(loc.changeLocation),
-              subtitle: Consumer<HomeViewModel>(
-                builder: (context, viewModel, child) {
-                  // Şehir ve ilçe bilgisi varsa göster
-                  String displayCity = viewModel.city ?? loc.citySelect;
-                  if (viewModel.district != null &&
-                      viewModel.district!.isNotEmpty) {
-                    return Text("${viewModel.district}, $displayCity");
-                  }
-                  return Text(displayCity);
-                },
-              ),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              // --- GÜNCELLENEN KISIM: YENİ ARAMA PENCERESİNİ AÇAR ---
-              onTap: () => _showCityDistrictDialog(context, loc),
-            ),
-            const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.tune, color: Colors.teal),
-              title: Text(loc.timeAdjustTitle),
-              subtitle: Text(loc.timeAdjustSub),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const TimeAdjustView()),
-              ),
-            ),
-            const Divider(height: 1),
-            const EndReminderSetting(),
-            const Divider(height: 1),
-            ListTile(
-              leading: const Icon(
-                Icons.notifications_active,
-                color: Colors.orange,
-              ),
-              title: Text(loc.menuNotifications),
-              subtitle: Text(loc.menuNotificationsSub),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () => Geolocator.openAppSettings(),
-            ),
-            const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.battery_alert, color: Colors.redAccent),
-              title: Text(loc.menuTroubleshoot),
-              subtitle: Text(loc.menuTroubleshootSub),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () => _showBatteryOptimizationDialog(context, loc),
-            ),
-          ]),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 10),
-            child: Text(
-              loc.sectionSupport,
-              style: TextStyle(
-                color: Theme.of(context).hintColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
-          ),
-          _buildSettingsCard(context, [
-            ListTile(
-              leading: const Icon(Icons.share, color: Colors.blue),
-              title: Text(loc.shareApp),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Share.share(loc.shareText(appLink));
-              },
-            ),
-            const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.star, color: Colors.amber),
-              title: Text(loc.rateApp),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () async {
-                final InAppReview inAppReview = InAppReview.instance;
-                try {
-                  await inAppReview.openStoreListing(
-                    appStoreId: 'com.mmdigital.vaktinde',
-                  );
-                } catch (e) {
-                  final Uri url = Uri.parse(appLink);
-                  if (!await launchUrl(
-                    url,
-                    mode: LaunchMode.externalApplication,
-                  )) {
-                    debugPrint("Link açılamadı");
-                  }
-                }
-              },
-            ),
-            const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.mail, color: Colors.red),
-              title: Text(loc.contactUs),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () async {
-                final Uri emailLaunchUri = Uri(
-                  scheme: 'mailto',
-                  path: 'mmdigitall.dev@gmail.com',
-                  query: 'subject=${loc.appTitle} - Destek',
-                );
-                if (!await launchUrl(emailLaunchUri)) {
-                  debugPrint("Mail açılamadı");
-                }
-              },
-            ),
-          ]),
-          const SizedBox(height: 30),
-          Center(
-            child: Column(
-              children: [
-                const Icon(Icons.mosque, color: Colors.teal, size: 40),
-                const SizedBox(height: 10),
-                Text(
-                  loc.appTitle,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+              AppListTile(
+                leadingIcon: Icons.tune,
+                title: loc.timeAdjustTitle,
+                subtitle: loc.timeAdjustSub,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const TimeAdjustView(),
                   ),
                 ),
-                const Text(
-                  "Versiyon 1.0.0",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                const SizedBox(height: 5),
-                const Text(
-                  "Made with ❤️ by mmdigital",
-                  style: TextStyle(color: Colors.teal, fontSize: 12),
-                ),
-              ],
-            ),
+              ),
+              const EndReminderSetting(),
+              AppListTile(
+                leadingIcon: Icons.notifications_active_outlined,
+                title: loc.menuNotifications,
+                subtitle: loc.menuNotificationsSub,
+                onTap: () => Geolocator.openAppSettings(),
+              ),
+              AppListTile(
+                leadingIcon: Icons.battery_alert_outlined,
+                title: loc.menuTroubleshoot,
+                subtitle: loc.menuTroubleshootSub,
+                onTap: () => _showBatteryOptimizationDialog(context, loc),
+              ),
+            ],
           ),
+          AppListSection(
+            title: loc.sectionSupport,
+            children: [
+              AppListTile(
+                leadingIcon: Icons.share_outlined,
+                title: loc.shareApp,
+                onTap: () => Share.share(loc.shareText(appLink)),
+              ),
+              AppListTile(
+                leadingIcon: Icons.star_outline,
+                title: loc.rateApp,
+                onTap: _openStoreListing,
+              ),
+              AppListTile(
+                leadingIcon: Icons.mail_outline,
+                title: loc.contactUs,
+                onTap: () => _sendSupportMail(loc),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          const _AboutFooter(),
         ],
       ),
     );
   }
 
-  Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(children: children),
-    );
+  static String _locationText(HomeViewModel viewModel, AppLocalizations loc) {
+    final city = viewModel.city ?? loc.citySelect;
+    final district = viewModel.district;
+    if (district != null && district.isNotEmpty) return '$district, $city';
+    return city;
   }
 
-  void _showAppearanceSettings(BuildContext context, AppLocalizations loc) {
-    showModalBottomSheet(
+  static Future<void> _openStoreListing() async {
+    try {
+      await InAppReview.instance.openStoreListing(
+        appStoreId: 'com.mmdigital.vaktinde',
+      );
+    } catch (e) {
+      if (!await launchUrl(
+        Uri.parse(appLink),
+        mode: LaunchMode.externalApplication,
+      )) {
+        debugPrint("Link açılamadı");
+      }
+    }
+  }
+
+  static Future<void> _sendSupportMail(AppLocalizations loc) async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: _supportMail,
+      query: 'subject=${Uri.encodeComponent(loc.supportMailSubject)}',
+    );
+    try {
+      if (!await launchUrl(uri)) debugPrint("Mail açılamadı");
+    } catch (e) {
+      debugPrint("Mail açılamadı: $e");
+    }
+  }
+
+  void _showLocationSearch(BuildContext context) {
+    showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                loc.appearanceSettings,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                loc.themeMode,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildThemeOption(
-                    context,
-                    Icons.brightness_auto,
-                    loc.themeSystem,
-                    ThemeMode.system,
-                  ),
-                  _buildThemeOption(
-                    context,
-                    Icons.wb_sunny,
-                    loc.themeLight,
-                    ThemeMode.light,
-                  ),
-                  _buildThemeOption(
-                    context,
-                    Icons.dark_mode,
-                    loc.themeDark,
-                    ThemeMode.dark,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Divider(),
-              const SizedBox(height: 10),
-              Text(
-                loc.bgImage,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 100,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildBgOption(context, null, loc.bgDefault),
-                    _buildBgOption(
-                      context,
-                      "bg_mosque1.webp",
-                      "${loc.bgMosque} 1",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_mosque2.webp",
-                      "${loc.bgMosque} 2",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_mosque3.webp",
-                      "${loc.bgMosque} 3",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_mosque4.webp",
-                      "${loc.bgMosque} 4",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_mosque5.webp",
-                      "${loc.bgMosque} 5",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_mosque6.webp",
-                      "${loc.bgMosque} 6",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_kaaba1.webp",
-                      "${loc.bgKaaba} 1",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_kaaba2.webp",
-                      "${loc.bgKaaba} 2",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_kaaba3.webp",
-                      "${loc.bgKaaba} 3",
-                    ),
-                    _buildBgOption(
-                      context,
-                      "bg_kaaba4.webp",
-                      "${loc.bgKaaba} 4",
-                    ),
-                    _buildBgOption(context, "bg_quran.webp", loc.bgQuran),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildThemeOption(
-    BuildContext context,
-    IconData icon,
-    String label,
-    ThemeMode mode,
-  ) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final isSelected = themeProvider.themeMode == mode;
-
-    return InkWell(
-      onTap: () => themeProvider.setThemeMode(mode),
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.teal.withOpacity(0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected ? Colors.teal : Colors.grey.withOpacity(0.3),
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: isSelected ? Colors.teal : Colors.grey),
-            const SizedBox(height: 5),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? Colors.teal : Colors.grey,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBgOption(BuildContext context, String? image, String label) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final isSelected = themeProvider.backgroundImage == image;
-
-    return GestureDetector(
-      onTap: () => themeProvider.setBackgroundImage(image),
-      child: Container(
-        width: 80,
-        margin: const EdgeInsets.only(right: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: isSelected ? Border.all(color: Colors.teal, width: 3) : null,
-          color: Colors.grey.shade300,
-          image: image != null
-              ? DecorationImage(
-                  image: AssetImage("assets/images/backgrounds/$image"),
-                  fit: BoxFit.cover,
-                )
-              : null,
-        ),
-        child: image == null
-            ? Center(
-                child: Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              )
-            : null,
-      ),
-    );
-  }
-
-  void _showLanguageDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 10),
-              Container(width: 40, height: 4, color: Colors.grey.shade300),
-              const SizedBox(height: 20),
-              _buildLanguageItem(context, "Türkçe", "tr", "🇹🇷"),
-              _buildLanguageItem(context, "English", "en", "🇬🇧"),
-              _buildLanguageItem(context, "Deutsch", "de", "🇩🇪"),
-              _buildLanguageItem(context, "Français", "fr", "🇫🇷"),
-              _buildLanguageItem(context, "العربية", "ar", "🇸🇦"),
-              const SizedBox(height: 30),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLanguageItem(
-    BuildContext context,
-    String name,
-    String code,
-    String flag,
-  ) {
-    return ListTile(
-      leading: Text(flag, style: const TextStyle(fontSize: 24)),
-      title: Text(name),
-      onTap: () {
-        context.read<LanguageProvider>().setLanguage(Locale(code));
-        Navigator.pop(context);
-      },
-    );
-  }
-
-  // --- GÜNCELLENEN FONKSİYON ---
-  // Artık eski Dropdown pencerelerini değil, yeni yaptığımız modern arama penceresini açıyor.
-  void _showCityDistrictDialog(BuildContext context, AppLocalizations loc) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // Tam ekran gibi açılması için
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => const LocationSearchDialog(),
+    );
+  }
+
+  void _showAppearanceSettings(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) => const _AppearanceSheet(),
     );
   }
 
@@ -501,18 +173,252 @@ class SettingsView extends StatelessWidget {
     BuildContext context,
     AppLocalizations loc,
   ) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(loc.batteryDialogTitle),
         content: SingleChildScrollView(child: Text(loc.batteryDialogBody)),
         actions: [
-          TextButton(
+          FilledButton(
             onPressed: () => Navigator.pop(ctx),
+            child: Text(loc.okUnderstood),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tema (sistem/açık/koyu) ve arka plan görseli seçimi
+class _AppearanceSheet extends StatelessWidget {
+  const _AppearanceSheet();
+
+  // assets/images/backgrounds/ içindeki görseller
+  static const List<String> _mosques = [
+    'bg_mosque1.webp',
+    'bg_mosque2.webp',
+    'bg_mosque3.webp',
+    'bg_mosque4.webp',
+    'bg_mosque5.webp',
+    'bg_mosque6.webp',
+  ];
+  static const List<String> _kaabas = [
+    'bg_kaaba1.webp',
+    'bg_kaaba2.webp',
+    'bg_kaaba3.webp',
+    'bg_kaaba4.webp',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final themeProvider = context.watch<ThemeProvider>();
+
+    Widget modeRow(ThemeMode mode, IconData icon, String label) {
+      final selected = themeProvider.themeMode == mode;
+      return Semantics(
+        selected: selected,
+        inMutuallyExclusiveGroup: true,
+        child: AppListTile(
+          leadingIcon: icon,
+          title: label,
+          showChevron: false,
+          trailing: Icon(
+            selected
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked,
+            color: selected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurfaceVariant,
+          ),
+          onTap: () => themeProvider.setThemeMode(mode),
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Text(
-              loc.okUnderstood,
-              style: const TextStyle(color: Colors.teal),
+              loc.appearanceSettings,
+              style: theme.textTheme.titleLarge,
             ),
+          ),
+          SectionHeader(loc.themeMode),
+          modeRow(ThemeMode.system, Icons.brightness_auto, loc.themeSystem),
+          modeRow(ThemeMode.light, Icons.light_mode_outlined, loc.themeLight),
+          modeRow(ThemeMode.dark, Icons.dark_mode_outlined, loc.themeDark),
+          SectionHeader(loc.bgImage),
+          SizedBox(
+            height: 112,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              children: [
+                _BackgroundOption(
+                  image: null,
+                  label: loc.bgDefault,
+                  selected: themeProvider.backgroundImage == null,
+                  onTap: () => themeProvider.setBackgroundImage(null),
+                ),
+                for (var i = 0; i < _mosques.length; i++)
+                  _BackgroundOption(
+                    image: _mosques[i],
+                    label: '${loc.bgMosque} ${i + 1}',
+                    selected: themeProvider.backgroundImage == _mosques[i],
+                    onTap: () => themeProvider.setBackgroundImage(_mosques[i]),
+                  ),
+                for (var i = 0; i < _kaabas.length; i++)
+                  _BackgroundOption(
+                    image: _kaabas[i],
+                    label: '${loc.bgKaaba} ${i + 1}',
+                    selected: themeProvider.backgroundImage == _kaabas[i],
+                    onTap: () => themeProvider.setBackgroundImage(_kaabas[i]),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BackgroundOption extends StatelessWidget {
+  final String? image;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _BackgroundOption({
+    required this.image,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final radius = BorderRadius.circular(AppRadius.md);
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: AppSpacing.sm),
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: label,
+        excludeSemantics: true,
+        child: Material(
+          color: scheme.surfaceContainerHigh,
+          shape: RoundedRectangleBorder(
+            borderRadius: radius,
+            side: selected
+                ? BorderSide(color: scheme.primary, width: 3)
+                : BorderSide(color: scheme.outlineVariant),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Ink(
+            width: 80,
+            decoration: image == null
+                ? null
+                : BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/backgrounds/$image'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+            child: InkWell(
+              onTap: onTap,
+              child: Stack(
+                children: [
+                  if (image == null)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.xs),
+                        child: Text(
+                          label,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.labelMedium,
+                        ),
+                      ),
+                    ),
+                  if (selected)
+                    PositionedDirectional(
+                      top: AppSpacing.xs,
+                      end: AppSpacing.xs,
+                      child: Icon(
+                        Icons.check_circle,
+                        color: scheme.primary,
+                        size: 22,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Uygulama adı, gerçek sürüm (paket bilgisinden) ve yapımcı
+class _AboutFooter extends StatelessWidget {
+  const _AboutFooter();
+
+  static Future<String?>? _version;
+
+  static Future<String?> _loadVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (info.version.isEmpty) return null;
+      return info.buildNumber.isEmpty
+          ? info.version
+          : '${info.version} (${info.buildNumber})';
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final muted = theme.textTheme.bodyMedium!.copyWith(
+      color: scheme.onSurfaceVariant,
+    );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: Column(
+        children: [
+          Icon(Icons.mosque, color: scheme.primary, size: 40),
+          const SizedBox(height: AppSpacing.sm),
+          Text(loc.appTitle, style: theme.textTheme.titleMedium),
+          FutureBuilder<String?>(
+            future: _version ??= _loadVersion(),
+            builder: (context, snapshot) {
+              final version = snapshot.data;
+              if (version == null) return const SizedBox.shrink();
+              return Text(
+                loc.versionLabel(version),
+                textAlign: TextAlign.center,
+                style: muted,
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            loc.madeBy,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall!.copyWith(color: scheme.primary),
           ),
         ],
       ),

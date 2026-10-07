@@ -1,12 +1,17 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-
 import '../home/view_model/home_view_model.dart';
 
+/// Dünya genelinde konum arama (alttan açılan sayfa).
+///
+/// Çağıran `showModalBottomSheet(isScrollControlled: true,
+/// backgroundColor: Colors.transparent)` ile açar; arka planı kendisi çizer.
 class LocationSearchDialog extends StatefulWidget {
   const LocationSearchDialog({super.key});
 
@@ -14,79 +19,101 @@ class LocationSearchDialog extends StatefulWidget {
   State<LocationSearchDialog> createState() => _LocationSearchDialogState();
 }
 
+enum _SearchError { notFound, failed }
+
 class _LocationSearchDialogState extends State<LocationSearchDialog> {
   final TextEditingController _searchController = TextEditingController();
   List<Placemark> _searchResults = [];
   List<Location> _resultLocations = [];
   bool _isLoading = false;
-  String _error = ''; // Hata durumunu kod olarak tutacağız (örn: 'NOT_FOUND')
+  _SearchError? _error;
+  String _lastQuery = '';
   Timer? _debounce;
 
+  /// Eski aramanın geç gelen sonucu yenisinin üstüne yazmasın
+  int _searchId = 0;
+
   void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce?.cancel();
+    setState(() {}); // temizle düğmesi
+    final trimmed = query.trim();
+    if (trimmed.length <= 2) {
+      _searchId++;
+      setState(() {
+        _isLoading = false;
+        _error = null;
+        _searchResults = [];
+        _resultLocations = [];
+      });
+      return;
+    }
     _debounce = Timer(const Duration(milliseconds: 800), () {
-      if (query.length > 2) {
-        _performSearch(query);
-      }
+      _performSearch(trimmed);
     });
   }
 
   Future<void> _performSearch(String query) async {
+    if (query.isEmpty) return;
+    _debounce?.cancel();
+    final id = ++_searchId;
+    _lastQuery = query;
     setState(() {
       _isLoading = true;
-      _error = '';
+      _error = null;
       _searchResults = [];
+      _resultLocations = [];
     });
 
+    var results = <Placemark>[];
+    var locations = <Location>[];
+    _SearchError? error;
     try {
-      List<Location> locations = await locationFromAddress(query);
-
-      if (locations.isNotEmpty) {
-        List<Placemark> tempResults = [];
-        List<Location> tempLocations = [];
-        int limit = locations.length > 5 ? 5 : locations.length;
-
-        for (int i = 0; i < limit; i++) {
+      final found = await locationFromAddress(query);
+      if (found.isEmpty) {
+        error = _SearchError.notFound;
+      } else {
+        final tempResults = <Placemark>[];
+        final tempLocations = <Location>[];
+        final limit = found.length > 5 ? 5 : found.length;
+        for (var i = 0; i < limit; i++) {
           try {
-            List<Placemark> placemarks = await placemarkFromCoordinates(
-              locations[i].latitude,
-              locations[i].longitude,
+            final placemarks = await placemarkFromCoordinates(
+              found[i].latitude,
+              found[i].longitude,
             );
             if (placemarks.isNotEmpty) {
               tempResults.add(placemarks.first);
-              tempLocations.add(locations[i]);
+              tempLocations.add(found[i]);
             }
           } catch (e) {
             continue;
           }
         }
-
-        final uniqueResults = <String>{};
-        final filteredResults = <Placemark>[];
-        final filteredLocations = <Location>[];
-        for (int i = 0; i < tempResults.length; i++) {
-          final element = tempResults[i];
+        final unique = <String>{};
+        for (var i = 0; i < tempResults.length; i++) {
+          final place = tempResults[i];
           final key =
-              "${element.name}-${element.administrativeArea}-${element.country}";
-          if (uniqueResults.add(key)) {
-            filteredResults.add(element);
-            filteredLocations.add(tempLocations[i]);
+              "${place.name}-${place.administrativeArea}-${place.country}";
+          if (unique.add(key)) {
+            results.add(place);
+            locations.add(tempLocations[i]);
           }
         }
-
-        setState(() {
-          _searchResults = filteredResults;
-          _resultLocations = filteredLocations;
-        });
-      } else {
-        // Hata mesajını direkt yazmıyoruz, kod atıyoruz. Build'de çevireceğiz.
-        setState(() => _error = 'NOT_FOUND');
+        if (results.isEmpty) error = _SearchError.notFound;
       }
     } catch (e) {
-      setState(() => _error = 'ERROR');
-    } finally {
-      setState(() => _isLoading = false);
+      error = _SearchError.failed;
+      results = [];
+      locations = [];
     }
+
+    if (!mounted || id != _searchId) return;
+    setState(() {
+      _isLoading = false;
+      _error = error;
+      _searchResults = results;
+      _resultLocations = locations;
+    });
   }
 
   @override
@@ -96,152 +123,186 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
     super.dispose();
   }
 
+  static String _titleOf(Placemark place) {
+    var mainText =
+        place.subAdministrativeArea ?? place.locality ?? place.name ?? "";
+    final subText = place.administrativeArea ?? "";
+    if (mainText.isEmpty || mainText == subText) {
+      if (place.name != null && place.name!.isNotEmpty) {
+        mainText = place.name!;
+      }
+    }
+    var title = mainText;
+    if (subText.isNotEmpty && subText != mainText) title += ", $subText";
+    return title;
+  }
+
+  void _select(int index, AppLocalizations loc) {
+    final place = _searchResults[index];
+    final selected = _resultLocations[index];
+    final titleDisplay = _titleOf(place);
+    final viewModel = context.read<HomeViewModel>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    String cityToSend;
+    String? districtToSend;
+    if (place.isoCountryCode == "TR") {
+      cityToSend =
+          place.administrativeArea ?? place.locality ?? place.name ?? "";
+      districtToSend = place.subAdministrativeArea ?? place.locality;
+      if (districtToSend == cityToSend) districtToSend = null;
+    } else {
+      cityToSend =
+          place.locality ?? place.administrativeArea ?? place.name ?? "";
+      districtToSend = null;
+    }
+    if (cityToSend.isEmpty) cityToSend = _searchController.text.trim();
+
+    Navigator.pop(context);
+    viewModel.changeCityAndDistrict(
+      cityToSend,
+      districtToSend,
+      lat: selected.latitude,
+      lng: selected.longitude,
+    );
+    messenger.showSnackBar(
+      SnackBar(content: Text(loc.locationSelected(titleDisplay))),
+    );
+  }
+
+  Widget _buildResults(AppLocalizations loc) {
+    if (_isLoading) return const LoadingState();
+    switch (_error) {
+      case _SearchError.failed:
+        return ErrorState(
+          message: loc.searchError,
+          onRetry: () => _performSearch(_lastQuery),
+        );
+      case _SearchError.notFound:
+        return EmptyState(icon: Icons.search_off, title: loc.searchNotFound);
+      case null:
+        break;
+    }
+    if (_searchResults.isEmpty) {
+      return EmptyState(icon: Icons.travel_explore, title: loc.searchInitial);
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+      itemCount: _searchResults.length,
+      separatorBuilder: (context, index) => const Divider(
+        height: 1,
+        indent: AppSpacing.lg,
+        endIndent: AppSpacing.lg,
+      ),
+      itemBuilder: (context, index) {
+        final place = _searchResults[index];
+        return AppListTile(
+          leadingIcon: Icons.location_on_outlined,
+          title: _titleOf(place),
+          subtitle: place.country ?? "",
+          showChevron: false,
+          onTap: () => _select(index, loc),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // --- ÇEVİRİ NESNESİ ---
     final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final media = MediaQuery.of(context);
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: 20),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
+    return Padding(
+      // Klavye açılınca sayfa yukarı kayar
+      padding: EdgeInsets.only(bottom: media.viewInsets.bottom),
+      child: Material(
+        color: theme.bottomSheetTheme.backgroundColor ?? scheme.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.xl),
           ),
-
-          Text(
-            loc.searchLocationTitle, // ARTIK DEĞİŞKENDEN GELİYOR
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 15),
-
-          TextField(
-            controller: _searchController,
-            onChanged: _onSearchChanged,
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: loc.searchLocationHint, // ARTIK DEĞİŞKENDEN GELİYOR
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              filled: true,
-              fillColor: Colors.grey[100],
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _searchResults.isEmpty
-                ? Center(
-                    child: Text(
-                      // Hata mesajları da dil desteğine kavuştu
-                      _error == 'NOT_FOUND'
-                          ? loc.searchNotFound
-                          : _error == 'ERROR'
-                          ? loc.searchError
-                          : loc.searchInitial, // "Aramak için yazın..." yerine değişkenden geliyor
-                      style: TextStyle(color: Colors.grey[600]),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: SizedBox(
+          height: media.size.height * 0.85,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 32,
+                    height: 4,
+                    margin: const EdgeInsets.only(top: AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: scheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                  )
-                : ListView.separated(
-                    itemCount: _searchResults.length,
-                    separatorBuilder: (c, i) => const Divider(),
-                    itemBuilder: (context, index) {
-                      final place = _searchResults[index];
-
-                      String mainText =
-                          place.subAdministrativeArea ??
-                          place.locality ??
-                          place.name ??
-                          "";
-                      String subText = place.administrativeArea ?? "";
-                      String country = place.country ?? "";
-
-                      if (mainText.isEmpty || mainText == subText) {
-                        if (place.name != null && place.name!.isNotEmpty) {
-                          mainText = place.name!;
-                        }
-                      }
-
-                      String titleDisplay = mainText;
-                      if (subText.isNotEmpty && subText != mainText) {
-                        titleDisplay += ", $subText";
-                      }
-
-                      return ListTile(
-                        leading: const Icon(
-                          Icons.location_on,
-                          color: Colors.teal,
-                        ),
-                        title: Text(
-                          titleDisplay,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(country),
-                        onTap: () {
-                          Navigator.pop(context);
-
-                          String cityToSend = "";
-                          String? districtToSend;
-
-                          if (place.isoCountryCode == "TR") {
-                            cityToSend =
-                                place.administrativeArea ??
-                                place.locality ??
-                                place.name ??
-                                "";
-                            districtToSend =
-                                place.subAdministrativeArea ?? place.locality;
-                            if (districtToSend == cityToSend)
-                              districtToSend = null;
-                          } else {
-                            cityToSend =
-                                place.locality ??
-                                place.administrativeArea ??
-                                place.name ??
-                                "";
-                            districtToSend = null;
-                          }
-
-                          if (cityToSend.isEmpty)
-                            cityToSend = _searchController.text;
-
-                          final selected = _resultLocations[index];
-                          context.read<HomeViewModel>().changeCityAndDistrict(
-                            cityToSend,
-                            districtToSend,
-                            lat: selected.latitude,
-                            lng: selected.longitude,
-                          );
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              // Seçildi yazısı da artık dinamik
-                              content: Text(loc.locationSelected(titleDisplay)),
-                            ),
-                          );
-                        },
-                      );
-                    },
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.lg,
+                    AppSpacing.sm,
+                    AppSpacing.xs,
+                    AppSpacing.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Semantics(
+                          header: true,
+                          child: Text(
+                            loc.searchLocationTitle,
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        tooltip: loc.close,
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                    onSubmitted: (value) => _performSearch(value.trim()),
+                    autofocus: true,
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      hintText: loc.searchLocationHint,
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _searchController.text.isEmpty
+                          ? null
+                          : IconButton(
+                              icon: const Icon(Icons.clear),
+                              tooltip: MaterialLocalizations.of(
+                                context,
+                              ).deleteButtonTooltip,
+                              onPressed: () {
+                                _searchController.clear();
+                                _onSearchChanged('');
+                              },
+                            ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Expanded(child: _buildResults(loc)),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -284,6 +284,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get timeAdjustTitle => 'Gebetszeiten anpassen';
 
   @override
+  String get tapToCount => 'Zum Zählen tippen';
+
+  @override
   String get timeAdjustSub => 'Zeiten minutengenau korrigieren';
 
   @override
