@@ -561,6 +561,7 @@
             }
         }
     },
+    "shareFailed": "Das hat nicht funktioniert. Bitte versuchen Sie es erneut.",
     "zakatCurrencyNote": "Alle Beträge sind in Türkischer Lira (₺).",
     "zakatCashTry": "Bargeld (₺)",
     "zakatRatesUnavailable": "Aktuelle Goldpreise und Wechselkurse sind nicht verfügbar. Bitte geben Sie die Preise selbst ein.",

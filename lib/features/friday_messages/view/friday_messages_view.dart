@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-// --- DİL İMPORTU ---
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-// -------------------
-import '../../../data/services/json_service.dart';
-// --- REKLAM İMPORTU ---
-import '../../common/widgets/ad_banner_widget.dart';
 
+import '../../../data/services/json_service.dart';
+
+/// Cuma mesajları: kart listesi; her mesaj kopyalanır veya paylaşılır
 class FridayMessagesView extends StatefulWidget {
   const FridayMessagesView({super.key});
 
@@ -16,218 +15,193 @@ class FridayMessagesView extends StatefulWidget {
 }
 
 class _FridayMessagesViewState extends State<FridayMessagesView> {
-  final JsonService jsonService = JsonService();
+  final JsonService _jsonService = JsonService();
   List<String>? _messages;
   bool _isLoading = true;
+  bool _failed = false;
+  String? _language;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final language = Localizations.localeOf(context).languageCode;
+    if (language != _language) {
+      _language = language;
+      _loadMessages();
+    }
+  }
+
+  void _retry() {
+    setState(() {
+      _isLoading = true;
+      _failed = false;
+    });
     _loadMessages();
   }
 
   Future<void> _loadMessages() async {
-    String currentLanguage = Localizations.localeOf(context).languageCode;
-    if (_messages == null) {
-      final list = await jsonService.getFridayMessages(currentLanguage);
-      if (mounted) {
-        setState(() {
-          _messages = list;
-          _isLoading = false;
-        });
-      }
+    final language = _language ?? 'tr';
+    try {
+      final list = await _jsonService.getFridayMessages(language);
+      if (!mounted || language != _language) return;
+      setState(() {
+        _messages = list;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _failed = true;
+        _isLoading = false;
+      });
     }
   }
 
-  void _shuffleMessages() {
-    if (_messages != null) {
-      setState(() {
-        _messages!.shuffle();
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Mesajlar karıştırıldı!"),
-          duration: Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,
-        ),
+  void _snack(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(text), duration: const Duration(seconds: 2)),
       );
+  }
+
+  void _shuffleMessages(AppLocalizations loc) {
+    final messages = _messages;
+    if (messages == null || messages.isEmpty) return;
+    setState(() => messages.shuffle());
+    _snack(loc.messagesShuffled);
+  }
+
+  Future<void> _copy(String message, AppLocalizations loc) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: message));
+      if (mounted) _snack(loc.messageCopied);
+    } catch (_) {
+      if (mounted) _snack(loc.shareFailed);
+    }
+  }
+
+  Future<void> _share(String message, AppLocalizations loc) async {
+    try {
+      await Share.share(message);
+    } catch (_) {
+      if (mounted) _snack(loc.shareFailed);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final messages = _messages;
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(loc.fridayMessagesTitle),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: _shuffleMessages,
-            icon: const Icon(Icons.shuffle),
-            tooltip: "Karıştır",
-          ),
-        ],
-      ),
-      backgroundColor: const Color(0xFF2d3436),
-      // --- REKLAM ALANI (Koyu zemin üzerine şeffaf bir SafeArea içine) ---
-      bottomNavigationBar: const SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 10.0),
-          child: AdBannerWidget(),
+    Widget body;
+    if (_isLoading) {
+      body = const LoadingState();
+    } else if (_failed || messages == null) {
+      body = ErrorState(message: loc.noDataFound, onRetry: _retry);
+    } else if (messages.isEmpty) {
+      body = EmptyState(icon: Icons.forum_outlined, title: loc.noDataFound);
+    } else {
+      body = ListView.separated(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        itemCount: messages.length,
+        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
+        itemBuilder: (context, index) => _MessageCard(
+          message: messages[index],
+          position: '${index + 1} / ${messages.length}',
+          copyLabel: loc.copy,
+          shareLabel: loc.share,
+          onCopy: () => _copy(messages[index], loc),
+          onShare: () => _share(messages[index], loc),
         ),
-      ),
-      // ------------------------------------------------------------------
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.teal))
-          : PageView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _messages!.length,
-              itemBuilder: (context, index) {
-                final message = _messages![index];
-                return _buildMessagePage(
-                  message,
-                  index + 1,
-                  _messages!.length,
-                  loc,
-                );
-              },
-            ),
+      );
+    }
+
+    return AppScaffold(
+      title: loc.fridayMessagesTitle,
+      actions: [
+        IconButton(
+          onPressed: (messages == null || messages.isEmpty)
+              ? null
+              : () => _shuffleMessages(loc),
+          icon: const Icon(Icons.shuffle),
+          tooltip: loc.shuffle,
+        ),
+      ],
+      body: body,
     );
   }
+}
 
-  Widget _buildMessagePage(
-    String message,
-    int currentIndex,
-    int totalCount,
-    AppLocalizations loc,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 80),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF2d3436), Color(0xFF00b894)],
-        ),
-      ),
+class _MessageCard extends StatelessWidget {
+  final String message;
+  final String position;
+  final String copyLabel;
+  final String shareLabel;
+  final VoidCallback onCopy;
+  final VoidCallback onShare;
+
+  const _MessageCard({
+    required this.message,
+    required this.position,
+    required this.copyLabel,
+    required this.shareLabel,
+    required this.onCopy,
+    required this.onShare,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return AppCard(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              "$currentIndex / $totalCount",
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
-            ),
-          ),
-          const Spacer(),
-          const Icon(Icons.format_quote, color: Colors.white54, size: 40),
-          const SizedBox(height: 10),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-              height: 1.5,
-              fontFamily: 'Roboto',
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-          const SizedBox(height: 10),
-          const Icon(Icons.format_quote, color: Colors.white54, size: 40),
-          const Spacer(),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildActionButton(
-                icon: Icons.copy,
-                label: "Kopyala",
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: message));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Mesaj kopyalandı"),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(width: 30),
-              _buildActionButton(
-                icon: Icons.share,
-                label: loc.share,
-                isPrimary: true,
-                onTap: () => Share.share(message),
+              Icon(Icons.format_quote, color: scheme.primary, size: 28),
+              const Spacer(),
+              Text(
+                position,
+                textDirection: TextDirection.ltr,
+                style: theme.textTheme.labelMedium!.copyWith(
+                  color: scheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 40),
-          const Icon(
-            Icons.keyboard_arrow_down,
-            color: Colors.white30,
-            size: 30,
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            message,
+            style: theme.textTheme.bodyLarge!.copyWith(
+              height: 1.6,
+              color: scheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            alignment: WrapAlignment.end,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              TextButton.icon(
+                onPressed: onCopy,
+                icon: const Icon(Icons.copy, size: 20),
+                label: Text(copyLabel),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: onShare,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(64, AppSizes.minTouch),
+                ),
+                icon: const Icon(Icons.share, size: 20),
+                label: Text(shareLabel),
+              ),
+            ],
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    bool isPrimary = false,
-  }) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(50),
-          child: Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isPrimary
-                  ? Colors.white
-                  : Colors.white.withValues(alpha: 0.1),
-              boxShadow: isPrimary
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ]
-                  : [],
-            ),
-            child: Icon(
-              icon,
-              color: isPrimary ? Colors.teal : Colors.white,
-              size: 28,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            color: isPrimary ? Colors.white : Colors.white70,
-            fontSize: 12,
-          ),
-        ),
-      ],
     );
   }
 }

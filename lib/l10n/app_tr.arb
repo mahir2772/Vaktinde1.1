@@ -582,6 +582,7 @@
             }
         }
     },
+    "shareFailed": "İşlem yapılamadı. Lütfen tekrar deneyin.",
     "zakatCurrencyNote": "Tüm tutarlar Türk lirası (₺) cinsindendir.",
     "zakatCashTry": "Nakit (₺)",
     "zakatRatesUnavailable": "Güncel altın fiyatı ve kurlar alınamadı. Lütfen fiyatları elle girin.",

@@ -1251,6 +1251,9 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get shareFailed => 'İşlem yapılamadı. Lütfen tekrar deneyin.';
+
+  @override
   String get zakatCurrencyNote => 'Tüm tutarlar Türk lirası (₺) cinsindendir.';
 
   @override

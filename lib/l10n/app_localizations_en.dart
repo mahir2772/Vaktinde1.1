@@ -1253,6 +1253,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get shareFailed => 'That did not work. Please try again.';
+
+  @override
   String get zakatCurrencyNote => 'All amounts are in Turkish lira (₺).';
 
   @override
