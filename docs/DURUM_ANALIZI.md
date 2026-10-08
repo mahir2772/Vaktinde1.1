@@ -1,4 +1,4 @@
-# Vaktinde — Durum (v1.1.0+14)
+# Vaktinde — Durum (v1.1.1+15; Play'de 1.1.0+14)
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
 
@@ -36,6 +36,14 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | B — widget'lar / güvenlik | Gün dönümü ve yatsı sonrası yarının imsakı, saat/dilim değişiminde hemen yeniden çizim, sağlayıcı başına tek alarm, seçicide ad/açıklama/önizleme, 30 dk yenileme; uygulama kilit ekranı üstünde açılmaz | `PrayerWidgetData.kt`, `res/xml/widget_info_*` |
 | C — gizlilik / izin / reklam / değerlendirme | Yedekten ya da başka telefondan gelen veride cihaza özgü bayraklar silinir (izin akışı yeni telefonda yeniden çalışır); analitikte konum ve vakit yok (tek kapı); Ayarlar reklamsız açılır; reklam içerik sınırı PG; 7 günlük tam seride bir kez uygulama içi değerlendirme | `install_guard.dart`, `app_analytics.dart`, `ad_consent.dart`, `streak_review.dart` |
 | İnceleme düzeltmeleri | İzin yokken widget/kalıcı bildirim yenilemesi uyandırmayan 10 dk pencereli alarmla (setAlarmClock hata veriyordu; Doze'da ezanın kotasını da yemez); gecikmiş (henüz çalmamış) ezan yeniden kurulumda iptal edilmez, üzerine yazılmaz (ID tarihe bağlı, son 90 dk; saati ve ayarları değiştiyse — ince ayar, konum, ses, dil — eskisi iptal); gecikmeli kipte hatırlatmalar "X dakika kaldı" yerine saatli; uyarı metni "yaklaşık 1 saate kadar, imsak/sahur dahil"; "Sessiz modda da çal" Android 7'de gizli | — |
+
+## v1.1.1 düzeltmeleri ✅ (1.1.0 yayınından gelen bildirimler)
+| Sorun | Çözüm |
+|---|---|
+| Ezanlar/bildirimler kapalıyken durum çubuğunda alarm simgesi | Günün ayeti/hadisi (10:00/19:00) herkese alarmClock ile kuruluyordu. alarmClock sadece açık ezanda; hatırlatmalar exactAllowWhileIdle, günlük içerik inexact; bildirimler kapalıyken alarmClock yok; 'schedule_mode_v2' ile mevcut kurulumlarda bir kez yeniden kurulum; Ayarlar'da "Günün ayeti ve hadisi" anahtarı |
+| Widget ve kalıcı bildirim vakit girince eksiye sayıyor ("İkindiye −17:08", Honor) | Vakit alarmı bazı üreticilerde gelmiyor: VaktindeApplication + WidgetRefresher (ekran/kilit açılınca ve ekran açıkken dakikada bir denetim, bayat yüzey yeniden çizilir; alarm simgesi yok); başlık her zaman "Akşama" (title_* anahtarları) |
+| Kıble bazen yanlış | flutter_compass manyetik kuzey veriyordu (Türkiye'de ~6° sabit hata): GeomagneticField ile sapma düzeltmesi, dairesel süzgeç, manyetik parazit uyarısı, manyetometre durumuyla kalibrasyon; "yaklaşık yön" notu + "Doğru sonuç için" ipuçları |
+| Gizlilik politikası eksik/yanlış | Metin güncellendi (Firebase, konum akışı, AdMob, KVKK) → docs/gizlilik_politikasi.md, Google Sites'ta yayında; Ayarlar > Destek'te bağlantı |
 
 ## Ertelenenler
 - CollectAPI anahtarı: koda yazılamıyor; derlemede `--dart-define=COLLECT_API_KEY=...` verilmezse zekat ekranında canlı kur gelmez. Anahtar yenilenmeli (git geçmişinde açık).
@@ -117,7 +125,7 @@ Efor: S ≤1 gün · M 2–4 gün · L 1 hafta+. Kaynak: araştırma raporu (Eki
    hep 24 saat), kalıcı bildirimin sabit renkleri ve "Vakit" yedek metni (`custom_notification.xml`), uygulama içi
    "Ana ekrana ekle" (home_widget 0.7, yeni bağımlılık yok).
 4. Tam ekran reklam yalnız Zekat'ta (S): araç açılışlarındaki interstitial kalkar (`tools_view.dart`); gelir etkisi ölçülür.
-5. Gizlilik politikası linki (Ayarlar) + AB'de Analytics'i UMP rızasına bağlama (`setConsent`) (S).
+5. ~~Gizlilik politikası linki~~ (1.1.1'de yapıldı) + AB'de Analytics'i UMP rızasına bağlama (`setConsent`) (S).
 
 **Aralık – 10 Ocak 2027 — Ramazan 8 Şubat 2027**
 6. Ramazan widget'ı (S–M): iftar/sahur sayacı; Ramazan dışında "Ramazan'a X gün".
@@ -139,3 +147,10 @@ Efor: S ≤1 gün · M 2–4 gün · L 1 hafta+. Kaynak: araştırma raporu (Eki
 **Yapılmayacak:** üyelik/giriş (şimdilik), yapay zekâ hoca, abonelik, uygulama içinde sadaka/zekat toplama.
 **Kullanıcı işleri:** CollectAPI anahtarı (yenile, dart-define), AdMob GDPR mesajı + hassas kategori engelleri, Veri güvenliği
 (Crashlytics), pil izni kararı; mağaza görselleri: Aralık başı Üç Aylar, ~11 Ocak "Ramazan 2027 İmsakiye".
+
+## Yayın öncesi kontrol (1.1.1, cihazda)
+1. Tüm ezanlar kapalı → durum çubuğunda alarm simgesi yok (güncellemeden sonra uygulamayı bir kez açınca 1.1.0'ın alarmları da yeniden kurulur).
+2. Bir ezan açık → simge var (beklenen: ezan alarmı); Ayarlar > "Günün ayeti ve hadisi" kapat → 10:00/19:00 bildirimi gelmez.
+3. Widget/kalıcı bildirim: vakit geçtikten sonra ekranı aç → en geç ~1 dk içinde sıradaki vakte sayar, başlık "Akşama" gibi.
+4. Kıble: bilinen bir yönle (cami) karşılaştır; mıknatıslı kılıf/metal yanında parazit uyarısı; alttaki not ve bilgi sayfası.
+5. Ayarlar > Destek > Gizlilik Politikası tarayıcıda açılır.

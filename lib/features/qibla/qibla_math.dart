@@ -35,12 +35,14 @@ bool compassAccuracyPoor(double? accuracy) =>
 /// pusula doğruluğuna kalır.
 bool magnetometerAccuracyPoor(int? accuracy) => accuracy == 0 || accuracy == 1;
 
-/// Kalibrasyon uyarısı kararı: pusula doğruluğu zayıf/bilinmiyor ya da
-/// manyetometre kalibrasyon istiyor. Eklentinin doğruluğu kayıtlı tüm
-/// sensörlerin (ivmeölçer dahil) son durumudur; manyetometreninki ayrıca okunur.
+/// Kalibrasyon uyarısı kararı. Manyetometrenin kendi durumu biliniyorsa o
+/// karar verir (0/1 zayıf): eklentinin doğruluğu kayıtlı tüm sensörlerin
+/// (ivmeölçer dahil) son durumudur, çoğu cihazda bilinmez ve kalibre pusulada
+/// da boşuna uyarı açtırır. Bilinmiyorsa eski kural (pusula doğruluğu).
 bool calibrationPoor({double? compassAccuracy, int? magnetometerAccuracy}) =>
-    compassAccuracyPoor(compassAccuracy) ||
-    magnetometerAccuracyPoor(magnetometerAccuracy);
+    magnetometerAccuracy != null
+    ? magnetometerAccuracyPoor(magnetometerAccuracy)
+    : compassAccuracyPoor(compassAccuracy);
 
 enum QiblaTurn { aligned, slightRight, right, slightLeft, left }
 

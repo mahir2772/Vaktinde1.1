@@ -21,7 +21,7 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 `lib/main.dart` → Firebase init + Crashlytics hata yakalayıcıları → `InstallGuard.run` (3 sn) → `AdHelper.loadInterstitialAd` (rıza gelince yükler) → `BackgroundManager.initializeService` → Workmanager periyodik görev (6 sa, `keep`; `callbackDispatcher` → `PrayerRefreshService.runHeadless`) → `MultiProvider` (HomeViewModel, LanguageProvider, ThemeProvider, ZikirViewModel) → `runApp` → `AdConsent.gatherAndStartAds()` (beklemez) → dil seçilmemişse `OnboardingLanguageView` → `MainWrapper`, yoksa `ShowCaseWidget(MainWrapper)` (tur bitince bildirim + konum izni).
 - Reklam rızası: `common/ad_consent.dart` — AdMob UMP (`requestConsentInfoUpdate` 10 sn zaman aşımı → `loadAndShowConsentFormIfRequired`), `canRequestAds()` true ise önce `updateRequestConfiguration(maxAdContentRating: PG)` (aile dostu; hata olursa yine başlar), sonra `MobileAds.initialize` (10 sn) ve `AdConsent.canRequestAds` (ValueNotifier) true; banner'lar/interstitial bunu bekler (`whenAdsStarted`; rıza geri çekilirse yeniden verilene kadar bekler). `getPrivacyOptionsRequirementStatus` → `AdConsent.privacyOptionsRequired`; gerekliyse Ayarlar > Destek'te "Reklam gizlilik ayarları" satırı (`AdConsent.showPrivacyOptions` → `ConsentForm.showPrivacyOptionsForm`). Hata/ağ yokluğu açılışı bekletmez, çökertmez.
 - Güncelleme: tek akış, Play esnek güncelleme (`_checkForUpdate`): iner, "Yeniden başlat" SnackBar'ı (`scaffoldMessengerKey`) ile kullanıcı onaylayınca `completeFlexibleUpdate`. UpgradeAlert yok.
-- Kurulum denetimi (`onboarding/install_guard.dart`): Android yedeği / cihazdan cihaza aktarım prefs'i yeni kuruluma taşır. 'install_marker' ≠ `PackageInfo.installTime` (firstInstallTime) → `InstallGuard.deviceKeys` silinir ('permissions_primed', 'battery_optimization_asked', 'alarms_scheduled_date', 'qibla_calibration_dialog_seen', 'exact_alarms_allowed', 'alarm_plan_meta'; yeni cihaza özgü bayrak buraya ve test/install_guard_test.dart fikstürüne eklenir). İşaretsiz eski veri: kurulum bu cihazda güncellenmişse sessizce işaretlenir, hiç güncellenmemişse (yedek) silinir.
+- Kurulum denetimi (`onboarding/install_guard.dart`): Android yedeği / cihazdan cihaza aktarım prefs'i yeni kuruluma taşır. 'install_marker' ≠ `PackageInfo.installTime` (firstInstallTime) → `InstallGuard.deviceKeys` silinir ('permissions_primed', 'battery_optimization_asked', 'alarms_scheduled_date', 'qibla_calibration_dialog_seen', 'exact_alarms_allowed', 'alarm_plan_meta', 'schedule_mode_v2', 'notifications_enabled'; yeni cihaza özgü bayrak buraya ve test/install_guard_test.dart fikstürüne eklenir). İşaretsiz eski veri: kurulum bu cihazda güncellenmişse sessizce işaretlenir, hiç güncellenmemişse (yedek) silinir.
 - Analytics: tek kapı `common/app_analytics.dart` (`AppAnalytics.logEvent`; sadece `allowedParameters`, konum/vakit gönderilmez). `FirebaseAnalytics` başka yerde kullanılmaz (testli).
 
 `MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma; Ayarlar satırı reklamsız). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
@@ -39,12 +39,16 @@ lib/
                             getPrayerTimes(city): yedek Aladhan API (timingsByCity, 10 sn timeout)
       storage_service       SharedPreferences sarmalayıcı (konum adı + koordinat 'saved_lat/lng', günlük cache 'cached_prayer_times'+'cached_prayer_date', ayarlar, kaza, hadis)
       location_service      geolocator + geocoding → {city: administrativeArea, district: subAdministrativeArea|locality}; getCoordinatesFromAddress(il, ilçe)
-      notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (alarmClock modu; namaz ID 0-71 = vaktin tarihine bağlı
+      notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (namaz ID 0-71 = vaktin tarihine bağlı
                             PrayerRefreshService.alarmId: epochDay%6 × 12 + vakit×2 (+1 hatırlatma), vakit çıkış 100-124, günlük içerik 1000/1900, kalıcı 888).
                             Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım")
-                            Kip: canScheduleExactNotifications true/bilinmiyor → alarmClock, false → inexactAllowWhileIdle (çalar ama Android
-                            12/12L'de pencere 1 saate kadar + Doze'da 9 dk kota: ~1 saat gecikebilir, imsak/sahur dahil; uyarı alarmHealthExactOff);
-                            alarmClock 'exact_alarms_not_permitted' ile reddedilirse aynı bildirim gecikmeli kurulur. Son durum 'exact_alarms_allowed'.
+                            Kip: scheduleModeFor(NotificationKind, exactAllowed:, notificationsEnabled:). alarmClock (durum çubuğunda alarm
+                            simgesi + kilit ekranında "sonraki alarm") SADECE kullanıcının açtığı ezan (prayer) için, tam zamanlı izin ve bildirimler
+                            açık/bilinmiyorken; hatırlatma (tek ID) ve vakit çıkış (100-124) exactAllowWhileIdle (simgesiz); günün ayeti/hadisi
+                            (1000/1900) her zaman inexactAllowWhileIdle. İzin false → hepsi inexactAllowWhileIdle (çalar ama Android 12/12L'de
+                            pencere 1 saate kadar + Doze'da 9 dk kota: ~1 saat gecikebilir, imsak/sahur dahil; uyarı alarmHealthExactOff); tam
+                            zamanlı kip 'exact_alarms_not_permitted' ile reddedilirse aynı bildirim gecikmeli kurulur. Son durumlar
+                            'exact_alarms_allowed', 'notifications_enabled' (refreshNotificationsEnabled, her kurulum turundan önce).
                             Gecikmeli kipte (buildAlarmPlan/buildEndReminderPlan exact:false) göreli metin yok: hatırlatma "X dk kaldı" yerine
                             vaktin saati, vakit çıkışı "çıkmasına X dk" yerine çıkış saati (nötr başlık), Ramazan imsakı "sahur HH:mm itibarıyla
                             sona erdi" — geç gelse de yanıltmaz (atlamak yerine; sahur hatırlatması kaybolmasın)
@@ -63,7 +67,10 @@ lib/
                             buildEndReminderPlan/syncEndReminders: "vakit çıkmadan hatırlat" (ayar: end_reminder_*). Alarm işleri SerialQueue ile sıralı.
                             Ramazan günlerinde (gün gün, loadRamadanCalendar; olmazsa hijriOnly) imsak/akşam ezanı sahur/iftar metniyle
                             Kurulum hatası yutulmaz: alarm başına yakalanır, diğerleri kurulur, tur sonunda tek Crashlytics kaydı; bekleyenler
-                            okunamazsa da kurulur (gün kaydedilmez). Tam zamanlı izin değişince runHeadless aynı gün de yeniden kurar.
+                            okunamazsa da kurulur (gün kaydedilmez). Tam zamanlı ya da bildirim izni değişince ve kip geçişi
+                            ('schedule_mode_v2': 1.1.0 her şeyi alarmClock kurdu) bitene kadar runHeadless aynı gün de yeniden kurar;
+                            geçişte bekleyen 1000/1900 aynı metinle yeniden yazılır (pendingTexts). Günün ayeti/hadisi ayarı
+                            'daily_content_enabled' (varsayılan açık; kapalıyken kurulmaz, bekleyen iptal; _dailyQueue ile sıralı).
                             Geç ezan: vakti son 90 dk'da (lateWindow) girmiş, açık farz ezanı aynı "Kıldım" yüküyle hâlâ bekliyorsa
                             (gecikmeli kip, henüz çalmadı) ve kurulduğu saat + ayarlar bugünkü hesapla aynıysa yeniden kurulumda iptal
                             edilmez (recentlyDueEzans). Kayıt: 'alarm_plan_meta' (ID → alarmFingerprint: saat, başlık, ses, kanal, alarm
@@ -71,7 +78,8 @@ lib/
                             ya da kayıt yoksa (güncelleme, yedekten dönüş) eskisi iptal edilir. ID tarihe bağlı olduğundan üzerine başka
                             günün alarmı da yazılmaz. Güneş, hatırlatma ve vakit çıkış hatırlatması korunmaz
       widget_service        home_widget → Android widget'larına veri yazar (+ gün dönümü: times_date, tomorrow_*;
-                            koordinat yoksa silinir). updateHomeWidget yazımları SerialQueue ile sıralı
+                            koordinat yoksa silinir; vakte kalan başlıkları title_imsak…title_yatsi = loc.toX, titleKeys).
+                            updateHomeWidget yazımları SerialQueue ile sıralı
       hadith_service        hadeethenc.com API + yerel json fallback
       ayah_service          api.alquran.cloud
       economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır
@@ -111,9 +119,18 @@ lib/
     home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse; onHero: kapsül, değilse InfoBanner
     home/widgets/prayer_tracker_row.dart   "Bugün" 5 vakit işareti (resume'da yenilenir) → prayer_tracker/view/prayer_tracker_view.dart
                                            (7 gün ızgara, 30 gün oran, seri, kılınmayanları kazaya ekle; araçlarda da kart)
-    settings/view/end_reminder_setting.dart vakit çıkış hatırlatması anahtarı + 15/30/45 dk
+    settings/view/end_reminder_setting.dart vakit çıkış hatırlatması anahtarı + 15/30/45 dk; altında "Günün ayeti ve hadisi"
+                                           anahtarı (HomeViewModel.setDailyContentEnabled)
+    settings/view/settings_view.dart       Destek'te "Gizlilik Politikası" (core/app_links.dart AppLinks.privacyPolicy = Google Sites,
+                                           harici tarayıcı; boşsa gizli). Metnin kaynağı docs/gizlilik_politikasi.md
     settings/view/language_sheet.dart      dil seçimi (Ayarlar'da ilk satır); sürüm package_info_plus ile
-    qibla/qibla_math.dart                  kıble açısı (adhan_dart Qibla) + dönüş yönü yardımcıları; pusula sadece sekme görünürken
+    qibla/qibla_math.dart                  kıble açısı (adhan_dart, COĞRAFİ kuzey) + dönüş yönü; trueHeading (manyetik + sapma),
+                                           Geomagnetic.tryParse, dairesel süzgeç (HeadingFilter, 0,25/olay), parazit (alan beklenenden
+                                           >%25 sapma 1,5 sn → uyarı, <%15 1 sn → kapanır), calibrationPoor (manyetometre durumu biliniyorsa
+                                           0/1 zayıf, yoksa eklentinin doğruluğu). flutter_compass MANYETİK kuzey verir: qibla_view pusula
+                                           açılınca konum başına bir kez 'vaktinde/device' geomagnetic sorar (hata → sapma 0, parazit denetimi
+                                           yok); 'vaktinde/magnetic' akışı pusulayla aynı yaşam döngüsünde (sekme görünür + ön plan); altta
+                                           her zaman "yaklaşık yön" notu + "Doğru sonuç için" alt sayfası (ipuçları, kıble açısı, sapma)
     zikirmatik/view/dhikr_names.dart       zikir adları/Arapça metinleri (Amiri)
     onboarding/view/onboarding_language_view.dart  dil seçimi + requestPermissionsWithPriming (açıklama penceresi → bildirim → konum;
                                            oturumda bir kez, bitince 'permissions_primed') + primePermissionsIfNeeded;
@@ -131,16 +148,25 @@ lib/
     main_wrapper/app_showcase.dart         tanıtım turu anahtarları + AppShowcase (marka renkli balon)
     common/{language,theme}_provider.dart
 android/app/src/main/
-  AndroidManifest.xml   AdMob APP ID, izinler, servis/receiver/widget tanımları (showWhenLocked/turnScreenOn YOK:
-                        kilit ekranı üstünde açılmaz); widget'lar + NotificationUpdater TIME_SET/TIMEZONE_CHANGED dinler
-  kotlin/com/mmdigital/vaktinde/ — MainActivity ('vaktinde/device' kanalı: sdkInt), 3 widget provider, NotificationUpdater (kalıcı bildirim 888;
+  AndroidManifest.xml   application android:name=".VaktindeApplication"; AdMob APP ID, izinler, servis/receiver/widget tanımları
+                        (showWhenLocked/turnScreenOn YOK: kilit ekranı üstünde açılmaz); widget'lar + NotificationUpdater
+                        TIME_SET/TIMEZONE_CHANGED dinler
+  kotlin/com/mmdigital/vaktinde/ — MainActivity (DeviceChannels.kt: 'vaktinde/device' sdkInt + geomagnetic {lat,lng} →
+                                   {declination doğu+, strength µT}; EventChannel 'vaktinde/magnetic' [µT, doğruluk 0..3/-1] ≤5/sn,
+                                   no_sensor; onStop'ta durur), 3 widget provider, NotificationUpdater (kalıcı bildirim 888;
                                    HomeWidgetPreferences'tan çizer, her vakitte PrayerWidgetData.setRefreshAlarm ile kendini yeniler)
     PrayerWidgetData.kt   ortak vakit mantığı: 'times_date' (yazılan setin günü) + 'tomorrow_*' (yarının vakitleri,
                           'tomorrow_hijri_date_text'): yatsıdan sonra yarının imsakı, gün dönmüşse yarının seti;
                           yeni anahtar yoksa eski davranış. Sağlayıcı başına tek alarm (requestCode 0), onDisabled'da iptal.
                           setRefreshAlarm: tam zamanlı (setExactAndAllowWhileIdle); izin yoksa (Android 12/12L) uyandırmayan
                           setWindow(RTC, 10 dk): izinsiz setAlarmClock SecurityException atar, setAndAllowWhileIdle ise Doze'da
-                          ezanla aynı "9 dk'da bir" kotasını paylaşıp ezanı geciktirir
+                          ezanla aynı "9 dk'da bir" kotasını paylaşıp ezanı geciktirir. NextPrayer(time, label, index);
+                          title(): Dart'ın title_<vakit> anahtarı ("İkindiye"), yoksa title_text (±60 sn) / vakit adı
+    VaktindeApplication.kt + WidgetRefresher.kt  kendini onaran sayaç (alarm geç/hiç gelmeyen üreticiler): onCreate'te tek dinamik
+                          alıcı (TIME_TICK, SCREEN_ON, USER_PRESENT; 33+ NOT_EXPORTED) + açılışta bir denetim. Her yüzey (3 widget
+                          türü + 888) çizdiği hedef + günü 'vaktinde_widget_state'e yazar (markWidgetsDrawn/markNotificationDrawn);
+                          hesaplanandan farklıysa sadece o yüzey süreç içinde yeniden çizilir (888 sadece açıksa). Hiçbir yol
+                          fırlatmaz. Widget yenilemede setAlarmClock KULLANILMAZ (durum çubuğu alarm simgesi)
   res/layout/vaktinde_widget_*.xml, custom_notification.xml; res/xml/widget_info_* (30 dk, açıklama, previewLayout);
   res/values*/strings.xml (widget adları/açıklamaları, tr varsayılan + en/de/fr/ar)
 assets/data/  esma/cuma mesajları (dil başına json), religious_days.json

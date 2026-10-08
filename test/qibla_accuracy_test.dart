@@ -352,31 +352,41 @@ void main() {
     });
   });
 
-  test('kalibrasyon kararı: manyetometre 0/1 zayıf, pusula kuralı aynen', () {
-    // (pusula ±°, manyetometre durumu, zayıf mı)
-    for (final (compass, magnetometer, poor) in [
-      (15.0, null, false), // manyetometre bilinmiyor: eskisi gibi
-      (15.0, 3, false), // yüksek
-      (15.0, 2, false), // orta yeterli
-      (15.0, 1, true), // düşük
-      (15.0, 0, true), // güvenilmez
-      (30.0, 3, true), // pusula orta: eskisi gibi zayıf
-      (null, 3, true), // pusula bilinmiyor: eskisi gibi zayıf
-    ]) {
-      expect(
-        calibrationPoor(
-          compassAccuracy: compass,
-          magnetometerAccuracy: magnetometer,
-        ),
-        poor,
-        reason: '$compass / $magnetometer',
-      );
-      expect(
-        magnetometerAccuracyPoor(magnetometer),
-        magnetometer == 0 || magnetometer == 1,
-      );
-    }
-  });
+  test(
+    'kalibrasyon kararı: manyetometre biliniyorsa o (0/1 zayıf), yoksa pusula kuralı',
+    () {
+      // (pusula ±°, manyetometre durumu, zayıf mı)
+      for (final (compass, magnetometer, poor) in [
+        (15.0, null, false), // manyetometre bilinmiyor: eskisi gibi
+        (30.0, null, true), // manyetometre bilinmiyor, pusula orta: zayıf
+        (null, null, true), // ikisi de bilinmiyor: zayıf
+        (15.0, 3, false), // yüksek
+        (15.0, 2, false), // orta yeterli
+        (15.0, 1, true), // düşük
+        (15.0, 0, true), // güvenilmez
+        (
+          30.0,
+          3,
+          false,
+        ), // manyetometre yüksek: eklentinin orta durumu uyarı açmaz
+        (null, 3, false), // eklenti bilinmiyor ama manyetometre yüksek
+        (null, 1, true), // manyetometre düşük
+      ]) {
+        expect(
+          calibrationPoor(
+            compassAccuracy: compass,
+            magnetometerAccuracy: magnetometer,
+          ),
+          poor,
+          reason: '$compass / $magnetometer',
+        );
+        expect(
+          magnetometerAccuracyPoor(magnetometer),
+          magnetometer == 0 || magnetometer == 1,
+        );
+      }
+    },
+  );
 
   group('Görünüm', () {
     setUp(() {
