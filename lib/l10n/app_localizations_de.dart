@@ -1178,6 +1178,46 @@ class AppLocalizationsDe extends AppLocalizations {
   String get calibrationRequired => 'Kalibrierung erforderlich';
 
   @override
+  String get qiblaAccuracyNote =>
+      'Der Kompass zeigt die Richtung nur ungefähr an; Metall, Magnete und elektronische Geräte können ihn ablenken.';
+
+  @override
+  String get qiblaTipsTitle => 'Für ein genaues Ergebnis';
+
+  @override
+  String get qiblaTipFlat => 'Halten Sie das Telefon waagerecht.';
+
+  @override
+  String get qiblaTipCalibrate =>
+      'Kalibrieren Sie, indem Sie mit dem Telefon eine \'8\' in die Luft zeichnen.';
+
+  @override
+  String get qiblaTipMagneticCase =>
+      'Entfernen Sie eine magnetische Hülle, falls vorhanden.';
+
+  @override
+  String get qiblaTipMetal =>
+      'Halten Sie Abstand zu Metallgegenständen und elektronischen Geräten.';
+
+  @override
+  String get qiblaTipMosque =>
+      'Vergleichen Sie nach Möglichkeit mit der Qibla-Richtung einer Moschee.';
+
+  @override
+  String qiblaAngleTrueNorth(String angle) {
+    return 'Qibla-Winkel: $angle° (bezogen auf geografisch Nord)';
+  }
+
+  @override
+  String qiblaDeclination(String deg) {
+    return 'Magnetische Deklination: $deg° (automatisch korrigiert)';
+  }
+
+  @override
+  String get qiblaInterferenceWarning =>
+      'Magnetische Störung erkannt: Halten Sie das Telefon von Metallgegenständen, magnetischen Hüllen und elektronischen Geräten fern.';
+
+  @override
   String get gold22kGram => 'Gramm Gold (22 Karat)';
 
   @override

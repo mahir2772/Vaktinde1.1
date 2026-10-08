@@ -1185,6 +1185,46 @@ class AppLocalizationsFr extends AppLocalizations {
   String get calibrationRequired => 'Étalonnage requis';
 
   @override
+  String get qiblaAccuracyNote =>
+      'La boussole indique une direction approximative ; le métal, les aimants et les appareils électroniques peuvent la fausser.';
+
+  @override
+  String get qiblaTipsTitle => 'Pour un résultat précis';
+
+  @override
+  String get qiblaTipFlat => 'Tenez le téléphone à plat, parallèle au sol.';
+
+  @override
+  String get qiblaTipCalibrate =>
+      'Étalonnez la boussole en dessinant un « 8 » en l\'air avec votre téléphone.';
+
+  @override
+  String get qiblaTipMagneticCase =>
+      'Retirez la coque aimantée, le cas échéant.';
+
+  @override
+  String get qiblaTipMetal =>
+      'Éloignez-vous des objets métalliques et des appareils électroniques.';
+
+  @override
+  String get qiblaTipMosque =>
+      'Si possible, comparez avec la direction de la Qibla d\'une mosquée.';
+
+  @override
+  String qiblaAngleTrueNorth(String angle) {
+    return 'Angle de la Qibla : $angle° (depuis le nord géographique)';
+  }
+
+  @override
+  String qiblaDeclination(String deg) {
+    return 'Déclinaison magnétique : $deg° (corrigée automatiquement)';
+  }
+
+  @override
+  String get qiblaInterferenceWarning =>
+      'Interférence magnétique détectée : éloignez le téléphone des objets métalliques, des coques aimantées et des appareils électroniques.';
+
+  @override
   String get gold22kGram => 'Gramme d\'or 22 carats';
 
   @override

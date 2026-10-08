@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_compass/flutter_compass.dart';
@@ -20,24 +21,72 @@ enum _LocationProblem { serviceOff, permissionDenied, unavailable }
 /// Konum: önce GPS (izin istemez; izin tanıtım turundan sonra istenir), olmazsa
 /// kayıtlı koordinat. Pusula sadece sekme görünür ve uygulama ön plandayken
 /// dinlenir (arka plan, tam ekran reklam, bildirim perdesi → sensörler kapanır).
+///
+/// Eklenti manyetik kuzeyi verir: yön, konumun manyetik sapmasıyla (MainActivity
+/// 'geomagnetic', Dünya Manyetik Modeli) coğrafi kuzeye çevrilir ve titreşime
+/// karşı süzülür. Manyetometre ('vaktinde/magnetic', pusulayla aynı yaşam
+/// döngüsü) beklenen alandan saparsa parazit uyarısı, doğruluğu düşükse
+/// kalibrasyon uyarısı verilir.
 class QiblaView extends StatefulWidget {
   /// Pusula olay kaynağı; testte sahte akış verilir
   @visibleForTesting
   final Stream<CompassEvent>? Function() compassEvents;
 
-  const QiblaView({super.key, this.compassEvents = _platformCompass});
+  /// Manyetometre olay kaynağı; testte sahte akış verilir
+  @visibleForTesting
+  final Stream<MagneticReading>? Function() magneticEvents;
+
+  const QiblaView({
+    super.key,
+    this.compassEvents = _platformCompass,
+    this.magneticEvents = _platformMagnetic,
+  });
 
   static Stream<CompassEvent>? _platformCompass() => FlutterCompass.events;
+
+  static const EventChannel _magneticChannel = EventChannel(
+    'vaktinde/magnetic',
+  );
+
+  /// Okunamayan olaylar atlanır; sensör yoksa 'no_sensor' hatası gelir
+  static Stream<MagneticReading>? _platformMagnetic() => _magneticChannel
+      .receiveBroadcastStream()
+      .map(parseMagneticReading)
+      .where((reading) => reading != null)
+      .map((reading) => reading!);
 
   @override
   State<QiblaView> createState() => _QiblaViewState();
 }
+
+/// Konumun manyetik sapması ve beklenen alan şiddeti; hata/eksik yanıtta null
+Future<Geomagnetic?> _queryGeomagnetic(double lat, double lng) async {
+  try {
+    final result = await const MethodChannel(
+      'vaktinde/device',
+    ).invokeMethod<Object?>('geomagnetic', {'lat': lat, 'lng': lng});
+    return Geomagnetic.tryParse(result);
+  } catch (_) {
+    return null;
+  }
+}
+
+String _deg(double value) => '${normalizeDegrees(value).round() % 360}';
+
+/// "152°" sağdan sola metinde de "152°" okunsun (° sayının solunda kalmasın,
+/// "+6°" işareti yer değiştirmesin)
+String _isolateDegrees(String text, String value) =>
+    text.replaceFirst('$value°', '${Unicode.LRI}$value°${Unicode.PDI}');
 
 class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   static const String _calibrationSeenKey = 'qibla_calibration_dialog_seen';
   static const Duration _noSensorTimeout = Duration(seconds: 4);
   // Kısa doğruluk düşüşlerinde uyarı yanıp sönmesin
   static const Duration _calibrationDelay = Duration(seconds: 2);
+  // Parazit uyarısı kısa sapmalarda açılmaz; alan normale dönünce kısa bir
+  // bekleyişle kapanır (metal yanından geçerken yanıp sönmesin)
+  static const Duration _interferenceDelay = Duration(milliseconds: 1500);
+  static const Duration _interferenceClearDelay = Duration(seconds: 1);
   // Bundan küçük yön değişimi yeniden çizim yaptırmaz
   static const double _minHeadingStep = 0.5;
 
@@ -45,21 +94,37 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   bool _initStarted = false;
   _LocationProblem? _problem;
   double? _bearing;
+  ({double lat, double lng})? _coords;
   bool _usingSavedLocation = false;
 
   bool _active = false;
   bool _foreground = true;
   StreamSubscription<CompassEvent>? _compassSubscription;
+  StreamSubscription<MagneticReading>? _magneticSubscription;
   Timer? _noSensorTimer;
   Timer? _calibrationTimer;
+  Timer? _interferenceTimer;
   bool _noCompass = false;
   bool _hasHeading = false;
+
+  /// Konumun manyetik modeli ve ait olduğu 0,1°'lik hücre (sorgu sürerken de
+  /// dolu: aynı konum bir kez sorulur)
+  Geomagnetic? _geomagnetic;
+  String? _geomagneticCell;
+
+  /// Süzülmüş coğrafi yön; abonelik yeniden açılınca ilk okumayla başlar
+  HeadingFilter? _headingFilter;
 
   /// Son gösterilen yön (0..360) ve kadranın yumuşak dönüşü için sarılmamış yön
   double _heading = 0;
   double _unwrappedHeading = 0;
   bool _aligned = false;
+
+  /// Son okunan doğruluklar: pusula (± derece) ve manyetometre (0..3)
+  double? _compassAccuracy;
+  int? _magnetometerAccuracy;
   bool _calibrationPoor = false;
+  bool _interference = false;
 
   bool _calibrationDialogSeen = true;
   bool _showCalibrationDialog = false;
@@ -161,6 +226,7 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     setState(() {
       _loading = false;
       _calibrationDialogSeen = seen;
+      _coords = coords;
       if (coords == null) {
         _bearing = null;
         _problem = problem;
@@ -172,6 +238,32 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     _syncCompass();
   }
 
+  /// Manyetik sapma ve beklenen alan şiddeti: konum başına bir kez sorulur
+  /// (0,1°'lik hücre). Hata/eksik yanıtta sapma 0 kabul edilir ve parazit
+  /// denetimi yapılmaz; pusula beklemez. Başarısız sorgu sonraki açılışta
+  /// yeniden denenir.
+  void _loadGeomagnetic() {
+    final coords = _coords;
+    if (coords == null) return;
+    final cell = geomagneticCell(coords.lat, coords.lng);
+    if (cell == _geomagneticCell) return;
+    _geomagneticCell = cell;
+    // Beklenen şiddet bilinmeden parazit uyarısı kapanamaz: yeni konumda sıfırdan
+    _geomagnetic = null;
+    _interference = false;
+    _interferenceTimer?.cancel();
+    _interferenceTimer = null;
+    _queryGeomagnetic(coords.lat, coords.lng).then((info) {
+      if (!mounted || _geomagneticCell != cell) return;
+      if (info == null) {
+        _geomagneticCell = null;
+        return;
+      }
+      // Yön süzgeçten geçtiği için düzeltme kadranı sıçratmadan uygulanır
+      setState(() => _geomagnetic = info);
+    });
+  }
+
   /// Pusula sadece sekme görünür, uygulama ön planda ve açı hazırken dinlenir
   void _syncCompass() {
     if (_active && _foreground && _bearing != null) {
@@ -181,7 +273,8 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     }
   }
 
-  /// Tek abonelik: zaten dinleniyorsa bir şey yapmaz
+  /// Tek abonelik: zaten dinleniyorsa bir şey yapmaz. Manyetometre de
+  /// pusulayla birlikte açılır ve kapanır.
   void _startCompass() {
     if (_compassSubscription != null) return;
     final events = widget.compassEvents();
@@ -189,6 +282,8 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
       if (!_noCompass) setState(() => _noCompass = true);
       return;
     }
+    // Yanıt genelde ilk yön olayından önce gelir
+    _loadGeomagnetic();
     _noSensorTimer?.cancel();
     _noSensorTimer = null;
     if (!_hasHeading) {
@@ -203,17 +298,28 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
         if (mounted && !_hasHeading) setState(() => _noCompass = true);
       },
     );
+    _magneticSubscription = widget.magneticEvents()?.listen(
+      _onMagneticReading,
+      // Manyetometre yok ('no_sensor') / kanal hatası: parazit denetimi yapılmaz
+      onError: (Object _) {},
+    );
   }
 
-  /// Aboneliği bırakır (eklenti sensör dinleyicilerini kaldırır); tekrar
+  /// Abonelikleri bırakır (eklentiler sensör dinleyicilerini kaldırır); tekrar
   /// çağrılabilir
   void _stopCompass() {
     _noSensorTimer?.cancel();
     _noSensorTimer = null;
     _calibrationTimer?.cancel();
     _calibrationTimer = null;
+    _interferenceTimer?.cancel();
+    _interferenceTimer = null;
     _compassSubscription?.cancel();
     _compassSubscription = null;
+    _magneticSubscription?.cancel();
+    _magneticSubscription = null;
+    // Dönüşte eski yöne göre süzülmez (telefon bu arada dönmüş olabilir)
+    _headingFilter = null;
   }
 
   void _onCompassEvent(CompassEvent event) {
@@ -223,11 +329,21 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
       if (!_hasHeading && !_noCompass) setState(() => _noCompass = true);
       return;
     }
+    // Bozuk okuma süzgeci kalıcı bozmasın
+    if (!raw.isFinite) return;
     _noSensorTimer?.cancel();
     _noSensorTimer = null;
-    _updateCalibration(event.accuracy);
+    _compassAccuracy = event.accuracy;
+    _updateCalibration();
 
-    final heading = normalizeDegrees(raw);
+    // Manyetik kuzey → coğrafi kuzey (kıble açısı coğrafi), sonra titreşim
+    // süzgeci
+    final filter = smoothHeading(
+      _headingFilter,
+      trueHeading(raw, _geomagnetic?.declination),
+    );
+    _headingFilter = filter;
+    final heading = filteredHeading(filter);
     final step = _hasHeading ? signedDelta(_heading, heading) : heading;
     // Saniyede ~30 olay: fark edilmeyecek titreşimde yeniden çizilmez
     if (_hasHeading && !_noCompass && step.abs() < _minHeadingStep) return;
@@ -243,10 +359,15 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     });
   }
 
-  /// Doğruluk [_calibrationDelay] boyunca zayıf/bilinmiyorsa uyarı açılır,
-  /// iyi okuma gelince hemen kapanır
-  void _updateCalibration(double? accuracy) {
-    if (!compassAccuracyPoor(accuracy)) {
+  /// Doğruluk [_calibrationDelay] boyunca zayıf/bilinmiyorsa (ya da
+  /// manyetometre kalibrasyon istiyorsa) uyarı açılır, iyi okuma gelince
+  /// hemen kapanır
+  void _updateCalibration() {
+    final poor = calibrationPoor(
+      compassAccuracy: _compassAccuracy,
+      magnetometerAccuracy: _magnetometerAccuracy,
+    );
+    if (!poor) {
       _calibrationTimer?.cancel();
       _calibrationTimer = null;
       if (_calibrationPoor) setState(() => _calibrationPoor = false);
@@ -254,6 +375,37 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     }
     if (_calibrationPoor || _calibrationTimer != null) return;
     _calibrationTimer = Timer(_calibrationDelay, _onCalibrationPoor);
+  }
+
+  /// Manyetometre: doğruluğu kalibrasyon kararına katılır; beklenen alan
+  /// şiddeti biliniyorsa parazit denetlenir
+  void _onMagneticReading(MagneticReading reading) {
+    if (!mounted) return;
+    _magnetometerAccuracy = reading.accuracy;
+    // Pusula yön vermeden karar verilmez (pusulasız cihazda pencere açılmasın)
+    if (_hasHeading) _updateCalibration();
+    final deviation = fieldDeviation(reading.magnitude, _geomagnetic?.strength);
+    if (deviation == null) return;
+    _updateInterference(
+      magneticInterference(deviation, warning: _interference),
+    );
+  }
+
+  /// Parazit [_interferenceDelay] boyunca sürerse uyarı açılır; alan
+  /// [_interferenceClearDelay] boyunca normal kalınca kapanır
+  void _updateInterference(bool disturbed) {
+    if (disturbed == _interference) {
+      _interferenceTimer?.cancel();
+      _interferenceTimer = null;
+      return;
+    }
+    _interferenceTimer ??= Timer(
+      _interference ? _interferenceClearDelay : _interferenceDelay,
+      () {
+        _interferenceTimer = null;
+        if (mounted) setState(() => _interference = !_interference);
+      },
+    );
   }
 
   void _onCalibrationPoor() {
@@ -274,12 +426,6 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     });
   }
 
-  String _deg(double value) => '${normalizeDegrees(value).round() % 360}';
-
-  /// "152°" sağdan sola metinde de "152°" okunsun (° sayının solunda kalmasın)
-  static String _isolateDegrees(String text, String value) =>
-      text.replaceFirst('$value°', '\u2066$value°\u2069');
-
   String _angleText(AppLocalizations loc, double bearing) {
     final value = _deg(bearing);
     return _isolateDegrees(loc.qiblaAngle(value), value);
@@ -288,6 +434,20 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   String _headingText(AppLocalizations loc, double heading) {
     final value = _deg(heading);
     return _isolateDegrees(loc.phoneHeading(value), value);
+  }
+
+  /// "Doğru sonuç için": ipuçları ve hesaplanan değerler (açılış anındaki)
+  void _showAccuracyTips(double bearing) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (_) => _AccuracyTipsSheet(
+        bearing: bearing,
+        declination: _geomagnetic?.declination,
+      ),
+    );
   }
 
   @override
@@ -411,18 +571,33 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                   ),
-                  child: _calibrationPoor
-                      ? InfoBanner(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: AppSpacing.sm,
+                    children: [
+                      if (_interference)
+                        InfoBanner(
+                          message: loc.qiblaInterferenceWarning,
+                          tone: InfoTone.warning,
+                        ),
+                      if (_calibrationPoor)
+                        InfoBanner(
                           message: loc.lowAccuracyWarning,
                           icon: Icons.screen_rotation,
                           tone: InfoTone.warning,
-                        )
-                      : InfoBanner(
+                        ),
+                      // Uyarı yokken kalibrasyon ipucu
+                      if (!_interference && !_calibrationPoor)
+                        InfoBanner(
                           message:
                               '${loc.qiblaCalibration} ${loc.keepAwayMetal}',
                           icon: Icons.screen_rotation,
                         ),
+                    ],
+                  ),
                 ),
+                const SizedBox(height: AppSpacing.sm),
+                _AccuracyNote(onInfo: () => _showAccuracyTips(bearing)),
               ],
             ),
           ),
@@ -473,6 +648,37 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   }
 }
 
+/// Arka plan resmi seçiliyken (Scaffold şeffaf) fotoğraf üstündeki yazının koyu
+/// zemini (SectionHeader kapsülüyle aynı karartma); resim yoksa çocuk olduğu
+/// gibi çizilir
+class _ImageScrim extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+
+  const _ImageScrim({
+    required this.child,
+    this.padding = const EdgeInsets.symmetric(
+      horizontal: AppSpacing.md,
+      vertical: AppSpacing.xs,
+    ),
+  });
+
+  static bool onPhoto(BuildContext context) =>
+      Theme.of(context).scaffoldBackgroundColor.a == 0;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!onPhoto(context)) return child;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: PrayerColors.of(context).heroImageScrim,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Padding(padding: padding, child: child),
+    );
+  }
+}
+
 /// Üstteki yönerge: "Sağa dönün" (ok fiziksel yönde) veya "Kıbleyi buldunuz"
 class _QiblaStatus extends StatelessWidget {
   final bool hasHeading;
@@ -486,6 +692,8 @@ class _QiblaStatus extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final colors = PrayerColors.of(context);
+    // Fotoğraf üstünde koyu zeminde beyaz (marka/başarı rengi okunmaz)
+    final onImage = _ImageScrim.onPhoto(context);
     final style = theme.textTheme.titleLarge!.copyWith(
       fontWeight: FontWeight.w700,
     );
@@ -495,15 +703,18 @@ class _QiblaStatus extends StatelessWidget {
       child = Text(
         loc.qiblaDirection,
         textAlign: TextAlign.center,
-        style: style.copyWith(color: scheme.onSurfaceVariant),
+        style: style.copyWith(
+          color: onImage ? colors.onHeroMuted : scheme.onSurfaceVariant,
+        ),
       );
     } else if (turn == QiblaTurn.aligned) {
+      final color = onImage ? colors.onHero : colors.success;
       child = Semantics(
         liveRegion: true,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.check_circle, color: colors.success, size: 28),
+            Icon(Icons.check_circle, color: color, size: 28),
             const SizedBox(width: AppSpacing.sm),
             Flexible(
               child: Text(
@@ -511,7 +722,7 @@ class _QiblaStatus extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: style.copyWith(color: colors.success),
+                style: style.copyWith(color: color),
               ),
             ),
           ],
@@ -528,11 +739,12 @@ class _QiblaStatus extends StatelessWidget {
         QiblaTurn.left => (loc.qiblaTurnLeft, Icons.turn_left, false),
         _ => (loc.qiblaTurnSlightLeft, Icons.turn_slight_left, false),
       };
+      final color = onImage ? colors.onHero : scheme.primary;
       // Ok her dilde fiziksel dönüş tarafında durur (Arapçada da sağ = sağ)
       final arrow = ExcludeSemantics(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Icon(icon, color: scheme.primary, size: 30),
+          child: Icon(icon, color: color, size: 30),
         ),
       );
       final text = Flexible(
@@ -541,11 +753,11 @@ class _QiblaStatus extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: style.copyWith(color: scheme.primary),
+          style: style.copyWith(color: color),
         ),
       );
       child = Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         textDirection: TextDirection.ltr,
         children: right
             ? [text, const SizedBox(width: AppSpacing.sm), arrow]
@@ -554,7 +766,7 @@ class _QiblaStatus extends StatelessWidget {
     }
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 64),
-      child: Center(child: child),
+      child: Center(child: _ImageScrim(child: child)),
     );
   }
 }
@@ -570,28 +782,172 @@ class _Readouts extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final onImage = _ImageScrim.onPhoto(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Column(
-        children: [
-          Text(
-            bearingText,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleLarge!.copyWith(
-              color: scheme.onSurface,
-              fontWeight: FontWeight.w700,
-            ),
+      child: Center(
+        child: _ImageScrim(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.sm,
           ),
-          if (headingText != null) ...[
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              headingText!,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyLarge!.copyWith(
-                color: scheme.onSurfaceVariant,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                bearingText,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleLarge!.copyWith(
+                  color: onImage ? colors.onHero : scheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              if (headingText != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  headingText!,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyLarge!.copyWith(
+                    color: onImage
+                        ? colors.onHeroMuted
+                        : scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Pusulanın altındaki doğruluk notu: her zaman görünür, göze batmaz; bilgi
+/// düğmesi "Doğru sonuç için" sayfasını açar
+class _AccuracyNote extends StatelessWidget {
+  final VoidCallback onInfo;
+
+  const _AccuracyNote({required this.onInfo});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final onImage = _ImageScrim.onPhoto(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: _ImageScrim(
+        padding: const EdgeInsetsDirectional.only(start: AppSpacing.md),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                loc.qiblaAccuracyNote,
+                style: theme.textTheme.bodySmall!.copyWith(
+                  color: onImage ? colors.onHero : scheme.onSurfaceVariant,
+                ),
               ),
             ),
+            IconButton(
+              onPressed: onInfo,
+              tooltip: loc.qiblaTipsTitle,
+              color: onImage ? colors.onHero : scheme.primary,
+              icon: const Icon(Icons.info_outline),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Doğru sonuç için" alt sayfası: ipuçları ve hesaplanan değerler (kıble
+/// açısı coğrafi kuzeyden; sapma biliniyorsa otomatik düzeltildiği)
+class _AccuracyTipsSheet extends StatelessWidget {
+  final double bearing;
+  final double? declination;
+
+  const _AccuracyTipsSheet({required this.bearing, required this.declination});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final tips = <(IconData, String)>[
+      (Icons.smartphone, loc.qiblaTipFlat),
+      (Icons.all_inclusive, loc.qiblaTipCalibrate),
+      (Icons.phonelink_erase, loc.qiblaTipMagneticCase),
+      (Icons.devices_other, loc.qiblaTipMetal),
+      (Icons.mosque, loc.qiblaTipMosque),
+    ];
+    final angle = _deg(bearing);
+    final offset = declination == null ? null : formatDeclination(declination!);
+    final values = <(IconData, String)>[
+      (
+        Icons.explore_outlined,
+        _isolateDegrees(loc.qiblaAngleTrueNorth(angle), angle),
+      ),
+      if (offset != null)
+        (Icons.north, _isolateDegrees(loc.qiblaDeclination(offset), offset)),
+    ];
+
+    Widget line(IconData icon, String text, TextStyle style, Color iconColor) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: iconColor),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(child: Text(text, style: style)),
+          ],
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsetsDirectional.fromSTEB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.xl,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(loc.qiblaTipsTitle, style: theme.textTheme.titleLarge),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          for (final (icon, text) in tips)
+            line(icon, text, theme.textTheme.bodyLarge!, scheme.primary),
+          const SizedBox(height: AppSpacing.md),
+          AppCard(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.sm,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final (icon, text) in values)
+                  line(
+                    icon,
+                    text,
+                    theme.textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    scheme.onSurfaceVariant,
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

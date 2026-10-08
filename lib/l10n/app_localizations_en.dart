@@ -1167,6 +1167,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calibrationRequired => 'Calibration Required';
 
   @override
+  String get qiblaAccuracyNote =>
+      'The compass shows an approximate direction; metal, magnets and electronic devices can throw it off.';
+
+  @override
+  String get qiblaTipsTitle => 'For an accurate result';
+
+  @override
+  String get qiblaTipFlat => 'Hold the phone flat, parallel to the ground.';
+
+  @override
+  String get qiblaTipCalibrate =>
+      'Calibrate by drawing an \'8\' in the air with your phone.';
+
+  @override
+  String get qiblaTipMagneticCase => 'Remove any magnetic phone case.';
+
+  @override
+  String get qiblaTipMetal =>
+      'Stay away from metal objects and electronic devices.';
+
+  @override
+  String get qiblaTipMosque =>
+      'If possible, compare with the qibla direction of a mosque.';
+
+  @override
+  String qiblaAngleTrueNorth(String angle) {
+    return 'Qibla angle: $angle° (from true north)';
+  }
+
+  @override
+  String qiblaDeclination(String deg) {
+    return 'Magnetic declination: $deg° (corrected automatically)';
+  }
+
+  @override
+  String get qiblaInterferenceWarning =>
+      'Magnetic interference detected: move the phone away from metal objects, magnetic cases and electronic devices.';
+
+  @override
   String get gold22kGram => '22 Carat Gram Gold';
 
   @override

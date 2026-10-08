@@ -561,6 +561,30 @@
     "turnLeft": "⬅ Sola dönün",
     "turnSlightLeft": "⬅ Biraz sola dönün",
     "calibrationRequired": "Kalibrasyon Gerekli",
+    "qiblaAccuracyNote": "Pusula yaklaşık yön gösterir; metal, mıknatıs ve elektronik cihazlar yönü saptırabilir.",
+    "qiblaTipsTitle": "Doğru sonuç için",
+    "qiblaTipFlat": "Telefonu yere paralel tutun.",
+    "qiblaTipCalibrate": "Telefonunuzla havada '8' çizerek kalibre edin.",
+    "qiblaTipMagneticCase": "Mıknatıslı kılıf kullanıyorsanız çıkarın.",
+    "qiblaTipMetal": "Metal eşyalardan ve elektronik cihazlardan uzak durun.",
+    "qiblaTipMosque": "Mümkünse bir caminin kıble yönüyle karşılaştırın.",
+    "qiblaAngleTrueNorth": "Kıble açısı: {angle}° (coğrafi kuzeyden)",
+    "@qiblaAngleTrueNorth": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaDeclination": "Manyetik sapma: {deg}° (otomatik düzeltildi)",
+    "@qiblaDeclination": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaInterferenceWarning": "Manyetik parazit algılandı: telefonu metal eşyalardan, mıknatıslı kılıftan ve elektronik cihazlardan uzaklaştırın.",
     "gold22kGram": "22 Ayar Gram Altın",
     "goldAtaToptan": "Ata Toptan",
     "goldAtaCumhuriyet": "Ata Cumhuriyet",

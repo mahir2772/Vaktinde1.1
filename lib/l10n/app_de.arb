@@ -540,6 +540,30 @@
     "turnLeft": "⬅ Nach links drehen",
     "turnSlightLeft": "⬅ Leicht nach links drehen",
     "calibrationRequired": "Kalibrierung erforderlich",
+    "qiblaAccuracyNote": "Der Kompass zeigt die Richtung nur ungefähr an; Metall, Magnete und elektronische Geräte können ihn ablenken.",
+    "qiblaTipsTitle": "Für ein genaues Ergebnis",
+    "qiblaTipFlat": "Halten Sie das Telefon waagerecht.",
+    "qiblaTipCalibrate": "Kalibrieren Sie, indem Sie mit dem Telefon eine '8' in die Luft zeichnen.",
+    "qiblaTipMagneticCase": "Entfernen Sie eine magnetische Hülle, falls vorhanden.",
+    "qiblaTipMetal": "Halten Sie Abstand zu Metallgegenständen und elektronischen Geräten.",
+    "qiblaTipMosque": "Vergleichen Sie nach Möglichkeit mit der Qibla-Richtung einer Moschee.",
+    "qiblaAngleTrueNorth": "Qibla-Winkel: {angle}° (bezogen auf geografisch Nord)",
+    "@qiblaAngleTrueNorth": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaDeclination": "Magnetische Deklination: {deg}° (automatisch korrigiert)",
+    "@qiblaDeclination": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaInterferenceWarning": "Magnetische Störung erkannt: Halten Sie das Telefon von Metallgegenständen, magnetischen Hüllen und elektronischen Geräten fern.",
     "gold22kGram": "Gramm Gold (22 Karat)",
     "goldAtaToptan": "Ata Großhandel",
     "goldAtaCumhuriyet": "Ata Cumhuriyet",

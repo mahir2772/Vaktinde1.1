@@ -339,6 +339,13 @@ void _mockPlatform() {
       'buildNumber': '14',
     },
   );
+  // MainActivity: İstanbul'un manyetik sapması ve beklenen alan şiddeti (µT)
+  messenger.setMockMethodCallHandler(
+    const MethodChannel('vaktinde/device'),
+    (call) async => call.method == 'geomagnetic'
+        ? {'declination': 6.3, 'strength': 47.0}
+        : null,
+  );
   // Bilinmeyen eklenti kanalları "başarılı, null" döner (reklam, ses, wakelock,
   // güncelleme...); motor kanalları (flutter/...) gerçek motora gider.
   messenger.allMessagesHandler = (channel, handler, message) {
@@ -365,6 +372,36 @@ void _mockCompass({required double heading, required double accuracy}) {
           onListen: (args, sink) => sink.success([heading, heading, accuracy]),
         ),
       );
+}
+
+/// Manyetometre (MainActivity): [µT, doğruluk]; [microTesla] yoksa olay yok
+void _mockMagnetic({double? microTesla, int accuracy = 3}) {
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+      .setMockStreamHandler(
+        const EventChannel('vaktinde/magnetic'),
+        MockStreamHandler.inline(
+          onListen: (args, sink) {
+            if (microTesla != null) sink.success([microTesla, accuracy]);
+          },
+        ),
+      );
+}
+
+/// Kıble sekmesinde "Doğru sonuç için" sayfası açılır, çekilir, kapanır
+Future<void> _qiblaTipsShot(
+  WidgetTester tester,
+  String lang,
+  String name,
+) async {
+  _currentScreen = name;
+  final loc = lookupAppLocalizations(Locale(lang));
+  final info = find.byTooltip(loc.qiblaTipsTitle);
+  await tester.ensureVisible(info);
+  await tester.tap(info);
+  await _settle(tester, steps: 6);
+  await _shot(tester, name);
+  _navigator(tester).pop();
+  await _settle(tester, steps: 6);
 }
 
 Future<void> _setViewport(
@@ -536,6 +573,7 @@ void main() {
   setUp(() {
     _mockPlatform();
     _mockCompass(heading: 120, accuracy: 5);
+    _mockMagnetic();
   });
 
   tearDown(() {
@@ -590,6 +628,7 @@ void main() {
 
       await _tapTab(tester, 1);
       await _shot(tester, 'tr_20_qibla');
+      await _qiblaTipsShot(tester, 'tr', 'tr_22_qibla_tips');
       await _tapTab(tester, 2);
       await _shot(tester, 'tr_30_zikirmatik');
       await _tapTab(tester, 3);
@@ -715,6 +754,21 @@ void main() {
     });
   });
 
+  testWidgets('tr: kıble manyetik parazit', skip: skip, variant: _android, (
+    tester,
+  ) async {
+    await _run(tester, () async {
+      // Beklenen 47 µT, ölçülen 95 µT (mıknatıslı kılıf): 1,5 sn sonra uyarı
+      _mockMagnetic(microTesla: 95);
+      await _pumpApp(tester, lang: 'tr', homeVm: _homeVm('tr'));
+      await _tapTab(tester, 1);
+      await tester.pump(const Duration(seconds: 2));
+      await _settle(tester, steps: 2);
+      await _shot(tester, 'tr_23_qibla_interference');
+      await _finish(tester);
+    });
+  });
+
   testWidgets('tr koyu tema', skip: skip, variant: _android, (tester) async {
     await _run(tester, () async {
       _currentScreen = 'tr_dark_10_home';
@@ -732,6 +786,7 @@ void main() {
       await _settle(tester);
       await _tapTab(tester, 1);
       await _shot(tester, 'tr_dark_20_qibla');
+      await _qiblaTipsShot(tester, 'tr', 'tr_dark_22_qibla_tips');
       await _tapTab(tester, 2);
       await _shot(tester, 'tr_dark_30_zikirmatik');
       await _tapTab(tester, 3);
@@ -770,6 +825,8 @@ void main() {
       await _shot(tester, 'tr_bg_11_home_full');
       await _setViewport(tester);
       await _settle(tester, steps: 2);
+      await _tapTab(tester, 1);
+      await _shot(tester, 'tr_bg_20_qibla');
       await _tapTab(tester, 2);
       await _shot(tester, 'tr_bg_30_zikirmatik');
       await _tapTab(tester, 3);
@@ -797,6 +854,7 @@ void main() {
           await _settle(tester, steps: 2);
           await _tapTab(tester, 1);
           await _shot(tester, '${lang}_20_qibla');
+          await _qiblaTipsShot(tester, lang, '${lang}_22_qibla_tips');
           await _tapTab(tester, 2);
           await _shot(tester, '${lang}_30_zikirmatik');
           await _tapTab(tester, 3);
@@ -837,6 +895,12 @@ void main() {
           await _setViewport(tester, width: 320, height: 640);
           await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
           await _shot(tester, '${lang}_16_home_320_text130');
+          await _tapTab(tester, 1);
+          await _shot(tester, '${lang}_26_qibla_320_text130');
+          // Kaydırınca görünen alt kısım (uyarı + doğruluk notu)
+          await _setViewport(tester, width: 320, height: 1100);
+          await _settle(tester, steps: 4);
+          await _shot(tester, '${lang}_27_qibla_320_text130_full');
           await _finish(tester);
         }
       } finally {

@@ -540,6 +540,30 @@
     "turnLeft": "⬅ Tournez à gauche",
     "turnSlightLeft": "⬅ Tournez légèrement à gauche",
     "calibrationRequired": "Étalonnage requis",
+    "qiblaAccuracyNote": "La boussole indique une direction approximative ; le métal, les aimants et les appareils électroniques peuvent la fausser.",
+    "qiblaTipsTitle": "Pour un résultat précis",
+    "qiblaTipFlat": "Tenez le téléphone à plat, parallèle au sol.",
+    "qiblaTipCalibrate": "Étalonnez la boussole en dessinant un « 8 » en l'air avec votre téléphone.",
+    "qiblaTipMagneticCase": "Retirez la coque aimantée, le cas échéant.",
+    "qiblaTipMetal": "Éloignez-vous des objets métalliques et des appareils électroniques.",
+    "qiblaTipMosque": "Si possible, comparez avec la direction de la Qibla d'une mosquée.",
+    "qiblaAngleTrueNorth": "Angle de la Qibla : {angle}° (depuis le nord géographique)",
+    "@qiblaAngleTrueNorth": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaDeclination": "Déclinaison magnétique : {deg}° (corrigée automatiquement)",
+    "@qiblaDeclination": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaInterferenceWarning": "Interférence magnétique détectée : éloignez le téléphone des objets métalliques, des coques aimantées et des appareils électroniques.",
     "gold22kGram": "Gramme d'or 22 carats",
     "goldAtaToptan": "Ata (prix de gros)",
     "goldAtaCumhuriyet": "Ata Cumhuriyet",
