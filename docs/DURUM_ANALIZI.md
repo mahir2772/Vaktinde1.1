@@ -53,10 +53,15 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 - Önceki sürüm cihazda kısa test edildi (vakitler, ince ayar, imsakiye paylaşımı OK). Yeni arayüz henüz cihazda denenmedi; "Kıldım" butonu, AB rıza formu ve Play esnek güncelleme yalnızca gerçek cihaz/Play sürümünde görülebilir.
 - Yüksek enlemde (NL/BE/FR, Haziran) Yatsı gece yarısını geçebilir; "HH:mm" modeli tarihsiz → sayaç Yatsı'yı atlar (eski sürümde de aynıydı, alarm doğru saatte çalar).
 - Konum telefonun saat diliminde gösterilir (başka ülkedeki şehir seçilirse saat farkı kadar kayar).
+- Widget/kalıcı bildirim "HH:mm" verisi telefonun saat diliminde yazılır: saat dilimi değişince (yolculuk) widget
+  hemen yeniden çizilir ama vakitler, Dart yeniden hesaplayana kadar (uygulama açılışı veya ≤6 saatte WorkManager) eski
+  dilimdedir. Gün dönümü ve yatsı sonrası imsak artık doğru (`times_date` + `tomorrow_*`, `PrayerWidgetData.kt`).
 - 2029+ Ramazan/Kadir tarihleri `religious_days.json`'a eklenmezse hijri paketinden (±1 gün) gelir; kandiller düzeltilmiş.
 
 ## Yayın öncesi kontrol (cihazda, önerilen)
 1. Ana ekran vakitleri, şehir değiştirme, internetsiz açılış.
 2. Ezan bildirimi + "Kıldım" butonu (uygulama kapalıyken) → Bugün satırında görünmeli.
-3. Ana ekran widget'ı ve kalıcı bildirim ertesi gün güncel mi.
+3. Ana ekran widget'ı ve kalıcı bildirim ertesi gün güncel mi (gece yarısından hemen sonra yeni günün vakitleri,
+   yatsıdan sonra sayaç yarının imsakına); saati elle değiştirince sayaç hemen düzeliyor mu; widget seçicide üç ayrı
+   ad + açıklama + önizleme (Android 12+); kilitliyken bildirime dokununca önce kilit açılıyor mu.
 4. Yeni ekranlar: ana ekran, Araçlar, Zekat (10.000 yaz → doğru), Kıble, Zikirmatik, Ayarlar; koyu tema.
