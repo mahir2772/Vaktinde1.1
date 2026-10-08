@@ -41,6 +41,7 @@ class InstallGuard {
     'battery_optimization_asked', // HomeViewModel: pil optimizasyonu muafiyeti
     'alarms_scheduled_date', // PrayerRefreshService: alarmların kurulduğu gün
     'qibla_calibration_dialog_seen', // QiblaView: pusula kalibrasyon penceresi
+    'exact_alarms_allowed', // NotificationService: tam zamanlı alarm izni durumu
   ];
 
   /// Testte platform kontrolünü aşmak için
