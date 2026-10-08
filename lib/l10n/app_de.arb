@@ -226,6 +226,9 @@
         }
     },
     "endReminderTitle": "Vor Ende der Gebetszeit erinnern",
+    "dailyContentNotifTitle": "Benachrichtigung für Vers und Hadith des Tages",
+    "dailyContentNotifSub": "Sendet jeden Morgen einen Vers und jeden Abend einen Hadith.",
+    "privacyPolicy": "Datenschutzerklärung",
     "endReminderSub": "Benachrichtigt vor dem Ende der Zeit eines nicht als verrichtet markierten Gebets.",
     "endReminderNotifTitle": "Gebetszeit endet bald",
     "endReminderNotifBody": "Noch {minute} Minuten bis zum Ende der {vakit}-Zeit.",

@@ -64,9 +64,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool ezanAlarmStream = false;
   // Android 7.x'te alarm ses akışı uygulanamaz: anahtar gösterilmez
   bool alarmStreamSupported = true;
+  // "Günün ayeti ve hadisi" bildirimi (varsayılan açık)
+  bool dailyContentEnabled = true;
 
   /// Ezan uyarısının sağlığı (bildirim ve tam zamanlı alarm izni); izin
-  /// değişince ya da bildirimler açılınca alarmlar yeniden kurulur
+  /// değişince ya da bildirimler açılıp kapanınca alarmlar yeniden kurulur
   late final AlarmHealth alarmHealth = AlarmHealth(
     notificationService,
     onChanged: rescheduleAlarms,
@@ -514,7 +516,37 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     final endReminder = await _storageService.loadEndReminderSettings();
     endReminderEnabled = endReminder.enabled;
     endReminderMinutes = endReminder.minutes;
+    dailyContentEnabled = await _storageService.loadDailyContentEnabled();
     notifyListeners();
+  }
+
+  /// "Günün ayeti ve hadisi" bildirimi: kapatılınca kurulu olanlar hemen iptal
+  /// edilir (bir daha kurulmaz); açılınca bugünün içeriği kurulur, alınamamış
+  /// olan yeniden istenir (gelince kurulur)
+  Future<void> setDailyContentEnabled(bool value) async {
+    if (dailyContentEnabled == value) return;
+    dailyContentEnabled = value;
+    notifyListeners();
+    try {
+      await _storageService.saveDailyContentEnabled(value);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'günlük içerik ayarı kaydedilemedi');
+    }
+    if (!value) {
+      await _refreshService.cancelDailyContent();
+      return;
+    }
+    await _scheduleDailyContent();
+    final loc = _currentLoc;
+    if (loc == null) return;
+    final locale = Locale(loc.localeName.substring(0, 2));
+    final now = DateTime.now();
+    await Future.wait([
+      if (!DateUtils.isSameDay(_ayahDate, now))
+        getDailyAyah(locale).catchError((Object e) {}),
+      if (!DateUtils.isSameDay(_hadithDate, now))
+        getDailyHadith(locale).catchError((Object e) {}),
+    ]);
   }
 
   /// Vakit çıkış hatırlatması ayarı; sadece bu hatırlatmalar (ID 100-124) yeniden kurulur

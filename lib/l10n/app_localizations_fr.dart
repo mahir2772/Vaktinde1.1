@@ -463,6 +463,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get endReminderTitle => 'Rappel avant la fin du temps de prière';
 
   @override
+  String get dailyContentNotifTitle =>
+      'Notification du verset et du hadith du jour';
+
+  @override
+  String get dailyContentNotifSub =>
+      'Envoie un verset chaque matin et un hadith chaque soir.';
+
+  @override
+  String get privacyPolicy => 'Politique de confidentialité';
+
+  @override
   String get endReminderSub =>
       'Vous avertit avant la fin du temps d\'une prière non cochée.';
 

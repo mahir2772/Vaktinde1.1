@@ -25,8 +25,10 @@ void main() {
   late List<int> pending;
   // Eklentinin yanıtı: bool, null ya da fırlatılacak hata
   late Object? canScheduleExact;
+  late Object? notificationsOn;
   late Set<int> failIds;
-  late bool rejectAlarmClock; // izin yokken eklentinin alarmClock reddi
+  // İzin yokken eklentinin tam zamanlı kip (alarmClock, exactAllowWhileIdle) reddi
+  late bool rejectExact;
   late bool failPending;
 
   Object? answer(Object? value) {
@@ -39,8 +41,9 @@ void main() {
     notifCalls = [];
     pending = [];
     canScheduleExact = true;
+    notificationsOn = null;
     failIds = {};
-    rejectAlarmClock = false;
+    rejectExact = false;
     failPending = false;
     messenger.setMockMethodCallHandler(
       const MethodChannel('flutter_timezone'),
@@ -57,13 +60,16 @@ void main() {
           return true;
         case 'canScheduleExactNotifications':
           return answer(canScheduleExact);
+        case 'areNotificationsEnabled':
+          return answer(notificationsOn);
         case 'zonedSchedule':
           final id = call.arguments['id'] as int;
           final mode = call.arguments['platformSpecifics']['scheduleMode'];
           if (failIds.contains(id)) {
             throw PlatformException(code: 'error', message: 'kurulamadı');
           }
-          if (rejectAlarmClock && mode == 'alarmClock') {
+          if (rejectExact &&
+              (mode == 'alarmClock' || mode == 'exactAllowWhileIdle')) {
             throw PlatformException(
               code: 'exact_alarms_not_permitted',
               message: 'Exact alarms are not permitted',
@@ -106,10 +112,16 @@ void main() {
 
   Iterable<MethodCall> scheduleCalls() =>
       notifCalls.where((c) => c.method == 'zonedSchedule');
-  Set<String> modes() => {
+  String modeOf(MethodCall c) =>
+      c.arguments['platformSpecifics']['scheduleMode'] as String;
+  // Kurulan bildirimlerin kipleri (sadece [where] ID'leri)
+  Set<String> modes([bool Function(int id)? where]) => {
     for (final c in scheduleCalls())
-      c.arguments['platformSpecifics']['scheduleMode'] as String,
+      if (where == null || where(c.arguments['id'] as int)) modeOf(c),
   };
+  bool isEzan(int id) => id < idCount && id.isEven;
+  bool isPreReminder(int id) => id < idCount && id.isOdd;
+  bool isDaily(int id) => PrayerRefreshService.dailyContentIds.contains(id);
   Map<String, Object> basePrefs([Map<String, Object> extra = const {}]) => {
     'saved_lat': 41.0,
     'saved_lng': 29.0,
@@ -122,37 +134,44 @@ void main() {
   };
 
   group('Zamanlama kipi', () {
-    test('izin var/yok/bilinmiyor → alarmClock / gecikmeli / alarmClock', () {
-      expect(
-        NotificationService.scheduleModeFor(true),
-        AndroidScheduleMode.alarmClock,
-      );
-      expect(
-        NotificationService.scheduleModeFor(false),
-        AndroidScheduleMode.inexactAllowWhileIdle,
-      );
-      expect(
-        NotificationService.scheduleModeFor(null),
-        AndroidScheduleMode.alarmClock,
-      );
-    });
+    test(
+      'ezan: izin var/yok/bilinmiyor → alarmClock / gecikmeli / alarmClock',
+      () {
+        AndroidScheduleMode ezan(bool? exact) =>
+            NotificationService.scheduleModeFor(
+              NotificationKind.prayer,
+              exactAllowed: exact,
+              notificationsEnabled: null,
+            );
+        expect(ezan(true), AndroidScheduleMode.alarmClock);
+        expect(ezan(false), AndroidScheduleMode.inexactAllowWhileIdle);
+        expect(ezan(null), AndroidScheduleMode.alarmClock);
+      },
+    );
 
     for (final allowed in [true, false]) {
-      test('arka plan görevi: izin ${allowed ? 'var' : 'yok'} → '
-          '${allowed ? 'alarmClock' : 'inexactAllowWhileIdle'} '
-          '(ezan, hatırlatma, vakit çıkış)', () async {
+      // İzin varken alarmClock (alarm simgesi) sadece ezanda; günlük içerik hep gecikmeli
+      test('arka plan görevi: izin ${allowed ? 'var' : 'yok'} → kipler (ezan, '
+          'hatırlatma, vakit çıkış, günlük içerik)', () async {
         SharedPreferences.setMockInitialValues(basePrefs());
         canScheduleExact = allowed;
         expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
 
         final ids = scheduleCalls().map((c) => c.arguments['id'] as int);
-        expect(ids.where((id) => id < idCount && id.isEven), isNotEmpty); // ezan
-        expect(
-          ids.where((id) => id < idCount && id.isOdd),
-          isNotEmpty,
-        ); // hatırlatma
+        expect(ids.where(isEzan), isNotEmpty);
+        expect(ids.where(isPreReminder), isNotEmpty);
         expect(ids.where(PrayerTracker.isEndReminderId), isNotEmpty);
-        expect(modes(), {allowed ? 'alarmClock' : 'inexactAllowWhileIdle'});
+        expect(ids.where(isDaily), isNotEmpty); // hadis (yerel yedek)
+        expect(modes(isEzan), {
+          allowed ? 'alarmClock' : 'inexactAllowWhileIdle',
+        });
+        expect(modes(isPreReminder), {
+          allowed ? 'exactAllowWhileIdle' : 'inexactAllowWhileIdle',
+        });
+        expect(modes(PrayerTracker.isEndReminderId), {
+          allowed ? 'exactAllowWhileIdle' : 'inexactAllowWhileIdle',
+        });
+        expect(modes(isDaily), {'inexactAllowWhileIdle'});
         final prefs = await SharedPreferences.getInstance();
         expect(
           prefs.getBool(NotificationService.exactAlarmsAllowedKey),
@@ -193,13 +212,17 @@ void main() {
       PlatformException(code: 'error'),
       MissingPluginException(),
     ]) {
-      test('izin okunamazsa (${unknown.runtimeType}) önce alarmClock, kayıt '
+      test('izin okunamazsa (${unknown.runtimeType}) önce tam zamanlı, kayıt '
           'değişmez', () async {
         SharedPreferences.setMockInitialValues(basePrefs());
         canScheduleExact = unknown;
         expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
         expect(scheduleCalls(), isNotEmpty);
-        expect(modes(), {'alarmClock'});
+        expect(modes(isEzan), {'alarmClock'});
+        expect(
+          modes((id) => isPreReminder(id) || PrayerTracker.isEndReminderId(id)),
+          {'exactAllowWhileIdle'},
+        );
         final prefs = await SharedPreferences.getInstance();
         expect(
           prefs.getBool(NotificationService.exactAlarmsAllowedKey),
@@ -208,47 +231,63 @@ void main() {
       });
     }
 
-    test('alarmClock reddedilirse aynı bildirim gecikmeli kurulur, sonrakiler '
-        'doğrudan gecikmeli', () async {
-      SharedPreferences.setMockInitialValues(basePrefs());
-      canScheduleExact = null; // sorgu sonuç vermedi
-      rejectAlarmClock = true; // ama izin yok
-      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
+    // Eklenti alarmClock'u da exactAllowWhileIdle'ı da izinsiz reddeder
+    for (final (name, extra) in <(String, Map<String, Object>)>[
+      ('ezan (alarmClock)', const {}),
+      (
+        'sadece hatırlatma (exactAllowWhileIdle)',
+        const {'onTime_Öğle': false, 'end_reminder_enabled': false},
+      ),
+    ]) {
+      test('tam zamanlı kip reddedilirse aynı bildirim gecikmeli kurulur, '
+          'sonrakiler doğrudan gecikmeli: $name', () async {
+        SharedPreferences.setMockInitialValues(basePrefs(extra));
+        canScheduleExact = null; // sorgu sonuç vermedi
+        rejectExact = true; // ama izin yok
+        expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
 
-      final calls = scheduleCalls().toList();
-      final rejected = calls
-          .where(
-            (c) =>
-                c.arguments['platformSpecifics']['scheduleMode'] ==
-                'alarmClock',
-          )
-          .toList();
-      expect(rejected, hasLength(1));
-      // Reddedilen bildirim hemen aynı ID ile gecikmeli kuruldu
-      final retry = calls[calls.indexOf(rejected.single) + 1];
-      expect(retry.arguments['id'], rejected.single.arguments['id']);
-      expect(
-        retry.arguments['platformSpecifics']['scheduleMode'],
-        'inexactAllowWhileIdle',
-      );
-      // Ezan, hatırlatma ve vakit çıkış hatırlatmaları kuruldu
-      expect(pending.where((id) => id < idCount), isNotEmpty);
-      expect(pending.where(PrayerTracker.isEndReminderId), isNotEmpty);
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(NotificationService.exactAlarmsAllowedKey), isFalse);
-      expect(prefs.getString('alarms_scheduled_date'), today);
-    });
+        final calls = scheduleCalls().toList();
+        final rejected = calls
+            .where((c) => modeOf(c) != 'inexactAllowWhileIdle')
+            .toList();
+        expect(rejected, hasLength(1));
+        if (extra.isNotEmpty) {
+          expect(isPreReminder(rejected.single.arguments['id'] as int), isTrue);
+          expect(modeOf(rejected.single), 'exactAllowWhileIdle');
+        }
+        // Reddedilen bildirim hemen aynı ID ile gecikmeli kuruldu
+        final retry = calls[calls.indexOf(rejected.single) + 1];
+        expect(retry.arguments['id'], rejected.single.arguments['id']);
+        expect(modeOf(retry), 'inexactAllowWhileIdle');
+        expect(pending, contains(retry.arguments['id']));
+        // Ezan / hatırlatma ve (açıksa) vakit çıkış hatırlatmaları kuruldu
+        expect(pending.where((id) => id < idCount), isNotEmpty);
+        if (extra.isEmpty) {
+          expect(pending.where(PrayerTracker.isEndReminderId), isNotEmpty);
+        }
+        final prefs = await SharedPreferences.getInstance();
+        expect(
+          prefs.getBool(NotificationService.exactAlarmsAllowedKey),
+          isFalse,
+        );
+        expect(prefs.getString('alarms_scheduled_date'), today);
+      });
+    }
   });
 
   group('Arka plan: izin değişimi', () {
+    // Bugün kurulmuş, kip geçişi bitmiş: yeniden kurulumu sadece izin değişimi tetikler
+    Map<String, Object> scheduledToday(Map<String, Object> extra) => basePrefs({
+      'alarms_scheduled_date': today,
+      PrayerRefreshService.scheduleModeMigratedKey: true,
+      ...extra,
+    });
+
     test(
       'izin kapatılınca aynı gün de gecikmeli kiple yeniden kurulur',
       () async {
         SharedPreferences.setMockInitialValues(
-          basePrefs({
-            'alarms_scheduled_date': today,
-            NotificationService.exactAlarmsAllowedKey: true,
-          }),
+          scheduledToday({NotificationService.exactAlarmsAllowedKey: true}),
         );
         canScheduleExact = false;
         expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
@@ -259,24 +298,51 @@ void main() {
 
     test('izin açılınca aynı gün de tam vaktine kurulur', () async {
       SharedPreferences.setMockInitialValues(
-        basePrefs({
-          'alarms_scheduled_date': today,
-          NotificationService.exactAlarmsAllowedKey: false,
-        }),
+        scheduledToday({NotificationService.exactAlarmsAllowedKey: false}),
       );
       canScheduleExact = true;
       expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
-      expect(scheduleCalls(), isNotEmpty);
-      expect(modes(), {'alarmClock'});
+      expect(modes(isEzan), {'alarmClock'});
+      expect(modes(isPreReminder), {'exactAllowWhileIdle'});
+    });
+
+    test('bildirimler kapatılınca aynı gün de alarm simgesiz kurulur; '
+        'açılınca ezan yine alarmClock', () async {
+      SharedPreferences.setMockInitialValues(
+        scheduledToday({
+          NotificationService.exactAlarmsAllowedKey: true,
+          NotificationService.notificationsEnabledKey: true,
+        }),
+      );
+      pending = [1000, 1900]; // günlük içerik zaten kurulu
+      notificationsOn = false;
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
+      expect(
+        scheduleCalls().where((c) => isEzan(c.arguments['id'])),
+        isNotEmpty,
+      );
+      expect(modes(), {'exactAllowWhileIdle'});
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        prefs.getBool(NotificationService.notificationsEnabledKey),
+        isFalse,
+      );
+
+      notifCalls.clear();
+      notificationsOn = true;
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
+      expect(modes(isEzan), {'alarmClock'});
+      expect(modes(isPreReminder), {'exactAllowWhileIdle'});
     });
 
     test('izin değişmediyse aynı gün alarmlara dokunulmaz', () async {
       SharedPreferences.setMockInitialValues(
-        basePrefs({
-          'alarms_scheduled_date': today,
+        scheduledToday({
           NotificationService.exactAlarmsAllowedKey: true,
+          NotificationService.notificationsEnabledKey: true,
         }),
       );
+      notificationsOn = true;
       // Günlük içerik zaten kurulu: sadece alarm kurulumu ölçülür
       pending = [1000, 1900];
       expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);

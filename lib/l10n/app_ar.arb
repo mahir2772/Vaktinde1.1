@@ -226,6 +226,9 @@
         }
     },
     "endReminderTitle": "التذكير قبل خروج الوقت",
+    "dailyContentNotifTitle": "إشعار آية اليوم وحديث اليوم",
+    "dailyContentNotifSub": "يرسل آية كل صباح وحديثًا كل مساء.",
+    "privacyPolicy": "سياسة الخصوصية",
     "endReminderSub": "يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.",
     "endReminderNotifTitle": "الوقت يوشك على الخروج",
     "endReminderNotifBody": "تبقّى {minute} دقيقة على خروج وقت {vakit}.",

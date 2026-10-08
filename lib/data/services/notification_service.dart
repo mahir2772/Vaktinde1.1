@@ -8,6 +8,22 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'prayer_tracker.dart';
 import 'prayer_tracker_service.dart';
 
+/// Kurulan bildirimin türü; zamanlama kipi buna göre seçilir
+/// ([NotificationService.scheduleModeFor])
+enum NotificationKind {
+  /// Vakit girdi (ezan): alarm planında kullanıcının açtığı vakit, çift ID
+  prayer,
+
+  /// "Vakit yaklaşıyor" hatırlatması: alarm planında tek ID
+  reminder,
+
+  /// "Vakit çıkmadan hatırlat" (ID 100-124)
+  endReminder,
+
+  /// Günün ayeti / hadisi (ID 1000 / 1900)
+  dailyContent,
+}
+
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -15,23 +31,43 @@ class NotificationService {
   /// Son bilinen tam zamanlı alarm izni (arayüz uyarısı ve arka plan görevi okur)
   static const String exactAlarmsAllowedKey = 'exact_alarms_allowed';
 
-  /// İzin yokken alarmClock kurulumunda eklentinin döndürdüğü hata kodu
+  /// Son kurulumda görülen bildirim izni (arka plan görevi değişimi buna göre anlar)
+  static const String notificationsEnabledKey = 'notifications_enabled';
+
+  /// İzin yokken tam zamanlı kurulumda (alarmClock / exactAllowWhileIdle)
+  /// eklentinin döndürdüğü hata kodu
   static const String exactAlarmsDeniedCode = 'exact_alarms_not_permitted';
 
   // Bu nesnede bilinen izin durumu; null: bilinmiyor (önce tam zamanlı denenir)
   bool? _exactAllowed;
+
+  // Bu nesnede bilinen bildirim izni; null: bilinmiyor (açık sayılır)
+  bool? _notificationsEnabled;
 
   AndroidFlutterLocalNotificationsPlugin? get _android => _notificationsPlugin
       .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin
       >();
 
-  /// İzin varsa (ya da bilinmiyorsa) alarmClock: tam vaktinde. Yoksa
-  /// inexactAllowWhileIdle: gecikebilir ama yine çalar (alarmClock hiç kurulmaz).
-  static AndroidScheduleMode scheduleModeFor(bool? exactAllowed) =>
-      exactAllowed == false
-      ? AndroidScheduleMode.inexactAllowWhileIdle
-      : AndroidScheduleMode.alarmClock;
+  /// Zamanlama kipi. alarmClock (durum çubuğunda alarm simgesi, kilit ekranında
+  /// "sonraki alarm") sadece ezan için: tam zamanlı izin varken (bilinmiyorsa önce
+  /// denenir) ve bildirimler açıkken (bilinmiyorsa açık sayılır). Hatırlatmalar
+  /// simgesiz tam zamanlı (exactAllowWhileIdle). İzin yoksa hepsi
+  /// inexactAllowWhileIdle: gecikebilir ama yine çalar. Günün ayeti/hadisi her
+  /// zaman gecikmeli (dakikası önemli değil).
+  static AndroidScheduleMode scheduleModeFor(
+    NotificationKind kind, {
+    required bool? exactAllowed,
+    required bool? notificationsEnabled,
+  }) {
+    if (kind == NotificationKind.dailyContent || exactAllowed == false) {
+      return AndroidScheduleMode.inexactAllowWhileIdle;
+    }
+    if (kind == NotificationKind.prayer && notificationsEnabled != false) {
+      return AndroidScheduleMode.alarmClock;
+    }
+    return AndroidScheduleMode.exactAllowWhileIdle;
+  }
 
   /// Ezan/hatırlatma kanalı. Android'de kanalın sesi ve ses türü sonradan
   /// değişmez: "sessiz modda da çal" için ayrı "alarm_" kanalları (alarm ses
@@ -85,17 +121,26 @@ class NotificationService {
     final allowed = await canScheduleExactAlarms();
     if (allowed != null) {
       _exactAllowed = allowed;
-      await _saveExactAllowed(allowed);
+      await _saveFlag(exactAlarmsAllowedKey, allowed);
     }
     return allowed;
   }
 
-  static Future<void> _saveExactAllowed(bool allowed) async {
+  /// Kurulumdan önce: bildirimler açık mı (kapalıyken ezan alarmClock kurulmaz).
+  /// Okunabildiyse kalıcı olarak da saklanır.
+  Future<bool?> refreshNotificationsEnabled() async {
+    final enabled = await notificationsEnabled();
+    _notificationsEnabled = enabled;
+    if (enabled != null) await _saveFlag(notificationsEnabledKey, enabled);
+    return enabled;
+  }
+
+  static Future<void> _saveFlag(String key, bool value) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(exactAlarmsAllowedKey, allowed);
+      await prefs.setBool(key, value);
     } catch (e) {
-      // Kayıt sadece uyarı içindir; kurulumu durdurmaz
+      // Kayıt sadece uyarı ve değişim tespiti içindir; kurulumu durdurmaz
     }
   }
 
@@ -138,17 +183,23 @@ class NotificationService {
     }
   }
 
-  // Tam zamanlı izin yoksa gecikmeli kip. İzin sorgulanamadıysa ya da kurulum
-  // sırasında geri alındıysa alarmClock reddedilir: aynı bildirim gecikmeli kurulur.
+  // Kip türe ve izinlere göre ([scheduleModeFor]). İzin sorgulanamadıysa ya da
+  // kurulum sırasında geri alındıysa tam zamanlı kip (alarmClock da
+  // exactAllowWhileIdle da) reddedilir: aynı bildirim gecikmeli kurulur.
   Future<void> _zonedSchedule(
     int id,
     String title,
     String body,
     tz.TZDateTime scheduledDate,
     NotificationDetails details, {
+    required NotificationKind kind,
     String? payload,
   }) async {
-    final mode = scheduleModeFor(_exactAllowed);
+    final mode = scheduleModeFor(
+      kind,
+      exactAllowed: _exactAllowed,
+      notificationsEnabled: _notificationsEnabled,
+    );
     try {
       await _notificationsPlugin.zonedSchedule(
         id,
@@ -163,11 +214,11 @@ class NotificationService {
       );
     } on PlatformException catch (e) {
       if (e.code != exactAlarmsDeniedCode ||
-          mode != AndroidScheduleMode.alarmClock) {
+          mode == AndroidScheduleMode.inexactAllowWhileIdle) {
         rethrow;
       }
       _exactAllowed = false;
-      await _saveExactAllowed(false);
+      await _saveFlag(exactAlarmsAllowedKey, false);
       await _notificationsPlugin.zonedSchedule(
         id,
         title,
@@ -249,6 +300,7 @@ class NotificationService {
     String? soundName,
     required String localizedChannelName,
     required String localizedTicker,
+    required NotificationKind kind, // ezan ya da hatırlatma
     String? payload,
     String? actionLabel, // verilirse "Kıldım" butonu eklenir
     bool alarmStream = false, // "sessiz modda da çal": alarm ses akışı (ezan)
@@ -285,6 +337,7 @@ class NotificationService {
           sound: soundName != null ? '$soundName.mp3' : null,
         ),
       ),
+      kind: kind,
       payload: payload,
     );
   }
@@ -316,6 +369,7 @@ class NotificationService {
         ),
         iOS: const DarwinNotificationDetails(),
       ),
+      kind: NotificationKind.endReminder,
       payload: payload,
     );
   }
@@ -426,6 +480,7 @@ class NotificationService {
         ),
         iOS: const DarwinNotificationDetails(),
       ),
+      kind: NotificationKind.dailyContent,
     );
   }
 
@@ -439,6 +494,12 @@ class NotificationService {
   Future<Map<int, String?>> pendingPayloads() async {
     final pending = await _notificationsPlugin.pendingNotificationRequests();
     return {for (final p in pending) p.id: p.payload};
+  }
+
+  /// Kurulu (henüz çalmamış) bildirimler: ID → başlık ve metin
+  Future<Map<int, ({String? title, String? body})>> pendingTexts() async {
+    final pending = await _notificationsPlugin.pendingNotificationRequests();
+    return {for (final p in pending) p.id: (title: p.title, body: p.body)};
   }
 
   Future<void> cancel(int id) => _notificationsPlugin.cancel(id);

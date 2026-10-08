@@ -449,6 +449,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get endReminderTitle => 'Vakit Çıkmadan Hatırlat';
 
   @override
+  String get dailyContentNotifTitle => 'Günün Ayeti ve Hadisi Bildirimi';
+
+  @override
+  String get dailyContentNotifSub =>
+      'Her gün sabah bir ayet, akşam bir hadis gönderir.';
+
+  @override
+  String get privacyPolicy => 'Gizlilik Politikası';
+
+  @override
   String get endReminderSub =>
       'Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.';
 

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:ezan_saati/core/app_links.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../common/ad_consent.dart';
@@ -24,6 +25,11 @@ class SettingsView extends StatelessWidget {
   static const String appLink =
       "https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde";
   static const String _supportMail = 'mmdigitall.dev@gmail.com';
+
+  /// Gizlilik politikası adresi ([AppLinks.privacyPolicy]); boşken satır gizli.
+  /// Testte doldurulabilir.
+  @visibleForTesting
+  static String privacyPolicyUrl = AppLinks.privacyPolicy;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +81,22 @@ class SettingsView extends StatelessWidget {
                 ),
               ),
               const EndReminderSetting(),
+              Consumer<HomeViewModel>(
+                builder: (context, viewModel, child) {
+                  final enabled = viewModel.dailyContentEnabled;
+                  return AppListTile(
+                    leadingIcon: Icons.menu_book_outlined,
+                    title: loc.dailyContentNotifTitle,
+                    subtitle: loc.dailyContentNotifSub,
+                    showChevron: false,
+                    trailing: Switch(
+                      value: enabled,
+                      onChanged: viewModel.setDailyContentEnabled,
+                    ),
+                    onTap: () => viewModel.setDailyContentEnabled(!enabled),
+                  );
+                },
+              ),
               AppListTile(
                 leadingIcon: Icons.notifications_active_outlined,
                 title: loc.menuNotifications,
@@ -110,6 +132,12 @@ class SettingsView extends StatelessWidget {
                   title: loc.contactUs,
                   onTap: () => _sendSupportMail(loc),
                 ),
+                if (privacyPolicyUrl.isNotEmpty)
+                  AppListTile(
+                    leadingIcon: Icons.policy_outlined,
+                    title: loc.privacyPolicy,
+                    onTap: _openPrivacyPolicy,
+                  ),
                 if (privacyRequired)
                   AppListTile(
                     leadingIcon: Icons.privacy_tip_outlined,
@@ -146,6 +174,20 @@ class SettingsView extends StatelessWidget {
       )) {
         debugPrint("Link açılamadı");
       }
+    }
+  }
+
+  // Tarayıcıda (uygulama içi görünüm değil)
+  static Future<void> _openPrivacyPolicy() async {
+    try {
+      if (!await launchUrl(
+        Uri.parse(privacyPolicyUrl),
+        mode: LaunchMode.externalApplication,
+      )) {
+        debugPrint("Gizlilik politikası açılamadı");
+      }
+    } catch (e) {
+      debugPrint("Gizlilik politikası açılamadı: $e");
     }
   }
 

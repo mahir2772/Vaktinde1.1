@@ -247,6 +247,9 @@
         }
     },
     "endReminderTitle": "Vakit Çıkmadan Hatırlat",
+    "dailyContentNotifTitle": "Günün Ayeti ve Hadisi Bildirimi",
+    "dailyContentNotifSub": "Her gün sabah bir ayet, akşam bir hadis gönderir.",
+    "privacyPolicy": "Gizlilik Politikası",
     "endReminderSub": "Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.",
     "endReminderNotifTitle": "Vakit Çıkıyor",
     "endReminderNotifBody": "{vakit} vaktinin çıkmasına {minute} dakika kaldı.",

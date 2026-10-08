@@ -226,6 +226,9 @@
         }
     },
     "endReminderTitle": "Remind Before Prayer Time Ends",
+    "dailyContentNotifTitle": "Daily Ayah & Hadith Notification",
+    "dailyContentNotifSub": "Sends an ayah every morning and a hadith every evening.",
+    "privacyPolicy": "Privacy Policy",
     "endReminderSub": "Notifies you before a prayer's time ends if it isn't marked as prayed.",
     "endReminderNotifTitle": "Prayer Time Ending",
     "endReminderNotifBody": "{minute} minutes left until {vakit} time ends.",

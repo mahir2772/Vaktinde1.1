@@ -15,12 +15,25 @@ class WidgetService {
   };
   static const String tomorrowHijriKey = 'tomorrow_hijri_date_text';
 
+  // Vakte kalan başlıkları ("Öğleye", Kotlin: PrayerWidgetData.kt): 'title_text'
+  // yazıldığı andaki sıradaki vakte göredir; vakit geçince Kotlin başlığı
+  // uygulamayı beklemeden bunlardan seçer
+  static const Map<String, String> titleKeys = {
+    'İmsak': 'title_imsak',
+    'Güneş': 'title_gunes',
+    'Öğle': 'title_ogle',
+    'İkindi': 'title_ikindi',
+    'Akşam': 'title_aksam',
+    'Yatsı': 'title_yatsi',
+  };
+
   static Future<void> widgetiGuncelle({
     required String baslik,
     required int hedefZamanMs,
     required Map<String, String> vakitler,
     required String konum,
     required Map<String, String> vakitIsimleri,
+    required Map<String, String> vakitBasliklari,
     required String hijriDateText, // 🔥 YENİ
     String? tarih,
     Map<String, String>? yarinVakitler,
@@ -96,6 +109,12 @@ class WidgetService {
         'label_yatsi',
         vakitIsimleri['Yatsı'] ?? "",
       );
+      for (final entry in titleKeys.entries) {
+        await HomeWidget.saveWidgetData<String>(
+          entry.value,
+          vakitBasliklari[entry.key] ?? "",
+        );
+      }
 
       // 1x1 WIDGET GÜNCELLEMESİ
       await HomeWidget.updateWidget(

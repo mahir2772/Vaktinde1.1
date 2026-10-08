@@ -43,6 +43,8 @@ class InstallGuard {
     'qibla_calibration_dialog_seen', // QiblaView: pusula kalibrasyon penceresi
     'exact_alarms_allowed', // NotificationService: tam zamanlı alarm izni durumu
     'alarm_plan_meta', // PrayerRefreshService: kurulu ezanların saat/ayar kaydı
+    'schedule_mode_v2', // PrayerRefreshService: bildirimler yeni kiple kuruldu
+    'notifications_enabled', // NotificationService: bildirim izni durumu
   ];
 
   /// Testte platform kontrolünü aşmak için
