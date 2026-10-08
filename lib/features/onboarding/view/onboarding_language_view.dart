@@ -114,6 +114,9 @@ const String permissionsPrimedKey = 'permissions_primed';
 bool _primingRunning = false;
 bool _primedThisSession = false;
 
+/// İzin akışı (açıklama + sistem pencereleri) şu an sürüyor mu
+bool get permissionPrimingActive => _primingRunning;
+
 @visibleForTesting
 void debugResetPermissionPriming() {
   _primingRunning = false;

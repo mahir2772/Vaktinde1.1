@@ -9,9 +9,11 @@ import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
+import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
+import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 
 import 'app_showcase.dart';
 
@@ -39,9 +41,20 @@ class _MainWrapperState extends State<MainWrapper> {
   // Tur birden fazla kez başlamasın
   bool _isTutorialChecked = false;
 
+  // 7 günlük tam seride bir kez değerlendirme isteği (açılış akışından sonra)
+  late final StreakReviewPrompt _reviewPrompt;
+
   @override
   void initState() {
     super.initState();
+    final viewModel = context.read<HomeViewModel>();
+    _reviewPrompt = StreakReviewPrompt(
+      todayTimes: () => viewModel.prayerTimes,
+      canPrompt: () =>
+          !permissionPrimingActive &&
+          !AdConsent.isGatheringConsent &&
+          !_isTourRunning(),
+    );
     AdHelper.instance.loadInterstitialAd();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -58,16 +71,35 @@ class _MainWrapperState extends State<MainWrapper> {
   /// yarıda kaldı), ardından pil optimizasyonu (en fazla bir kez). Pencereler
   /// üst üste binmez.
   Future<void> _runStartupFlow() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isFirstTime = prefs.getBool(tourSeenKey) ?? true;
-    if (!mounted) return;
-    if (isFirstTime && _startTour()) {
-      await prefs.setBool(tourSeenKey, false);
-      return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final isFirstTime = prefs.getBool(tourSeenKey) ?? true;
+      if (!mounted) return;
+      if (isFirstTime && _startTour()) {
+        await prefs.setBool(tourSeenKey, false);
+        return;
+      }
+      await primePermissionsIfNeeded(context);
+      if (!mounted) return;
+      await context.read<HomeViewModel>().requestBatteryOptimizationOnce();
+    } finally {
+      // Değerlendirme isteği açılış pencereleriyle çakışmaz
+      if (mounted) _reviewPrompt.start();
     }
-    await primePermissionsIfNeeded(context);
-    if (!mounted) return;
-    await context.read<HomeViewModel>().requestBatteryOptimizationOnce();
+  }
+
+  bool _isTourRunning() {
+    try {
+      return ShowcaseView.get().isShowcaseRunning;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _reviewPrompt.dispose();
+    super.dispose();
   }
 
   /// Turu ekranda olan hedeflerle başlatır (5.x'te eksik hedef turu erken
