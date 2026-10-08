@@ -12,7 +12,7 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | 5 | Pusulasız cihazlar Play'de uygulamayı göremiyordu | `sensor.compass required=false` |
 | 6 | Android 15 `dataSync` FGS 6 saat limiti (çökme riski) | Servis sadece `specialUse` |
 | 7 | Exact alarm izinleri | `SCHEDULE_EXACT_ALARM maxSdk=32` + `USE_EXACT_ALARM`, tekrar kaldırıldı |
-| 8 | Alarmlar tek günlük | Koordinat varsa 5 gün önceden (ID 0-59) |
+| 8 | Alarmlar tek günlük | Koordinat varsa 5 gün önceden (ID 0-71, vaktin tarihine bağlı) |
 | 9 | HTTP timeout yok | `http_client.dart` → `httpGet` (10 sn) |
 | 10 | Hatalar görünmüyordu | Firebase Crashlytics (release'de açık) |
 | 11 | Temizlik | Bozuk widget_test silindi, `android/build` + translator cache git'ten çıktı, `fromList` ölü kod, kullanılmayan `workmanager` kaldırıldı, Kotlin klasörü `com/mmdigital/vaktinde`, README, pubspec açıklaması, iOS'ta AdHelper çökmez |
@@ -28,6 +28,14 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | Kerahat kartı + "vakit çıkıyor" hatırlatması (varsayılan kapalı, ID 100–124) | `kerahat_*`, `end_reminder_setting.dart` |
 | Arka plan günlük yenileme (WorkManager 6 saat; widget, kalıcı bildirim, 5 günlük alarm) | `prayer_refresh_service.dart` |
 | İnceleme düzeltmeleri: Avrupa yazında İmsak=Yatsı, de/fr ana ekran hatası, gece yarısı bayatlığı, alarm yarışları, tepsideki bildirimlerin silinmesi | — |
+
+## v1.1.0 güvenilirlik paketleri ✅
+| Paket | Ne değişti | Nerede |
+|---|---|---|
+| A — ezan güvenilirliği | Tam zamanlı alarm izni yoksa (Android 12/12L'de "Alarmlar ve hatırlatıcılar" kapalı) ezan gecikmeli kiple kurulur (eskiden hiç kurulmuyordu); kurulum hataları yutulmaz (Crashlytics); izin değişince aynı gün yeniden kurulur; ana ekran + Alarmlar sekmesinde uyarı şeridi (bildirimler kapalı → "Aç", alarm izni kapalı → "İzin ver"); "Sessiz modda da çal" (ezan alarm ses seviyesinde, Android 8+) | `notification_service.dart`, `prayer_refresh_service.dart`, `alarm_health*.dart` |
+| B — widget'lar / güvenlik | Gün dönümü ve yatsı sonrası yarının imsakı, saat/dilim değişiminde hemen yeniden çizim, sağlayıcı başına tek alarm, seçicide ad/açıklama/önizleme, 30 dk yenileme; uygulama kilit ekranı üstünde açılmaz | `PrayerWidgetData.kt`, `res/xml/widget_info_*` |
+| C — gizlilik / izin / reklam / değerlendirme | Yedekten ya da başka telefondan gelen veride cihaza özgü bayraklar silinir (izin akışı yeni telefonda yeniden çalışır); analitikte konum ve vakit yok (tek kapı); Ayarlar reklamsız açılır; reklam içerik sınırı PG; 7 günlük tam seride bir kez uygulama içi değerlendirme | `install_guard.dart`, `app_analytics.dart`, `ad_consent.dart`, `streak_review.dart` |
+| İnceleme düzeltmeleri | İzin yokken widget/kalıcı bildirim yenilemesi uyandırmayan 10 dk pencereli alarmla (setAlarmClock hata veriyordu; Doze'da ezanın kotasını da yemez); gecikmiş (henüz çalmamış) ezan yeniden kurulumda iptal edilmez, üzerine yazılmaz (ID tarihe bağlı, son 90 dk); gecikmeli kipte hatırlatmalar "X dakika kaldı" yerine saatli; uyarı metni "yaklaşık 1 saate kadar, imsak/sahur dahil"; "Sessiz modda da çal" Android 7'de gizli | — |
 
 ## Ertelenenler
 - CollectAPI anahtarı: koda yazılamıyor; derlemede `--dart-define=COLLECT_API_KEY=...` verilmezse zekat ekranında canlı kur gelmez. Anahtar yenilenmeli (git geçmişinde açık).
@@ -46,7 +54,8 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | Zikirmatik | Çeviriler, görünür "Sayacı Düzenle", sıfırlama onayı, zikir listesi Arapça taşma hatası düzeldi |
 | Ayarlar | Dil ilk satır, gerçek sürüm, tutarlı satırlar, arka plan resminde okunur başlıklar |
 | Bağımlılık | story_view + upgrader kaldırıldı (16 paket az), package_info_plus doğrudan |
-- Test: 221 geçiyor (+10 ekran görüntüsü testi env ile). Ekran görüntüsü düzeneğinde tr/de/fr/ar, açık/koyu/arka plan, 320dp + %130'da düzen hatası yok.
+- Test: 320 geçiyor (+10 ekran görüntüsü testi env ile). Ekran görüntüsü düzeneğinde tr/de/fr/ar, açık/koyu/arka plan, 320dp + %130'da düzen hatası yok.
+- Kotlin (widget'lar, kalıcı bildirim, MainActivity) bulutta API 36 çerçevesine ve SDK'daki flutter.jar'a karşı derlendi, Robolectric testleri geçti (düzenek repo dışında); gerçek cihaz testinin yerini tutmaz.
 - AdMob: AB kullanıcıları için AdMob panelinde "Gizlilik ve mesajlaşma → GDPR mesajı" yayınlanmış olmalı; yoksa AB'de reklam gösterilmeyebilir (ertelendi, kullanıcı işi).
 
 ## Bilinen sınırlar
@@ -57,6 +66,15 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
   hemen yeniden çizilir ama vakitler, Dart yeniden hesaplayana kadar (uygulama açılışı veya ≤6 saatte WorkManager) eski
   dilimdedir. Gün dönümü ve yatsı sonrası imsak artık doğru (`times_date` + `tomorrow_*`, `PrayerWidgetData.kt`).
 - 2029+ Ramazan/Kadir tarihleri `religious_days.json`'a eklenmezse hijri paketinden (±1 gün) gelir; kandiller düzeltilmiş.
+- Android 12/12L'de "Alarmlar ve hatırlatıcılar" kapatılırsa ezan ve hatırlatmalar yaklaşık 1 saate kadar gecikebilir (sistem sınırı;
+  uyarı şeridi gösterilir). Bu kipte hatırlatmalar saatli metinle gelir; gecikmiş farz ezanı 90 dk korunur, Güneş bildirimi ve
+  hatırlatmalar korunmaz (yeniden kurulumda iptal). Android 13+ etkilenmez (USE_EXACT_ALARM).
+- "Sessiz modda da çal" Android 8+ (ses türü bildirim kanalıyla verilir); 7.x'te anahtar gösterilmez.
+- Pil optimizasyonu muafiyeti penceresi açılmaz: `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` manifest'ten çıkarıldı (1e9c763), permission_handler
+  sessizce reddeder. Honor/Huawei gibi agresif pil yönetiminde ezan için kullanıcı pil ayarını elle "sınırsız" yapmalı. Geri
+  eklemek Play'de izin politikası incelemesi gerektirir; karar uygulama sahibinin.
+- Yayın: InstallGuard'sız 1.1.0+14 (`claude/vaktinde-app-analysis-bocjca`) Play'e yüklenmemeli; cihaz bayraklarını yazar ama kurulum
+  işaretini yazmaz, o veriden dönen yedekte izin akışı atlanabilir. Yayın InstallGuard'lı daldan yapılmalı.
 
 ## Yayın öncesi kontrol (cihazda, önerilen)
 1. Ana ekran vakitleri, şehir değiştirme, internetsiz açılış.
@@ -65,3 +83,11 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
    yatsıdan sonra sayaç yarının imsakına); saati elle değiştirince sayaç hemen düzeliyor mu; widget seçicide üç ayrı
    ad + açıklama + önizleme (Android 12+); kilitliyken bildirime dokununca önce kilit açılıyor mu.
 4. Yeni ekranlar: ana ekran, Araçlar, Zekat (10.000 yaz → doğru), Kıble, Zikirmatik, Ayarlar; koyu tema.
+5. "Sessiz modda da çal": telefon sessiz/titreşimdeyken açık → ezan alarm ses seviyesinde çalar; kapalı → sessiz kalır.
+6. Bildirim izni (Android 13+): izni reddet → ana ekranda uyarı → "Aç" → izin penceresi ya da ayarlar; izin verilince uyarı kalkar.
+7. Güncelleme: Play'deki sürümün üzerine kur, uygulamayı aç → sonraki ezanlar birer kez çalar (alarm ID'leri değişti, çift ezan yok).
+8. Yedekten geri yükleme / yeni telefona aktarım → izin açıklaması ve bildirim/konum izni yeniden sorulur.
+9. Araçlar → Ayarlar reklamsız açılır; 7 günlük tam seride bir kez değerlendirme penceresi (Play sürümünde).
+10. (Android 12/12L cihaz varsa) "Alarmlar ve hatırlatıcılar"ı kapat → yeni uyarı metni + "İzin ver"; kapalıyken ezan gelir (gecikebilir),
+    hatırlatmalar saatli metinle; vakitten hemen sonra uygulamayı açınca gecikmiş ezan yine çalar; widget ve kalıcı bildirim vakitten
+    sonra ekran açıkken en geç ~10 dk içinde yenilenir. (Android 7.x varsa: "Sessiz modda da çal" görünmez.)

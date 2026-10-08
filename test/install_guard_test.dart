@@ -21,6 +21,7 @@ void main() {
     'battery_optimization_asked': true,
     'alarms_scheduled_date': '2026-10-08',
     'qibla_calibration_dialog_seen': true,
+    'exact_alarms_allowed': false,
   };
   final userData = <String, Object>{
     'language_code': 'tr',
@@ -86,7 +87,9 @@ void main() {
       InstallGuard.markerKey: install - 400 * day,
     }, info());
     expect(result, InstallCheck.restored);
-    for (final key in InstallGuard.deviceKeys) {
+    // Fikstür koddaki listeyle aynı: listeden düşen bayrak testte yakalanır
+    expect(deviceFlags.keys.toSet(), InstallGuard.deviceKeys.toSet());
+    for (final key in deviceFlags.keys) {
       expect(prefs.containsKey(key), isFalse, reason: key);
     }
     expectUserDataKept(prefs);
@@ -124,7 +127,7 @@ void main() {
       'bayraklar silinir', () async {
     final (result, prefs) = await check({...deviceFlags, ...userData}, info());
     expect(result, InstallCheck.restored);
-    for (final key in InstallGuard.deviceKeys) {
+    for (final key in deviceFlags.keys) {
       expect(prefs.containsKey(key), isFalse, reason: key);
     }
     expectUserDataKept(prefs);
