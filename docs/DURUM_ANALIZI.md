@@ -61,7 +61,7 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 ## Sonrası (bu dalda) ✅
 - Çeviri denetimi: 5 dil ana dil gözüyle denetlendi, ikinci ajan onaylı 360 düzeltme (`a40c3f4`); yinelenen arb anahtarları temizlendi.
 - Kıble pusulası sadece sekme görünür + uygulama ön plandayken çalışır (arka planda/reklamda sensör kapanır), kalibrasyon uyarısı 2 sn gecikmeli (`7cd668d`).
-- Araştırma raporu (widget, üyelik, rakipler): sohbette kullanıcıya verildi; öneri sırası orada.
+- Araştırma raporu (widget, üyelik, rakipler) → öneriler aşağıda **Yol haritası**'nda.
 
 ## Bilinen sınırlar
 - Önceki sürüm cihazda kısa test edildi (vakitler, ince ayar, imsakiye paylaşımı OK). Yeni arayüz henüz cihazda denenmedi; "Kıldım" butonu, AB rıza formu ve Play esnek güncelleme yalnızca gerçek cihaz/Play sürümünde görülebilir.
@@ -94,3 +94,48 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 10. (Android 12/12L cihaz varsa) "Alarmlar ve hatırlatıcılar"ı kapat → yeni uyarı metni + "İzin ver"; kapalıyken ezan gelir (gecikebilir),
     hatırlatmalar saatli metinle; vakitten hemen sonra uygulamayı açınca gecikmiş ezan yine çalar; widget ve kalıcı bildirim vakitten
     sonra ekran açıkken en geç ~10 dk içinde yenilenir. (Android 7.x varsa: "Sessiz modda da çal" görünmez.)
+
+## Yayın (1.1.0+14)
+- Derleme ayarı v13 (a3e7cd2) ile aynı: R8 ve kaynak küçültme kapalı (`isMinifyEnabled`/`isShrinkResources = false` →
+  flutter_local_notifications Gson kayıtları ve `res/raw` ezan sesleri korunur), compile/target SDK 36. Arka plan giriş
+  noktaları (`callbackDispatcher`, `onNotificationActionBackground`, `onStart`) `@pragma('vm:entry-point')`'lu (AOT'de silinmez).
+- Manifest farkı (v13'e göre): FGS türü `dataSync|specialUse` → `specialUse`; `USE_EXACT_ALARM` v13'te de vardı → yeni izin beyanı yok.
+- Akış: `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<anahtar>` → Play Dahili test (Play sürümünün üstüne
+  güncelleme = kontrol 7) → Üretim, kademeli %20 → %100. Aynı gün: Veri güvenliği formuna Crashlytics.
+
+## Yol haritası (öneriler; sıra kullanıcı onayıyla)
+Efor: S ≤1 gün · M 2–4 gün · L 1 hafta+. Kaynak: araştırma raporu (Ekim 2026); yapılanlar çıkarıldı.
+
+**Kasım — Üç Aylar 10 Aralık 2026'dan önce yayında**
+1. Bildirim sağlık ekranı (M): bildirim/tam zamanlı alarm izni, pil, ses ve Rahatsız Etmeyin, sıradaki alarmın saati,
+   "1 dk sonra test ezanı"; üretici rehberi (Xiaomi otomatik başlatma, Honor/Huawei, Oppo/Realme, Vivo, Samsung; dontkillmyapp);
+   WorkManager son koşu kaydı 12–24 sa eskiyse "uygulama öldürülüyor" uyarısı. Ayarlar'daki "Bildirim Gelmiyor mu?" diyaloğunun yerine.
+2. Kandil / Üç Aylar bildirimleri (S–M): `religious_days.json`'dan — Üç Aylar + Regaib 10.12.2026, Miraç 04.01.2027,
+   Berat 22.01.2027, Ramazan 08.02.2027, Kadir 05.03.2027; Ayarlar'da aç/kapa. (json'da "12 Ocak 2025 Üç Ayların Başlangıcı"
+   Diyanet'e göre 1 Ocak 2025 olmalı; geçmiş tarih, bu işte düzeltilsin.)
+3. Widget iyileştirme (M): kontrast (açık duvar kâğıdında yetersiz), açık/koyu tema + Material You, en/ar'da 12 saat (widget
+   hep 24 saat), kalıcı bildirimin sabit renkleri ve "Vakit" yedek metni (`custom_notification.xml`), uygulama içi
+   "Ana ekrana ekle" (home_widget 0.7, yeni bağımlılık yok).
+4. Tam ekran reklam yalnız Zekat'ta (S): araç açılışlarındaki interstitial kalkar (`tools_view.dart`); gelir etkisi ölçülür.
+5. Gizlilik politikası linki (Ayarlar) + AB'de Analytics'i UMP rızasına bağlama (`setConsent`) (S).
+
+**Aralık – 10 Ocak 2027 — Ramazan 8 Şubat 2027**
+6. Ramazan widget'ı (S–M): iftar/sahur sayacı; Ramazan dışında "Ramazan'a X gün".
+7. Fitre/fidye hesaplayıcı (S): Diyanet tutarı uygulama güncellemeden değiştirilebilmeli.
+8. Tek seferlik "Reklamsız" satın alma (M): abonelik yok; Play hesabıyla geri yüklenir; ezan/widget/imsakiye/takip hep ücretsiz.
+
+**Ramazan sonrası**
+9. Yedekle / Geri yükle (S–M): takip, kaza, zikir, ayarlar tek dosya (share_plus) → Drive/WhatsApp; hesap gerekmez.
+10. Ön plan servisini isteğe bağlı yapma (M): kalıcı bildirimi NotificationUpdater zaten çiziyor; FGS otomatik yedeği engelliyor
+    ve Play beyanı istiyor. Yedek kuralları (`dataExtractionRules`) ile birlikte.
+11. Erişilebilirlik (M): %200 yazı, TalkBack etiketleri (saniyelik sayaç okunmasın), sade mod, ezan bildiriminde "Durdur".
+12. 81 il / 973 ilçe + Avrupa şehir koordinatları gömülü (M): internetsiz şehir seçimi, ilçe merkezinden hesap; gurbetçiye
+    "memleket vakitleri".
+13. Kadın modu (özel gün: seri bozulmaz, kazaya sayılmaz, istenirse ezan susar) + kaza sihirbazı (M–L).
+14. "Namazdayım" (S–M): vakit girince X dk sessiz (Rahatsız Etmeyin erişimi); Cuma penceresi öğle vaktine göre.
+15. Yeni widget'lar (M–L): sıradaki vakit halkası (`VaktindeWidgetSmallProvider` sınıfı korunmalı), etkileşimli "Bugün" takip widget'ı.
+16. Kur'an modülü + namaz hocası (L): meal lisansı kontrol edilmeli (alquran.cloud `tr.diyanet`).
+
+**Yapılmayacak:** üyelik/giriş (şimdilik), yapay zekâ hoca, abonelik, uygulama içinde sadaka/zekat toplama.
+**Kullanıcı işleri:** CollectAPI anahtarı (yenile, dart-define), AdMob GDPR mesajı + hassas kategori engelleri, Veri güvenliği
+(Crashlytics), pil izni kararı; mağaza görselleri: Aralık başı Üç Aylar, ~11 Ocak "Ramazan 2027 İmsakiye".
