@@ -31,6 +31,9 @@ object PrayerWidgetData {
     // Sağlayıcı başına tek güncelleme alarmı; kurulum ve iptal aynı requestCode + intent
     private const val UPDATE_REQUEST_CODE = 0
 
+    // İzinsiz yenileme penceresi (Android 12+ en kısa pencere 10 dk)
+    private const val REFRESH_WINDOW_MS = 10 * 60 * 1000L
+
     /** Bugün gösterilecek 6 vakit, yatsıdan sonraki imsak; [rolledOver]: gün dönmüş, yarının seti bugünün */
     class Day(val times: List<String>, val nextImsak: String, val rolledOver: Boolean)
 
@@ -151,12 +154,14 @@ object PrayerWidgetData {
     /**
      * Yenileme alarmı (widget'lar ve NotificationUpdater ortak). Tam zamanlı alarm izni yoksa
      * (Android 12/12L'de "Alarmlar ve hatırlatıcılar" kapalı) setAlarmClock da SecurityException
-     * atar: izin istemeyen gecikmeli alarm kurulur (geç gelebilir ama kurulur).
+     * atar: izin istemeyen, cihazı uyandırmayan pencereli alarm kurulur (ekran açıkken en geç
+     * 10 dk, kapalıyken açılınca gelir). setAndAllowWhileIdle olmaz: Doze'da ezanla aynı
+     * "9 dk'da bir" kotasını paylaşıp ezanı geciktirir.
      */
     fun setRefreshAlarm(context: Context, targetTime: Long, pendingIntent: PendingIntent) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
+            alarmManager.setWindow(AlarmManager.RTC, targetTime, REFRESH_WINDOW_MS, pendingIntent)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
         } else {
