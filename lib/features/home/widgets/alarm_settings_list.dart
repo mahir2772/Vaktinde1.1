@@ -6,7 +6,7 @@ import '../prayer_schedule.dart';
 import '../view_model/home_view_model.dart';
 import 'alarm_health_banner.dart';
 
-/// "Alarmlar" sekmesi: en üstte izin uyarısı (varsa) ve "sessiz modda da çal";
+/// "Alarmlar" sekmesi: en üstte izin uyarısı (varsa) ve "sessiz modda da çal" (8.0+);
 /// sonra her vakit için açılır kart (tam vakitte ezan, sessiz bildirim, ses
 /// seçimi, önceden uyarı). Sıradaki vakit vurgulanır.
 class AlarmSettingsList extends StatelessWidget {
@@ -34,7 +34,8 @@ class AlarmSettingsList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               AlarmHealthBanner(viewModel: viewModel),
-              _AlarmStreamTile(viewModel: viewModel),
+              if (viewModel.alarmStreamSupported)
+                _AlarmStreamTile(viewModel: viewModel),
             ],
           );
         }

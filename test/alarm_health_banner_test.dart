@@ -315,4 +315,32 @@ void main() {
     expect(vm.reschedules, 2);
     await finish(tester);
   });
+
+  testWidgets('"Sessiz modda da çal" Android 8 (API 26) altında gösterilmez; '
+      'sürüm okunamazsa gösterilir', (tester) async {
+    const device = MethodChannel('vaktinde/device');
+    addTearDown(() => messenger.setMockMethodCallHandler(device, null));
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    for (final (int? sdk, bool shown) in [
+      (25, false),
+      (26, true),
+      (35, true),
+      (null, true), // kanal yok (Android dışı / eski sürüm)
+    ]) {
+      messenger.setMockMethodCallHandler(device, (call) async {
+        if (sdk == null) throw MissingPluginException();
+        return call.method == 'sdkInt' ? sdk : null;
+      });
+      final vm = await pumpHome(tester, 'tr');
+      await vm.checkAlarmStreamSupport();
+      await openAlarmsTab(tester, loc);
+      expect(
+        find.text(loc.ezanAlarmStreamTitle),
+        shown ? findsOneWidget : findsNothing,
+        reason: 'SDK $sdk',
+      );
+      expect(vm.alarmStreamSupported, shown);
+      await finish(tester);
+    }
+  });
 }

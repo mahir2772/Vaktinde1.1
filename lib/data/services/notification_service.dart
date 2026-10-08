@@ -55,6 +55,20 @@ class NotificationService {
     return (id: 'channel_$soundName', usage: AudioAttributesUsage.notification);
   }
 
+  /// "Sessiz modda da çal" sadece Android 8+ (API 26) çalışır: alarm ses türü
+  /// bildirim kanalıyla verilir, 7.x'te kanal yok. Sürüm MainActivity kanalından
+  /// okunur; okunamazsa (başka platform / test) true.
+  static Future<bool> alarmStreamSupported() async {
+    try {
+      final sdk = await const MethodChannel(
+        'vaktinde/device',
+      ).invokeMethod<int>('sdkInt');
+      return sdk == null || sdk >= 26;
+    } catch (e) {
+      return true;
+    }
+  }
+
   /// Android 12+ "Alarmlar ve hatırlatıcılar" izni (11 ve altında eklenti hep
   /// true döner). Belirlenemezse (Android değil / kanal hatası) null.
   Future<bool?> canScheduleExactAlarms() async {

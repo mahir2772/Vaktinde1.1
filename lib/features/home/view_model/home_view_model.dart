@@ -20,6 +20,7 @@ import '../../../data/models/hadith_model.dart';
 import '../../../main.dart';
 import '../../../data/services/ayah_service.dart';
 import '../../../data/services/error_reporter.dart';
+import '../../../data/services/notification_service.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../alarm_health.dart';
@@ -61,6 +62,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   int endReminderMinutes = PrayerTracker.defaultEndReminderMinutes;
   // "Sessiz modda da çal": ezan alarm ses akışında (varsayılan kapalı)
   bool ezanAlarmStream = false;
+  // Android 7.x'te alarm ses akışı uygulanamaz: anahtar gösterilmez
+  bool alarmStreamSupported = true;
 
   /// Ezan uyarısının sağlığı (bildirim ve tam zamanlı alarm izni); izin
   /// değişince ya da bildirimler açılınca alarmlar yeniden kurulur
@@ -165,6 +168,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     try {
       await initializeDateFormatting('tr_TR', null);
       await _loadSavedSettings();
+      await checkAlarmStreamSupport();
       await notificationService.init();
       alarmHealth.refresh();
 
@@ -523,6 +527,14 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       minutes: endReminderMinutes,
     );
     await refreshEndReminders();
+  }
+
+  /// Android sürümü okunur: 8.0 altında "Sessiz modda da çal" gizlenir
+  Future<void> checkAlarmStreamSupport() async {
+    final supported = await NotificationService.alarmStreamSupported();
+    if (supported == alarmStreamSupported) return;
+    alarmStreamSupported = supported;
+    notifyListeners();
   }
 
   /// "Sessiz modda da çal": ezanlar yeni (alarm) kanallarıyla yeniden kurulur

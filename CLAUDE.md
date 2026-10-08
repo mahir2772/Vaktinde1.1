@@ -49,7 +49,9 @@ lib/
                             vaktin saati, vakit çıkışı "çıkmasına X dk" yerine çıkış saati (nötr başlık), Ramazan imsakı "sahur HH:mm itibarıyla
                             sona erdi" — geç gelse de yanıltmaz (atlamak yerine; sahur hatırlatması kaybolmasın)
                             "Sessiz modda da çal" ('ezan_alarm_stream', varsayılan kapalı): sesli ezan 'alarm_channel_<ses>' kanalında
-                            (AudioAttributesUsage.alarm; kanal sesi sonradan değişmediği için ayrı kanal); hatırlatma/yazılı bildirim değişmez
+                            (AudioAttributesUsage.alarm; kanal sesi sonradan değişmediği için ayrı kanal); hatırlatma/yazılı bildirim değişmez.
+                            Ses türü sadece kanalla verilir → Android 8+ (API 26); 7.x'te anahtar gizli (alarmStreamSupported: MainActivity
+                            'vaktinde/device' kanalı 'sdkInt'; okunamazsa gösterilir)
       prayer_tracker        saf: namaz takibi (tarih→5 vakit bit maskesi, seri, oran, kaza adayları), aksiyon yükü "prayed|yyyy-MM-dd|Öğle",
                             vakit çıkış ID'si (hatırlatma günü epochDay%5 → ID 100-124, günden bağımsız sabit)
       prayer_tracker_service kayıt + kaza ekleme (SerialQueue ile sıralı), "Kıldım" arka plan işleyicisi (ayrı isolate; prefs.reload şart),
@@ -98,7 +100,8 @@ lib/
                                            resume'da okunur, izin değişince/bildirim açılınca alarmlar yeniden kurulur. Pencere açmaz;
                                            butonlar: requestExactAlarmsPermission / requestNotificationsPermission (pencere çıkmazsa ayarlar)
     home/widgets/alarm_health_banner.dart  ana ekran + Alarmlar sekmesi InfoBanner uyarısı (alarm açıksa; önce bildirim). Alarmlar
-                                           sekmesinin başında "Sessiz modda da çal" (HomeViewModel.setEzanAlarmStream)
+                                           sekmesinin başında "Sessiz modda da çal" (HomeViewModel.setEzanAlarmStream; 8.0 altında gizli:
+                                           checkAlarmStreamSupport → alarmStreamSupported)
     home/widgets/hero_chip.dart            hero bilgi kapsülü
     home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (hero kapsülü)
     home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse; onHero: kapsül, değilse InfoBanner
@@ -126,7 +129,7 @@ lib/
 android/app/src/main/
   AndroidManifest.xml   AdMob APP ID, izinler, servis/receiver/widget tanımları (showWhenLocked/turnScreenOn YOK:
                         kilit ekranı üstünde açılmaz); widget'lar + NotificationUpdater TIME_SET/TIMEZONE_CHANGED dinler
-  kotlin/com/mmdigital/vaktinde/ — MainActivity, 3 widget provider, NotificationUpdater (kalıcı bildirim 888;
+  kotlin/com/mmdigital/vaktinde/ — MainActivity ('vaktinde/device' kanalı: sdkInt), 3 widget provider, NotificationUpdater (kalıcı bildirim 888;
                                    HomeWidgetPreferences'tan çizer, her vakitte PrayerWidgetData.setRefreshAlarm ile kendini yeniler)
     PrayerWidgetData.kt   ortak vakit mantığı: 'times_date' (yazılan setin günü) + 'tomorrow_*' (yarının vakitleri,
                           'tomorrow_hijri_date_text'): yatsıdan sonra yarının imsakı, gün dönmüşse yarının seti;
