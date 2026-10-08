@@ -537,6 +537,30 @@
     "turnLeft": "⬅ انعطف يساراً",
     "turnSlightLeft": "⬅ انعطف يساراً قليلاً",
     "calibrationRequired": "المعايرة مطلوبة",
+    "qiblaAccuracyNote": "تُظهر البوصلة اتجاهًا تقريبيًا؛ وقد تُسبّب المعادن والمغناطيس والأجهزة الإلكترونية انحراف الاتجاه.",
+    "qiblaTipsTitle": "للحصول على نتيجة دقيقة",
+    "qiblaTipFlat": "أمسك الهاتف موازيًا للأرض.",
+    "qiblaTipCalibrate": "عايِر البوصلة برسم رقم '8' في الهواء بهاتفك.",
+    "qiblaTipMagneticCase": "انزع غطاء الهاتف المغناطيسي إن وُجد.",
+    "qiblaTipMetal": "ابتعد عن الأشياء المعدنية والأجهزة الإلكترونية.",
+    "qiblaTipMosque": "قارن الاتجاه إن أمكن باتجاه القبلة في أحد المساجد.",
+    "qiblaAngleTrueNorth": "زاوية القبلة: {angle}° (من الشمال الجغرافي)",
+    "@qiblaAngleTrueNorth": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaDeclination": "الانحراف المغناطيسي: {deg}° (يُصحَّح تلقائيًا)",
+    "@qiblaDeclination": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaInterferenceWarning": "تم رصد تشويش مغناطيسي: أبعِد الهاتف عن الأشياء المعدنية والأغطية المغناطيسية والأجهزة الإلكترونية.",
     "gold22kGram": "جرام ذهب عيار 22",
     "goldAtaToptan": "آتا بالجملة",
     "goldAtaCumhuriyet": "آتا جمهوريت",

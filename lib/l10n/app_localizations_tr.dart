@@ -1154,6 +1154,46 @@ class AppLocalizationsTr extends AppLocalizations {
   String get calibrationRequired => 'Kalibrasyon Gerekli';
 
   @override
+  String get qiblaAccuracyNote =>
+      'Pusula yaklaşık yön gösterir; metal, mıknatıs ve elektronik cihazlar yönü saptırabilir.';
+
+  @override
+  String get qiblaTipsTitle => 'Doğru sonuç için';
+
+  @override
+  String get qiblaTipFlat => 'Telefonu yere paralel tutun.';
+
+  @override
+  String get qiblaTipCalibrate =>
+      'Telefonunuzla havada \'8\' çizerek kalibre edin.';
+
+  @override
+  String get qiblaTipMagneticCase =>
+      'Mıknatıslı kılıf kullanıyorsanız çıkarın.';
+
+  @override
+  String get qiblaTipMetal =>
+      'Metal eşyalardan ve elektronik cihazlardan uzak durun.';
+
+  @override
+  String get qiblaTipMosque =>
+      'Mümkünse bir caminin kıble yönüyle karşılaştırın.';
+
+  @override
+  String qiblaAngleTrueNorth(String angle) {
+    return 'Kıble açısı: $angle° (coğrafi kuzeyden)';
+  }
+
+  @override
+  String qiblaDeclination(String deg) {
+    return 'Manyetik sapma: $deg° (otomatik düzeltildi)';
+  }
+
+  @override
+  String get qiblaInterferenceWarning =>
+      'Manyetik parazit algılandı: telefonu metal eşyalardan, mıknatıslı kılıftan ve elektronik cihazlardan uzaklaştırın.';
+
+  @override
   String get gold22kGram => '22 Ayar Gram Altın';
 
   @override

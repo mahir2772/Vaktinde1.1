@@ -1165,6 +1165,44 @@ class AppLocalizationsAr extends AppLocalizations {
   String get calibrationRequired => 'المعايرة مطلوبة';
 
   @override
+  String get qiblaAccuracyNote =>
+      'تُظهر البوصلة اتجاهًا تقريبيًا؛ وقد تُسبّب المعادن والمغناطيس والأجهزة الإلكترونية انحراف الاتجاه.';
+
+  @override
+  String get qiblaTipsTitle => 'للحصول على نتيجة دقيقة';
+
+  @override
+  String get qiblaTipFlat => 'أمسك الهاتف موازيًا للأرض.';
+
+  @override
+  String get qiblaTipCalibrate =>
+      'عايِر البوصلة برسم رقم \'8\' في الهواء بهاتفك.';
+
+  @override
+  String get qiblaTipMagneticCase => 'انزع غطاء الهاتف المغناطيسي إن وُجد.';
+
+  @override
+  String get qiblaTipMetal => 'ابتعد عن الأشياء المعدنية والأجهزة الإلكترونية.';
+
+  @override
+  String get qiblaTipMosque =>
+      'قارن الاتجاه إن أمكن باتجاه القبلة في أحد المساجد.';
+
+  @override
+  String qiblaAngleTrueNorth(String angle) {
+    return 'زاوية القبلة: $angle° (من الشمال الجغرافي)';
+  }
+
+  @override
+  String qiblaDeclination(String deg) {
+    return 'الانحراف المغناطيسي: $deg° (يُصحَّح تلقائيًا)';
+  }
+
+  @override
+  String get qiblaInterferenceWarning =>
+      'تم رصد تشويش مغناطيسي: أبعِد الهاتف عن الأشياء المعدنية والأغطية المغناطيسية والأجهزة الإلكترونية.';
+
+  @override
   String get gold22kGram => 'جرام ذهب عيار 22';
 
   @override

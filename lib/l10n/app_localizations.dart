@@ -2192,6 +2192,66 @@ abstract class AppLocalizations {
   /// **'Kalibrasyon Gerekli'**
   String get calibrationRequired;
 
+  /// No description provided for @qiblaAccuracyNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pusula yaklaşık yön gösterir; metal, mıknatıs ve elektronik cihazlar yönü saptırabilir.'**
+  String get qiblaAccuracyNote;
+
+  /// No description provided for @qiblaTipsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Doğru sonuç için'**
+  String get qiblaTipsTitle;
+
+  /// No description provided for @qiblaTipFlat.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonu yere paralel tutun.'**
+  String get qiblaTipFlat;
+
+  /// No description provided for @qiblaTipCalibrate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonunuzla havada \'8\' çizerek kalibre edin.'**
+  String get qiblaTipCalibrate;
+
+  /// No description provided for @qiblaTipMagneticCase.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mıknatıslı kılıf kullanıyorsanız çıkarın.'**
+  String get qiblaTipMagneticCase;
+
+  /// No description provided for @qiblaTipMetal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metal eşyalardan ve elektronik cihazlardan uzak durun.'**
+  String get qiblaTipMetal;
+
+  /// No description provided for @qiblaTipMosque.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mümkünse bir caminin kıble yönüyle karşılaştırın.'**
+  String get qiblaTipMosque;
+
+  /// No description provided for @qiblaAngleTrueNorth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble açısı: {angle}° (coğrafi kuzeyden)'**
+  String qiblaAngleTrueNorth(String angle);
+
+  /// No description provided for @qiblaDeclination.
+  ///
+  /// In tr, this message translates to:
+  /// **'Manyetik sapma: {deg}° (otomatik düzeltildi)'**
+  String qiblaDeclination(String deg);
+
+  /// No description provided for @qiblaInterferenceWarning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Manyetik parazit algılandı: telefonu metal eşyalardan, mıknatıslı kılıftan ve elektronik cihazlardan uzaklaştırın.'**
+  String get qiblaInterferenceWarning;
+
   /// No description provided for @gold22kGram.
   ///
   /// In tr, this message translates to:

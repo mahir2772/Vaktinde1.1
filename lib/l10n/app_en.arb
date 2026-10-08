@@ -537,6 +537,30 @@
     "turnLeft": "⬅ Turn left",
     "turnSlightLeft": "⬅ Turn slight left",
     "calibrationRequired": "Calibration Required",
+    "qiblaAccuracyNote": "The compass shows an approximate direction; metal, magnets and electronic devices can throw it off.",
+    "qiblaTipsTitle": "For an accurate result",
+    "qiblaTipFlat": "Hold the phone flat, parallel to the ground.",
+    "qiblaTipCalibrate": "Calibrate by drawing an '8' in the air with your phone.",
+    "qiblaTipMagneticCase": "Remove any magnetic phone case.",
+    "qiblaTipMetal": "Stay away from metal objects and electronic devices.",
+    "qiblaTipMosque": "If possible, compare with the qibla direction of a mosque.",
+    "qiblaAngleTrueNorth": "Qibla angle: {angle}° (from true north)",
+    "@qiblaAngleTrueNorth": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaDeclination": "Magnetic declination: {deg}° (corrected automatically)",
+    "@qiblaDeclination": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaInterferenceWarning": "Magnetic interference detected: move the phone away from metal objects, magnetic cases and electronic devices.",
     "gold22kGram": "22 Carat Gram Gold",
     "goldAtaToptan": "Ata Wholesale",
     "goldAtaCumhuriyet": "Ata Cumhuriyet",
