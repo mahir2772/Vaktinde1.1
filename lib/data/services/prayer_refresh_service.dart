@@ -73,6 +73,10 @@ class PrayerRefreshService {
   static const int alarmIdCount = _idDays * 12;
   static const String _alarmsDateKey = 'alarms_scheduled_date';
 
+  /// Kurulan farz ezanlarının ID → [alarmFingerprint] kaydı (eklentinin bekleyen
+  /// listesi saat/ayar vermez; geç ezanı korumadan önce karşılaştırılır)
+  static const String planMetaKey = 'alarm_plan_meta';
+
   /// Tam zamanlı izin yokken (Android 12) gecikmeli ezan vaktinden sonra bu süre
   /// bekleyebilir: pencere 1 saate kadar + Doze'da uygulamanın diğer gecikmeli
   /// alarmlarıyla 9 dk arayla sıra
@@ -396,41 +400,64 @@ class PrayerRefreshService {
   }
 
   /// Vakti son [lateWindow] içinde girmiş, açık farz ezanları (dün ve bugün): ID →
-  /// "Kıldım" yükü. Gecikmeli kurulmuş ezan bu sürede henüz çalmamış olabilir; aynı
-  /// yükle bekliyorsa yeniden kurulumda iptal edilmez. Güneş ve hatırlatmalar
-  /// korunmaz (yükleri yok; geç gelen hatırlatma da yanıltır).
-  static Map<int, String> recentlyDueEzans({
+  /// bugünkü ayarlarla kurulacak hali. Gecikmeli kurulmuş ezan bu sürede henüz
+  /// çalmamış olabilir; aynı yükle bekliyor ve kaydı ([alarmFingerprint]) aynıysa
+  /// yeniden kurulumda iptal edilmez. Güneş ve hatırlatmalar korunmaz (yükleri yok;
+  /// geç gelen hatırlatma da yanıltır).
+  static Map<int, PlannedAlarm> recentlyDueEzans({
     required PrayerTimesModel previous,
     required PrayerTimesModel today,
     required DateTime now,
+    required AppLocalizations loc,
     required Map<String, bool> onTimeAlarms,
+    required Map<String, String> selectedSounds,
+    required Map<String, bool> silentModeSettings,
+    RamadanCalendar? ramadan,
+    bool alarmStream = false,
   }) {
     final from = now.subtract(lateWindow);
-    final result = <int, String>{};
-    for (final (date, times) in [
-      (PrayerTracker.addDays(now, -1), previous),
-      (PrayerTracker.day(now), today),
-    ]) {
-      final map = timesMap(times);
-      for (final key in PrayerTracker.prayerKeys) {
-        if (onTimeAlarms[key] != true) continue;
-        final parts = map[key]!.split(':');
-        final time = DateTime(
-          date.year,
-          date.month,
-          date.day,
-          int.parse(parts[0]),
-          int.parse(parts[1]),
-        );
-        if (time.isBefore(now) && !time.isBefore(from)) {
-          result[alarmId(date, vakitKeys.indexOf(key))] = PrayerTracker.payload(
-            date,
-            key,
-          );
-        }
-      }
+    // Dünün başından itibaren iki günün tüm ezanları (geçmiş olsalar da)
+    final ezans = buildAlarmPlan(
+      days: [previous, today],
+      now: PrayerTracker.addDays(now, -1),
+      loc: loc,
+      onTimeAlarms: onTimeAlarms,
+      reminderAlarms: const {},
+      selectedSounds: selectedSounds,
+      selectedReminderSounds: const {},
+      silentModeSettings: silentModeSettings,
+      ramadan: ramadan,
+      alarmStream: alarmStream,
+    );
+    return {
+      for (final a in ezans)
+        if (a.payload != null && a.time.isBefore(now) && !a.time.isBefore(from))
+          a.id: a,
+    };
+  }
+
+  /// Kurulan ezanın kaydı: saat + ayarlar (ses, sessiz, alarm akışı, dil, gün).
+  /// Gövde yok: tam zamanlı/gecikmeli kip sadece metni değiştirir, ezan aynıdır.
+  static String alarmFingerprint(PlannedAlarm a) => [
+    a.time.millisecondsSinceEpoch,
+    a.title,
+    a.sound,
+    a.channelName,
+    a.alarmStream,
+    a.payload,
+  ].join('|');
+
+  // Okunamazsa boş: hiçbir geç ezan korunmaz (eski davranış, çift çalma olmaz)
+  static Map<int, String> _loadPlanMeta(SharedPreferences prefs) {
+    try {
+      final raw = prefs.getString(planMetaKey);
+      if (raw == null) return {};
+      return Map<String, dynamic>.from(
+        jsonDecode(raw),
+      ).map((k, v) => MapEntry(int.parse(k), v as String));
+    } catch (e) {
+      return {};
     }
-    return result;
   }
 
   static bool _isRamadanDay(RamadanCalendar? ramadan, DateTime date) {
@@ -743,19 +770,34 @@ class PrayerRefreshService {
       exact: exact,
     );
 
+    // Geç ezan sadece kurulduğu saat ve ayarlar bugün de aynıysa korunur (ince ayar,
+    // konum, ses, dil değiştiyse eskisi geç çalmasın; kayıt yoksa korunmaz)
+    final prefs = await SharedPreferences.getInstance();
+    final savedMeta = _loadPlanMeta(prefs);
+    final keep = <int, String>{
+      for (final MapEntry(key: id, value: alarm) in recentlyDueEzans(
+        previous: planDays.previous,
+        today: planDays.days.first,
+        now: now,
+        loc: loc,
+        onTimeAlarms: onTimeAlarms,
+        selectedSounds: selectedSounds,
+        silentModeSettings: silentModeSettings,
+        ramadan: ramadan,
+        alarmStream: alarmStream,
+      ).entries)
+        if (savedMeta[id] == alarmFingerprint(alarm)) id: alarm.payload!,
+    };
+
     final failures = _AlarmFailures();
     final cleanupOk = await _cancelUnplanned(
       (id) => id >= 0 && id < alarmIdCount,
       plan.map((a) => a.id).toSet(),
       failures,
-      keep: recentlyDueEzans(
-        previous: planDays.previous,
-        today: planDays.days.first,
-        now: now,
-        onTimeAlarms: onTimeAlarms,
-      ),
+      keep: keep,
     );
 
+    final meta = {for (final id in keep.keys) '$id': savedMeta[id]!};
     int succeeded = 0;
     for (final alarm in plan) {
       try {
@@ -772,9 +814,17 @@ class PrayerRefreshService {
           alarmStream: alarm.alarmStream,
         );
         succeeded++;
+        if (alarm.payload != null) {
+          meta['${alarm.id}'] = alarmFingerprint(alarm);
+        }
       } catch (e, st) {
         failures.add(e, st);
       }
+    }
+    try {
+      await prefs.setString(planMetaKey, jsonEncode(meta));
+    } catch (e, st) {
+      failures.add(e, st);
     }
     await failures.report('ezan alarmı', plan.length);
 
@@ -789,7 +839,6 @@ class PrayerRefreshService {
     // Hiçbiri kurulamadıysa (ya da iptaller yapılamadıysa) tarih yazılmaz: arka plan
     // görevi aynı gün yeniden dener
     if ((plan.isEmpty || succeeded > 0) && remindersOk && cleanupOk) {
-      final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_alarmsDateKey, _dateKey(now));
     }
   });

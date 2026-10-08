@@ -22,6 +22,7 @@ void main() {
     'alarms_scheduled_date': '2026-10-08',
     'qibla_calibration_dialog_seen': true,
     'exact_alarms_allowed': false,
+    'alarm_plan_meta': '{"52":"x"}',
   };
   final userData = <String, Object>{
     'language_code': 'tr',

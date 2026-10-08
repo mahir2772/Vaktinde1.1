@@ -42,6 +42,7 @@ class InstallGuard {
     'alarms_scheduled_date', // PrayerRefreshService: alarmların kurulduğu gün
     'qibla_calibration_dialog_seen', // QiblaView: pusula kalibrasyon penceresi
     'exact_alarms_allowed', // NotificationService: tam zamanlı alarm izni durumu
+    'alarm_plan_meta', // PrayerRefreshService: kurulu ezanların saat/ayar kaydı
   ];
 
   /// Testte platform kontrolünü aşmak için

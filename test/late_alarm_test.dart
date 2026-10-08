@@ -97,6 +97,10 @@ void main() {
     Map<String, bool>? onTime,
     Map<String, bool> reminders = const {},
     PrayerTimesModel? todayTimes,
+    Map<String, String> sounds = const {},
+    Map<String, bool> silent = const {},
+    bool alarmStream = false,
+    AppLocalizations? loc,
   }) async {
     calls.clear();
     final notifications = NotificationService();
@@ -106,12 +110,13 @@ void main() {
       clock: () => clock,
     ).rescheduleAlarms(
       todayTimes: todayTimes ?? timesOf(clock),
-      loc: tr,
+      loc: loc ?? tr,
       onTimeAlarms: onTime ?? allOn,
       reminderAlarms: reminders,
-      selectedSounds: const {},
+      selectedSounds: sounds,
       selectedReminderSounds: const {},
-      silentModeSettings: const {},
+      silentModeSettings: silent,
+      alarmStream: alarmStream,
     );
     return List.of(calls);
   }
@@ -208,18 +213,94 @@ void main() {
       expect(pendingIdOf(day, 'Öğle'), isNull);
     });
 
-    test('aynı ID\'de başka günün ezanı bekliyorsa (eski numaralama) korunmaz, '
-        'o gün çift çalmaz', () async {
+    test('aynı ID\'de güncelleme öncesinden kalan alarm (Play sürümü: yük boş; '
+        'ya da başka günün ezanı) korunmaz, çift çalmaz', () async {
       final ogle = at(day, timesOf(day).ogle!);
       final lateId = PrayerRefreshService.alarmId(day, 2);
       final tomorrow = PrayerTracker.addDays(day, 1);
-      pending[lateId] = (
-        payload: PrayerTracker.payload(tomorrow, 'Öğle'),
-        time: at(tomorrow, timesOf(tomorrow).ogle!).toIso8601String(),
+      for (final payload in ['', PrayerTracker.payload(tomorrow, 'Öğle')]) {
+        pending
+          ..clear()
+          ..[lateId] = (
+            payload: payload,
+            time: at(tomorrow, timesOf(tomorrow).ogle!).toIso8601String(),
+          );
+        await runAt(ogle.add(const Duration(minutes: 5)));
+        expect(pending.containsKey(lateId), isFalse, reason: payload);
+        expect(pendingIdOf(tomorrow, 'Öğle'), isNot(lateId));
+      }
+    });
+
+    test('ince ayarla vakit geçmişe alındıysa eski saatteki ezan iptal edilir '
+        '(geç çalmaz)', () async {
+      final ogle = at(day, timesOf(day).ogle!);
+      await runAt(DateTime(day.year, day.month, day.day, 9));
+      expect(pendingIdOf(day, 'Öğle'), isNotNull);
+
+      // Öğle 30 dk öne alındı: yeni vakit 20 dk önce, eski alarm 10 dk sonra
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('time_offsets', '{"Öğle": -30}');
+      await runAt(ogle.subtract(const Duration(minutes: 10)));
+      expect(pendingIdOf(day, 'Öğle'), isNull);
+    });
+
+    test('konum değişti (İstanbul → Van, Van\'ın öğlesi geçti): İstanbul '
+        'saatindeki ezan iptal edilir', () async {
+      final ogle = at(day, timesOf(day).ogle!);
+      await runAt(DateTime(day.year, day.month, day.day, 9));
+      expect(pendingIdOf(day, 'Öğle'), isNotNull);
+
+      final van = PrayerTimeService().calculate(38.49, 43.38, date: day);
+      final clock = ogle.subtract(const Duration(minutes: 5));
+      final vanOgle = at(day, van.ogle!);
+      expect(vanOgle.isBefore(clock), isTrue);
+      expect(
+        clock.difference(vanOgle),
+        lessThan(PrayerRefreshService.lateWindow),
       );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('saved_lat', 38.49);
+      await prefs.setDouble('saved_lng', 43.38);
+      await runAt(clock, todayTimes: van);
+      expect(pendingIdOf(day, 'Öğle'), isNull);
+    });
+
+    for (final (name, change) in <(String, Map<String, Object>)>[
+      ('ses', {'sounds': 'ezan2'}),
+      ('sadece yazılı', {'silent': true}),
+      ('sessiz modda da çal', {'alarmStream': true}),
+      ('dil', {'loc': 'en'}),
+    ]) {
+      test('geç ezanın ayarı değiştiyse ($name) eskisi iptal edilir', () async {
+        final ogle = at(day, timesOf(day).ogle!);
+        await runAt(DateTime(day.year, day.month, day.day, 9));
+        expect(pendingIdOf(day, 'Öğle'), isNotNull);
+
+        await runAt(
+          ogle.add(const Duration(minutes: 5)),
+          sounds: change['sounds'] == null
+              ? const {}
+              : {'Öğle': change['sounds'] as String},
+          silent: change['silent'] == true ? const {'Öğle': true} : const {},
+          alarmStream: change['alarmStream'] == true,
+          loc: change['loc'] == null
+              ? null
+              : lookupAppLocalizations(Locale(change['loc'] as String)),
+        );
+        expect(pendingIdOf(day, 'Öğle'), isNull);
+      });
+    }
+
+    test('kurulum kaydı yoksa (güncelleme / yedekten dönüş) geç ezan korunmaz, '
+        'iptal edilir', () async {
+      final ogle = at(day, timesOf(day).ogle!);
+      await runAt(DateTime(day.year, day.month, day.day, 9));
+      expect(pendingIdOf(day, 'Öğle'), isNotNull);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('alarm_plan_meta');
       await runAt(ogle.add(const Duration(minutes: 5)));
-      expect(pending.containsKey(lateId), isFalse);
-      expect(pendingIdOf(tomorrow, 'Öğle'), isNot(lateId));
+      expect(pendingIdOf(day, 'Öğle'), isNull);
     });
 
     test('geç kalan "vakit yaklaşıyor" hatırlatması korunmaz', () async {

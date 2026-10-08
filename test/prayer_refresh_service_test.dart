@@ -189,13 +189,20 @@ void main() {
       aksam: '18:59',
       yatsi: '23:30',
     );
+    Map<int, PlannedAlarm> dueAlarms(
+      DateTime now, {
+      Map<String, bool>? onTime,
+    }) => PrayerRefreshService.recentlyDueEzans(
+      previous: previous,
+      today: day,
+      now: now,
+      loc: loc,
+      onTimeAlarms: onTime ?? all(true),
+      selectedSounds: const {'Öğle': 'ezan3'},
+      silentModeSettings: all(false),
+    );
     Map<int, String> due(DateTime now, {Map<String, bool>? onTime}) =>
-        PrayerRefreshService.recentlyDueEzans(
-          previous: previous,
-          today: day,
-          now: now,
-          onTimeAlarms: onTime ?? all(true),
-        );
+        dueAlarms(now, onTime: onTime).map((k, v) => MapEntry(k, v.payload!));
 
     test('son 90 dk içinde vakti girmiş açık farz ezanı: ID → yük', () {
       expect(due(DateTime(2026, 3, 10, 13, 5)), {
@@ -218,6 +225,94 @@ void main() {
       final now = DateTime(2026, 3, 10, 13, 5);
       expect(due(now, onTime: {...all(true), 'Öğle': false}), isEmpty);
       expect(due(DateTime(2026, 3, 10, 6, 45)), isEmpty); // güneş 06:30
+    });
+
+    test('bugünkü ayarlarla kurulacak hali sabah kurulanla aynı kayıtta', () {
+      final morning = plan(dayCount: 5, now: DateTime(2026, 3, 10, 0, 1));
+      final scheduled = morning.firstWhere((a) => a.id == id(d0, 2));
+      final late = dueAlarms(DateTime(2026, 3, 10, 13, 5))[id(d0, 2)]!;
+      expect(
+        PrayerRefreshService.alarmFingerprint(late),
+        PrayerRefreshService.alarmFingerprint(scheduled),
+      );
+    });
+  });
+
+  group('Ezan kaydı (alarmFingerprint)', () {
+    final now = DateTime(2026, 3, 10, 0, 1);
+    String fingerprint(List<PlannedAlarm> p) => PrayerRefreshService
+        .alarmFingerprint(p.firstWhere((a) => a.id == id(d0, 0)));
+    final base = fingerprint(plan(dayCount: 1, now: now));
+
+    test('saat, ses, sessiz, alarm akışı ya da dil değişince değişir', () {
+      final shifted = PrayerTimesModel(
+        imsak: '04:30',
+        gunes: '06:30',
+        ogle: '13:00',
+        ikindi: '16:30',
+        aksam: '19:00',
+        yatsi: '20:30',
+      );
+      final variants = {
+        'saat': PrayerRefreshService.buildAlarmPlan(
+          days: [shifted],
+          now: now,
+          loc: loc,
+          onTimeAlarms: all(true),
+          reminderAlarms: const {},
+          selectedSounds: const {},
+          selectedReminderSounds: const {},
+          silentModeSettings: const {},
+        ),
+        'ses': PrayerRefreshService.buildAlarmPlan(
+          days: [day],
+          now: now,
+          loc: loc,
+          onTimeAlarms: all(true),
+          reminderAlarms: const {},
+          selectedSounds: const {'İmsak': 'ezan2'},
+          selectedReminderSounds: const {},
+          silentModeSettings: const {},
+        ),
+        'sessiz': plan(dayCount: 1, now: now, silent: true),
+        'dil': plan(
+          dayCount: 1,
+          now: now,
+          l10n: lookupAppLocalizations(const Locale('de')),
+        ),
+        'alarm akışı': PrayerRefreshService.buildAlarmPlan(
+          days: [day],
+          now: now,
+          loc: loc,
+          onTimeAlarms: all(true),
+          reminderAlarms: const {},
+          selectedSounds: const {},
+          selectedReminderSounds: const {},
+          silentModeSettings: const {},
+          alarmStream: true,
+        ),
+      };
+      for (final MapEntry(:key, :value) in variants.entries) {
+        expect(fingerprint(value), isNot(base), reason: key);
+      }
+    });
+
+    test('tam zamanlı / gecikmeli kip (sadece metin) değiştirmez', () {
+      final calendar = RamadanCalendar.fromReligiousDays([
+        {'name': 'Ramazan Başlangıcı', 'date': '19 Şubat 2026'},
+        {'name': 'Ramazan Bayramı 1. Gün', 'date': '20 Mart 2026'},
+      ]);
+      final exact = plan(dayCount: 1, now: now, ramadan: calendar);
+      final inexact = plan(
+        dayCount: 1,
+        now: now,
+        ramadan: calendar,
+        exact: false,
+      );
+      PlannedAlarm imsak(List<PlannedAlarm> p) =>
+          p.firstWhere((a) => a.id == id(d0, 0));
+      expect(imsak(exact).body, isNot(imsak(inexact).body));
+      expect(fingerprint(exact), fingerprint(inexact));
     });
   });
 

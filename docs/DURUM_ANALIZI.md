@@ -35,7 +35,7 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | A — ezan güvenilirliği | Tam zamanlı alarm izni yoksa (Android 12/12L'de "Alarmlar ve hatırlatıcılar" kapalı) ezan gecikmeli kiple kurulur (eskiden hiç kurulmuyordu); kurulum hataları yutulmaz (Crashlytics); izin değişince aynı gün yeniden kurulur; ana ekran + Alarmlar sekmesinde uyarı şeridi (bildirimler kapalı → "Aç", alarm izni kapalı → "İzin ver"); "Sessiz modda da çal" (ezan alarm ses seviyesinde, Android 8+) | `notification_service.dart`, `prayer_refresh_service.dart`, `alarm_health*.dart` |
 | B — widget'lar / güvenlik | Gün dönümü ve yatsı sonrası yarının imsakı, saat/dilim değişiminde hemen yeniden çizim, sağlayıcı başına tek alarm, seçicide ad/açıklama/önizleme, 30 dk yenileme; uygulama kilit ekranı üstünde açılmaz | `PrayerWidgetData.kt`, `res/xml/widget_info_*` |
 | C — gizlilik / izin / reklam / değerlendirme | Yedekten ya da başka telefondan gelen veride cihaza özgü bayraklar silinir (izin akışı yeni telefonda yeniden çalışır); analitikte konum ve vakit yok (tek kapı); Ayarlar reklamsız açılır; reklam içerik sınırı PG; 7 günlük tam seride bir kez uygulama içi değerlendirme | `install_guard.dart`, `app_analytics.dart`, `ad_consent.dart`, `streak_review.dart` |
-| İnceleme düzeltmeleri | İzin yokken widget/kalıcı bildirim yenilemesi uyandırmayan 10 dk pencereli alarmla (setAlarmClock hata veriyordu; Doze'da ezanın kotasını da yemez); gecikmiş (henüz çalmamış) ezan yeniden kurulumda iptal edilmez, üzerine yazılmaz (ID tarihe bağlı, son 90 dk); gecikmeli kipte hatırlatmalar "X dakika kaldı" yerine saatli; uyarı metni "yaklaşık 1 saate kadar, imsak/sahur dahil"; "Sessiz modda da çal" Android 7'de gizli | — |
+| İnceleme düzeltmeleri | İzin yokken widget/kalıcı bildirim yenilemesi uyandırmayan 10 dk pencereli alarmla (setAlarmClock hata veriyordu; Doze'da ezanın kotasını da yemez); gecikmiş (henüz çalmamış) ezan yeniden kurulumda iptal edilmez, üzerine yazılmaz (ID tarihe bağlı, son 90 dk; saati ve ayarları değiştiyse — ince ayar, konum, ses, dil — eskisi iptal); gecikmeli kipte hatırlatmalar "X dakika kaldı" yerine saatli; uyarı metni "yaklaşık 1 saate kadar, imsak/sahur dahil"; "Sessiz modda da çal" Android 7'de gizli | — |
 
 ## Ertelenenler
 - CollectAPI anahtarı: koda yazılamıyor; derlemede `--dart-define=COLLECT_API_KEY=...` verilmezse zekat ekranında canlı kur gelmez. Anahtar yenilenmeli (git geçmişinde açık).
@@ -54,7 +54,7 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | Zikirmatik | Çeviriler, görünür "Sayacı Düzenle", sıfırlama onayı, zikir listesi Arapça taşma hatası düzeldi |
 | Ayarlar | Dil ilk satır, gerçek sürüm, tutarlı satırlar, arka plan resminde okunur başlıklar |
 | Bağımlılık | story_view + upgrader kaldırıldı (16 paket az), package_info_plus doğrudan |
-- Test: 320 geçiyor (+10 ekran görüntüsü testi env ile). Ekran görüntüsü düzeneğinde tr/de/fr/ar, açık/koyu/arka plan, 320dp + %130'da düzen hatası yok.
+- Test: 330 geçiyor (+10 ekran görüntüsü testi env ile). Ekran görüntüsü düzeneğinde tr/de/fr/ar, açık/koyu/arka plan, 320dp + %130'da düzen hatası yok.
 - Kotlin (widget'lar, kalıcı bildirim, MainActivity) bulutta API 36 çerçevesine ve SDK'daki flutter.jar'a karşı derlendi, Robolectric testleri geçti (düzenek repo dışında); gerçek cihaz testinin yerini tutmaz.
 - AdMob: AB kullanıcıları için AdMob panelinde "Gizlilik ve mesajlaşma → GDPR mesajı" yayınlanmış olmalı; yoksa AB'de reklam gösterilmeyebilir (ertelendi, kullanıcı işi).
 
@@ -67,7 +67,7 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
   dilimdedir. Gün dönümü ve yatsı sonrası imsak artık doğru (`times_date` + `tomorrow_*`, `PrayerWidgetData.kt`).
 - 2029+ Ramazan/Kadir tarihleri `religious_days.json`'a eklenmezse hijri paketinden (±1 gün) gelir; kandiller düzeltilmiş.
 - Android 12/12L'de "Alarmlar ve hatırlatıcılar" kapatılırsa ezan ve hatırlatmalar yaklaşık 1 saate kadar gecikebilir (sistem sınırı;
-  uyarı şeridi gösterilir). Bu kipte hatırlatmalar saatli metinle gelir; gecikmiş farz ezanı 90 dk korunur, Güneş bildirimi ve
+  uyarı şeridi gösterilir). Bu kipte hatırlatmalar saatli metinle gelir; gecikmiş farz ezanı (saati/ayarı değişmediyse) 90 dk korunur, Güneş bildirimi ve
   hatırlatmalar korunmaz (yeniden kurulumda iptal). Android 13+ etkilenmez (USE_EXACT_ALARM).
 - "Sessiz modda da çal" Android 8+ (ses türü bildirim kanalıyla verilir); 7.x'te anahtar gösterilmez.
 - Pil optimizasyonu muafiyeti penceresi açılmaz: `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` manifest'ten çıkarıldı (1e9c763), permission_handler
