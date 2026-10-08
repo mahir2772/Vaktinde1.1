@@ -20,6 +20,7 @@ import 'data/services/notification_service.dart';
 import 'data/services/background_manager.dart';
 import 'data/services/prayer_refresh_service.dart';
 import 'features/onboarding/view/onboarding_language_view.dart';
+import 'features/onboarding/install_guard.dart';
 import 'features/common/theme_provider.dart';
 import 'features/zikirmatik/view_model/zikir_view_model.dart';
 import 'features/common/ad_helper.dart';
@@ -73,6 +74,13 @@ void main() async {
   } catch (e) {
     debugPrint("Firebase hatası: $e");
   }
+
+  // Yedekten / başka telefondan gelen kayıtlarda cihaza özgü bayraklar (izin
+  // akışı, pil sorusu, alarm günü) silinir; bayrakları okuyan her şeyden önce
+  await InstallGuard.run().timeout(
+    const Duration(seconds: 3),
+    onTimeout: () => InstallCheck.skipped,
+  );
 
   // Reklamlar AdMob rızası (UMP) alındıktan sonra başlar; açılışı bekletmez
   AdHelper.instance.loadInterstitialAd();
