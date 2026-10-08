@@ -176,6 +176,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exactAlarm => 'إشعار في الوقت المحدد';
 
   @override
+  String get alarmHealthExactOff =>
+      'إذن المنبّه معطّل: قد يتأخر الأذان بضع دقائق.';
+
+  @override
+  String get alarmHealthExactAction => 'سماح';
+
+  @override
+  String get alarmHealthNotificationsOff => 'الإشعارات معطّلة، لن يعمل الأذان.';
+
+  @override
+  String get alarmHealthNotificationsAction => 'تفعيل';
+
+  @override
+  String get ezanAlarmStreamTitle => 'التشغيل في الوضع الصامت أيضاً';
+
+  @override
+  String get ezanAlarmStreamSub =>
+      'يُرفع الأذان بمستوى صوت المنبّه حتى عندما يكون الهاتف صامتاً.';
+
+  @override
+  String channelAlarmSound(String soundName) {
+    return 'الصوت: $soundName (حتى في الوضع الصامت)';
+  }
+
+  @override
   String get exactAlarmSub => 'يرسل إشعاراً.';
 
   @override

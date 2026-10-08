@@ -11,6 +11,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../models/hadith_model.dart';
 import '../models/prayer_times_model.dart';
 import 'ayah_service.dart';
+import 'error_reporter.dart';
 import 'hadith_service.dart';
 import 'notification_service.dart';
 import 'prayer_time_service.dart';
@@ -30,6 +31,7 @@ class PlannedAlarm {
   final String channelName;
   final String? payload; // "Kıldım" aksiyonu için tarih + vakit
   final String? actionLabel; // null: aksiyon butonu yok
+  final bool alarmStream; // "sessiz modda da çal" (sadece sesli ezan)
 
   const PlannedAlarm({
     required this.id,
@@ -40,6 +42,7 @@ class PlannedAlarm {
     required this.channelName,
     this.payload,
     this.actionLabel,
+    this.alarmStream = false,
   });
 }
 
@@ -223,6 +226,8 @@ class PrayerRefreshService {
   /// Ezan (çift ID) ve hatırlatma (tek ID) planı; gün başına 12 ID.
   /// [days] bugünden başlayan günlerin vakitleri. Tek gün varsa geçmiş vakit yarına kayar.
   /// [ramadan] verilirse Ramazan günlerinde imsak/akşam ezanı sahur/iftar metniyle gelir.
+  /// [alarmStream] ("sessiz modda da çal") sadece sesli ezanı alarm kanalına alır;
+  /// hatırlatmalar ve sessiz (yazılı) bildirimler değişmez.
   static List<PlannedAlarm> buildAlarmPlan({
     required List<PrayerTimesModel> days,
     required DateTime now,
@@ -233,6 +238,7 @@ class PrayerRefreshService {
     required Map<String, String> selectedReminderSounds,
     required Map<String, bool> silentModeSettings,
     RamadanCalendar? ramadan,
+    bool alarmStream = false,
   }) {
     final vakitDisplayNames = vakitNames(loc);
     final plan = <PlannedAlarm>[];
@@ -275,6 +281,7 @@ class PrayerRefreshService {
               body = loc.ramadanIftarBody(vakitDisplayName);
             }
           }
+          final onAlarmStream = alarmStream && soundToSend != null;
           plan.add(
             PlannedAlarm(
               id: idCounter,
@@ -282,13 +289,16 @@ class PrayerRefreshService {
               body: body,
               time: vakitDate,
               sound: soundToSend,
-              channelName: soundToSend != null
-                  ? loc.channelSoundPrefix(soundToSend)
-                  : loc.channelSilentPrayers,
+              channelName: soundToSend == null
+                  ? loc.channelSilentPrayers
+                  : (onAlarmStream
+                        ? loc.channelAlarmSound(soundToSend)
+                        : loc.channelSoundPrefix(soundToSend)),
               payload: tracked
                   ? PrayerTracker.payload(vakitDate, vakitLogicKey)
                   : null,
               actionLabel: tracked ? loc.trackerPrayedAction : null,
+              alarmStream: onAlarmStream,
             ),
           );
         }
@@ -446,13 +456,14 @@ class PrayerRefreshService {
 
   /// "Vakit çıkıyor" hatırlatmalarını ayara ve takip kaydına göre eşitler (sadece
   /// 100-124): plandan çıkan bekleyenler iptal, plandakiler aynı ID'nin üzerine kurulur.
-  /// Ayar kapalıysa hepsi iptal edilir. Hata fırlatmaz.
+  /// Ayar kapalıysa hepsi iptal edilir. Hata fırlatmaz (Crashlytics'e bildirilir).
   Future<void> syncEndReminders({
     required PrayerTimesModel todayTimes,
     required AppLocalizations loc,
   }) => _serializeAlarms(() async {
     final now = DateTime.now();
     try {
+      await _notifications.refreshExactAlarmPermission();
       final planDays = await _planDays(todayTimes, now);
       await _syncEndReminders(
         previous: planDays.previous,
@@ -460,17 +471,22 @@ class PrayerRefreshService {
         now: now,
         loc: loc,
       );
-    } catch (e) {}
+    } catch (e, st) {
+      await reportNonFatal(
+        e,
+        st,
+        reason: 'vakit çıkış hatırlatmaları eşitlenemedi',
+      );
+    }
   });
 
-  /// Plan boşsa ya da en az bir hatırlatma kurulduysa true
+  /// Plan boşsa ya da en az bir hatırlatma kurulduysa (ve iptaller yapılabildiyse) true
   Future<bool> _syncEndReminders({
     required PrayerTimesModel previous,
     required List<PrayerTimesModel> days,
     required DateTime now,
     required AppLocalizations loc,
   }) => PrayerTrackerService.runExclusive(() async {
-    int succeeded = 0;
     List<PlannedAlarm> plan = const [];
     try {
       // Plan çıkarılamazsa (okuma hatası) kurulu hatırlatmalara dokunulmaz
@@ -485,29 +501,38 @@ class PrayerRefreshService {
           prayerLog: await _storageService.loadPrayerLog(),
         );
       }
-      final plannedIds = plan.map((a) => a.id).toSet();
-      for (final id in await _notifications.pendingIds()) {
-        if (PrayerTracker.isEndReminderId(id) && !plannedIds.contains(id)) {
-          await _notifications.cancel(id);
-        }
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'vakit çıkış planı okunamadı');
+      return false;
+    }
+    final failures = _AlarmFailures();
+    final cleanupOk = await _cancelUnplanned(
+      PrayerTracker.isEndReminderId,
+      plan.map((a) => a.id).toSet(),
+      failures,
+    );
+    int succeeded = 0;
+    for (final alarm in plan) {
+      try {
+        await _notifications.scheduleEndReminder(
+          id: alarm.id,
+          title: alarm.title,
+          body: alarm.body,
+          scheduledTime: alarm.time,
+          localizedChannelName: alarm.channelName,
+          actionLabel: alarm.actionLabel!,
+          payload: alarm.payload!,
+        );
+        succeeded++;
+      } catch (e, st) {
+        failures.add(e, st);
       }
-      for (final alarm in plan) {
-        try {
-          await _notifications.scheduleEndReminder(
-            id: alarm.id,
-            title: alarm.title,
-            body: alarm.body,
-            scheduledTime: alarm.time,
-            localizedChannelName: alarm.channelName,
-            actionLabel: alarm.actionLabel!,
-            payload: alarm.payload!,
-          );
-          succeeded++;
-        } catch (e) {}
-      }
-      // Bu arada bildirimden "Kıldım" denmiş olabilir (ayrı isolate): o vaktin
-      // yeniden kurulan hatırlatması iptal edilir
-      if (plan.isNotEmpty) {
+    }
+    // Bu arada bildirimden "Kıldım" denmiş olabilir (ayrı isolate): o vaktin
+    // yeniden kurulan hatırlatması iptal edilir
+    var recheckOk = true;
+    if (plan.isNotEmpty) {
+      try {
         final fresh = await _storageService.loadPrayerLog();
         for (final alarm in plan) {
           final target = PrayerTracker.parsePayload(alarm.payload);
@@ -516,12 +541,42 @@ class PrayerRefreshService {
             await _notifications.cancel(alarm.id);
           }
         }
+      } catch (e, st) {
+        recheckOk = false;
+        failures.add(e, st);
       }
-    } catch (e) {
+    }
+    await failures.report('vakit çıkış hatırlatması', plan.length);
+    return cleanupOk && recheckOk && (plan.isEmpty || succeeded > 0);
+  });
+
+  // Plandan çıkan bekleyen (henüz çalmamış) bildirimler iptal edilir; çekmecedekilere
+  // dokunulmaz. false: temizlik tamamlanamadı (gün kaydedilmez, yeniden denenir).
+  // Okuma hatası kurulumu engellemez.
+  Future<bool> _cancelUnplanned(
+    bool Function(int id) inRange,
+    Set<int> plannedIds,
+    _AlarmFailures failures,
+  ) async {
+    final Set<int> pending;
+    try {
+      pending = await _notifications.pendingIds();
+    } catch (e, st) {
+      failures.add(e, st);
       return false;
     }
-    return plan.isEmpty || succeeded > 0;
-  });
+    var ok = true;
+    for (final id in pending) {
+      if (!inRange(id) || plannedIds.contains(id)) continue;
+      try {
+        await _notifications.cancel(id);
+      } catch (e, st) {
+        ok = false;
+        failures.add(e, st);
+      }
+    }
+    return ok;
+  }
 
   // Uygulama içinde alarm kurma işleri üst üste binmez (iptal/kur sırası karışmasın).
   // Arka plan görevi ayrı isolate'tedir.
@@ -534,7 +589,8 @@ class PrayerRefreshService {
   /// yoksa sadece [todayTimes] ile 1 gün.
   /// Toplu iptal yok: aynı ID'nin üzerine yazılır, sadece plandan çıkan bekleyen (henüz
   /// çalmamış) alarmlar iptal edilir → ekrandaki ezan bildirimi ve "Kıldım" butonu silinmez,
-  /// alarmda boşluk olmaz.
+  /// alarmda boşluk olmaz. Tam zamanlı alarm izni yoksa gecikmeli kiple kurulur.
+  /// Kurulamayan alarm diğerlerini durdurmaz; tur sonunda Crashlytics'e bildirilir.
   Future<void> rescheduleAlarms({
     required PrayerTimesModel todayTimes,
     required AppLocalizations loc,
@@ -543,8 +599,10 @@ class PrayerRefreshService {
     required Map<String, String> selectedSounds,
     required Map<String, String> selectedReminderSounds,
     required Map<String, bool> silentModeSettings,
+    bool alarmStream = false,
   }) => _serializeAlarms(() async {
     final now = DateTime.now();
+    await _notifications.refreshExactAlarmPermission();
     final planDays = await _planDays(todayTimes, now);
     final ramadan = await _ramadanCalendar();
     final plan = buildAlarmPlan(
@@ -557,14 +615,15 @@ class PrayerRefreshService {
       selectedReminderSounds: selectedReminderSounds,
       silentModeSettings: silentModeSettings,
       ramadan: ramadan,
+      alarmStream: alarmStream,
     );
 
-    final plannedIds = plan.map((a) => a.id).toSet();
-    for (final id in await _notifications.pendingIds()) {
-      if (id >= 0 && id < alarmDays * 12 && !plannedIds.contains(id)) {
-        await _notifications.cancel(id);
-      }
-    }
+    final failures = _AlarmFailures();
+    final cleanupOk = await _cancelUnplanned(
+      (id) => id >= 0 && id < alarmDays * 12,
+      plan.map((a) => a.id).toSet(),
+      failures,
+    );
 
     int succeeded = 0;
     for (final alarm in plan) {
@@ -579,10 +638,14 @@ class PrayerRefreshService {
           localizedTicker: loc.tickerEzan,
           payload: alarm.payload,
           actionLabel: alarm.actionLabel,
+          alarmStream: alarm.alarmStream,
         );
         succeeded++;
-      } catch (e) {}
+      } catch (e, st) {
+        failures.add(e, st);
+      }
     }
+    await failures.report('ezan alarmı', plan.length);
 
     final remindersOk = await _syncEndReminders(
       previous: planDays.previous,
@@ -591,14 +654,16 @@ class PrayerRefreshService {
       loc: loc,
     );
 
-    // Hiçbiri kurulamadıysa tarih yazılmaz: arka plan görevi aynı gün yeniden dener
-    if ((plan.isEmpty || succeeded > 0) && remindersOk) {
+    // Hiçbiri kurulamadıysa (ya da iptaller yapılamadıysa) tarih yazılmaz: arka plan
+    // görevi aynı gün yeniden dener
+    if ((plan.isEmpty || succeeded > 0) && remindersOk && cleanupOk) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_alarmsDateKey, _dateKey(now));
     }
   });
 
-  /// Günlük ayet (10:00, ID 1000) ve hadis (19:00, ID 1900) bildirimi
+  /// Günlük ayet (10:00, ID 1000) ve hadis (19:00, ID 1900) bildirimi.
+  /// Biri kurulamazsa diğeri yine kurulur; hata Crashlytics'e bildirilir.
   Future<void> scheduleDailyContent({
     required String localeName,
     AyahModel? ayah,
@@ -609,29 +674,41 @@ class PrayerRefreshService {
           ? "Günün Ayeti"
           : "Ayah of the Day";
       String content = "${ayah.arabicText}\n\n${ayah.translatedText}";
-      await _notifications.scheduleDailyContent(
-        id: 1000,
-        title: title,
-        body: content,
-        hour: 10,
-        minute: 0,
-        channelId: 'daily_ayah_channel',
-        channelName: 'Günlük Ayet',
-      );
+      try {
+        await _notifications.scheduleDailyContent(
+          id: 1000,
+          title: title,
+          body: content,
+          hour: 10,
+          minute: 0,
+          channelId: 'daily_ayah_channel',
+          channelName: 'Günlük Ayet',
+        );
+      } catch (e, st) {
+        await reportNonFatal(e, st, reason: 'günün ayeti bildirimi kurulamadı');
+      }
     }
     if (hadith != null && hadith.content != null) {
       String title = localeName.startsWith('tr')
           ? "Günün Hadisi"
           : "Hadith of the Day";
-      await _notifications.scheduleDailyContent(
-        id: 1900,
-        title: title,
-        body: hadith.content!,
-        hour: 19,
-        minute: 0,
-        channelId: 'daily_hadith_channel',
-        channelName: 'Günlük Hadis',
-      );
+      try {
+        await _notifications.scheduleDailyContent(
+          id: 1900,
+          title: title,
+          body: hadith.content!,
+          hour: 19,
+          minute: 0,
+          channelId: 'daily_hadith_channel',
+          channelName: 'Günlük Hadis',
+        );
+      } catch (e, st) {
+        await reportNonFatal(
+          e,
+          st,
+          reason: 'günün hadisi bildirimi kurulamadı',
+        );
+      }
     }
   }
 
@@ -700,7 +777,17 @@ class PrayerRefreshService {
       );
 
       await service._notifications.init();
-      if (prefs.getString(_alarmsDateKey) != _dateKey(now)) {
+      // Tam zamanlı alarm izni değiştiyse (açıldı/kapatıldı) alarmlar aynı gün de
+      // yeni kiple yeniden kurulur (izin kapatılınca sistem kurulu alarmları siler)
+      final exactBefore = prefs.getBool(
+        NotificationService.exactAlarmsAllowedKey,
+      );
+      final exactNow = await service._notifications
+          .refreshExactAlarmPermission();
+      final permissionChanged =
+          exactBefore != null && exactNow != null && exactBefore != exactNow;
+      if (prefs.getString(_alarmsDateKey) != _dateKey(now) ||
+          permissionChanged) {
         final settings = await service._storageService.loadSettings();
         await service.rescheduleAlarms(
           todayTimes: times,
@@ -710,12 +797,38 @@ class PrayerRefreshService {
           selectedSounds: settings['sounds'],
           selectedReminderSounds: settings['reminderSounds'],
           silentModeSettings: settings['silentMode'],
+          alarmStream: settings['alarmStream'] == true,
         );
       }
       await service._topUpDailyContent(loc);
       return true;
-    } catch (e) {
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'arka plan yenilemesi başarısız');
       return false;
     }
+  }
+}
+
+/// Bir kurulum turundaki hatalar: tek tek yutulmaz, tur sonunda tek kayıtla
+/// Crashlytics'e bildirilir (her alarm için ayrı kayıt gürültü olur)
+class _AlarmFailures {
+  int count = 0;
+  Object? _first;
+  StackTrace? _firstStack;
+
+  void add(Object error, StackTrace stack) {
+    count++;
+    _first ??= error;
+    _firstStack ??= stack;
+  }
+
+  Future<void> report(String what, int planned) async {
+    final first = _first;
+    if (first == null) return;
+    await reportNonFatal(
+      first,
+      _firstStack,
+      reason: '$what kurulumu: $count hata, $planned planlı',
+    );
   }
 }

@@ -52,6 +52,20 @@
     "aksam": "Maghrib",
     "yatsi": "Isha",
     "exactAlarm": "Notifier à l'heure exacte",
+    "alarmHealthExactOff": "Autorisation d'alarme désactivée : l'adhan peut avoir quelques minutes de retard.",
+    "alarmHealthExactAction": "Autoriser",
+    "alarmHealthNotificationsOff": "Les notifications sont désactivées, l'adhan ne retentira pas.",
+    "alarmHealthNotificationsAction": "Activer",
+    "ezanAlarmStreamTitle": "Jouer aussi en mode silencieux",
+    "ezanAlarmStreamSub": "L'adhan retentit au volume de l'alarme, même si le téléphone est en mode silencieux.",
+    "channelAlarmSound": "Son : {soundName} (même en silencieux)",
+    "@channelAlarmSound": {
+        "placeholders": {
+            "soundName": {
+                "type": "String"
+            }
+        }
+    },
     "exactAlarmSub": "Envoie une notification.",
     "silentNotif": "Notification textuelle uniquement",
     "silentNotifSub": "Ni adhan ni son, uniquement une alerte visuelle.",

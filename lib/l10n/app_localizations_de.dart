@@ -180,6 +180,32 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exactAlarm => 'Pünktlich benachrichtigen';
 
   @override
+  String get alarmHealthExactOff =>
+      'Ohne Wecker-Berechtigung kann der Adhan einige Minuten zu spät kommen.';
+
+  @override
+  String get alarmHealthExactAction => 'Erlauben';
+
+  @override
+  String get alarmHealthNotificationsOff =>
+      'Benachrichtigungen sind aus, der Adhan ertönt nicht.';
+
+  @override
+  String get alarmHealthNotificationsAction => 'Aktivieren';
+
+  @override
+  String get ezanAlarmStreamTitle => 'Auch im Lautlos-Modus abspielen';
+
+  @override
+  String get ezanAlarmStreamSub =>
+      'Der Adhan ertönt in der Lautstärke des Weckers, auch wenn das Telefon stumm ist.';
+
+  @override
+  String channelAlarmSound(String soundName) {
+    return 'Ton: $soundName (auch lautlos)';
+  }
+
+  @override
   String get exactAlarmSub => 'Sendet eine Benachrichtigung.';
 
   @override

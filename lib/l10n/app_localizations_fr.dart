@@ -181,6 +181,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get exactAlarm => 'Notifier à l\'heure exacte';
 
   @override
+  String get alarmHealthExactOff =>
+      'Autorisation d\'alarme désactivée : l\'adhan peut avoir quelques minutes de retard.';
+
+  @override
+  String get alarmHealthExactAction => 'Autoriser';
+
+  @override
+  String get alarmHealthNotificationsOff =>
+      'Les notifications sont désactivées, l\'adhan ne retentira pas.';
+
+  @override
+  String get alarmHealthNotificationsAction => 'Activer';
+
+  @override
+  String get ezanAlarmStreamTitle => 'Jouer aussi en mode silencieux';
+
+  @override
+  String get ezanAlarmStreamSub =>
+      'L\'adhan retentit au volume de l\'alarme, même si le téléphone est en mode silencieux.';
+
+  @override
+  String channelAlarmSound(String soundName) {
+    return 'Son : $soundName (même en silencieux)';
+  }
+
+  @override
   String get exactAlarmSub => 'Envoie une notification.';
 
   @override

@@ -1,4 +1,6 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:io';
@@ -9,6 +11,162 @@ import 'prayer_tracker_service.dart';
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
+  /// Son bilinen tam zamanlı alarm izni (arayüz uyarısı ve arka plan görevi okur)
+  static const String exactAlarmsAllowedKey = 'exact_alarms_allowed';
+
+  /// İzin yokken alarmClock kurulumunda eklentinin döndürdüğü hata kodu
+  static const String exactAlarmsDeniedCode = 'exact_alarms_not_permitted';
+
+  // Bu nesnede bilinen izin durumu; null: bilinmiyor (önce tam zamanlı denenir)
+  bool? _exactAllowed;
+
+  AndroidFlutterLocalNotificationsPlugin? get _android => _notificationsPlugin
+      .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >();
+
+  /// İzin varsa (ya da bilinmiyorsa) alarmClock: tam vaktinde. Yoksa
+  /// inexactAllowWhileIdle: gecikebilir ama yine çalar (alarmClock hiç kurulmaz).
+  static AndroidScheduleMode scheduleModeFor(bool? exactAllowed) =>
+      exactAllowed == false
+      ? AndroidScheduleMode.inexactAllowWhileIdle
+      : AndroidScheduleMode.alarmClock;
+
+  /// Ezan/hatırlatma kanalı. Android'de kanalın sesi ve ses türü sonradan
+  /// değişmez: "sessiz modda da çal" için ayrı "alarm_" kanalları (alarm ses
+  /// akışı); eski kanallar kapalı hali için kalır. Sesi olmayan bildirim etkilenmez.
+  static ({String id, AudioAttributesUsage usage}) prayerChannel(
+    String? soundName, {
+    bool alarmStream = false,
+  }) {
+    if (soundName == null) {
+      return (
+        id: 'channel_silent_prayer',
+        usage: AudioAttributesUsage.notification,
+      );
+    }
+    if (alarmStream) {
+      return (
+        id: 'alarm_channel_$soundName',
+        usage: AudioAttributesUsage.alarm,
+      );
+    }
+    return (id: 'channel_$soundName', usage: AudioAttributesUsage.notification);
+  }
+
+  /// Android 12+ "Alarmlar ve hatırlatıcılar" izni (11 ve altında eklenti hep
+  /// true döner). Belirlenemezse (Android değil / kanal hatası) null.
+  Future<bool?> canScheduleExactAlarms() async {
+    try {
+      return await _android?.canScheduleExactNotifications();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Kurulumdan önce: izin okunur, bu nesnede ve kalıcı olarak saklanır.
+  /// Okunamazsa önceki bilgi korunur.
+  Future<bool?> refreshExactAlarmPermission() async {
+    final allowed = await canScheduleExactAlarms();
+    if (allowed != null) {
+      _exactAllowed = allowed;
+      await _saveExactAllowed(allowed);
+    }
+    return allowed;
+  }
+
+  static Future<void> _saveExactAllowed(bool allowed) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(exactAlarmsAllowedKey, allowed);
+    } catch (e) {
+      // Kayıt sadece uyarı içindir; kurulumu durdurmaz
+    }
+  }
+
+  /// Son kurulumda görülen izin (canlı sorgu yapılamazsa arayüz bunu kullanır)
+  static Future<bool?> lastKnownExactAllowed() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(exactAlarmsAllowedKey);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Uygulama bildirimleri açık mı (Android 13+ bildirim izni dahil); bilinmiyorsa null
+  Future<bool?> notificationsEnabled() async {
+    try {
+      return await _android?.areNotificationsEnabled();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Android 12+: sistemin "Alarmlar ve hatırlatıcılar" ekranı açılır; dönünce
+  /// izin durumu gelir. Hata/başka platformda null.
+  Future<bool?> requestExactAlarmPermission() async {
+    try {
+      return await _android?.requestExactAlarmsPermission();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Android 13+ bildirim izni penceresi (12 ve altında pencere yok, mevcut
+  /// durum döner). Hata/başka platformda null.
+  Future<bool?> requestNotificationPermission() async {
+    try {
+      return await _android?.requestNotificationsPermission();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Tam zamanlı izin yoksa gecikmeli kip. İzin sorgulanamadıysa ya da kurulum
+  // sırasında geri alındıysa alarmClock reddedilir: aynı bildirim gecikmeli kurulur.
+  Future<void> _zonedSchedule(
+    int id,
+    String title,
+    String body,
+    tz.TZDateTime scheduledDate,
+    NotificationDetails details, {
+    String? payload,
+  }) async {
+    final mode = scheduleModeFor(_exactAllowed);
+    try {
+      await _notificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        scheduledDate,
+        details,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidScheduleMode: mode,
+        payload: payload,
+      );
+    } on PlatformException catch (e) {
+      if (e.code != exactAlarmsDeniedCode ||
+          mode != AndroidScheduleMode.alarmClock) {
+        rethrow;
+      }
+      _exactAllowed = false;
+      await _saveExactAllowed(false);
+      await _notificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        scheduledDate,
+        details,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        payload: payload,
+      );
+    }
+  }
 
   Future<void> init() async {
     tz.initializeTimeZones();
@@ -79,25 +237,24 @@ class NotificationService {
     required String localizedTicker,
     String? payload,
     String? actionLabel, // verilirse "Kıldım" butonu eklenir
+    bool alarmStream = false, // "sessiz modda da çal": alarm ses akışı (ezan)
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
-    String channelId = soundName != null
-        ? 'channel_$soundName'
-        : 'channel_silent_prayer';
+    final channel = prayerChannel(soundName, alarmStream: alarmStream);
 
     bool playSound = soundName != null;
     RawResourceAndroidNotificationSound? soundSource = soundName != null
         ? RawResourceAndroidNotificationSound(soundName)
         : null;
 
-    await _notificationsPlugin.zonedSchedule(
+    await _zonedSchedule(
       id,
       title,
       body,
       tz.TZDateTime.from(scheduledTime, tz.local),
       NotificationDetails(
         android: AndroidNotificationDetails(
-          channelId,
+          channel.id,
           localizedChannelName,
           importance: Importance.max,
           priority: Priority.high,
@@ -106,6 +263,7 @@ class NotificationService {
           icon: '@mipmap/launcher_icon',
           sound: soundSource,
           enableVibration: true,
+          audioAttributesUsage: channel.usage,
           actions: actionLabel != null ? [prayedAction(actionLabel)] : null,
         ),
         iOS: DarwinNotificationDetails(
@@ -113,9 +271,6 @@ class NotificationService {
           sound: soundName != null ? '$soundName.mp3' : null,
         ),
       ),
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      androidScheduleMode: AndroidScheduleMode.alarmClock,
       payload: payload,
     );
   }
@@ -131,7 +286,7 @@ class NotificationService {
     required String payload,
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
-    await _notificationsPlugin.zonedSchedule(
+    await _zonedSchedule(
       id,
       title,
       body,
@@ -147,9 +302,6 @@ class NotificationService {
         ),
         iOS: const DarwinNotificationDetails(),
       ),
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      androidScheduleMode: AndroidScheduleMode.alarmClock,
       payload: payload,
     );
   }
@@ -244,7 +396,7 @@ class NotificationService {
           htmlFormatContentTitle: false,
         );
 
-    await _notificationsPlugin.zonedSchedule(
+    await _zonedSchedule(
       id,
       title,
       body,
@@ -260,9 +412,6 @@ class NotificationService {
         ),
         iOS: const DarwinNotificationDetails(),
       ),
-      androidScheduleMode: AndroidScheduleMode.alarmClock,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

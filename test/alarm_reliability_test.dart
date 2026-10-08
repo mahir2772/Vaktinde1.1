@@ -1,0 +1,462 @@
+import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/error_reporter.dart';
+import 'package:ezan_saati/data/services/notification_service.dart';
+import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
+import 'package:ezan_saati/data/services/prayer_time_service.dart';
+import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// Ezan güvenilirliği: tam zamanlı alarm izni yoksa gecikmeli kip, hataların
+// yutulmaması/bildirilmesi, "sessiz modda da çal" kanalları
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  const notifChannel = MethodChannel(
+    'dexterous.com/flutter/local_notifications',
+  );
+
+  late List<MethodCall> notifCalls;
+  late List<int> pending;
+  // Eklentinin yanıtı: bool, null ya da fırlatılacak hata
+  late Object? canScheduleExact;
+  late Set<int> failIds;
+  late bool rejectAlarmClock; // izin yokken eklentinin alarmClock reddi
+  late bool failPending;
+
+  Object? answer(Object? value) {
+    if (value is Exception) throw value;
+    return value;
+  }
+
+  setUp(() {
+    AndroidFlutterLocalNotificationsPlugin.registerWith();
+    notifCalls = [];
+    pending = [];
+    canScheduleExact = true;
+    failIds = {};
+    rejectAlarmClock = false;
+    failPending = false;
+    messenger.setMockMethodCallHandler(
+      const MethodChannel('flutter_timezone'),
+      (call) async => 'Europe/Istanbul',
+    );
+    messenger.setMockMethodCallHandler(
+      const MethodChannel('home_widget'),
+      (call) async => true,
+    );
+    messenger.setMockMethodCallHandler(notifChannel, (call) async {
+      notifCalls.add(call);
+      switch (call.method) {
+        case 'initialize':
+          return true;
+        case 'canScheduleExactNotifications':
+          return answer(canScheduleExact);
+        case 'zonedSchedule':
+          final id = call.arguments['id'] as int;
+          final mode = call.arguments['platformSpecifics']['scheduleMode'];
+          if (failIds.contains(id)) {
+            throw PlatformException(code: 'error', message: 'kurulamadı');
+          }
+          if (rejectAlarmClock && mode == 'alarmClock') {
+            throw PlatformException(
+              code: 'exact_alarms_not_permitted',
+              message: 'Exact alarms are not permitted',
+            );
+          }
+          pending.add(id);
+          return null;
+        case 'cancel':
+          pending.remove(call.arguments['id']);
+          return null;
+        case 'pendingNotificationRequests':
+          if (failPending) throw PlatformException(code: 'error');
+          return [
+            for (final id in pending)
+              {'id': id, 'title': '', 'body': '', 'payload': ''},
+          ];
+        default:
+          return null;
+      }
+    });
+  });
+
+  tearDown(() {
+    messenger.setMockMethodCallHandler(notifChannel, null);
+  });
+
+  final tr = lookupAppLocalizations(const Locale('tr'));
+  final today = DateTime.now().toIso8601String().split('T')[0];
+
+  Iterable<MethodCall> scheduleCalls() =>
+      notifCalls.where((c) => c.method == 'zonedSchedule');
+  Set<String> modes() => {
+    for (final c in scheduleCalls())
+      c.arguments['platformSpecifics']['scheduleMode'] as String,
+  };
+  Map<String, Object> basePrefs([Map<String, Object> extra = const {}]) => {
+    'saved_lat': 41.0,
+    'saved_lng': 29.0,
+    'saved_city': 'İstanbul',
+    'language_code': 'tr',
+    'onTime_Öğle': true,
+    'reminder_Akşam': true,
+    'end_reminder_enabled': true,
+    ...extra,
+  };
+
+  group('Zamanlama kipi', () {
+    test('izin var/yok/bilinmiyor → alarmClock / gecikmeli / alarmClock', () {
+      expect(
+        NotificationService.scheduleModeFor(true),
+        AndroidScheduleMode.alarmClock,
+      );
+      expect(
+        NotificationService.scheduleModeFor(false),
+        AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+      expect(
+        NotificationService.scheduleModeFor(null),
+        AndroidScheduleMode.alarmClock,
+      );
+    });
+
+    for (final allowed in [true, false]) {
+      test('arka plan görevi: izin ${allowed ? 'var' : 'yok'} → '
+          '${allowed ? 'alarmClock' : 'inexactAllowWhileIdle'} '
+          '(ezan, hatırlatma, vakit çıkış)', () async {
+        SharedPreferences.setMockInitialValues(basePrefs());
+        canScheduleExact = allowed;
+        expect(await PrayerRefreshService.runHeadless(), isTrue);
+
+        final ids = scheduleCalls().map((c) => c.arguments['id'] as int);
+        expect(ids.where((id) => id < 60 && id % 2 == 0), isNotEmpty); // ezan
+        expect(
+          ids.where((id) => id < 60 && id.isOdd),
+          isNotEmpty,
+        ); // hatırlatma
+        expect(ids.where(PrayerTracker.isEndReminderId), isNotEmpty);
+        expect(modes(), {allowed ? 'alarmClock' : 'inexactAllowWhileIdle'});
+        final prefs = await SharedPreferences.getInstance();
+        expect(
+          prefs.getBool(NotificationService.exactAlarmsAllowedKey),
+          allowed,
+        );
+        expect(prefs.getString('alarms_scheduled_date'), today);
+      });
+    }
+
+    test('uygulama içi kurulum da izni kurulumdan önce okur', () async {
+      SharedPreferences.setMockInitialValues(basePrefs());
+      canScheduleExact = false;
+      final notifications = NotificationService();
+      await notifications.init();
+      final times = await PrayerTimeService().forDate(DateTime.now());
+      await PrayerRefreshService(notifications).rescheduleAlarms(
+        todayTimes: times!,
+        loc: tr,
+        onTimeAlarms: {for (final k in PrayerRefreshService.vakitKeys) k: true},
+        reminderAlarms: const {},
+        selectedSounds: const {},
+        selectedReminderSounds: const {},
+        silentModeSettings: const {},
+      );
+      final checkIndex = notifCalls.indexWhere(
+        (c) => c.method == 'canScheduleExactNotifications',
+      );
+      final firstSchedule = notifCalls.indexWhere(
+        (c) => c.method == 'zonedSchedule',
+      );
+      expect(checkIndex, isNonNegative);
+      expect(firstSchedule, greaterThan(checkIndex));
+      expect(modes(), {'inexactAllowWhileIdle'});
+    });
+
+    for (final unknown in <Object?>[
+      null,
+      PlatformException(code: 'error'),
+      MissingPluginException(),
+    ]) {
+      test('izin okunamazsa (${unknown.runtimeType}) önce alarmClock, kayıt '
+          'değişmez', () async {
+        SharedPreferences.setMockInitialValues(basePrefs());
+        canScheduleExact = unknown;
+        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(scheduleCalls(), isNotEmpty);
+        expect(modes(), {'alarmClock'});
+        final prefs = await SharedPreferences.getInstance();
+        expect(
+          prefs.getBool(NotificationService.exactAlarmsAllowedKey),
+          isNull,
+        );
+      });
+    }
+
+    test('alarmClock reddedilirse aynı bildirim gecikmeli kurulur, sonrakiler '
+        'doğrudan gecikmeli', () async {
+      SharedPreferences.setMockInitialValues(basePrefs());
+      canScheduleExact = null; // sorgu sonuç vermedi
+      rejectAlarmClock = true; // ama izin yok
+      expect(await PrayerRefreshService.runHeadless(), isTrue);
+
+      final calls = scheduleCalls().toList();
+      final rejected = calls
+          .where(
+            (c) =>
+                c.arguments['platformSpecifics']['scheduleMode'] ==
+                'alarmClock',
+          )
+          .toList();
+      expect(rejected, hasLength(1));
+      // Reddedilen bildirim hemen aynı ID ile gecikmeli kuruldu
+      final retry = calls[calls.indexOf(rejected.single) + 1];
+      expect(retry.arguments['id'], rejected.single.arguments['id']);
+      expect(
+        retry.arguments['platformSpecifics']['scheduleMode'],
+        'inexactAllowWhileIdle',
+      );
+      // Ezan, hatırlatma ve vakit çıkış hatırlatmaları kuruldu
+      expect(pending.where((id) => id < 60), isNotEmpty);
+      expect(pending.where(PrayerTracker.isEndReminderId), isNotEmpty);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool(NotificationService.exactAlarmsAllowedKey), isFalse);
+      expect(prefs.getString('alarms_scheduled_date'), today);
+    });
+  });
+
+  group('Arka plan: izin değişimi', () {
+    test(
+      'izin kapatılınca aynı gün de gecikmeli kiple yeniden kurulur',
+      () async {
+        SharedPreferences.setMockInitialValues(
+          basePrefs({
+            'alarms_scheduled_date': today,
+            NotificationService.exactAlarmsAllowedKey: true,
+          }),
+        );
+        canScheduleExact = false;
+        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(scheduleCalls(), isNotEmpty);
+        expect(modes(), {'inexactAllowWhileIdle'});
+      },
+    );
+
+    test('izin açılınca aynı gün de tam vaktine kurulur', () async {
+      SharedPreferences.setMockInitialValues(
+        basePrefs({
+          'alarms_scheduled_date': today,
+          NotificationService.exactAlarmsAllowedKey: false,
+        }),
+      );
+      canScheduleExact = true;
+      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      expect(scheduleCalls(), isNotEmpty);
+      expect(modes(), {'alarmClock'});
+    });
+
+    test('izin değişmediyse aynı gün alarmlara dokunulmaz', () async {
+      SharedPreferences.setMockInitialValues(
+        basePrefs({
+          'alarms_scheduled_date': today,
+          NotificationService.exactAlarmsAllowedKey: true,
+        }),
+      );
+      // Günlük içerik zaten kurulu: sadece alarm kurulumu ölçülür
+      pending = [1000, 1900];
+      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      expect(scheduleCalls(), isEmpty);
+      expect(notifCalls.where((c) => c.method == 'cancel'), isEmpty);
+    });
+  });
+
+  group('Kurulum hataları yutulmaz', () {
+    test(
+      'bir alarm kurulamazsa diğerleri yine kurulur, gün kaydedilir',
+      () async {
+        SharedPreferences.setMockInitialValues(
+          basePrefs({'end_reminder_enabled': false, 'reminder_Akşam': false}),
+        );
+        failIds = {16, 28}; // yarın ve sonraki gün öğle
+        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(pending, containsAll([40, 52]));
+        expect(pending, isNot(contains(16)));
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getString('alarms_scheduled_date'), today);
+      },
+    );
+
+    test(
+      'bekleyenler okunamasa da kurulur; gün kaydedilmez (yeniden denenir)',
+      () async {
+        SharedPreferences.setMockInitialValues(basePrefs());
+        failPending = true;
+        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(pending, containsAll([16, 28, 40, 52]));
+        expect(pending.where(PrayerTracker.isEndReminderId), isNotEmpty);
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getString('alarms_scheduled_date'), isNull);
+      },
+    );
+
+    test(
+      'Firebase yokken (arka plan isolate) bildirim hata fırlatmaz',
+      () async {
+        await expectLater(
+          reportNonFatal(
+            Exception('deneme'),
+            StackTrace.current,
+            reason: 'test',
+          ),
+          completes,
+        );
+      },
+    );
+  });
+
+  group('Sessiz modda da çal', () {
+    test('kanal ve ses türü', () {
+      final silent = NotificationService.prayerChannel(null, alarmStream: true);
+      expect(silent.id, 'channel_silent_prayer');
+      expect(silent.usage, AudioAttributesUsage.notification);
+      final normal = NotificationService.prayerChannel('ezan1');
+      expect(normal.id, 'channel_ezan1');
+      expect(normal.usage, AudioAttributesUsage.notification);
+      final alarm = NotificationService.prayerChannel(
+        'ezan1',
+        alarmStream: true,
+      );
+      expect(alarm.id, 'alarm_channel_ezan1');
+      expect(alarm.usage, AudioAttributesUsage.alarm);
+    });
+
+    List<PlannedAlarm> plan({bool? alarmStream}) {
+      final day = PrayerTimesModel(
+        imsak: '05:00',
+        gunes: '06:30',
+        ogle: '13:00',
+        ikindi: '16:30',
+        aksam: '19:00',
+        yatsi: '20:30',
+      );
+      final args = (
+        days: [day, day],
+        now: DateTime(2026, 1, 10, 0, 1),
+        onTime: {for (final k in PrayerRefreshService.vakitKeys) k: true},
+        reminder: {for (final k in PrayerRefreshService.vakitKeys) k: true},
+        sounds: {'Öğle': 'ezan2', 'İkindi': 'bildirim2'},
+        silent: {'Yatsı': true},
+      );
+      return alarmStream == null
+          ? PrayerRefreshService.buildAlarmPlan(
+              days: args.days,
+              now: args.now,
+              loc: tr,
+              onTimeAlarms: args.onTime,
+              reminderAlarms: args.reminder,
+              selectedSounds: args.sounds,
+              selectedReminderSounds: const {},
+              silentModeSettings: args.silent,
+            )
+          : PrayerRefreshService.buildAlarmPlan(
+              days: args.days,
+              now: args.now,
+              loc: tr,
+              onTimeAlarms: args.onTime,
+              reminderAlarms: args.reminder,
+              selectedSounds: args.sounds,
+              selectedReminderSounds: const {},
+              silentModeSettings: args.silent,
+              alarmStream: alarmStream,
+            );
+    }
+
+    String describe(PlannedAlarm a) =>
+        '${a.id}|${a.title}|${a.body}|${a.time}|${a.sound}|${a.channelName}|'
+        '${a.payload}|${a.actionLabel}|${a.alarmStream}';
+
+    test('kapalıyken plan eskisiyle aynı', () {
+      final before = plan().map(describe).toList();
+      expect(before, hasLength(24));
+      expect(plan(alarmStream: false).map(describe), before);
+      expect(plan().where((a) => a.alarmStream), isEmpty);
+    });
+
+    test('açıkken sadece sesli ezan alarm kanalına geçer', () {
+      final off = plan(alarmStream: false);
+      final on = plan(alarmStream: true);
+      expect(on.map((a) => a.id), off.map((a) => a.id));
+      for (var i = 0; i < on.length; i++) {
+        final a = on[i];
+        final isEzan = a.id % 2 == 0;
+        final hasSound = a.sound != null;
+        expect(a.alarmStream, isEzan && hasSound, reason: describe(a));
+        if (a.alarmStream) {
+          expect(a.channelName, tr.channelAlarmSound(a.sound!));
+          // Metin, ses, zaman ve "Kıldım" aynı
+          expect(
+            describe(a).replaceAll(a.channelName, ''),
+            describe(
+              off[i],
+            ).replaceAll(off[i].channelName, '').replaceAll('|false', '|true'),
+          );
+        } else {
+          expect(describe(a), describe(off[i]));
+        }
+      }
+      // Sessiz (yazılı) ezan ve hatırlatmalar değişmez
+      expect(on.where((a) => a.sound == null), isNotEmpty);
+      expect(on.where((a) => a.id.isOdd && !a.alarmStream), hasLength(12));
+    });
+
+    Map<String, Object?> specifics(int id) => Map<String, Object?>.from(
+      scheduleCalls()
+          .lastWhere((c) => c.arguments['id'] == id)
+          .arguments['platformSpecifics'],
+    );
+
+    for (final on in [false, true]) {
+      test('arka plan kurulumu: ayar ${on ? 'açık' : 'kapalı'}', () async {
+        SharedPreferences.setMockInitialValues(
+          basePrefs({
+            'sound_Öğle': 'ezan2',
+            'onTime_Yatsı': true,
+            'silent_Yatsı': true,
+            'end_reminder_enabled': false,
+            'ezan_alarm_stream': on,
+          }),
+        );
+        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        // Öğle ezanı (yarın): ID 16
+        final ogle = specifics(16);
+        expect(ogle['channelId'], on ? 'alarm_channel_ezan2' : 'channel_ezan2');
+        expect(
+          ogle['channelName'],
+          on ? tr.channelAlarmSound('ezan2') : tr.channelSoundPrefix('ezan2'),
+        );
+        expect(
+          ogle['audioAttributesUsage'],
+          on
+              ? AudioAttributesUsage.alarm.value
+              : AudioAttributesUsage.notification.value,
+        );
+        expect(ogle['sound'], 'ezan2');
+        // Akşam hatırlatması (yarın): ID 21 — bildirim akışında kalır
+        final reminder = specifics(21);
+        expect(reminder['channelId'], 'channel_bildirim1');
+        expect(
+          reminder['audioAttributesUsage'],
+          AudioAttributesUsage.notification.value,
+        );
+        // Sessiz (yazılı) yatsı ezanı (yarın): ID 22
+        final yatsi = specifics(22);
+        expect(yatsi['channelId'], 'channel_silent_prayer');
+        expect(yatsi['playSound'], isFalse);
+      });
+    }
+  });
+}

@@ -177,6 +177,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exactAlarm => 'Alert at Prayer Time';
 
   @override
+  String get alarmHealthExactOff =>
+      'Alarm permission is off: prayer alerts may be a few minutes late.';
+
+  @override
+  String get alarmHealthExactAction => 'Allow';
+
+  @override
+  String get alarmHealthNotificationsOff =>
+      'Notifications are off, the adhan won\'t play.';
+
+  @override
+  String get alarmHealthNotificationsAction => 'Turn on';
+
+  @override
+  String get ezanAlarmStreamTitle => 'Play in silent mode too';
+
+  @override
+  String get ezanAlarmStreamSub =>
+      'The adhan plays at alarm volume even when the phone is on silent.';
+
+  @override
+  String channelAlarmSound(String soundName) {
+    return 'Sound: $soundName (plays on silent)';
+  }
+
+  @override
   String get exactAlarmSub => 'Sends a notification.';
 
   @override

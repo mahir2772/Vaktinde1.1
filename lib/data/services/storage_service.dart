@@ -62,7 +62,16 @@ class StorageService {
       'sounds': sounds,
       'reminderSounds': reminderSounds,
       'silentMode': silentMode,
+      'alarmStream': prefs.getBool(ezanAlarmStreamKey) ?? false,
     };
+  }
+
+  /// "Sessiz modda da çal": ezan alarm ses akışında çalar (varsayılan kapalı)
+  static const String ezanAlarmStreamKey = 'ezan_alarm_stream';
+
+  Future<void> saveEzanAlarmStream(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(ezanAlarmStreamKey, enabled);
   }
 
   Future<void> saveLocation(String city) async {

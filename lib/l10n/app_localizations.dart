@@ -422,6 +422,48 @@ abstract class AppLocalizations {
   /// **'Tam Vaktinde Bildir'**
   String get exactAlarm;
 
+  /// No description provided for @alarmHealthExactOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm izni kapalı: ezan vakitleri birkaç dakika gecikebilir.'**
+  String get alarmHealthExactOff;
+
+  /// No description provided for @alarmHealthExactAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzin ver'**
+  String get alarmHealthExactAction;
+
+  /// No description provided for @alarmHealthNotificationsOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler kapalı, ezan çalmaz.'**
+  String get alarmHealthNotificationsOff;
+
+  /// No description provided for @alarmHealthNotificationsAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aç'**
+  String get alarmHealthNotificationsAction;
+
+  /// No description provided for @ezanAlarmStreamTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sessiz modda da çal'**
+  String get ezanAlarmStreamTitle;
+
+  /// No description provided for @ezanAlarmStreamSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan, telefon sessizdeyken de alarm ses seviyesinde çalar.'**
+  String get ezanAlarmStreamSub;
+
+  /// No description provided for @channelAlarmSound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses: {soundName} (sessizde de çalar)'**
+  String channelAlarmSound(String soundName);
+
   /// No description provided for @exactAlarmSub.
   ///
   /// In tr, this message translates to:

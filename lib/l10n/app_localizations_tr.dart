@@ -178,6 +178,31 @@ class AppLocalizationsTr extends AppLocalizations {
   String get exactAlarm => 'Tam Vaktinde Bildir';
 
   @override
+  String get alarmHealthExactOff =>
+      'Alarm izni kapalı: ezan vakitleri birkaç dakika gecikebilir.';
+
+  @override
+  String get alarmHealthExactAction => 'İzin ver';
+
+  @override
+  String get alarmHealthNotificationsOff => 'Bildirimler kapalı, ezan çalmaz.';
+
+  @override
+  String get alarmHealthNotificationsAction => 'Aç';
+
+  @override
+  String get ezanAlarmStreamTitle => 'Sessiz modda da çal';
+
+  @override
+  String get ezanAlarmStreamSub =>
+      'Ezan, telefon sessizdeyken de alarm ses seviyesinde çalar.';
+
+  @override
+  String channelAlarmSound(String soundName) {
+    return 'Ses: $soundName (sessizde de çalar)';
+  }
+
+  @override
   String get exactAlarmSub => 'Bildirim gönderir.';
 
   @override

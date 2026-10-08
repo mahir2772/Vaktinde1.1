@@ -73,6 +73,20 @@
     "aksam": "Akşam",
     "yatsi": "Yatsı",
     "exactAlarm": "Tam Vaktinde Bildir",
+    "alarmHealthExactOff": "Alarm izni kapalı: ezan vakitleri birkaç dakika gecikebilir.",
+    "alarmHealthExactAction": "İzin ver",
+    "alarmHealthNotificationsOff": "Bildirimler kapalı, ezan çalmaz.",
+    "alarmHealthNotificationsAction": "Aç",
+    "ezanAlarmStreamTitle": "Sessiz modda da çal",
+    "ezanAlarmStreamSub": "Ezan, telefon sessizdeyken de alarm ses seviyesinde çalar.",
+    "channelAlarmSound": "Ses: {soundName} (sessizde de çalar)",
+    "@channelAlarmSound": {
+        "placeholders": {
+            "soundName": {
+                "type": "String"
+            }
+        }
+    },
     "exactAlarmSub": "Bildirim gönderir.",
     "silentNotif": "Sadece Yazılı Bildirim",
     "silentNotifSub": "Ezan/ses çalmaz, sadece uyarı gelir.",

@@ -52,6 +52,20 @@
     "aksam": "المغرب",
     "yatsi": "العشاء",
     "exactAlarm": "إشعار في الوقت المحدد",
+    "alarmHealthExactOff": "إذن المنبّه معطّل: قد يتأخر الأذان بضع دقائق.",
+    "alarmHealthExactAction": "سماح",
+    "alarmHealthNotificationsOff": "الإشعارات معطّلة، لن يعمل الأذان.",
+    "alarmHealthNotificationsAction": "تفعيل",
+    "ezanAlarmStreamTitle": "التشغيل في الوضع الصامت أيضاً",
+    "ezanAlarmStreamSub": "يُرفع الأذان بمستوى صوت المنبّه حتى عندما يكون الهاتف صامتاً.",
+    "channelAlarmSound": "الصوت: {soundName} (حتى في الوضع الصامت)",
+    "@channelAlarmSound": {
+        "placeholders": {
+            "soundName": {
+                "type": "String"
+            }
+        }
+    },
     "exactAlarmSub": "يرسل إشعاراً.",
     "silentNotif": "إشعار نصي فقط",
     "silentNotifSub": "بدون أذان/صوت، تنبيه مرئي فقط.",

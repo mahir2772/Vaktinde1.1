@@ -52,6 +52,20 @@
     "aksam": "Maghrib",
     "yatsi": "Ischa",
     "exactAlarm": "Pünktlich benachrichtigen",
+    "alarmHealthExactOff": "Ohne Wecker-Berechtigung kann der Adhan einige Minuten zu spät kommen.",
+    "alarmHealthExactAction": "Erlauben",
+    "alarmHealthNotificationsOff": "Benachrichtigungen sind aus, der Adhan ertönt nicht.",
+    "alarmHealthNotificationsAction": "Aktivieren",
+    "ezanAlarmStreamTitle": "Auch im Lautlos-Modus abspielen",
+    "ezanAlarmStreamSub": "Der Adhan ertönt in der Lautstärke des Weckers, auch wenn das Telefon stumm ist.",
+    "channelAlarmSound": "Ton: {soundName} (auch lautlos)",
+    "@channelAlarmSound": {
+        "placeholders": {
+            "soundName": {
+                "type": "String"
+            }
+        }
+    },
     "exactAlarmSub": "Sendet eine Benachrichtigung.",
     "silentNotif": "Nur Textbenachrichtigung",
     "silentNotifSub": "Kein Adhan/Ton, nur visueller Alarm.",

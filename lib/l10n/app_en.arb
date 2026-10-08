@@ -52,6 +52,20 @@
     "aksam": "Maghrib",
     "yatsi": "Isha",
     "exactAlarm": "Alert at Prayer Time",
+    "alarmHealthExactOff": "Alarm permission is off: prayer alerts may be a few minutes late.",
+    "alarmHealthExactAction": "Allow",
+    "alarmHealthNotificationsOff": "Notifications are off, the adhan won't play.",
+    "alarmHealthNotificationsAction": "Turn on",
+    "ezanAlarmStreamTitle": "Play in silent mode too",
+    "ezanAlarmStreamSub": "The adhan plays at alarm volume even when the phone is on silent.",
+    "channelAlarmSound": "Sound: {soundName} (plays on silent)",
+    "@channelAlarmSound": {
+        "placeholders": {
+            "soundName": {
+                "type": "String"
+            }
+        }
+    },
     "exactAlarmSub": "Sends a notification.",
     "silentNotif": "Text Notification Only",
     "silentNotifSub": "No Adhan/Sound, only visual alert.",
