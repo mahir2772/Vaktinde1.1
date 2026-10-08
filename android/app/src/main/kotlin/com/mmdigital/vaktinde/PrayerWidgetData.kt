@@ -116,7 +116,7 @@ object PrayerWidgetData {
                 context, UPDATE_REQUEST_CODE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            setExactAlarm(context, targetTime, pendingIntent)
+            setRefreshAlarm(context, targetTime, pendingIntent)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -148,16 +148,15 @@ object PrayerWidgetData {
         }
     }
 
-    // İzin verilmemişse (Android 12) AlarmClockInfo; eski sağlayıcı kodundaki sıra korunur
-    private fun setExactAlarm(context: Context, targetTime: Long, pendingIntent: PendingIntent) {
+    /**
+     * Yenileme alarmı (widget'lar ve NotificationUpdater ortak). Tam zamanlı alarm izni yoksa
+     * (Android 12/12L'de "Alarmlar ve hatırlatıcılar" kapalı) setAlarmClock da SecurityException
+     * atar: izin istemeyen gecikmeli alarm kurulur (geç gelebilir ama kurulur).
+     */
+    fun setRefreshAlarm(context: Context, targetTime: Long, pendingIntent: PendingIntent) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
-            } else {
-                val alarmClockInfo = AlarmManager.AlarmClockInfo(targetTime, pendingIntent)
-                alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
         } else {

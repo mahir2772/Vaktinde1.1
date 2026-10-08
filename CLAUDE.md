@@ -119,10 +119,12 @@ android/app/src/main/
   AndroidManifest.xml   AdMob APP ID, izinler, servis/receiver/widget tanımları (showWhenLocked/turnScreenOn YOK:
                         kilit ekranı üstünde açılmaz); widget'lar + NotificationUpdater TIME_SET/TIMEZONE_CHANGED dinler
   kotlin/com/mmdigital/vaktinde/ — MainActivity, 3 widget provider, NotificationUpdater (kalıcı bildirim 888;
-                                   HomeWidgetPreferences'tan çizer, her vakitte exact alarmla kendini yeniler)
+                                   HomeWidgetPreferences'tan çizer, her vakitte PrayerWidgetData.setRefreshAlarm ile kendini yeniler)
     PrayerWidgetData.kt   ortak vakit mantığı: 'times_date' (yazılan setin günü) + 'tomorrow_*' (yarının vakitleri,
                           'tomorrow_hijri_date_text'): yatsıdan sonra yarının imsakı, gün dönmüşse yarının seti;
-                          yeni anahtar yoksa eski davranış. Sağlayıcı başına tek alarm (requestCode 0), onDisabled'da iptal
+                          yeni anahtar yoksa eski davranış. Sağlayıcı başına tek alarm (requestCode 0), onDisabled'da iptal.
+                          setRefreshAlarm: tam zamanlı (setExactAndAllowWhileIdle); izin yoksa (Android 12/12L) setAndAllowWhileIdle
+                          (izinsiz setAlarmClock da SecurityException atar)
   res/layout/vaktinde_widget_*.xml, custom_notification.xml; res/xml/widget_info_* (30 dk, açıklama, previewLayout);
   res/values*/strings.xml (widget adları/açıklamaları, tr varsayılan + en/de/fr/ar)
 assets/data/  esma/cuma mesajları (dil başına json), religious_days.json

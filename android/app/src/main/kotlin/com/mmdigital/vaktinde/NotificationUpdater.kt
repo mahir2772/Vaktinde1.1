@@ -1,6 +1,5 @@
 package com.mmdigital.vaktinde
 
-import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -79,21 +78,14 @@ class NotificationUpdater : BroadcastReceiver() {
         }
     }
 
-    // Widget alarmlarına benzer (PrayerWidgetData); sabit requestCode ile tek alarm
+    // Widget alarmlarıyla aynı kurulum (PrayerWidgetData.setRefreshAlarm); sabit requestCode ile tek alarm
     private fun scheduleNextUpdate(context: Context, targetTime: Long) {
         try {
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(context, NotificationUpdater::class.java).apply {
                 action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
             }
             val pendingIntent = PendingIntent.getBroadcast(context, 888, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-                val alarmClockInfo = AlarmManager.AlarmClockInfo(targetTime, pendingIntent)
-                alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
-            } else {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
-            }
+            PrayerWidgetData.setRefreshAlarm(context, targetTime, pendingIntent)
         } catch (e: Exception) {
             e.printStackTrace()
         }
