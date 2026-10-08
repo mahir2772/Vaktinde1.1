@@ -1,6 +1,20 @@
 import 'package:home_widget/home_widget.dart';
 
 class WidgetService {
+  // Gün dönümü anahtarları (Kotlin: PrayerWidgetData.kt): bugünün setinin günü
+  // (yyyy-MM-dd) ve yarının vakitleri. Yarının verisi yoksa anahtarlar silinir;
+  // Kotlin eski davranışa (bugünün imsakı +1 gün) döner.
+  static const String dateKey = 'times_date';
+  static const Map<String, String> tomorrowKeys = {
+    'İmsak': 'tomorrow_imsak_time',
+    'Güneş': 'tomorrow_gunes_time',
+    'Öğle': 'tomorrow_ogle_time',
+    'İkindi': 'tomorrow_ikindi_time',
+    'Akşam': 'tomorrow_aksam_time',
+    'Yatsı': 'tomorrow_yatsi_time',
+  };
+  static const String tomorrowHijriKey = 'tomorrow_hijri_date_text';
+
   static Future<void> widgetiGuncelle({
     required String baslik,
     required int hedefZamanMs,
@@ -8,6 +22,9 @@ class WidgetService {
     required String konum,
     required Map<String, String> vakitIsimleri,
     required String hijriDateText, // 🔥 YENİ
+    String? tarih,
+    Map<String, String>? yarinVakitler,
+    String? yarinHijriDateText,
   }) async {
     try {
       await HomeWidget.saveWidgetData<String>('title_text', baslik);
@@ -41,6 +58,18 @@ class WidgetService {
       await HomeWidget.saveWidgetData<String>(
         'yatsi_time',
         vakitler['Yatsı'] ?? "",
+      );
+
+      await HomeWidget.saveWidgetData<String>(dateKey, tarih);
+      for (final entry in tomorrowKeys.entries) {
+        await HomeWidget.saveWidgetData<String>(
+          entry.value,
+          yarinVakitler?[entry.key],
+        );
+      }
+      await HomeWidget.saveWidgetData<String>(
+        tomorrowHijriKey,
+        yarinHijriDateText,
       );
 
       await HomeWidget.saveWidgetData<String>(

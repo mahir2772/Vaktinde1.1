@@ -55,7 +55,8 @@ lib/
                             Ramazan günlerinde (gün gün, loadRamadanCalendar; olmazsa hijriOnly) imsak/akşam ezanı sahur/iftar metniyle
                             Kurulum hatası yutulmaz: alarm başına yakalanır, diğerleri kurulur, tur sonunda tek Crashlytics kaydı; bekleyenler
                             okunamazsa da kurulur (gün kaydedilmez). Tam zamanlı izin değişince runHeadless aynı gün de yeniden kurar
-      widget_service        home_widget → Android widget'larına veri yazar
+      widget_service        home_widget → Android widget'larına veri yazar (+ gün dönümü: times_date, tomorrow_*;
+                            koordinat yoksa silinir). updateHomeWidget yazımları SerialQueue ile sıralı
       hadith_service        hadeethenc.com API + yerel json fallback
       ayah_service          api.alquran.cloud
       economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır
@@ -110,10 +111,15 @@ lib/
     main_wrapper/app_showcase.dart         tanıtım turu anahtarları + AppShowcase (marka renkli balon)
     common/{language,theme}_provider.dart
 android/app/src/main/
-  AndroidManifest.xml   AdMob APP ID, izinler, servis/receiver/widget tanımları
+  AndroidManifest.xml   AdMob APP ID, izinler, servis/receiver/widget tanımları (showWhenLocked/turnScreenOn YOK:
+                        kilit ekranı üstünde açılmaz); widget'lar + NotificationUpdater TIME_SET/TIMEZONE_CHANGED dinler
   kotlin/com/mmdigital/vaktinde/ — MainActivity, 3 widget provider, NotificationUpdater (kalıcı bildirim 888;
                                    HomeWidgetPreferences'tan çizer, her vakitte exact alarmla kendini yeniler)
-  res/layout/vaktinde_widget_*.xml, custom_notification.xml
+    PrayerWidgetData.kt   ortak vakit mantığı: 'times_date' (yazılan setin günü) + 'tomorrow_*' (yarının vakitleri,
+                          'tomorrow_hijri_date_text'): yatsıdan sonra yarının imsakı, gün dönmüşse yarının seti;
+                          yeni anahtar yoksa eski davranış. Sağlayıcı başına tek alarm (requestCode 0), onDisabled'da iptal
+  res/layout/vaktinde_widget_*.xml, custom_notification.xml; res/xml/widget_info_* (30 dk, açıklama, previewLayout);
+  res/values*/strings.xml (widget adları/açıklamaları, tr varsayılan + en/de/fr/ar)
 assets/data/  esma/cuma mesajları (dil başına json), religious_days.json
 assets/google_fonts/ (Poppins), assets/fonts/amiri/ (Amiri + OFL)
 ```

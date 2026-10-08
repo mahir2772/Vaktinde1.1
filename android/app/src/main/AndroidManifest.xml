@@ -24,13 +24,13 @@
     
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
 
+    <!-- showWhenLocked/turnScreenOn yok: uygulama kilit ekranı üstünde açılmaz (tam ekran ezan
+         ekranı kullanılmıyor); kilit ekranındaki bildirime dokununca önce kilit açılır -->
     <application
         android:label="Vaktinde"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
-        android:showWhenLocked="true"
-        android:turnScreenOn="true">
-        
+        android:icon="@mipmap/launcher_icon">
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-4975388193054410~3263720480"/>
@@ -43,9 +43,7 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true">
+            android:windowSoftInputMode="adjustResize">
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
@@ -91,23 +89,41 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".VaktindeWidgetSmallProvider" android:exported="true">
+        <!-- android:label: widget seçicide her widget'ın kendi adı.
+             TIME_SET / TIMEZONE_CHANGED (manifest alıcısına izinli örtük yayınlar): saat
+             değişince sayaç hemen yeniden kurulur -->
+        <receiver android:name=".VaktindeWidgetSmallProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_small_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small" />
         </receiver>
 
-        <receiver android:name=".VaktindeWidgetLargeProvider" android:exported="true">
+        <receiver android:name=".VaktindeWidgetLargeProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_large_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_large" />
         </receiver>
 
-        <receiver android:name=".VaktindeWidgetSmall2Provider" android:exported="true">
+        <receiver android:name=".VaktindeWidgetSmall2Provider" android:exported="true"
+            android:label="@string/vaktinde_widget_small2_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small2" />
         </receiver>
@@ -115,6 +131,10 @@
         <receiver android:name=".NotificationUpdater" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 

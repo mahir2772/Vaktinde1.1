@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:text="Konum"
+                android:text="@string/vaktinde_widget_location"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:textSize="16sp"/>
@@ -49,7 +49,7 @@
             android:paddingRight="8dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:text="25 Zilhicce"
+            android:text="@string/vaktinde_widget_hijri_sample"
             android:textColor="#FFCA28"
             android:textStyle="bold"
             android:textSize="12sp"/>
@@ -81,7 +81,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="İmsak"
+                    android:text="@string/vaktinde_widget_imsak"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -112,7 +112,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Güneş"
+                    android:text="@string/vaktinde_widget_gunes"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -147,7 +147,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Öğle"
+                    android:text="@string/vaktinde_widget_ogle"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -178,7 +178,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="İkindi"
+                    android:text="@string/vaktinde_widget_ikindi"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -212,7 +212,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Akşam"
+                    android:text="@string/vaktinde_widget_aksam"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -243,7 +243,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Yatsı"
+                    android:text="@string/vaktinde_widget_yatsi"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -251,7 +251,7 @@
                     android:id="@+id/tv_yatsi_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    text="--"
+                    android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
                     android:textStyle="bold" />

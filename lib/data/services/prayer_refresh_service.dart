@@ -86,12 +86,17 @@ class PrayerRefreshService {
 
   /// Hicri tarih metni (örn. 7 Safer 1448). hijri paketinde sadece tr/en/ar var,
   /// diğer dillerde setLocal hata fırlattığı için İngilizce ay adları kullanılır.
-  static String hijriDateText(String langCode) {
+  /// [date] verilmezse bugün.
+  static String hijriDateText(String langCode, {DateTime? date}) {
     final code = HijriCalendar.supportedLocales.contains(langCode)
         ? langCode
         : 'en';
+    // Ay adı dönüştürme anında seçili dilden alınır: setLocal önce
     HijriCalendar.setLocal(code);
-    return HijriCalendar.now().toFormat("dd MMMM yyyy");
+    final hijri = date == null
+        ? HijriCalendar.now()
+        : HijriCalendar.fromDate(date);
+    return hijri.toFormat("dd MMMM yyyy");
   }
 
   /// Arka plan servisinin (kalıcı bildirim) kullandığı metinler
@@ -130,18 +135,33 @@ class PrayerRefreshService {
     };
   }
 
+  // Widget yazımları sırayla: üst üste gelen çağrılar anahtarları karıştırmasın
+  static final SerialQueue _widgetQueue = SerialQueue();
+
   /// Ana ekran widget'ları ve kalıcı bildirim (NotificationUpdater aynı veriyi okur).
-  /// Hata fırlatmaz.
+  /// [times] bugünün vakitleri. Gece yarısı ve yatsı sonrası için setin günü ve
+  /// (koordinat varsa) yarının vakitleri + hicri tarihi de yazılır. Hata fırlatmaz.
   Future<void> updateHomeWidget({
     required PrayerTimesModel times,
     required AppLocalizations? loc,
     required String? city,
     required String? district,
     required String hijriDateText,
-  }) async {
+  }) => _widgetQueue.run(() async {
     try {
       final now = DateTime.now();
       Map<String, String> vakitler = timesMap(times);
+      final tomorrow = DateTime(now.year, now.month, now.day + 1);
+      final yarinVakitler = await _tomorrowTimes(tomorrow);
+      String? yarinHijri;
+      if (yarinVakitler != null && loc != null) {
+        try {
+          yarinHijri = PrayerRefreshService.hijriDateText(
+            loc.localeName.substring(0, 2),
+            date: tomorrow,
+          );
+        } catch (e) {}
+      }
       Map<String, String> vakitIsimleri = {
         "İmsak": loc?.imsak ?? "İmsak",
         "Güneş": loc?.gunes ?? "Güneş",
@@ -173,14 +193,16 @@ class PrayerRefreshService {
 
       if (!bulundu) {
         sonrakiVakitIsmi = "İmsak";
-        List<String> parts = vakitler["İmsak"]!.split(':');
+        // Yatsıdan sonra yarının imsakı (yoksa bugünkü saat, yarın)
+        List<String> parts = (yarinVakitler?["İmsak"] ?? vakitler["İmsak"]!)
+            .split(':');
         sonrakiVakitTarihi = DateTime(
-          now.year,
-          now.month,
-          now.day,
+          tomorrow.year,
+          tomorrow.month,
+          tomorrow.day,
           int.parse(parts[0]),
           int.parse(parts[1]),
-        ).add(const Duration(days: 1));
+        );
       }
 
       String dinamikBaslik = "";
@@ -219,8 +241,21 @@ class PrayerRefreshService {
         konum: guncelKonum,
         vakitIsimleri: vakitIsimleri,
         hijriDateText: hijriDateText,
+        tarih: _dateKey(now),
+        yarinVakitler: yarinVakitler,
+        yarinHijriDateText: yarinHijri,
       );
     } catch (e) {}
+  });
+
+  // Yarının vakitleri (kayıtlı koordinat + ince ayar); koordinat yoksa null
+  Future<Map<String, String>?> _tomorrowTimes(DateTime tomorrow) async {
+    try {
+      final times = await _prayerTimeService.forDate(tomorrow);
+      return times == null ? null : timesMap(times);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Ezan (çift ID) ve hatırlatma (tek ID) planı; gün başına 12 ID.
