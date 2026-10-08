@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vaktinde_widget_small_label">Gebets-Countdown</string>
+    <string name="vaktinde_widget_small_description">Verbleibende Zeit bis zum nächsten Gebet</string>
+    <string name="vaktinde_widget_large_label">Heutige Gebetszeiten</string>
+    <string name="vaktinde_widget_large_description">Standort, islamisches Datum, heutige Gebetszeiten und verbleibende Zeit bis zum nächsten Gebet</string>
+    <string name="vaktinde_widget_small2_label">Nächste Gebetszeit</string>
+    <string name="vaktinde_widget_small2_description">Standort, islamisches Datum und verbleibende Zeit bis zum nächsten Gebet</string>
+
+    <string name="vaktinde_widget_location">Standort</string>
+    <string name="vaktinde_widget_hijri_sample">25 Dhu Al-Hijjah</string>
+    <string name="vaktinde_widget_remaining">Übrig</string>
+    <string name="vaktinde_widget_next_sample">Bis Asr</string>
+    <string name="vaktinde_widget_imsak">Imsak</string>
+    <string name="vaktinde_widget_gunes">Sonnenaufgang</string>
+    <string name="vaktinde_widget_ogle">Dhuhr</string>
+    <string name="vaktinde_widget_ikindi">Asr</string>
+    <string name="vaktinde_widget_aksam">Maghrib</string>
+    <string name="vaktinde_widget_yatsi">Ischa</string>
+</resources>

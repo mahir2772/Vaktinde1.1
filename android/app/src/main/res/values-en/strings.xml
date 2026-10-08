@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vaktinde_widget_small_label">Prayer Countdown</string>
+    <string name="vaktinde_widget_small_description">Time left until the next prayer</string>
+    <string name="vaktinde_widget_large_label">Today\'s Prayer Times</string>
+    <string name="vaktinde_widget_large_description">Location, Hijri date, today\'s prayer times and the time left until the next prayer</string>
+    <string name="vaktinde_widget_small2_label">Next Prayer</string>
+    <string name="vaktinde_widget_small2_description">Location, Hijri date and the time left until the next prayer</string>
+
+    <string name="vaktinde_widget_location">Location</string>
+    <string name="vaktinde_widget_hijri_sample">25 Dhu Al-Hijjah</string>
+    <string name="vaktinde_widget_remaining">Left</string>
+    <string name="vaktinde_widget_next_sample">To Asr</string>
+    <string name="vaktinde_widget_imsak">Imsak</string>
+    <string name="vaktinde_widget_gunes">Sunrise</string>
+    <string name="vaktinde_widget_ogle">Dhuhr</string>
+    <string name="vaktinde_widget_ikindi">Asr</string>
+    <string name="vaktinde_widget_aksam">Maghrib</string>
+    <string name="vaktinde_widget_yatsi">Isha</string>
+</resources>

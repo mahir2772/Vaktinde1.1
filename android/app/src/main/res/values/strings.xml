@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget seçicide ad ve açıklama (açıklama Android 12+) -->
+    <string name="vaktinde_widget_small_label">Vakit Sayacı</string>
+    <string name="vaktinde_widget_small_description">Sıradaki vakte kalan süre</string>
+    <string name="vaktinde_widget_large_label">Günün Vakitleri</string>
+    <string name="vaktinde_widget_large_description">Konum, hicri tarih, günün vakitleri ve sıradaki vakte kalan süre</string>
+    <string name="vaktinde_widget_small2_label">Sıradaki Vakit</string>
+    <string name="vaktinde_widget_small2_description">Konum, hicri tarih ve sıradaki vakte kalan süre</string>
+
+    <!-- Önizleme ve ilk çizim yer tutucuları; gerçek metinleri uygulama yazar -->
+    <string name="vaktinde_widget_location">Konum</string>
+    <string name="vaktinde_widget_hijri_sample">25 Zilhicce</string>
+    <string name="vaktinde_widget_remaining">Kalan</string>
+    <string name="vaktinde_widget_next_sample">İkindiye</string>
+    <string name="vaktinde_widget_imsak">İmsak</string>
+    <string name="vaktinde_widget_gunes">Güneş</string>
+    <string name="vaktinde_widget_ogle">Öğle</string>
+    <string name="vaktinde_widget_ikindi">İkindi</string>
+    <string name="vaktinde_widget_aksam">Akşam</string>
+    <string name="vaktinde_widget_yatsi">Yatsı</string>
+</resources>

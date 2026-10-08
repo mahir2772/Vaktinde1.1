@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vaktinde_widget_small_label">العد التنازلي للصلاة</string>
+    <string name="vaktinde_widget_small_description">الوقت المتبقي حتى الصلاة القادمة</string>
+    <string name="vaktinde_widget_large_label">مواقيت اليوم</string>
+    <string name="vaktinde_widget_large_description">الموقع والتاريخ الهجري ومواقيت اليوم والوقت المتبقي حتى الصلاة القادمة</string>
+    <string name="vaktinde_widget_small2_label">الصلاة القادمة</string>
+    <string name="vaktinde_widget_small2_description">الموقع والتاريخ الهجري والوقت المتبقي حتى الصلاة القادمة</string>
+
+    <string name="vaktinde_widget_location">الموقع</string>
+    <string name="vaktinde_widget_hijri_sample">٢٥ ذو الحجة</string>
+    <string name="vaktinde_widget_remaining">الباقي</string>
+    <string name="vaktinde_widget_next_sample">إلى العصر</string>
+    <string name="vaktinde_widget_imsak">الإمساك</string>
+    <string name="vaktinde_widget_gunes">الشروق</string>
+    <string name="vaktinde_widget_ogle">الظهر</string>
+    <string name="vaktinde_widget_ikindi">العصر</string>
+    <string name="vaktinde_widget_aksam">المغرب</string>
+    <string name="vaktinde_widget_yatsi">العشاء</string>
+</resources>
