@@ -20,7 +20,11 @@ class AdConsent {
 
   static Future<void>? _run;
   static bool _adsStarted = false;
+  static bool _gathering = false;
   static final List<VoidCallback> _onAdsStarted = [];
+
+  /// Açılıştaki rıza güncellemesi / formu sürüyor mu (başka pencere açılmasın)
+  static bool get isGatheringConsent => _gathering;
 
   /// Reklam istenebilir olduğunda bir kez çalışır (şu an istenebiliyorsa hemen;
   /// rıza geri çekildiyse yeniden verilene kadar bekler)
@@ -55,6 +59,7 @@ class AdConsent {
   static void debugReset() {
     _run = null;
     _adsStarted = false;
+    _gathering = false;
     _onAdsStarted.clear();
     canRequestAds.value = false;
     privacyOptionsRequired.value = false;
@@ -62,6 +67,15 @@ class AdConsent {
 
   static Future<void> _gather() async {
     if (!isSupported()) return;
+    _gathering = true;
+    try {
+      await _gatherConsent();
+    } finally {
+      _gathering = false;
+    }
+  }
+
+  static Future<void> _gatherConsent() async {
     // Önceki oturumda rıza alınmışsa reklamlar beklemeden başlar
     await _startIfAllowed();
     try {
@@ -155,6 +169,7 @@ class AdConsent {
     }
     if (!allowed || _adsStarted) return;
     _adsStarted = true;
+    await _applyRequestConfiguration();
     try {
       await MobileAds.instance.initialize().timeout(
         const Duration(seconds: 10),
@@ -163,5 +178,20 @@ class AdConsent {
       debugPrint('MobileAds başlatılamadı: $e');
     }
     _setCanRequestAds(true);
+  }
+
+  /// Aile dostu içerik sınırı (en fazla PG): SDK başlamadan ve ilk reklam
+  /// isteğinden önce verilir. Ayarlanamazsa reklamlar yine başlar (AdMob
+  /// panelindeki sınır geçerli kalır).
+  static Future<void> _applyRequestConfiguration() async {
+    try {
+      await MobileAds.instance
+          .updateRequestConfiguration(
+            RequestConfiguration(maxAdContentRating: MaxAdContentRating.pg),
+          )
+          .timeout(const Duration(seconds: 5));
+    } catch (e) {
+      debugPrint('Reklam içerik sınırı ayarlanamadı: $e');
+    }
   }
 }
