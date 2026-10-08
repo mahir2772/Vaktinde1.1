@@ -104,8 +104,13 @@ class AdHelper {
     _lastAdShowTime = at ?? DateTime.now();
   }
 
+  /// Gösterme istekleri (test için; soğuma ve hazır olmama dahil)
+  @visibleForTesting
+  int debugShowRequests = 0;
+
   // Reklam gösterme fonksiyonu (Süreyi kontrol eder)
   void showInterstitialAd() {
+    debugShowRequests++;
     final now = DateTime.now();
 
     // Soğuma süresi kontrolü

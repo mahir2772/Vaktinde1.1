@@ -9,7 +9,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/services/location_service.dart';
@@ -24,6 +23,7 @@ import '../../../data/services/error_reporter.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../alarm_health.dart';
+import '../../common/app_analytics.dart';
 
 class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final LocationService _locationService = LocationService();
@@ -328,10 +328,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
         _sendTimesToBackgroundService();
         Future.microtask(() => _rescheduleAlarms());
-        await FirebaseAnalytics.instance.logEvent(
-          name: 'sehir_secildi',
-          parameters: {'sehir': newCity, 'ilce': newDistrict ?? 'Merkez'},
-        );
+        // Konum bilgisi (il/ilçe) analitiğe gönderilmez
+        await AppAnalytics.logEvent(name: 'sehir_secildi');
       } else {
         if (prayerTimes == null) {
           errorMessageKey = "dataError";
@@ -572,12 +570,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     _saveCurrentSettings();
     _rescheduleAlarms();
     if (value == true) {
-      FirebaseAnalytics.instance.logEvent(
+      // Hangi vakit olduğu (ibadet bilgisi) gönderilmez
+      AppAnalytics.logEvent(
         name: 'alarm_acildi',
-        parameters: {
-          'vakit': vakit,
-          'tip': isExactTime ? 'tam_vakit' : 'hatirlatma',
-        },
+        parameters: {'tip': isExactTime ? 'tam_vakit' : 'hatirlatma'},
       );
     }
   }

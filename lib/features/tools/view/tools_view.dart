@@ -20,9 +20,10 @@ import '../../zakat/view/zakat_view.dart';
 class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
 
-  // Açılışta geçiş reklamı (AdHelper 5 dk soğuma süresini kendisi uygular)
-  static void _open(BuildContext context, Widget page) {
-    AdHelper.instance.showInterstitialAd();
+  // Araç açılışında geçiş reklamı (AdHelper 5 dk soğuma süresini kendisi
+  // uygular). Ayarlar (sorun giderme, izinler, destek) reklamsız açılır.
+  static void _open(BuildContext context, Widget page, {bool showAd = true}) {
+    if (showAd) AdHelper.instance.showInterstitialAd();
     Navigator.push(context, MaterialPageRoute(builder: (_) => page));
   }
 
@@ -119,7 +120,8 @@ class ToolsView extends StatelessWidget {
                 leadingIcon: Icons.settings_outlined,
                 title: loc.menuTitle,
                 subtitle: loc.toolSettingsDesc,
-                onTap: () => _open(context, const SettingsView()),
+                onTap: () =>
+                    _open(context, const SettingsView(), showAd: false),
               ),
             ],
           ),
