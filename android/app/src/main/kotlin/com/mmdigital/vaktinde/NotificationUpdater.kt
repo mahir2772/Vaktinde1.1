@@ -14,49 +14,32 @@ import java.util.Calendar
 
 class NotificationUpdater : BroadcastReceiver() {
 
-    private fun getPrayerTimeMs(timeStr: String?, addDay: Boolean = false): Long {
-        if (timeStr.isNullOrEmpty() || !timeStr.contains(":")) return 0L
-        try {
-            val parts = timeStr.split(":")
-            val calendar = Calendar.getInstance()
-            calendar.set(Calendar.HOUR_OF_DAY, parts[0].toInt())
-            calendar.set(Calendar.MINUTE, parts[1].toInt())
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            if (addDay) calendar.add(Calendar.DAY_OF_YEAR, 1)
-            return calendar.timeInMillis
-        } catch (e: Exception) { return 0L }
-    }
-
     override fun onReceive(context: Context, intent: Intent) {
         // Notification.Builder(context, kanal) API 26+ ister; eski sürümde servisin kendi bildirimi kalır
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         try {
             // Dart'ın sisteme kaydettiği verileri okuyoruz
             val widgetData = context.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
-            
+
+            // Saat değişimi: uygulama henüz vakit yazmadıysa boş bildirim çıkarılmaz
+            if (PrayerWidgetData.isTimeChange(intent.action) && !PrayerWidgetData.hasTimes(widgetData)) return
+
             // 2. adımda hazırladığımız o şık XML tasarımını belleğe alıyoruz
             val views = RemoteViews(context.packageName, R.layout.custom_notification)
-            
-            views.setTextViewText(R.id.notif_location, widgetData.getString("location_text", ""))
-            views.setTextViewText(R.id.notif_hijri_date, widgetData.getString("hijri_date_text", ""))
-            
-            val currentTime = System.currentTimeMillis()
-            val times = listOf(
-                Pair(getPrayerTimeMs(widgetData.getString("imsak_time", "")), widgetData.getString("label_imsak", "İmsak")),
-                Pair(getPrayerTimeMs(widgetData.getString("gunes_time", "")), widgetData.getString("label_gunes", "Güneş")),
-                Pair(getPrayerTimeMs(widgetData.getString("ogle_time", "")), widgetData.getString("label_ogle", "Öğle")),
-                Pair(getPrayerTimeMs(widgetData.getString("ikindi_time", "")), widgetData.getString("label_ikindi", "İkindi")),
-                Pair(getPrayerTimeMs(widgetData.getString("aksam_time", "")), widgetData.getString("label_aksam", "Akşam")),
-                Pair(getPrayerTimeMs(widgetData.getString("yatsi_time", "")), widgetData.getString("label_yatsi", "Yatsı")),
-                Pair(getPrayerTimeMs(widgetData.getString("imsak_time", ""), true), widgetData.getString("label_imsak", "İmsak"))
-            )
 
-            val nextPrayer = times.filter { it.first > currentTime + 1000L }.minByOrNull { it.first }
+            val now = Calendar.getInstance()
+            // Gün dönmüşse yarının seti, yatsıdan sonra yarının imsakı
+            val day = PrayerWidgetData.today(widgetData, now)
+
+            views.setTextViewText(R.id.notif_location, widgetData.getString("location_text", ""))
+            views.setTextViewText(R.id.notif_hijri_date, PrayerWidgetData.hijriText(widgetData, day))
+
+            val currentTime = now.timeInMillis
+            val nextPrayer = PrayerWidgetData.nextPrayer(widgetData, day, now)
 
             if (nextPrayer != null && nextPrayer.first > 0L) {
                 val targetTime = nextPrayer.first
-                val prayerName = nextPrayer.second ?: ""
+                val prayerName = nextPrayer.second
 
                 val dartTargetTime = widgetData.getLong("target_time_ms", 0L)
                 if (kotlin.math.abs(dartTargetTime - targetTime) < 60000) { 
@@ -96,7 +79,7 @@ class NotificationUpdater : BroadcastReceiver() {
         }
     }
 
-    // Widget sağlayıcılarındaki scheduleExactUpdate ile aynı mantık; sabit requestCode ile tek alarm
+    // Widget alarmlarına benzer (PrayerWidgetData); sabit requestCode ile tek alarm
     private fun scheduleNextUpdate(context: Context, targetTime: Long) {
         try {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

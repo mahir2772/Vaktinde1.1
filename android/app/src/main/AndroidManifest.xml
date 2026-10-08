@@ -89,11 +89,17 @@
             </intent-filter>
         </receiver>
 
-        <!-- android:label: widget seçicide her widget'ın kendi adı -->
+        <!-- android:label: widget seçicide her widget'ın kendi adı.
+             TIME_SET / TIMEZONE_CHANGED (manifest alıcısına izinli örtük yayınlar): saat
+             değişince sayaç hemen yeniden kurulur -->
         <receiver android:name=".VaktindeWidgetSmallProvider" android:exported="true"
             android:label="@string/vaktinde_widget_small_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small" />
         </receiver>
@@ -103,6 +109,10 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_large" />
         </receiver>
 
@@ -111,12 +121,20 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small2" />
         </receiver>
 
         <receiver android:name=".NotificationUpdater" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 
