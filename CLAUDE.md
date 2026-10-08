@@ -39,6 +39,10 @@ lib/
       location_service      geolocator + geocoding → {city: administrativeArea, district: subAdministrativeArea|locality}; getCoordinatesFromAddress(il, ilçe)
       notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (alarmClock modu; namaz ID 0-59, vakit çıkış 100-124, günlük içerik 1000/1900, kalıcı 888).
                             Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım")
+                            Kip: canScheduleExactNotifications true/bilinmiyor → alarmClock, false → inexactAllowWhileIdle (gecikebilir ama çalar);
+                            alarmClock 'exact_alarms_not_permitted' ile reddedilirse aynı bildirim gecikmeli kurulur. Son durum 'exact_alarms_allowed'.
+                            "Sessiz modda da çal" ('ezan_alarm_stream', varsayılan kapalı): sesli ezan 'alarm_channel_<ses>' kanalında
+                            (AudioAttributesUsage.alarm; kanal sesi sonradan değişmediği için ayrı kanal); hatırlatma/yazılı bildirim değişmez
       prayer_tracker        saf: namaz takibi (tarih→5 vakit bit maskesi, seri, oran, kaza adayları), aksiyon yükü "prayed|yyyy-MM-dd|Öğle",
                             vakit çıkış ID'si (hatırlatma günü epochDay%5 → ID 100-124, günden bağımsız sabit)
       prayer_tracker_service kayıt + kaza ekleme (SerialQueue ile sıralı), "Kıldım" arka plan işleyicisi (ayrı isolate; prefs.reload şart),
@@ -49,11 +53,14 @@ lib/
                             vakitleri → cache + widget + bg_display; alarmlar günde bir ('alarms_scheduled_date', en az biri kurulunca), toplu iptal yok.
                             buildEndReminderPlan/syncEndReminders: "vakit çıkmadan hatırlat" (ayar: end_reminder_*). Alarm işleri SerialQueue ile sıralı.
                             Ramazan günlerinde (gün gün, loadRamadanCalendar; olmazsa hijriOnly) imsak/akşam ezanı sahur/iftar metniyle
+                            Kurulum hatası yutulmaz: alarm başına yakalanır, diğerleri kurulur, tur sonunda tek Crashlytics kaydı; bekleyenler
+                            okunamazsa da kurulur (gün kaydedilmez). Tam zamanlı izin değişince runHeadless aynı gün de yeniden kurar
       widget_service        home_widget → Android widget'larına veri yazar
       hadith_service        hadeethenc.com API + yerel json fallback
       ayah_service          api.alquran.cloud
       economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır
       http_client           httpGet(): tüm dış isteklerde 10 sn timeout
+      error_reporter        reportNonFatal(): Crashlytics ölümcül olmayan kayıt; Firebase yoksa (WorkManager isolate) başlatmayı dener, fırlatmaz
       json_service          assets/data/*.json (esma, dini günler, cuma mesajları)
       dini_gunler_service   dini günler: religious_days.json (Diyanet, 2025-2028) öncelikli, yoksa hijri hesap (turFromName, parseResmiGunler, yilinGunleri)
   features/<özellik>/{view,view_model,widgets}
@@ -76,6 +83,11 @@ lib/
     home/widgets/prayer_times_grid.dart    2×3 ızgara (Güneş ikonla ayrık, 5 sn'de bir durum kontrolü)
     home/widgets/daily_content.dart        ayet/hadis tek kart + okuma alt sayfası (Amiri, kopyala/paylaş; kendiliğinden kapanmaz)
     home/widgets/alarm_settings_list.dart  vakit başına açılır alarm kartı (ezan/sessiz/ses seçimi/önceden uyar)
+    home/alarm_health.dart                 AlarmHealth (HomeViewModel.alarmHealth): bildirim + tam zamanlı alarm izni; açılışta ve her
+                                           resume'da okunur, izin değişince/bildirim açılınca alarmlar yeniden kurulur. Pencere açmaz;
+                                           butonlar: requestExactAlarmsPermission / requestNotificationsPermission (pencere çıkmazsa ayarlar)
+    home/widgets/alarm_health_banner.dart  ana ekran + Alarmlar sekmesi InfoBanner uyarısı (alarm açıksa; önce bildirim). Alarmlar
+                                           sekmesinin başında "Sessiz modda da çal" (HomeViewModel.setEzanAlarmStream)
     home/widgets/hero_chip.dart            hero bilgi kapsülü
     home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (hero kapsülü)
     home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse; onHero: kapsül, değilse InfoBanner
