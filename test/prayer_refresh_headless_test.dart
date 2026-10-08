@@ -23,6 +23,9 @@ void main() {
   late List<int> pending;
   late bool failSchedule;
   late Future<void> Function(MethodCall call)? onSchedule;
+  // Görev ve beklenen değerler aynı andan (gece yarısında gün ayrışmasın)
+  final clockNow = DateTime.now();
+  DateTime clock() => clockNow;
 
   setUp(() {
     failSchedule = false;
@@ -71,7 +74,7 @@ void main() {
 
   test('Koordinat yoksa hiçbir şeye dokunmaz', () async {
     SharedPreferences.setMockInitialValues({'saved_city': 'İstanbul'});
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
     expect(widgetCalls, isEmpty);
     expect(notifCalls, isEmpty);
   });
@@ -90,7 +93,7 @@ void main() {
     pending = [7, 30, 1000, 1900];
     final de = lookupAppLocalizations(const Locale('de'));
 
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
 
     final saved = {
       for (final c in widgetCalls.where((c) => c.method == 'saveWidgetData'))
@@ -115,7 +118,7 @@ void main() {
     );
 
     final prefs = await SharedPreferences.getInstance();
-    final today = DateTime.now().toIso8601String().split('T')[0];
+    final today = clockNow.toIso8601String().split('T')[0];
     expect(prefs.getString('cached_prayer_date'), today);
     expect(prefs.getString('alarms_scheduled_date'), today);
     expect(jsonDecode(prefs.getString('bg_display')!)['next'], de.nextPrayer);
@@ -135,7 +138,7 @@ void main() {
     // Her gün öğle ezanı ve akşam hatırlatması (bugünküler geçmişse yok)
     int idOf(int day, int vakit, {bool reminder = false}) =>
         PrayerRefreshService.alarmId(
-          PrayerTracker.addDays(DateTime.now(), day),
+          PrayerTracker.addDays(clockNow, day),
           vakit,
           reminder: reminder,
         );
@@ -149,7 +152,7 @@ void main() {
     );
     expect(ogle.arguments['body'], de.notifBodyTime(de.ogle));
     // "Kıldım" butonu ve yükü (yarının öğlesi)
-    final tomorrow = PrayerTracker.addDays(DateTime.now(), 1);
+    final tomorrow = PrayerTracker.addDays(clockNow, 1);
     expect(ogle.arguments['payload'], PrayerTracker.payload(tomorrow, 'Öğle'));
     final action = ogle.arguments['platformSpecifics']['actions'][0];
     expect(action['id'], PrayerTracker.actionId);
@@ -164,13 +167,13 @@ void main() {
 
     // Aynı gün tekrar çalışınca alarmlara dokunmaz
     notifCalls.clear();
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
     expect(notifCalls.where((c) => c.method == 'zonedSchedule'), isEmpty);
     expect(notifCalls.where((c) => c.method == 'cancel'), isEmpty);
   });
 
   test('Vakit çıkış hatırlatmaları arka planda da kurulur; kılınan iptal', () async {
-    final tomorrow = PrayerTracker.addDays(DateTime.now(), 1);
+    final tomorrow = PrayerTracker.addDays(clockNow, 1);
     SharedPreferences.setMockInitialValues({
       'saved_lat': 41.0,
       'saved_lng': 29.0,
@@ -186,7 +189,7 @@ void main() {
     pending = [skipped, 1000, 1900];
     final tr = lookupAppLocalizations(const Locale('tr'));
 
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
 
     expect(
       notifCalls
@@ -233,17 +236,17 @@ void main() {
       'onTime_Öğle': true,
     });
     failSchedule = true;
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getString('alarms_scheduled_date'), isNull);
 
     failSchedule = false;
     notifCalls.clear();
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
     expect(notifCalls.where((c) => c.method == 'zonedSchedule'), isNotEmpty);
     expect(
       prefs.getString('alarms_scheduled_date'),
-      DateTime.now().toIso8601String().split('T')[0],
+      clockNow.toIso8601String().split('T')[0],
     );
   });
 
@@ -253,7 +256,7 @@ void main() {
       'saved_lng': 29.0,
       'saved_city': 'İstanbul',
     });
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getString('alarms_scheduled_date'), isNotNull);
   });
@@ -321,7 +324,7 @@ void main() {
       markedId = id;
     };
 
-    expect(await PrayerRefreshService.runHeadless(), isTrue);
+    expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
     expect(markedId, isNotNull);
     final scheduleIndex = notifCalls.indexWhere(
       (c) => c.method == 'zonedSchedule' && c.arguments['id'] == markedId,

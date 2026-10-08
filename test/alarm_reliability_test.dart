@@ -91,12 +91,15 @@ void main() {
   });
 
   final tr = lookupAppLocalizations(const Locale('tr'));
-  final today = DateTime.now().toIso8601String().split('T')[0];
+  // Görev ve beklenen değerler aynı andan (gece yarısında gün ayrışmasın)
+  final clockNow = DateTime.now();
+  DateTime clock() => clockNow;
+  final today = clockNow.toIso8601String().split('T')[0];
   const idCount = PrayerRefreshService.alarmIdCount;
   // [day] gün sonraki vaktin ID'si (vakit sırası: Öğle 2, Akşam 4, Yatsı 5)
   int idOf(int day, int vakit, {bool reminder = false}) =>
       PrayerRefreshService.alarmId(
-        PrayerTracker.addDays(DateTime.now(), day),
+        PrayerTracker.addDays(clockNow, day),
         vakit,
         reminder: reminder,
       );
@@ -140,7 +143,7 @@ void main() {
           '(ezan, hatırlatma, vakit çıkış)', () async {
         SharedPreferences.setMockInitialValues(basePrefs());
         canScheduleExact = allowed;
-        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
 
         final ids = scheduleCalls().map((c) => c.arguments['id'] as int);
         expect(ids.where((id) => id < idCount && id.isEven), isNotEmpty); // ezan
@@ -164,8 +167,8 @@ void main() {
       canScheduleExact = false;
       final notifications = NotificationService();
       await notifications.init();
-      final times = await PrayerTimeService().forDate(DateTime.now());
-      await PrayerRefreshService(notifications).rescheduleAlarms(
+      final times = await PrayerTimeService().forDate(clockNow);
+      await PrayerRefreshService(notifications, clock: clock).rescheduleAlarms(
         todayTimes: times!,
         loc: tr,
         onTimeAlarms: {for (final k in PrayerRefreshService.vakitKeys) k: true},
@@ -194,7 +197,7 @@ void main() {
           'değişmez', () async {
         SharedPreferences.setMockInitialValues(basePrefs());
         canScheduleExact = unknown;
-        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
         expect(scheduleCalls(), isNotEmpty);
         expect(modes(), {'alarmClock'});
         final prefs = await SharedPreferences.getInstance();
@@ -210,7 +213,7 @@ void main() {
       SharedPreferences.setMockInitialValues(basePrefs());
       canScheduleExact = null; // sorgu sonuç vermedi
       rejectAlarmClock = true; // ama izin yok
-      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
 
       final calls = scheduleCalls().toList();
       final rejected = calls
@@ -248,7 +251,7 @@ void main() {
           }),
         );
         canScheduleExact = false;
-        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
         expect(scheduleCalls(), isNotEmpty);
         expect(modes(), {'inexactAllowWhileIdle'});
       },
@@ -262,7 +265,7 @@ void main() {
         }),
       );
       canScheduleExact = true;
-      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
       expect(scheduleCalls(), isNotEmpty);
       expect(modes(), {'alarmClock'});
     });
@@ -276,7 +279,7 @@ void main() {
       );
       // Günlük içerik zaten kurulu: sadece alarm kurulumu ölçülür
       pending = [1000, 1900];
-      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
       expect(scheduleCalls(), isEmpty);
       expect(notifCalls.where((c) => c.method == 'cancel'), isEmpty);
     });
@@ -290,7 +293,7 @@ void main() {
           basePrefs({'end_reminder_enabled': false, 'reminder_Akşam': false}),
         );
         failIds = {idOf(1, 2), idOf(2, 2)}; // yarın ve sonraki gün öğle
-        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
         expect(pending, containsAll([idOf(3, 2), idOf(4, 2)]));
         expect(pending, isNot(contains(idOf(1, 2))));
         final prefs = await SharedPreferences.getInstance();
@@ -303,7 +306,7 @@ void main() {
       () async {
         SharedPreferences.setMockInitialValues(basePrefs());
         failPending = true;
-        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
         expect(pending, containsAll([for (var d = 1; d <= 4; d++) idOf(d, 2)]));
         expect(pending.where(PrayerTracker.isEndReminderId), isNotEmpty);
         final prefs = await SharedPreferences.getInstance();
@@ -339,7 +342,7 @@ void main() {
     test('izin yok: hatırlatma ve vakit çıkış metinleri saatli', () async {
       SharedPreferences.setMockInitialValues(reminderPrefs());
       canScheduleExact = false;
-      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
       final reminders = scheduleCalls()
           .where((c) => isReminder(c.arguments['id'] as int))
           .toList();
@@ -359,7 +362,7 @@ void main() {
     test('izin var: göreli metinler aynen kalır', () async {
       SharedPreferences.setMockInitialValues(reminderPrefs());
       canScheduleExact = true;
-      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
       final reminders = scheduleCalls()
           .where((c) => isReminder(c.arguments['id'] as int))
           .toList();
@@ -486,7 +489,7 @@ void main() {
             'ezan_alarm_stream': on,
           }),
         );
-        expect(await PrayerRefreshService.runHeadless(), isTrue);
+        expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
         // Öğle ezanı (yarın)
         final ogle = specifics(idOf(1, 2));
         expect(ogle['channelId'], on ? 'alarm_channel_ezan2' : 'channel_ezan2');

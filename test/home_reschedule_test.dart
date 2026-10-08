@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
-import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -19,7 +18,8 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-  late Set<int> pending;
+  // Bekleyen alarmlar: ID → (Kıldım yükü "prayed|gün|vakit", kanal)
+  late Map<int, ({String payload, String channel})> pending;
   late Completer<void> firstSchedule;
   late List<int> scheduled;
   late List<int> cancelledNotPending;
@@ -45,20 +45,28 @@ void main() {
             return true;
           case 'zonedSchedule':
             await Future<void>.delayed(scheduleDelay);
-            pending.add(call.arguments['id']);
+            pending[call.arguments['id']] = (
+              payload: call.arguments['payload'] as String? ?? '',
+              channel: call.arguments['platformSpecifics']['channelId'],
+            );
             scheduled.add(call.arguments['id']);
             if (!firstSchedule.isCompleted) firstSchedule.complete();
             return null;
           case 'cancel':
             // Bekleyen değilse çekmecede gösterilen bildirim silinmiş olur
-            if (!pending.remove(call.arguments['id'])) {
+            if (pending.remove(call.arguments['id']) == null) {
               cancelledNotPending.add(call.arguments['id']);
             }
             return null;
           case 'pendingNotificationRequests':
             return [
-              for (final id in pending)
-                {'id': id, 'title': '', 'body': '', 'payload': ''},
+              for (final e in pending.entries)
+                {
+                  'id': e.key,
+                  'title': '',
+                  'body': '',
+                  'payload': e.value.payload,
+                },
             ];
           default:
             return null;
@@ -71,15 +79,15 @@ void main() {
     debugDefaultTargetPlatformOverride = null;
   });
 
-  const idCount = PrayerRefreshService.alarmIdCount;
-  // Yarından itibaren 4 günün öğle ezanı (kesin gelecekte)
-  List<int> ogleIds() => [
-    for (var d = 1; d <= 4; d++)
-      PrayerRefreshService.alarmId(
-        PrayerTracker.addDays(DateTime.now(), d),
-        2,
-      ),
-  ];
+  // Bekleyen ezanlar vakit vakit: "Öğle" → günler (yükten)
+  Map<String, Set<String>> pendingEzans() {
+    final result = <String, Set<String>>{};
+    for (final p in pending.values) {
+      final parts = p.payload.split('|');
+      if (parts.length == 3) (result[parts[2]] ??= {}).add(parts[1]);
+    }
+    return result;
+  }
 
   test('Kurulum sürerken kapatılan alarm kurulu kalmaz', () async {
     SharedPreferences.setMockInitialValues({'saved_lat': 41.0, 'saved_lng': 29.0});
@@ -101,7 +109,7 @@ void main() {
     // Geride kalmış bir kurulum olmadığından emin ol
     await Future<void>.delayed(const Duration(milliseconds: 300));
 
-    expect(pending.where((id) => id < idCount), isEmpty);
+    expect(pending, isEmpty);
   });
 
   test('Ardışık istekler sonunda son ayar kurulu olur', () async {
@@ -119,9 +127,12 @@ void main() {
     vm.toggleSilentMode('Öğle', true);
     await vm.alarmsSettled;
 
-    // Öğle ezanı (her günde ID % 12 == 4)
-    expect(pending, containsAll(ogleIds()));
-    expect(pending.where((id) => id < idCount && id % 12 != 4), isEmpty);
+    // Sadece öğle ezanı, en az yarından itibaren 4 gün, son ayarla (sessiz)
+    expect(pendingEzans().keys, ['Öğle']);
+    expect(pendingEzans()['Öğle']!.length, greaterThanOrEqualTo(4));
+    expect(pending.values.map((p) => p.channel).toSet(), {
+      'channel_silent_prayer',
+    });
   });
 
   Future<HomeViewModel> loadedViewModel() async {
@@ -140,12 +151,13 @@ void main() {
     vm.onTimeAlarms['Öğle'] = true;
     vm.toggleSilentMode('Öğle', false);
     await vm.alarmsSettled;
-    expect(pending, containsAll(ogleIds()));
+    expect(pendingEzans().keys, ['Öğle']);
+    expect(pendingEzans()['Öğle']!.length, greaterThanOrEqualTo(4));
 
     vm.onTimeAlarms['Öğle'] = false;
     vm.toggleSilentMode('Öğle', false);
     await vm.alarmsSettled;
-    expect(pending.where((id) => id < idCount), isEmpty);
+    expect(pending, isEmpty);
     // Toplu iptal yok: sadece bekleyen alarmlar iptal edildi
     expect(cancelledNotPending, isEmpty);
   });

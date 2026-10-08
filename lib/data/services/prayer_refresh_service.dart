@@ -926,15 +926,15 @@ class PrayerRefreshService {
 
   /// WorkManager görevi (uygulama kapalıyken de): bugünün vakitleri → cache, widget'lar,
   /// kalıcı bildirim; alarmlar günde bir kez 5 gün ileriye uzatılır. Hata fırlatmaz,
-  /// beklenmeyen hatada false döner (WorkManager yeniden dener).
-  static Future<bool> runHeadless() async {
+  /// beklenmeyen hatada false döner (WorkManager yeniden dener). [clock] sadece testte.
+  static Future<bool> runHeadless({DateTime Function()? clock}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs
           .reload(); // uygulama süreci açıksa diğer isolate'in yazdıkları
 
-      final service = PrayerRefreshService(NotificationService());
-      final now = DateTime.now();
+      final service = PrayerRefreshService(NotificationService(), clock: clock);
+      final now = service._clock();
       final times = await service._prayerTimeService.forDate(now);
       // Koordinat yoksa cihazda hesaplanamaz; uygulama açılınca çözülür
       if (times == null) return true;
