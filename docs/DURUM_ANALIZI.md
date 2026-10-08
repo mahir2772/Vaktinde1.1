@@ -1,4 +1,4 @@
-# Vaktinde — Durum (v1.1.2+16; dahili testte 1.1.1+15, Play'de 1.1.0+14)
+# Vaktinde — Durum (v1.1.2+16 Play'de yayında, 8 Ekim 2026, %100; 1.1.1+15 sadece dahili testte kaldı)
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
 
