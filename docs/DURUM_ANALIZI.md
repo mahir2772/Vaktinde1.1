@@ -58,6 +58,29 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 - Kotlin (widget'lar, kalıcı bildirim, MainActivity) bulutta API 36 çerçevesine ve SDK'daki flutter.jar'a karşı derlendi, Robolectric testleri geçti (düzenek repo dışında); gerçek cihaz testinin yerini tutmaz.
 - AdMob: AB kullanıcıları için AdMob panelinde "Gizlilik ve mesajlaşma → GDPR mesajı" yayınlanmış olmalı; yoksa AB'de reklam gösterilmeyebilir (ertelendi, kullanıcı işi).
 
+## Sonrası (bu dalda) ✅
+- Çeviri denetimi: 5 dil ana dil gözüyle denetlendi, ikinci ajan onaylı 360 düzeltme (`a40c3f4`); yinelenen arb anahtarları temizlendi.
+- Kıble pusulası sadece sekme görünür + uygulama ön plandayken çalışır (arka planda/reklamda sensör kapanır), kalibrasyon uyarısı 2 sn gecikmeli (`7cd668d`).
+- Araştırma raporu (widget, üyelik, rakipler): sohbette kullanıcıya verildi; öneri sırası orada.
+
+## ⏸ DURAKLATILDI — Güvenilirlik düzeltmeleri (yarım, bu dalda DEĞİL)
+Kullanıcı isteğiyle durduruldu (2026-10-08). Bu dal kararlı; yarım iş koda karışmadı.
+- Arşiv: `docs/wip/guvenilirlik-wip.bundle` (taban `326a624`, dal `wip/ui-int` @ `1805062`). Geri yükleme:
+  `git fetch docs/wip/guvenilirlik-wip.bundle 'refs/heads/wip/ui-int:refs/heads/wip/ui-int'`. İş bitince bundle + `inceleme_bulgular.json` silinecek.
+- Arşivdeki hazır işler (analyze temiz, 302 test geçiyor; henüz cihazda denenmedi):
+  - **A Ezan güvenilirliği:** tam zamanlı alarm izni yoksa `inexactAllowWhileIdle` yedeği (ezan kaybolmaz), kurulum hataları alarm başına yakalanır + Crashlytics (non-fatal), ana ekran/Alarmlar'da izin ve "bildirimler kapalı" uyarı kartları, isteğe bağlı "Sessiz modda da çal" (alarm ses kanalı, varsayılan kapalı).
+  - **B Android yüzeyleri/güvenlik:** kilit ekranı açığı kapatıldı (showWhenLocked/turnScreenOn kaldırıldı), 3 widget 30 dk yenilenir, ayrı ad/açıklama/önizleme, saat/saat dilimi değişince yenilenir, gün dönümü için yarının vakitleri yazılır, silinen widget'ın alarmı iptal. Kotlin ajan tarafından derlenip Robolectric ile (API 26/31/34/35) test edildi.
+  - **C Gizlilik/izin/reklam:** yedekten/telefon değişiminden sonra cihaz bayrakları sıfırlanır (`InstallGuard`, izin tekrar sorulur), analitikte konum/vakit yok, Ayarlar reklamsız açılır, reklam içerik sınırı PG, 7 günlük seride bir kez uygulama içi değerlendirme.
+- Son inceleme turu (4 açı, her bulgu 2 doğrulayıcı) 7 bulgu çıkardı (`docs/wip/inceleme_bulgular.json`); düzeltici yarıda durdu:
+  1. ✅ İzin yoksa widget/kalıcı bildirim yenilemesi `setAlarmClock` ile hep hata veriyordu → gecikmeli alarm (`74b9209`; Kotlin değişikliği, yeniden derleme doğrulaması önerilir).
+  2. ⏳ Gecikmeli (inexact) modda yeniden kurulum, vakti gelmiş ama henüz teslim edilmemiş ezanı iptal ediyor (prayer_refresh_service ~657) — yarım: sadece test saati eklendi (`1805062`).
+  3. Gecikmeli modda "X dk kaldı" hatırlatmaları olaydan sonra gelebiliyor; uyarı metni "birkaç dakika" diyor ama Android 12'de ~1 saate kadar gecikebilir (metin + mutlak saatli içerik).
+  4. "Sessiz modda da çal" Android 7'de çalışmaz (minSdk 24) → Android 8 altı gizlenmeli.
+  5. Yedek, yeni telefonda ilk açılıştan önce Play tarafından güncellenirse InstallGuard eski bayrakları benimseyebilir (düşük).
+  6. Belgeler: CLAUDE.md/DURUM_ANALIZI paket A ve C'yi tam yansıtmıyor.
+  7. (6. ile birlikte) InstallGuard anahtar listesi ve testleri güncel tutulmalı.
+- Devam adımları: bundle'ı geri yükle → 2–7'yi düzelt (testli) → Kotlin'i yeniden derle/Robolectric → analyze + test + ekran görüntüsü → kısa yeniden inceleme → ana dala ff + push.
+
 ## Bilinen sınırlar
 - Önceki sürüm cihazda kısa test edildi (vakitler, ince ayar, imsakiye paylaşımı OK). Yeni arayüz henüz cihazda denenmedi; "Kıldım" butonu, AB rıza formu ve Play esnek güncelleme yalnızca gerçek cihaz/Play sürümünde görülebilir.
 - Yüksek enlemde (NL/BE/FR, Haziran) Yatsı gece yarısını geçebilir; "HH:mm" modeli tarihsiz → sayaç Yatsı'yı atlar (eski sürümde de aynıydı, alarm doğru saatte çalar).
