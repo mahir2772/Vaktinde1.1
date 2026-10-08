@@ -421,5 +421,11 @@ class NotificationService {
     return pending.map((p) => p.id).toSet();
   }
 
+  /// Kurulu (henüz çalmamış) bildirimler: ID → yük ("Kıldım" verisi; yoksa boş)
+  Future<Map<int, String?>> pendingPayloads() async {
+    final pending = await _notificationsPlugin.pendingNotificationRequests();
+    return {for (final p in pending) p.id: p.payload};
+  }
+
   Future<void> cancel(int id) => _notificationsPlugin.cancel(id);
 }

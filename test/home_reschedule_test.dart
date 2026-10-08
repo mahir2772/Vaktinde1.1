@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
+import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -70,6 +71,16 @@ void main() {
     debugDefaultTargetPlatformOverride = null;
   });
 
+  const idCount = PrayerRefreshService.alarmIdCount;
+  // Yarından itibaren 4 günün öğle ezanı (kesin gelecekte)
+  List<int> ogleIds() => [
+    for (var d = 1; d <= 4; d++)
+      PrayerRefreshService.alarmId(
+        PrayerTracker.addDays(DateTime.now(), d),
+        2,
+      ),
+  ];
+
   test('Kurulum sürerken kapatılan alarm kurulu kalmaz', () async {
     SharedPreferences.setMockInitialValues({'saved_lat': 41.0, 'saved_lng': 29.0});
     await NotificationService().init();
@@ -90,7 +101,7 @@ void main() {
     // Geride kalmış bir kurulum olmadığından emin ol
     await Future<void>.delayed(const Duration(milliseconds: 300));
 
-    expect(pending.where((id) => id < 60), isEmpty);
+    expect(pending.where((id) => id < idCount), isEmpty);
   });
 
   test('Ardışık istekler sonunda son ayar kurulu olur', () async {
@@ -108,9 +119,9 @@ void main() {
     vm.toggleSilentMode('Öğle', true);
     await vm.alarmsSettled;
 
-    // Öğle ezanı her gün 4 + 12*gün; yarından itibaren 4 gün kesin gelecekte
-    expect(pending, containsAll([16, 28, 40, 52]));
-    expect(pending.where((id) => id < 60 && id % 12 != 4), isEmpty);
+    // Öğle ezanı (her günde ID % 12 == 4)
+    expect(pending, containsAll(ogleIds()));
+    expect(pending.where((id) => id < idCount && id % 12 != 4), isEmpty);
   });
 
   Future<HomeViewModel> loadedViewModel() async {
@@ -129,12 +140,12 @@ void main() {
     vm.onTimeAlarms['Öğle'] = true;
     vm.toggleSilentMode('Öğle', false);
     await vm.alarmsSettled;
-    expect(pending, containsAll([16, 28, 40, 52]));
+    expect(pending, containsAll(ogleIds()));
 
     vm.onTimeAlarms['Öğle'] = false;
     vm.toggleSilentMode('Öğle', false);
     await vm.alarmsSettled;
-    expect(pending.where((id) => id < 60), isEmpty);
+    expect(pending.where((id) => id < idCount), isEmpty);
     // Toplu iptal yok: sadece bekleyen alarmlar iptal edildi
     expect(cancelledNotPending, isEmpty);
   });

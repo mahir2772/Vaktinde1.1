@@ -66,8 +66,23 @@ class PrayerRefreshService {
     "Akşam",
     "Yatsı",
   ];
-  static const int alarmDays = 5; // gün başına 12 ID → 0-59
+  static const int alarmDays = 5;
+  // ID vaktin tarihine bağlı: 6 günlük döngü (plan + dünün geç kalan ezanı) x 12 → 0-71
+  static const int _idDays = alarmDays + 1;
+  static const int alarmIdCount = _idDays * 12;
   static const String _alarmsDateKey = 'alarms_scheduled_date';
+
+  /// Tam zamanlı izin yokken (Android 12) gecikmeli ezan vaktinden sonra bu süre
+  /// bekleyebilir: pencere 1 saate kadar + Doze'da uygulamanın diğer gecikmeli
+  /// alarmlarıyla 9 dk arayla sıra
+  static const Duration lateWindow = Duration(minutes: 90);
+
+  /// [day] günündeki vaktin ([vakitIndex], [vakitKeys] sırası) ezan (çift) ya da
+  /// hatırlatma (tek) ID'si. Farklı günlerde kurulan planlar aynı vakte aynı ID'yi verir.
+  static int alarmId(DateTime day, int vakitIndex, {bool reminder = false}) =>
+      (PrayerTracker.epochDay(day) % _idDays) * 12 +
+      vakitIndex * 2 +
+      (reminder ? 1 : 0);
 
   static Map<String, String> timesMap(PrayerTimesModel t) => {
     "İmsak": t.imsak!,
@@ -261,7 +276,7 @@ class PrayerRefreshService {
     }
   }
 
-  /// Ezan (çift ID) ve hatırlatma (tek ID) planı; gün başına 12 ID.
+  /// Ezan (çift ID) ve hatırlatma (tek ID) planı; ID vaktin tarihine bağlı ([alarmId]).
   /// [days] bugünden başlayan günlerin vakitleri. Tek gün varsa geçmiş vakit yarına kayar.
   /// [ramadan] verilirse Ramazan günlerinde imsak/akşam ezanı sahur/iftar metniyle gelir.
   /// [alarmStream] ("sessiz modda da çal") sadece sesli ezanı alarm kanalına alır;
@@ -280,11 +295,11 @@ class PrayerRefreshService {
   }) {
     final vakitDisplayNames = vakitNames(loc);
     final plan = <PlannedAlarm>[];
-    int idCounter = 0;
     for (int day = 0; day < days.length; day++) {
       final dayDate = DateTime(now.year, now.month, now.day + day);
       for (var entry in timesMap(days[day]).entries) {
         String vakitLogicKey = entry.key;
+        final vakitIndex = vakitKeys.indexOf(vakitLogicKey);
         String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
         List<String> parts = entry.value.split(':');
         DateTime vakitDate = DateTime(
@@ -322,7 +337,7 @@ class PrayerRefreshService {
           final onAlarmStream = alarmStream && soundToSend != null;
           plan.add(
             PlannedAlarm(
-              id: idCounter,
+              id: alarmId(vakitDate, vakitIndex),
               title: title,
               body: body,
               time: vakitDate,
@@ -340,7 +355,6 @@ class PrayerRefreshService {
             ),
           );
         }
-        idCounter++;
         if (reminderAlarms[vakitLogicKey] == true) {
           int dakikaOnce =
               (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş") ? 30 : 15;
@@ -352,7 +366,7 @@ class PrayerRefreshService {
                 selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
             plan.add(
               PlannedAlarm(
-                id: idCounter,
+                id: alarmId(vakitDate, vakitIndex, reminder: true),
                 title: loc.notifTitleUpcoming,
                 body: loc.notifBodyUpcoming(vakitDisplayName, dakikaOnce),
                 time: hatirlatmaZamani,
@@ -362,10 +376,47 @@ class PrayerRefreshService {
             );
           }
         }
-        idCounter++;
       }
     }
     return plan;
+  }
+
+  /// Vakti son [lateWindow] içinde girmiş, açık farz ezanları (dün ve bugün): ID →
+  /// "Kıldım" yükü. Gecikmeli kurulmuş ezan bu sürede henüz çalmamış olabilir; aynı
+  /// yükle bekliyorsa yeniden kurulumda iptal edilmez. Güneş ve hatırlatmalar
+  /// korunmaz (yükleri yok; geç gelen hatırlatma da yanıltır).
+  static Map<int, String> recentlyDueEzans({
+    required PrayerTimesModel previous,
+    required PrayerTimesModel today,
+    required DateTime now,
+    required Map<String, bool> onTimeAlarms,
+  }) {
+    final from = now.subtract(lateWindow);
+    final result = <int, String>{};
+    for (final (date, times) in [
+      (PrayerTracker.addDays(now, -1), previous),
+      (PrayerTracker.day(now), today),
+    ]) {
+      final map = timesMap(times);
+      for (final key in PrayerTracker.prayerKeys) {
+        if (onTimeAlarms[key] != true) continue;
+        final parts = map[key]!.split(':');
+        final time = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          int.parse(parts[0]),
+          int.parse(parts[1]),
+        );
+        if (time.isBefore(now) && !time.isBefore(from)) {
+          result[alarmId(date, vakitKeys.indexOf(key))] = PrayerTracker.payload(
+            date,
+            key,
+          );
+        }
+      }
+    }
+    return result;
   }
 
   static bool _isRamadanDay(RamadanCalendar? ramadan, DateTime date) {
@@ -589,23 +640,26 @@ class PrayerRefreshService {
   });
 
   // Plandan çıkan bekleyen (henüz çalmamış) bildirimler iptal edilir; çekmecedekilere
-  // dokunulmaz. false: temizlik tamamlanamadı (gün kaydedilmez, yeniden denenir).
+  // dokunulmaz. [keep]: aynı yükle bekleyen geç ezan (ID → yük) iptal edilmez.
+  // false: temizlik tamamlanamadı (gün kaydedilmez, yeniden denenir).
   // Okuma hatası kurulumu engellemez.
   Future<bool> _cancelUnplanned(
     bool Function(int id) inRange,
     Set<int> plannedIds,
-    _AlarmFailures failures,
-  ) async {
-    final Set<int> pending;
+    _AlarmFailures failures, {
+    Map<int, String> keep = const {},
+  }) async {
+    final Map<int, String?> pending;
     try {
-      pending = await _notifications.pendingIds();
+      pending = await _notifications.pendingPayloads();
     } catch (e, st) {
       failures.add(e, st);
       return false;
     }
     var ok = true;
-    for (final id in pending) {
+    for (final MapEntry(key: id, value: payload) in pending.entries) {
       if (!inRange(id) || plannedIds.contains(id)) continue;
+      if (keep[id] != null && keep[id] == payload) continue;
       try {
         await _notifications.cancel(id);
       } catch (e, st) {
@@ -627,7 +681,8 @@ class PrayerRefreshService {
   /// yoksa sadece [todayTimes] ile 1 gün.
   /// Toplu iptal yok: aynı ID'nin üzerine yazılır, sadece plandan çıkan bekleyen (henüz
   /// çalmamış) alarmlar iptal edilir → ekrandaki ezan bildirimi ve "Kıldım" butonu silinmez,
-  /// alarmda boşluk olmaz. Tam zamanlı alarm izni yoksa gecikmeli kiple kurulur.
+  /// alarmda boşluk olmaz. Tam zamanlı alarm izni yoksa gecikmeli kiple kurulur; vakti
+  /// geçip henüz çalmamış (gecikmiş) ezan korunur ([recentlyDueEzans]).
   /// Kurulamayan alarm diğerlerini durdurmaz; tur sonunda Crashlytics'e bildirilir.
   Future<void> rescheduleAlarms({
     required PrayerTimesModel todayTimes,
@@ -658,9 +713,15 @@ class PrayerRefreshService {
 
     final failures = _AlarmFailures();
     final cleanupOk = await _cancelUnplanned(
-      (id) => id >= 0 && id < alarmDays * 12,
+      (id) => id >= 0 && id < alarmIdCount,
       plan.map((a) => a.id).toSet(),
       failures,
+      keep: recentlyDueEzans(
+        previous: planDays.previous,
+        today: planDays.days.first,
+        now: now,
+        onTimeAlarms: onTimeAlarms,
+      ),
     );
 
     int succeeded = 0;

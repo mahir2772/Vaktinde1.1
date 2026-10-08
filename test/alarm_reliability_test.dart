@@ -92,6 +92,14 @@ void main() {
 
   final tr = lookupAppLocalizations(const Locale('tr'));
   final today = DateTime.now().toIso8601String().split('T')[0];
+  const idCount = PrayerRefreshService.alarmIdCount;
+  // [day] gün sonraki vaktin ID'si (vakit sırası: Öğle 2, Akşam 4, Yatsı 5)
+  int idOf(int day, int vakit, {bool reminder = false}) =>
+      PrayerRefreshService.alarmId(
+        PrayerTracker.addDays(DateTime.now(), day),
+        vakit,
+        reminder: reminder,
+      );
 
   Iterable<MethodCall> scheduleCalls() =>
       notifCalls.where((c) => c.method == 'zonedSchedule');
@@ -135,9 +143,9 @@ void main() {
         expect(await PrayerRefreshService.runHeadless(), isTrue);
 
         final ids = scheduleCalls().map((c) => c.arguments['id'] as int);
-        expect(ids.where((id) => id < 60 && id % 2 == 0), isNotEmpty); // ezan
+        expect(ids.where((id) => id < idCount && id.isEven), isNotEmpty); // ezan
         expect(
-          ids.where((id) => id < 60 && id.isOdd),
+          ids.where((id) => id < idCount && id.isOdd),
           isNotEmpty,
         ); // hatırlatma
         expect(ids.where(PrayerTracker.isEndReminderId), isNotEmpty);
@@ -221,7 +229,7 @@ void main() {
         'inexactAllowWhileIdle',
       );
       // Ezan, hatırlatma ve vakit çıkış hatırlatmaları kuruldu
-      expect(pending.where((id) => id < 60), isNotEmpty);
+      expect(pending.where((id) => id < idCount), isNotEmpty);
       expect(pending.where(PrayerTracker.isEndReminderId), isNotEmpty);
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool(NotificationService.exactAlarmsAllowedKey), isFalse);
@@ -281,10 +289,10 @@ void main() {
         SharedPreferences.setMockInitialValues(
           basePrefs({'end_reminder_enabled': false, 'reminder_Akşam': false}),
         );
-        failIds = {16, 28}; // yarın ve sonraki gün öğle
+        failIds = {idOf(1, 2), idOf(2, 2)}; // yarın ve sonraki gün öğle
         expect(await PrayerRefreshService.runHeadless(), isTrue);
-        expect(pending, containsAll([40, 52]));
-        expect(pending, isNot(contains(16)));
+        expect(pending, containsAll([idOf(3, 2), idOf(4, 2)]));
+        expect(pending, isNot(contains(idOf(1, 2))));
         final prefs = await SharedPreferences.getInstance();
         expect(prefs.getString('alarms_scheduled_date'), today);
       },
@@ -296,7 +304,7 @@ void main() {
         SharedPreferences.setMockInitialValues(basePrefs());
         failPending = true;
         expect(await PrayerRefreshService.runHeadless(), isTrue);
-        expect(pending, containsAll([16, 28, 40, 52]));
+        expect(pending, containsAll([for (var d = 1; d <= 4; d++) idOf(d, 2)]));
         expect(pending.where(PrayerTracker.isEndReminderId), isNotEmpty);
         final prefs = await SharedPreferences.getInstance();
         expect(prefs.getString('alarms_scheduled_date'), isNull);
@@ -431,8 +439,8 @@ void main() {
           }),
         );
         expect(await PrayerRefreshService.runHeadless(), isTrue);
-        // Öğle ezanı (yarın): ID 16
-        final ogle = specifics(16);
+        // Öğle ezanı (yarın)
+        final ogle = specifics(idOf(1, 2));
         expect(ogle['channelId'], on ? 'alarm_channel_ezan2' : 'channel_ezan2');
         expect(
           ogle['channelName'],
@@ -445,15 +453,15 @@ void main() {
               : AudioAttributesUsage.notification.value,
         );
         expect(ogle['sound'], 'ezan2');
-        // Akşam hatırlatması (yarın): ID 21 — bildirim akışında kalır
-        final reminder = specifics(21);
+        // Akşam hatırlatması (yarın) — bildirim akışında kalır
+        final reminder = specifics(idOf(1, 4, reminder: true));
         expect(reminder['channelId'], 'channel_bildirim1');
         expect(
           reminder['audioAttributesUsage'],
           AudioAttributesUsage.notification.value,
         );
-        // Sessiz (yazılı) yatsı ezanı (yarın): ID 22
-        final yatsi = specifics(22);
+        // Sessiz (yazılı) yatsı ezanı (yarın)
+        final yatsi = specifics(idOf(1, 5));
         expect(yatsi['channelId'], 'channel_silent_prayer');
         expect(yatsi['playSound'], isFalse);
       });

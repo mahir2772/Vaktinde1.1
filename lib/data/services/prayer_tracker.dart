@@ -51,6 +51,11 @@ class PrayerTracker {
   static DateTime addDays(DateTime d, int days) =>
       DateTime(d.year, d.month, d.day + days);
 
+  /// Takvim gününün sırası (1970'ten beri; yaz saatinden bağımsız)
+  static int epochDay(DateTime d) =>
+      DateTime.utc(d.year, d.month, d.day).millisecondsSinceEpoch ~/
+      Duration.millisecondsPerDay;
+
   /// Takvim günü farkı (yaz saatinden bağımsız)
   static int daysBetween(DateTime from, DateTime to) => DateTime.utc(
     to.year,
@@ -241,18 +246,10 @@ class PrayerTracker {
   static DateTime reminderDay(DateTime prayerDate, String key) =>
       key == "Yatsı" ? addDays(prayerDate, 1) : day(prayerDate);
 
-  static int endReminderId(DateTime reminderDay, String key) {
-    final epochDay =
-        DateTime.utc(
-          reminderDay.year,
-          reminderDay.month,
-          reminderDay.day,
-        ).millisecondsSinceEpoch ~/
-        Duration.millisecondsPerDay;
-    return endReminderBaseId +
-        (epochDay % endReminderDays) * prayerKeys.length +
-        prayerKeys.indexOf(key);
-  }
+  static int endReminderId(DateTime reminderDay, String key) =>
+      endReminderBaseId +
+      (epochDay(reminderDay) % endReminderDays) * prayerKeys.length +
+      prayerKeys.indexOf(key);
 
   /// Vakit kılındı işaretlenince iptal edilecek hatırlatma ID'si. Plan penceresi
   /// (bugün + 4 gün) dışındaysa null: aynı ID başka günün hatırlatması olabilir.

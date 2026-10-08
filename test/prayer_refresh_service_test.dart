@@ -20,6 +20,11 @@ void main() {
   Map<String, bool> all(bool value) => {
     for (final key in PrayerRefreshService.vakitKeys) key: value,
   };
+  // Vakit sırası: İmsak 0, Güneş 1, Öğle 2, İkindi 3, Akşam 4, Yatsı 5
+  int id(DateTime date, int vakit, {bool reminder = false}) =>
+      PrayerRefreshService.alarmId(date, vakit, reminder: reminder);
+  final d0 = DateTime(2026, 3, 10);
+  final d1 = DateTime(2026, 3, 11);
 
   List<PlannedAlarm> plan({
     required int dayCount,
@@ -45,12 +50,23 @@ void main() {
     }
   });
 
-  test('5 günlük plan: gece yarısından sonra 60 alarm, ID 0-59', () {
+  test('5 günlük plan: gece yarısından sonra 60 alarm, ID tarihe bağlı', () {
     final alarms = plan(dayCount: 5, now: DateTime(2026, 3, 10, 0, 1));
-    expect(alarms.map((a) => a.id).toList(), List.generate(60, (i) => i));
+    expect(alarms.map((a) => a.id).toList(), [
+      for (int day = 0; day < 5; day++)
+        for (int vakit = 0; vakit < 6; vakit++) ...[
+          id(PrayerTracker.addDays(d0, day), vakit),
+          id(PrayerTracker.addDays(d0, day), vakit, reminder: true),
+        ],
+    ]);
+    expect(alarms.map((a) => a.id).toSet().length, 60);
+    expect(
+      alarms.every((a) => a.id < PrayerRefreshService.alarmIdCount),
+      isTrue,
+    );
 
-    // 2. günün öğlesi: 12 + 2*2 = 16
-    final ogle = alarms.firstWhere((a) => a.id == 16);
+    // 2. günün öğlesi
+    final ogle = alarms.firstWhere((a) => a.id == id(d1, 2));
     expect(ogle.time, DateTime(2026, 3, 11, 13, 0));
     expect(ogle.sound, 'ezan3');
     expect(ogle.channelName, loc.channelSoundPrefix('ezan3'));
@@ -58,10 +74,12 @@ void main() {
 
     // Hatırlatma: İmsak/Güneş 30 dk, diğerleri 15 dk önce
     expect(
-      alarms.firstWhere((a) => a.id == 1).time,
+      alarms.firstWhere((a) => a.id == id(d0, 0, reminder: true)).time,
       DateTime(2026, 3, 10, 4, 30),
     );
-    final ogleReminder = alarms.firstWhere((a) => a.id == 5);
+    final ogleReminder = alarms.firstWhere(
+      (a) => a.id == id(d0, 2, reminder: true),
+    );
     expect(ogleReminder.time, DateTime(2026, 3, 10, 12, 45));
     expect(ogleReminder.sound, 'bildirim1');
     expect(ogleReminder.body, loc.notifBodyUpcoming(loc.ogle, 15));
@@ -71,21 +89,34 @@ void main() {
     final alarms = plan(dayCount: 5, now: DateTime(2026, 3, 10, 12, 50));
     final ids = alarms.map((a) => a.id).toSet();
     // imsak, güneş ve öğle hatırlatması (12:45) geçti
-    for (final id in [0, 1, 2, 3, 5]) {
-      expect(ids.contains(id), isFalse, reason: 'ID $id');
+    for (final past in [
+      id(d0, 0),
+      id(d0, 0, reminder: true),
+      id(d0, 1),
+      id(d0, 1, reminder: true),
+      id(d0, 2, reminder: true),
+    ]) {
+      expect(ids.contains(past), isFalse, reason: 'ID $past');
     }
-    expect(ids.contains(4), isTrue); // öğle (13:00)
-    expect(ids.contains(12), isTrue); // yarının imsakı
+    expect(ids.contains(id(d0, 2)), isTrue); // öğle (13:00)
+    expect(ids.contains(id(d1, 0)), isTrue); // yarının imsakı
     expect(alarms.length, 60 - 5);
   });
 
-  test('Koordinatsız tek gün: geçmiş vakit yarına kayar', () {
+  test('Koordinatsız tek gün: geçmiş vakit yarına (yarının ID\'siyle) kayar', () {
     final alarms = plan(
       dayCount: 1,
       now: DateTime(2026, 3, 10, 12, 0),
       reminders: false,
     );
-    expect(alarms.map((a) => a.id).toList(), [0, 2, 4, 6, 8, 10]);
+    expect(alarms.map((a) => a.id).toList(), [
+      id(d1, 0),
+      id(d1, 1),
+      id(d0, 2),
+      id(d0, 3),
+      id(d0, 4),
+      id(d0, 5),
+    ]);
     expect(alarms.first.time, DateTime(2026, 3, 11, 5, 0));
     expect(alarms[2].time, DateTime(2026, 3, 10, 13, 0));
   });
@@ -104,12 +135,13 @@ void main() {
   test('Ezan bildiriminde "Kıldım" (Güneş ve hatırlatma hariç), doğru gün', () {
     final alarms = plan(dayCount: 5, now: DateTime(2026, 3, 10, 0, 1));
     PlannedAlarm byId(int id) => alarms.firstWhere((a) => a.id == id);
-    expect(byId(0).payload, 'prayed|2026-03-10|İmsak');
-    expect(byId(0).actionLabel, loc.trackerPrayedAction);
-    expect(byId(1).payload, isNull); // vakit yaklaşıyor hatırlatması
-    expect(byId(2).payload, isNull); // güneş
-    expect(byId(2).actionLabel, isNull);
-    expect(byId(12 + 10).payload, 'prayed|2026-03-11|Yatsı');
+    expect(byId(id(d0, 0)).payload, 'prayed|2026-03-10|İmsak');
+    expect(byId(id(d0, 0)).actionLabel, loc.trackerPrayedAction);
+    // vakit yaklaşıyor hatırlatması
+    expect(byId(id(d0, 0, reminder: true)).payload, isNull);
+    expect(byId(id(d0, 1)).payload, isNull); // güneş
+    expect(byId(id(d0, 1)).actionLabel, isNull);
+    expect(byId(id(d1, 5)).payload, 'prayed|2026-03-11|Yatsı');
 
     // Tek gün modunda yarına kayan vakit yarının tarihini taşır
     final single = plan(
@@ -121,6 +153,71 @@ void main() {
     expect(single[2].payload, 'prayed|2026-03-10|Öğle');
   });
 
+  test('ID tarihe bağlı: farklı günlerde kurulan planlar aynı vakte aynı ID '
+      'verir; 6 gün çakışmasız', () {
+    final first = plan(dayCount: 5, now: DateTime(2026, 3, 10, 0, 1));
+    final second = plan(dayCount: 5, now: DateTime(2026, 3, 11, 0, 1));
+    final byTime = {for (final a in first) (a.time, a.id.isOdd): a.id};
+    int shared = 0;
+    for (final a in second) {
+      final previous = byTime[(a.time, a.id.isOdd)];
+      if (previous != null) {
+        expect(a.id, previous, reason: '${a.time}');
+        shared++;
+      }
+    }
+    expect(shared, 4 * 12);
+    // Dün + 5 günlük plan: 72 ID'nin hepsi farklı
+    final ids = {
+      for (int day = -1; day < 5; day++)
+        for (int vakit = 0; vakit < 6; vakit++)
+          for (final reminder in [false, true])
+            id(PrayerTracker.addDays(d0, day), vakit, reminder: reminder),
+    };
+    expect(ids.length, PrayerRefreshService.alarmIdCount);
+  });
+
+  group('Geç kalan ezan (gecikmeli kip): korunacaklar', () {
+    final previous = PrayerTimesModel(
+      imsak: '05:01',
+      gunes: '06:31',
+      ogle: '13:00',
+      ikindi: '16:30',
+      aksam: '18:59',
+      yatsi: '23:30',
+    );
+    Map<int, String> due(DateTime now, {Map<String, bool>? onTime}) =>
+        PrayerRefreshService.recentlyDueEzans(
+          previous: previous,
+          today: day,
+          now: now,
+          onTimeAlarms: onTime ?? all(true),
+        );
+
+    test('son 90 dk içinde vakti girmiş açık farz ezanı: ID → yük', () {
+      expect(due(DateTime(2026, 3, 10, 13, 5)), {
+        id(d0, 2): PrayerTracker.payload(d0, 'Öğle'),
+      });
+      // Pencere sınırları; vakit tam şimdi ise plandadır (korunacak değil)
+      expect(due(DateTime(2026, 3, 10, 14, 30)).keys, [id(d0, 2)]);
+      expect(due(DateTime(2026, 3, 10, 14, 31)), isEmpty);
+      expect(due(DateTime(2026, 3, 10, 13, 0)), isEmpty);
+    });
+
+    test('gece yarısından sonra dünün yatsısı (dünün ID\'si)', () {
+      final yesterday = DateTime(2026, 3, 9);
+      expect(due(DateTime(2026, 3, 10, 0, 20)), {
+        id(yesterday, 5): PrayerTracker.payload(yesterday, 'Yatsı'),
+      });
+    });
+
+    test('kapalı vakit ve Güneş korunmaz', () {
+      final now = DateTime(2026, 3, 10, 13, 5);
+      expect(due(now, onTime: {...all(true), 'Öğle': false}), isEmpty);
+      expect(due(DateTime(2026, 3, 10, 6, 45)), isEmpty); // güneş 06:30
+    });
+  });
+
   group('Vakit çıkmadan hatırlatma planı', () {
     final previous = PrayerTimesModel(
       imsak: '05:01',
@@ -130,7 +227,6 @@ void main() {
       aksam: '18:59',
       yatsi: '20:28',
     );
-    final d0 = DateTime(2026, 3, 10);
     String payload(DateTime date, String key) =>
         PrayerTracker.payload(date, key);
 
@@ -249,22 +345,24 @@ void main() {
 
     test('Ramazan gününde imsak sahur, akşam iftar metni; diğer günler normal', () {
       final alarms = plan(dayCount: 5, now: now, ramadan: calendar);
-      PlannedAlarm byId(int id) => alarms.firstWhere((a) => a.id == id);
+      PlannedAlarm byId(int day, int vakit) => alarms.firstWhere(
+        (a) => a.id == id(PrayerTracker.addDays(now, day), vakit),
+      );
       for (final day in [0, 1]) {
-        final imsak = byId(12 * day);
+        final imsak = byId(day, 0);
         expect(imsak.title, loc.ramadanImsakTitle);
         expect(imsak.body, loc.ramadanImsakBody);
-        final aksam = byId(12 * day + 8);
+        final aksam = byId(day, 4);
         expect(aksam.title, loc.ramadanIftarTitle);
         expect(aksam.body, loc.ramadanIftarBody(loc.aksam));
         // Diğer vakitler değişmez
-        expect(byId(12 * day + 4).body, loc.notifBodyTime(loc.ogle));
-        expect(byId(12 * day + 10).body, loc.notifBodyTime(loc.yatsi));
+        expect(byId(day, 2).body, loc.notifBodyTime(loc.ogle));
+        expect(byId(day, 5).body, loc.notifBodyTime(loc.yatsi));
       }
       for (final day in [2, 3, 4]) {
-        expect(byId(12 * day).title, loc.notifTitleTime);
-        expect(byId(12 * day).body, loc.notifBodyTime(loc.imsak));
-        expect(byId(12 * day + 8).body, loc.notifBodyTime(loc.aksam));
+        expect(byId(day, 0).title, loc.notifTitleTime);
+        expect(byId(day, 0).body, loc.notifBodyTime(loc.imsak));
+        expect(byId(day, 4).body, loc.notifBodyTime(loc.aksam));
       }
     });
 
@@ -285,7 +383,7 @@ void main() {
       expect(changed, 4); // 2 gün x (imsak + akşam)
       // Takvim verilmezse (ya da Ramazan dışı) metinler normal
       expect(
-        normal.firstWhere((a) => a.id == 8).body,
+        normal.firstWhere((a) => a.id == id(now, 4)).body,
         loc.notifBodyTime(loc.aksam),
       );
     });
@@ -300,7 +398,9 @@ void main() {
       );
       expect(alarms.first.time, DateTime(2026, 3, 20, 5, 0));
       expect(alarms.first.body, loc.notifBodyTime(loc.imsak));
-      final aksam = alarms.firstWhere((a) => a.id == 8);
+      final aksam = alarms.firstWhere(
+        (a) => a.id == id(DateTime(2026, 3, 19), 4),
+      );
       expect(aksam.time, DateTime(2026, 3, 19, 19, 0));
       expect(aksam.title, loc.ramadanIftarTitle);
     });

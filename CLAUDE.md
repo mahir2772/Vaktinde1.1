@@ -39,7 +39,8 @@ lib/
                             getPrayerTimes(city): yedek Aladhan API (timingsByCity, 10 sn timeout)
       storage_service       SharedPreferences sarmalayıcı (konum adı + koordinat 'saved_lat/lng', günlük cache 'cached_prayer_times'+'cached_prayer_date', ayarlar, kaza, hadis)
       location_service      geolocator + geocoding → {city: administrativeArea, district: subAdministrativeArea|locality}; getCoordinatesFromAddress(il, ilçe)
-      notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (alarmClock modu; namaz ID 0-59, vakit çıkış 100-124, günlük içerik 1000/1900, kalıcı 888).
+      notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (alarmClock modu; namaz ID 0-71 = vaktin tarihine bağlı
+                            PrayerRefreshService.alarmId: epochDay%6 × 12 + vakit×2 (+1 hatırlatma), vakit çıkış 100-124, günlük içerik 1000/1900, kalıcı 888).
                             Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım")
                             Kip: canScheduleExactNotifications true/bilinmiyor → alarmClock, false → inexactAllowWhileIdle (gecikebilir ama çalar);
                             alarmClock 'exact_alarms_not_permitted' ile reddedilirse aynı bildirim gecikmeli kurulur. Son durum 'exact_alarms_allowed'.
@@ -56,7 +57,10 @@ lib/
                             buildEndReminderPlan/syncEndReminders: "vakit çıkmadan hatırlat" (ayar: end_reminder_*). Alarm işleri SerialQueue ile sıralı.
                             Ramazan günlerinde (gün gün, loadRamadanCalendar; olmazsa hijriOnly) imsak/akşam ezanı sahur/iftar metniyle
                             Kurulum hatası yutulmaz: alarm başına yakalanır, diğerleri kurulur, tur sonunda tek Crashlytics kaydı; bekleyenler
-                            okunamazsa da kurulur (gün kaydedilmez). Tam zamanlı izin değişince runHeadless aynı gün de yeniden kurar
+                            okunamazsa da kurulur (gün kaydedilmez). Tam zamanlı izin değişince runHeadless aynı gün de yeniden kurar.
+                            Geç ezan: vakti son 90 dk'da (lateWindow) girmiş, açık farz ezanı aynı "Kıldım" yüküyle hâlâ bekliyorsa
+                            (gecikmeli kip, henüz çalmadı) yeniden kurulumda iptal edilmez (recentlyDueEzans); ID tarihe bağlı olduğundan
+                            üzerine başka günün alarmı da yazılmaz. Güneş, hatırlatma ve vakit çıkış hatırlatması korunmaz
       widget_service        home_widget → Android widget'larına veri yazar (+ gün dönümü: times_date, tomorrow_*;
                             koordinat yoksa silinir). updateHomeWidget yazımları SerialQueue ile sıralı
       hadith_service        hadeethenc.com API + yerel json fallback

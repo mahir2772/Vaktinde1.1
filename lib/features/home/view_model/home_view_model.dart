@@ -661,7 +661,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  // Koordinat varsa 5 günlük alarm kurulur: uygulama açılmasa da ezan gelir (ID 0-59)
+  // Koordinat varsa 5 günlük alarm kurulur: uygulama açılmasa da ezan gelir (ID 0-71)
   Future<void> _doRescheduleAlarms() async {
     if (prayerTimes == null || _currentLoc == null) return;
     try {

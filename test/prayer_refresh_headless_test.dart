@@ -86,7 +86,7 @@ void main() {
       'onTime_Öğle': true,
       'reminder_Akşam': true,
     });
-    // 7 (İkindi hatırlatma) ve 30 (3. gün İkindi) artık planda yok; 1000/1900 günlük içerik
+    // 7 ve 30 İkindi ID'leri (hatırlatma, ezan): planda yok; 1000/1900 günlük içerik
     pending = [7, 30, 1000, 1900];
     final de = lookupAppLocalizations(const Locale('de'));
 
@@ -132,14 +132,20 @@ void main() {
         .where((c) => c.method == 'zonedSchedule')
         .map((c) => c.arguments['id'] as int)
         .toList();
-    // Öğle ezanı: 4 + 12*gün, Akşam hatırlatması: 9 + 12*gün (bugünküler geçmişse yok)
-    expect(
-      scheduled.toSet().difference({4, 16, 28, 40, 52, 9, 21, 33, 45, 57}),
-      isEmpty,
-    );
-    expect(scheduled, containsAll([16, 28, 40, 52, 21, 33, 45, 57]));
+    // Her gün öğle ezanı ve akşam hatırlatması (bugünküler geçmişse yok)
+    int idOf(int day, int vakit, {bool reminder = false}) =>
+        PrayerRefreshService.alarmId(
+          PrayerTracker.addDays(DateTime.now(), day),
+          vakit,
+          reminder: reminder,
+        );
+    final expected = [
+      for (var d = 0; d < 5; d++) ...[idOf(d, 2), idOf(d, 4, reminder: true)],
+    ];
+    expect(scheduled.toSet().difference(expected.toSet()), isEmpty);
+    expect(scheduled, containsAll(expected.skip(2)));
     final ogle = notifCalls.firstWhere(
-      (c) => c.method == 'zonedSchedule' && c.arguments['id'] == 16,
+      (c) => c.method == 'zonedSchedule' && c.arguments['id'] == idOf(1, 2),
     );
     expect(ogle.arguments['body'], de.notifBodyTime(de.ogle));
     // "Kıldım" butonu ve yükü (yarının öğlesi)
