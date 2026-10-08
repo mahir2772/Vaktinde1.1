@@ -52,7 +52,39 @@
     "aksam": "Maghrib",
     "yatsi": "Isha",
     "exactAlarm": "Alert at Prayer Time",
-    "alarmHealthExactOff": "Alarm permission is off: prayer alerts may be a few minutes late.",
+    "reminderTitleAt": "Prayer Time Reminder",
+    "notifBodyUpcomingAt": "{vakit} time: {time}",
+    "@notifBodyUpcomingAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitleAt": "End of Prayer Time",
+    "endReminderNotifBodyAt": "End of {vakit} time: {time}",
+    "@endReminderNotifBodyAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakBodyAt": "Suhoor time ended at {time}. Have a blessed fast!",
+    "@ramadanImsakBodyAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "alarmHealthExactOff": "Alarm permission is off: the adhan and reminders can be up to about an hour late (including imsak and suhoor).",
     "alarmHealthExactAction": "Allow",
     "alarmHealthNotificationsOff": "Notifications are off, the adhan won't play.",
     "alarmHealthNotificationsAction": "Turn on",

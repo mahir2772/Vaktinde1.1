@@ -32,16 +32,19 @@ void main() {
     bool reminders = true,
     bool silent = false,
     RamadanCalendar? ramadan,
+    bool exact = true,
+    AppLocalizations? l10n,
   }) => PrayerRefreshService.buildAlarmPlan(
     days: List.filled(dayCount, day),
     now: now,
-    loc: loc,
+    loc: l10n ?? loc,
     onTimeAlarms: all(true),
     reminderAlarms: all(reminders),
     selectedSounds: const {'Öğle': 'ezan3'},
     selectedReminderSounds: const {},
     silentModeSettings: all(silent),
     ramadan: ramadan,
+    exact: exact,
   );
 
   test('Hicri tarih tüm uygulama dillerinde hata vermez', () {
@@ -235,13 +238,16 @@ void main() {
       int minutes = 30,
       Map<String, int> log = const {},
       PrayerTimesModel? times,
+      bool exact = true,
+      AppLocalizations? l10n,
     }) => PrayerRefreshService.buildEndReminderPlan(
       previous: previous,
       days: List.filled(5, times ?? day),
       now: now,
-      loc: loc,
+      loc: l10n ?? loc,
       minutes: minutes,
       prayerLog: log,
+      exact: exact,
     );
 
     test('ID 100-124; bitiş: sabah→güneş, öğle→ikindi, ikindi→akşam, '
@@ -316,6 +322,39 @@ void main() {
       expect(
         fifteen.firstWhere((a) => a.payload == payload(d0, 'İmsak')).time,
         DateTime(2026, 3, 10, 6, 15),
+      );
+    });
+
+    test('Gecikmeli kip: "çıkmasına X dk kaldı" yerine çıkış saati, nötr '
+        'başlık; zaman, ID, Kıldım aynı', () {
+      final now = DateTime(2026, 3, 10, 0, 1);
+      final relative = endPlan(now: now);
+      final absolute = endPlan(now: now, exact: false);
+      expect(absolute.length, relative.length);
+      for (int i = 0; i < relative.length; i++) {
+        final a = relative[i];
+        final b = absolute[i];
+        expect(
+          (b.id, b.time, b.payload, b.actionLabel, b.channelName),
+          (a.id, a.time, a.payload, a.actionLabel, a.channelName),
+        );
+        expect(b.title, loc.endReminderTitleAt);
+      }
+      PlannedAlarm find(List<PlannedAlarm> p, String key) =>
+          p.singleWhere((a) => a.payload == payload(d0, key));
+      expect(
+        find(absolute, 'Öğle').body,
+        loc.endReminderNotifBodyAt(loc.ogle, '16:30'),
+      );
+      expect(
+        find(absolute, 'İmsak').body,
+        loc.endReminderNotifBodyAt(loc.sabah, '06:30'),
+      );
+      // Arapça: 12 saat
+      final ar = lookupAppLocalizations(const Locale('ar'));
+      expect(
+        find(endPlan(now: now, exact: false, l10n: ar), 'Öğle').body,
+        ar.endReminderNotifBodyAt(ar.ogle, '4:30 م'),
       );
     });
 
@@ -413,6 +452,65 @@ void main() {
       );
       expect(alarms.where((a) => a.title != loc.notifTitleTime &&
           a.title != loc.notifTitleUpcoming), isEmpty);
+    });
+  });
+
+  group('Gecikmeli kip (tam zamanlı izin yok) metinleri', () {
+    final now = DateTime(2026, 3, 10, 0, 1);
+
+    test('hatırlatma "X dakika kaldı" yerine vaktin saati, nötr başlık; '
+        'ezanlar, zaman ve sesler aynı', () {
+      final relative = plan(dayCount: 5, now: now);
+      final absolute = plan(dayCount: 5, now: now, exact: false);
+      expect(absolute.length, relative.length);
+      for (int i = 0; i < relative.length; i++) {
+        final a = relative[i];
+        final b = absolute[i];
+        expect(
+          (b.id, b.time, b.sound, b.channelName, b.payload, b.alarmStream),
+          (a.id, a.time, a.sound, a.channelName, a.payload, a.alarmStream),
+        );
+        if (a.id.isEven) {
+          expect((b.title, b.body), (a.title, a.body)); // ezan
+        } else {
+          expect(b.title, loc.reminderTitleAt);
+        }
+      }
+      PlannedAlarm byId(int id) => absolute.firstWhere((a) => a.id == id);
+      expect(
+        byId(id(d0, 0, reminder: true)).body,
+        loc.notifBodyUpcomingAt(loc.imsak, '05:00'),
+      );
+      expect(
+        byId(id(d0, 2, reminder: true)).body,
+        loc.notifBodyUpcomingAt(loc.ogle, '13:00'),
+      );
+      // İngilizce: 12 saat
+      final en = lookupAppLocalizations(const Locale('en'));
+      final enPlan = plan(dayCount: 1, now: now, exact: false, l10n: en);
+      expect(
+        enPlan.firstWhere((a) => a.id == id(d0, 4, reminder: true)).body,
+        en.notifBodyUpcomingAt(en.aksam, '7:00 PM'),
+      );
+    });
+
+    test('Ramazan: sahur bitişi saatle; iftar metni aynı', () {
+      final calendar = RamadanCalendar.fromReligiousDays([
+        {'name': 'Ramazan Başlangıcı', 'date': '19 Şubat 2026'},
+        {'name': 'Ramazan Bayramı 1. Gün', 'date': '20 Mart 2026'},
+      ]);
+      final alarms = plan(
+        dayCount: 1,
+        now: now,
+        reminders: false,
+        ramadan: calendar,
+        exact: false,
+      );
+      final imsak = alarms.firstWhere((a) => a.id == id(d0, 0));
+      expect(imsak.title, loc.ramadanImsakTitle);
+      expect(imsak.body, loc.ramadanImsakBodyAt('05:00'));
+      final aksam = alarms.firstWhere((a) => a.id == id(d0, 4));
+      expect(aksam.body, loc.ramadanIftarBody(loc.aksam));
     });
   });
 }

@@ -52,7 +52,39 @@
     "aksam": "المغرب",
     "yatsi": "العشاء",
     "exactAlarm": "إشعار في الوقت المحدد",
-    "alarmHealthExactOff": "إذن المنبّه معطّل: قد يتأخر الأذان بضع دقائق.",
+    "reminderTitleAt": "تذكير بوقت الصلاة",
+    "notifBodyUpcomingAt": "دخول وقت {vakit}: {time}",
+    "@notifBodyUpcomingAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitleAt": "خروج وقت الصلاة",
+    "endReminderNotifBodyAt": "خروج وقت {vakit}: {time}",
+    "@endReminderNotifBodyAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakBodyAt": "انتهى وقت السحور الساعة {time}. صومًا مقبولًا!",
+    "@ramadanImsakBodyAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "alarmHealthExactOff": "إذن المنبّه معطّل: قد يتأخر الأذان والتذكيرات حتى ساعة تقريبًا (بما في ذلك الإمساك والسحور).",
     "alarmHealthExactAction": "سماح",
     "alarmHealthNotificationsOff": "الإشعارات معطّلة، لن يعمل الأذان.",
     "alarmHealthNotificationsAction": "تفعيل",

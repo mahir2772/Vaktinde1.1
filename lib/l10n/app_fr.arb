@@ -52,7 +52,39 @@
     "aksam": "Maghrib",
     "yatsi": "Isha",
     "exactAlarm": "Notifier à l'heure exacte",
-    "alarmHealthExactOff": "Autorisation d'alarme désactivée : l'adhan peut avoir quelques minutes de retard.",
+    "reminderTitleAt": "Rappel de prière",
+    "notifBodyUpcomingAt": "{vakit} : début à {time}",
+    "@notifBodyUpcomingAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitleAt": "Fin du temps de prière",
+    "endReminderNotifBodyAt": "{vakit} : fin du temps de prière à {time}",
+    "@endReminderNotifBodyAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakBodyAt": "Le temps du suhoor s'est terminé à {time}. Bon jeûne !",
+    "@ramadanImsakBodyAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "alarmHealthExactOff": "Autorisation d'alarme désactivée : l'adhan et les rappels peuvent avoir jusqu'à environ une heure de retard (imsak et suhoor compris).",
     "alarmHealthExactAction": "Autoriser",
     "alarmHealthNotificationsOff": "Les notifications sont désactivées, l'adhan ne retentira pas.",
     "alarmHealthNotificationsAction": "Activer",

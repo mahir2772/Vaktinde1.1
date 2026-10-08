@@ -181,8 +181,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get exactAlarm => 'Notifier à l\'heure exacte';
 
   @override
+  String get reminderTitleAt => 'Rappel de prière';
+
+  @override
+  String notifBodyUpcomingAt(String vakit, String time) {
+    return '$vakit : début à $time';
+  }
+
+  @override
+  String get endReminderTitleAt => 'Fin du temps de prière';
+
+  @override
+  String endReminderNotifBodyAt(String vakit, String time) {
+    return '$vakit : fin du temps de prière à $time';
+  }
+
+  @override
+  String ramadanImsakBodyAt(String time) {
+    return 'Le temps du suhoor s\'est terminé à $time. Bon jeûne !';
+  }
+
+  @override
   String get alarmHealthExactOff =>
-      'Autorisation d\'alarme désactivée : l\'adhan peut avoir quelques minutes de retard.';
+      'Autorisation d\'alarme désactivée : l\'adhan et les rappels peuvent avoir jusqu\'à environ une heure de retard (imsak et suhoor compris).';
 
   @override
   String get alarmHealthExactAction => 'Autoriser';

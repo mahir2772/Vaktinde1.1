@@ -178,8 +178,29 @@ class AppLocalizationsTr extends AppLocalizations {
   String get exactAlarm => 'Tam Vaktinde Bildir';
 
   @override
+  String get reminderTitleAt => 'Vakit Hatırlatması';
+
+  @override
+  String notifBodyUpcomingAt(String vakit, String time) {
+    return '$vakit vakti: $time';
+  }
+
+  @override
+  String get endReminderTitleAt => 'Vakit Çıkışı';
+
+  @override
+  String endReminderNotifBodyAt(String vakit, String time) {
+    return '$vakit vaktinin çıkışı: $time';
+  }
+
+  @override
+  String ramadanImsakBodyAt(String time) {
+    return 'Sahur vakti $time itibarıyla sona erdi. Hayırlı oruçlar!';
+  }
+
+  @override
   String get alarmHealthExactOff =>
-      'Alarm izni kapalı: ezan vakitleri birkaç dakika gecikebilir.';
+      'Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).';
 
   @override
   String get alarmHealthExactAction => 'İzin ver';

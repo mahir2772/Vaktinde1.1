@@ -176,8 +176,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exactAlarm => 'إشعار في الوقت المحدد';
 
   @override
+  String get reminderTitleAt => 'تذكير بوقت الصلاة';
+
+  @override
+  String notifBodyUpcomingAt(String vakit, String time) {
+    return 'دخول وقت $vakit: $time';
+  }
+
+  @override
+  String get endReminderTitleAt => 'خروج وقت الصلاة';
+
+  @override
+  String endReminderNotifBodyAt(String vakit, String time) {
+    return 'خروج وقت $vakit: $time';
+  }
+
+  @override
+  String ramadanImsakBodyAt(String time) {
+    return 'انتهى وقت السحور الساعة $time. صومًا مقبولًا!';
+  }
+
+  @override
   String get alarmHealthExactOff =>
-      'إذن المنبّه معطّل: قد يتأخر الأذان بضع دقائق.';
+      'إذن المنبّه معطّل: قد يتأخر الأذان والتذكيرات حتى ساعة تقريبًا (بما في ذلك الإمساك والسحور).';
 
   @override
   String get alarmHealthExactAction => 'سماح';

@@ -73,7 +73,39 @@
     "aksam": "Akşam",
     "yatsi": "Yatsı",
     "exactAlarm": "Tam Vaktinde Bildir",
-    "alarmHealthExactOff": "Alarm izni kapalı: ezan vakitleri birkaç dakika gecikebilir.",
+    "reminderTitleAt": "Vakit Hatırlatması",
+    "notifBodyUpcomingAt": "{vakit} vakti: {time}",
+    "@notifBodyUpcomingAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitleAt": "Vakit Çıkışı",
+    "endReminderNotifBodyAt": "{vakit} vaktinin çıkışı: {time}",
+    "@endReminderNotifBodyAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakBodyAt": "Sahur vakti {time} itibarıyla sona erdi. Hayırlı oruçlar!",
+    "@ramadanImsakBodyAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "alarmHealthExactOff": "Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).",
     "alarmHealthExactAction": "İzin ver",
     "alarmHealthNotificationsOff": "Bildirimler kapalı, ezan çalmaz.",
     "alarmHealthNotificationsAction": "Aç",

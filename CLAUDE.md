@@ -42,8 +42,12 @@ lib/
       notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (alarmClock modu; namaz ID 0-71 = vaktin tarihine bağlı
                             PrayerRefreshService.alarmId: epochDay%6 × 12 + vakit×2 (+1 hatırlatma), vakit çıkış 100-124, günlük içerik 1000/1900, kalıcı 888).
                             Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım")
-                            Kip: canScheduleExactNotifications true/bilinmiyor → alarmClock, false → inexactAllowWhileIdle (gecikebilir ama çalar);
+                            Kip: canScheduleExactNotifications true/bilinmiyor → alarmClock, false → inexactAllowWhileIdle (çalar ama Android
+                            12/12L'de pencere 1 saate kadar + Doze'da 9 dk kota: ~1 saat gecikebilir, imsak/sahur dahil; uyarı alarmHealthExactOff);
                             alarmClock 'exact_alarms_not_permitted' ile reddedilirse aynı bildirim gecikmeli kurulur. Son durum 'exact_alarms_allowed'.
+                            Gecikmeli kipte (buildAlarmPlan/buildEndReminderPlan exact:false) göreli metin yok: hatırlatma "X dk kaldı" yerine
+                            vaktin saati, vakit çıkışı "çıkmasına X dk" yerine çıkış saati (nötr başlık), Ramazan imsakı "sahur HH:mm itibarıyla
+                            sona erdi" — geç gelse de yanıltmaz (atlamak yerine; sahur hatırlatması kaybolmasın)
                             "Sessiz modda da çal" ('ezan_alarm_stream', varsayılan kapalı): sesli ezan 'alarm_channel_<ses>' kanalında
                             (AudioAttributesUsage.alarm; kanal sesi sonradan değişmediği için ayrı kanal); hatırlatma/yazılı bildirim değişmez
       prayer_tracker        saf: namaz takibi (tarih→5 vakit bit maskesi, seri, oran, kaza adayları), aksiyon yükü "prayed|yyyy-MM-dd|Öğle",

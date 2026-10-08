@@ -180,8 +180,29 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exactAlarm => 'Pünktlich benachrichtigen';
 
   @override
+  String get reminderTitleAt => 'Gebetszeit-Erinnerung';
+
+  @override
+  String notifBodyUpcomingAt(String vakit, String time) {
+    return 'Beginn der $vakit-Zeit: $time';
+  }
+
+  @override
+  String get endReminderTitleAt => 'Ende der Gebetszeit';
+
+  @override
+  String endReminderNotifBodyAt(String vakit, String time) {
+    return 'Ende der $vakit-Zeit: $time';
+  }
+
+  @override
+  String ramadanImsakBodyAt(String time) {
+    return 'Die Suhur-Zeit endete um $time. Gesegnetes Fasten!';
+  }
+
+  @override
   String get alarmHealthExactOff =>
-      'Ohne Wecker-Berechtigung kann der Adhan einige Minuten zu spät kommen.';
+      'Ohne Wecker-Berechtigung können Adhan und Erinnerungen bis zu etwa einer Stunde zu spät kommen (auch Imsak und Suhur).';
 
   @override
   String get alarmHealthExactAction => 'Erlauben';

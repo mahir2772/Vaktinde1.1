@@ -422,10 +422,40 @@ abstract class AppLocalizations {
   /// **'Tam Vaktinde Bildir'**
   String get exactAlarm;
 
+  /// No description provided for @reminderTitleAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Hatırlatması'**
+  String get reminderTitleAt;
+
+  /// No description provided for @notifBodyUpcomingAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vakti: {time}'**
+  String notifBodyUpcomingAt(String vakit, String time);
+
+  /// No description provided for @endReminderTitleAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Çıkışı'**
+  String get endReminderTitleAt;
+
+  /// No description provided for @endReminderNotifBodyAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vaktinin çıkışı: {time}'**
+  String endReminderNotifBodyAt(String vakit, String time);
+
+  /// No description provided for @ramadanImsakBodyAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahur vakti {time} itibarıyla sona erdi. Hayırlı oruçlar!'**
+  String ramadanImsakBodyAt(String time);
+
   /// No description provided for @alarmHealthExactOff.
   ///
   /// In tr, this message translates to:
-  /// **'Alarm izni kapalı: ezan vakitleri birkaç dakika gecikebilir.'**
+  /// **'Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).'**
   String get alarmHealthExactOff;
 
   /// No description provided for @alarmHealthExactAction.

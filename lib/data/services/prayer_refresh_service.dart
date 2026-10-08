@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ezan_saati/core/ui/app_format.dart';
 import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
@@ -281,6 +282,9 @@ class PrayerRefreshService {
   /// [ramadan] verilirse Ramazan günlerinde imsak/akşam ezanı sahur/iftar metniyle gelir.
   /// [alarmStream] ("sessiz modda da çal") sadece sesli ezanı alarm kanalına alır;
   /// hatırlatmalar ve sessiz (yazılı) bildirimler değişmez.
+  /// [exact] false (tam zamanlı izin yok, alarm bir saate kadar gecikebilir): geç
+  /// okunduğunda yanıltmasın diye "X dakika kaldı" yerine vaktin saati yazılır
+  /// (hatırlatma ve Ramazan'da sahur bitişi).
   static List<PlannedAlarm> buildAlarmPlan({
     required List<PrayerTimesModel> days,
     required DateTime now,
@@ -292,6 +296,7 @@ class PrayerRefreshService {
     required Map<String, bool> silentModeSettings,
     RamadanCalendar? ramadan,
     bool alarmStream = false,
+    bool exact = true,
   }) {
     final vakitDisplayNames = vakitNames(loc);
     final plan = <PlannedAlarm>[];
@@ -328,7 +333,11 @@ class PrayerRefreshService {
               _isRamadanDay(ramadan, vakitDate)) {
             if (vakitLogicKey == "İmsak") {
               title = loc.ramadanImsakTitle;
-              body = loc.ramadanImsakBody;
+              body = exact
+                  ? loc.ramadanImsakBody
+                  : loc.ramadanImsakBodyAt(
+                      formatClockTime(vakitDate, loc.localeName),
+                    );
             } else {
               title = loc.ramadanIftarTitle;
               body = loc.ramadanIftarBody(vakitDisplayName);
@@ -367,8 +376,13 @@ class PrayerRefreshService {
             plan.add(
               PlannedAlarm(
                 id: alarmId(vakitDate, vakitIndex, reminder: true),
-                title: loc.notifTitleUpcoming,
-                body: loc.notifBodyUpcoming(vakitDisplayName, dakikaOnce),
+                title: exact ? loc.notifTitleUpcoming : loc.reminderTitleAt,
+                body: exact
+                    ? loc.notifBodyUpcoming(vakitDisplayName, dakikaOnce)
+                    : loc.notifBodyUpcomingAt(
+                        vakitDisplayName,
+                        formatClockTime(vakitDate, loc.localeName),
+                      ),
                 time: hatirlatmaZamani,
                 sound: reminderSound,
                 channelName: loc.channelSoundPrefix(reminderSound),
@@ -441,6 +455,7 @@ class PrayerRefreshService {
   /// vakitleri (dünkü yatsının süresi için). Hatırlatma günü d: dünkü yatsı (d'nin
   /// imsakında biter), sabah (güneşte), öğle (ikindide), ikindi (akşamda), akşam (yatsıda).
   /// Geçmiş, [minutes] >= vakit süresi veya kılındı işaretli vakitler atlanır.
+  /// [exact] false: "çıkmasına X dakika kaldı" yerine çıkış saati ([buildAlarmPlan]).
   static List<PlannedAlarm> buildEndReminderPlan({
     required PrayerTimesModel previous,
     required List<PrayerTimesModel> days,
@@ -448,6 +463,7 @@ class PrayerRefreshService {
     required AppLocalizations loc,
     required int minutes,
     required Map<String, int> prayerLog,
+    bool exact = true,
   }) {
     final names = {
       "İmsak": loc.sabah,
@@ -489,8 +505,13 @@ class PrayerRefreshService {
         plan.add(
           PlannedAlarm(
             id: PrayerTracker.endReminderId(date, key),
-            title: loc.endReminderNotifTitle,
-            body: loc.endReminderNotifBody(names[key]!, minutes),
+            title: exact ? loc.endReminderNotifTitle : loc.endReminderTitleAt,
+            body: exact
+                ? loc.endReminderNotifBody(names[key]!, minutes)
+                : loc.endReminderNotifBodyAt(
+                    names[key]!,
+                    formatClockTime(end, loc.localeName),
+                  ),
             time: remindAt,
             sound: null,
             channelName: loc.endReminderChannel,
@@ -552,13 +573,14 @@ class PrayerRefreshService {
   }) => _serializeAlarms(() async {
     final now = _clock();
     try {
-      await _notifications.refreshExactAlarmPermission();
+      final exact = await _exactMode();
       final planDays = await _planDays(todayTimes, now);
       await _syncEndReminders(
         previous: planDays.previous,
         days: planDays.reminderDays,
         now: now,
         loc: loc,
+        exact: exact,
       );
     } catch (e, st) {
       await reportNonFatal(
@@ -575,6 +597,7 @@ class PrayerRefreshService {
     required List<PrayerTimesModel> days,
     required DateTime now,
     required AppLocalizations loc,
+    required bool exact,
   }) => PrayerTrackerService.runExclusive(() async {
     List<PlannedAlarm> plan = const [];
     try {
@@ -588,6 +611,7 @@ class PrayerRefreshService {
           loc: loc,
           minutes: settings.minutes,
           prayerLog: await _storageService.loadPrayerLog(),
+          exact: exact,
         );
       }
     } catch (e, st) {
@@ -670,6 +694,13 @@ class PrayerRefreshService {
     return ok;
   }
 
+  // Kurulumdan önce izin okunur (kip buna göre); okunamazsa son bilinen. false değilse
+  // tam zamanlı kabul edilir (metinler göreli kalır)
+  Future<bool> _exactMode() async =>
+      (await _notifications.refreshExactAlarmPermission() ??
+          await NotificationService.lastKnownExactAllowed()) !=
+      false;
+
   // Uygulama içinde alarm kurma işleri üst üste binmez (iptal/kur sırası karışmasın).
   // Arka plan görevi ayrı isolate'tedir.
   static final SerialQueue _alarmQueue = SerialQueue();
@@ -695,7 +726,7 @@ class PrayerRefreshService {
     bool alarmStream = false,
   }) => _serializeAlarms(() async {
     final now = _clock();
-    await _notifications.refreshExactAlarmPermission();
+    final exact = await _exactMode();
     final planDays = await _planDays(todayTimes, now);
     final ramadan = await _ramadanCalendar();
     final plan = buildAlarmPlan(
@@ -709,6 +740,7 @@ class PrayerRefreshService {
       silentModeSettings: silentModeSettings,
       ramadan: ramadan,
       alarmStream: alarmStream,
+      exact: exact,
     );
 
     final failures = _AlarmFailures();
@@ -751,6 +783,7 @@ class PrayerRefreshService {
       days: planDays.reminderDays,
       now: now,
       loc: loc,
+      exact: exact,
     );
 
     // Hiçbiri kurulamadıysa (ya da iptaller yapılamadıysa) tarih yazılmaz: arka plan

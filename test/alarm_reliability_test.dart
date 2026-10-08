@@ -326,6 +326,54 @@ void main() {
     );
   });
 
+  group('Gecikmeli kipte göreli metin yok', () {
+    // Gecikmeli alarm Android 12'de bir saate kadar geç gelebilir: "X dakika
+    // kaldı" vakit geçince okunabilir. Hatırlatmalar saatli, nötr başlıkla gelir.
+    Map<String, Object> reminderPrefs() => basePrefs({
+      for (final k in PrayerRefreshService.vakitKeys) 'reminder_$k': true,
+      'end_reminder_minutes': 15,
+    });
+    bool isReminder(int id) =>
+        (id < idCount && id.isOdd) || PrayerTracker.isEndReminderId(id);
+
+    test('izin yok: hatırlatma ve vakit çıkış metinleri saatli', () async {
+      SharedPreferences.setMockInitialValues(reminderPrefs());
+      canScheduleExact = false;
+      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      final reminders = scheduleCalls()
+          .where((c) => isReminder(c.arguments['id'] as int))
+          .toList();
+      final ids = reminders.map((c) => c.arguments['id'] as int);
+      expect(ids.where((id) => id < idCount), isNotEmpty);
+      expect(ids.where(PrayerTracker.isEndReminderId), isNotEmpty);
+      for (final c in reminders) {
+        final title = c.arguments['title'] as String;
+        final body = c.arguments['body'] as String;
+        expect(title, isNot(tr.notifTitleUpcoming), reason: body);
+        expect(title, isNot(tr.endReminderNotifTitle), reason: body);
+        expect(body, isNot(contains('kaldı')), reason: body);
+        expect(body, matches(RegExp(r'\d\d:\d\d')), reason: body);
+      }
+    });
+
+    test('izin var: göreli metinler aynen kalır', () async {
+      SharedPreferences.setMockInitialValues(reminderPrefs());
+      canScheduleExact = true;
+      expect(await PrayerRefreshService.runHeadless(), isTrue);
+      final reminders = scheduleCalls()
+          .where((c) => isReminder(c.arguments['id'] as int))
+          .toList();
+      expect(reminders, isNotEmpty);
+      for (final c in reminders) {
+        expect(
+          c.arguments['title'],
+          anyOf(tr.notifTitleUpcoming, tr.endReminderNotifTitle),
+        );
+        expect(c.arguments['body'] as String, contains('kaldı'));
+      }
+    });
+  });
+
   group('Sessiz modda da çal', () {
     test('kanal ve ses türü', () {
       final silent = NotificationService.prayerChannel(null, alarmStream: true);

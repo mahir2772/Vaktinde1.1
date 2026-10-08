@@ -52,7 +52,39 @@
     "aksam": "Maghrib",
     "yatsi": "Ischa",
     "exactAlarm": "Pünktlich benachrichtigen",
-    "alarmHealthExactOff": "Ohne Wecker-Berechtigung kann der Adhan einige Minuten zu spät kommen.",
+    "reminderTitleAt": "Gebetszeit-Erinnerung",
+    "notifBodyUpcomingAt": "Beginn der {vakit}-Zeit: {time}",
+    "@notifBodyUpcomingAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitleAt": "Ende der Gebetszeit",
+    "endReminderNotifBodyAt": "Ende der {vakit}-Zeit: {time}",
+    "@endReminderNotifBodyAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakBodyAt": "Die Suhur-Zeit endete um {time}. Gesegnetes Fasten!",
+    "@ramadanImsakBodyAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "alarmHealthExactOff": "Ohne Wecker-Berechtigung können Adhan und Erinnerungen bis zu etwa einer Stunde zu spät kommen (auch Imsak und Suhur).",
     "alarmHealthExactAction": "Erlauben",
     "alarmHealthNotificationsOff": "Benachrichtigungen sind aus, der Adhan ertönt nicht.",
     "alarmHealthNotificationsAction": "Aktivieren",
