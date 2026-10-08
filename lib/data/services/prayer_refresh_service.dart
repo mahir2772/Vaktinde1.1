@@ -49,9 +49,12 @@ class PlannedAlarm {
 /// Vakitleri ekran dışına taşır: ana ekran widget'ları, kalıcı bildirim, ezan alarmları.
 /// BuildContext gerektirmez; HomeViewModel ve WorkManager arka plan görevi ortak kullanır.
 class PrayerRefreshService {
-  PrayerRefreshService(this._notifications);
+  PrayerRefreshService(this._notifications, {DateTime Function()? clock})
+    : _clock = clock ?? DateTime.now;
 
   final NotificationService _notifications;
+  // Alarm planının "şimdi"si (testte sabit saat verilebilir)
+  final DateTime Function() _clock;
   final PrayerTimeService _prayerTimeService = PrayerTimeService();
   final StorageService _storageService = StorageService();
 
@@ -496,7 +499,7 @@ class PrayerRefreshService {
     required PrayerTimesModel todayTimes,
     required AppLocalizations loc,
   }) => _serializeAlarms(() async {
-    final now = DateTime.now();
+    final now = _clock();
     try {
       await _notifications.refreshExactAlarmPermission();
       final planDays = await _planDays(todayTimes, now);
@@ -636,7 +639,7 @@ class PrayerRefreshService {
     required Map<String, bool> silentModeSettings,
     bool alarmStream = false,
   }) => _serializeAlarms(() async {
-    final now = DateTime.now();
+    final now = _clock();
     await _notifications.refreshExactAlarmPermission();
     final planDays = await _planDays(todayTimes, now);
     final ramadan = await _ramadanCalendar();
