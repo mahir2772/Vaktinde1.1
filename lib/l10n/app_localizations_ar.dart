@@ -460,6 +460,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get endReminderTitle => 'التذكير قبل خروج الوقت';
 
   @override
+  String get dailyContentNotifTitle => 'إشعار آية اليوم وحديث اليوم';
+
+  @override
+  String get dailyContentNotifSub => 'يرسل آية كل صباح وحديثًا كل مساء.';
+
+  @override
+  String get privacyPolicy => 'سياسة الخصوصية';
+
+  @override
   String get endReminderSub =>
       'يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.';
 

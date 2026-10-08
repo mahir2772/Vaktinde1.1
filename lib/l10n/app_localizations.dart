@@ -866,6 +866,24 @@ abstract class AppLocalizations {
   /// **'Vakit Çıkmadan Hatırlat'**
   String get endReminderTitle;
 
+  /// No description provided for @dailyContentNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günün Ayeti ve Hadisi Bildirimi'**
+  String get dailyContentNotifTitle;
+
+  /// No description provided for @dailyContentNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her gün sabah bir ayet, akşam bir hadis gönderir.'**
+  String get dailyContentNotifSub;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik Politikası'**
+  String get privacyPolicy;
+
   /// No description provided for @endReminderSub.
   ///
   /// In tr, this message translates to:

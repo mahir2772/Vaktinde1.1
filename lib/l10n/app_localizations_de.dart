@@ -457,6 +457,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get endReminderTitle => 'Vor Ende der Gebetszeit erinnern';
 
   @override
+  String get dailyContentNotifTitle =>
+      'Benachrichtigung für Vers und Hadith des Tages';
+
+  @override
+  String get dailyContentNotifSub =>
+      'Sendet jeden Morgen einen Vers und jeden Abend einen Hadith.';
+
+  @override
+  String get privacyPolicy => 'Datenschutzerklärung';
+
+  @override
   String get endReminderSub =>
       'Benachrichtigt vor dem Ende der Zeit eines nicht als verrichtet markierten Gebets.';
 

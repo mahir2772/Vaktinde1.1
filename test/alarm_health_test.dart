@@ -102,7 +102,7 @@ void main() {
   }
 
   test(
-    'ilk okuma yeniden kurmaz; izin değişince / bildirim açılınca kurar',
+    'ilk okuma yeniden kurmaz; izin değişince / bildirim açılıp kapanınca kurar',
     () async {
       SharedPreferences.setMockInitialValues({});
       final h = health();
@@ -121,14 +121,14 @@ void main() {
       expect(changes, 2);
       await h.refresh(); // değişiklik yok
       expect(changes, 2);
-      notificationsEnabled =
-          false; // kapatıldı: uyarı çıkar, kurulacak bir şey yok
+      // Kapatıldı: uyarı çıkar, ezan alarm simgesi olmadan (alarmClock'suz) yeniden
+      notificationsEnabled = false;
       await h.refresh();
-      expect(changes, 2);
+      expect(changes, 3);
       expect(h.issue(anyAlarmEnabled: true), AlarmHealthIssue.notificationsOff);
       canScheduleExact = false; // izin geri alındı: gecikmeli kiple yeniden
       await h.refresh();
-      expect(changes, 3);
+      expect(changes, 4);
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool(NotificationService.exactAlarmsAllowedKey), isFalse);
     },

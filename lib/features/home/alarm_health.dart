@@ -10,9 +10,9 @@ enum AlarmHealthIssue { notificationsOff, exactAlarmsOff }
 
 /// Ezan uyarısının sağlığı: bildirim izni ve tam zamanlı alarm izni (Android 12+).
 /// Açılışta ve uygulamaya her dönüşte (ayarlardan dönüş dahil) yeniden okunur.
-/// İzin değişince ya da bildirimler açılınca [onChanged] (alarmları yeniden kur)
-/// çağrılır. Pencere açmaz, kendiliğinden izin istemez; sadece kullanıcı
-/// uyarıdaki butona basınca istenir.
+/// İzin değişince ya da bildirimler açılıp kapanınca [onChanged] (alarmları
+/// yeniden kur) çağrılır. Pencere açmaz, kendiliğinden izin istemez; sadece
+/// kullanıcı uyarıdaki butona basınca istenir.
 class AlarmHealth extends ChangeNotifier {
   AlarmHealth(
     this._notifications, {
@@ -88,14 +88,18 @@ class AlarmHealth extends ChangeNotifier {
     if (_disposed) return;
     final exactChanged =
         exactAllowed != null && exact != null && exact != exactAllowed;
-    final notificationsFixed = notificationsEnabled == false && enabled == true;
+    final notificationsChanged =
+        notificationsEnabled != null &&
+        enabled != null &&
+        enabled != notificationsEnabled;
     final changed = exact != exactAllowed || enabled != notificationsEnabled;
     exactAllowed = exact;
     notificationsEnabled = enabled;
     if (changed) notifyListeners();
-    // İzin değişti (kip değişir) ya da bildirimler açıldı: alarmlar yeniden kurulur
+    // Kip değişir: izin değişti ya da bildirimler açıldı/kapandı (kapalıyken ezan
+    // alarmClock kurulmaz, alarm simgesi kalkar): alarmlar yeniden kurulur
     final callback = onChanged;
-    if ((exactChanged || notificationsFixed) && callback != null) {
+    if ((exactChanged || notificationsChanged) && callback != null) {
       unawaited(callback());
     }
   }

@@ -248,6 +248,19 @@ class StorageService {
     await prefs.setInt('end_reminder_minutes', minutes);
   }
 
+  /// "Günün ayeti ve hadisi" bildirimi (ID 1000/1900; varsayılan açık)
+  static const String dailyContentEnabledKey = 'daily_content_enabled';
+
+  Future<bool> loadDailyContentEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(dailyContentEnabledKey) ?? true;
+  }
+
+  Future<void> saveDailyContentEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(dailyContentEnabledKey, enabled);
+  }
+
   Future<void> saveDailyHadith(HadithModel hadith, String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('daily_hadith_content', hadith.content ?? "");

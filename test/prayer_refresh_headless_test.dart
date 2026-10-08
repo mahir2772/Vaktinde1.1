@@ -88,6 +88,7 @@ void main() {
       'language_code': 'de',
       'onTime_Öğle': true,
       'reminder_Akşam': true,
+      PrayerRefreshService.scheduleModeMigratedKey: true, // kip geçişi bitmiş
     });
     // 7 ve 30 İkindi ID'leri (hatırlatma, ezan): planda yok; 1000/1900 günlük içerik
     pending = [7, 30, 1000, 1900];
@@ -184,6 +185,7 @@ void main() {
       'prayer_log': jsonEncode({
         PrayerTracker.dateKey(tomorrow): PrayerTracker.bit('Öğle'),
       }),
+      PrayerRefreshService.scheduleModeMigratedKey: true, // kip geçişi bitmiş
     });
     final skipped = PrayerTracker.endReminderId(tomorrow, 'Öğle');
     pending = [skipped, 1000, 1900];

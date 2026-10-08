@@ -173,6 +173,52 @@ void main() {
     },
   );
 
+  test(
+    'Vakte kalan başlıkları yazılır (Kotlin sıradakini seçer); dil yoksa Türkçe',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'saved_lat': 41.0,
+        'saved_lng': 29.0,
+      });
+      Map<String, Object?> titles() => {
+        for (final key in [
+          'title_imsak',
+          'title_gunes',
+          'title_ogle',
+          'title_ikindi',
+          'title_aksam',
+          'title_yatsi',
+        ])
+          key: saved()[key],
+      };
+      final de = lookupAppLocalizations(const Locale('de'));
+      await write(allMidnight, loc: de);
+      expect(titles(), {
+        'title_imsak': de.toImsak,
+        'title_gunes': de.toGunes,
+        'title_ogle': de.toOgle,
+        'title_ikindi': de.toIkindi,
+        'title_aksam': de.toAksam,
+        'title_yatsi': de.toYatsi,
+      });
+      // Eski anahtarlar da yazılmaya devam eder
+      expect(saved()['title_text'], de.toImsak);
+      expect(saved()['label_ogle'], de.ogle);
+
+      calls.clear();
+      await write(allMidnight);
+      expect(titles(), {
+        'title_imsak': 'İmsaka',
+        'title_gunes': 'Güneşe',
+        'title_ogle': 'Öğleye',
+        'title_ikindi': 'İkindiye',
+        'title_aksam': 'Akşama',
+        'title_yatsi': 'Yatsıya',
+      });
+      expect(saved()['title_text'], 'İmsaka');
+    },
+  );
+
   test('Dil yoksa yarının hicri tarihi yazılmaz, vakitleri yazılır', () async {
     SharedPreferences.setMockInitialValues({
       'saved_lat': 41.0,
@@ -265,6 +311,10 @@ void main() {
         data['tomorrow_hijri_date_text'],
         PrayerRefreshService.hijriDateText('ar', date: tomorrowOf(now)),
       );
+      // Vakte kalan başlıkları arka planda da (uygulamanın dilinde)
+      final ar = lookupAppLocalizations(const Locale('ar'));
+      expect(data['title_ogle'], ar.toOgle);
+      expect(data['title_yatsi'], ar.toYatsi);
     });
   });
 }

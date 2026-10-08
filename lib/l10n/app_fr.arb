@@ -226,6 +226,9 @@
         }
     },
     "endReminderTitle": "Rappel avant la fin du temps de prière",
+    "dailyContentNotifTitle": "Notification du verset et du hadith du jour",
+    "dailyContentNotifSub": "Envoie un verset chaque matin et un hadith chaque soir.",
+    "privacyPolicy": "Politique de confidentialité",
     "endReminderSub": "Vous avertit avant la fin du temps d'une prière non cochée.",
     "endReminderNotifTitle": "Fin du temps de prière",
     "endReminderNotifBody": "{vakit} : le temps de prière se termine dans {minute} minutes.",

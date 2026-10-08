@@ -451,6 +451,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endReminderTitle => 'Remind Before Prayer Time Ends';
 
   @override
+  String get dailyContentNotifTitle => 'Daily Ayah & Hadith Notification';
+
+  @override
+  String get dailyContentNotifSub =>
+      'Sends an ayah every morning and a hadith every evening.';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
   String get endReminderSub =>
       'Notifies you before a prayer\'s time ends if it isn\'t marked as prayed.';
 

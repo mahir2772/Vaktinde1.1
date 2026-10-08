@@ -23,6 +23,8 @@ void main() {
     'qibla_calibration_dialog_seen': true,
     'exact_alarms_allowed': false,
     'alarm_plan_meta': '{"52":"x"}',
+    'schedule_mode_v2': true,
+    'notifications_enabled': false,
   };
   final userData = <String, Object>{
     'language_code': 'tr',
