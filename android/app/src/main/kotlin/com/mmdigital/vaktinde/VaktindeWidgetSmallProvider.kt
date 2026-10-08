@@ -9,7 +9,6 @@ import android.os.SystemClock
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetProvider
 import java.util.Calendar
-import kotlin.math.abs
 
 class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
 
@@ -20,8 +19,8 @@ class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
         val day = PrayerWidgetData.today(widgetData, now)
         val nextPrayer = PrayerWidgetData.nextPrayer(widgetData, day, now)
         // Vakit gelince kendini yeniler (bu türdeki tüm widget'lar için tek alarm)
-        if (nextPrayer != null && nextPrayer.first > 0L) {
-            PrayerWidgetData.scheduleWidgetUpdate(context, VaktindeWidgetSmallProvider::class.java, nextPrayer.first)
+        if (nextPrayer != null && nextPrayer.time > 0L) {
+            PrayerWidgetData.scheduleWidgetUpdate(context, VaktindeWidgetSmallProvider::class.java, nextPrayer.time)
         }
 
         appWidgetIds.forEach { widgetId ->
@@ -30,18 +29,11 @@ class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
                 val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 setOnClickPendingIntent(R.id.widget_root, pendingIntent)
 
-                if (nextPrayer != null && nextPrayer.first > 0L) {
-                    val targetTime = nextPrayer.first
-                    val prayerName = nextPrayer.second
+                if (nextPrayer != null && nextPrayer.time > 0L) {
+                    // "İkindiye" (title_<vakit>; yoksa title_text / vakit adı)
+                    setTextViewText(R.id.tv_title_small, PrayerWidgetData.title(widgetData, nextPrayer))
 
-                    val dartTargetTime = widgetData.getLong("target_time_ms", 0L)
-                    if (abs(dartTargetTime - targetTime) < 60000) {
-                        setTextViewText(R.id.tv_title_small, widgetData.getString("title_text", ""))
-                    } else {
-                        setTextViewText(R.id.tv_title_small, prayerName)
-                    }
-
-                    val baseTime = SystemClock.elapsedRealtime() + (targetTime - currentTime)
+                    val baseTime = SystemClock.elapsedRealtime() + (nextPrayer.time - currentTime)
                     setChronometer(R.id.chronometer_small, baseTime, null, true)
                     setBoolean(R.id.chronometer_small, "setCountDown", true)
                 } else {
@@ -51,6 +43,8 @@ class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
             }
             appWidgetManager.updateAppWidget(widgetId, views)
         }
+        // Alarm gelmezse WidgetRefresher bu kayda bakıp yeniden çizer
+        WidgetRefresher.markWidgetsDrawn(context, VaktindeWidgetSmallProvider::class.java, appWidgetIds, nextPrayer?.time ?: 0L, now)
     }
 
     // Saat / saat dilimi değişince sayaç hemen yeniden kurulur

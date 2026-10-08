@@ -18,7 +18,7 @@ class NotificationUpdater : BroadcastReceiver() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         try {
             // Dart'ın sisteme kaydettiği verileri okuyoruz
-            val widgetData = context.getSharedPreferences("HomeWidgetPreferences", Context.MODE_PRIVATE)
+            val widgetData = context.getSharedPreferences(PrayerWidgetData.PREFS, Context.MODE_PRIVATE)
 
             // Saat değişimi: uygulama henüz vakit yazmadıysa boş bildirim çıkarılmaz
             if (PrayerWidgetData.isTimeChange(intent.action) && !PrayerWidgetData.hasTimes(widgetData)) return
@@ -36,16 +36,11 @@ class NotificationUpdater : BroadcastReceiver() {
             val currentTime = now.timeInMillis
             val nextPrayer = PrayerWidgetData.nextPrayer(widgetData, day, now)
 
-            if (nextPrayer != null && nextPrayer.first > 0L) {
-                val targetTime = nextPrayer.first
-                val prayerName = nextPrayer.second
+            if (nextPrayer != null && nextPrayer.time > 0L) {
+                val targetTime = nextPrayer.time
 
-                val dartTargetTime = widgetData.getLong("target_time_ms", 0L)
-                if (kotlin.math.abs(dartTargetTime - targetTime) < 60000) { 
-                    views.setTextViewText(R.id.notif_next_prayer_name, widgetData.getString("title_text", ""))
-                } else {
-                    views.setTextViewText(R.id.notif_next_prayer_name, prayerName)
-                }
+                // "İkindiye" (title_<vakit>; yoksa title_text / vakit adı)
+                views.setTextViewText(R.id.notif_next_prayer_name, PrayerWidgetData.title(widgetData, nextPrayer))
 
                 // Native Sayacı (Chronometer) başlatıyoruz
                 val baseTime = SystemClock.elapsedRealtime() + (targetTime - currentTime)
@@ -73,6 +68,8 @@ class NotificationUpdater : BroadcastReceiver() {
                 .setContentIntent(pendingIntent)
             
             notificationManager.notify(888, builder.build())
+            // Alarm gelmezse WidgetRefresher bu kayda bakıp yeniden çizer (888 açıksa)
+            WidgetRefresher.markNotificationDrawn(context, nextPrayer?.time ?: 0L, now)
         } catch (e: Exception) {
             e.printStackTrace()
         }
