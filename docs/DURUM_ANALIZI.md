@@ -1,4 +1,4 @@
-# Vaktinde — Durum (v1.1.1+15; Play'de 1.1.0+14)
+# Vaktinde — Durum (v1.1.2+16; dahili testte 1.1.1+15, Play'de 1.1.0+14)
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
 
@@ -154,3 +154,11 @@ Efor: S ≤1 gün · M 2–4 gün · L 1 hafta+. Kaynak: araştırma raporu (Eki
 3. Widget/kalıcı bildirim: vakit geçtikten sonra ekranı aç → en geç ~1 dk içinde sıradaki vakte sayar, başlık "Akşama" gibi.
 4. Kıble: bilinen bir yönle (cami) karşılaştır; mıknatıslı kılıf/metal yanında parazit uyarısı; alttaki not ve bilgi sayfası.
 5. Ayarlar > Destek > Gizlilik Politikası tarayıcıda açılır.
+
+## v1.1.2: R8 (Play "DEX kodu optimizasyonu, eşiğimizin altında"; Kod karartma %1, son tarih Şub 2027)
+Release derlemesinde R8 açıldı (küçültme + optimizasyon + karartma), kaynak küçültme kapalı kaldı (res/raw sesleri).
+Kurallar `android/app/proguard-rules.pro`. Bu ortamda R8 çalıştırılamadığı için dahili testte cihazda denenecekler:
+1. Derleme "Missing classes detected while running R8" ile durursa missing_rules.txt satırları kurallara eklenir.
+2. 1.1.1 kuruluyken 1.1.2'ye güncelle → uygulamayı aç → bir sonraki vakit için ezan aç; ezan çalar, "Kıldım" işler.
+3. Telefonu yeniden başlat → kurulu ezan yine çalar (eklenti Gson kaydını okur).
+4. Widget'lar, kalıcı bildirim, kıble pusulası, reklamlar çalışır; Crashlytics'te "kurulamadı" kaydı yok.

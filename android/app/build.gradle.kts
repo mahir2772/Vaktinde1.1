@@ -46,9 +46,14 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
+            // R8: Kotlin/Java kodu küçültülür, optimize edilir ve karartılır (Play "DEX kodu
+            // optimizasyonu" ölçütü). Eşleme dosyası AAB'ye girer, Crashlytics'e de yüklenir.
+            // Kurallar: proguard-rules.pro (bildirim eklentisinin Gson kayıtları)
+            isMinifyEnabled = true
+            // Kaynak küçültme kapalı: ezan/bildirim sesleri (res/raw) Dart'tan adla çağrılıyor,
+            // küçültücü onları kullanılmıyor sanıp siler
             isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }

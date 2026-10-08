@@ -187,6 +187,14 @@ Tüm ID'ler `common/ad_helper.dart` → `AdIds` içinde; `kReleaseMode` ile debu
 - `pubspec.yaml` version `x.y.z+build` → versionCode. Play'e her yüklemede build numarası artmalı.
 - İmza: `android/key.properties` (+ .jks) git'te yok, yerelde olmalı. `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<anahtar>` (README).
 - Crashlytics gradle plugin: root `build.gradle.kts` classpath + app `plugins`.
+- R8 (1.1.2+): release'de `isMinifyEnabled = true` (küçültme + optimizasyon + karartma; Play "DEX kodu optimizasyonu",
+  son tarih Şub 2027), `proguard-android-optimize.txt` + `android/app/proguard-rules.pro`: `-keep class com.dexterous.** { *; }`
+  (flutter_local_notifications kurulu bildirimleri Gson ile saklar; stil alt türü sınıfın kısa adıyla, enum alan adıyla
+  kaydedilir → ad değişirse eski kayıt okunamaz, yeni bildirim kurulamaz) + Gson kuralları + Play Core/annotation dontwarn.
+  `isShrinkResources = false`: res/raw ezan sesleri Dart'tan adla çağrılır, kaynak küçültücü siler. Eşleme dosyası AAB'ye
+  girer; Crashlytics eklentisi derlemede yükler (internet gerekir). Burada R8 çalıştırılamıyor → her R8 değişikliği dahili
+  testte cihazda denenir. "Missing classes detected while running R8" çıkarsa
+  build/app/outputs/mapping/release/missing_rules.txt satırları proguard-rules.pro'ya eklenir.
 - Test: `TZ=Europe/Istanbul flutter test test/prayer_time_service_test.dart` (Diyanet referansıyla ±1 dk). Tüm testler: `TZ=Europe/Istanbul flutter test`.
 - Ekran görüntüleri: `SCREENSHOT_DIR=<klasör> TZ=Europe/Istanbul flutter test test/screenshots/` → tüm ana ekranlar PNG (tr açık/koyu/arka plan/%130 yazı, de, ar) + `_errors.txt`. Env yoksa atlanır.
 - Bulut ortamında Flutter SDK hazır gelmiyor (gerekirse scratchpad'e indirilir); Android SDK indirilemiyor (dl.google.com kapalı) → APK derlenemez. api.aladhan.com ve diyanet.gov.tr erişimi kapalı.
