@@ -18,17 +18,28 @@ enum _LocationProblem { serviceOff, permissionDenied, unavailable }
 /// Kıble pusulası: konumdan Kâbe yönü (açı) + telefonun yönü.
 ///
 /// Konum: önce GPS (izin istemez; izin tanıtım turundan sonra istenir), olmazsa
-/// kayıtlı koordinat. Pusula ve konum sadece ekran görünürken çalışır.
+/// kayıtlı koordinat. Pusula sadece sekme görünür ve uygulama ön plandayken
+/// dinlenir (arka plan, tam ekran reklam, bildirim perdesi → sensörler kapanır).
 class QiblaView extends StatefulWidget {
-  const QiblaView({super.key});
+  /// Pusula olay kaynağı; testte sahte akış verilir
+  @visibleForTesting
+  final Stream<CompassEvent>? Function() compassEvents;
+
+  const QiblaView({super.key, this.compassEvents = _platformCompass});
+
+  static Stream<CompassEvent>? _platformCompass() => FlutterCompass.events;
 
   @override
   State<QiblaView> createState() => _QiblaViewState();
 }
 
-class _QiblaViewState extends State<QiblaView> {
+class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   static const String _calibrationSeenKey = 'qibla_calibration_dialog_seen';
   static const Duration _noSensorTimeout = Duration(seconds: 4);
+  // Kısa doğruluk düşüşlerinde uyarı yanıp sönmesin
+  static const Duration _calibrationDelay = Duration(seconds: 2);
+  // Bundan küçük yön değişimi yeniden çizim yaptırmaz
+  static const double _minHeadingStep = 0.5;
 
   bool _loading = true;
   bool _initStarted = false;
@@ -37,12 +48,14 @@ class _QiblaViewState extends State<QiblaView> {
   bool _usingSavedLocation = false;
 
   bool _active = false;
+  bool _foreground = true;
   StreamSubscription<CompassEvent>? _compassSubscription;
   Timer? _noSensorTimer;
+  Timer? _calibrationTimer;
   bool _noCompass = false;
   bool _hasHeading = false;
 
-  /// Son okunan yön (0..360) ve kadranın yumuşak dönüşü için sarılmamış yön
+  /// Son gösterilen yön (0..360) ve kadranın yumuşak dönüşü için sarılmamış yön
   double _heading = 0;
   double _unwrappedHeading = 0;
   bool _aligned = false;
@@ -52,28 +65,43 @@ class _QiblaViewState extends State<QiblaView> {
   bool _showCalibrationDialog = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Durum henüz bildirilmediyse (açılış) ön planda sayılır
+    final state = WidgetsBinding.instance.lifecycleState;
+    _foreground = state == null || state == AppLifecycleState.resumed;
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Sekme gizliyken (IndexedStack) veya üstüne sayfa açılınca pusula durur
     final active = Visibility.of(context) && TickerMode.of(context);
     if (active == _active) return;
     _active = active;
-    if (active) {
-      if (!_initStarted) {
-        _initStarted = true;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _init();
-        });
-      } else if (_bearing != null) {
-        _startCompass();
-      }
-    } else {
-      _stopCompass();
+    if (active && !_initStarted) {
+      _initStarted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _init();
+      });
+      return;
     }
+    _syncCompass();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // inactive/hidden/paused/detached: sensörler bırakılır
+    final foreground = state == AppLifecycleState.resumed;
+    if (foreground == _foreground) return;
+    _foreground = foreground;
+    _syncCompass();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _stopCompass();
     super.dispose();
   }
@@ -98,11 +126,14 @@ class _QiblaViewState extends State<QiblaView> {
             permission == LocationPermission.deniedForever) {
           problem = _LocationProblem.permissionDenied;
         } else {
+          // timeLimit: süre dolunca yerel konum isteği de durur (dış .timeout
+          // sadece beklemeyi bırakır)
           final position =
               await Geolocator.getLastKnownPosition() ??
               await Geolocator.getCurrentPosition(
                 desiredAccuracy: LocationAccuracy.medium,
-              ).timeout(const Duration(seconds: 8));
+                timeLimit: const Duration(seconds: 8),
+              );
           coords = (lat: position.latitude, lng: position.longitude);
         }
       }
@@ -138,17 +169,28 @@ class _QiblaViewState extends State<QiblaView> {
         _usingSavedLocation = usingSaved;
       }
     });
-    if (_bearing != null && _active) _startCompass();
+    _syncCompass();
   }
 
+  /// Pusula sadece sekme görünür, uygulama ön planda ve açı hazırken dinlenir
+  void _syncCompass() {
+    if (_active && _foreground && _bearing != null) {
+      _startCompass();
+    } else {
+      _stopCompass();
+    }
+  }
+
+  /// Tek abonelik: zaten dinleniyorsa bir şey yapmaz
   void _startCompass() {
     if (_compassSubscription != null) return;
-    final events = FlutterCompass.events;
+    final events = widget.compassEvents();
     if (events == null) {
-      setState(() => _noCompass = true);
+      if (!_noCompass) setState(() => _noCompass = true);
       return;
     }
     _noSensorTimer?.cancel();
+    _noSensorTimer = null;
     if (!_hasHeading) {
       // Sensörü olmayan cihazda hiç olay gelmez
       _noSensorTimer = Timer(_noSensorTimeout, () {
@@ -163,9 +205,13 @@ class _QiblaViewState extends State<QiblaView> {
     );
   }
 
+  /// Aboneliği bırakır (eklenti sensör dinleyicilerini kaldırır); tekrar
+  /// çağrılabilir
   void _stopCompass() {
     _noSensorTimer?.cancel();
     _noSensorTimer = null;
+    _calibrationTimer?.cancel();
+    _calibrationTimer = null;
     _compassSubscription?.cancel();
     _compassSubscription = null;
   }
@@ -174,26 +220,19 @@ class _QiblaViewState extends State<QiblaView> {
     if (!mounted || _bearing == null) return;
     final raw = event.heading;
     if (raw == null) {
-      if (!_hasHeading) setState(() => _noCompass = true);
+      if (!_hasHeading && !_noCompass) setState(() => _noCompass = true);
       return;
     }
     _noSensorTimer?.cancel();
+    _noSensorTimer = null;
+    _updateCalibration(event.accuracy);
+
     final heading = normalizeDegrees(raw);
     final step = _hasHeading ? signedDelta(_heading, heading) : heading;
+    // Saniyede ~30 olay: fark edilmeyecek titreşimde yeniden çizilmez
+    if (_hasHeading && !_noCompass && step.abs() < _minHeadingStep) return;
     final aligned = qiblaTurnFor(heading, _bearing!) == QiblaTurn.aligned;
     if (aligned && !_aligned) HapticFeedback.heavyImpact();
-
-    final accuracy = event.accuracy;
-    final poor = accuracy == null || accuracy <= 0 || accuracy > 15;
-    var showDialog = _showCalibrationDialog;
-    if (poor && !_calibrationDialogSeen) {
-      // Kalibrasyon penceresi sadece ilk seferde (kalıcı olarak hatırlanır)
-      _calibrationDialogSeen = true;
-      showDialog = true;
-      SharedPreferences.getInstance()
-          .then((prefs) => prefs.setBool(_calibrationSeenKey, true))
-          .catchError((Object _) => false);
-    }
 
     setState(() {
       _hasHeading = true;
@@ -201,7 +240,36 @@ class _QiblaViewState extends State<QiblaView> {
       _heading = heading;
       _unwrappedHeading += step;
       _aligned = aligned;
-      _calibrationPoor = poor;
+    });
+  }
+
+  /// Doğruluk [_calibrationDelay] boyunca zayıf/bilinmiyorsa uyarı açılır,
+  /// iyi okuma gelince hemen kapanır
+  void _updateCalibration(double? accuracy) {
+    if (!compassAccuracyPoor(accuracy)) {
+      _calibrationTimer?.cancel();
+      _calibrationTimer = null;
+      if (_calibrationPoor) setState(() => _calibrationPoor = false);
+      return;
+    }
+    if (_calibrationPoor || _calibrationTimer != null) return;
+    _calibrationTimer = Timer(_calibrationDelay, _onCalibrationPoor);
+  }
+
+  void _onCalibrationPoor() {
+    _calibrationTimer = null;
+    if (!mounted) return;
+    var showDialog = _showCalibrationDialog;
+    if (!_calibrationDialogSeen) {
+      // Kalibrasyon penceresi sadece ilk seferde (kalıcı olarak hatırlanır)
+      _calibrationDialogSeen = true;
+      showDialog = true;
+      SharedPreferences.getInstance()
+          .then((prefs) => prefs.setBool(_calibrationSeenKey, true))
+          .catchError((Object _) => false);
+    }
+    setState(() {
+      _calibrationPoor = true;
       _showCalibrationDialog = showDialog;
     });
   }
