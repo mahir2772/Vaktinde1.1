@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
-import '../../../core/ui/app_format.dart';
-import '../../../core/ui/app_tokens.dart';
-import '../../../core/ui/prayer_colors.dart';
 import '../prayer_schedule.dart';
 import '../view_model/home_view_model.dart';
+import 'alarm_health_banner.dart';
 
-/// "Alarmlar" sekmesi: her vakit için açılır kart (tam vakitte ezan, sessiz
-/// bildirim, ses seçimi, önceden uyarı). Sıradaki vakit vurgulanır.
+/// "Alarmlar" sekmesi: en üstte izin uyarısı (varsa) ve "sessiz modda da çal";
+/// sonra her vakit için açılır kart (tam vakitte ezan, sessiz bildirim, ses
+/// seçimi, önceden uyarı). Sıradaki vakit vurgulanır.
 class AlarmSettingsList extends StatelessWidget {
   final HomeViewModel viewModel;
   final String? nextKey;
@@ -26,10 +26,19 @@ class AlarmSettingsList extends StatelessWidget {
     final times = viewModel.prayerTimes!;
     return ListView.separated(
       padding: padding,
-      itemCount: homePrayerKeys.length,
+      itemCount: homePrayerKeys.length + 1,
       separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, i) {
-        final key = homePrayerKeys[i];
+        if (i == 0) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AlarmHealthBanner(viewModel: viewModel),
+              _AlarmStreamTile(viewModel: viewModel),
+            ],
+          );
+        }
+        final key = homePrayerKeys[i - 1];
         return _AlarmCard(
           viewModel: viewModel,
           prayerKey: key,
@@ -37,6 +46,34 @@ class AlarmSettingsList extends StatelessWidget {
           isNext: key == nextKey,
         );
       },
+    );
+  }
+}
+
+/// "Sessiz modda da çal" (varsayılan kapalı): açıkken ezan alarm ses
+/// seviyesinde çalar; hatırlatmalar ve yazılı bildirimler değişmez
+class _AlarmStreamTile extends StatelessWidget {
+  final HomeViewModel viewModel;
+
+  const _AlarmStreamTile({required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final enabled = viewModel.ezanAlarmStream;
+    return AppCard(
+      padding: EdgeInsets.zero,
+      child: AppListTile(
+        leadingIcon: Icons.volume_up_outlined,
+        title: loc.ezanAlarmStreamTitle,
+        subtitle: loc.ezanAlarmStreamSub,
+        showChevron: false,
+        trailing: Switch(
+          value: enabled,
+          onChanged: (value) => viewModel.setEzanAlarmStream(value),
+        ),
+        onTap: () => viewModel.setEzanAlarmStream(!enabled),
+      ),
     );
   }
 }
@@ -118,11 +155,17 @@ class _AlarmCard extends StatelessWidget {
               size: 20,
             ),
           ),
-          title: Text(
-            localizedPrayerName(prayerKey, loc),
-            style: theme.textTheme.titleMedium!.copyWith(
-              color: titleColor,
-              fontSize: 17,
+          // Dar ekranda büyük yazıda vakit adı ortadan bölünmez, küçülür
+          title: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+              localizedPrayerName(prayerKey, loc),
+              maxLines: 1,
+              style: theme.textTheme.titleMedium!.copyWith(
+                color: titleColor,
+                fontSize: 17,
+              ),
             ),
           ),
           trailing: Row(

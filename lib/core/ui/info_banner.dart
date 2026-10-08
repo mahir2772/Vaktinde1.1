@@ -12,12 +12,17 @@ class InfoBanner extends StatelessWidget {
   final InfoTone tone;
   final Widget? action;
 
+  /// [action] metnin altında (sonda hizalı): dar ekranda/büyük yazıda metin
+  /// tam genişlikte kalır
+  final bool actionBelow;
+
   const InfoBanner({
     super.key,
     required this.message,
     this.icon,
     this.tone = InfoTone.info,
     this.action,
+    this.actionBelow = false,
   });
 
   @override
@@ -56,6 +61,10 @@ class InfoBanner extends StatelessWidget {
         Icons.check_circle_outline,
       ),
     };
+    final text = Text(
+      message,
+      style: theme.textTheme.bodyMedium!.copyWith(color: foreground),
+    );
     return Semantics(
       container: true,
       child: Container(
@@ -78,12 +87,20 @@ class InfoBanner extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: Text(
-                message,
-                style: theme.textTheme.bodyMedium!.copyWith(color: foreground),
-              ),
+              child: action != null && actionBelow
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        text,
+                        Align(
+                          alignment: AlignmentDirectional.centerEnd,
+                          child: action,
+                        ),
+                      ],
+                    )
+                  : text,
             ),
-            if (action != null) ...[
+            if (action != null && !actionBelow) ...[
               const SizedBox(width: AppSpacing.sm),
               action!,
             ],

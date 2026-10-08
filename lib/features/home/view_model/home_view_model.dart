@@ -20,8 +20,10 @@ import '../../../data/models/prayer_times_model.dart';
 import '../../../data/models/hadith_model.dart';
 import '../../../main.dart';
 import '../../../data/services/ayah_service.dart';
+import '../../../data/services/error_reporter.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
+import '../alarm_health.dart';
 
 class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final LocationService _locationService = LocationService();
@@ -57,6 +59,21 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   // "Vakit çıkmadan hatırlat"
   bool endReminderEnabled = false;
   int endReminderMinutes = PrayerTracker.defaultEndReminderMinutes;
+  // "Sessiz modda da çal": ezan alarm ses akışında (varsayılan kapalı)
+  bool ezanAlarmStream = false;
+
+  /// Ezan uyarısının sağlığı (bildirim ve tam zamanlı alarm izni); izin
+  /// değişince ya da bildirimler açılınca alarmlar yeniden kurulur
+  late final AlarmHealth alarmHealth = AlarmHealth(
+    notificationService,
+    onChanged: rescheduleAlarms,
+  );
+
+  /// En az bir ezan / hatırlatma / vakit çıkış uyarısı açık mı (uyarı şeridi için)
+  bool get anyAlarmEnabled =>
+      onTimeAlarms.values.any((on) => on) ||
+      reminderAlarms.values.any((on) => on) ||
+      endReminderEnabled;
   final List<String> soundIds = [
     "ezan1",
     "ezan2",
@@ -112,6 +129,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      // Ayarlardan dönülmüş olabilir: izinler yeniden okunur (düzeldiyse uyarı kalkar)
+      alarmHealth.refresh();
       if (_isDataLoaded) {
         _refreshTimesIfNewDay();
         _calculateHijriDate(); // Uygulama uyanınca tarihi kontrol et
@@ -147,6 +166,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       await initializeDateFormatting('tr_TR', null);
       await _loadSavedSettings();
       await notificationService.init();
+      alarmHealth.refresh();
 
       _calculateHijriDate(); // İlk açılışta Hicri tarih
 
@@ -488,6 +508,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     selectedSounds = savedData['sounds'];
     selectedReminderSounds = savedData['reminderSounds'];
     silentModeSettings = savedData['silentMode'];
+    ezanAlarmStream = savedData['alarmStream'] == true;
     final endReminder = await _storageService.loadEndReminderSettings();
     endReminderEnabled = endReminder.enabled;
     endReminderMinutes = endReminder.minutes;
@@ -504,6 +525,19 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       minutes: endReminderMinutes,
     );
     await refreshEndReminders();
+  }
+
+  /// "Sessiz modda da çal": ezanlar yeni (alarm) kanallarıyla yeniden kurulur
+  Future<void> setEzanAlarmStream(bool value) async {
+    if (ezanAlarmStream == value) return;
+    ezanAlarmStream = value;
+    notifyListeners();
+    try {
+      await _storageService.saveEzanAlarmStream(value);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'sessiz modda çal ayarı kaydedilemedi');
+    }
+    await rescheduleAlarms();
   }
 
   /// Takipte bir vakit geri alınınca ya da ayar değişince hatırlatmalar eşitlenir
@@ -602,6 +636,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   Future<void>? _rescheduleRun;
   bool _rescheduleAgain = false;
 
+  /// Alarmları güncel ayarlar ve izinlerle yeniden kurar (üst üste istekler birleşir)
+  Future<void> rescheduleAlarms() => _rescheduleAlarms();
+
   Future<void> _rescheduleAlarms() {
     final running = _rescheduleRun;
     if (running != null) {
@@ -640,10 +677,13 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         selectedSounds: selectedSounds,
         selectedReminderSounds: selectedReminderSounds,
         silentModeSettings: silentModeSettings,
+        alarmStream: ezanAlarmStream,
       );
 
       await _scheduleDailyContent();
-    } catch (e) {}
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'alarmlar kurulamadı (uygulama)');
+    }
   }
 
   static const String _batteryAskedKey = 'battery_optimization_asked';
@@ -667,6 +707,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _midnightTimer?.cancel();
     _audioPlayer?.dispose();
+    alarmHealth.dispose();
     super.dispose();
   }
 }

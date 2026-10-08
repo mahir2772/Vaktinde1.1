@@ -15,6 +15,7 @@ import '../../location_search_dialog/location_search_dialog.dart';
 import '../../main_wrapper/app_showcase.dart';
 import '../prayer_schedule.dart';
 import '../view_model/home_view_model.dart';
+import '../widgets/alarm_health_banner.dart';
 import '../widgets/alarm_settings_list.dart';
 import '../widgets/countdown_widget.dart';
 import '../widgets/daily_content.dart';
@@ -257,6 +258,8 @@ class _HomeViewState extends State<HomeView>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Bildirim/alarm izni sorunu varsa (yoksa yer kaplamaz)
+          AlarmHealthBanner(viewModel: viewModel),
           PrayerTimesGrid(prayerTimes: times),
           const SizedBox(height: AppSpacing.md),
           PrayerTrackerRow(prayerTimes: times),
