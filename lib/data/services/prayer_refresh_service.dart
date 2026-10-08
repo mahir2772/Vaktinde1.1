@@ -183,7 +183,7 @@ class PrayerRefreshService {
       String dinamikBaslik = "";
       switch (sonrakiVakitIsmi) {
         case "İmsak":
-          dinamikBaslik = loc?.toImsak ?? "Sabaha";
+          dinamikBaslik = loc?.toImsak ?? "İmsaka";
           break;
         case "Güneş":
           dinamikBaslik = loc?.toGunes ?? "Güneşe";

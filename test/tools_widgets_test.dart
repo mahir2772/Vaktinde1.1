@@ -342,8 +342,9 @@ void main() {
         find.widgetWithText(TextField, loc.silverGram),
         '100',
       );
+      // Altın ve gümüş birim fiyatı aynı etiketi taşır; gümüşünki sonuncusu
       await tester.enterText(
-        find.widgetWithText(TextField, loc.unitPrice),
+        find.widgetWithText(TextField, loc.unitPrice).last,
         '40,5',
       );
       final button = find.text(loc.calculateButton);

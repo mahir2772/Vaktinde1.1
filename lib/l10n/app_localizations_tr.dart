@@ -15,7 +15,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navZikir => 'Zikir';
 
   @override
-  String get adPrivacySettings => 'Reklam gizlilik ayarları';
+  String get adPrivacySettings => 'Reklam Gizlilik Ayarları';
 
   @override
   String get adPrivacySettingsSub =>
@@ -175,7 +175,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get yatsi => 'Yatsı';
 
   @override
-  String get exactAlarm => 'Tam Vaktinde Oku';
+  String get exactAlarm => 'Tam Vaktinde Bildir';
 
   @override
   String get exactAlarmSub => 'Bildirim gönderir.';
@@ -184,7 +184,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get silentNotif => 'Sadece Yazılı Bildirim';
 
   @override
-  String get silentNotifSub => 'Ezan/Ses çalmaz, sadece uyarı gelir.';
+  String get silentNotifSub => 'Ezan/ses çalmaz, sadece uyarı gelir.';
 
   @override
   String warningAlarm(String minute) {
@@ -273,13 +273,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get locationWarning =>
-      'Doğru namaz vakitleri için İlçe seçimi önemlidir.';
+      'Doğru namaz vakitleri için ilçe seçimi önemlidir.';
 
   @override
   String get menuNotifications => 'Bildirim İzinleri';
 
   @override
-  String get menuNotificationsSub => 'Ses gelmiyorsa buradan kontrol et.';
+  String get menuNotificationsSub => 'Ses gelmiyorsa buradan kontrol edin.';
 
   @override
   String get menuTroubleshoot => 'Bildirim Gelmiyor mu?';
@@ -350,7 +350,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get trackerKazaInfo =>
-      'Takibe başladığınız günden itibaren son 30 günde işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.';
+      'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.';
 
   @override
   String trackerKazaConfirm(int count) {
@@ -400,11 +400,11 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get endReminderTitle => 'Vakit çıkmadan hatırlat';
+  String get endReminderTitle => 'Vakit Çıkmadan Hatırlat';
 
   @override
   String get endReminderSub =>
-      'Kılındı işaretlenmemiş namazın vakti çıkmadan bildirim gönderir.';
+      'Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.';
 
   @override
   String get endReminderNotifTitle => 'Vakit Çıkıyor';
@@ -435,7 +435,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sectionSupport => 'DESTEK';
 
   @override
-  String get shareApp => 'Arkadaşınla Paylaş';
+  String get shareApp => 'Arkadaşlarınızla Paylaş';
 
   @override
   String get rateApp => 'Bize Puan Ver';
@@ -445,7 +445,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String shareText(String link) {
-    return 'Harika bir Ezan Vakti uygulaması buldum! İndir: $link';
+    return 'Harika bir ezan vakti uygulaması buldum! İndir: $link';
   }
 
   @override
@@ -453,7 +453,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get batteryDialogBody =>
-      'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (Kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya logoya tıklayın.\n3. Kilit Simgesine 🔒 basarak kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil > Kısıtlanmamış seçeneğini seçin.';
+      'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya simgesine dokunun.\n3. Kilit simgesine 🔒 dokunarak uygulamayı kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil bölümünden \'Kısıtlanmamış\' seçeneğini işaretleyin.';
 
   @override
   String get okUnderstood => 'Tamam, Anladım';
@@ -484,7 +484,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get missedPrayersInfo =>
-      'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya tıklayarak elle girebilirsiniz)';
+      'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)';
 
   @override
   String editMissedTitle(String title) {
@@ -527,7 +527,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get zakatTitle => 'Zekat Hesapla';
 
   @override
-  String get zakatCalculatorTitle => 'Akıllı Zekat Hesapla';
+  String get zakatCalculatorTitle => 'Akıllı Zekat Hesaplama';
 
   @override
   String get liveRatesLoading => 'Güncel kurlar çekiliyor...';
@@ -546,7 +546,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get goldAmount => 'Adet / Gram';
 
   @override
-  String get goldUnitPrice => 'Birim Fiyatı (TL)';
+  String get goldUnitPrice => 'Birim Fiyatı';
 
   @override
   String get sectionCurrency => 'Döviz Varlığı';
@@ -638,7 +638,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appearanceSettings => 'Görünüm Ayarları';
 
   @override
-  String get appearanceSub => 'Tema ve Arka Plan';
+  String get appearanceSub => 'Tema ve arka plan';
 
   @override
   String get themeMode => 'Tema Modu';
@@ -677,11 +677,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get zakatNotEligible => 'Zekat Gerekmiyor';
 
   @override
-  String get nisabLimit => 'Nisab Sınırı (80.18 gr Altın)';
+  String get nisabLimit => 'Nisap Sınırı (80,18 gr Altın)';
 
   @override
   String get belowNisabMessage =>
-      'Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.';
+      'Net varlığınız nisap miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.';
 
   @override
   String get searchLocationTitle => 'Konum Ara (Tüm Dünya)';
@@ -747,10 +747,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get zakatDescription =>
-      'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre detaylı zekatınızı hesaplayın.';
+      'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre zekatınızı detaylı olarak hesaplayın.';
 
   @override
-  String get cashAndCurrencyTitle => 'Nakit ve Döviz Varlıklar';
+  String get cashAndCurrencyTitle => 'Nakit ve Döviz Varlıkları';
 
   @override
   String get cashTurkishLira => 'Nakit Türk Lirası (TL)';
@@ -768,7 +768,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get commercialGoodsTitle => 'Ticari Mallar';
 
   @override
-  String get commercialEvalCurrency => 'Değerlendirme Döviz Türü';
+  String get commercialEvalCurrency => 'Değerleme Para Birimi';
 
   @override
   String get commercialGoodsValue => 'Malın Değeri';
@@ -802,7 +802,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get agriDiyanetNote =>
-      'Zirai ürünlerin zekât hesaplamasında nisap miktarı aranmadığı için, beyan ettiğiniz tutar doğrudan zekât sepetine eklenir.';
+      'Zirai ürünlerin zekat hesaplamasında nisap miktarı aranmadığı için, ürün değerinden hesaplanan öşür doğrudan toplam zekata eklenir.';
 
   @override
   String get harvestedProductValue => 'Hasat Edilen Ürün Değeri (TL)';
@@ -817,7 +817,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get debtType => 'Borcun Cinsi (TL, Döviz, Altın)';
 
   @override
-  String get zakatAgriIncluded => 'İçindeki Zirai Ürün (Öşür) Zekatı';
+  String get zakatAgriIncluded => 'Dahil Edilen Öşür (Zirai Ürün Zekatı)';
 
   @override
   String get assetCheck => 'Çek';
@@ -847,7 +847,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get agriRateCostly => 'Masraflı (Motor/Taşıma) - %5';
 
   @override
-  String get toImsak => 'Sabaha';
+  String get toImsak => 'İmsaka';
 
   @override
   String get toGunes => 'Güneşe';
@@ -1001,13 +1001,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dhikrEstagfirullah => 'Estağfirullah';
 
   @override
-  String get dhikrLaHavle => 'La Havle Vela Kuvvete';
+  String get dhikrLaHavle => 'La Havle Vela Kuvvete İlla Billah';
 
   @override
   String get dhikrHasbunallah => 'Hasbünallah';
 
   @override
-  String get dhikrSubhanallahi => 'Subhanallahi ve bihamdihi';
+  String get dhikrSubhanallahi => 'Sübhanallahi ve Bihamdihi';
 
   @override
   String get dhikrYunus => 'Hz. Yunus\'un Duası';
@@ -1068,7 +1068,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get kurbanBayrami => 'Kurban Bayramı';
 
   @override
-  String get regaipKandili => 'Regaip Kandili';
+  String get regaipKandili => 'Regaib Kandili';
 
   @override
   String get tabTimes => 'Vakitler';
@@ -1077,7 +1077,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tabAlarms => 'Alarmlar';
 
   @override
-  String get locationFoundNoName => 'Konum bulundu ama isim yok.';
+  String get locationFoundNoName => 'Konum bulundu ancak yer adı alınamadı.';
 
   @override
   String get dailyAyahTitle => 'Günün Ayeti';
@@ -1093,16 +1093,16 @@ class AppLocalizationsTr extends AppLocalizations {
       'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.';
 
   @override
-  String get turnRight => 'Sağa dön ➔';
+  String get turnRight => 'Sağa dönün ➔';
 
   @override
-  String get turnSlightRight => 'Hafif sağa dön ➔';
+  String get turnSlightRight => 'Biraz sağa dönün ➔';
 
   @override
-  String get turnLeft => '⬅ Sola dön';
+  String get turnLeft => '⬅ Sola dönün';
 
   @override
-  String get turnSlightLeft => '⬅ Hafif sola dön';
+  String get turnSlightLeft => '⬅ Biraz sola dönün';
 
   @override
   String get calibrationRequired => 'Kalibrasyon Gerekli';
@@ -1208,7 +1208,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get toolsGroupInfo => 'Bilgi';
 
   @override
-  String get toolsGroupCalc => 'Hesap';
+  String get toolsGroupCalc => 'Hesaplama';
 
   @override
   String get toolImsakiyeDesc => 'Aylık ve Ramazan vakitleri';
@@ -1277,14 +1277,14 @@ class AppLocalizationsTr extends AppLocalizations {
       'Güncel altın fiyatı ve kurlar alınamadı. Lütfen fiyatları elle girin.';
 
   @override
-  String get zakatGoldGramPrice => '24 ayar gram altın fiyatı (₺)';
+  String get zakatGoldGramPrice => '24 Ayar Gram Altın Fiyatı (₺)';
 
   @override
-  String get zakatGoldGramPriceHelp => 'Nisab sınırı bu fiyatla hesaplanır.';
+  String get zakatGoldGramPriceHelp => 'Nisap sınırı bu fiyatla hesaplanır.';
 
   @override
   String get zakatNisabUnknown =>
-      'Gram altın fiyatı olmadan nisab sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.';
+      'Gram altın fiyatı olmadan nisap sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.';
 
   @override
   String get imsakiyeRamadan => 'Ramazan';

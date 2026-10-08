@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// No description provided for @adPrivacySettings.
   ///
   /// In tr, this message translates to:
-  /// **'Reklam gizlilik ayarları'**
+  /// **'Reklam Gizlilik Ayarları'**
   String get adPrivacySettings;
 
   /// No description provided for @adPrivacySettingsSub.
@@ -419,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @exactAlarm.
   ///
   /// In tr, this message translates to:
-  /// **'Tam Vaktinde Oku'**
+  /// **'Tam Vaktinde Bildir'**
   String get exactAlarm;
 
   /// No description provided for @exactAlarmSub.
@@ -437,7 +437,7 @@ abstract class AppLocalizations {
   /// No description provided for @silentNotifSub.
   ///
   /// In tr, this message translates to:
-  /// **'Ezan/Ses çalmaz, sadece uyarı gelir.'**
+  /// **'Ezan/ses çalmaz, sadece uyarı gelir.'**
   String get silentNotifSub;
 
   /// No description provided for @warningAlarm.
@@ -599,7 +599,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationWarning.
   ///
   /// In tr, this message translates to:
-  /// **'Doğru namaz vakitleri için İlçe seçimi önemlidir.'**
+  /// **'Doğru namaz vakitleri için ilçe seçimi önemlidir.'**
   String get locationWarning;
 
   /// No description provided for @menuNotifications.
@@ -611,7 +611,7 @@ abstract class AppLocalizations {
   /// No description provided for @menuNotificationsSub.
   ///
   /// In tr, this message translates to:
-  /// **'Ses gelmiyorsa buradan kontrol et.'**
+  /// **'Ses gelmiyorsa buradan kontrol edin.'**
   String get menuNotificationsSub;
 
   /// No description provided for @menuTroubleshoot.
@@ -731,7 +731,7 @@ abstract class AppLocalizations {
   /// No description provided for @trackerKazaInfo.
   ///
   /// In tr, this message translates to:
-  /// **'Takibe başladığınız günden itibaren son 30 günde işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.'**
+  /// **'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.'**
   String get trackerKazaInfo;
 
   /// No description provided for @trackerKazaConfirm.
@@ -791,13 +791,13 @@ abstract class AppLocalizations {
   /// No description provided for @endReminderTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Vakit çıkmadan hatırlat'**
+  /// **'Vakit Çıkmadan Hatırlat'**
   String get endReminderTitle;
 
   /// No description provided for @endReminderSub.
   ///
   /// In tr, this message translates to:
-  /// **'Kılındı işaretlenmemiş namazın vakti çıkmadan bildirim gönderir.'**
+  /// **'Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.'**
   String get endReminderSub;
 
   /// No description provided for @endReminderNotifTitle.
@@ -851,7 +851,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareApp.
   ///
   /// In tr, this message translates to:
-  /// **'Arkadaşınla Paylaş'**
+  /// **'Arkadaşlarınızla Paylaş'**
   String get shareApp;
 
   /// No description provided for @rateApp.
@@ -869,7 +869,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareText.
   ///
   /// In tr, this message translates to:
-  /// **'Harika bir Ezan Vakti uygulaması buldum! İndir: {link}'**
+  /// **'Harika bir ezan vakti uygulaması buldum! İndir: {link}'**
   String shareText(String link);
 
   /// No description provided for @batteryDialogTitle.
@@ -881,7 +881,7 @@ abstract class AppLocalizations {
   /// No description provided for @batteryDialogBody.
   ///
   /// In tr, this message translates to:
-  /// **'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (Kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya logoya tıklayın.\n3. Kilit Simgesine 🔒 basarak kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil > Kısıtlanmamış seçeneğini seçin.'**
+  /// **'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya simgesine dokunun.\n3. Kilit simgesine 🔒 dokunarak uygulamayı kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil bölümünden \'Kısıtlanmamış\' seçeneğini işaretleyin.'**
   String get batteryDialogBody;
 
   /// No description provided for @okUnderstood.
@@ -929,7 +929,7 @@ abstract class AppLocalizations {
   /// No description provided for @missedPrayersInfo.
   ///
   /// In tr, this message translates to:
-  /// **'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya tıklayarak elle girebilirsiniz)'**
+  /// **'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)'**
   String get missedPrayersInfo;
 
   /// No description provided for @editMissedTitle.
@@ -1007,7 +1007,7 @@ abstract class AppLocalizations {
   /// No description provided for @zakatCalculatorTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Akıllı Zekat Hesapla'**
+  /// **'Akıllı Zekat Hesaplama'**
   String get zakatCalculatorTitle;
 
   /// No description provided for @liveRatesLoading.
@@ -1043,7 +1043,7 @@ abstract class AppLocalizations {
   /// No description provided for @goldUnitPrice.
   ///
   /// In tr, this message translates to:
-  /// **'Birim Fiyatı (TL)'**
+  /// **'Birim Fiyatı'**
   String get goldUnitPrice;
 
   /// No description provided for @sectionCurrency.
@@ -1217,7 +1217,7 @@ abstract class AppLocalizations {
   /// No description provided for @appearanceSub.
   ///
   /// In tr, this message translates to:
-  /// **'Tema ve Arka Plan'**
+  /// **'Tema ve arka plan'**
   String get appearanceSub;
 
   /// No description provided for @themeMode.
@@ -1295,13 +1295,13 @@ abstract class AppLocalizations {
   /// No description provided for @nisabLimit.
   ///
   /// In tr, this message translates to:
-  /// **'Nisab Sınırı (80.18 gr Altın)'**
+  /// **'Nisap Sınırı (80,18 gr Altın)'**
   String get nisabLimit;
 
   /// No description provided for @belowNisabMessage.
   ///
   /// In tr, this message translates to:
-  /// **'Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.'**
+  /// **'Net varlığınız nisap miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.'**
   String get belowNisabMessage;
 
   /// No description provided for @searchLocationTitle.
@@ -1421,13 +1421,13 @@ abstract class AppLocalizations {
   /// No description provided for @zakatDescription.
   ///
   /// In tr, this message translates to:
-  /// **'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre detaylı zekatınızı hesaplayın.'**
+  /// **'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre zekatınızı detaylı olarak hesaplayın.'**
   String get zakatDescription;
 
   /// No description provided for @cashAndCurrencyTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Nakit ve Döviz Varlıklar'**
+  /// **'Nakit ve Döviz Varlıkları'**
   String get cashAndCurrencyTitle;
 
   /// No description provided for @cashTurkishLira.
@@ -1463,7 +1463,7 @@ abstract class AppLocalizations {
   /// No description provided for @commercialEvalCurrency.
   ///
   /// In tr, this message translates to:
-  /// **'Değerlendirme Döviz Türü'**
+  /// **'Değerleme Para Birimi'**
   String get commercialEvalCurrency;
 
   /// No description provided for @commercialGoodsValue.
@@ -1529,7 +1529,7 @@ abstract class AppLocalizations {
   /// No description provided for @agriDiyanetNote.
   ///
   /// In tr, this message translates to:
-  /// **'Zirai ürünlerin zekât hesaplamasında nisap miktarı aranmadığı için, beyan ettiğiniz tutar doğrudan zekât sepetine eklenir.'**
+  /// **'Zirai ürünlerin zekat hesaplamasında nisap miktarı aranmadığı için, ürün değerinden hesaplanan öşür doğrudan toplam zekata eklenir.'**
   String get agriDiyanetNote;
 
   /// No description provided for @harvestedProductValue.
@@ -1559,7 +1559,7 @@ abstract class AppLocalizations {
   /// No description provided for @zakatAgriIncluded.
   ///
   /// In tr, this message translates to:
-  /// **'İçindeki Zirai Ürün (Öşür) Zekatı'**
+  /// **'Dahil Edilen Öşür (Zirai Ürün Zekatı)'**
   String get zakatAgriIncluded;
 
   /// No description provided for @assetCheck.
@@ -1619,7 +1619,7 @@ abstract class AppLocalizations {
   /// No description provided for @toImsak.
   ///
   /// In tr, this message translates to:
-  /// **'Sabaha'**
+  /// **'İmsaka'**
   String get toImsak;
 
   /// No description provided for @toGunes.
@@ -1913,7 +1913,7 @@ abstract class AppLocalizations {
   /// No description provided for @dhikrLaHavle.
   ///
   /// In tr, this message translates to:
-  /// **'La Havle Vela Kuvvete'**
+  /// **'La Havle Vela Kuvvete İlla Billah'**
   String get dhikrLaHavle;
 
   /// No description provided for @dhikrHasbunallah.
@@ -1925,7 +1925,7 @@ abstract class AppLocalizations {
   /// No description provided for @dhikrSubhanallahi.
   ///
   /// In tr, this message translates to:
-  /// **'Subhanallahi ve bihamdihi'**
+  /// **'Sübhanallahi ve Bihamdihi'**
   String get dhikrSubhanallahi;
 
   /// No description provided for @dhikrYunus.
@@ -2045,7 +2045,7 @@ abstract class AppLocalizations {
   /// No description provided for @regaipKandili.
   ///
   /// In tr, this message translates to:
-  /// **'Regaip Kandili'**
+  /// **'Regaib Kandili'**
   String get regaipKandili;
 
   /// No description provided for @tabTimes.
@@ -2063,7 +2063,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationFoundNoName.
   ///
   /// In tr, this message translates to:
-  /// **'Konum bulundu ama isim yok.'**
+  /// **'Konum bulundu ancak yer adı alınamadı.'**
   String get locationFoundNoName;
 
   /// No description provided for @dailyAyahTitle.
@@ -2093,25 +2093,25 @@ abstract class AppLocalizations {
   /// No description provided for @turnRight.
   ///
   /// In tr, this message translates to:
-  /// **'Sağa dön ➔'**
+  /// **'Sağa dönün ➔'**
   String get turnRight;
 
   /// No description provided for @turnSlightRight.
   ///
   /// In tr, this message translates to:
-  /// **'Hafif sağa dön ➔'**
+  /// **'Biraz sağa dönün ➔'**
   String get turnSlightRight;
 
   /// No description provided for @turnLeft.
   ///
   /// In tr, this message translates to:
-  /// **'⬅ Sola dön'**
+  /// **'⬅ Sola dönün'**
   String get turnLeft;
 
   /// No description provided for @turnSlightLeft.
   ///
   /// In tr, this message translates to:
-  /// **'⬅ Hafif sola dön'**
+  /// **'⬅ Biraz sola dönün'**
   String get turnSlightLeft;
 
   /// No description provided for @calibrationRequired.
@@ -2321,7 +2321,7 @@ abstract class AppLocalizations {
   /// No description provided for @toolsGroupCalc.
   ///
   /// In tr, this message translates to:
-  /// **'Hesap'**
+  /// **'Hesaplama'**
   String get toolsGroupCalc;
 
   /// No description provided for @toolImsakiyeDesc.
@@ -2435,19 +2435,19 @@ abstract class AppLocalizations {
   /// No description provided for @zakatGoldGramPrice.
   ///
   /// In tr, this message translates to:
-  /// **'24 ayar gram altın fiyatı (₺)'**
+  /// **'24 Ayar Gram Altın Fiyatı (₺)'**
   String get zakatGoldGramPrice;
 
   /// No description provided for @zakatGoldGramPriceHelp.
   ///
   /// In tr, this message translates to:
-  /// **'Nisab sınırı bu fiyatla hesaplanır.'**
+  /// **'Nisap sınırı bu fiyatla hesaplanır.'**
   String get zakatGoldGramPriceHelp;
 
   /// No description provided for @zakatNisabUnknown.
   ///
   /// In tr, this message translates to:
-  /// **'Gram altın fiyatı olmadan nisab sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.'**
+  /// **'Gram altın fiyatı olmadan nisap sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.'**
   String get zakatNisabUnknown;
 
   /// No description provided for @imsakiyeRamadan.

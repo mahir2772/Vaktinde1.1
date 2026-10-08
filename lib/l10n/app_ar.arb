@@ -24,9 +24,9 @@
     "phoneHeading": "اتجاه الهاتف: {deg}°",
     "usingSavedLocation": "يتم استخدام الموقع المحفوظ.",
     "exampleHint": "مثال: {n}",
-    "noCustomDhikr": "لم تُضف أي ذكر خاص بعد.",
-    "messagesShuffled": "تم خلط الرسائل",
-    "shuffle": "خلط",
+    "noCustomDhikr": "لم تُضف أي ذكر مخصص بعد.",
+    "messagesShuffled": "تم ترتيب الرسائل عشوائيًا",
+    "shuffle": "ترتيب عشوائي",
     "copy": "نسخ",
     "messageCopied": "تم نسخ الرسالة",
     "versionLabel": "الإصدار {v}",
@@ -36,12 +36,12 @@
     "permissionPrimingBody": "نحتاج إلى إذن الإشعارات لتنبيهات الأذان، وإذن الموقع لحساب مواقيت الصلاة حسب مكانك.",
     "continueAction": "متابعة",
     "ok": "حسناً",
-    "nextPrayer": "الصلاة القادمة",
+    "nextPrayer": "الوقت التالي",
     "hadithTitle": "حديث اليوم",
     "readMore": "اقرأ المزيد...",
     "share": "مشاركة",
     "close": "إغلاق",
-    "loading": "جاري حساب الأوقات...",
+    "loading": "جارٍ حساب الأوقات...",
     "error": "خطأ",
     "retry": "حاول مرة أخرى",
     "noData": "لا توجد بيانات.",
@@ -84,7 +84,7 @@
         }
     },
     "notifTitleUpcoming": "اقترب الوقت",
-    "notifBodyUpcoming": "تبقى {minute} دقيقة لوقت {vakit}.",
+    "notifBodyUpcoming": "تبقّى {minute} دقيقة على دخول وقت {vakit}.",
     "@notifBodyUpcoming": {
         "placeholders": {
             "vakit": {
@@ -115,7 +115,7 @@
     "timeAdjustSub": "تعديل الأوقات بالدقيقة",
     "timeAdjustInfo": "تُحسب الأوقات حسب موقعك وفق طريقة رئاسة الشؤون الدينية التركية (ديانت). إذا كانت تختلف قليلاً عن أوقات المسجد في منطقتك، يمكنك تقديم كل وقت أو تأخيره بالدقائق. يُطبَّق التعديل على الشاشة الرئيسية والودجت وإشعارات الصلاة.",
     "timeAdjustReset": "إعادة تعيين",
-    "timeAdjustMinutes": "{value} دقيقة",
+    "timeAdjustMinutes": "{value} د",
     "@timeAdjustMinutes": {
         "placeholders": {
             "value": {
@@ -140,7 +140,7 @@
         }
     },
     "trackerNotYet": "لم يدخل وقت هذه الصلاة بعد.",
-    "trackerKazaButton": "إضافة غير المؤداة إلى القضاء",
+    "trackerKazaButton": "إضافة الصلوات غير المؤدّاة إلى القضاء",
     "trackerKazaInfo": "تُضاف الصلوات غير المعلَّمة خلال آخر 30 يومًا (منذ بدء المتابعة) إلى عدادات القضاء. تُضاف كل صلاة مرة واحدة فقط.",
     "trackerKazaConfirm": "{count, plural, =1{ستُضاف صلاة واحدة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟} =2{ستُضاف صلاتان غير معلَّمتين إلى عدادات القضاء. هل تريد المتابعة؟} few{ستُضاف {count} صلوات غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟} other{ستُضاف {count} صلاة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟}}",
     "@trackerKazaConfirm": {
@@ -160,7 +160,7 @@
         }
     },
     "trackerKazaNone": "لا توجد صلوات لإضافتها إلى القضاء.",
-    "trackerKazaLocked": "أُضيفت هذه الصلاة إلى القضاء. بعد قضائها، أنقِصها من متابعة الصلوات الفائتة.",
+    "trackerKazaLocked": "أُضيفت هذه الصلاة إلى القضاء. بعد قضائها يمكنك إنقاصها من «تتبع الصلوات الفائتة».",
     "trackerLegendPrayed": "مؤداة",
     "trackerLegendKaza": "أُضيفت إلى القضاء",
     "kerahatActive": "وقت كراهة الآن: {range}",
@@ -207,8 +207,8 @@
     "ramadanImsakBody": "انتهى وقت السحور. صومًا مقبولًا!",
     "sectionSupport": "الدعم",
     "shareApp": "شارك مع صديق",
-    "rateApp": "قيمنا",
-    "contactUs": "اتصل بنا والإبلاغ عن خطأ",
+    "rateApp": "قيّمنا",
+    "contactUs": "اتصل بنا وأبلغ عن خطأ",
     "shareText": "وجدت تطبيقاً رائعاً لأوقات الصلاة! حمله من هنا: {link}",
     "@shareText": {
         "placeholders": {
@@ -220,7 +220,7 @@
     "batteryDialogTitle": "حل مشكلة الإشعارات",
     "batteryDialogBody": "قد يقوم هاتفك بإغلاق التطبيق لتوفير البطارية. لمنع ذلك:\n\n1. افتح شاشة التطبيقات الحديثة.\n2. اضغط مطولاً على تطبيق 'Vaktinde' أو انقر على شعاره.\n3. اضغط على أيقونة القفل 🔒 لقفله.\n\nأيضاً، اذهب إلى الإعدادات > التطبيقات > Vaktinde > البطارية > اختر غير مقيد.",
     "okUnderstood": "حسناً، فهمت",
-    "religiousDaysTitle": "الأيام الدينية",
+    "religiousDaysTitle": "المناسبات الدينية",
     "errorOccurred": "حدث خطأ: {error}",
     "@errorOccurred": {
         "placeholders": {
@@ -238,7 +238,7 @@
             }
         }
     },
-    "religiousDaysListTitle": "قائمة الأيام الدينية لعام {year}",
+    "religiousDaysListTitle": "قائمة المناسبات الدينية لعام {year}",
     "@religiousDaysListTitle": {
         "placeholders": {
             "year": {
@@ -248,7 +248,7 @@
     },
     "missedPrayersTitle": "تتبع الصلوات الفائتة",
     "missedPrayersInfo": "سجل صلواتك الفائتة هنا واطرحها عند قضائها.\n(اضغط على الرقم للإدخال يدوياً)",
-    "editMissedTitle": "تعديل فائتة {title}",
+    "editMissedTitle": "تعديل قضاء {title}",
     "@editMissedTitle": {
         "placeholders": {
             "title": {
@@ -265,7 +265,7 @@
     "yatsi": "العشاء",
     "vitir": "الوتر",
     "oruc": "الصيام",
-    "timeLeftFor": "الوقت المتبقي لـ {vakit}",
+    "timeLeftFor": "الوقت المتبقي حتى {vakit}",
     "@timeLeftFor": {
         "placeholders": {
             "vakit": {
@@ -279,8 +279,8 @@
     "closeCaps": "إغلاق",
     "zakatTitle": "حاسبة الزكاة",
     "zakatCalculatorTitle": "حاسبة الزكاة الذكية",
-    "liveRatesLoading": "جاري جلب أسعار الصرف الحالية...",
-    "liveRatesInfo": "يمكنك تعديل الأسعار المجلبة تلقائياً يدوياً إذا رغبت.",
+    "liveRatesLoading": "جارٍ جلب أسعار الصرف الحالية...",
+    "liveRatesInfo": "جُلبت الأسعار تلقائيًا، ويمكنك تعديلها يدويًا إذا رغبت.",
     "sectionGold": "أصول الذهب",
     "goldType": "نوع الذهب",
     "goldAmount": "الكمية / الجرامات",
@@ -288,7 +288,7 @@
     "sectionCurrency": "الأصول النقدية والعملات",
     "currencyType": "نوع العملة",
     "currencyAmount": "المبلغ",
-    "currencyRate": "السعر الحالي",
+    "currencyRate": "سعر الصرف الحالي",
     "sectionCashDebt": "النقد والديون",
     "cashAmount": "النقد المتوفر وفي البنك",
     "debtAmount": "إجمالي الديون (للخصم)",
@@ -317,7 +317,7 @@
             }
         }
     },
-    "keepAwayMetal": "ابعده عن الأشياء المعدنية.",
+    "keepAwayMetal": "أبعِد الهاتف عن الأشياء المعدنية.",
     "goldGram": "جرام ذهب (عيار 24)",
     "goldQuarter": "ربع ليرة ذهب",
     "goldFull": "ليرة ذهب كاملة",
@@ -365,25 +365,25 @@
     "tickerEzan": "وقت الصلاة",
     "stickyChannelName": "عداد دائم",
     "stickyChannelDesc": "يعرض الوقت المتبقي",
-    "timeLeftTo": "الوقت المتبقي لانتهاء الوقت: ",
+    "timeLeftTo": "المتبقي على خروج الوقت: ",
     "locationFallbackMessage": "تعذر الحصول على الموقع، يتم استخدام القيم الافتراضية.",
-    "fetchingLocation": "جاري الحصول على الموقع...",
+    "fetchingLocation": "جارٍ الحصول على الموقع...",
     "directionNorth": "ش",
     "directionSouth": "ج",
     "directionEast": "ق",
     "directionWest": "غ",
     "calibrationInstruction": "(ارسم رقم '8' للمعايرة)",
-    "zakatDescription": "احسب زكاتك بالتفصيل وفقاً للفتاوى وأسعار السوق الحالية.",
+    "zakatDescription": "احسب زكاتك بالتفصيل وفقًا لفتاوى رئاسة الشؤون الدينية التركية وأسعار السوق الحالية.",
     "cashAndCurrencyTitle": "النقد والعملات",
-    "cashTurkishLira": "النقد (بالعملة المحلية)",
+    "cashTurkishLira": "النقد بالليرة التركية (₺)",
     "goldAndSilverTitle": "الذهب والفضة",
     "silverGram": "فضة (جرام)",
     "unitPrice": "سعر الوحدة",
     "commercialGoodsTitle": "عروض التجارة",
     "commercialEvalCurrency": "عملة التقييم",
     "commercialGoodsValue": "قيمة البضاعة",
-    "exchangeRateValue": "قيمة الصرف",
-    "receivablesTitle": "الديون المستحقة (القابلة للتحصيل)",
+    "exchangeRateValue": "سعر الصرف",
+    "receivablesTitle": "الديون المستحقة لك (القابلة للتحصيل)",
     "receivableType": "نوع الدين (نقد، عملة أجنبية، ذهب)",
     "amountOrCount": "المبلغ / الكمية",
     "otherAssetsTitle": "أصول أخرى",
@@ -391,12 +391,12 @@
     "currencyLabel": "العملة",
     "valueOrAmount": "القيمة / المبلغ",
     "agriProductsTitle": "المنتجات الزراعية (العشر)",
-    "agriDiyanetNote": "نظراً لعدم اشتراط النصاب في المنتجات الزراعية، يتم إضافة المبلغ المصرح به مباشرة إلى إجمالي الزكاة.",
-    "harvestedProductValue": "قيمة المحصول (بالعملة المحلية)",
+    "agriDiyanetNote": "نظرًا لعدم اشتراط النصاب في زكاة المنتجات الزراعية، يُضاف المبلغ الذي تُدخله مباشرةً إلى إجمالي الزكاة.",
+    "harvestedProductValue": "قيمة المحصول (₺)",
     "irrigationMethod": "طريقة الري",
     "debtsTitle": "الديون (للخصم)",
     "debtType": "نوع الدين (نقد، عملة، ذهب)",
-    "zakatAgriIncluded": "يتضمن زكاة المنتجات الزراعية (العشر)",
+    "zakatAgriIncluded": "منها زكاة المنتجات الزراعية (العُشر)",
     "assetCheck": "شيك",
     "assetBond": "كمبيالة",
     "assetSukuk": "صكوك",
@@ -419,7 +419,7 @@
     "dhikrElhamdulillah": "الحمد لله",
     "dhikrAllahuEkber": "الله أكبر",
     "dhikrKalima": "كلمة التوحيد",
-    "dhikrSalavat": "صلوات",
+    "dhikrSalavat": "الصلاة على النبي",
     "targetReached": "لقد وصلت إلى الهدف!",
     "resetCounter": "إعادة تعيين",
     "targetCount": "الهدف: {target}",
@@ -499,15 +499,15 @@
     "calibrationRequired": "المعايرة مطلوبة",
     "gold22kGram": "جرام ذهب عيار 22",
     "goldAtaToptan": "آتا بالجملة",
-    "goldAtaCumhuriyet": "آتا جمهوريات",
+    "goldAtaCumhuriyet": "آتا جمهوريت",
     "gold22kBracelet": "سوار عيار 22",
     "gold18k": "ذهب عيار 18",
     "gold14k": "ذهب عيار 14",
     "goldHalf": "نصف ليرة ذهب",
     "goldGremse": "ذهب غريمسة",
     "goldAtaBesli": "آتا بيشلي",
-    "goldResat": "ذهب رشاد",
-    "goldHamit": "ذهب حامد",
+    "goldResat": "ليرة رشادية",
+    "goldHamit": "ليرة حميدية",
     "currencyChf": "فرنك سويسري",
     "currencyJpy": "ين ياباني",
     "currencySar": "ريال سعودي",
@@ -530,10 +530,10 @@
     "imsakiyeTitle": "جدول المواقيت",
     "toolsGroupPrayer": "الصلاة",
     "toolsGroupInfo": "معلومات",
-    "toolsGroupCalc": "الحساب",
+    "toolsGroupCalc": "الحاسبات",
     "toolImsakiyeDesc": "مواقيت الشهر ورمضان",
     "toolTrackerDesc": "سجّل الصلوات التي أدّيتها",
-    "toolKazaDesc": "عدّاد الصلوات والصيام الفائت",
+    "toolKazaDesc": "عدّاد قضاء الصلوات والصيام",
     "toolReligiousDaysDesc": "الليالي المباركة والأعياد",
     "toolEsmaDesc": "الأسماء الحسنى ومعانيها",
     "toolFridayDesc": "رسائل جاهزة للمشاركة",
@@ -551,7 +551,7 @@
     "nextYear": "السنة التالية",
     "previousItem": "السابق",
     "nextItem": "التالي",
-    "missedChangeConfirm": "سيتغيّر عدد {name} من {from} إلى {to}. هل تريد الحفظ؟",
+    "missedChangeConfirm": "سيتغيّر عدد قضاء {name} من {from} إلى {to}. هل تريد الحفظ؟",
     "@missedChangeConfirm": {
         "placeholders": {
             "name": {
@@ -569,7 +569,7 @@
     "zakatCurrencyNote": "جميع المبالغ بالليرة التركية (₺).",
     "zakatCashTry": "النقد (₺)",
     "zakatRatesUnavailable": "تعذّر جلب أسعار الذهب وأسعار الصرف الحالية. يُرجى إدخال الأسعار يدويًا.",
-    "zakatGoldGramPrice": "سعر غرام الذهب عيار 24 (₺)",
+    "zakatGoldGramPrice": "سعر جرام الذهب عيار 24 (₺)",
     "zakatGoldGramPriceHelp": "يُستخدم لحساب حدّ النصاب.",
     "zakatNisabUnknown": "لا يمكن حساب حدّ النصاب بدون سعر الذهب. أدخل سعر الذهب للحصول على نتيجة صحيحة.",
     "imsakiyeRamadan": "رمضان",

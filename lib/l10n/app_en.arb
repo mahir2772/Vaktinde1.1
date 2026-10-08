@@ -1,10 +1,10 @@
 {
     "appTitle": "Vaktinde",
     "navZikir": "Dhikr",
-    "adPrivacySettings": "Ad privacy settings",
+    "adPrivacySettings": "Ad Privacy Settings",
     "adPrivacySettingsSub": "Change your consent for personalised ads",
     "showcaseLanguage": "You can change the app language here.",
-    "showcaseStory": "Read the verse and hadith of the day here.",
+    "showcaseStory": "Read the ayah and hadith of the day here.",
     "showcaseAlarms": "Set adhan and reminder alarms for each prayer here.",
     "showcaseQibla": "Find the Qibla direction with the compass.",
     "showcaseZikir": "Keep track of your dhikr here.",
@@ -51,11 +51,11 @@
     "ikindi": "Asr",
     "aksam": "Maghrib",
     "yatsi": "Isha",
-    "exactAlarm": "Read Exactly on Time",
+    "exactAlarm": "Alert at Prayer Time",
     "exactAlarmSub": "Sends a notification.",
     "silentNotif": "Text Notification Only",
     "silentNotifSub": "No Adhan/Sound, only visual alert.",
-    "warningAlarm": "Warn {minute} mins Before",
+    "warningAlarm": "Reminder {minute} Minutes Before",
     "@warningAlarm": {
         "placeholders": {
             "minute": {
@@ -83,7 +83,7 @@
             }
         }
     },
-    "notifTitleUpcoming": "Time is Approaching",
+    "notifTitleUpcoming": "Prayer Time Approaching",
     "notifBodyUpcoming": "{minute} minutes left until {vakit}.",
     "@notifBodyUpcoming": {
         "placeholders": {
@@ -140,7 +140,7 @@
         }
     },
     "trackerNotYet": "This prayer time has not started yet.",
-    "trackerKazaButton": "Add unprayed to qada",
+    "trackerKazaButton": "Add missed prayers to qada",
     "trackerKazaInfo": "Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once.",
     "trackerKazaConfirm": "{count, plural, =1{1 unmarked prayer will be added to your qada counters. Continue?} other{{count} unmarked prayers will be added to your qada counters. Continue?}}",
     "@trackerKazaConfirm": {
@@ -160,7 +160,7 @@
         }
     },
     "trackerKazaNone": "No prayers to add to qada.",
-    "trackerKazaLocked": "This prayer was added to qada. Once you make it up, reduce it in the Missed Prayers Tracker.",
+    "trackerKazaLocked": "This prayer has been added to qada. Once you make it up, subtract it in the Missed Prayers Tracker.",
     "trackerLegendPrayed": "Prayed",
     "trackerLegendKaza": "Added to qada",
     "kerahatActive": "Makruh time now: {range}",
@@ -179,8 +179,8 @@
             }
         }
     },
-    "endReminderTitle": "Remind before prayer time ends",
-    "endReminderSub": "Notifies you before the time of a prayer not marked as prayed ends.",
+    "endReminderTitle": "Remind Before Prayer Time Ends",
+    "endReminderSub": "Notifies you before a prayer's time ends if it isn't marked as prayed.",
     "endReminderNotifTitle": "Prayer Time Ending",
     "endReminderNotifBody": "{minute} minutes left until {vakit} time ends.",
     "@endReminderNotifBody": {
@@ -208,7 +208,7 @@
     "sectionSupport": "SUPPORT",
     "shareApp": "Share with a Friend",
     "rateApp": "Rate Us",
-    "contactUs": "Contact & Report Bug",
+    "contactUs": "Contact Us & Report a Bug",
     "shareText": "I found a great Prayer Time app! Download it here: {link}",
     "@shareText": {
         "placeholders": {
@@ -217,8 +217,8 @@
             }
         }
     },
-    "batteryDialogTitle": "Notification Issue Solution",
-    "batteryDialogBody": "Your phone might be closing the app to save battery. To prevent this:\n\n1. Open the Recent Apps screen.\n2. Long press the 'Vaktinde' app or tap its logo.\n3. Tap the Lock Icon 🔒 to lock it.\n\nAlso, go to Settings > Apps > Vaktinde > Battery > Select Unrestricted.",
+    "batteryDialogTitle": "Fix Notification Issues",
+    "batteryDialogBody": "Your phone might be closing the app to save battery. To prevent this:\n\n1. Open the Recent Apps screen.\n2. Long-press the 'Vaktinde' app or tap its icon.\n3. Tap the lock icon 🔒 to lock it.\n\nAlso go to Settings > Apps > Vaktinde > Battery and select Unrestricted.",
     "okUnderstood": "OK, I Understand",
     "religiousDaysTitle": "Religious Days",
     "errorOccurred": "An error occurred: {error}",
@@ -238,7 +238,7 @@
             }
         }
     },
-    "religiousDaysListTitle": "Religious Days List for {year}",
+    "religiousDaysListTitle": "Religious Days in {year}",
     "@religiousDaysListTitle": {
         "placeholders": {
             "year": {
@@ -247,7 +247,7 @@
         }
     },
     "missedPrayersTitle": "Missed Prayers Tracker",
-    "missedPrayersInfo": "Note your missed prayers here and subtract as you pray them.\n(Tap the number to enter manually)",
+    "missedPrayersInfo": "Note your missed prayers here and subtract them as you make them up.\n(Tap a number to enter it manually)",
     "editMissedTitle": "Edit Missed {title}",
     "@editMissedTitle": {
         "placeholders": {
@@ -257,7 +257,7 @@
         }
     },
     "missedCountLabel": "Missed Count",
-    "missedCountHint": "E.g.: 150",
+    "missedCountHint": "E.g. 150",
     "sabah": "Fajr",
     "ogle": "Dhuhr",
     "ikindi": "Asr",
@@ -293,7 +293,7 @@
     "cashAmount": "Cash on Hand & in Bank",
     "debtAmount": "Total Debts (To be deducted)",
     "calculateButton": "CALCULATE",
-    "zakatResultTitle": "Your Payable Zakat",
+    "zakatResultTitle": "Zakat Due",
     "netAssets": "Net Assets:",
     "qiblaTitle": "Qibla Compass",
     "locationServiceOff": "Location service is off. Please enable location.",
@@ -340,10 +340,10 @@
     "none": "None",
     "zakatEligible": "Zakat is Required",
     "zakatNotEligible": "Zakat is Not Required",
-    "nisabLimit": "Nisab Limit (80.18 g Gold)",
-    "belowNisabMessage": "Since your net assets are below the Nisab amount (wealth limit), Zakat is not obligatory.",
+    "nisabLimit": "Nisab Threshold (80.18 g Gold)",
+    "belowNisabMessage": "Since your net assets are below the nisab threshold (the minimum wealth on which zakat is due), zakat is not obligatory.",
     "searchLocationTitle": "Search Location (Worldwide)",
-    "searchLocationHint": "City or Country (E.g.: Paris)",
+    "searchLocationHint": "City or country (e.g. Paris)",
     "searchInitial": "Type the place you want to search...",
     "searchNotFound": "Location not found.",
     "searchError": "No results found. Please try again.",
@@ -373,7 +373,7 @@
     "directionEast": "E",
     "directionWest": "W",
     "calibrationInstruction": "(Draw an '8' for calibration)",
-    "zakatDescription": "Calculate your Zakat in detail according to religious guidelines and current market rates.",
+    "zakatDescription": "Calculate your zakat in detail based on the fatwas of Diyanet (Turkey's Presidency of Religious Affairs) and current market rates.",
     "cashAndCurrencyTitle": "Cash and Currency Assets",
     "cashTurkishLira": "Cash (Local Currency)",
     "goldAndSilverTitle": "Gold and Silver",
@@ -391,13 +391,13 @@
     "currencyLabel": "Currency",
     "valueOrAmount": "Value / Amount",
     "agriProductsTitle": "Agricultural Products (Ushr)",
-    "agriDiyanetNote": "Since Nisab is not required for agricultural products, the amount you declare is directly added to your Zakat total.",
+    "agriDiyanetNote": "Since no nisab threshold applies to agricultural products, the amount you declare is added directly to your zakat total.",
     "harvestedProductValue": "Harvested Product Value",
     "irrigationMethod": "Irrigation Method",
     "debtsTitle": "Debts (To be deducted)",
     "debtType": "Debt Type (Cash, Currency, Gold)",
     "zakatAgriIncluded": "Included Agricultural Zakat (Ushr)",
-    "assetCheck": "Check",
+    "assetCheck": "Cheque",
     "assetBond": "Promissory Note",
     "assetSukuk": "Sukuk",
     "assetLeaseCert": "Lease Certificate",
@@ -405,7 +405,7 @@
     "agriSoil": "Agriculture (Soil)",
     "agriSoilless": "Agriculture (Soilless)",
     "agriRateNoCost": "No Cost (Rain/River) - 10%",
-    "agriRateCostly": "Costly (Motor/Transport) - 5%",
+    "agriRateCostly": "With Cost (Pump/Transport) - 5%",
     "toImsak": "To Imsak",
     "toGunes": "To Sunrise",
     "toOgle": "To Dhuhr",
@@ -418,7 +418,7 @@
     "dhikrSubhanallah": "Subhanallah",
     "dhikrElhamdulillah": "Alhamdulillah",
     "dhikrAllahuEkber": "Allahu Akbar",
-    "dhikrKalima": "Kalima Tayyibah",
+    "dhikrKalima": "Kalimat al-Tawhid",
     "dhikrSalavat": "Salawat",
     "targetReached": "Target Reached!",
     "resetCounter": "Reset",
@@ -462,16 +462,16 @@
     "today": "Today",
     "statsEmpty": "No dhikr data yet.",
     "dhikrEstagfirullah": "Astaghfirullah",
-    "dhikrLaHavle": "La Hawla wa la Quwwata",
+    "dhikrLaHavle": "La Hawla wa la Quwwata illa Billah",
     "dhikrHasbunallah": "Hasbunallah",
     "dhikrSubhanallahi": "Subhanallahi wa bihamdihi",
-    "dhikrYunus": "Prayer of Prophet Yunus",
-    "dhikrYaAllah": "Ya Allah (J.J.)",
-    "dhikrYaRahman": "Ya Rahman (J.J.)",
-    "dhikrYaRahim": "Ya Rahim (J.J.)",
-    "dhikrYaSafi": "Ya Shafi (J.J.)",
-    "dhikrYaRezzak": "Ya Razzaq (J.J.)",
-    "dhikrYaFettah": "Ya Fattah (J.J.)",
+    "dhikrYunus": "Dua of Prophet Yunus",
+    "dhikrYaAllah": "Ya Allah (SWT)",
+    "dhikrYaRahman": "Ya Rahman (SWT)",
+    "dhikrYaRahim": "Ya Rahim (SWT)",
+    "dhikrYaSafi": "Ya Shafi (SWT)",
+    "dhikrYaRezzak": "Ya Razzaq (SWT)",
+    "dhikrYaFettah": "Ya Fattah (SWT)",
     "mainDhikrs": "Basic Dhikrs",
     "esmaulHusnaTab": "Names of Allah",
     "qiblaCalibration": "For the compass to work accurately, please draw an '8' in the air with your phone.",
@@ -487,7 +487,7 @@
     "regaipKandili": "Laylat al-Raghaib",
     "tabTimes": "Times",
     "tabAlarms": "Alarms",
-    "locationFoundNoName": "Location found but no name.",
+    "locationFoundNoName": "Location found, but its name is unavailable.",
     "dailyAyahTitle": "Ayah of the Day",
     "remainingTime": "Remaining",
     "onboardingWelcome": "Hoş Geldiniz / Welcome",
@@ -523,8 +523,8 @@
     "currencyTry": "Turkish Lira",
     "holdToEdit": "Hold to edit",
     "editCounterTitle": "Edit Counter",
-    "editCounterHint": "E.g.: 2000",
-    "editTargetHint": "E.g.: 99",
+    "editCounterHint": "E.g. 2000",
+    "editTargetHint": "E.g. 99",
     "resetCounterConfirm": "Are you sure you want to reset the counter?",
     "dhikrTarget": "Target:",
     "imsakiyeTitle": "Prayer Timetable",
@@ -587,8 +587,8 @@
     "imsakiyeNextMonth": "Next month",
     "imsakiyeNoLocation": "Please select your location first to see the timetable. You can set it on the home screen or in Settings.",
     "imsakiyeShareError": "Could not share the timetable. Please try again.",
-    "ramadanSahurLeft": "Time to Suhoor",
-    "ramadanIftarLeft": "Time to Iftar",
+    "ramadanSahurLeft": "Suhoor ends in",
+    "ramadanIftarLeft": "Iftar in",
     "ramadanDayLabel": "Ramadan, day {day}",
     "@ramadanDayLabel": {
         "placeholders": {

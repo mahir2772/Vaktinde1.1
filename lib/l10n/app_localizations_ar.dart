@@ -89,13 +89,13 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get noCustomDhikr => 'لم تُضف أي ذكر خاص بعد.';
+  String get noCustomDhikr => 'لم تُضف أي ذكر مخصص بعد.';
 
   @override
-  String get messagesShuffled => 'تم خلط الرسائل';
+  String get messagesShuffled => 'تم ترتيب الرسائل عشوائيًا';
 
   @override
-  String get shuffle => 'خلط';
+  String get shuffle => 'ترتيب عشوائي';
 
   @override
   String get copy => 'نسخ';
@@ -128,7 +128,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ok => 'حسناً';
 
   @override
-  String get nextPrayer => 'الصلاة القادمة';
+  String get nextPrayer => 'الوقت التالي';
 
   @override
   String get hadithTitle => 'حديث اليوم';
@@ -143,7 +143,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get close => 'إغلاق';
 
   @override
-  String get loading => 'جاري حساب الأوقات...';
+  String get loading => 'جارٍ حساب الأوقات...';
 
   @override
   String get error => 'خطأ';
@@ -236,7 +236,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String notifBodyUpcoming(String vakit, int minute) {
-    return 'تبقى $minute دقيقة لوقت $vakit.';
+    return 'تبقّى $minute دقيقة على دخول وقت $vakit.';
   }
 
   @override
@@ -304,7 +304,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String timeAdjustMinutes(String value) {
-    return '$value دقيقة';
+    return '$value د';
   }
 
   @override
@@ -350,7 +350,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get trackerNotYet => 'لم يدخل وقت هذه الصلاة بعد.';
 
   @override
-  String get trackerKazaButton => 'إضافة غير المؤداة إلى القضاء';
+  String get trackerKazaButton => 'إضافة الصلوات غير المؤدّاة إلى القضاء';
 
   @override
   String get trackerKazaInfo =>
@@ -392,7 +392,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get trackerKazaLocked =>
-      'أُضيفت هذه الصلاة إلى القضاء. بعد قضائها، أنقِصها من متابعة الصلوات الفائتة.';
+      'أُضيفت هذه الصلاة إلى القضاء. بعد قضائها يمكنك إنقاصها من «تتبع الصلوات الفائتة».';
 
   @override
   String get trackerLegendPrayed => 'مؤداة';
@@ -449,10 +449,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shareApp => 'شارك مع صديق';
 
   @override
-  String get rateApp => 'قيمنا';
+  String get rateApp => 'قيّمنا';
 
   @override
-  String get contactUs => 'اتصل بنا والإبلاغ عن خطأ';
+  String get contactUs => 'اتصل بنا وأبلغ عن خطأ';
 
   @override
   String shareText(String link) {
@@ -470,7 +470,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get okUnderstood => 'حسناً، فهمت';
 
   @override
-  String get religiousDaysTitle => 'الأيام الدينية';
+  String get religiousDaysTitle => 'المناسبات الدينية';
 
   @override
   String errorOccurred(String error) {
@@ -487,7 +487,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String religiousDaysListTitle(int year) {
-    return 'قائمة الأيام الدينية لعام $year';
+    return 'قائمة المناسبات الدينية لعام $year';
   }
 
   @override
@@ -499,7 +499,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String editMissedTitle(String title) {
-    return 'تعديل فائتة $title';
+    return 'تعديل قضاء $title';
   }
 
   @override
@@ -519,7 +519,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String timeLeftFor(String vakit) {
-    return 'الوقت المتبقي لـ $vakit';
+    return 'الوقت المتبقي حتى $vakit';
   }
 
   @override
@@ -541,11 +541,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zakatCalculatorTitle => 'حاسبة الزكاة الذكية';
 
   @override
-  String get liveRatesLoading => 'جاري جلب أسعار الصرف الحالية...';
+  String get liveRatesLoading => 'جارٍ جلب أسعار الصرف الحالية...';
 
   @override
   String get liveRatesInfo =>
-      'يمكنك تعديل الأسعار المجلبة تلقائياً يدوياً إذا رغبت.';
+      'جُلبت الأسعار تلقائيًا، ويمكنك تعديلها يدويًا إذا رغبت.';
 
   @override
   String get sectionGold => 'أصول الذهب';
@@ -569,7 +569,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get currencyAmount => 'المبلغ';
 
   @override
-  String get currencyRate => 'السعر الحالي';
+  String get currencyRate => 'سعر الصرف الحالي';
 
   @override
   String get sectionCashDebt => 'النقد والديون';
@@ -619,7 +619,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get keepAwayMetal => 'ابعده عن الأشياء المعدنية.';
+  String get keepAwayMetal => 'أبعِد الهاتف عن الأشياء المعدنية.';
 
   @override
   String get goldGram => 'جرام ذهب (عيار 24)';
@@ -732,14 +732,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stickyChannelDesc => 'يعرض الوقت المتبقي';
 
   @override
-  String get timeLeftTo => 'الوقت المتبقي لانتهاء الوقت: ';
+  String get timeLeftTo => 'المتبقي على خروج الوقت: ';
 
   @override
   String get locationFallbackMessage =>
       'تعذر الحصول على الموقع، يتم استخدام القيم الافتراضية.';
 
   @override
-  String get fetchingLocation => 'جاري الحصول على الموقع...';
+  String get fetchingLocation => 'جارٍ الحصول على الموقع...';
 
   @override
   String get directionNorth => 'ش';
@@ -758,13 +758,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get zakatDescription =>
-      'احسب زكاتك بالتفصيل وفقاً للفتاوى وأسعار السوق الحالية.';
+      'احسب زكاتك بالتفصيل وفقًا لفتاوى رئاسة الشؤون الدينية التركية وأسعار السوق الحالية.';
 
   @override
   String get cashAndCurrencyTitle => 'النقد والعملات';
 
   @override
-  String get cashTurkishLira => 'النقد (بالعملة المحلية)';
+  String get cashTurkishLira => 'النقد بالليرة التركية (₺)';
 
   @override
   String get goldAndSilverTitle => 'الذهب والفضة';
@@ -785,10 +785,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commercialGoodsValue => 'قيمة البضاعة';
 
   @override
-  String get exchangeRateValue => 'قيمة الصرف';
+  String get exchangeRateValue => 'سعر الصرف';
 
   @override
-  String get receivablesTitle => 'الديون المستحقة (القابلة للتحصيل)';
+  String get receivablesTitle => 'الديون المستحقة لك (القابلة للتحصيل)';
 
   @override
   String get receivableType => 'نوع الدين (نقد، عملة أجنبية، ذهب)';
@@ -813,10 +813,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get agriDiyanetNote =>
-      'نظراً لعدم اشتراط النصاب في المنتجات الزراعية، يتم إضافة المبلغ المصرح به مباشرة إلى إجمالي الزكاة.';
+      'نظرًا لعدم اشتراط النصاب في زكاة المنتجات الزراعية، يُضاف المبلغ الذي تُدخله مباشرةً إلى إجمالي الزكاة.';
 
   @override
-  String get harvestedProductValue => 'قيمة المحصول (بالعملة المحلية)';
+  String get harvestedProductValue => 'قيمة المحصول (₺)';
 
   @override
   String get irrigationMethod => 'طريقة الري';
@@ -828,7 +828,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get debtType => 'نوع الدين (نقد، عملة، ذهب)';
 
   @override
-  String get zakatAgriIncluded => 'يتضمن زكاة المنتجات الزراعية (العشر)';
+  String get zakatAgriIncluded => 'منها زكاة المنتجات الزراعية (العُشر)';
 
   @override
   String get assetCheck => 'شيك';
@@ -898,7 +898,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dhikrKalima => 'كلمة التوحيد';
 
   @override
-  String get dhikrSalavat => 'صلوات';
+  String get dhikrSalavat => 'الصلاة على النبي';
 
   @override
   String get targetReached => 'لقد وصلت إلى الهدف!';
@@ -1125,7 +1125,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goldAtaToptan => 'آتا بالجملة';
 
   @override
-  String get goldAtaCumhuriyet => 'آتا جمهوريات';
+  String get goldAtaCumhuriyet => 'آتا جمهوريت';
 
   @override
   String get gold22kBracelet => 'سوار عيار 22';
@@ -1146,10 +1146,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goldAtaBesli => 'آتا بيشلي';
 
   @override
-  String get goldResat => 'ذهب رشاد';
+  String get goldResat => 'ليرة رشادية';
 
   @override
-  String get goldHamit => 'ذهب حامد';
+  String get goldHamit => 'ليرة حميدية';
 
   @override
   String get currencyChf => 'فرنك سويسري';
@@ -1218,7 +1218,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolsGroupInfo => 'معلومات';
 
   @override
-  String get toolsGroupCalc => 'الحساب';
+  String get toolsGroupCalc => 'الحاسبات';
 
   @override
   String get toolImsakiyeDesc => 'مواقيت الشهر ورمضان';
@@ -1227,7 +1227,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolTrackerDesc => 'سجّل الصلوات التي أدّيتها';
 
   @override
-  String get toolKazaDesc => 'عدّاد الصلوات والصيام الفائت';
+  String get toolKazaDesc => 'عدّاد قضاء الصلوات والصيام';
 
   @override
   String get toolReligiousDaysDesc => 'الليالي المباركة والأعياد';
@@ -1273,7 +1273,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String missedChangeConfirm(String name, int from, int to) {
-    return 'سيتغيّر عدد $name من $from إلى $to. هل تريد الحفظ؟';
+    return 'سيتغيّر عدد قضاء $name من $from إلى $to. هل تريد الحفظ؟';
   }
 
   @override
@@ -1290,7 +1290,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّر جلب أسعار الذهب وأسعار الصرف الحالية. يُرجى إدخال الأسعار يدويًا.';
 
   @override
-  String get zakatGoldGramPrice => 'سعر غرام الذهب عيار 24 (₺)';
+  String get zakatGoldGramPrice => 'سعر جرام الذهب عيار 24 (₺)';
 
   @override
   String get zakatGoldGramPriceHelp => 'يُستخدم لحساب حدّ النصاب.';

@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navZikir => 'Dhikr';
 
   @override
-  String get adPrivacySettings => 'Ad privacy settings';
+  String get adPrivacySettings => 'Ad Privacy Settings';
 
   @override
   String get adPrivacySettingsSub => 'Change your consent for personalised ads';
@@ -24,7 +24,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showcaseLanguage => 'You can change the app language here.';
 
   @override
-  String get showcaseStory => 'Read the verse and hadith of the day here.';
+  String get showcaseStory => 'Read the ayah and hadith of the day here.';
 
   @override
   String get showcaseAlarms =>
@@ -174,7 +174,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yatsi => 'Isha';
 
   @override
-  String get exactAlarm => 'Read Exactly on Time';
+  String get exactAlarm => 'Alert at Prayer Time';
 
   @override
   String get exactAlarmSub => 'Sends a notification.';
@@ -187,7 +187,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String warningAlarm(String minute) {
-    return 'Warn $minute mins Before';
+    return 'Reminder $minute Minutes Before';
   }
 
   @override
@@ -232,7 +232,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notifTitleUpcoming => 'Time is Approaching';
+  String get notifTitleUpcoming => 'Prayer Time Approaching';
 
   @override
   String notifBodyUpcoming(String vakit, int minute) {
@@ -345,7 +345,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackerNotYet => 'This prayer time has not started yet.';
 
   @override
-  String get trackerKazaButton => 'Add unprayed to qada';
+  String get trackerKazaButton => 'Add missed prayers to qada';
 
   @override
   String get trackerKazaInfo =>
@@ -382,7 +382,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackerKazaLocked =>
-      'This prayer was added to qada. Once you make it up, reduce it in the Missed Prayers Tracker.';
+      'This prayer has been added to qada. Once you make it up, subtract it in the Missed Prayers Tracker.';
 
   @override
   String get trackerLegendPrayed => 'Prayed';
@@ -401,11 +401,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get endReminderTitle => 'Remind before prayer time ends';
+  String get endReminderTitle => 'Remind Before Prayer Time Ends';
 
   @override
   String get endReminderSub =>
-      'Notifies you before the time of a prayer not marked as prayed ends.';
+      'Notifies you before a prayer\'s time ends if it isn\'t marked as prayed.';
 
   @override
   String get endReminderNotifTitle => 'Prayer Time Ending';
@@ -442,7 +442,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rateApp => 'Rate Us';
 
   @override
-  String get contactUs => 'Contact & Report Bug';
+  String get contactUs => 'Contact Us & Report a Bug';
 
   @override
   String shareText(String link) {
@@ -450,11 +450,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get batteryDialogTitle => 'Notification Issue Solution';
+  String get batteryDialogTitle => 'Fix Notification Issues';
 
   @override
   String get batteryDialogBody =>
-      'Your phone might be closing the app to save battery. To prevent this:\n\n1. Open the Recent Apps screen.\n2. Long press the \'Vaktinde\' app or tap its logo.\n3. Tap the Lock Icon 🔒 to lock it.\n\nAlso, go to Settings > Apps > Vaktinde > Battery > Select Unrestricted.';
+      'Your phone might be closing the app to save battery. To prevent this:\n\n1. Open the Recent Apps screen.\n2. Long-press the \'Vaktinde\' app or tap its icon.\n3. Tap the lock icon 🔒 to lock it.\n\nAlso go to Settings > Apps > Vaktinde > Battery and select Unrestricted.';
 
   @override
   String get okUnderstood => 'OK, I Understand';
@@ -477,7 +477,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String religiousDaysListTitle(int year) {
-    return 'Religious Days List for $year';
+    return 'Religious Days in $year';
   }
 
   @override
@@ -485,7 +485,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get missedPrayersInfo =>
-      'Note your missed prayers here and subtract as you pray them.\n(Tap the number to enter manually)';
+      'Note your missed prayers here and subtract them as you make them up.\n(Tap a number to enter it manually)';
 
   @override
   String editMissedTitle(String title) {
@@ -496,7 +496,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missedCountLabel => 'Missed Count';
 
   @override
-  String get missedCountHint => 'E.g.: 150';
+  String get missedCountHint => 'E.g. 150';
 
   @override
   String get sabah => 'Fajr';
@@ -574,7 +574,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calculateButton => 'CALCULATE';
 
   @override
-  String get zakatResultTitle => 'Your Payable Zakat';
+  String get zakatResultTitle => 'Zakat Due';
 
   @override
   String get netAssets => 'Net Assets:';
@@ -679,17 +679,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get zakatNotEligible => 'Zakat is Not Required';
 
   @override
-  String get nisabLimit => 'Nisab Limit (80.18 g Gold)';
+  String get nisabLimit => 'Nisab Threshold (80.18 g Gold)';
 
   @override
   String get belowNisabMessage =>
-      'Since your net assets are below the Nisab amount (wealth limit), Zakat is not obligatory.';
+      'Since your net assets are below the nisab threshold (the minimum wealth on which zakat is due), zakat is not obligatory.';
 
   @override
   String get searchLocationTitle => 'Search Location (Worldwide)';
 
   @override
-  String get searchLocationHint => 'City or Country (E.g.: Paris)';
+  String get searchLocationHint => 'City or country (e.g. Paris)';
 
   @override
   String get searchInitial => 'Type the place you want to search...';
@@ -749,7 +749,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get zakatDescription =>
-      'Calculate your Zakat in detail according to religious guidelines and current market rates.';
+      'Calculate your zakat in detail based on the fatwas of Diyanet (Turkey\'s Presidency of Religious Affairs) and current market rates.';
 
   @override
   String get cashAndCurrencyTitle => 'Cash and Currency Assets';
@@ -804,7 +804,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get agriDiyanetNote =>
-      'Since Nisab is not required for agricultural products, the amount you declare is directly added to your Zakat total.';
+      'Since no nisab threshold applies to agricultural products, the amount you declare is added directly to your zakat total.';
 
   @override
   String get harvestedProductValue => 'Harvested Product Value';
@@ -822,7 +822,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get zakatAgriIncluded => 'Included Agricultural Zakat (Ushr)';
 
   @override
-  String get assetCheck => 'Check';
+  String get assetCheck => 'Cheque';
 
   @override
   String get assetBond => 'Promissory Note';
@@ -846,7 +846,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get agriRateNoCost => 'No Cost (Rain/River) - 10%';
 
   @override
-  String get agriRateCostly => 'Costly (Motor/Transport) - 5%';
+  String get agriRateCostly => 'With Cost (Pump/Transport) - 5%';
 
   @override
   String get toImsak => 'To Imsak';
@@ -886,7 +886,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dhikrAllahuEkber => 'Allahu Akbar';
 
   @override
-  String get dhikrKalima => 'Kalima Tayyibah';
+  String get dhikrKalima => 'Kalimat al-Tawhid';
 
   @override
   String get dhikrSalavat => 'Salawat';
@@ -1002,7 +1002,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dhikrEstagfirullah => 'Astaghfirullah';
 
   @override
-  String get dhikrLaHavle => 'La Hawla wa la Quwwata';
+  String get dhikrLaHavle => 'La Hawla wa la Quwwata illa Billah';
 
   @override
   String get dhikrHasbunallah => 'Hasbunallah';
@@ -1011,25 +1011,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dhikrSubhanallahi => 'Subhanallahi wa bihamdihi';
 
   @override
-  String get dhikrYunus => 'Prayer of Prophet Yunus';
+  String get dhikrYunus => 'Dua of Prophet Yunus';
 
   @override
-  String get dhikrYaAllah => 'Ya Allah (J.J.)';
+  String get dhikrYaAllah => 'Ya Allah (SWT)';
 
   @override
-  String get dhikrYaRahman => 'Ya Rahman (J.J.)';
+  String get dhikrYaRahman => 'Ya Rahman (SWT)';
 
   @override
-  String get dhikrYaRahim => 'Ya Rahim (J.J.)';
+  String get dhikrYaRahim => 'Ya Rahim (SWT)';
 
   @override
-  String get dhikrYaSafi => 'Ya Shafi (J.J.)';
+  String get dhikrYaSafi => 'Ya Shafi (SWT)';
 
   @override
-  String get dhikrYaRezzak => 'Ya Razzaq (J.J.)';
+  String get dhikrYaRezzak => 'Ya Razzaq (SWT)';
 
   @override
-  String get dhikrYaFettah => 'Ya Fattah (J.J.)';
+  String get dhikrYaFettah => 'Ya Fattah (SWT)';
 
   @override
   String get mainDhikrs => 'Basic Dhikrs';
@@ -1078,7 +1078,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabAlarms => 'Alarms';
 
   @override
-  String get locationFoundNoName => 'Location found but no name.';
+  String get locationFoundNoName =>
+      'Location found, but its name is unavailable.';
 
   @override
   String get dailyAyahTitle => 'Ayah of the Day';
@@ -1187,10 +1188,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editCounterTitle => 'Edit Counter';
 
   @override
-  String get editCounterHint => 'E.g.: 2000';
+  String get editCounterHint => 'E.g. 2000';
 
   @override
-  String get editTargetHint => 'E.g.: 99';
+  String get editTargetHint => 'E.g. 99';
 
   @override
   String get resetCounterConfirm =>
@@ -1316,10 +1317,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not share the timetable. Please try again.';
 
   @override
-  String get ramadanSahurLeft => 'Time to Suhoor';
+  String get ramadanSahurLeft => 'Suhoor ends in';
 
   @override
-  String get ramadanIftarLeft => 'Time to Iftar';
+  String get ramadanIftarLeft => 'Iftar in';
 
   @override
   String ramadanDayLabel(int day) {
