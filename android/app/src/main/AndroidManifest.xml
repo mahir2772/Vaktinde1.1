@@ -25,10 +25,12 @@
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
 
     <!-- showWhenLocked/turnScreenOn yok: uygulama kilit ekranı üstünde açılmaz (tam ekran ezan
-         ekranı kullanılmıyor); kilit ekranındaki bildirime dokununca önce kilit açılır -->
+         ekranı kullanılmıyor); kilit ekranındaki bildirime dokununca önce kilit açılır.
+         VaktindeApplication: Flutter'ın applicationName yer tutucusu (android.app.Application)
+         yerine; vakti geçmiş widget/bildirim sayaçlarını onarır (WidgetRefresher) -->
     <application
         android:label="Vaktinde"
-        android:name="${applicationName}"
+        android:name=".VaktindeApplication"
         android:icon="@mipmap/launcher_icon">
 
         <meta-data

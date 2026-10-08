@@ -19,8 +19,8 @@ class VaktindeWidgetLargeProvider : HomeWidgetProvider() {
         val day = PrayerWidgetData.today(widgetData, now)
         val nextPrayer = PrayerWidgetData.nextPrayer(widgetData, day, now)
         // Vakit gelince kendini yeniler (bu türdeki tüm widget'lar için tek alarm)
-        if (nextPrayer != null && nextPrayer.first > 0L) {
-            PrayerWidgetData.scheduleWidgetUpdate(context, VaktindeWidgetLargeProvider::class.java, nextPrayer.first)
+        if (nextPrayer != null && nextPrayer.time > 0L) {
+            PrayerWidgetData.scheduleWidgetUpdate(context, VaktindeWidgetLargeProvider::class.java, nextPrayer.time)
         }
 
         appWidgetIds.forEach { widgetId ->
@@ -46,8 +46,8 @@ class VaktindeWidgetLargeProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.tv_aksam_l, day.times[4])
                 setTextViewText(R.id.tv_yatsi_l, day.times[5])
 
-                if (nextPrayer != null && nextPrayer.first > 0L) {
-                    val baseTime = SystemClock.elapsedRealtime() + (nextPrayer.first - currentTime)
+                if (nextPrayer != null && nextPrayer.time > 0L) {
+                    val baseTime = SystemClock.elapsedRealtime() + (nextPrayer.time - currentTime)
                     setChronometer(R.id.chronometer_large, baseTime, null, true)
                     setBoolean(R.id.chronometer_large, "setCountDown", true)
                 } else {
@@ -57,6 +57,8 @@ class VaktindeWidgetLargeProvider : HomeWidgetProvider() {
             }
             appWidgetManager.updateAppWidget(widgetId, views)
         }
+        // Alarm gelmezse WidgetRefresher bu kayda bakıp yeniden çizer
+        WidgetRefresher.markWidgetsDrawn(context, VaktindeWidgetLargeProvider::class.java, appWidgetIds, nextPrayer?.time ?: 0L, now)
     }
 
     // Saat / saat dilimi değişince sayaç hemen yeniden kurulur

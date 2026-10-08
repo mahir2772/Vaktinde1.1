@@ -11,6 +11,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.abs
 
 /**
  * Widget'ların ve kalıcı bildirimin ortak vakit mantığı (HomeWidgetPreferences).
@@ -19,8 +20,11 @@ import java.util.Locale
  * eski davranış: yatsıdan sonra bugünün imsakı +1 gün.
  */
 object PrayerWidgetData {
+    const val PREFS = "HomeWidgetPreferences"
     private val TIME_KEYS = arrayOf("imsak_time", "gunes_time", "ogle_time", "ikindi_time", "aksam_time", "yatsi_time")
     private val LABEL_KEYS = arrayOf("label_imsak", "label_gunes", "label_ogle", "label_ikindi", "label_aksam", "label_yatsi")
+    // Dart'ın yönelme hâli başlıkları ("İmsaka", "İkindiye"); yoksa title_text / vakit adı
+    private val TITLE_KEYS = arrayOf("title_imsak", "title_gunes", "title_ogle", "title_ikindi", "title_aksam", "title_yatsi")
     private val DEFAULT_LABELS = arrayOf("İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı")
     private const val DATE_KEY = "times_date"
     private const val TOMORROW_PREFIX = "tomorrow_"
@@ -36,6 +40,9 @@ object PrayerWidgetData {
 
     /** Bugün gösterilecek 6 vakit, yatsıdan sonraki imsak; [rolledOver]: gün dönmüş, yarının seti bugünün */
     class Day(val times: List<String>, val nextImsak: String, val rolledOver: Boolean)
+
+    /** Sıradaki vakit: zaman (ms), ad, sıra (0 imsak … 5 yatsı; ertesi günün imsakı da 0) */
+    class NextPrayer(val time: Long, val label: String, val index: Int)
 
     /** Saat veya saat dilimi elle/şebekeden değişti */
     fun isTimeChange(action: String?): Boolean =
@@ -60,13 +67,34 @@ object PrayerWidgetData {
         }
     }
 
-    /** Sıradaki vakit (zaman ms, ad); veri yoksa null */
-    fun nextPrayer(data: SharedPreferences, day: Day, now: Calendar): Pair<Long, String>? {
+    /** Sıradaki vakit; veri yoksa null */
+    fun nextPrayer(data: SharedPreferences, day: Day, now: Calendar): NextPrayer? {
         val labels = LABEL_KEYS.mapIndexed { i, key -> data.getString(key, DEFAULT_LABELS[i]) ?: DEFAULT_LABELS[i] }
-        val candidates = day.times.mapIndexed { i, time -> Pair(timeMs(time, 0, now), labels[i]) } +
-            Pair(timeMs(day.nextImsak, 1, now), labels[0])
+        val candidates = day.times.mapIndexed { i, time -> NextPrayer(timeMs(time, 0, now), labels[i], i) } +
+            NextPrayer(timeMs(day.nextImsak, 1, now), labels[0], 0)
         val nowMs = now.timeInMillis
-        return candidates.filter { it.first > nowMs + 1000L }.minByOrNull { it.first }
+        return candidates.filter { it.time > nowMs + 1000L }.minByOrNull { it.time }
+    }
+
+    /**
+     * Sayacın başlığı ("İkindiye"): Dart'ın title_<vakit> anahtarı. Yoksa (eski veri) Dart'ın
+     * hedefi bu vakitse title_text, değilse vakit adı.
+     */
+    fun title(data: SharedPreferences, next: NextPrayer): String {
+        val own = data.getString(TITLE_KEYS[next.index], null)
+        if (!own.isNullOrEmpty()) return own
+        return if (abs(longValue(data, "target_time_ms") - next.time) < 60000) {
+            data.getString("title_text", "") ?: ""
+        } else {
+            next.label
+        }
+    }
+
+    // home_widget küçük tam sayıyı Int yazar: getLong ClassCastException atmasın
+    private fun longValue(data: SharedPreferences, key: String): Long = try {
+        data.getLong(key, 0L)
+    } catch (e: ClassCastException) {
+        (data.all[key] as? Number)?.toLong() ?: 0L
     }
 
     /** Gün dönmüşse yarının hicri tarihi (yazılmışsa) */
@@ -95,7 +123,7 @@ object PrayerWidgetData {
     }
 
     // Dart'ın yazdığıyla aynı biçim; Locale.US: Arapça yerelde de ASCII rakam
-    private fun dateKey(c: Calendar): String = String.format(
+    fun dateKey(c: Calendar): String = String.format(
         Locale.US, "%04d-%02d-%02d",
         c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH)
     )
