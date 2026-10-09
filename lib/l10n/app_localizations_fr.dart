@@ -654,7 +654,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dailyContentNotifTitle =>
-      'Notification du verset et du hadith du jour';
+      'Notifications du verset et du hadith du jour';
 
   @override
   String get dailyContentNotifSub =>
@@ -1481,7 +1481,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String qiblaAngleTrueNorth(String angle) {
-    return 'Angle de la Qibla : $angle° (depuis le nord géographique)';
+    return 'Angle de la Qibla : $angle° (par rapport au nord géographique)';
   }
 
   @override

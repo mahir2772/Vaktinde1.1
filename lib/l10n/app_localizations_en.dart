@@ -639,7 +639,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endReminderTitle => 'Remind Before Prayer Time Ends';
 
   @override
-  String get dailyContentNotifTitle => 'Daily Ayah & Hadith Notification';
+  String get dailyContentNotifTitle => 'Daily Ayah & Hadith Notifications';
 
   @override
   String get dailyContentNotifSub =>
@@ -1438,14 +1438,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'The compass shows an approximate direction; metal, magnets and electronic devices can throw it off.';
 
   @override
-  String get qiblaTipsTitle => 'For an accurate result';
+  String get qiblaTipsTitle => 'For accurate results';
 
   @override
   String get qiblaTipFlat => 'Hold the phone flat, parallel to the ground.';
 
   @override
   String get qiblaTipCalibrate =>
-      'Calibrate by drawing an \'8\' in the air with your phone.';
+      'Calibrate the compass by drawing an \'8\' in the air with your phone.';
 
   @override
   String get qiblaTipMagneticCase => 'Remove any magnetic phone case.';
@@ -1456,7 +1456,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get qiblaTipMosque =>
-      'If possible, compare with the qibla direction of a mosque.';
+      'If possible, compare with the Qibla direction of a mosque.';
 
   @override
   String qiblaAngleTrueNorth(String angle) {

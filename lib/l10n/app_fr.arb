@@ -327,7 +327,7 @@
         }
     },
     "endReminderTitle": "Rappel avant la fin du temps de prière",
-    "dailyContentNotifTitle": "Notification du verset et du hadith du jour",
+    "dailyContentNotifTitle": "Notifications du verset et du hadith du jour",
     "dailyContentNotifSub": "Envoie un verset chaque matin et un hadith chaque soir.",
     "religiousDaysNotifTitle": "Notifications des jours religieux et des nuits bénies",
     "religiousDaysNotifSub": "Vous rappelle le matin même les nuits bénies, les fêtes et les autres jours religieux.",
@@ -669,7 +669,7 @@
     "qiblaTipMagneticCase": "Retirez la coque aimantée, le cas échéant.",
     "qiblaTipMetal": "Éloignez-vous des objets métalliques et des appareils électroniques.",
     "qiblaTipMosque": "Si possible, comparez avec la direction de la Qibla d'une mosquée.",
-    "qiblaAngleTrueNorth": "Angle de la Qibla : {angle}° (depuis le nord géographique)",
+    "qiblaAngleTrueNorth": "Angle de la Qibla : {angle}° (par rapport au nord géographique)",
     "@qiblaAngleTrueNorth": {
         "placeholders": {
             "angle": {
