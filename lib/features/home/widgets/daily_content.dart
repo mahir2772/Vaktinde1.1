@@ -248,11 +248,12 @@ class _ReadingContentState extends State<_ReadingContent> {
     final scheme = theme.colorScheme;
     return ListView(
       controller: widget.controller,
-      padding: const EdgeInsets.fromLTRB(
+      // + gezinme çubuğu (uçtan uca): sondaki butonlar altında kalmasın
+      padding: EdgeInsets.fromLTRB(
         AppSpacing.xl,
         0,
         AppSpacing.xl,
-        AppSpacing.xxl,
+        AppSpacing.xxl + MediaQuery.paddingOf(context).bottom,
       ),
       children: [
         Row(

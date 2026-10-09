@@ -454,6 +454,127 @@ Future<void> _shot(WidgetTester tester, String name) async {
     file.parent.createSync(recursive: true);
     file.writeAsBytesSync(data!.buffer.asUint8List());
   });
+  if (_checkBars) _checkSystemBars(name);
+}
+
+// --- Uçtan uca: içerik sistem çubuklarının altına uzanır (Android 15+ ve
+// MainActivity.enableEdgeToEdge), boşluğu MediaQuery.padding bırakır.
+// Tipik değerler: durum çubuğu 24 dp, 3 tuşlu gezinme çubuğu 48 dp.
+const double _statusBarDp = 24;
+const double _navBarDp = 48;
+
+/// Açıkken her görüntüde çubukların altında kalan içerik `_errors.txt`'ye yazılır
+bool _checkBars = false;
+
+void _setSystemBars(WidgetTester tester) {
+  const bars = FakeViewPadding(
+    top: _statusBarDp * _deviceRatio,
+    bottom: _navBarDp * _deviceRatio,
+  );
+  tester.view.padding = bars;
+  tester.view.viewPadding = bars;
+}
+
+/// Çubuk altında kalmaması gerekenler: yazı/simge ve dokunulan ögeler
+/// (zemin, görsel, renk serbest)
+bool _isBarSensitive(Widget w) =>
+    w is RichText ||
+    w is EditableText ||
+    w is InkResponse ||
+    w is Switch ||
+    w is Checkbox ||
+    w is Radio;
+
+/// Ögenin görünen kısmı (kök kutuya göre, ata kırpmaları uygulanmış); yoksa null
+Rect? _visibleRect(RenderBox box, RenderBox root) {
+  var rect = MatrixUtils.transformRect(
+    box.getTransformTo(root),
+    Offset.zero & box.size,
+  );
+  RenderObject child = box;
+  RenderObject? parent = box.parent;
+  while (parent != null && child != root) {
+    if (parent is RenderOpacity && parent.opacity == 0) return null;
+    final clip = parent.describeApproximatePaintClip(child);
+    if (clip != null) {
+      rect = rect.intersect(
+        MatrixUtils.transformRect(parent.getTransformTo(root), clip),
+      );
+    }
+    if (rect.width <= 0 || rect.height <= 0) return null;
+    child = parent;
+    parent = parent.parent;
+  }
+  return rect;
+}
+
+/// Kaydırınca çubuğun altından çıkabilen liste içeriği serbest (uçtan uca olağan)
+bool _canScrollOut(Element element, double overlap, {required bool bottom}) {
+  var out = false;
+  element.visitAncestorElements((ancestor) {
+    if (ancestor is! StatefulElement || ancestor.state is! ScrollableState) {
+      return true;
+    }
+    final position = (ancestor.state as ScrollableState).position;
+    if (position.axis != Axis.vertical) return true;
+    out = (bottom ? position.extentAfter : position.extentBefore) >= overlap;
+    return false;
+  });
+  return out;
+}
+
+String _describeContent(Element element) {
+  final widget = element.widget;
+  if (widget is RichText) {
+    final text = widget.text.toPlainText().trim();
+    final runes = text.runes.toList();
+    // Material simgeleri Unicode özel kullanım alanlarında
+    final rune = runes.length == 1 ? runes.first : 0;
+    if ((rune >= 0xE000 && rune <= 0xF8FF) || rune >= 0xF0000) return 'simge';
+    return '"${text.length > 40 ? '${text.substring(0, 40)}…' : text}"';
+  }
+  String? inner;
+  void visit(Element e) {
+    if (inner != null) return;
+    if (e.widget is RichText) {
+      inner = _describeContent(e);
+    } else {
+      e.visitChildren(visit);
+    }
+  }
+
+  element.visitChildren(visit);
+  return '${widget.runtimeType}${inner == null ? '' : ' $inner'}';
+}
+
+/// Durum/gezinme çubuğunun altında kalan yazı, simge ve dokunulan ögeler
+void _checkSystemBars(String name) {
+  final root = _rootKey.currentContext!.findRenderObject()! as RenderBox;
+  final size = root.size;
+  final bands = <(String, Rect)>[
+    ('durum çubuğu', Rect.fromLTRB(0, 0, size.width, _statusBarDp)),
+    (
+      'gezinme çubuğu',
+      Rect.fromLTRB(0, size.height - _navBarDp, size.width, size.height),
+    ),
+  ];
+  for (final element in find.byWidgetPredicate(_isBarSensitive).evaluate()) {
+    final box = element.renderObject;
+    if (box is! RenderBox || !box.attached || !box.hasSize) continue;
+    final rect = _visibleRect(box, root);
+    if (rect == null) continue;
+    for (final (label, band) in bands) {
+      final overlap = rect.intersect(band);
+      if (overlap.width < 1 || overlap.height < 1) continue;
+      if (_canScrollOut(element, overlap.height, bottom: band.top > 0)) {
+        continue;
+      }
+      _errors.add(
+        '[$name] $label altında: ${_describeContent(element)} '
+        '(${rect.top.toStringAsFixed(0)}-${rect.bottom.toStringAsFixed(0)} dp)',
+      );
+    }
+  }
 }
 
 /// Ekranlardaki çerçeve hataları (taşma, yerleşim) düzeneği durdurmaz;
@@ -834,6 +955,139 @@ void main() {
       await _openRoute(tester, 'tr_bg_50_settings', const SettingsView());
       await _openRoute(tester, 'tr_bg_41_imsakiye', const ImsakiyeView());
       await _finish(tester);
+    });
+  });
+
+  // Uçtan uca: durum çubuğu 24 dp + 3 tuşlu gezinme 48 dp. Çubuk altında kalan
+  // yazı/simge/dokunulan öge `_errors.txt`'ye yazılır (zemin serbest)
+  testWidgets('tr uçtan uca: sistem çubukları', skip: skip, variant: _android, (
+    tester,
+  ) async {
+    await _run(tester, () async {
+      _setSystemBars(tester);
+      _checkBars = true;
+      try {
+        final loc = lookupAppLocalizations(const Locale('tr'));
+        Future<void> closeSheet() async {
+          _navigator(tester).pop();
+          await _settle(tester, steps: 6);
+        }
+
+        _currentScreen = 'tr_edge_01_onboarding_language';
+        await _pumpApp(
+          tester,
+          lang: 'tr',
+          homeVm: _homeVm('tr'),
+          languageSelected: false,
+        );
+        await _shot(tester, 'tr_edge_01_onboarding_language');
+        await _finish(tester);
+
+        // Uzun meal: okuma sayfası kayar, sondaki butonlar denetlenir
+        final vm = _homeVm('tr')
+          ..dailyAyah = AyahModel(
+            number: 293,
+            surahName: 'Bakara',
+            numberInSurah: 286,
+            arabicText: 'لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا',
+            translatedText: List.filled(
+              14,
+              'Allah hiç kimseye gücünün yetmeyeceği bir yük yüklemez.',
+            ).join(' '),
+          );
+        _currentScreen = 'tr_edge_10_home';
+        await _pumpApp(tester, lang: 'tr', homeVm: vm);
+        await _shot(tester, 'tr_edge_10_home');
+
+        await tester.tap(find.byTooltip(loc.changeLocation));
+        await _settle(tester, steps: 6);
+        await _shot(tester, 'tr_edge_15_location_sheet');
+        await closeSheet();
+
+        await tester.ensureVisible(find.text(loc.dailyAyahTitle));
+        await _settle(tester, steps: 2);
+        await tester.tap(find.text(loc.dailyAyahTitle));
+        await _settle(tester, steps: 6);
+        await tester.scrollUntilVisible(
+          find.text(loc.share),
+          300,
+          scrollable: find
+              .descendant(
+                of: find.byType(DraggableScrollableSheet),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await _settle(tester, steps: 4);
+        await _shot(tester, 'tr_edge_16_reading_sheet_end');
+        await closeSheet();
+
+        await tester.tap(find.text('Alarmlar'));
+        await _settle(tester);
+        await _shot(tester, 'tr_edge_12_home_alarms');
+        await tester.tap(find.text('Vakitler'));
+        await _settle(tester);
+
+        await _tapTab(tester, 1);
+        await _shot(tester, 'tr_edge_20_qibla');
+        await _qiblaTipsShot(tester, 'tr', 'tr_edge_22_qibla_tips');
+        await _tapTab(tester, 2);
+        await _shot(tester, 'tr_edge_30_zikirmatik');
+        await _tapTab(tester, 3);
+        await _shot(tester, 'tr_edge_40_tools');
+
+        // Ayarlar + dil ve görünüm sayfaları
+        _currentScreen = 'tr_edge_50_settings';
+        _navigator(
+          tester,
+        ).push(MaterialPageRoute<void>(builder: (_) => const SettingsView()));
+        await _settle(tester, steps: 10);
+        await _shot(tester, 'tr_edge_50_settings');
+        for (final (title, name) in [
+          (loc.changeLanguage, 'tr_edge_53_language_sheet'),
+          (loc.appearanceSettings, 'tr_edge_54_appearance_sheet'),
+        ]) {
+          await tester.tap(find.text(title).first);
+          await _settle(tester, steps: 6);
+          await _shot(tester, name);
+          await closeSheet();
+        }
+        await closeSheet();
+
+        await _openRoute(tester, 'tr_edge_41_imsakiye', const ImsakiyeView());
+        await _openRoute(
+          tester,
+          'tr_edge_47_prayer_tracker',
+          const PrayerTrackerView(),
+        );
+        await _openRoute(tester, 'tr_edge_42_zakat', const ZakatView());
+        await _openRoute(
+          tester,
+          'tr_edge_51_time_adjust',
+          const TimeAdjustView(),
+        );
+        await _openRoute(
+          tester,
+          'tr_edge_31_dhikr_list',
+          const DhikrListView(),
+        );
+
+        // Kaza: sayıya dokununca açılan elle giriş penceresi
+        _currentScreen = 'tr_edge_46_missed_prayers';
+        _navigator(tester).push(
+          MaterialPageRoute<void>(builder: (_) => const MissedPrayersView()),
+        );
+        await _settle(tester, steps: 10);
+        await _shot(tester, 'tr_edge_46_missed_prayers');
+        await tester.tap(find.text('12').first);
+        await _settle(tester, steps: 6);
+        await _shot(tester, 'tr_edge_49_missed_dialog');
+        await closeSheet();
+        await closeSheet();
+        await _finish(tester);
+      } finally {
+        _checkBars = false;
+      }
     });
   });
 

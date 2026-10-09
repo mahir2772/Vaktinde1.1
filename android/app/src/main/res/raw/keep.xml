@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kaynak küçültme (isShrinkResources): koddan R.* ile değil, çalışırken ADIYLA çağrılan
+     kaynaklar; küçültücü bunları göremez, burada korunur (varsayılan güvenli kip).
+     - raw/ezan1-8, raw/bildirim1-3: Dart RawResourceAndroidNotificationSound(ad) →
+       flutter_local_notifications getIdentifier(ad, "raw") (yoksa bildirim kurulmaz) ve
+       android.resource://paket/raw/ad (bildirim/kanal sesi; cihazdaki kanallar bu adı saklar)
+     - mipmap/launcher_icon: Dart bildirim simgesi '@mipmap/launcher_icon' → getIdentifier
+     ezan*/bildirim* dışında adla çağrılan yeni bir kaynak (ses, simge) eklenirse buraya yazılır. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/ezan*,@raw/bildirim*,@mipmap/launcher_icon" />

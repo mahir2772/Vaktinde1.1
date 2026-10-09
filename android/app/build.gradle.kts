@@ -50,9 +50,10 @@ android {
             // optimizasyonu" ölçütü). Eşleme dosyası AAB'ye girer, Crashlytics'e de yüklenir.
             // Kurallar: proguard-rules.pro (bildirim eklentisinin Gson kayıtları)
             isMinifyEnabled = true
-            // Kaynak küçültme kapalı: ezan/bildirim sesleri (res/raw) Dart'tan adla çağrılıyor,
-            // küçültücü onları kullanılmıyor sanıp siler
-            isShrinkResources = false
+            // Kaynak küçültme (Play "kullanılmayan kaynaklar"; varsayılan güvenli kip): Dart'tan
+            // adla çağrılan kaynaklar (res/raw ezan/bildirim sesleri, '@mipmap/launcher_icon'
+            // bildirim simgesi) küçültücüye görünmez, res/raw/keep.xml (tools:keep) ile korunur
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

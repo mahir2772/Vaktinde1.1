@@ -226,6 +226,17 @@ void main() {
     }
   });
 
+  test('AppBar sistem çubukları: renk yok, açık simge (uçtan uca)', () {
+    for (final theme in [AppTheme.light(), AppTheme.dark()]) {
+      final style = theme.appBarTheme.systemOverlayStyle!;
+      expect(style.statusBarColor, isNull);
+      expect(style.systemNavigationBarColor, isNull);
+      expect(style.systemNavigationBarDividerColor, isNull);
+      expect(style.statusBarIconBrightness, Brightness.light);
+      expect(style.systemNavigationBarIconBrightness, Brightness.light);
+    }
+  });
+
   testWidgets('Onay penceresi: onay true, iptal false', (tester) async {
     late BuildContext ctx;
     await pumpGallery(

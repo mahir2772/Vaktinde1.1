@@ -295,7 +295,10 @@ class _AppearanceSheet extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+      // + gezinme çubuğu (uçtan uca): görseller altında kalmasın
+      padding: EdgeInsets.only(
+        bottom: AppSpacing.xl + MediaQuery.paddingOf(context).bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

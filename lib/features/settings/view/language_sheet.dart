@@ -54,7 +54,10 @@ class _LanguageSheet extends StatelessWidget {
     final theme = Theme.of(context);
     final current = context.watch<LanguageProvider>().locale.languageCode;
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      // + gezinme çubuğu (uçtan uca): son satır altında kalmasın
+      padding: EdgeInsets.only(
+        bottom: AppSpacing.lg + MediaQuery.paddingOf(context).bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
