@@ -16,9 +16,11 @@ class MainActivity : FlutterFragmentActivity() {
     private var magnetic: MagneticStream? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         // Uçtan uca (Play önerisi; Android 15+ zaten böyle): içerik sistem çubuklarının altına
-        // uzanır, boşluğu Flutter MediaQuery.padding bırakır. super'den önce: pencere burada
-        // LaunchTheme ile kurulur, Flutter ardından (15 altı) durum çubuğuna yarı saydam rengini verir.
+        // uzanır, boşluğu Flutter MediaQuery.padding bırakır. super'den sonra: pencere NormalTheme
+        // ile kurulmuş olur (önce çağrılırsa LaunchTheme'in açılış görseli pencere arka planında
+        // kalır), Flutter'ın yarı saydam durum çubuğu da şeffafla değişir.
         // 11 altı: Flutter her resume'da eski sistem bayraklarını sıfırlar (gezinme uçtan uca olmaz,
         // tuşlar beyaz) → gezinme çubuğu eskisi gibi siyah; varsayılan açık perdede tuşlar görünmezdi
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
@@ -26,7 +28,6 @@ class MainActivity : FlutterFragmentActivity() {
         } else {
             enableEdgeToEdge()
         }
-        super.onCreate(savedInstanceState)
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

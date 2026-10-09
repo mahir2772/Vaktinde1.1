@@ -32,3 +32,7 @@
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn javax.annotation.**
 -dontwarn org.checkerframework.**
+
+# --- Uçtan uca ekran (MainActivity.enableEdgeToEdge) ---
+# Play Console çağrıyı paket içinde arar; R8 satır içine alıp sınıfı silmesin
+-keep class androidx.activity.EdgeToEdge { *; }
