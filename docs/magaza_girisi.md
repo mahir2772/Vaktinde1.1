@@ -104,3 +104,47 @@ Görüş ve önerileriniz için: mmdigitall.dev@gmail.com
 • تحسينات في الأداء والاستقرار
 </ar>
 ```
+
+## Sürüm notları 1.2.0 (17) (her dil ≤500)
+```
+<tr-TR>
+• Yeni: Kandil ve dini gün bildirimleri (Üç Aylar, kandiller, Ramazan, bayramlar)
+• Yeni: Bildirim Kontrolü – ezan gelmiyorsa sebebini bulur, telefonunuza göre ayar adımları ve test ezanı
+• Yeni: Yakındaki Camiler, harita uygulamanızda
+• Arka plan resminin görünmemesi düzeltildi
+• Bazı telefonlarda alt kısımda gezinme çubuğunun altında kalan düğmeler düzeltildi
+• Daha küçük ve hızlı uygulama
+</tr-TR>
+<en-US>
+• New: notifications for religious days and holy nights (the three holy months, Ramadan, Eid)
+• New: Notification Check – finds out why the adhan doesn't sound, with steps for your phone and a test adhan
+• New: Nearby Mosques in your maps app
+• Fixed background images not showing
+• Fixed buttons hidden behind the navigation bar on some phones
+• Smaller, faster app
+</en-US>
+<de-DE>
+• Neu: Benachrichtigungen für religiöse Tage und gesegnete Nächte (drei heilige Monate, Ramadan, Feste)
+• Neu: Benachrichtigungen prüfen – findet heraus, warum der Adhan nicht ertönt, mit Schritten für Ihr Telefon und Test-Adhan
+• Neu: Moscheen in der Nähe in Ihrer Karten-App
+• Hintergrundbilder werden wieder angezeigt
+• Schaltflächen hinter der Navigationsleiste behoben
+• Kleinere, schnellere App
+</de-DE>
+<fr-FR>
+• Nouveau : notifications des jours religieux et des nuits bénies (trois mois bénis, Ramadan, Aïds)
+• Nouveau : Vérifier les notifications – trouve pourquoi l'adhan ne sonne pas, avec les étapes pour votre téléphone et un adhan de test
+• Nouveau : Mosquées à proximité dans votre application de cartes
+• Images de fond de nouveau visibles
+• Boutons masqués par la barre de navigation corrigés
+• Application plus légère et plus rapide
+</fr-FR>
+<ar>
+• جديد: إشعارات المناسبات الدينية والليالي المباركة (الأشهر الثلاثة، رمضان، الأعياد)
+• جديد: فحص الإشعارات – يكتشف سبب عدم سماع الأذان مع خطوات خاصة بهاتفك وأذان تجريبي
+• جديد: المساجد القريبة في تطبيق الخرائط لديك
+• إصلاح عدم ظهور صور الخلفية
+• إصلاح الأزرار المخفية خلف شريط التنقل
+• تطبيق أخف وأسرع
+</ar>
+```
