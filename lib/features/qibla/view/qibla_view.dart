@@ -910,11 +910,12 @@ class _AccuracyTipsSheet extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsetsDirectional.fromSTEB(
+      // + gezinme çubuğu (uçtan uca): son satır altında kalmasın
+      padding: EdgeInsetsDirectional.fromSTEB(
         AppSpacing.lg,
         0,
         AppSpacing.lg,
-        AppSpacing.xl,
+        AppSpacing.xl + MediaQuery.paddingOf(context).bottom,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

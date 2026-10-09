@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
+import '../../../core/ui/app_theme.dart';
 import '../../../core/ui/app_tokens.dart';
 import '../../../core/ui/prayer_colors.dart';
 import '../../../core/ui/state_views.dart';
@@ -128,7 +128,7 @@ class _HomeViewState extends State<HomeView>
       elevation: 0,
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
-      systemOverlayStyle: SystemUiOverlayStyle.light,
+      systemOverlayStyle: AppTheme.lightBars,
       centerTitle: true,
       iconTheme: const IconThemeData(color: onHero),
       actionsIconTheme: const IconThemeData(color: onHero),

@@ -21,6 +21,16 @@ abstract final class AppTheme {
     FontFeature.tabularFigures(),
   ];
 
+  /// AppBar/hero (koyu zemin) üstünde sistem çubukları: sadece açık simgeler.
+  /// Çubuk rengi verilmez (SystemUiOverlayStyle.light gezinme çubuğunu siyaha
+  /// boyuyordu): uçtan uca çubuklar şeffaf, Android 15+ rengi zaten yok sayar;
+  /// 11 altında gezinme çubuğunu MainActivity siyah kurar.
+  static const SystemUiOverlayStyle lightBars = SystemUiOverlayStyle(
+    statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
+    systemNavigationBarIconBrightness: Brightness.light,
+  );
+
   /// [hasBackgroundImage]: kullanıcı arka plan resmi seçtiyse Scaffold şeffaf
   /// kalır (resim MaterialApp.builder'da çizilir); kartlar yine opaktır.
   static ThemeData light({bool hasBackgroundImage = false}) {
@@ -180,7 +190,7 @@ abstract final class AppTheme {
         toolbarTextStyle: text.bodyLarge!.copyWith(color: appBarForeground),
         iconTheme: IconThemeData(color: appBarForeground),
         actionsIconTheme: IconThemeData(color: appBarForeground),
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        systemOverlayStyle: lightBars,
       ),
       tabBarTheme: TabBarThemeData(
         labelColor: isLight ? Colors.white : scheme.primary,
