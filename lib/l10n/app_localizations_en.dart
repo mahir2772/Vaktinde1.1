@@ -553,7 +553,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackerKazaInfo =>
-      'Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once.';
+      'Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once. If you have performed a prayer that was added to qada, tap it: it will be marked as prayed and subtracted from your qada count.';
 
   @override
   String trackerKazaConfirm(int count) {
@@ -585,8 +585,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackerKazaNone => 'No prayers to add to qada.';
 
   @override
-  String get trackerKazaLocked =>
-      'This prayer has been added to qada. Once you make it up, subtract it in the Missed Prayers Tracker.';
+  String get trackerKazaRemoveTitle => 'Remove from qada?';
+
+  @override
+  String trackerKazaRemoveConfirm(String name, int from, int to) {
+    return 'This prayer will be marked as prayed and your $name qada count will change from $from to $to.';
+  }
 
   @override
   String get trackerLegendPrayed => 'Prayed';

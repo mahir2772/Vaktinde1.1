@@ -62,7 +62,7 @@ class PrayerTrackerService {
 
   /// [date] günündeki [key] vaktini işaretler/kaldırır. Kılındıysa o vaktin bekleyen
   /// "vakit çıkıyor" hatırlatması iptal edilir. Kazaya eklenmiş vakit işaretlenmez
-  /// (sayaç zaten artırıldı); değişiklik yapıldıysa true.
+  /// (sayaç zaten artırıldı; [removeFromKaza]); değişiklik yapıldıysa true.
   Future<bool> setPrayed(DateTime date, String key, bool prayed) async {
     final result = await runExclusive(() async {
       final now = DateTime.now();
@@ -90,6 +90,39 @@ class PrayerTrackerService {
           } catch (e) {}
         }
       }
+      return true;
+    });
+    changes.value++;
+    return result;
+  }
+
+  /// [key] vaktinin kaza sayacı (Kaza Takibi)
+  Future<int> loadKazaCount(String key) async =>
+      (await _storage.loadMissedPrayers())[PrayerTracker.kazaKeys[key]!] ?? 0;
+
+  /// Kazaya eklenmiş vakti kılındı yapar ve kaza sayacından bir düşer (sıfırın
+  /// altına inmez). Sıra: kılındı → kayıt silinir → sayaç; yarıda kalırsa sayaç en
+  /// kötü ihtimalle fazla kalır, iki kez düşülmez. Kazaya eklenmemişse false.
+  Future<bool> removeFromKaza(DateTime date, String key) async {
+    final result = await runExclusive(() async {
+      final added = await _storage.loadKazaAdded();
+      if (!PrayerTracker.isPrayed(added, date, key)) return false;
+      final now = DateTime.now();
+      await _storage.savePrayerLog(
+        PrayerTracker.withPrayed(
+          await _storage.loadPrayerLog(),
+          date,
+          key,
+          true,
+          today: now,
+        ),
+      );
+      await _storage.saveKazaAdded(
+        PrayerTracker.withPrayed(added, date, key, false, today: now),
+      );
+      final kazaKey = PrayerTracker.kazaKeys[key]!;
+      final count = (await _storage.loadMissedPrayers())[kazaKey] ?? 0;
+      if (count > 0) await _storage.updateMissedPrayer(kazaKey, count - 1);
       return true;
     });
     changes.value++;

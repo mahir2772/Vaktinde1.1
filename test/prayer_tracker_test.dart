@@ -387,6 +387,41 @@ void main() {
       expect((await StorageService().loadMissedPrayers())['Yatsı'], 3);
     });
 
+    test('kazadan çıkarma: kılındı olur, sayaç bir azalır (0 altına inmez)', () async {
+      SharedPreferences.setMockInitialValues({'kaza_Sabah': 4});
+      final service = PrayerTrackerService();
+      DateTime day(int offset) => PrayerTracker.addDays(now(), offset);
+      bool prayed(Map<String, int> m, int offset, String key) =>
+          PrayerTracker.isPrayed(m, day(offset), key);
+
+      await service.setPrayed(day(-2), 'Öğle', true);
+      expect(await service.addMissedToKaza(), 9);
+      expect(await service.loadKazaCount('İmsak'), 6);
+
+      // Kazaya eklenmemiş vakit değişmez
+      expect(await service.removeFromKaza(day(-2), 'Öğle'), isFalse);
+
+      expect(await service.removeFromKaza(day(-1), 'İmsak'), isTrue);
+      expect(await service.loadKazaCount('İmsak'), 5);
+      expect(prayed(await service.loadLog(), -1, 'İmsak'), isTrue);
+      expect(prayed(await service.loadKazaAdded(), -1, 'İmsak'), isFalse);
+      // İkinci kez düşülmez, yeniden kazaya eklenmez
+      expect(await service.removeFromKaza(day(-1), 'İmsak'), isFalse);
+      expect(await service.addMissedToKaza(), 0);
+      expect(await service.loadKazaCount('İmsak'), 5);
+
+      // Kaza Takibi'nde elle sıfırlanmışsa 0'da kalır, vakit yine kılındı olur
+      await StorageService().updateMissedPrayer('Akşam', 0);
+      expect(await service.removeFromKaza(day(-1), 'Akşam'), isTrue);
+      expect(await service.loadKazaCount('Akşam'), 0);
+      expect(prayed(await service.loadLog(), -1, 'Akşam'), isTrue);
+
+      // Sonradan kılınmadı yapılırsa yeniden kazaya eklenebilir
+      await service.setPrayed(day(-1), 'Akşam', false);
+      expect(await service.addMissedToKaza(), 1);
+      expect(await service.loadKazaCount('Akşam'), 1);
+    });
+
     test('vakit çıkış hatırlatması ayarı: varsayılan kapalı/30, geçersiz dakika 30', () async {
       SharedPreferences.setMockInitialValues({});
       final storage = StorageService();

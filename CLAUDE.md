@@ -59,7 +59,9 @@ lib/
       prayer_tracker        saf: namaz takibi (tarih→5 vakit bit maskesi, seri, oran, kaza adayları), aksiyon yükü "prayed|yyyy-MM-dd|Öğle",
                             vakit çıkış ID'si (hatırlatma günü epochDay%5 → ID 100-124, günden bağımsız sabit)
       prayer_tracker_service kayıt + kaza ekleme (SerialQueue ile sıralı), "Kıldım" arka plan işleyicisi (ayrı isolate; prefs.reload şart),
-                            kılınan vaktin hatırlatmasını iptal eder; kazaya eklenmiş vakit işaretlenmez. Ekranlar 30 sn'de bir kaydı yeniden okur
+                            kılınan vaktin hatırlatmasını iptal eder; kazaya eklenmiş vakit işaretlenmez (takipte hücreye dokununca
+                            removeFromKaza: kılındı + kaza sayacı −1, sayaç >0 ise onay; Kaza Takibi sayacı geçmiş işareti
+                            değiştirmez, yoksa aynı vakit yeniden kazaya eklenirdi). Ekranlar 30 sn'de bir kaydı yeniden okur
       background_manager    flutter_background_service foreground servisi; sadece ilk bildirim metni ('bg_display'), asıl içerik NotificationUpdater'da
       prayer_refresh_service BuildContext'siz ortak mantık: widget/kalıcı bildirim verisi, 5 günlük alarm planı (buildAlarmPlan),
                             günlük ayet/hadis bildirimi, hicri tarih (de/fr → en). runHeadless(): WorkManager görevi — bugünün
@@ -203,6 +205,8 @@ assets/google_fonts/ (Poppins), assets/fonts/amiri/ (Amiri + OFL)
 | Interstitial (zekat) | `AdIds.zakatInterstitial` | `/2151461471` |
 | Banner (iç ekranlar) | `AdIds.innerBanner` | `/6543014509` |
 | Banner (alt menü) | `AdIds.mainBanner` | `/3285554173` |
+app-ads.txt: `docs/site/` (app-ads.txt + index.html) GitHub Pages `mahir2772.github.io` kökünde; Play "Web sitesi" bu adres olmalı
+(Google Sites alan adı app-ads.txt'de desteklenmez). Gizlilik politikası Google Sites'ta kalır.
 Tüm ID'ler `common/ad_helper.dart` → `AdIds` içinde; `kReleaseMode` ile debug'da otomatik Google test ID'si, release'de gerçek ID. Yeni ID eklerken buraya ekle, sayfalara sabit yazma.
 
 ## Build / yayın

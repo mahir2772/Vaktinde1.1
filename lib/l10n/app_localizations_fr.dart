@@ -565,7 +565,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get trackerKazaInfo =>
-      'Les prières non cochées des 30 derniers jours (depuis le début du suivi) sont ajoutées aux compteurs de qada. Chaque prière n\'est ajoutée qu\'une fois.';
+      'Les prières non cochées des 30 derniers jours (depuis le début du suivi) sont ajoutées aux compteurs de qada. Chaque prière n\'est ajoutée qu\'une fois. Si vous avez accompli une prière ajoutée au qada, appuyez dessus : elle sera marquée comme accomplie et déduite du compteur de qada.';
 
   @override
   String trackerKazaConfirm(int count) {
@@ -598,8 +598,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get trackerKazaNone => 'Aucune prière à ajouter au qada.';
 
   @override
-  String get trackerKazaLocked =>
-      'Cette prière a été ajoutée au qada. Après l\'avoir rattrapée, vous pourrez la déduire dans le Suivi des prières manquées.';
+  String get trackerKazaRemoveTitle => 'Retirer du qada ?';
+
+  @override
+  String trackerKazaRemoveConfirm(String name, int from, int to) {
+    return 'Cette prière sera marquée comme accomplie. $name : le nombre à rattraper passera de $from à $to.';
+  }
 
   @override
   String get trackerLegendPrayed => 'Accomplie';

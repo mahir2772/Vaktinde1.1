@@ -1055,7 +1055,7 @@ abstract class AppLocalizations {
   /// No description provided for @trackerKazaInfo.
   ///
   /// In tr, this message translates to:
-  /// **'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.'**
+  /// **'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir. Kazaya eklenen bir vakti kıldıysanız üzerine dokunun; kılındı olarak işaretlenir ve kaza sayısından düşülür.'**
   String get trackerKazaInfo;
 
   /// No description provided for @trackerKazaConfirm.
@@ -1082,11 +1082,17 @@ abstract class AppLocalizations {
   /// **'Kazaya eklenecek vakit yok.'**
   String get trackerKazaNone;
 
-  /// No description provided for @trackerKazaLocked.
+  /// No description provided for @trackerKazaRemoveTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Bu vakit kazaya eklendi. Kıldığınızda Kaza Takibi\'nden düşebilirsiniz.'**
-  String get trackerKazaLocked;
+  /// **'Kazadan çıkarılsın mı?'**
+  String get trackerKazaRemoveTitle;
+
+  /// No description provided for @trackerKazaRemoveConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu vakit kılındı olarak işaretlenecek ve {name} kaza sayısı {from} yerine {to} olacak.'**
+  String trackerKazaRemoveConfirm(String name, int from, int to);
 
   /// No description provided for @trackerLegendPrayed.
   ///

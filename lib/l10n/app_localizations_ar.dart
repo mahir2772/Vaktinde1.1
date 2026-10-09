@@ -555,7 +555,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get trackerKazaInfo =>
-      'تُضاف الصلوات غير المعلَّمة خلال آخر 30 يومًا (منذ بدء المتابعة) إلى عدادات القضاء. تُضاف كل صلاة مرة واحدة فقط.';
+      'تُضاف الصلوات غير المعلَّمة خلال آخر 30 يومًا (منذ بدء المتابعة) إلى عدادات القضاء. تُضاف كل صلاة مرة واحدة فقط. إذا أدّيت صلاةً أُضيفت إلى القضاء، فاضغط عليها لتُعلَّم على أنها مؤداة وتُطرح من عداد القضاء.';
 
   @override
   String trackerKazaConfirm(int count) {
@@ -592,8 +592,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get trackerKazaNone => 'لا توجد صلوات لإضافتها إلى القضاء.';
 
   @override
-  String get trackerKazaLocked =>
-      'أُضيفت هذه الصلاة إلى القضاء. بعد قضائها يمكنك إنقاصها من «تتبع الصلوات الفائتة».';
+  String get trackerKazaRemoveTitle => 'إزالتها من القضاء؟';
+
+  @override
+  String trackerKazaRemoveConfirm(String name, int from, int to) {
+    return 'ستُعلَّم هذه الصلاة على أنها مؤداة، وسيتغيّر عدد قضاء $name من $from إلى $to.';
+  }
 
   @override
   String get trackerLegendPrayed => 'مؤداة';

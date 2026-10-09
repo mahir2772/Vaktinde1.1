@@ -552,7 +552,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get trackerKazaInfo =>
-      'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.';
+      'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir. Kazaya eklenen bir vakti kıldıysanız üzerine dokunun; kılındı olarak işaretlenir ve kaza sayısından düşülür.';
 
   @override
   String trackerKazaConfirm(int count) {
@@ -582,8 +582,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get trackerKazaNone => 'Kazaya eklenecek vakit yok.';
 
   @override
-  String get trackerKazaLocked =>
-      'Bu vakit kazaya eklendi. Kıldığınızda Kaza Takibi\'nden düşebilirsiniz.';
+  String get trackerKazaRemoveTitle => 'Kazadan çıkarılsın mı?';
+
+  @override
+  String trackerKazaRemoveConfirm(String name, int from, int to) {
+    return 'Bu vakit kılındı olarak işaretlenecek ve $name kaza sayısı $from yerine $to olacak.';
+  }
 
   @override
   String get trackerLegendPrayed => 'Kılındı';

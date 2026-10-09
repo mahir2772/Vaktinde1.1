@@ -110,7 +110,7 @@ void main() {
       // 3 gün önce: 5 kaza hücresi + açıklama
       expect(find.byIcon(Icons.history), findsNWidgets(6));
 
-      await tester.drag(find.byType(ListView), const Offset(0, -600));
+      await tester.drag(find.byType(ListView), const Offset(0, -2000));
       await tester.pumpAndSettle();
       await tester.tap(find.text(loc.trackerKazaButton));
       await tester.pumpAndSettle();
@@ -119,9 +119,33 @@ void main() {
       await tester.tap(find.text(loc.trackerKazaAdd));
       await tester.pumpAndSettle();
       expect(find.text(loc.trackerKazaDone(4)), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5)); // SnackBar kapansın
+      await tester.drag(find.byType(ListView), const Offset(0, 2000));
+      await tester.pumpAndSettle();
       expect(find.byIcon(Icons.history), findsNWidgets(10));
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getInt('kaza_Öğle'), 1);
+      expect(prefs.getInt('kaza_Sabah'), isNull);
+      expect(tester.takeException(), isNull);
+
+      // Kaza hücresi: sayaç varsa onayla kılındı olur ve sayaç bir azalır
+      await tester.tap(find.byIcon(Icons.history).first); // 2 gün önce öğle
+      await tester.pumpAndSettle();
+      expect(
+        find.text(loc.trackerKazaRemoveConfirm(loc.ogle, 1, 0)),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.widgetWithText(FilledButton, loc.trackerPrayedAction),
+      );
+      await tester.pumpAndSettle();
+      expect(prefs.getInt('kaza_Öğle'), 0);
+      expect(find.byIcon(Icons.history), findsNWidgets(9));
+      // Sayaç sıfırsa onay sorulmaz (3 gün önce sabah)
+      await tester.tap(find.byIcon(Icons.history).at(3));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byIcon(Icons.history), findsNWidgets(8));
       expect(prefs.getInt('kaza_Sabah'), isNull);
       expect(tester.takeException(), isNull);
 

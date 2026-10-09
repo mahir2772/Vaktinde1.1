@@ -278,7 +278,7 @@
     },
     "trackerNotYet": "This prayer time has not started yet.",
     "trackerKazaButton": "Add missed prayers to qada",
-    "trackerKazaInfo": "Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once.",
+    "trackerKazaInfo": "Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once. If you have performed a prayer that was added to qada, tap it: it will be marked as prayed and subtracted from your qada count.",
     "trackerKazaConfirm": "{count, plural, =1{1 unmarked prayer will be added to your qada counters. Continue?} other{{count} unmarked prayers will be added to your qada counters. Continue?}}",
     "@trackerKazaConfirm": {
         "placeholders": {
@@ -297,7 +297,21 @@
         }
     },
     "trackerKazaNone": "No prayers to add to qada.",
-    "trackerKazaLocked": "This prayer has been added to qada. Once you make it up, subtract it in the Missed Prayers Tracker.",
+    "trackerKazaRemoveTitle": "Remove from qada?",
+    "trackerKazaRemoveConfirm": "This prayer will be marked as prayed and your {name} qada count will change from {from} to {to}.",
+    "@trackerKazaRemoveConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
     "trackerLegendPrayed": "Prayed",
     "trackerLegendKaza": "Added to qada",
     "kerahatActive": "Makruh time now: {range}",

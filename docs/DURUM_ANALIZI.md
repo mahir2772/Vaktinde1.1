@@ -172,6 +172,8 @@ Kurallar `android/app/proguard-rules.pro`. Bu ortamda R8 çalıştırılamadığ
 | Yakındaki Camiler | Harita uygulamasında arama (global, API anahtarı yok) |
 | Uçtan uca ekran (Play önerisi) | FlutterFragmentActivity + enableEdgeToEdge; Android 15+ 3 tuşlu gezinmede alt sayfaların son satırı gezinme çubuğu altında kalıyordu (dil, görünüm, kıble ipuçları, ayet/hadis okuma) → düzeltildi |
 | Kaynak küçültme (Play R8 önerisi) | isShrinkResources + res/raw/keep.xml (ezan sesleri, bildirim simgesi) |
+| Kaza: "Kılınmayanları kazaya ekle" sonrası vakitler hep kaza kalıyordu (Kaza Takibi'nden düşmek işareti değiştirmiyordu) | Takipte kaza hücresine dokununca kılındı olur ve kaza sayacı bir azalır (sayaç >0 ise onay sorulur, 0'da kalır); Kaza Takibi sayacı borçtur, geçmiş işareti değiştirmez (yoksa aynı vakit yeniden eklenirdi) |
+| AdMob app-ads.txt "desteklenmeyen alan adı" | Play'deki web sitesi Google Sites'tı (kökte dosya olamaz). docs/site/ (app-ads.txt + index.html) → mahir2772.github.io; Play "Web sitesi" bu adres |
 | Çeviri | Yeni metinler iki ayrı denetimden geçti (5 dil) |
 | Yapılmayan | Play "desteği sonlandırılmış API" (Flutter motorundan) ve AGP 9 (Flutter desteği belirsiz): Flutter güncellemesi beklenir |
 | İndirme butonu çıkmayan hesap | Uygulama tarafı değil (178 ülke açık, başka hesaplar indiriyor): okul/iş ya da ebeveyn denetimli hesap |
@@ -183,3 +185,5 @@ Kurallar `android/app/proguard-rules.pro`. Bu ortamda R8 çalıştırılamadığ
 4. Araçlar > Yakındaki Camiler harita uygulamasını açar.
 5. Ayarlar'da "Dini gün ve kandil bildirimleri" anahtarı; (ilk bildirim 10 Aralık 2026 10:00).
 6. Eski sürümde arka plan resmi seçmiş cihazda arka plan görünür (ya da düz renk), Crashlytics'te yeni "Unable to load asset" yok.
+7. Namaz Takibi: kazaya eklenmiş hücreye dokun → kılındı olur, Kaza Takibi'nde sayı bir azalır.
+8. https://mahir2772.github.io/app-ads.txt açılır; Play web sitesi güncellendikten sonra AdMob > app-ads.txt > "Güncellemeleri kontrol edin".

@@ -111,6 +111,7 @@ Görüş ve önerileriniz için: mmdigitall.dev@gmail.com
 • Yeni: Kandil ve dini gün bildirimleri (Üç Aylar, kandiller, Ramazan, bayramlar)
 • Yeni: Bildirim Kontrolü – ezan gelmiyorsa sebebini bulur, telefonunuza göre ayar adımları ve test ezanı
 • Yeni: Yakındaki Camiler, harita uygulamanızda
+• Namaz Takibi: kazaya eklenen vakte dokunarak kılındı işaretleyebilirsiniz
 • Arka plan resminin görünmemesi düzeltildi
 • Bazı telefonlarda alt kısımda gezinme çubuğunun altında kalan düğmeler düzeltildi
 • Daha küçük ve hızlı uygulama
@@ -119,6 +120,7 @@ Görüş ve önerileriniz için: mmdigitall.dev@gmail.com
 • New: notifications for religious days and holy nights (the three holy months, Ramadan, Eid)
 • New: Notification Check – finds out why the adhan doesn't sound, with steps for your phone and a test adhan
 • New: Nearby Mosques in your maps app
+• Prayer Tracker: tap a prayer added to qada to mark it as prayed
 • Fixed background images not showing
 • Fixed buttons hidden behind the navigation bar on some phones
 • Smaller, faster app
@@ -127,6 +129,7 @@ Görüş ve önerileriniz için: mmdigitall.dev@gmail.com
 • Neu: Benachrichtigungen für religiöse Tage und gesegnete Nächte (drei heilige Monate, Ramadan, Feste)
 • Neu: Benachrichtigungen prüfen – findet heraus, warum der Adhan nicht ertönt, mit Schritten für Ihr Telefon und Test-Adhan
 • Neu: Moscheen in der Nähe in Ihrer Karten-App
+• Gebetstracker: Zu Qada hinzugefügte Gebete per Tippen als verrichtet markieren
 • Hintergrundbilder werden wieder angezeigt
 • Schaltflächen hinter der Navigationsleiste behoben
 • Kleinere, schnellere App
@@ -135,6 +138,7 @@ Görüş ve önerileriniz için: mmdigitall.dev@gmail.com
 • Nouveau : notifications des jours religieux et des nuits bénies (trois mois bénis, Ramadan, Aïds)
 • Nouveau : Vérifier les notifications – trouve pourquoi l'adhan ne sonne pas, avec les étapes pour votre téléphone et un adhan de test
 • Nouveau : Mosquées à proximité dans votre application de cartes
+• Suivi des prières : cochez une prière ajoutée au qada
 • Images de fond de nouveau visibles
 • Boutons masqués par la barre de navigation corrigés
 • Application plus légère et plus rapide
@@ -143,6 +147,7 @@ Görüş ve önerileriniz için: mmdigitall.dev@gmail.com
 • جديد: إشعارات المناسبات الدينية والليالي المباركة (الأشهر الثلاثة، رمضان، الأعياد)
 • جديد: فحص الإشعارات – يكتشف سبب عدم سماع الأذان مع خطوات خاصة بهاتفك وأذان تجريبي
 • جديد: المساجد القريبة في تطبيق الخرائط لديك
+• متابعة الصلوات: اضغط على صلاة أُضيفت إلى القضاء لتعليمها مؤداة
 • إصلاح عدم ظهور صور الخلفية
 • إصلاح الأزرار المخفية خلف شريط التنقل
 • تطبيق أخف وأسرع

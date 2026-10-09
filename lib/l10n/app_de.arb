@@ -278,7 +278,7 @@
     },
     "trackerNotYet": "Diese Gebetszeit hat noch nicht begonnen.",
     "trackerKazaButton": "Versäumte Gebete zu Qada hinzufügen",
-    "trackerKazaInfo": "Nicht markierte Gebete der letzten 30 Tage (ab Beginn der Erfassung) werden zu den Qada-Zählern hinzugefügt. Jedes Gebet wird nur einmal hinzugefügt.",
+    "trackerKazaInfo": "Nicht markierte Gebete der letzten 30 Tage (ab Beginn der Erfassung) werden zu den Qada-Zählern hinzugefügt. Jedes Gebet wird nur einmal hinzugefügt. Wenn Sie ein zu Qada hinzugefügtes Gebet verrichtet haben, tippen Sie darauf: Es wird als verrichtet markiert und vom Qada-Zähler abgezogen.",
     "trackerKazaConfirm": "{count, plural, =1{1 nicht markiertes Gebet wird zu den Qada-Zählern hinzugefügt. Fortfahren?} other{{count} nicht markierte Gebete werden zu den Qada-Zählern hinzugefügt. Fortfahren?}}",
     "@trackerKazaConfirm": {
         "placeholders": {
@@ -297,7 +297,21 @@
         }
     },
     "trackerKazaNone": "Keine Gebete zum Hinzufügen.",
-    "trackerKazaLocked": "Dieses Gebet wurde zu Qada hinzugefügt. Wenn Sie es nachgeholt haben, können Sie es im Qada-Tracker abziehen.",
+    "trackerKazaRemoveTitle": "Aus Qada entfernen?",
+    "trackerKazaRemoveConfirm": "Dieses Gebet wird als verrichtet markiert und die Qada-Anzahl für {name} ändert sich von {from} auf {to}.",
+    "@trackerKazaRemoveConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
     "trackerLegendPrayed": "Verrichtet",
     "trackerLegendKaza": "Zu Qada hinzugefügt",
     "kerahatActive": "Jetzt Makruh-Zeit: {range}",

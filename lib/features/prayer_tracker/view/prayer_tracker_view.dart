@@ -136,7 +136,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   ) async {
     if (!PrayerTracker.isPrayed(_log, date, key) &&
         PrayerTracker.isPrayed(_kazaAdded, date, key)) {
-      _snack(loc.trackerKazaLocked);
+      await _removeFromKaza(date, key, loc);
       return;
     }
     if (!_isDue(date, key, times)) {
@@ -168,6 +168,49 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
         await viewModel.refreshEndReminders();
       } catch (e) {}
     }
+  }
+
+  // Kazaya eklenmiş vakit kılındı yapılır; kaza sayacı azalacaksa önce onay
+  Future<void> _removeFromKaza(
+    DateTime date,
+    String key,
+    AppLocalizations loc,
+  ) async {
+    final count = await _service.loadKazaCount(key);
+    if (!mounted) return;
+    if (count > 0) {
+      final confirmed = await showConfirmDialog(
+        context,
+        title: loc.trackerKazaRemoveTitle,
+        message: loc.trackerKazaRemoveConfirm(
+          trackerPrayerNames(loc)[key]!,
+          count,
+          count - 1,
+        ),
+        confirmLabel: loc.trackerPrayedAction,
+      );
+      if (!confirmed || !mounted) return;
+    }
+    final now = DateTime.now();
+    _saving++;
+    _generation++;
+    setState(() {
+      _log = PrayerTracker.withPrayed(_log, date, key, true, today: now);
+      _kazaAdded = PrayerTracker.withPrayed(
+        _kazaAdded,
+        date,
+        key,
+        false,
+        today: now,
+      );
+    });
+    try {
+      await _service.removeFromKaza(date, key);
+    } catch (e) {
+    } finally {
+      _saving--;
+    }
+    _load();
   }
 
   Future<void> _addToKaza(

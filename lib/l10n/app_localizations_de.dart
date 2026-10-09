@@ -560,7 +560,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get trackerKazaInfo =>
-      'Nicht markierte Gebete der letzten 30 Tage (ab Beginn der Erfassung) werden zu den Qada-Zählern hinzugefügt. Jedes Gebet wird nur einmal hinzugefügt.';
+      'Nicht markierte Gebete der letzten 30 Tage (ab Beginn der Erfassung) werden zu den Qada-Zählern hinzugefügt. Jedes Gebet wird nur einmal hinzugefügt. Wenn Sie ein zu Qada hinzugefügtes Gebet verrichtet haben, tippen Sie darauf: Es wird als verrichtet markiert und vom Qada-Zähler abgezogen.';
 
   @override
   String trackerKazaConfirm(int count) {
@@ -593,8 +593,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get trackerKazaNone => 'Keine Gebete zum Hinzufügen.';
 
   @override
-  String get trackerKazaLocked =>
-      'Dieses Gebet wurde zu Qada hinzugefügt. Wenn Sie es nachgeholt haben, können Sie es im Qada-Tracker abziehen.';
+  String get trackerKazaRemoveTitle => 'Aus Qada entfernen?';
+
+  @override
+  String trackerKazaRemoveConfirm(String name, int from, int to) {
+    return 'Dieses Gebet wird als verrichtet markiert und die Qada-Anzahl für $name ändert sich von $from auf $to.';
+  }
 
   @override
   String get trackerLegendPrayed => 'Verrichtet';

@@ -299,7 +299,7 @@
     },
     "trackerNotYet": "Bu vakit henüz girmedi.",
     "trackerKazaButton": "Kılınmayanları kazaya ekle",
-    "trackerKazaInfo": "Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir.",
+    "trackerKazaInfo": "Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir. Kazaya eklenen bir vakti kıldıysanız üzerine dokunun; kılındı olarak işaretlenir ve kaza sayısından düşülür.",
     "trackerKazaConfirm": "{count, plural, other{İşaretlenmemiş {count} vakit kaza sayaçlarına eklenecek. Devam edilsin mi?}}",
     "@trackerKazaConfirm": {
         "placeholders": {
@@ -318,7 +318,21 @@
         }
     },
     "trackerKazaNone": "Kazaya eklenecek vakit yok.",
-    "trackerKazaLocked": "Bu vakit kazaya eklendi. Kıldığınızda Kaza Takibi'nden düşebilirsiniz.",
+    "trackerKazaRemoveTitle": "Kazadan çıkarılsın mı?",
+    "trackerKazaRemoveConfirm": "Bu vakit kılındı olarak işaretlenecek ve {name} kaza sayısı {from} yerine {to} olacak.",
+    "@trackerKazaRemoveConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
     "trackerLegendPrayed": "Kılındı",
     "trackerLegendKaza": "Kazaya eklendi",
     "kerahatActive": "Şu an kerahat vakti: {range}",
