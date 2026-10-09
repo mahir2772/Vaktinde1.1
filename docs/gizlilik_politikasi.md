@@ -15,6 +15,7 @@ Konum izni verirseniz telefonunuzun konumu (enlem ve boylam) namaz vakitlerini v
 • Bulunduğunuz il/ilçe adını göstermek ve elle şehir aramak için koordinatlar ya da aradığınız şehir adı, telefonunuzun adres hizmetine (Android; genellikle Google) iletilir.
 • Koordinat bulunamazsa vakitleri getirmek için yalnızca il/ilçe adı Aladhan vakit servisine (aladhan.com) gönderilebilir.
 • Konumunuz bizim sunucularımıza gönderilmez; Uygulama konumunuzu analiz ve reklam hizmetlerine iletmez.
+• "Yakındaki camiler" özelliği, konumunuzu yalnızca sizin açtığınız harita uygulamasına iletir.
 Konum izni vermeden şehrinizi elle seçebilirsiniz.
 
 3. İçerik servisleri
