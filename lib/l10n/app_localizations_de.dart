@@ -1333,6 +1333,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolReligiousDaysDesc => 'Gesegnete Nächte und Feste';
 
   @override
+  String get nearbyMosquesTitle => 'Moscheen in der Nähe';
+
+  @override
+  String get toolNearbyMosquesDesc =>
+      'Nächstgelegene Moscheen auf der Karte finden';
+
+  @override
+  String get nearbyMosquesQuery => 'Moschee';
+
+  @override
+  String get nearbyMosquesError => 'Die Karte konnte nicht geöffnet werden.';
+
+  @override
   String get toolEsmaDesc => 'Die 99 Namen und ihre Bedeutung';
 
   @override

@@ -1340,6 +1340,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get toolReligiousDaysDesc => 'Nuits bénies et fêtes';
 
   @override
+  String get nearbyMosquesTitle => 'Mosquées à proximité';
+
+  @override
+  String get toolNearbyMosquesDesc =>
+      'Trouvez les mosquées les plus proches sur la carte';
+
+  @override
+  String get nearbyMosquesQuery => 'mosquée';
+
+  @override
+  String get nearbyMosquesError => 'Impossible d\'ouvrir la carte.';
+
+  @override
   String get toolEsmaDesc => 'Les 99 noms et leur sens';
 
   @override

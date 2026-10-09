@@ -177,13 +177,14 @@ void main() {
   }
 
   group('Araçlar', () {
-    testWidgets('7 araç + Ayarlar satırı tek listede', (tester) async {
+    testWidgets('8 araç + Ayarlar satırı tek listede', (tester) async {
       await _pumpScreen(tester, const ToolsView(), textScale: 1);
       final loc = lookupAppLocalizations(const Locale('tr'));
       for (final title in [
         loc.imsakiyeTitle,
         loc.trackerTitle,
         loc.missedPrayersTitle,
+        loc.nearbyMosquesTitle,
         loc.religiousDaysTitle,
         loc.esmaulHusnaTitle,
         loc.fridayMessagesTitle,

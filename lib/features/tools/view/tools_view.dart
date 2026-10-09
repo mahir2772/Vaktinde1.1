@@ -13,6 +13,7 @@ import '../../prayer_tracker/view/prayer_tracker_view.dart';
 import '../../religious_days/view/religious_days_view.dart';
 import '../../settings/view/settings_view.dart';
 import '../../zakat/view/zakat_view.dart';
+import '../nearby_mosques.dart';
 
 /// Araçlar sekmesi: Ayarlar ile aynı dikey liste stili (ikon kutusu + başlık +
 /// kısa açıklama, ≥56dp satırlar), Namaz / Bilgi / Hesap grupları ve en altta
@@ -21,7 +22,8 @@ class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
 
   // Araç açılışında geçiş reklamı (AdHelper 5 dk soğuma süresini kendisi
-  // uygular). Ayarlar (sorun giderme, izinler, destek) reklamsız açılır.
+  // uygular). Ayarlar (sorun giderme, izinler, destek) ve uygulamadan çıkan
+  // Yakındaki Camiler (harita) reklamsız açılır.
   static void _open(BuildContext context, Widget page, {bool showAd = true}) {
     if (showAd) AdHelper.instance.showInterstitialAd();
     Navigator.push(context, MaterialPageRoute(builder: (_) => page));
@@ -53,6 +55,12 @@ class ToolsView extends StatelessWidget {
             loc.missedPrayersTitle,
             loc.toolKazaDesc,
             () => const MissedPrayersView(),
+          ),
+          _ToolItem.external(
+            Icons.mosque_outlined,
+            loc.nearbyMosquesTitle,
+            loc.toolNearbyMosquesDesc,
+            () => openNearbyMosques(context),
           ),
         ],
       ),
@@ -108,7 +116,7 @@ class ToolsView extends StatelessWidget {
                     leadingIcon: item.icon,
                     title: item.title,
                     subtitle: item.subtitle,
-                    onTap: () => _open(context, item.page()),
+                    onTap: item.onTap ?? () => _open(context, item.page!()),
                   ),
               ],
             ),
@@ -135,9 +143,24 @@ class _ToolItem {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Widget Function() page;
+  final Widget Function()? page;
 
-  const _ToolItem(this.icon, this.title, this.subtitle, this.page);
+  /// Sayfa yerine uygulama dışına çıkan araç (harita): geçiş reklamı yok
+  final VoidCallback? onTap;
+
+  const _ToolItem(
+    this.icon,
+    this.title,
+    this.subtitle,
+    Widget Function() this.page,
+  ) : onTap = null;
+
+  const _ToolItem.external(
+    this.icon,
+    this.title,
+    this.subtitle,
+    VoidCallback this.onTap,
+  ) : page = null;
 }
 
 /// Grup başlığı; arka plan görseli seçiliyse okunur kalsın diye opak kapsül içinde

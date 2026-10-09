@@ -18,6 +18,7 @@ import 'features/home/view_model/home_view_model.dart';
 import 'features/common/language_provider.dart';
 import 'data/services/notification_service.dart';
 import 'data/services/background_manager.dart';
+import 'data/services/error_reporter.dart';
 import 'data/services/prayer_refresh_service.dart';
 import 'features/onboarding/view/onboarding_language_view.dart';
 import 'features/onboarding/install_guard.dart';
@@ -66,11 +67,7 @@ void main() async {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
       !kDebugMode,
     );
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
+    installCrashlyticsHandlers(FirebaseCrashlytics.instance);
   } catch (e) {
     debugPrint("Firebase hatası: $e");
   }
@@ -223,6 +220,9 @@ class _MyAppState extends State<MyApp> {
                 child: Image.asset(
                   "assets/images/backgrounds/${themeProvider.backgroundImage}",
                   fit: BoxFit.cover,
+                  // Yüklenemezse arka plansız görünüm; hata bildirilmez
+                  errorBuilder: (context, _, _) =>
+                      ColoredBox(color: Theme.of(context).colorScheme.surface),
                 ),
               ),
             Positioned.fill(

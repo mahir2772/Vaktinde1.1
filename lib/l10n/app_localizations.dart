@@ -2498,6 +2498,30 @@ abstract class AppLocalizations {
   /// **'Kandiller ve bayramlar'**
   String get toolReligiousDaysDesc;
 
+  /// No description provided for @nearbyMosquesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yakındaki Camiler'**
+  String get nearbyMosquesTitle;
+
+  /// No description provided for @toolNearbyMosquesDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Size en yakın camileri haritada bulun'**
+  String get toolNearbyMosquesDesc;
+
+  /// No description provided for @nearbyMosquesQuery.
+  ///
+  /// In tr, this message translates to:
+  /// **'cami'**
+  String get nearbyMosquesQuery;
+
+  /// No description provided for @nearbyMosquesError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Harita açılamadı.'**
+  String get nearbyMosquesError;
+
   /// No description provided for @toolEsmaDesc.
   ///
   /// In tr, this message translates to:
