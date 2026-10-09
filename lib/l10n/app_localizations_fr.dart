@@ -130,16 +130,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get continueAction => 'Continuer';
 
   @override
-  String get ok => 'OK';
-
-  @override
   String get nextPrayer => 'Prochaine prière';
 
   @override
   String get hadithTitle => 'Hadith du jour';
-
-  @override
-  String get readMore => 'Lire la suite...';
 
   @override
   String get share => 'Partager';
@@ -149,9 +143,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get loading => 'Calcul des horaires...';
-
-  @override
-  String get error => 'Erreur';
 
   @override
   String get retry => 'Réessayer';
@@ -185,7 +176,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String notifBodyUpcomingAt(String vakit, String time) {
-    return '$vakit : début à $time';
+    return '$vakit : début à $time';
   }
 
   @override
@@ -193,17 +184,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String endReminderNotifBodyAt(String vakit, String time) {
-    return '$vakit : fin du temps de prière à $time';
+    return '$vakit : fin du temps de prière à $time';
   }
 
   @override
   String ramadanImsakBodyAt(String time) {
-    return 'Le temps du suhoor s\'est terminé à $time. Bon jeûne !';
+    return 'Le temps du suhoor s\'est terminé à $time. Bon jeûne !';
   }
 
   @override
   String get alarmHealthExactOff =>
-      'Autorisation d\'alarme désactivée : l\'adhan et les rappels peuvent avoir jusqu\'à environ une heure de retard (imsak et suhoor compris).';
+      'Autorisation d\'alarme désactivée : l\'adhan et les rappels peuvent avoir jusqu\'à environ une heure de retard (imsak et suhoor compris).';
 
   @override
   String get healthTitle => 'Vérifier les notifications';
@@ -261,19 +252,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get healthVolumeSilent =>
-      'Le téléphone est en mode silencieux ou vibreur : l\'adhan ne sera pas entendu.';
+      'Votre téléphone est en mode silencieux ou vibreur : vous n\'entendrez pas l\'adhan.';
 
   @override
   String get healthVolumeNotificationMuted =>
-      'Le son des notifications est coupé : l\'adhan ne sera pas entendu.';
+      'Le son des notifications est coupé : vous n\'entendrez pas l\'adhan.';
 
   @override
   String get healthVolumeAlarmMuted =>
-      'Le son des alarmes est coupé : l\'adhan ne sera pas entendu.';
+      'Le son des alarmes est coupé : vous n\'entendrez pas l\'adhan.';
 
   @override
   String healthAlarmStreamTip(String setting) {
-    return 'Avec « $setting », l\'adhan retentit au volume de l\'alarme.';
+    return 'Si « $setting » est activé, l\'adhan retentit au volume de l\'alarme.';
   }
 
   @override
@@ -283,7 +274,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get healthDndOff => 'Désactivé.';
 
   @override
-  String get healthDndOn => 'Activé : l\'adhan risque de ne pas être entendu.';
+  String get healthDndOn =>
+      'Activé : vous risquez de ne pas entendre l\'adhan.';
 
   @override
   String healthDndAlarm(String setting) {
@@ -299,7 +291,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get healthBatteryOptimized =>
-      'L\'optimisation de la batterie est activée : votre téléphone peut arrêter Vaktinde en arrière-plan. Dans les paramètres de l\'application, ouvrez Batterie et choisissez « Non restreint » (l\'intitulé peut varier selon le téléphone).';
+      'L\'optimisation de la batterie est activée : votre téléphone peut arrêter Vaktinde en arrière-plan. Dans les paramètres de l\'application, ouvrez Batterie et choisissez « Sans restriction » (l\'intitulé peut varier selon le téléphone).';
 
   @override
   String get healthBackgroundTitle => 'Activité en arrière-plan';
@@ -331,7 +323,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get healthGuideStale =>
-      'L\'activité en arrière-plan semble arrêtée. Pour que l\'adhan reste à l\'heure, modifiez ces paramètres :';
+      'L\'activité en arrière-plan semble arrêtée. Pour que l\'adhan ne soit pas retardé, modifiez les paramètres suivants :';
 
   @override
   String get healthGuideMore =>
@@ -342,7 +334,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get healthTestInfo =>
-      'Une notification de test arrive dans 1 minute, avec le même son et les mêmes paramètres qu\'un véritable adhan.';
+      'Vous recevrez une notification de test dans 1 minute, avec le même son et les mêmes paramètres que le véritable adhan.';
 
   @override
   String get healthTestButton => 'Adhan de test dans 1 min';
@@ -382,15 +374,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get healthStepAppBattery =>
-      'Dans les paramètres de l\'application, sous Batterie, choisissez « Non restreint ».';
+      'Dans les paramètres de l\'application, sous Batterie, choisissez « Sans restriction ».';
 
   @override
   String get healthStepSamsungSleeping =>
-      'Dans Paramètres > Batterie > Limites d\'utilisation en arrière-plan, ajoutez Vaktinde aux « Applications jamais en veille ».';
+      'Dans Paramètres > Batterie > Limites d\'utilisation en arrière-plan, ajoutez Vaktinde aux applications jamais mises en veille.';
 
   @override
   String get healthStepLockRecents =>
-      'Verrouillez Vaktinde dans l\'écran des applications récentes (si votre téléphone le permet).';
+      'Verrouillez Vaktinde sur l\'écran des applications récentes (si votre téléphone le permet).';
 
   @override
   String get healthDetails => 'Détails';
@@ -414,7 +406,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String channelAlarmSound(String soundName) {
-    return 'Son : $soundName (même en silencieux)';
+    return 'Son : $soundName (même en silencieux)';
   }
 
   @override
@@ -490,9 +482,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navQibla => 'Qibla';
 
   @override
-  String get navMenu => 'Menu';
-
-  @override
   String get menuTitle => 'Paramètres';
 
   @override
@@ -505,31 +494,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get citySelect => 'Sélectionner la ville';
 
   @override
-  String get districtSelect => 'Sélectionner le district';
-
-  @override
   String get save => 'Enregistrer';
 
   @override
   String get cancel => 'Annuler';
-
-  @override
-  String get locationWarning =>
-      'Le choix du district est important pour des horaires précis.';
-
-  @override
-  String get menuNotifications => 'Autorisations de notification';
-
-  @override
-  String get menuNotificationsSub =>
-      'Vérifiez ici si vous n\'entendez pas les sons.';
-
-  @override
-  String get menuTroubleshoot => 'Vous ne recevez pas de notifications ?';
-
-  @override
-  String get menuTroubleshootSub =>
-      'Ajustez les paramètres de batterie pour Samsung/Xiaomi.';
 
   @override
   String get timeAdjustTitle => 'Ajustement des horaires';
@@ -789,22 +757,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get batteryDialogTitle => 'Résoudre les problèmes de notification';
-
-  @override
-  String get batteryDialogBody =>
-      'Votre téléphone peut fermer l\'application pour économiser la batterie. Pour éviter cela :\n\n1. Ouvrez l\'écran des applications récentes.\n2. Appuyez longuement sur l\'application « Vaktinde » ou sur son logo.\n3. Appuyez sur l\'icône de cadenas 🔒 pour la verrouiller.\n\nAllez également dans Paramètres > Applications > Vaktinde > Batterie et sélectionnez « Non restreint ».';
-
-  @override
   String get okUnderstood => 'OK, j\'ai compris';
 
   @override
   String get religiousDaysTitle => 'Jours religieux';
-
-  @override
-  String errorOccurred(String error) {
-    return 'Une erreur est survenue : $error';
-  }
 
   @override
   String get noDataFound => 'Aucune donnée trouvée.';
@@ -861,9 +817,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get esmaulHusnaTitle => 'Noms d\'Allah';
 
   @override
-  String get closeCaps => 'FERMER';
-
-  @override
   String get zakatTitle => 'Calculatrice de Zakat';
 
   @override
@@ -877,9 +830,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vous pouvez modifier manuellement les taux récupérés automatiquement.';
 
   @override
-  String get sectionGold => 'Avoirs en or';
-
-  @override
   String get goldType => 'Type d\'or';
 
   @override
@@ -889,9 +839,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get goldUnitPrice => 'Prix unitaire';
 
   @override
-  String get sectionCurrency => 'Avoirs en devises';
-
-  @override
   String get currencyType => 'Type de devise';
 
   @override
@@ -899,15 +846,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get currencyRate => 'Taux actuel';
-
-  @override
-  String get sectionCashDebt => 'Espèces et dettes';
-
-  @override
-  String get cashAmount => 'Espèces et avoirs en banque';
-
-  @override
-  String get debtAmount => 'Total des dettes (à déduire)';
 
   @override
   String get calculateButton => 'CALCULER';
@@ -928,15 +866,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get locationPermissionDenied =>
       'Autorisation de localisation refusée.';
-
-  @override
-  String get locationPermissionForever =>
-      'L\'autorisation de localisation est bloquée définitivement. Veuillez l\'accorder dans les paramètres.';
-
-  @override
-  String compassError(String error) {
-    return 'Erreur du capteur : $error';
-  }
 
   @override
   String get noCompass => 'Pas de boussole sur cet appareil.';
@@ -1008,12 +937,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get bgKaaba => 'Kaaba';
 
   @override
-  String get bgQuran => 'Coran';
-
-  @override
-  String get none => 'Aucun';
-
-  @override
   String get zakatEligible => 'La Zakat est due';
 
   @override
@@ -1058,19 +981,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tickerEzan => 'Heure de prière';
 
   @override
-  String get stickyChannelName => 'Compteur persistant';
-
-  @override
-  String get stickyChannelDesc => 'Affiche le temps restant';
-
-  @override
-  String get timeLeftTo => 'Avant la fin du temps de prière : ';
-
-  @override
-  String get locationFallbackMessage =>
-      'Impossible d\'obtenir la position, valeurs par défaut utilisées.';
-
-  @override
   String get fetchingLocation => 'Localisation en cours...';
 
   @override
@@ -1086,18 +996,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get directionWest => 'O';
 
   @override
-  String get calibrationInstruction =>
-      '(Dessinez un « 8 » pour étalonner la boussole)';
-
-  @override
   String get zakatDescription =>
       'Calculez votre Zakat en détail selon les directives religieuses et les taux actuels du marché.';
 
   @override
   String get cashAndCurrencyTitle => 'Espèces et devises';
-
-  @override
-  String get cashTurkishLira => 'Espèces en livres turques (TL)';
 
   @override
   String get goldAndSilverTitle => 'Or et argent';
@@ -1252,9 +1155,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dhikrOther => 'Autre (dhikr personnalisé)';
 
   @override
-  String get customDhikrTitle => 'Ajouter un dhikr personnalisé';
-
-  @override
   String get customDhikrHint => 'Tapez votre dhikr';
 
   @override
@@ -1277,36 +1177,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get themeClassic => 'Tasbih classique';
-
-  @override
-  String get introTitle1 => 'Bienvenue sur Vaktinde';
-
-  @override
-  String get introDesc1 =>
-      'Suivez facilement les heures de prière, les dhikrs et les jours religieux avec notre interface moderne.';
-
-  @override
-  String get introTitle2 => 'Notifications intelligentes';
-
-  @override
-  String get introDesc2 =>
-      'Recevez des alertes avec le son de votre choix. Ne manquez jamais vos actes d\'adoration.';
-
-  @override
-  String get introTitle3 => 'Outils avancés';
-
-  @override
-  String get introDesc3 =>
-      'Renforcez votre spiritualité avec le compteur de dhikr animé, le suivi des prières manquées, les noms d\'Allah et la calculatrice de Zakat.';
-
-  @override
-  String get introSkip => 'Passer';
-
-  @override
-  String get introNext => 'Suivant';
-
-  @override
-  String get introStart => 'Commencer';
 
   @override
   String get dhikrListTitle => 'Liste des dhikrs';
@@ -1429,26 +1299,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dailyAyahTitle => 'Verset du jour';
 
   @override
-  String get remainingTime => 'Restant';
-
-  @override
   String get onboardingWelcome => 'Hoş Geldiniz / Bienvenue';
 
   @override
   String get onboardingSelectLanguage =>
       'Lütfen kullanmak istediğiniz dili seçin.\nVeuillez sélectionner votre langue.';
-
-  @override
-  String get turnRight => 'Tournez à droite ➔';
-
-  @override
-  String get turnSlightRight => 'Tournez légèrement à droite ➔';
-
-  @override
-  String get turnLeft => '⬅ Tournez à gauche';
-
-  @override
-  String get turnSlightLeft => '⬅ Tournez légèrement à gauche';
 
   @override
   String get calibrationRequired => 'Étalonnage requis';
@@ -1566,23 +1421,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get currencyTry => 'Livre turque';
 
   @override
-  String get holdToEdit => 'Maintenir pour modifier';
-
-  @override
   String get editCounterTitle => 'Modifier le compteur';
-
-  @override
-  String get editCounterHint => 'Ex. : 2000';
-
-  @override
-  String get editTargetHint => 'Ex. : 99';
 
   @override
   String get resetCounterConfirm =>
       'Voulez-vous vraiment réinitialiser le compteur ?';
-
-  @override
-  String get dhikrTarget => 'Objectif :';
 
   @override
   String get imsakiyeTitle => 'Calendrier des prières';

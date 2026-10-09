@@ -35,14 +35,11 @@
     "permissionPrimingTitle": "Ne manquez aucune prière",
     "permissionPrimingBody": "Nous avons besoin de l'autorisation des notifications pour les alertes d'adhan et de la localisation pour calculer les horaires là où vous êtes.",
     "continueAction": "Continuer",
-    "ok": "OK",
     "nextPrayer": "Prochaine prière",
     "hadithTitle": "Hadith du jour",
-    "readMore": "Lire la suite...",
     "share": "Partager",
     "close": "Fermer",
     "loading": "Calcul des horaires...",
-    "error": "Erreur",
     "retry": "Réessayer",
     "noData": "Aucune donnée.",
     "imsak": "Imsak",
@@ -53,7 +50,7 @@
     "yatsi": "Isha",
     "exactAlarm": "Notifier à l'heure exacte",
     "reminderTitleAt": "Rappel de prière",
-    "notifBodyUpcomingAt": "{vakit} : début à {time}",
+    "notifBodyUpcomingAt": "{vakit} : début à {time}",
     "@notifBodyUpcomingAt": {
         "placeholders": {
             "vakit": {
@@ -65,7 +62,7 @@
         }
     },
     "endReminderTitleAt": "Fin du temps de prière",
-    "endReminderNotifBodyAt": "{vakit} : fin du temps de prière à {time}",
+    "endReminderNotifBodyAt": "{vakit} : fin du temps de prière à {time}",
     "@endReminderNotifBodyAt": {
         "placeholders": {
             "vakit": {
@@ -76,7 +73,7 @@
             }
         }
     },
-    "ramadanImsakBodyAt": "Le temps du suhoor s'est terminé à {time}. Bon jeûne !",
+    "ramadanImsakBodyAt": "Le temps du suhoor s'est terminé à {time}. Bon jeûne !",
     "@ramadanImsakBodyAt": {
         "placeholders": {
             "time": {
@@ -84,7 +81,7 @@
             }
         }
     },
-    "alarmHealthExactOff": "Autorisation d'alarme désactivée : l'adhan et les rappels peuvent avoir jusqu'à environ une heure de retard (imsak et suhoor compris).",
+    "alarmHealthExactOff": "Autorisation d'alarme désactivée : l'adhan et les rappels peuvent avoir jusqu'à environ une heure de retard (imsak et suhoor compris).",
     "healthTitle": "Vérifier les notifications",
     "healthSub": "L'adhan ne retentit pas ? Vérifiez vos paramètres étape par étape",
     "healthSectionStatus": "État",
@@ -109,10 +106,10 @@
     "healthVolumeTitle": "Son",
     "healthVolumeOk": "Le son des notifications est activé.",
     "healthVolumeAlarmOk": "Le son des alarmes est activé.",
-    "healthVolumeSilent": "Le téléphone est en mode silencieux ou vibreur : l'adhan ne sera pas entendu.",
-    "healthVolumeNotificationMuted": "Le son des notifications est coupé : l'adhan ne sera pas entendu.",
-    "healthVolumeAlarmMuted": "Le son des alarmes est coupé : l'adhan ne sera pas entendu.",
-    "healthAlarmStreamTip": "Avec « {setting} », l'adhan retentit au volume de l'alarme.",
+    "healthVolumeSilent": "Votre téléphone est en mode silencieux ou vibreur : vous n'entendrez pas l'adhan.",
+    "healthVolumeNotificationMuted": "Le son des notifications est coupé : vous n'entendrez pas l'adhan.",
+    "healthVolumeAlarmMuted": "Le son des alarmes est coupé : vous n'entendrez pas l'adhan.",
+    "healthAlarmStreamTip": "Si « {setting} » est activé, l'adhan retentit au volume de l'alarme.",
     "@healthAlarmStreamTip": {
         "placeholders": {
             "setting": {
@@ -122,7 +119,7 @@
     },
     "healthDndTitle": "Ne pas déranger",
     "healthDndOff": "Désactivé.",
-    "healthDndOn": "Activé : l'adhan risque de ne pas être entendu.",
+    "healthDndOn": "Activé : vous risquez de ne pas entendre l'adhan.",
     "healthDndAlarm": "Activé, mais grâce à « {setting} », l'adhan retentit au volume de l'alarme.",
     "@healthDndAlarm": {
         "placeholders": {
@@ -133,7 +130,7 @@
     },
     "healthBatteryTitle": "Utilisation de la batterie",
     "healthBatteryOk": "L'optimisation de la batterie est désactivée pour Vaktinde.",
-    "healthBatteryOptimized": "L'optimisation de la batterie est activée : votre téléphone peut arrêter Vaktinde en arrière-plan. Dans les paramètres de l'application, ouvrez Batterie et choisissez « Non restreint » (l'intitulé peut varier selon le téléphone).",
+    "healthBatteryOptimized": "L'optimisation de la batterie est activée : votre téléphone peut arrêter Vaktinde en arrière-plan. Dans les paramètres de l'application, ouvrez Batterie et choisissez « Sans restriction » (l'intitulé peut varier selon le téléphone).",
     "healthBackgroundTitle": "Activité en arrière-plan",
     "healthBackgroundToday": "Dernière exécution : aujourd'hui à {time}",
     "@healthBackgroundToday": {
@@ -162,10 +159,10 @@
         }
     },
     "healthGuideTitleGeneric": "Paramètres pour votre téléphone",
-    "healthGuideStale": "L'activité en arrière-plan semble arrêtée. Pour que l'adhan reste à l'heure, modifiez ces paramètres :",
+    "healthGuideStale": "L'activité en arrière-plan semble arrêtée. Pour que l'adhan ne soit pas retardé, modifiez les paramètres suivants :",
     "healthGuideMore": "Guides détaillés selon votre modèle (en anglais)",
     "healthTestTitle": "Adhan de test",
-    "healthTestInfo": "Une notification de test arrive dans 1 minute, avec le même son et les mêmes paramètres qu'un véritable adhan.",
+    "healthTestInfo": "Vous recevrez une notification de test dans 1 minute, avec le même son et les mêmes paramètres que le véritable adhan.",
     "healthTestButton": "Adhan de test dans 1 min",
     "healthTestScheduled": "L'adhan de test retentira dans 1 minute. Vous pouvez fermer l'application.",
     "healthTestNotifBody": "Si vous voyez cette notification, les notifications d'adhan fonctionnent.",
@@ -182,16 +179,16 @@
             }
         }
     },
-    "healthStepAppBattery": "Dans les paramètres de l'application, sous Batterie, choisissez « Non restreint ».",
-    "healthStepSamsungSleeping": "Dans Paramètres > Batterie > Limites d'utilisation en arrière-plan, ajoutez Vaktinde aux « Applications jamais en veille ».",
-    "healthStepLockRecents": "Verrouillez Vaktinde dans l'écran des applications récentes (si votre téléphone le permet).",
+    "healthStepAppBattery": "Dans les paramètres de l'application, sous Batterie, choisissez « Sans restriction ».",
+    "healthStepSamsungSleeping": "Dans Paramètres > Batterie > Limites d'utilisation en arrière-plan, ajoutez Vaktinde aux applications jamais mises en veille.",
+    "healthStepLockRecents": "Verrouillez Vaktinde sur l'écran des applications récentes (si votre téléphone le permet).",
     "healthDetails": "Détails",
     "alarmHealthExactAction": "Autoriser",
     "alarmHealthNotificationsOff": "Les notifications sont désactivées, l'adhan ne retentira pas.",
     "alarmHealthNotificationsAction": "Activer",
     "ezanAlarmStreamTitle": "Jouer aussi en mode silencieux",
     "ezanAlarmStreamSub": "L'adhan retentit au volume de l'alarme, même si le téléphone est en mode silencieux.",
-    "channelAlarmSound": "Son : {soundName} (même en silencieux)",
+    "channelAlarmSound": "Son : {soundName} (même en silencieux)",
     "@channelAlarmSound": {
         "placeholders": {
             "soundName": {
@@ -244,19 +241,12 @@
     },
     "navPrayer": "Accueil",
     "navQibla": "Qibla",
-    "navMenu": "Menu",
     "menuTitle": "Paramètres",
     "sectionLocation": "POSITION & HORAIRES",
     "changeLocation": "Changer la position",
     "citySelect": "Sélectionner la ville",
-    "districtSelect": "Sélectionner le district",
     "save": "Enregistrer",
     "cancel": "Annuler",
-    "locationWarning": "Le choix du district est important pour des horaires précis.",
-    "menuNotifications": "Autorisations de notification",
-    "menuNotificationsSub": "Vérifiez ici si vous n'entendez pas les sons.",
-    "menuTroubleshoot": "Vous ne recevez pas de notifications ?",
-    "menuTroubleshootSub": "Ajustez les paramètres de batterie pour Samsung/Xiaomi.",
     "timeAdjustTitle": "Ajustement des horaires",
     "tapToCount": "Appuyez pour compter",
     "timeAdjustSub": "Corriger les horaires à la minute près",
@@ -388,18 +378,8 @@
             }
         }
     },
-    "batteryDialogTitle": "Résoudre les problèmes de notification",
-    "batteryDialogBody": "Votre téléphone peut fermer l'application pour économiser la batterie. Pour éviter cela :\n\n1. Ouvrez l'écran des applications récentes.\n2. Appuyez longuement sur l'application « Vaktinde » ou sur son logo.\n3. Appuyez sur l'icône de cadenas 🔒 pour la verrouiller.\n\nAllez également dans Paramètres > Applications > Vaktinde > Batterie et sélectionnez « Non restreint ».",
     "okUnderstood": "OK, j'ai compris",
     "religiousDaysTitle": "Jours religieux",
-    "errorOccurred": "Une erreur est survenue : {error}",
-    "@errorOccurred": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
     "noDataFound": "Aucune donnée trouvée.",
     "noDataForYear": "Aucune donnée trouvée pour l'année {year}.",
     "@noDataForYear": {
@@ -443,37 +423,22 @@
     "tomorrow": "(Demain)",
     "fridayMessagesTitle": "Messages du vendredi",
     "esmaulHusnaTitle": "Noms d'Allah",
-    "closeCaps": "FERMER",
     "zakatTitle": "Calculatrice de Zakat",
     "zakatCalculatorTitle": "Calculatrice intelligente de Zakat",
     "liveRatesLoading": "Récupération des taux de change...",
     "liveRatesInfo": "Vous pouvez modifier manuellement les taux récupérés automatiquement.",
-    "sectionGold": "Avoirs en or",
     "goldType": "Type d'or",
     "goldAmount": "Quantité / Grammes",
     "goldUnitPrice": "Prix unitaire",
-    "sectionCurrency": "Avoirs en devises",
     "currencyType": "Type de devise",
     "currencyAmount": "Montant",
     "currencyRate": "Taux actuel",
-    "sectionCashDebt": "Espèces et dettes",
-    "cashAmount": "Espèces et avoirs en banque",
-    "debtAmount": "Total des dettes (à déduire)",
     "calculateButton": "CALCULER",
     "zakatResultTitle": "Votre Zakat à payer",
     "netAssets": "Actifs nets :",
     "qiblaTitle": "Boussole Qibla",
     "locationServiceOff": "Service de localisation désactivé. Veuillez l'activer.",
     "locationPermissionDenied": "Autorisation de localisation refusée.",
-    "locationPermissionForever": "L'autorisation de localisation est bloquée définitivement. Veuillez l'accorder dans les paramètres.",
-    "compassError": "Erreur du capteur : {error}",
-    "@compassError": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
     "noCompass": "Pas de boussole sur cet appareil.",
     "qiblaFound": "VOUS AVEZ TROUVÉ LA QIBLA !",
     "qiblaAngle": "Angle de la Qibla : {angle}°",
@@ -503,8 +468,6 @@
     "bgDefault": "Par défaut",
     "bgMosque": "Mosquée",
     "bgKaaba": "Kaaba",
-    "bgQuran": "Coran",
-    "none": "Aucun",
     "zakatEligible": "La Zakat est due",
     "zakatNotEligible": "La Zakat n'est pas due",
     "nisabLimit": "Seuil du nisab (80,18 g d'or)",
@@ -530,19 +493,13 @@
     },
     "channelSilentPrayers": "Notifications d'adhan silencieuses",
     "tickerEzan": "Heure de prière",
-    "stickyChannelName": "Compteur persistant",
-    "stickyChannelDesc": "Affiche le temps restant",
-    "timeLeftTo": "Avant la fin du temps de prière : ",
-    "locationFallbackMessage": "Impossible d'obtenir la position, valeurs par défaut utilisées.",
     "fetchingLocation": "Localisation en cours...",
     "directionNorth": "N",
     "directionSouth": "S",
     "directionEast": "E",
     "directionWest": "O",
-    "calibrationInstruction": "(Dessinez un « 8 » pour étalonner la boussole)",
     "zakatDescription": "Calculez votre Zakat en détail selon les directives religieuses et les taux actuels du marché.",
     "cashAndCurrencyTitle": "Espèces et devises",
-    "cashTurkishLira": "Espèces en livres turques (TL)",
     "goldAndSilverTitle": "Or et argent",
     "silverGram": "Argent (grammes)",
     "unitPrice": "Prix unitaire",
@@ -597,7 +554,6 @@
     },
     "setTarget": "Définir l'objectif",
     "dhikrOther": "Autre (dhikr personnalisé)",
-    "customDhikrTitle": "Ajouter un dhikr personnalisé",
     "customDhikrHint": "Tapez votre dhikr",
     "zikirSettings": "Paramètres",
     "vibration": "Vibration",
@@ -606,15 +562,6 @@
     "appearance": "Apparence",
     "themeModern": "Bouton moderne",
     "themeClassic": "Tasbih classique",
-    "introTitle1": "Bienvenue sur Vaktinde",
-    "introDesc1": "Suivez facilement les heures de prière, les dhikrs et les jours religieux avec notre interface moderne.",
-    "introTitle2": "Notifications intelligentes",
-    "introDesc2": "Recevez des alertes avec le son de votre choix. Ne manquez jamais vos actes d'adoration.",
-    "introTitle3": "Outils avancés",
-    "introDesc3": "Renforcez votre spiritualité avec le compteur de dhikr animé, le suivi des prières manquées, les noms d'Allah et la calculatrice de Zakat.",
-    "introSkip": "Passer",
-    "introNext": "Suivant",
-    "introStart": "Commencer",
     "dhikrListTitle": "Liste des dhikrs",
     "addCustomDhikr": "Ajouter un nouveau dhikr",
     "customDhikrAdded": "Dhikr ajouté avec succès.",
@@ -654,13 +601,8 @@
     "tabAlarms": "Alarmes",
     "locationFoundNoName": "Position trouvée, mais le nom du lieu est introuvable.",
     "dailyAyahTitle": "Verset du jour",
-    "remainingTime": "Restant",
     "onboardingWelcome": "Hoş Geldiniz / Bienvenue",
     "onboardingSelectLanguage": "Lütfen kullanmak istediğiniz dili seçin.\nVeuillez sélectionner votre langue.",
-    "turnRight": "Tournez à droite ➔",
-    "turnSlightRight": "Tournez légèrement à droite ➔",
-    "turnLeft": "⬅ Tournez à gauche",
-    "turnSlightLeft": "⬅ Tournez légèrement à gauche",
     "calibrationRequired": "Étalonnage requis",
     "qiblaAccuracyNote": "La boussole indique une direction approximative ; le métal, les aimants et les appareils électroniques peuvent la fausser.",
     "qiblaTipsTitle": "Pour un résultat précis",
@@ -710,12 +652,8 @@
     "currencyBgn": "Lev bulgare",
     "currencyKwd": "Dinar koweïtien",
     "currencyTry": "Livre turque",
-    "holdToEdit": "Maintenir pour modifier",
     "editCounterTitle": "Modifier le compteur",
-    "editCounterHint": "Ex. : 2000",
-    "editTargetHint": "Ex. : 99",
     "resetCounterConfirm": "Voulez-vous vraiment réinitialiser le compteur ?",
-    "dhikrTarget": "Objectif :",
     "imsakiyeTitle": "Calendrier des prières",
     "toolsGroupPrayer": "Prière",
     "toolsGroupInfo": "Connaissances",

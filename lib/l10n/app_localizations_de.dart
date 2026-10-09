@@ -129,16 +129,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get continueAction => 'Weiter';
 
   @override
-  String get ok => 'OK';
-
-  @override
   String get nextPrayer => 'Nächste Gebetszeit';
 
   @override
   String get hadithTitle => 'Hadith des Tages';
-
-  @override
-  String get readMore => 'Weiterlesen...';
 
   @override
   String get share => 'Teilen';
@@ -148,9 +142,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get loading => 'Zeiten werden berechnet...';
-
-  @override
-  String get error => 'Fehler';
 
   @override
   String get retry => 'Erneut versuchen';
@@ -260,7 +251,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get healthVolumeSilent =>
-      'Das Telefon ist lautlos oder auf Vibration gestellt: Der Adhan ist nicht zu hören.';
+      'Ihr Telefon ist lautlos oder auf Vibration gestellt: Der Adhan ist nicht zu hören.';
 
   @override
   String get healthVolumeNotificationMuted =>
@@ -272,7 +263,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String healthAlarmStreamTip(String setting) {
-    return 'Mit „$setting“ ertönt der Adhan in der Lautstärke des Weckers.';
+    return 'Ist „$setting“ aktiviert, ertönt der Adhan in der Lautstärke des Weckers.';
   }
 
   @override
@@ -299,7 +290,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get healthBatteryOptimized =>
-      'Die Akkuoptimierung ist aktiv: Ihr Telefon kann Vaktinde im Hintergrund beenden. Wählen Sie in den App-Einstellungen unter Akku „Nicht eingeschränkt“ (auf manchen Telefonen „Keine Beschränkungen“).';
+      'Die Akkuoptimierung ist aktiv: Ihr Telefon kann Vaktinde im Hintergrund beenden. Wählen Sie in den App-Einstellungen unter Akku „Uneingeschränkt“ (auf manchen Telefonen „Nicht eingeschränkt“ oder „Keine Beschränkungen“).';
 
   @override
   String get healthBackgroundTitle => 'Hintergrundaktivität';
@@ -342,10 +333,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get healthTestInfo =>
-      'In 1 Minute kommt eine Testbenachrichtigung mit demselben Ton und denselben Einstellungen wie ein echter Adhan.';
+      'Sie erhalten in 1 Minute eine Testbenachrichtigung mit demselben Ton und denselben Einstellungen wie beim echten Adhan.';
 
   @override
-  String get healthTestButton => 'Test-Adhan in 1 Min.';
+  String get healthTestButton => 'Test-Adhan in 1 Min.';
 
   @override
   String get healthTestScheduled =>
@@ -382,11 +373,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get healthStepAppBattery =>
-      'Wählen Sie in den App-Einstellungen unter Akku „Nicht eingeschränkt“.';
+      'Wählen Sie in den App-Einstellungen unter Akku „Uneingeschränkt“ (bzw. „Nicht eingeschränkt“).';
 
   @override
   String get healthStepSamsungSleeping =>
-      'Fügen Sie Vaktinde unter Einstellungen > Akku > Grenzen der Hintergrundnutzung zu „Apps, die nie im Standby sind“ hinzu.';
+      'Fügen Sie Vaktinde unter Einstellungen > Akku > Grenzen der Hintergrundnutzung zur Liste „Apps, die nie im Standby sind“ hinzu.';
 
   @override
   String get healthStepLockRecents =>
@@ -488,9 +479,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navQibla => 'Qibla';
 
   @override
-  String get navMenu => 'Menü';
-
-  @override
   String get menuTitle => 'Einstellungen';
 
   @override
@@ -503,30 +491,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get citySelect => 'Stadt auswählen';
 
   @override
-  String get districtSelect => 'Bezirk auswählen';
-
-  @override
   String get save => 'Speichern';
 
   @override
   String get cancel => 'Abbrechen';
-
-  @override
-  String get locationWarning =>
-      'Die Auswahl des Bezirks ist wichtig für genaue Gebetszeiten.';
-
-  @override
-  String get menuNotifications => 'Berechtigungen für Benachrichtigungen';
-
-  @override
-  String get menuNotificationsSub => 'Hier prüfen, falls Sie keine Töne hören.';
-
-  @override
-  String get menuTroubleshoot => 'Keine Benachrichtigungen?';
-
-  @override
-  String get menuTroubleshootSub =>
-      'Akkueinstellungen für Samsung/Xiaomi anpassen.';
 
   @override
   String get timeAdjustTitle => 'Gebetszeiten anpassen';
@@ -785,22 +753,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get batteryDialogTitle => 'Lösung für Benachrichtigungsprobleme';
-
-  @override
-  String get batteryDialogBody =>
-      'Ihr Telefon schließt die App möglicherweise, um Akku zu sparen. Um dies zu verhindern:\n\n1. Öffnen Sie die Ansicht \'Zuletzt verwendete Apps\'.\n2. Halten Sie die \'Vaktinde\'-App gedrückt oder tippen Sie auf ihr Logo.\n3. Tippen Sie auf das Schloss-Symbol 🔒, um sie zu sperren.\n\nWählen Sie außerdem unter Einstellungen > Apps > Vaktinde > Akku die Option \'Nicht eingeschränkt\'.';
-
-  @override
   String get okUnderstood => 'OK, verstanden';
 
   @override
   String get religiousDaysTitle => 'Religiöse Tage';
-
-  @override
-  String errorOccurred(String error) {
-    return 'Ein Fehler ist aufgetreten: $error';
-  }
 
   @override
   String get noDataFound => 'Keine Daten gefunden.';
@@ -857,9 +813,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get esmaulHusnaTitle => 'Namen Allahs';
 
   @override
-  String get closeCaps => 'SCHLIESSEN';
-
-  @override
   String get zakatTitle => 'Zakat-Rechner';
 
   @override
@@ -873,9 +826,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Sie können die automatisch abgerufenen Kurse bei Bedarf manuell bearbeiten.';
 
   @override
-  String get sectionGold => 'Goldvermögen';
-
-  @override
   String get goldType => 'Goldart';
 
   @override
@@ -885,9 +835,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get goldUnitPrice => 'Einzelpreis';
 
   @override
-  String get sectionCurrency => 'Währungsvermögen';
-
-  @override
   String get currencyType => 'Währungsart';
 
   @override
@@ -895,15 +842,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get currencyRate => 'Aktueller Kurs';
-
-  @override
-  String get sectionCashDebt => 'Bargeld & Schulden';
-
-  @override
-  String get cashAmount => 'Bargeld & Bankguthaben (TL)';
-
-  @override
-  String get debtAmount => 'Gesamtschulden (werden abgezogen)';
 
   @override
   String get calculateButton => 'BERECHNEN';
@@ -923,15 +861,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get locationPermissionDenied => 'Standortberechtigung verweigert.';
-
-  @override
-  String get locationPermissionForever =>
-      'Standortberechtigung dauerhaft verweigert. Bitte in den Einstellungen aktivieren.';
-
-  @override
-  String compassError(String error) {
-    return 'Sensorfehler: $error';
-  }
 
   @override
   String get noCompass => 'Kein Kompass auf diesem Gerät.';
@@ -1002,12 +931,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get bgKaaba => 'Kaaba';
 
   @override
-  String get bgQuran => 'Koran';
-
-  @override
-  String get none => 'Keines';
-
-  @override
   String get zakatEligible => 'Zakat ist fällig';
 
   @override
@@ -1053,19 +976,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tickerEzan => 'Gebetszeit';
 
   @override
-  String get stickyChannelName => 'Permanenter Zähler';
-
-  @override
-  String get stickyChannelDesc => 'Zeigt die verbleibende Zeit an';
-
-  @override
-  String get timeLeftTo => 'Bis zum Ende der Gebetszeit: ';
-
-  @override
-  String get locationFallbackMessage =>
-      'Standort konnte nicht abgerufen werden, Standardwerte werden verwendet.';
-
-  @override
   String get fetchingLocation => 'Standort wird abgerufen...';
 
   @override
@@ -1081,18 +991,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get directionWest => 'W';
 
   @override
-  String get calibrationInstruction =>
-      '(Zeichnen Sie eine \'8\' zur Kalibrierung)';
-
-  @override
   String get zakatDescription =>
       'Berechnen Sie Ihre Zakat detailliert gemäß den Fatwas der Diyanet und aktuellen Marktpreisen.';
 
   @override
   String get cashAndCurrencyTitle => 'Bargeld und Devisen';
-
-  @override
-  String get cashTurkishLira => 'Bargeld in Türkischer Lira (TL)';
 
   @override
   String get goldAndSilverTitle => 'Gold und Silber';
@@ -1247,9 +1150,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dhikrOther => 'Eigene Dhikr';
 
   @override
-  String get customDhikrTitle => 'Eigenen Dhikr hinzufügen';
-
-  @override
   String get customDhikrHint => 'Geben Sie Ihren Dhikr ein';
 
   @override
@@ -1272,36 +1172,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get themeClassic => 'Klassischer Tasbih';
-
-  @override
-  String get introTitle1 => 'Willkommen bei Vaktinde';
-
-  @override
-  String get introDesc1 =>
-      'Verfolgen Sie Gebetszeiten, Dhikr und religiöse Tage einfach mit unserer modernen Oberfläche.';
-
-  @override
-  String get introTitle2 => 'Smarte Benachrichtigungen';
-
-  @override
-  String get introDesc2 =>
-      'Erhalten Sie zu den Gebetszeiten eine Benachrichtigung mit dem Ton Ihrer Wahl. Verpassen Sie nie wieder ein Gebet.';
-
-  @override
-  String get introTitle3 => 'Erweiterte Tools';
-
-  @override
-  String get introDesc3 =>
-      'Stärken Sie Ihre Spiritualität mit dem animierten Dhikr-Zähler, dem Qada-Tracker, den Namen Allahs und dem Zakat-Rechner.';
-
-  @override
-  String get introSkip => 'Überspringen';
-
-  @override
-  String get introNext => 'Weiter';
-
-  @override
-  String get introStart => 'Jetzt starten';
 
   @override
   String get dhikrListTitle => 'Dhikr-Liste';
@@ -1423,26 +1293,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dailyAyahTitle => 'Vers des Tages';
 
   @override
-  String get remainingTime => 'Verbleibend';
-
-  @override
   String get onboardingWelcome => 'Hoş Geldiniz / Willkommen';
 
   @override
   String get onboardingSelectLanguage =>
       'Lütfen kullanmak istediğiniz dili seçin.\nBitte wählen Sie Ihre bevorzugte Sprache.';
-
-  @override
-  String get turnRight => 'Nach rechts drehen ➔';
-
-  @override
-  String get turnSlightRight => 'Leicht nach rechts drehen ➔';
-
-  @override
-  String get turnLeft => '⬅ Nach links drehen';
-
-  @override
-  String get turnSlightLeft => '⬅ Leicht nach links drehen';
 
   @override
   String get calibrationRequired => 'Kalibrierung erforderlich';
@@ -1560,23 +1415,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get currencyTry => 'Türkische Lira';
 
   @override
-  String get holdToEdit => 'Zum Bearbeiten gedrückt halten';
-
-  @override
   String get editCounterTitle => 'Zähler bearbeiten';
-
-  @override
-  String get editCounterHint => 'Z. B. 2000';
-
-  @override
-  String get editTargetHint => 'Z. B. 99';
 
   @override
   String get resetCounterConfirm =>
       'Sind Sie sicher, dass Sie den Zähler zurücksetzen möchten?';
-
-  @override
-  String get dhikrTarget => 'Ziel:';
 
   @override
   String get imsakiyeTitle => 'Gebetskalender';
