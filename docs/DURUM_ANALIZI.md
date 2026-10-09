@@ -1,4 +1,4 @@
-# Vaktinde — Durum (v1.1.2+16 Play'de yayında, 8 Ekim 2026, %100; 1.1.1+15 sadece dahili testte kaldı)
+# Vaktinde — Durum (v1.2.0+17 hazır; Play'de 1.1.2+16, 8 Ekim 2026)
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
 
@@ -115,10 +115,10 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 Efor: S ≤1 gün · M 2–4 gün · L 1 hafta+. Kaynak: araştırma raporu (Ekim 2026); yapılanlar çıkarıldı.
 
 **Kasım — Üç Aylar 10 Aralık 2026'dan önce yayında**
-1. Bildirim sağlık ekranı (M): bildirim/tam zamanlı alarm izni, pil, ses ve Rahatsız Etmeyin, sıradaki alarmın saati,
+1. ~~Bildirim sağlık ekranı~~ (1.2.0'da yapıldı: Bildirim Kontrolü) (M): bildirim/tam zamanlı alarm izni, pil, ses ve Rahatsız Etmeyin, sıradaki alarmın saati,
    "1 dk sonra test ezanı"; üretici rehberi (Xiaomi otomatik başlatma, Honor/Huawei, Oppo/Realme, Vivo, Samsung; dontkillmyapp);
    WorkManager son koşu kaydı 12–24 sa eskiyse "uygulama öldürülüyor" uyarısı. Ayarlar'daki "Bildirim Gelmiyor mu?" diyaloğunun yerine.
-2. Kandil / Üç Aylar bildirimleri (S–M): `religious_days.json`'dan — Üç Aylar + Regaib 10.12.2026, Miraç 04.01.2027,
+2. ~~Kandil / Üç Aylar bildirimleri~~ (1.2.0'da yapıldı) (S–M): `religious_days.json`'dan — Üç Aylar + Regaib 10.12.2026, Miraç 04.01.2027,
    Berat 22.01.2027, Ramazan 08.02.2027, Kadir 05.03.2027; Ayarlar'da aç/kapa. (json'da "12 Ocak 2025 Üç Ayların Başlangıcı"
    Diyanet'e göre 1 Ocak 2025 olmalı; geçmiş tarih, bu işte düzeltilsin.)
 3. Widget iyileştirme (M): kontrast (açık duvar kâğıdında yetersiz), açık/koyu tema + Material You, en/ar'da 12 saat (widget
@@ -162,3 +162,24 @@ Kurallar `android/app/proguard-rules.pro`. Bu ortamda R8 çalıştırılamadığ
 2. 1.1.1 kuruluyken 1.1.2'ye güncelle → uygulamayı aç → bir sonraki vakit için ezan aç; ezan çalar, "Kıldım" işler.
 3. Telefonu yeniden başlat → kurulu ezan yine çalar (eklenti Gson kaydını okur).
 4. Widget'lar, kalıcı bildirim, kıble pusulası, reklamlar çalışır; Crashlytics'te "kurulamadı" kaydı yok.
+
+## v1.2.0 (17) ✅ (Crashlytics + Android vitals bulguları ve yol haritası 1–2)
+| Konu | Çözüm |
+|---|---|
+| Crashlytics "Unable to load asset: backgrounds/bg…" (%88,9 çökmesiz) | Eski .jpg arka plan kaydı .webp'e taşınır, listede olmayan (bg_quran) silinir; resim açılamazsa tema rengi. Flutter/Dart hataları artık ölümcül değil (çökme sayılmaz) |
+| Kandil / dini gün bildirimleri | 10:00, Ramazan bir gün önce, bayramda arefe + 1. gün; ayar anahtarı; json'da 2025 Üç Aylar (1 Ocak) ve 2028 Kadir (22 Şubat, Diyanet'le teyit edilmeli) düzeltildi |
+| Bildirim Kontrolü ekranı | İzinler, pil, Rahatsız Etmeyin, ses, açık ezan, sıradaki ezan, arka plan (48 sa), üretici rehberi, 1 dk test ezanı |
+| Yakındaki Camiler | Harita uygulamasında arama (global, API anahtarı yok) |
+| Uçtan uca ekran (Play önerisi) | FlutterFragmentActivity + enableEdgeToEdge; Android 15+ 3 tuşlu gezinmede alt sayfaların son satırı gezinme çubuğu altında kalıyordu (dil, görünüm, kıble ipuçları, ayet/hadis okuma) → düzeltildi |
+| Kaynak küçültme (Play R8 önerisi) | isShrinkResources + res/raw/keep.xml (ezan sesleri, bildirim simgesi) |
+| Çeviri | Yeni metinler iki ayrı denetimden geçti (5 dil) |
+| Yapılmayan | Play "desteği sonlandırılmış API" (Flutter motorundan) ve AGP 9 (Flutter desteği belirsiz): Flutter güncellemesi beklenir |
+| İndirme butonu çıkmayan hesap | Uygulama tarafı değil (178 ülke açık, başka hesaplar indiriyor): okul/iş ya da ebeveyn denetimli hesap |
+
+## Yayın öncesi kontrol (1.2.0, dahili test önerilir: R8 + kaynak küçültme + yeni ana etkinlik)
+1. Ezan çalar (eski ve yeni kanallarda ses var), bildirim simgesi görünür, "Kıldım" çalışır; telefonu yeniden başlatınca da çalar.
+2. Ayarlar > Bildirim Kontrolü: durumlar doğru, üretici rehberi telefonun markası, "1 dk sonra test ezanı" gelir.
+3. Android 11–14: gezinme çubuğu saydam, alt menü/reklam/alt sayfalar çubuğun üstünde; Android 15+ değişmedi.
+4. Araçlar > Yakındaki Camiler harita uygulamasını açar.
+5. Ayarlar'da "Dini gün ve kandil bildirimleri" anahtarı; (ilk bildirim 10 Aralık 2026 10:00).
+6. Eski sürümde arka plan resmi seçmiş cihazda arka plan görünür (ya da düz renk), Crashlytics'te yeni "Unable to load asset" yok.
