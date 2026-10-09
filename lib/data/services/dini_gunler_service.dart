@@ -4,7 +4,8 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../features/imsakiye/imsakiye_logic.dart' show parseTurkishDate;
 import 'json_service.dart';
 
-/// Ekranda gösterilen dini gün türleri (adlar dile göre çevrilir)
+/// Dini gün türleri (adlar dile göre çevrilir). Son üçü ekranda yok, sadece
+/// bildirimde ([DiniGunlerService.parseBildirimGunleri]).
 enum DiniGunTuru {
   hicriYilbasi,
   asureGunu,
@@ -16,6 +17,9 @@ enum DiniGunTuru {
   kadirGecesi,
   ramazanBayrami,
   kurbanBayrami,
+  ucAylar,
+  ramazanArefesi,
+  kurbanArefesi,
 }
 
 class DiniGunModel {
@@ -152,6 +156,41 @@ class DiniGunlerService {
     return result;
   }
 
+  /// religious_days.json kayıtları -> bildirim günleri: ekrandaki türler +
+  /// üç ayların başlangıcı ve arefeler ("Üç Ayların Başlangıcı ve Regaib
+  /// Kandili" iki gün verir). Bayramın 2-4. günleri ve bozuk kayıtlar atlanır.
+  static List<ResmiDiniGun> parseBildirimGunleri(Iterable<Object?> entries) {
+    final result = <ResmiDiniGun>[];
+    for (final e in entries) {
+      if (e is! Map) continue;
+      final name = e['name'];
+      final date = e['date'];
+      if (name is! String || date is! String) continue;
+      final tarih = parseTurkishDate(date);
+      if (tarih == null) continue;
+      final n = _normalize(name);
+      if (n.contains('arefe')) {
+        final arefe = n.contains('ramazan')
+            ? DiniGunTuru.ramazanArefesi
+            : (n.contains('kurban') ? DiniGunTuru.kurbanArefesi : null);
+        if (arefe != null) result.add(ResmiDiniGun(arefe, tarih));
+        continue;
+      }
+      if (n.contains('uc aylar')) {
+        result.add(ResmiDiniGun(DiniGunTuru.ucAylar, tarih));
+      }
+      final tur = turFromName(name);
+      if (tur != null) result.add(ResmiDiniGun(tur, tarih));
+    }
+    result.sort((a, b) => a.tarih.compareTo(b.tarih));
+    return result;
+  }
+
+  /// Bildirim günleri (her kurulumda okunur). Okunamazsa hata fırlatır:
+  /// kurulu bildirimlere dokunulmaz.
+  static Future<List<ResmiDiniGun>> loadBildirimGunleri() async =>
+      parseBildirimGunleri(await JsonService().getReligiousDays());
+
   static String isimOf(DiniGunTuru tur, AppLocalizations loc) => switch (tur) {
     DiniGunTuru.hicriYilbasi => loc.hicriYilbasi,
     DiniGunTuru.asureGunu => loc.asureGunu,
@@ -163,7 +202,29 @@ class DiniGunlerService {
     DiniGunTuru.kadirGecesi => loc.kadirGecesi,
     DiniGunTuru.ramazanBayrami => loc.ramazanBayrami,
     DiniGunTuru.kurbanBayrami => loc.kurbanBayrami,
+    DiniGunTuru.ucAylar => loc.ucAylarBaslangici,
+    DiniGunTuru.ramazanArefesi => loc.ramazanArefesi,
+    DiniGunTuru.kurbanArefesi => loc.kurbanArefesi,
   };
+
+  /// Bildirim metni: kandillerde "bu gece" (gece o akşam başlar); Ramazan
+  /// başlangıcı bir gün önce gönderilir ("yarın başlıyor, ilk sahur bu gece")
+  static String bildirimMetniOf(DiniGunTuru tur, AppLocalizations loc) =>
+      switch (tur) {
+        DiniGunTuru.hicriYilbasi => loc.hicriYilbasiNotifBody,
+        DiniGunTuru.asureGunu => loc.asureGunuNotifBody,
+        DiniGunTuru.mevlidKandili => loc.mevlidKandiliNotifBody,
+        DiniGunTuru.regaipKandili => loc.regaipKandiliNotifBody,
+        DiniGunTuru.miracKandili => loc.miracKandiliNotifBody,
+        DiniGunTuru.beratKandili => loc.beratKandiliNotifBody,
+        DiniGunTuru.ramazanBaslangici => loc.ramazanBaslangiciNotifBody,
+        DiniGunTuru.kadirGecesi => loc.kadirGecesiNotifBody,
+        DiniGunTuru.ramazanBayrami => loc.ramazanBayramiNotifBody,
+        DiniGunTuru.kurbanBayrami => loc.kurbanBayramiNotifBody,
+        DiniGunTuru.ucAylar => loc.ucAylarNotifBody,
+        DiniGunTuru.ramazanArefesi => loc.ramazanArefesiNotifBody,
+        DiniGunTuru.kurbanArefesi => loc.kurbanArefesiNotifBody,
+      };
 
   /// Miladi yılın dini günleri: Diyanet tarihi varsa o, yoksa hicri hesap.
   ///

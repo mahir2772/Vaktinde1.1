@@ -66,6 +66,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool alarmStreamSupported = true;
   // "Günün ayeti ve hadisi" bildirimi (varsayılan açık)
   bool dailyContentEnabled = true;
+  // "Dini gün ve kandil bildirimleri" (varsayılan açık)
+  bool religiousDaysEnabled = true;
 
   /// Ezan uyarısının sağlığı (bildirim ve tam zamanlı alarm izni); izin
   /// değişince ya da bildirimler açılıp kapanınca alarmlar yeniden kurulur
@@ -517,6 +519,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     endReminderEnabled = endReminder.enabled;
     endReminderMinutes = endReminder.minutes;
     dailyContentEnabled = await _storageService.loadDailyContentEnabled();
+    religiousDaysEnabled = await _storageService.loadReligiousDaysEnabled();
     notifyListeners();
   }
 
@@ -547,6 +550,22 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       if (!DateUtils.isSameDay(_hadithDate, now))
         getDailyHadith(locale).catchError((Object e) {}),
     ]);
+  }
+
+  /// "Dini gün ve kandil bildirimleri": kapatılınca kurulu olanlar hemen iptal
+  /// edilir (bir daha kurulmaz); açılınca önümüzdeki günler kurulur (ID 2000-2399)
+  Future<void> setReligiousDaysEnabled(bool value) async {
+    if (religiousDaysEnabled == value) return;
+    religiousDaysEnabled = value;
+    notifyListeners();
+    try {
+      await _storageService.saveReligiousDaysEnabled(value);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'dini gün ayarı kaydedilemedi');
+    }
+    final loc = _currentLoc;
+    if (loc == null) return;
+    await _refreshService.syncReligiousDays(loc);
   }
 
   /// Vakit çıkış hatırlatması ayarı; sadece bu hatırlatmalar (ID 100-124) yeniden kurulur

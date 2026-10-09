@@ -12,6 +12,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../models/hadith_model.dart';
 import '../models/prayer_times_model.dart';
 import 'ayah_service.dart';
+import 'dini_gunler_service.dart';
 import 'error_reporter.dart';
 import 'hadith_service.dart';
 import 'notification_service.dart';
@@ -93,6 +94,20 @@ class PrayerRefreshService {
     ayahNotificationId,
     hadithNotificationId,
   ];
+
+  /// Dini gün ve kandil bildirimleri: o gün 10:00, [religiousDayDays] gün
+  /// ilerisine kadar. ID bildirim gününe bağlı (400 günlük döngü: pencerede
+  /// tekrar etmez) → 2000-2399
+  static const int religiousDayBaseId = 2000;
+  static const int religiousDayIdCount = 400;
+  static const int religiousDayDays = 60;
+  static const int religiousDayHour = 10;
+
+  static int religiousDayId(DateTime day) =>
+      religiousDayBaseId + PrayerTracker.epochDay(day) % religiousDayIdCount;
+
+  static bool isReligiousDayId(int id) =>
+      id >= religiousDayBaseId && id < religiousDayBaseId + religiousDayIdCount;
 
   /// Tam zamanlı izin yokken (Android 12) gecikmeli ezan vaktinden sonra bu süre
   /// bekleyebilir: pencere 1 saate kadar + Doze'da uygulamanın diğer gecikmeli
@@ -562,6 +577,53 @@ class PrayerRefreshService {
     return plan;
   }
 
+  /// Dini gün ve kandil bildirimi planı ([days]: religious_days.json,
+  /// [DiniGunlerService.parseBildirimGunleri]). O gün 10:00'da; Ramazan
+  /// başlangıcı bir gün önce. Aynı güne düşenler tek bildirim (Üç Aylar +
+  /// Regaib ortak metinle). Vakti geçmiş ve [religiousDayDays] günden ötesi yok.
+  static List<PlannedAlarm> buildReligiousDayPlan({
+    required List<ResmiDiniGun> days,
+    required DateTime now,
+    required AppLocalizations loc,
+  }) {
+    final byDay = <DateTime, List<DiniGunTuru>>{};
+    for (final d in days) {
+      final day = PrayerTracker.addDays(
+        d.tarih,
+        d.tur == DiniGunTuru.ramazanBaslangici ? -1 : 0,
+      );
+      (byDay[day] ??= []).add(d.tur);
+    }
+    final plan = <PlannedAlarm>[];
+    for (final MapEntry(key: day, value: turler) in byDay.entries) {
+      final time = DateTime(day.year, day.month, day.day, religiousDayHour);
+      if (!time.isAfter(now) ||
+          PrayerTracker.daysBetween(now, day) > religiousDayDays) {
+        continue;
+      }
+      final ucAylarRegaip =
+          turler.contains(DiniGunTuru.ucAylar) &&
+          turler.contains(DiniGunTuru.regaipKandili);
+      plan.add(
+        PlannedAlarm(
+          id: religiousDayId(day),
+          kind: NotificationKind.religiousDay,
+          title: ucAylarRegaip
+              ? loc.ucAylarRegaipTitle
+              : DiniGunlerService.isimOf(turler.first, loc),
+          body: ucAylarRegaip
+              ? loc.ucAylarRegaipNotifBody
+              : DiniGunlerService.bildirimMetniOf(turler.first, loc),
+          time: time,
+          sound: null, // kanalın varsayılan sesi
+          channelName: loc.religiousDaysChannel,
+        ),
+      );
+    }
+    plan.sort((a, b) => a.time.compareTo(b.time));
+    return plan;
+  }
+
   /// Alarm planı için günlerin vakitleri. Koordinat varsa bugün + 4 gün ve dün yeniden
   /// hesaplanır ([todayTimes] gece yarısından kalma olabilir); yoksa sadece [todayTimes]
   /// (dün/yarın yerine bugünkü vakitler yaklaşık kullanılır).
@@ -701,6 +763,60 @@ class PrayerRefreshService {
     return cleanupOk && recheckOk && (plan.isEmpty || succeeded > 0);
   });
 
+  // Dini gün kurma/iptal işleri sırayla: kapatılınca iptal, süren bir
+  // kurulumun ardından çalışır (kapalı ayarla kurulu kalmaz)
+  static final SerialQueue _religiousQueue = SerialQueue();
+
+  /// Dini gün ve kandil bildirimlerini ayara göre eşitler (sadece 2000-2399):
+  /// plandakiler aynı ID'nin üzerine kurulur, plandan çıkan bekleyenler iptal;
+  /// ayar kapalıysa hepsi iptal. Bugünün bildirimi gecikmeli kipte vaktinden
+  /// sonra da bekliyor olabilir: ayar açıkken iptal edilmez. Hata fırlatmaz;
+  /// plan boşsa ya da en az biri kurulduysa (ve iptaller yapılabildiyse) true.
+  Future<bool> syncReligiousDays(AppLocalizations loc) =>
+      _religiousQueue.run(() async {
+        final now = _clock();
+        final bool enabled;
+        List<PlannedAlarm> plan = const [];
+        try {
+          // Plan çıkarılamazsa (okuma hatası) kurulu bildirimlere dokunulmaz
+          enabled = await _storageService.loadReligiousDaysEnabled();
+          if (enabled) {
+            plan = buildReligiousDayPlan(
+              days: await DiniGunlerService.loadBildirimGunleri(),
+              now: now,
+              loc: loc,
+            );
+          }
+        } catch (e, st) {
+          await reportNonFatal(e, st, reason: 'dini gün planı okunamadı');
+          return false;
+        }
+        final today = religiousDayId(now);
+        final failures = _AlarmFailures();
+        final cleanupOk = await _cancelUnplanned(
+          (id) => isReligiousDayId(id) && !(enabled && id == today),
+          plan.map((a) => a.id).toSet(),
+          failures,
+        );
+        int succeeded = 0;
+        for (final day in plan) {
+          try {
+            await _notifications.scheduleReligiousDay(
+              id: day.id,
+              title: day.title,
+              body: day.body,
+              scheduledTime: day.time,
+              localizedChannelName: day.channelName,
+            );
+            succeeded++;
+          } catch (e, st) {
+            failures.add(e, st);
+          }
+        }
+        await failures.report('dini gün bildirimi', plan.length);
+        return cleanupOk && (plan.isEmpty || succeeded > 0);
+      });
+
   // Plandan çıkan bekleyen (henüz çalmamış) bildirimler iptal edilir; çekmecedekilere
   // dokunulmaz. [keep]: aynı yükle bekleyen geç ezan (ID → yük) iptal edilmez.
   // false: temizlik tamamlanamadı (gün kaydedilmez, yeniden denenir).
@@ -756,8 +872,9 @@ class PrayerRefreshService {
   /// alarmda boşluk olmaz. Tam zamanlı alarm izni yoksa gecikmeli kiple kurulur; vakti
   /// geçip henüz çalmamış (gecikmiş) ezan korunur ([recentlyDueEzans]).
   /// Kurulamayan alarm diğerlerini durdurmaz; tur sonunda Crashlytics'e bildirilir.
-  /// Kip geçişi ([scheduleModeMigratedKey]) bitmediyse bekleyen günlük içerik de
-  /// yeni kiple yeniden yazılır.
+  /// Vakit çıkış hatırlatmaları ve dini gün bildirimleri ([syncReligiousDays]) de
+  /// eşitlenir. Kip geçişi ([scheduleModeMigratedKey]) bitmediyse bekleyen günlük
+  /// içerik de yeni kiple yeniden yazılır.
   Future<void> rescheduleAlarms({
     required PrayerTimesModel todayTimes,
     required AppLocalizations loc,
@@ -853,6 +970,7 @@ class PrayerRefreshService {
       loc: loc,
       exact: exact,
     );
+    final religiousOk = await syncReligiousDays(loc);
 
     // Kip geçişi: plan ve vakit çıkış hatırlatmaları her turda zaten üzerine yazılır
     // (plandan çıkan bekleyenler iptal); kalan günlük içerik de yeni kiple yazılır
@@ -861,7 +979,10 @@ class PrayerRefreshService {
     // Hiçbiri kurulamadıysa (ya da iptaller yapılamadıysa) tarih yazılmaz: arka plan
     // görevi aynı gün yeniden dener. Geçiş de ancak o zaman (ve günlük içerik
     // yazılabildiyse) tamamlanmış sayılır.
-    if ((plan.isEmpty || succeeded > 0) && remindersOk && cleanupOk) {
+    if ((plan.isEmpty || succeeded > 0) &&
+        remindersOk &&
+        religiousOk &&
+        cleanupOk) {
       await prefs.setString(_alarmsDateKey, _dateKey(now));
       if (migrating && dailyOk) {
         await prefs.setBool(scheduleModeMigratedKey, true);

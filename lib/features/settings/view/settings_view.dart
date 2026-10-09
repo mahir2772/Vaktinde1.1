@@ -97,6 +97,22 @@ class SettingsView extends StatelessWidget {
                   );
                 },
               ),
+              Consumer<HomeViewModel>(
+                builder: (context, viewModel, child) {
+                  final enabled = viewModel.religiousDaysEnabled;
+                  return AppListTile(
+                    leadingIcon: Icons.event_note_outlined,
+                    title: loc.religiousDaysNotifTitle,
+                    subtitle: loc.religiousDaysNotifSub,
+                    showChevron: false,
+                    trailing: Switch(
+                      value: enabled,
+                      onChanged: viewModel.setReligiousDaysEnabled,
+                    ),
+                    onTap: () => viewModel.setReligiousDaysEnabled(!enabled),
+                  );
+                },
+              ),
               AppListTile(
                 leadingIcon: Icons.notifications_active_outlined,
                 title: loc.menuNotifications,

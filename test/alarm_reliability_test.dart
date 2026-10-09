@@ -321,7 +321,10 @@ void main() {
         scheduleCalls().where((c) => isEzan(c.arguments['id'])),
         isNotEmpty,
       );
-      expect(modes(), {'exactAllowWhileIdle'});
+      // Dini gün bildirimi (60 gün ileri, varsa) her zaman gecikmeli
+      expect(modes((id) => !PrayerRefreshService.isReligiousDayId(id)), {
+        'exactAllowWhileIdle',
+      });
       final prefs = await SharedPreferences.getInstance();
       expect(
         prefs.getBool(NotificationService.notificationsEnabledKey),

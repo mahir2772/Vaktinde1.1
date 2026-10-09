@@ -466,6 +466,84 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailyContentNotifSub => 'يرسل آية كل صباح وحديثًا كل مساء.';
 
   @override
+  String get religiousDaysNotifTitle =>
+      'إشعارات المناسبات الدينية والليالي المباركة';
+
+  @override
+  String get religiousDaysNotifSub =>
+      'يذكّرك صباحًا بالليالي المباركة والأعياد وسائر المناسبات الدينية.';
+
+  @override
+  String get religiousDaysChannel => 'المناسبات الدينية والليالي المباركة';
+
+  @override
+  String get ucAylarBaslangici => 'بداية الأشهر الثلاثة المباركة';
+
+  @override
+  String get ramazanArefesi => 'آخر يوم من رمضان';
+
+  @override
+  String get kurbanArefesi => 'يوم عرفة';
+
+  @override
+  String get ucAylarNotifBody =>
+      'تبدأ اليوم الأشهر الثلاثة المباركة: رجب وشعبان ورمضان. اللهم بارك لنا في رجب وشعبان وبلّغنا رمضان.';
+
+  @override
+  String get ucAylarRegaipTitle => 'الأشهر الثلاثة وليلة الرغائب';
+
+  @override
+  String get ucAylarRegaipNotifBody =>
+      'تبدأ اليوم الأشهر الثلاثة المباركة، والليلة ليلة الرغائب. اللهم بارك لنا في رجب وشعبان وبلّغنا رمضان.';
+
+  @override
+  String get regaipKandiliNotifBody =>
+      'الليلة ليلة الرغائب. ليلة مباركة عليكم.';
+
+  @override
+  String get miracKandiliNotifBody =>
+      'الليلة ذكرى الإسراء والمعراج. ليلة مباركة عليكم.';
+
+  @override
+  String get beratKandiliNotifBody =>
+      'الليلة ليلة النصف من شعبان. ليلة مباركة عليكم.';
+
+  @override
+  String get mevlidKandiliNotifBody =>
+      'الليلة ذكرى المولد النبوي الشريف. ليلة مباركة عليكم.';
+
+  @override
+  String get kadirGecesiNotifBody =>
+      'الليلة ليلة القدر. تقبّل الله منا ومنكم صالح الأعمال.';
+
+  @override
+  String get ramazanBaslangiciNotifBody =>
+      'يبدأ شهر رمضان غدًا، والليلة أول صلاة تراويح وأول سحور. رمضان مبارك!';
+
+  @override
+  String get ramazanArefesiNotifBody =>
+      'غدًا عيد الفطر. تقبّل الله صيامكم وقيامكم، وكل عام وأنتم بخير.';
+
+  @override
+  String get ramazanBayramiNotifBody => 'عيد فطر مبارك! تقبّل الله منا ومنكم.';
+
+  @override
+  String get kurbanArefesiNotifBody =>
+      'غدًا عيد الأضحى المبارك. كل عام وأنتم بخير.';
+
+  @override
+  String get kurbanBayramiNotifBody =>
+      'عيد أضحى مبارك! تقبّل الله منا ومنكم صالح الأعمال.';
+
+  @override
+  String get hicriYilbasiNotifBody =>
+      'اليوم رأس السنة الهجرية. كل عام وأنتم بخير.';
+
+  @override
+  String get asureGunuNotifBody =>
+      'اليوم يوم عاشوراء. جعله الله يوم خير وبركة عليكم.';
+
+  @override
   String get privacyPolicy => 'سياسة الخصوصية';
 
   @override

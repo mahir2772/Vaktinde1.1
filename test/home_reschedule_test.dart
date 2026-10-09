@@ -18,6 +18,12 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  // Ezan alarmları ölçülür; dini gün bildirimleri (60 gün ileri) ayrı testte
+  const prefs = <String, Object>{
+    'saved_lat': 41.0,
+    'saved_lng': 29.0,
+    'religious_days_enabled': false,
+  };
   // Bekleyen alarmlar: ID → (Kıldım yükü "prayed|gün|vakit", kanal)
   late Map<int, ({String payload, String channel})> pending;
   late Completer<void> firstSchedule;
@@ -90,7 +96,7 @@ void main() {
   }
 
   test('Kurulum sürerken kapatılan alarm kurulu kalmaz', () async {
-    SharedPreferences.setMockInitialValues({'saved_lat': 41.0, 'saved_lng': 29.0});
+    SharedPreferences.setMockInitialValues(prefs);
     await NotificationService().init();
     final vm = HomeViewModel();
     addTearDown(vm.dispose);
@@ -113,7 +119,7 @@ void main() {
   });
 
   test('Ardışık istekler sonunda son ayar kurulu olur', () async {
-    SharedPreferences.setMockInitialValues({'saved_lat': 41.0, 'saved_lng': 29.0});
+    SharedPreferences.setMockInitialValues(prefs);
     await NotificationService().init();
     final vm = HomeViewModel();
     addTearDown(vm.dispose);
@@ -136,7 +142,7 @@ void main() {
   });
 
   Future<HomeViewModel> loadedViewModel() async {
-    SharedPreferences.setMockInitialValues({'saved_lat': 41.0, 'saved_lng': 29.0});
+    SharedPreferences.setMockInitialValues(prefs);
     await NotificationService().init();
     final vm = HomeViewModel();
     addTearDown(vm.dispose);

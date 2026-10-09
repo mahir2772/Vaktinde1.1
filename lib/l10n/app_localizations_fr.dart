@@ -471,6 +471,85 @@ class AppLocalizationsFr extends AppLocalizations {
       'Envoie un verset chaque matin et un hadith chaque soir.';
 
   @override
+  String get religiousDaysNotifTitle =>
+      'Notifications des jours religieux et des nuits bénies';
+
+  @override
+  String get religiousDaysNotifSub =>
+      'Vous rappelle le matin même les nuits bénies, les fêtes et les autres jours religieux.';
+
+  @override
+  String get religiousDaysChannel => 'Jours religieux et nuits bénies';
+
+  @override
+  String get ucAylarBaslangici => 'Début des trois mois bénis';
+
+  @override
+  String get ramazanArefesi => 'Dernier jour du Ramadan';
+
+  @override
+  String get kurbanArefesi => 'Jour d\'Arafat';
+
+  @override
+  String get ucAylarNotifBody =>
+      'Les trois mois bénis de Rajab, Chaabane et Ramadan commencent aujourd\'hui. Qu\'ils vous apportent de nombreuses bénédictions.';
+
+  @override
+  String get ucAylarRegaipTitle => 'Trois mois bénis et Nuit du Raghaïb';
+
+  @override
+  String get ucAylarRegaipNotifBody =>
+      'Les trois mois bénis commencent aujourd\'hui, et ce soir, c\'est la Nuit du Raghaïb. Que cette nuit et ces mois soient bénis pour vous.';
+
+  @override
+  String get regaipKandiliNotifBody =>
+      'Ce soir commence la Nuit du Raghaïb. Qu\'elle soit bénie pour vous.';
+
+  @override
+  String get miracKandiliNotifBody =>
+      'Ce soir commence la nuit d\'Isra et Mi\'raj. Qu\'elle soit bénie pour vous.';
+
+  @override
+  String get beratKandiliNotifBody =>
+      'Ce soir commence la nuit de la mi-Chaabane (Bara\'at). Qu\'elle soit bénie pour vous.';
+
+  @override
+  String get mevlidKandiliNotifBody =>
+      'Ce soir commence la nuit du Mawlid. Qu\'elle soit bénie pour vous.';
+
+  @override
+  String get kadirGecesiNotifBody =>
+      'Ce soir commence la Nuit du Destin (Qadr). Qu\'elle soit bénie pour vous.';
+
+  @override
+  String get ramazanBaslangiciNotifBody =>
+      'Le Ramadan commence demain : la première prière de tarawih et le premier suhoor ont lieu cette nuit. Bon Ramadan !';
+
+  @override
+  String get ramazanArefesiNotifBody =>
+      'Demain, c\'est l\'Aïd al-Fitr. Aïd Moubarak par avance !';
+
+  @override
+  String get ramazanBayramiNotifBody =>
+      'Aïd Moubarak ! Qu\'Allah accepte notre jeûne et nos prières.';
+
+  @override
+  String get kurbanArefesiNotifBody =>
+      'Demain, c\'est l\'Aïd al-Adha. Aïd Moubarak par avance !';
+
+  @override
+  String get kurbanBayramiNotifBody =>
+      'Aïd Moubarak ! Qu\'Allah accepte vos sacrifices et vos bonnes actions.';
+
+  @override
+  String get hicriYilbasiNotifBody =>
+      'Aujourd\'hui, c\'est le Nouvel An islamique. Que cette nouvelle année soit source de bien et de bénédictions.';
+
+  @override
+  String get asureGunuNotifBody =>
+      'Aujourd\'hui, c\'est le jour d\'Achoura. Qu\'il soit source de bien et de bénédictions.';
+
+  @override
   String get privacyPolicy => 'Politique de confidentialité';
 
   @override

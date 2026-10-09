@@ -132,9 +132,11 @@ void main() {
           .toSet(),
       {7, 30},
     );
+    // Dini gün bildirimleri (gerçek tarihe göre 60 gün ileri) ayrı testte
     final scheduled = notifCalls
         .where((c) => c.method == 'zonedSchedule')
         .map((c) => c.arguments['id'] as int)
+        .where((id) => !PrayerRefreshService.isReligiousDayId(id))
         .toList();
     // Her gün öğle ezanı ve akşam hatırlatması (bugünküler geçmişse yok)
     int idOf(int day, int vakit, {bool reminder = false}) =>

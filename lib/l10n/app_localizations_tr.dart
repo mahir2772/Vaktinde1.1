@@ -456,6 +456,83 @@ class AppLocalizationsTr extends AppLocalizations {
       'Her gün sabah bir ayet, akşam bir hadis gönderir.';
 
   @override
+  String get religiousDaysNotifTitle => 'Dini Gün ve Kandil Bildirimleri';
+
+  @override
+  String get religiousDaysNotifSub =>
+      'Kandil, bayram ve diğer dini günlerde sabah bildirim gönderir.';
+
+  @override
+  String get religiousDaysChannel => 'Dini Günler ve Kandiller';
+
+  @override
+  String get ucAylarBaslangici => 'Üç Ayların Başlangıcı';
+
+  @override
+  String get ramazanArefesi => 'Ramazan Bayramı Arefesi';
+
+  @override
+  String get kurbanArefesi => 'Kurban Bayramı Arefesi';
+
+  @override
+  String get ucAylarNotifBody =>
+      'Recep, Şaban ve Ramazan aylarından oluşan üç aylar bugün başladı. Üç aylarınız mübarek olsun.';
+
+  @override
+  String get ucAylarRegaipTitle => 'Üç Aylar ve Regaib Kandili';
+
+  @override
+  String get ucAylarRegaipNotifBody =>
+      'Üç aylar bugün başladı, bu gece de Regaib Kandili. Üç aylarınız ve kandiliniz mübarek olsun.';
+
+  @override
+  String get regaipKandiliNotifBody =>
+      'Bu gece Regaib Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get miracKandiliNotifBody =>
+      'Bu gece Miraç Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get beratKandiliNotifBody =>
+      'Bu gece Berat Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get mevlidKandiliNotifBody =>
+      'Bu gece Mevlid Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get kadirGecesiNotifBody =>
+      'Bu gece Kadir Gecesi. Kadir Geceniz mübarek olsun.';
+
+  @override
+  String get ramazanBaslangiciNotifBody =>
+      'Ramazan yarın başlıyor; ilk teravih ve sahur bu gece. Hayırlı Ramazanlar!';
+
+  @override
+  String get ramazanArefesiNotifBody =>
+      'Bugün arefe, yarın Ramazan Bayramı. Bayramınız şimdiden mübarek olsun.';
+
+  @override
+  String get ramazanBayramiNotifBody =>
+      'Ramazan Bayramınız mübarek olsun. Nice bayramlara!';
+
+  @override
+  String get kurbanArefesiNotifBody =>
+      'Bugün arefe, yarın Kurban Bayramı. Bayramınız şimdiden mübarek olsun.';
+
+  @override
+  String get kurbanBayramiNotifBody =>
+      'Kurban Bayramınız mübarek, kurbanlarınız kabul olsun.';
+
+  @override
+  String get hicriYilbasiNotifBody =>
+      'Bugün Hicri Yılbaşı. Yeni yılınız hayırlara vesile olsun.';
+
+  @override
+  String get asureGunuNotifBody => 'Bugün Aşure Günü. Hayırlara vesile olsun.';
+
+  @override
   String get privacyPolicy => 'Gizlilik Politikası';
 
   @override
