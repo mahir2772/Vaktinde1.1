@@ -50,6 +50,9 @@ class PlannedAlarm {
   });
 }
 
+/// Kurulu bir ezan: vakit anahtarı ([PrayerRefreshService.vakitKeys]) ve saati
+typedef ScheduledEzan = ({String key, DateTime time});
+
 /// Vakitleri ekran dışına taşır: ana ekran widget'ları, kalıcı bildirim, ezan alarmları.
 /// BuildContext gerektirmez; HomeViewModel ve WorkManager arka plan görevi ortak kullanır.
 class PrayerRefreshService {
@@ -109,6 +112,15 @@ class PrayerRefreshService {
   static bool isReligiousDayId(int id) =>
       id >= religiousDayBaseId && id < religiousDayBaseId + religiousDayIdCount;
 
+  /// Bildirim Kontrolü "test ezanı". Plan temizliği (ezan 0-71, vakit çıkış 100-124,
+  /// günlük içerik 1000/1900) bu ID'ye dokunmaz; vakit sayılmaz, yükü yok.
+  static const int testEzanId = 1999;
+
+  /// WorkManager görevinin son başarılı koşusu (ms). Bildirim Kontrolü telefonun
+  /// uygulamayı arka planda durdurup durdurmadığını buradan anlar. Cihaza özgü
+  /// (InstallGuard.deviceKeys).
+  static const String lastHeadlessRunKey = 'last_headless_run';
+
   /// Tam zamanlı izin yokken (Android 12) gecikmeli ezan vaktinden sonra bu süre
   /// bekleyebilir: pencere 1 saate kadar + Doze'da uygulamanın diğer gecikmeli
   /// alarmlarıyla 9 dk arayla sıra
@@ -129,6 +141,18 @@ class PrayerRefreshService {
     "Akşam": t.aksam!,
     "Yatsı": t.yatsi!,
   };
+
+  /// Ezan kanalının adı ([NotificationService.prayerChannel] ile aynı ayrım): sessiz,
+  /// alarm sesiyle ("sessiz modda da çal") ya da bildirim sesiyle
+  static String ezanChannelName(
+    AppLocalizations loc,
+    String? sound, {
+    bool alarmStream = false,
+  }) => sound == null
+      ? loc.channelSilentPrayers
+      : (alarmStream
+            ? loc.channelAlarmSound(sound)
+            : loc.channelSoundPrefix(sound));
 
   static Map<String, String> vakitNames(AppLocalizations loc) => {
     "İmsak": loc.imsak,
@@ -377,11 +401,11 @@ class PrayerRefreshService {
               body: body,
               time: vakitDate,
               sound: soundToSend,
-              channelName: soundToSend == null
-                  ? loc.channelSilentPrayers
-                  : (onAlarmStream
-                        ? loc.channelAlarmSound(soundToSend)
-                        : loc.channelSoundPrefix(soundToSend)),
+              channelName: ezanChannelName(
+                loc,
+                soundToSend,
+                alarmStream: onAlarmStream,
+              ),
               payload: tracked
                   ? PrayerTracker.payload(vakitDate, vakitLogicKey)
                   : null,
@@ -990,6 +1014,89 @@ class PrayerRefreshService {
     }
   });
 
+  /// Bildirim Kontrolü "test ezanı" ([testEzanId]), [delay] sonra: ilk açık vaktin
+  /// ezanıyla aynı ses, kanal ve "sessiz modda da çal" ayarı (hiç açık vakit yoksa
+  /// ezan1), aynı kip (izin varsa alarmClock). "Kıldım" butonu ve yükü yok.
+  Future<void> scheduleTestEzan({
+    required AppLocalizations loc,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, String> selectedSounds,
+    required Map<String, bool> silentModeSettings,
+    bool alarmStream = false,
+    Duration delay = const Duration(minutes: 1),
+  }) async {
+    // Kip izinlere göre (bildirimler kapalıyken ezan alarmClock kurulmaz)
+    await _exactMode();
+    final enabled = vakitKeys.where((k) => onTimeAlarms[k] == true);
+    final key = enabled.isEmpty ? null : enabled.first;
+    final String? sound = key == null
+        ? "ezan1"
+        : (silentModeSettings[key] == true
+              ? null
+              : (selectedSounds[key] ?? "ezan1"));
+    final onAlarmStream = alarmStream && sound != null;
+    await _notifications.schedulePrayerNotification(
+      id: testEzanId,
+      title: loc.healthTestTitle,
+      body: loc.healthTestNotifBody,
+      scheduledTime: _clock().add(delay),
+      soundName: sound,
+      localizedChannelName: ezanChannelName(
+        loc,
+        sound,
+        alarmStream: onAlarmStream,
+      ),
+      localizedTicker: loc.tickerEzan,
+      kind: NotificationKind.prayer,
+      alarmStream: onAlarmStream,
+    );
+  }
+
+  /// Kurulu ezanlardan (bekleyen çift ID'ler, 0-71) vakti en yakın olanı. Saat kurulum
+  /// kaydından ([planMetaKey]; farz ezanlar), yoksa ID'nin gününün kayıtlı konumla
+  /// hesabından. Bekleyen ezan yoksa null; bekleyenler okunamazsa hata fırlatır.
+  Future<ScheduledEzan?> nextScheduledEzan() async {
+    final now = _clock();
+    final pending = await _notifications.pendingIds();
+    final meta = _loadPlanMeta(await SharedPreferences.getInstance());
+    ScheduledEzan? next;
+    for (final id in pending) {
+      if (id < 0 || id >= alarmIdCount || id.isOdd) continue;
+      final key = vakitKeys[id % 12 ~/ 2];
+      final time = _fingerprintTime(meta[id]) ?? await _slotTime(id, key, now);
+      if (time == null || !time.isAfter(now)) continue;
+      if (next == null || time.isBefore(next.time)) {
+        next = (key: key, time: time);
+      }
+    }
+    return next;
+  }
+
+  // [alarmFingerprint]'in ilk alanı vaktin zamanı (ms)
+  static DateTime? _fingerprintTime(String? fingerprint) {
+    final ms = int.tryParse(fingerprint?.split('|').first ?? '');
+    return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
+  }
+
+  // [alarmId]'nin günü: dünden başlayan 6 günden gün sırası (mod 6) ID'ninkiyle aynı olanı
+  Future<DateTime?> _slotTime(int id, String key, DateTime now) async {
+    for (int d = -1; d < alarmDays; d++) {
+      final day = PrayerTracker.addDays(now, d);
+      if (PrayerTracker.epochDay(day) % _idDays != id ~/ 12) continue;
+      final times = await _prayerTimeService.forDate(day);
+      final parts = times == null ? null : timesMap(times)[key]!.split(':');
+      if (parts == null) return null;
+      return DateTime(
+        day.year,
+        day.month,
+        day.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+    }
+    return null;
+  }
+
   // Günlük içerik kurma/iptal işleri sırayla: kapatılınca iptal, süren bir
   // kurulumun ardından çalışır (kapalı ayarla kurulu kalmaz)
   static final SerialQueue _dailyQueue = SerialQueue();
@@ -1144,7 +1251,7 @@ class PrayerRefreshService {
       final now = service._clock();
       final times = await service._prayerTimeService.forDate(now);
       // Koordinat yoksa cihazda hesaplanamaz; uygulama açılınca çözülür
-      if (times == null) return true;
+      if (times == null) return await _headlessDone(prefs, now);
       await service._storageService.savePrayerTimesData(times);
 
       final loc = _localizations(prefs.getString('language_code'));
@@ -1201,10 +1308,34 @@ class PrayerRefreshService {
         );
       }
       await service._topUpDailyContent(loc);
-      return true;
+      return await _headlessDone(prefs, now);
     } catch (e, st) {
       await reportNonFatal(e, st, reason: 'arka plan yenilemesi başarısız');
       return false;
+    }
+  }
+
+  // Görev başarıyla bitti: zamanı yazılır (Bildirim Kontrolü); yazılamazsa da başarılı
+  static Future<bool> _headlessDone(
+    SharedPreferences prefs,
+    DateTime now,
+  ) async {
+    try {
+      await prefs.setInt(lastHeadlessRunKey, now.millisecondsSinceEpoch);
+    } catch (e) {}
+    return true;
+  }
+
+  /// Arka plan görevinin son başarılı koşusu; hiç yoksa ya da okunamazsa null.
+  /// Görev ayrı isolate'te yazar: önce yeniden okunur.
+  static Future<DateTime?> lastHeadlessRun() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
+      final ms = prefs.getInt(lastHeadlessRunKey);
+      return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
+    } catch (e) {
+      return null;
     }
   }
 }

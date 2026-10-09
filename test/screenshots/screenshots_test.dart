@@ -28,6 +28,7 @@ import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
 import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
+import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
@@ -43,6 +44,7 @@ import 'package:ezan_saati/main.dart' show MyApp;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -230,8 +232,30 @@ Map<String, Object> _prefs({
     'dhikr_target_Sübhanallah': 33,
     'custom_dhikrs_list': ['Ya Vedûd'],
     'dhikr_daily_stats': jsonEncode(stats),
+    // Bildirim Kontrolü: arka plan görevi 30 saattir çalışmadı (üretici rehberi öne çıkar)
+    'last_headless_run': today
+        .subtract(const Duration(hours: 50))
+        .millisecondsSinceEpoch,
   };
 }
+
+/// Bildirim Kontrolü: kurulu ezanlar (bugün ve yarın öğle, akşam, yatsı)
+List<Map<String, Object>> _pendingEzans() => [
+  for (final day in [0, 1])
+    for (final vakit in [2, 4, 5])
+      {
+        'id': PrayerRefreshService.alarmId(
+          PrayerTracker.addDays(DateTime.now(), day),
+          vakit,
+        ),
+        'title': '',
+        'body': '',
+        'payload': '',
+      },
+];
+
+/// Tam zamanlı alarm izni (false: ana ekranda alarm izni uyarısı)
+bool _exactAllowed = true;
 
 String? _flutterRoot() {
   final env = Platform.environment['FLUTTER_ROOT'];
@@ -339,12 +363,36 @@ void _mockPlatform() {
       'buildNumber': '14',
     },
   );
-  // MainActivity: İstanbul'un manyetik sapması ve beklenen alan şiddeti (µT)
+  // MainActivity: İstanbul'un manyetik sapması ve beklenen alan şiddeti (µT);
+  // Bildirim Kontrolü için Redmi, pil optimizasyonu açık, Rahatsız Etmeyin öncelikli
   messenger.setMockMethodCallHandler(
     const MethodChannel('vaktinde/device'),
-    (call) async => call.method == 'geomagnetic'
-        ? {'declination': 6.3, 'strength': 47.0}
-        : null,
+    (call) async => switch (call.method) {
+      'geomagnetic' => {'declination': 6.3, 'strength': 47.0},
+      'deviceInfo' => {
+        'manufacturer': 'Xiaomi',
+        'brand': 'Redmi',
+        'sdkInt': 34,
+        'batteryOptimized': true,
+        'interruptionFilter': 2,
+        'notificationVolume': 5,
+        'alarmVolume': 6,
+        'ringerMode': 2,
+      },
+      'openSettings' => true,
+      _ => null,
+    },
+  );
+  // Bildirimler açık; alarm izni [_exactAllowed]; kurulu ezanlar
+  AndroidFlutterLocalNotificationsPlugin.registerWith();
+  messenger.setMockMethodCallHandler(
+    const MethodChannel('dexterous.com/flutter/local_notifications'),
+    (call) async => switch (call.method) {
+      'canScheduleExactNotifications' => _exactAllowed,
+      'areNotificationsEnabled' => true,
+      'pendingNotificationRequests' => _pendingEzans(),
+      _ => null,
+    },
   );
   // Bilinmeyen eklenti kanalları "başarılı, null" döner (reklam, ses, wakelock,
   // güncelleme...); motor kanalları (flutter/...) gerçek motora gider.
@@ -794,6 +842,12 @@ void main() {
       await _openRoute(tester, 'tr_51_time_adjust', const TimeAdjustView());
       await _openRoute(
         tester,
+        'tr_53_notification_health',
+        const NotificationHealthView(),
+        tallHeight: 2300,
+      );
+      await _openRoute(
+        tester,
         'tr_32_dhikr_stats',
         const DhikrStatsView(),
         tallHeight: 1300,
@@ -851,6 +905,12 @@ void main() {
             tester,
             'tr_52_settings_text130',
             const SettingsView(),
+          );
+          await _openRoute(
+            tester,
+            'tr_54_notification_health_text130',
+            const NotificationHealthView(),
+            tallHeight: 2800,
           );
           await _finish(tester);
         } finally {
@@ -915,6 +975,12 @@ void main() {
       await _openRoute(tester, 'tr_dark_50_settings', const SettingsView());
       await _openRoute(
         tester,
+        'tr_dark_53_notification_health',
+        const NotificationHealthView(),
+        tallHeight: 2300,
+      );
+      await _openRoute(
+        tester,
         'tr_dark_47_prayer_tracker',
         const PrayerTrackerView(),
       );
@@ -953,6 +1019,12 @@ void main() {
       await _tapTab(tester, 3);
       await _shot(tester, 'tr_bg_40_tools');
       await _openRoute(tester, 'tr_bg_50_settings', const SettingsView());
+      await _openRoute(
+        tester,
+        'tr_bg_53_notification_health',
+        const NotificationHealthView(),
+        tallHeight: 2300,
+      );
       await _openRoute(tester, 'tr_bg_41_imsakiye', const ImsakiyeView());
       await _finish(tester);
     });
@@ -1121,6 +1193,12 @@ void main() {
           );
           await _openRoute(
             tester,
+            '${lang}_53_notification_health',
+            const NotificationHealthView(),
+            tallHeight: 2400,
+          );
+          await _openRoute(
+            tester,
             '${lang}_47_prayer_tracker',
             const PrayerTrackerView(),
           );
@@ -1162,4 +1240,47 @@ void main() {
       }
     });
   });
+
+  // 320dp + %130: alarm izni uyarısı (iki buton) ve Bildirim Kontrolü
+  testWidgets(
+    '320dp %130: alarm uyarısı, Bildirim Kontrolü',
+    skip: skip,
+    variant: _android,
+    (tester) async {
+      await _run(tester, () async {
+        tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+        _exactAllowed = false;
+        try {
+          for (final lang in ['tr', 'de', 'fr', 'ar']) {
+            final loc = lookupAppLocalizations(Locale(lang));
+            _currentScreen = '${lang}_17_alarms_banner_320_text130';
+            await _setViewport(tester, width: 320, height: 640);
+            final vm = _homeVm(lang);
+            await _pumpApp(tester, lang: lang, homeVm: vm);
+            await vm.alarmHealth.refresh();
+            await tester.tap(find.text(loc.tabAlarms));
+            await _settle(tester);
+            await _shot(tester, '${lang}_17_alarms_banner_320_text130');
+
+            final name = '${lang}_55_notification_health_320_text130';
+            _currentScreen = name;
+            _navigator(tester).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const NotificationHealthView(),
+              ),
+            );
+            await _settle(tester, steps: 10);
+            await _shot(tester, name);
+            await _setViewport(tester, width: 320, height: 3600);
+            await _settle(tester, steps: 4);
+            await _shot(tester, '${name}_full');
+            await _finish(tester);
+          }
+        } finally {
+          _exactAllowed = true;
+          tester.platformDispatcher.clearTextScaleFactorTestValue();
+        }
+      });
+    },
+  );
 }

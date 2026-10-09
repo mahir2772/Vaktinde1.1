@@ -202,6 +202,194 @@ class AppLocalizationsEn extends AppLocalizations {
       'Alarm permission is off: the adhan and reminders can be up to about an hour late (including imsak and suhoor).';
 
   @override
+  String get healthTitle => 'Notification Check';
+
+  @override
+  String get healthSub =>
+      'If the adhan doesn\'t play, check your settings step by step';
+
+  @override
+  String get healthSectionStatus => 'Status';
+
+  @override
+  String get healthEzansTitle => 'Adhan alarms';
+
+  @override
+  String healthEzansOn(String names) {
+    return 'On: $names';
+  }
+
+  @override
+  String get healthEzansNone => 'The adhan isn\'t turned on for any prayer.';
+
+  @override
+  String get healthNextTitle => 'Next adhan';
+
+  @override
+  String get healthNextNone => 'No scheduled adhan found.';
+
+  @override
+  String get healthReschedule => 'Reschedule';
+
+  @override
+  String get healthNotificationsTitle => 'Notifications';
+
+  @override
+  String get healthNotificationsOk => 'On.';
+
+  @override
+  String get healthOpenSettings => 'Open settings';
+
+  @override
+  String get healthExactTitle => 'Alarms & reminders';
+
+  @override
+  String get healthExactOk => 'Allowed: the adhan plays right on time.';
+
+  @override
+  String get healthVolumeTitle => 'Sound';
+
+  @override
+  String get healthVolumeOk => 'Notification volume is on.';
+
+  @override
+  String get healthVolumeAlarmOk => 'Alarm volume is on.';
+
+  @override
+  String get healthVolumeSilent =>
+      'The phone is on silent or vibrate: the adhan won\'t be heard.';
+
+  @override
+  String get healthVolumeNotificationMuted =>
+      'Notification volume is off: the adhan won\'t be heard.';
+
+  @override
+  String get healthVolumeAlarmMuted =>
+      'Alarm volume is off: the adhan won\'t be heard.';
+
+  @override
+  String healthAlarmStreamTip(String setting) {
+    return 'With “$setting” on, the adhan plays at alarm volume.';
+  }
+
+  @override
+  String get healthDndTitle => 'Do Not Disturb';
+
+  @override
+  String get healthDndOff => 'Off.';
+
+  @override
+  String get healthDndOn => 'On: the adhan may not be heard.';
+
+  @override
+  String healthDndAlarm(String setting) {
+    return 'On, but thanks to “$setting” the adhan plays at alarm volume.';
+  }
+
+  @override
+  String get healthBatteryTitle => 'Battery usage';
+
+  @override
+  String get healthBatteryOk => 'Battery optimization is off for Vaktinde.';
+
+  @override
+  String get healthBatteryOptimized =>
+      'Battery optimization is on: your phone may stop Vaktinde in the background. In the app settings, open Battery and choose “Unrestricted” (on some phones “No restrictions”).';
+
+  @override
+  String get healthBackgroundTitle => 'Background activity';
+
+  @override
+  String healthBackgroundToday(String time) {
+    return 'Last run: today at $time';
+  }
+
+  @override
+  String healthBackgroundYesterday(String time) {
+    return 'Last run: yesterday at $time';
+  }
+
+  @override
+  String get healthBackgroundStale =>
+      'Vaktinde hasn\'t run in the background in the last 48 hours: your phone may be stopping it.';
+
+  @override
+  String get healthShowSteps => 'Show steps';
+
+  @override
+  String healthGuideTitle(String brand) {
+    return 'Settings for $brand';
+  }
+
+  @override
+  String get healthGuideTitleGeneric => 'Settings for your phone';
+
+  @override
+  String get healthGuideStale =>
+      'Background activity seems to have stopped. To keep the adhan on time, change these settings:';
+
+  @override
+  String get healthGuideMore => 'Detailed guides for your phone model';
+
+  @override
+  String get healthTestTitle => 'Test adhan';
+
+  @override
+  String get healthTestInfo =>
+      'A test notification arrives in 1 minute, with the same sound and settings as a real adhan.';
+
+  @override
+  String get healthTestButton => 'Test adhan in 1 min';
+
+  @override
+  String get healthTestScheduled =>
+      'The test adhan will play in 1 minute. You can close the app.';
+
+  @override
+  String get healthTestNotifBody =>
+      'If you see this notification, adhan notifications are working.';
+
+  @override
+  String get healthStepXiaomiAutostart =>
+      'In the app settings, turn on “Autostart”.';
+
+  @override
+  String get healthStepXiaomiBattery =>
+      'On the same screen, under Battery saver (or Battery), choose “No restrictions”.';
+
+  @override
+  String get healthStepHuaweiLaunch =>
+      'Open “App launch” in Settings (under Battery or Apps). Turn off automatic management for Vaktinde and leave all options on in the window that appears.';
+
+  @override
+  String get healthStepOppoBackground =>
+      'In the app settings, under Battery usage, allow background activity and auto launch.';
+
+  @override
+  String get healthStepVivoBackground =>
+      'In Settings > Battery, allow high background power consumption for Vaktinde.';
+
+  @override
+  String healthStepAutostartIn(String app) {
+    return 'Turn on autostart for Vaktinde in Settings or in the $app app.';
+  }
+
+  @override
+  String get healthStepAppBattery =>
+      'In the app settings, under Battery, choose “Unrestricted”.';
+
+  @override
+  String get healthStepSamsungSleeping =>
+      'In Settings > Battery > Background usage limits, add Vaktinde to “Never sleeping apps”.';
+
+  @override
+  String get healthStepLockRecents =>
+      'Lock Vaktinde in the recent apps screen (if your phone offers this option).';
+
+  @override
+  String get healthDetails => 'Details';
+
+  @override
   String get alarmHealthExactAction => 'Allow';
 
   @override

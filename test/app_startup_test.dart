@@ -3,6 +3,7 @@ import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
@@ -381,6 +382,32 @@ void main() {
         await finish(tester);
       });
     }
+  });
+
+  testWidgets('Alarmlar sekmesi isteği (Bildirim Kontrolü): başka sekmedeyken '
+      'ana sayfa açılır, Alarmlar sekmesine geçilir', (tester) async {
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    await pumpApp(
+      tester,
+      mainWrapper(),
+      prefs: {tourSeenKey: false, permissionsPrimedKey: true},
+    );
+    int selected() =>
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex;
+    await tester.tap(find.text(loc.navTools));
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(selected(), 3);
+
+    HomeView.openAlarmsTab();
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(selected(), 0);
+    expect(find.text(loc.ezanAlarmStreamTitle).hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await finish(tester);
   });
 
   testWidgets('Fotoğraf üstünde bölüm başlığı koyu kapsülde', (tester) async {

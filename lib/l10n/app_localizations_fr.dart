@@ -206,6 +206,196 @@ class AppLocalizationsFr extends AppLocalizations {
       'Autorisation d\'alarme désactivée : l\'adhan et les rappels peuvent avoir jusqu\'à environ une heure de retard (imsak et suhoor compris).';
 
   @override
+  String get healthTitle => 'Vérifier les notifications';
+
+  @override
+  String get healthSub =>
+      'L\'adhan ne retentit pas ? Vérifiez vos paramètres étape par étape';
+
+  @override
+  String get healthSectionStatus => 'État';
+
+  @override
+  String get healthEzansTitle => 'Alarmes d\'adhan';
+
+  @override
+  String healthEzansOn(String names) {
+    return 'Activées : $names';
+  }
+
+  @override
+  String get healthEzansNone => 'L\'adhan n\'est activé pour aucune prière.';
+
+  @override
+  String get healthNextTitle => 'Prochain adhan';
+
+  @override
+  String get healthNextNone => 'Aucun adhan programmé.';
+
+  @override
+  String get healthReschedule => 'Reprogrammer';
+
+  @override
+  String get healthNotificationsTitle => 'Notifications';
+
+  @override
+  String get healthNotificationsOk => 'Activées.';
+
+  @override
+  String get healthOpenSettings => 'Ouvrir les paramètres';
+
+  @override
+  String get healthExactTitle => 'Alarmes et rappels';
+
+  @override
+  String get healthExactOk => 'Autorisé : l\'adhan retentit à l\'heure exacte.';
+
+  @override
+  String get healthVolumeTitle => 'Son';
+
+  @override
+  String get healthVolumeOk => 'Le son des notifications est activé.';
+
+  @override
+  String get healthVolumeAlarmOk => 'Le son des alarmes est activé.';
+
+  @override
+  String get healthVolumeSilent =>
+      'Le téléphone est en mode silencieux ou vibreur : l\'adhan ne sera pas entendu.';
+
+  @override
+  String get healthVolumeNotificationMuted =>
+      'Le son des notifications est coupé : l\'adhan ne sera pas entendu.';
+
+  @override
+  String get healthVolumeAlarmMuted =>
+      'Le son des alarmes est coupé : l\'adhan ne sera pas entendu.';
+
+  @override
+  String healthAlarmStreamTip(String setting) {
+    return 'Avec « $setting », l\'adhan retentit au volume de l\'alarme.';
+  }
+
+  @override
+  String get healthDndTitle => 'Ne pas déranger';
+
+  @override
+  String get healthDndOff => 'Désactivé.';
+
+  @override
+  String get healthDndOn => 'Activé : l\'adhan risque de ne pas être entendu.';
+
+  @override
+  String healthDndAlarm(String setting) {
+    return 'Activé, mais grâce à « $setting », l\'adhan retentit au volume de l\'alarme.';
+  }
+
+  @override
+  String get healthBatteryTitle => 'Utilisation de la batterie';
+
+  @override
+  String get healthBatteryOk =>
+      'L\'optimisation de la batterie est désactivée pour Vaktinde.';
+
+  @override
+  String get healthBatteryOptimized =>
+      'L\'optimisation de la batterie est activée : votre téléphone peut arrêter Vaktinde en arrière-plan. Dans les paramètres de l\'application, ouvrez Batterie et choisissez « Non restreint » (l\'intitulé peut varier selon le téléphone).';
+
+  @override
+  String get healthBackgroundTitle => 'Activité en arrière-plan';
+
+  @override
+  String healthBackgroundToday(String time) {
+    return 'Dernière exécution : aujourd\'hui à $time';
+  }
+
+  @override
+  String healthBackgroundYesterday(String time) {
+    return 'Dernière exécution : hier à $time';
+  }
+
+  @override
+  String get healthBackgroundStale =>
+      'Vaktinde ne s\'est pas exécuté en arrière-plan depuis 48 heures : votre téléphone l\'arrête peut-être.';
+
+  @override
+  String get healthShowSteps => 'Voir les étapes';
+
+  @override
+  String healthGuideTitle(String brand) {
+    return 'Paramètres pour $brand';
+  }
+
+  @override
+  String get healthGuideTitleGeneric => 'Paramètres pour votre téléphone';
+
+  @override
+  String get healthGuideStale =>
+      'L\'activité en arrière-plan semble arrêtée. Pour que l\'adhan reste à l\'heure, modifiez ces paramètres :';
+
+  @override
+  String get healthGuideMore =>
+      'Guides détaillés selon votre modèle (en anglais)';
+
+  @override
+  String get healthTestTitle => 'Adhan de test';
+
+  @override
+  String get healthTestInfo =>
+      'Une notification de test arrive dans 1 minute, avec le même son et les mêmes paramètres qu\'un véritable adhan.';
+
+  @override
+  String get healthTestButton => 'Adhan de test dans 1 min';
+
+  @override
+  String get healthTestScheduled =>
+      'L\'adhan de test retentira dans 1 minute. Vous pouvez fermer l\'application.';
+
+  @override
+  String get healthTestNotifBody =>
+      'Si vous voyez cette notification, les notifications d\'adhan fonctionnent.';
+
+  @override
+  String get healthStepXiaomiAutostart =>
+      'Dans les paramètres de l\'application, activez le démarrage automatique.';
+
+  @override
+  String get healthStepXiaomiBattery =>
+      'Sur le même écran, dans l\'économiseur de batterie (ou Batterie), supprimez toutes les restrictions.';
+
+  @override
+  String get healthStepHuaweiLaunch =>
+      'Dans les paramètres, ouvrez la gestion du lancement des applications (sous Batterie ou Applications). Désactivez la gestion automatique pour Vaktinde et laissez toutes les options activées dans la fenêtre qui s\'affiche.';
+
+  @override
+  String get healthStepOppoBackground =>
+      'Dans les paramètres de l\'application, sous Utilisation de la batterie, autorisez l\'activité en arrière-plan et le lancement automatique.';
+
+  @override
+  String get healthStepVivoBackground =>
+      'Dans Paramètres > Batterie, autorisez une consommation d\'énergie élevée en arrière-plan pour Vaktinde.';
+
+  @override
+  String healthStepAutostartIn(String app) {
+    return 'Activez le démarrage automatique de Vaktinde dans les paramètres ou dans l\'application $app.';
+  }
+
+  @override
+  String get healthStepAppBattery =>
+      'Dans les paramètres de l\'application, sous Batterie, choisissez « Non restreint ».';
+
+  @override
+  String get healthStepSamsungSleeping =>
+      'Dans Paramètres > Batterie > Limites d\'utilisation en arrière-plan, ajoutez Vaktinde aux « Applications jamais en veille ».';
+
+  @override
+  String get healthStepLockRecents =>
+      'Verrouillez Vaktinde dans l\'écran des applications récentes (si votre téléphone le permet).';
+
+  @override
+  String get healthDetails => 'Détails';
+
+  @override
   String get alarmHealthExactAction => 'Autoriser';
 
   @override

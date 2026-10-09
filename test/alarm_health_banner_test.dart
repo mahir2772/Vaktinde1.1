@@ -4,11 +4,13 @@ import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
+import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -280,6 +282,34 @@ void main() {
     await settle(tester);
     expect(find.text(loc.alarmHealthNotificationsOff), findsNothing);
     expect(vm.reschedules, 1);
+    await finish(tester);
+  });
+
+  testWidgets('"Ayrıntılar" Bildirim Kontrolü ekranını açar', (tester) async {
+    // Ekranın okuduğu cihaz durumu ve kurulum zamanı (yanıtsız kanal beklemesin)
+    const device = MethodChannel('vaktinde/device');
+    messenger.setMockMethodCallHandler(device, (call) async => null);
+    addTearDown(() => messenger.setMockMethodCallHandler(device, null));
+    PackageInfo.setMockInitialValues(
+      appName: 'Vaktinde',
+      packageName: 'com.mmdigital.vaktinde',
+      version: '1.2.0',
+      buildNumber: '17',
+      buildSignature: '',
+    );
+    canScheduleExact = false;
+    final vm = await pumpHome(tester, 'tr');
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    await vm.alarmHealth.refresh();
+    await settle(tester);
+    await tester.ensureVisible(find.text(loc.healthDetails));
+    await settle(tester);
+    await tester.tap(find.text(loc.healthDetails));
+    await settle(tester);
+    expect(find.byType(NotificationHealthView), findsOneWidget);
+    expect(find.text(loc.healthExactTitle), findsOneWidget);
+    expect(exactRequests, 0);
+    expect(tester.takeException(), isNull);
     await finish(tester);
   });
 

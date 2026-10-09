@@ -106,6 +106,107 @@
         }
     },
     "alarmHealthExactOff": "Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).",
+    "healthTitle": "Bildirim Kontrolü",
+    "healthSub": "Ezan gelmiyorsa ayarları adım adım kontrol edin",
+    "healthSectionStatus": "Durum",
+    "healthEzansTitle": "Ezan alarmları",
+    "healthEzansOn": "Açık: {names}",
+    "@healthEzansOn": {
+        "placeholders": {
+            "names": {
+                "type": "String"
+            }
+        }
+    },
+    "healthEzansNone": "Hiçbir vakit için ezan açık değil.",
+    "healthNextTitle": "Sıradaki ezan",
+    "healthNextNone": "Kurulu ezan bulunamadı.",
+    "healthReschedule": "Yeniden kur",
+    "healthNotificationsTitle": "Bildirimler",
+    "healthNotificationsOk": "Açık.",
+    "healthOpenSettings": "Ayarları aç",
+    "healthExactTitle": "Alarmlar ve hatırlatıcılar",
+    "healthExactOk": "İzin verildi: ezan tam vaktinde çalar.",
+    "healthVolumeTitle": "Ses",
+    "healthVolumeOk": "Bildirim sesi açık.",
+    "healthVolumeAlarmOk": "Alarm sesi açık.",
+    "healthVolumeSilent": "Telefon sessiz ya da titreşim modunda: ezan sesi duyulmaz.",
+    "healthVolumeNotificationMuted": "Bildirim sesi kapalı: ezan sesi duyulmaz.",
+    "healthVolumeAlarmMuted": "Alarm sesi kapalı: ezan sesi duyulmaz.",
+    "healthAlarmStreamTip": "“{setting}” açıkken ezan alarm sesiyle çalar.",
+    "@healthAlarmStreamTip": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthDndTitle": "Rahatsız Etmeyin",
+    "healthDndOff": "Kapalı.",
+    "healthDndOn": "Açık: ezan sesi duyulmayabilir.",
+    "healthDndAlarm": "Açık, ancak “{setting}” sayesinde ezan alarm sesiyle çalar.",
+    "@healthDndAlarm": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBatteryTitle": "Pil kullanımı",
+    "healthBatteryOk": "Pil optimizasyonu Vaktinde için kapalı.",
+    "healthBatteryOptimized": "Pil optimizasyonu açık: telefon Vaktinde'yi arka planda durdurabilir. Uygulama ayarlarında Pil bölümünden “Kısıtlanmamış” seçeneğini işaretleyin (bazı telefonlarda “Sınırsız” ya da “Kısıtlama yok”).",
+    "healthBackgroundTitle": "Arka planda çalışma",
+    "healthBackgroundToday": "Son çalışma: bugün {time}",
+    "@healthBackgroundToday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundYesterday": "Son çalışma: dün {time}",
+    "@healthBackgroundYesterday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundStale": "Vaktinde son 48 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.",
+    "healthShowSteps": "Adımları göster",
+    "healthGuideTitle": "{brand} için ayarlar",
+    "@healthGuideTitle": {
+        "placeholders": {
+            "brand": {
+                "type": "String"
+            }
+        }
+    },
+    "healthGuideTitleGeneric": "Telefonunuz için ayarlar",
+    "healthGuideStale": "Arka planda çalışma durmuş görünüyor. Ezanın gecikmemesi için şu ayarları yapın:",
+    "healthGuideMore": "Telefon modelinize göre ayrıntılı anlatım (İngilizce)",
+    "healthTestTitle": "Test ezanı",
+    "healthTestInfo": "Gerçek ezanla aynı ses ve ayarlarla 1 dakika sonra bir test bildirimi gelir.",
+    "healthTestButton": "1 dk sonra test ezanı",
+    "healthTestScheduled": "Test ezanı 1 dakika sonra çalacak. Uygulamayı kapatabilirsiniz.",
+    "healthTestNotifBody": "Bu bildirim geldiyse ezan bildirimleri çalışıyor.",
+    "healthStepXiaomiAutostart": "Uygulama ayarlarında “Otomatik başlatma” seçeneğini açın.",
+    "healthStepXiaomiBattery": "Aynı ekranda Pil tasarrufu (ya da Pil) bölümünden “Kısıtlama yok” seçeneğini işaretleyin.",
+    "healthStepHuaweiLaunch": "Ayarlar'da “Uygulama başlatma” bölümünü açın (Pil ya da Uygulamalar altında). Vaktinde için otomatik yönetimi kapatın ve açılan penceredeki tüm seçenekleri açık bırakın.",
+    "healthStepOppoBackground": "Uygulama ayarları > Pil kullanımı bölümünde arka planda çalışmaya ve otomatik başlatmaya izin verin.",
+    "healthStepVivoBackground": "Ayarlar > Pil bölümünde Vaktinde'nin arka planda yüksek güç tüketmesine izin verin.",
+    "healthStepAutostartIn": "Ayarlar'da ya da {app} uygulamasında Vaktinde için otomatik başlatmayı açın.",
+    "@healthStepAutostartIn": {
+        "placeholders": {
+            "app": {
+                "type": "String"
+            }
+        }
+    },
+    "healthStepAppBattery": "Uygulama ayarları > Pil bölümünde “Kısıtlanmamış” seçeneğini işaretleyin.",
+    "healthStepSamsungSleeping": "Ayarlar > Pil > Arka plan kullanım sınırları bölümünde Vaktinde'yi hiç uyku moduna alınmayan uygulamalara ekleyin.",
+    "healthStepLockRecents": "Son uygulamalar ekranında Vaktinde'yi kilitleyin (telefonunuzda bu seçenek varsa).",
+    "healthDetails": "Ayrıntılar",
     "alarmHealthExactAction": "İzin ver",
     "alarmHealthNotificationsOff": "Bildirimler kapalı, ezan çalmaz.",
     "alarmHealthNotificationsAction": "Aç",

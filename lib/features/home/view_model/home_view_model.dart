@@ -601,6 +601,20 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     await rescheduleAlarms();
   }
 
+  /// Bildirim Kontrolü: 1 dk sonra gerçek ezanla aynı ses/kanal/kiple test ezanı
+  Future<void> scheduleTestEzan(AppLocalizations loc) =>
+      _refreshService.scheduleTestEzan(
+        loc: loc,
+        onTimeAlarms: onTimeAlarms,
+        selectedSounds: selectedSounds,
+        silentModeSettings: silentModeSettings,
+        alarmStream: ezanAlarmStream,
+      );
+
+  /// Bildirim Kontrolü: sıradaki kurulu ezan (bekleyenler okunamazsa hata)
+  Future<ScheduledEzan?> nextScheduledEzan() =>
+      _refreshService.nextScheduledEzan();
+
   /// Takipte bir vakit geri alınınca ya da ayar değişince hatırlatmalar eşitlenir
   Future<void> refreshEndReminders() async {
     if (prayerTimes == null || _currentLoc == null) return;

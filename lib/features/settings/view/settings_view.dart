@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +13,7 @@ import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 import '../../home/view_model/home_view_model.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
+import '../../notification_health/view/notification_health_view.dart';
 import 'end_reminder_setting.dart';
 import 'language_sheet.dart';
 import 'time_adjust_view.dart';
@@ -113,17 +113,17 @@ class SettingsView extends StatelessWidget {
                   );
                 },
               ),
+              // Bildirim izni, alarm izni, ses, pil, üretici ayarları ve test ezanı
               AppListTile(
                 leadingIcon: Icons.notifications_active_outlined,
-                title: loc.menuNotifications,
-                subtitle: loc.menuNotificationsSub,
-                onTap: () => Geolocator.openAppSettings(),
-              ),
-              AppListTile(
-                leadingIcon: Icons.battery_alert_outlined,
-                title: loc.menuTroubleshoot,
-                subtitle: loc.menuTroubleshootSub,
-                onTap: () => _showBatteryOptimizationDialog(context, loc),
+                title: loc.healthTitle,
+                subtitle: loc.healthSub,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const NotificationHealthView(),
+                  ),
+                ),
               ),
             ],
           ),
@@ -236,25 +236,6 @@ class SettingsView extends StatelessWidget {
       useSafeArea: true,
       showDragHandle: true,
       builder: (context) => const _AppearanceSheet(),
-    );
-  }
-
-  void _showBatteryOptimizationDialog(
-    BuildContext context,
-    AppLocalizations loc,
-  ) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(loc.batteryDialogTitle),
-        content: SingleChildScrollView(child: Text(loc.batteryDialogBody)),
-        actions: [
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(loc.okUnderstood),
-          ),
-        ],
-      ),
     );
   }
 }

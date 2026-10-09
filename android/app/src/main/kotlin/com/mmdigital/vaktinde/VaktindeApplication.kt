@@ -11,6 +11,8 @@ import android.app.Application
 class VaktindeApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        // "vaktinde/device" kanalı (Bildirim Kontrolü) cihaz durumunu bu bağlamla okur
+        DeviceMethods.appContext = this
         try {
             WidgetRefresher.register(this)
         } catch (t: Throwable) {

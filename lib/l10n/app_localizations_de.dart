@@ -205,6 +205,197 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ohne Wecker-Berechtigung können Adhan und Erinnerungen bis zu etwa einer Stunde zu spät kommen (auch Imsak und Suhur).';
 
   @override
+  String get healthTitle => 'Benachrichtigungen prüfen';
+
+  @override
+  String get healthSub =>
+      'Kein Adhan? Einstellungen Schritt für Schritt prüfen';
+
+  @override
+  String get healthSectionStatus => 'Status';
+
+  @override
+  String get healthEzansTitle => 'Adhan-Alarme';
+
+  @override
+  String healthEzansOn(String names) {
+    return 'Aktiv: $names';
+  }
+
+  @override
+  String get healthEzansNone => 'Der Adhan ist für keine Gebetszeit aktiviert.';
+
+  @override
+  String get healthNextTitle => 'Nächster Adhan';
+
+  @override
+  String get healthNextNone => 'Kein geplanter Adhan gefunden.';
+
+  @override
+  String get healthReschedule => 'Neu planen';
+
+  @override
+  String get healthNotificationsTitle => 'Benachrichtigungen';
+
+  @override
+  String get healthNotificationsOk => 'Aktiviert.';
+
+  @override
+  String get healthOpenSettings => 'Einstellungen öffnen';
+
+  @override
+  String get healthExactTitle => 'Wecker und Erinnerungen';
+
+  @override
+  String get healthExactOk => 'Erlaubt: Der Adhan ertönt pünktlich.';
+
+  @override
+  String get healthVolumeTitle => 'Ton';
+
+  @override
+  String get healthVolumeOk => 'Der Benachrichtigungston ist eingeschaltet.';
+
+  @override
+  String get healthVolumeAlarmOk => 'Der Weckerton ist eingeschaltet.';
+
+  @override
+  String get healthVolumeSilent =>
+      'Das Telefon ist lautlos oder auf Vibration gestellt: Der Adhan ist nicht zu hören.';
+
+  @override
+  String get healthVolumeNotificationMuted =>
+      'Der Benachrichtigungston ist ausgeschaltet: Der Adhan ist nicht zu hören.';
+
+  @override
+  String get healthVolumeAlarmMuted =>
+      'Der Weckerton ist ausgeschaltet: Der Adhan ist nicht zu hören.';
+
+  @override
+  String healthAlarmStreamTip(String setting) {
+    return 'Mit „$setting“ ertönt der Adhan in der Lautstärke des Weckers.';
+  }
+
+  @override
+  String get healthDndTitle => 'Bitte nicht stören';
+
+  @override
+  String get healthDndOff => 'Aus.';
+
+  @override
+  String get healthDndOn =>
+      'Aktiv: Der Adhan ist möglicherweise nicht zu hören.';
+
+  @override
+  String healthDndAlarm(String setting) {
+    return 'Aktiv, aber dank „$setting“ ertönt der Adhan in der Lautstärke des Weckers.';
+  }
+
+  @override
+  String get healthBatteryTitle => 'Akkunutzung';
+
+  @override
+  String get healthBatteryOk =>
+      'Die Akkuoptimierung ist für Vaktinde deaktiviert.';
+
+  @override
+  String get healthBatteryOptimized =>
+      'Die Akkuoptimierung ist aktiv: Ihr Telefon kann Vaktinde im Hintergrund beenden. Wählen Sie in den App-Einstellungen unter Akku „Nicht eingeschränkt“ (auf manchen Telefonen „Keine Beschränkungen“).';
+
+  @override
+  String get healthBackgroundTitle => 'Hintergrundaktivität';
+
+  @override
+  String healthBackgroundToday(String time) {
+    return 'Zuletzt ausgeführt: heute um $time';
+  }
+
+  @override
+  String healthBackgroundYesterday(String time) {
+    return 'Zuletzt ausgeführt: gestern um $time';
+  }
+
+  @override
+  String get healthBackgroundStale =>
+      'Vaktinde lief in den letzten 48 Stunden nicht im Hintergrund: Ihr Telefon beendet die App möglicherweise.';
+
+  @override
+  String get healthShowSteps => 'Schritte anzeigen';
+
+  @override
+  String healthGuideTitle(String brand) {
+    return 'Einstellungen für $brand';
+  }
+
+  @override
+  String get healthGuideTitleGeneric => 'Einstellungen für Ihr Telefon';
+
+  @override
+  String get healthGuideStale =>
+      'Die Hintergrundaktivität scheint gestoppt zu sein. Damit der Adhan pünktlich ertönt, ändern Sie diese Einstellungen:';
+
+  @override
+  String get healthGuideMore =>
+      'Ausführliche Anleitungen für Ihr Modell (auf Englisch)';
+
+  @override
+  String get healthTestTitle => 'Test-Adhan';
+
+  @override
+  String get healthTestInfo =>
+      'In 1 Minute kommt eine Testbenachrichtigung mit demselben Ton und denselben Einstellungen wie ein echter Adhan.';
+
+  @override
+  String get healthTestButton => 'Test-Adhan in 1 Min.';
+
+  @override
+  String get healthTestScheduled =>
+      'Der Test-Adhan ertönt in 1 Minute. Sie können die App schließen.';
+
+  @override
+  String get healthTestNotifBody =>
+      'Wenn Sie diese Benachrichtigung sehen, funktionieren die Adhan-Benachrichtigungen.';
+
+  @override
+  String get healthStepXiaomiAutostart =>
+      'Aktivieren Sie in den App-Einstellungen „Autostart“.';
+
+  @override
+  String get healthStepXiaomiBattery =>
+      'Wählen Sie auf demselben Bildschirm unter Energiesparmodus (bzw. Akku) „Keine Beschränkungen“.';
+
+  @override
+  String get healthStepHuaweiLaunch =>
+      'Öffnen Sie in den Einstellungen „App-Start“ (unter Akku oder Apps). Deaktivieren Sie für Vaktinde die automatische Verwaltung und lassen Sie im folgenden Fenster alle Optionen aktiviert.';
+
+  @override
+  String get healthStepOppoBackground =>
+      'Erlauben Sie in den App-Einstellungen unter Akkunutzung die Hintergrundaktivität und den automatischen Start.';
+
+  @override
+  String get healthStepVivoBackground =>
+      'Erlauben Sie unter Einstellungen > Akku für Vaktinde einen hohen Energieverbrauch im Hintergrund.';
+
+  @override
+  String healthStepAutostartIn(String app) {
+    return 'Aktivieren Sie den Autostart für Vaktinde in den Einstellungen oder in der App $app.';
+  }
+
+  @override
+  String get healthStepAppBattery =>
+      'Wählen Sie in den App-Einstellungen unter Akku „Nicht eingeschränkt“.';
+
+  @override
+  String get healthStepSamsungSleeping =>
+      'Fügen Sie Vaktinde unter Einstellungen > Akku > Grenzen der Hintergrundnutzung zu „Apps, die nie im Standby sind“ hinzu.';
+
+  @override
+  String get healthStepLockRecents =>
+      'Sperren Sie Vaktinde in der Ansicht der zuletzt verwendeten Apps (falls Ihr Telefon diese Option bietet).';
+
+  @override
+  String get healthDetails => 'Details';
+
+  @override
   String get alarmHealthExactAction => 'Erlauben';
 
   @override

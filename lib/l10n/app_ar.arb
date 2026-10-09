@@ -85,6 +85,107 @@
         }
     },
     "alarmHealthExactOff": "إذن المنبّه معطّل: قد يتأخر الأذان والتذكيرات حتى ساعة تقريبًا (بما في ذلك الإمساك والسحور).",
+    "healthTitle": "فحص الإشعارات",
+    "healthSub": "إذا لم يعمل الأذان، افحص الإعدادات خطوة بخطوة",
+    "healthSectionStatus": "الحالة",
+    "healthEzansTitle": "منبّهات الأذان",
+    "healthEzansOn": "مفعّلة: {names}",
+    "@healthEzansOn": {
+        "placeholders": {
+            "names": {
+                "type": "String"
+            }
+        }
+    },
+    "healthEzansNone": "الأذان غير مفعّل لأي صلاة.",
+    "healthNextTitle": "الأذان التالي",
+    "healthNextNone": "لم يُعثر على أذان مجدول.",
+    "healthReschedule": "إعادة الجدولة",
+    "healthNotificationsTitle": "الإشعارات",
+    "healthNotificationsOk": "مفعّلة.",
+    "healthOpenSettings": "فتح الإعدادات",
+    "healthExactTitle": "المنبّهات والتذكيرات",
+    "healthExactOk": "مسموح: يُرفع الأذان في وقته تمامًا.",
+    "healthVolumeTitle": "الصوت",
+    "healthVolumeOk": "صوت الإشعارات مفعّل.",
+    "healthVolumeAlarmOk": "صوت المنبّه مفعّل.",
+    "healthVolumeSilent": "الهاتف في الوضع الصامت أو وضع الاهتزاز: لن يُسمع صوت الأذان.",
+    "healthVolumeNotificationMuted": "صوت الإشعارات مكتوم: لن يُسمع صوت الأذان.",
+    "healthVolumeAlarmMuted": "صوت المنبّه مكتوم: لن يُسمع صوت الأذان.",
+    "healthAlarmStreamTip": "عند تفعيل «{setting}» يُرفع الأذان بمستوى صوت المنبّه.",
+    "@healthAlarmStreamTip": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthDndTitle": "عدم الإزعاج",
+    "healthDndOff": "غير مفعّل.",
+    "healthDndOn": "مفعّل: قد لا يُسمع صوت الأذان.",
+    "healthDndAlarm": "مفعّل، لكن بفضل «{setting}» يُرفع الأذان بمستوى صوت المنبّه.",
+    "@healthDndAlarm": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBatteryTitle": "استخدام البطارية",
+    "healthBatteryOk": "تحسين البطارية متوقف لتطبيق Vaktinde.",
+    "healthBatteryOptimized": "تحسين البطارية مفعّل: قد يوقف هاتفك تطبيق Vaktinde في الخلفية. افتح إعدادات التطبيق ثم البطارية واختر «غير مقيد» (قد يختلف الاسم حسب الهاتف).",
+    "healthBackgroundTitle": "العمل في الخلفية",
+    "healthBackgroundToday": "آخر تشغيل: اليوم الساعة {time}",
+    "@healthBackgroundToday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundYesterday": "آخر تشغيل: أمس الساعة {time}",
+    "@healthBackgroundYesterday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundStale": "لم يعمل Vaktinde في الخلفية خلال آخر 48 ساعة: ربما يوقفه هاتفك.",
+    "healthShowSteps": "عرض الخطوات",
+    "healthGuideTitle": "إعدادات هواتف {brand}",
+    "@healthGuideTitle": {
+        "placeholders": {
+            "brand": {
+                "type": "String"
+            }
+        }
+    },
+    "healthGuideTitleGeneric": "إعدادات هاتفك",
+    "healthGuideStale": "يبدو أن العمل في الخلفية متوقف. لكي لا يتأخر الأذان، غيّر هذه الإعدادات:",
+    "healthGuideMore": "شرح مفصّل حسب طراز هاتفك (بالإنجليزية)",
+    "healthTestTitle": "أذان تجريبي",
+    "healthTestInfo": "يصلك إشعار تجريبي بعد دقيقة واحدة بالصوت والإعدادات نفسها التي يستخدمها الأذان الحقيقي.",
+    "healthTestButton": "أذان تجريبي بعد دقيقة",
+    "healthTestScheduled": "سيُرفع الأذان التجريبي بعد دقيقة واحدة. يمكنك إغلاق التطبيق.",
+    "healthTestNotifBody": "إذا ظهر لك هذا الإشعار فإشعارات الأذان تعمل.",
+    "healthStepXiaomiAutostart": "فعّل التشغيل التلقائي من إعدادات التطبيق.",
+    "healthStepXiaomiBattery": "من الشاشة نفسها، افتح موفّر البطارية (أو البطارية) وألغِ كل القيود.",
+    "healthStepHuaweiLaunch": "افتح إدارة تشغيل التطبيقات في الإعدادات (ضمن البطارية أو التطبيقات)، وأوقف الإدارة التلقائية لتطبيق Vaktinde، واترك كل الخيارات مفعّلة في النافذة التي تظهر.",
+    "healthStepOppoBackground": "من إعدادات التطبيق > استخدام البطارية، اسمح بالنشاط في الخلفية وبالتشغيل التلقائي.",
+    "healthStepVivoBackground": "من الإعدادات > البطارية، اسمح لتطبيق Vaktinde باستهلاك طاقة مرتفع في الخلفية.",
+    "healthStepAutostartIn": "فعّل التشغيل التلقائي لتطبيق Vaktinde من الإعدادات أو من تطبيق {app}.",
+    "@healthStepAutostartIn": {
+        "placeholders": {
+            "app": {
+                "type": "String"
+            }
+        }
+    },
+    "healthStepAppBattery": "من إعدادات التطبيق > البطارية، اختر «غير مقيد».",
+    "healthStepSamsungSleeping": "من الإعدادات > البطارية > حدود الاستخدام في الخلفية، أضف Vaktinde إلى التطبيقات التي لا تدخل وضع السكون أبدًا.",
+    "healthStepLockRecents": "اقفل Vaktinde في شاشة التطبيقات الحديثة (إن كان هاتفك يتيح ذلك).",
+    "healthDetails": "التفاصيل",
     "alarmHealthExactAction": "سماح",
     "alarmHealthNotificationsOff": "الإشعارات معطّلة، لن يعمل الأذان.",
     "alarmHealthNotificationsAction": "تفعيل",

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
+import '../../notification_health/view/notification_health_view.dart';
 import '../alarm_health.dart';
 import '../view_model/home_view_model.dart';
 
 /// Ezan uyarısını engelleyen durum için kısa uyarı şeridi (ana ekran ve
 /// "Alarmlar" sekmesi). Sorun yoksa ya da hiç alarm açık değilse yer kaplamaz.
-/// Bildirimler kapalıysa o, değilse tam zamanlı alarm izni uyarısı gösterilir.
+/// Bildirimler kapalıysa o, değilse tam zamanlı alarm izni uyarısı gösterilir;
+/// yanında Bildirim Kontrolü ekranına geçiş.
 class AlarmHealthBanner extends StatelessWidget {
   final HomeViewModel viewModel;
   final EdgeInsetsGeometry padding;
@@ -47,6 +49,10 @@ class AlarmHealthBanner extends StatelessWidget {
             health.fixExactAlarms,
           ),
         };
+        final buttonStyle = TextButton.styleFrom(
+          foregroundColor: colors.onWarningContainer,
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        );
         return Padding(
           padding: padding,
           child: InfoBanner(
@@ -54,13 +60,26 @@ class AlarmHealthBanner extends StatelessWidget {
             icon: icon,
             message: message,
             actionBelow: true,
-            action: TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: colors.onWarningContainer,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              ),
-              onPressed: onFix,
-              child: Text(actionLabel),
+            // Dar ekranda/büyük yazıda butonlar alt alta geçer
+            action: Wrap(
+              alignment: WrapAlignment.end,
+              children: [
+                TextButton(
+                  style: buttonStyle,
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => const NotificationHealthView(),
+                    ),
+                  ),
+                  child: Text(loc.healthDetails),
+                ),
+                TextButton(
+                  style: buttonStyle,
+                  onPressed: onFix,
+                  child: Text(actionLabel),
+                ),
+              ],
             ),
           ),
         );
