@@ -458,15 +458,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dailyContentNotifTitle =>
-      'Benachrichtigung für Vers und Hadith des Tages';
+      'Benachrichtigungen für Vers und Hadith des Tages';
 
   @override
   String get dailyContentNotifSub =>
       'Sendet jeden Morgen einen Vers und jeden Abend einen Hadith.';
 
   @override
-  String get religiousDaysNotifTitle =>
-      'Benachrichtigungen für religiöse Tage und gesegnete Nächte';
+  String get religiousDaysNotifTitle => 'Benachrichtigungen für religiöse Tage';
 
   @override
   String get religiousDaysNotifSub =>
@@ -502,7 +501,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get miracKandiliNotifBody =>
-      'Heute Nacht ist die Nacht von Isra und Mi\'radsch. Eine gesegnete Nacht!';
+      'Heute ist die Nacht von Isra und Mi\'radsch. Eine gesegnete Nacht!';
 
   @override
   String get beratKandiliNotifBody =>
@@ -1269,7 +1268,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get qiblaTipCalibrate =>
-      'Kalibrieren Sie, indem Sie mit dem Telefon eine \'8\' in die Luft zeichnen.';
+      'Kalibrieren Sie den Kompass, indem Sie mit dem Telefon eine \'8\' in die Luft zeichnen.';
 
   @override
   String get qiblaTipMagneticCase =>

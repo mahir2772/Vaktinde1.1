@@ -226,7 +226,7 @@
         }
     },
     "endReminderTitle": "Remind Before Prayer Time Ends",
-    "dailyContentNotifTitle": "Daily Ayah & Hadith Notification",
+    "dailyContentNotifTitle": "Daily Ayah & Hadith Notifications",
     "dailyContentNotifSub": "Sends an ayah every morning and a hadith every evening.",
     "religiousDaysNotifTitle": "Religious Day & Holy Night Notifications",
     "religiousDaysNotifSub": "Sends a morning reminder for holy nights, Eids and other religious days.",
@@ -562,12 +562,12 @@
     "turnSlightLeft": "⬅ Turn slight left",
     "calibrationRequired": "Calibration Required",
     "qiblaAccuracyNote": "The compass shows an approximate direction; metal, magnets and electronic devices can throw it off.",
-    "qiblaTipsTitle": "For an accurate result",
+    "qiblaTipsTitle": "For accurate results",
     "qiblaTipFlat": "Hold the phone flat, parallel to the ground.",
-    "qiblaTipCalibrate": "Calibrate by drawing an '8' in the air with your phone.",
+    "qiblaTipCalibrate": "Calibrate the compass by drawing an '8' in the air with your phone.",
     "qiblaTipMagneticCase": "Remove any magnetic phone case.",
     "qiblaTipMetal": "Stay away from metal objects and electronic devices.",
-    "qiblaTipMosque": "If possible, compare with the qibla direction of a mosque.",
+    "qiblaTipMosque": "If possible, compare with the Qibla direction of a mosque.",
     "qiblaAngleTrueNorth": "Qibla angle: {angle}° (from true north)",
     "@qiblaAngleTrueNorth": {
         "placeholders": {

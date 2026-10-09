@@ -869,7 +869,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyContentNotifTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Günün Ayeti ve Hadisi Bildirimi'**
+  /// **'Günün Ayeti ve Hadisi Bildirimleri'**
   String get dailyContentNotifTitle;
 
   /// No description provided for @dailyContentNotifSub.

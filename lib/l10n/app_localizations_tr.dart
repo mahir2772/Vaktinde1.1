@@ -449,7 +449,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get endReminderTitle => 'Vakit Çıkmadan Hatırlat';
 
   @override
-  String get dailyContentNotifTitle => 'Günün Ayeti ve Hadisi Bildirimi';
+  String get dailyContentNotifTitle => 'Günün Ayeti ve Hadisi Bildirimleri';
 
   @override
   String get dailyContentNotifSub =>
