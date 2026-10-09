@@ -85,6 +85,107 @@
         }
     },
     "alarmHealthExactOff": "Alarm permission is off: the adhan and reminders can be up to about an hour late (including imsak and suhoor).",
+    "healthTitle": "Notification Check",
+    "healthSub": "If the adhan doesn't play, check your settings step by step",
+    "healthSectionStatus": "Status",
+    "healthEzansTitle": "Adhan alarms",
+    "healthEzansOn": "On: {names}",
+    "@healthEzansOn": {
+        "placeholders": {
+            "names": {
+                "type": "String"
+            }
+        }
+    },
+    "healthEzansNone": "The adhan isn't turned on for any prayer.",
+    "healthNextTitle": "Next adhan",
+    "healthNextNone": "No scheduled adhan found.",
+    "healthReschedule": "Reschedule",
+    "healthNotificationsTitle": "Notifications",
+    "healthNotificationsOk": "On.",
+    "healthOpenSettings": "Open settings",
+    "healthExactTitle": "Alarms & reminders",
+    "healthExactOk": "Allowed: the adhan plays right on time.",
+    "healthVolumeTitle": "Sound",
+    "healthVolumeOk": "Notification volume is on.",
+    "healthVolumeAlarmOk": "Alarm volume is on.",
+    "healthVolumeSilent": "The phone is on silent or vibrate: the adhan won't be heard.",
+    "healthVolumeNotificationMuted": "Notification volume is off: the adhan won't be heard.",
+    "healthVolumeAlarmMuted": "Alarm volume is off: the adhan won't be heard.",
+    "healthAlarmStreamTip": "With “{setting}” on, the adhan plays at alarm volume.",
+    "@healthAlarmStreamTip": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthDndTitle": "Do Not Disturb",
+    "healthDndOff": "Off.",
+    "healthDndOn": "On: the adhan may not be heard.",
+    "healthDndAlarm": "On, but thanks to “{setting}” the adhan plays at alarm volume.",
+    "@healthDndAlarm": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBatteryTitle": "Battery usage",
+    "healthBatteryOk": "Battery optimization is off for Vaktinde.",
+    "healthBatteryOptimized": "Battery optimization is on: your phone may stop Vaktinde in the background. In the app settings, open Battery and choose “Unrestricted” (on some phones “No restrictions”).",
+    "healthBackgroundTitle": "Background activity",
+    "healthBackgroundToday": "Last run: today at {time}",
+    "@healthBackgroundToday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundYesterday": "Last run: yesterday at {time}",
+    "@healthBackgroundYesterday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundStale": "Vaktinde hasn't run in the background in the last 24 hours: your phone may be stopping it.",
+    "healthShowSteps": "Show steps",
+    "healthGuideTitle": "Settings for {brand}",
+    "@healthGuideTitle": {
+        "placeholders": {
+            "brand": {
+                "type": "String"
+            }
+        }
+    },
+    "healthGuideTitleGeneric": "Settings for your phone",
+    "healthGuideStale": "Background activity seems to have stopped. To keep the adhan on time, change these settings:",
+    "healthGuideMore": "Detailed guides for your phone model",
+    "healthTestTitle": "Test adhan",
+    "healthTestInfo": "A test notification arrives in 1 minute, with the same sound and settings as a real adhan.",
+    "healthTestButton": "Test adhan in 1 min",
+    "healthTestScheduled": "The test adhan will play in 1 minute. You can close the app.",
+    "healthTestNotifBody": "If you see this notification, adhan notifications are working.",
+    "healthStepXiaomiAutostart": "In the app settings, turn on “Autostart”.",
+    "healthStepXiaomiBattery": "On the same screen, under Battery saver (or Battery), choose “No restrictions”.",
+    "healthStepHuaweiLaunch": "Open “App launch” in Settings (under Battery or Apps). Turn off automatic management for Vaktinde and leave all options on in the window that appears.",
+    "healthStepOppoBackground": "In the app settings, under Battery usage, allow background activity and auto launch.",
+    "healthStepVivoBackground": "In Settings > Battery, allow high background power consumption for Vaktinde.",
+    "healthStepAutostartIn": "Turn on autostart for Vaktinde in Settings or in the {app} app.",
+    "@healthStepAutostartIn": {
+        "placeholders": {
+            "app": {
+                "type": "String"
+            }
+        }
+    },
+    "healthStepAppBattery": "In the app settings, under Battery, choose “Unrestricted”.",
+    "healthStepSamsungSleeping": "In Settings > Battery > Background usage limits, add Vaktinde to “Never sleeping apps”.",
+    "healthStepLockRecents": "Lock Vaktinde in the recent apps screen (if your phone offers this option).",
+    "healthDetails": "Details",
     "alarmHealthExactAction": "Allow",
     "alarmHealthNotificationsOff": "Notifications are off, the adhan won't play.",
     "alarmHealthNotificationsAction": "Turn on",

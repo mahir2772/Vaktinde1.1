@@ -203,6 +203,193 @@ class AppLocalizationsTr extends AppLocalizations {
       'Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).';
 
   @override
+  String get healthTitle => 'Bildirim Kontrolü';
+
+  @override
+  String get healthSub => 'Ezan gelmiyorsa ayarları adım adım kontrol edin';
+
+  @override
+  String get healthSectionStatus => 'Durum';
+
+  @override
+  String get healthEzansTitle => 'Ezan alarmları';
+
+  @override
+  String healthEzansOn(String names) {
+    return 'Açık: $names';
+  }
+
+  @override
+  String get healthEzansNone => 'Hiçbir vakit için ezan açık değil.';
+
+  @override
+  String get healthNextTitle => 'Sıradaki ezan';
+
+  @override
+  String get healthNextNone => 'Kurulu ezan bulunamadı.';
+
+  @override
+  String get healthReschedule => 'Yeniden kur';
+
+  @override
+  String get healthNotificationsTitle => 'Bildirimler';
+
+  @override
+  String get healthNotificationsOk => 'Açık.';
+
+  @override
+  String get healthOpenSettings => 'Ayarları aç';
+
+  @override
+  String get healthExactTitle => 'Alarmlar ve hatırlatıcılar';
+
+  @override
+  String get healthExactOk => 'İzin verildi: ezan tam vaktinde çalar.';
+
+  @override
+  String get healthVolumeTitle => 'Ses';
+
+  @override
+  String get healthVolumeOk => 'Bildirim sesi açık.';
+
+  @override
+  String get healthVolumeAlarmOk => 'Alarm sesi açık.';
+
+  @override
+  String get healthVolumeSilent =>
+      'Telefon sessiz ya da titreşim modunda: ezan sesi duyulmaz.';
+
+  @override
+  String get healthVolumeNotificationMuted =>
+      'Bildirim sesi kapalı: ezan sesi duyulmaz.';
+
+  @override
+  String get healthVolumeAlarmMuted => 'Alarm sesi kapalı: ezan sesi duyulmaz.';
+
+  @override
+  String healthAlarmStreamTip(String setting) {
+    return '“$setting” açıkken ezan alarm sesiyle çalar.';
+  }
+
+  @override
+  String get healthDndTitle => 'Rahatsız Etmeyin';
+
+  @override
+  String get healthDndOff => 'Kapalı.';
+
+  @override
+  String get healthDndOn => 'Açık: ezan sesi duyulmayabilir.';
+
+  @override
+  String healthDndAlarm(String setting) {
+    return 'Açık, ancak “$setting” sayesinde ezan alarm sesiyle çalar.';
+  }
+
+  @override
+  String get healthBatteryTitle => 'Pil kullanımı';
+
+  @override
+  String get healthBatteryOk => 'Pil optimizasyonu Vaktinde için kapalı.';
+
+  @override
+  String get healthBatteryOptimized =>
+      'Pil optimizasyonu açık: telefon Vaktinde\'yi arka planda durdurabilir. Uygulama ayarlarında Pil bölümünden “Kısıtlanmamış” seçeneğini işaretleyin (bazı telefonlarda “Sınırsız” ya da “Kısıtlama yok”).';
+
+  @override
+  String get healthBackgroundTitle => 'Arka planda çalışma';
+
+  @override
+  String healthBackgroundToday(String time) {
+    return 'Son çalışma: bugün $time';
+  }
+
+  @override
+  String healthBackgroundYesterday(String time) {
+    return 'Son çalışma: dün $time';
+  }
+
+  @override
+  String get healthBackgroundStale =>
+      'Vaktinde son 24 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.';
+
+  @override
+  String get healthShowSteps => 'Adımları göster';
+
+  @override
+  String healthGuideTitle(String brand) {
+    return '$brand için ayarlar';
+  }
+
+  @override
+  String get healthGuideTitleGeneric => 'Telefonunuz için ayarlar';
+
+  @override
+  String get healthGuideStale =>
+      'Arka planda çalışma durmuş görünüyor. Ezanın gecikmemesi için şu ayarları yapın:';
+
+  @override
+  String get healthGuideMore =>
+      'Telefon modelinize göre ayrıntılı anlatım (İngilizce)';
+
+  @override
+  String get healthTestTitle => 'Test ezanı';
+
+  @override
+  String get healthTestInfo =>
+      'Gerçek ezanla aynı ses ve ayarlarla 1 dakika sonra bir test bildirimi gelir.';
+
+  @override
+  String get healthTestButton => '1 dk sonra test ezanı';
+
+  @override
+  String get healthTestScheduled =>
+      'Test ezanı 1 dakika sonra çalacak. Uygulamayı kapatabilirsiniz.';
+
+  @override
+  String get healthTestNotifBody =>
+      'Bu bildirim geldiyse ezan bildirimleri çalışıyor.';
+
+  @override
+  String get healthStepXiaomiAutostart =>
+      'Uygulama ayarlarında “Otomatik başlatma” seçeneğini açın.';
+
+  @override
+  String get healthStepXiaomiBattery =>
+      'Aynı ekranda Pil tasarrufu (ya da Pil) bölümünden “Kısıtlama yok” seçeneğini işaretleyin.';
+
+  @override
+  String get healthStepHuaweiLaunch =>
+      'Ayarlar\'da “Uygulama başlatma” bölümünü açın (Pil ya da Uygulamalar altında). Vaktinde için otomatik yönetimi kapatın ve açılan penceredeki tüm seçenekleri açık bırakın.';
+
+  @override
+  String get healthStepOppoBackground =>
+      'Uygulama ayarları > Pil kullanımı bölümünde arka planda çalışmaya ve otomatik başlatmaya izin verin.';
+
+  @override
+  String get healthStepVivoBackground =>
+      'Ayarlar > Pil bölümünde Vaktinde\'nin arka planda yüksek güç tüketmesine izin verin.';
+
+  @override
+  String healthStepAutostartIn(String app) {
+    return 'Ayarlar\'da ya da $app uygulamasında Vaktinde için otomatik başlatmayı açın.';
+  }
+
+  @override
+  String get healthStepAppBattery =>
+      'Uygulama ayarları > Pil bölümünde “Kısıtlanmamış” seçeneğini işaretleyin.';
+
+  @override
+  String get healthStepSamsungSleeping =>
+      'Ayarlar > Pil > Arka plan kullanım sınırları bölümünde Vaktinde\'yi hiç uyku moduna alınmayan uygulamalara ekleyin.';
+
+  @override
+  String get healthStepLockRecents =>
+      'Son uygulamalar ekranında Vaktinde\'yi kilitleyin (telefonunuzda bu seçenek varsa).';
+
+  @override
+  String get healthDetails => 'Ayrıntılar';
+
+  @override
   String get alarmHealthExactAction => 'İzin ver';
 
   @override

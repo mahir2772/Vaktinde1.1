@@ -85,6 +85,107 @@
         }
     },
     "alarmHealthExactOff": "Ohne Wecker-Berechtigung können Adhan und Erinnerungen bis zu etwa einer Stunde zu spät kommen (auch Imsak und Suhur).",
+    "healthTitle": "Benachrichtigungen prüfen",
+    "healthSub": "Kein Adhan? Einstellungen Schritt für Schritt prüfen",
+    "healthSectionStatus": "Status",
+    "healthEzansTitle": "Adhan-Alarme",
+    "healthEzansOn": "Aktiv: {names}",
+    "@healthEzansOn": {
+        "placeholders": {
+            "names": {
+                "type": "String"
+            }
+        }
+    },
+    "healthEzansNone": "Der Adhan ist für keine Gebetszeit aktiviert.",
+    "healthNextTitle": "Nächster Adhan",
+    "healthNextNone": "Kein geplanter Adhan gefunden.",
+    "healthReschedule": "Neu planen",
+    "healthNotificationsTitle": "Benachrichtigungen",
+    "healthNotificationsOk": "Aktiviert.",
+    "healthOpenSettings": "Einstellungen öffnen",
+    "healthExactTitle": "Wecker und Erinnerungen",
+    "healthExactOk": "Erlaubt: Der Adhan ertönt pünktlich.",
+    "healthVolumeTitle": "Ton",
+    "healthVolumeOk": "Der Benachrichtigungston ist eingeschaltet.",
+    "healthVolumeAlarmOk": "Der Weckerton ist eingeschaltet.",
+    "healthVolumeSilent": "Das Telefon ist lautlos oder auf Vibration gestellt: Der Adhan ist nicht zu hören.",
+    "healthVolumeNotificationMuted": "Der Benachrichtigungston ist ausgeschaltet: Der Adhan ist nicht zu hören.",
+    "healthVolumeAlarmMuted": "Der Weckerton ist ausgeschaltet: Der Adhan ist nicht zu hören.",
+    "healthAlarmStreamTip": "Mit „{setting}“ ertönt der Adhan in der Lautstärke des Weckers.",
+    "@healthAlarmStreamTip": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthDndTitle": "Bitte nicht stören",
+    "healthDndOff": "Aus.",
+    "healthDndOn": "Aktiv: Der Adhan ist möglicherweise nicht zu hören.",
+    "healthDndAlarm": "Aktiv, aber dank „{setting}“ ertönt der Adhan in der Lautstärke des Weckers.",
+    "@healthDndAlarm": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBatteryTitle": "Akkunutzung",
+    "healthBatteryOk": "Die Akkuoptimierung ist für Vaktinde deaktiviert.",
+    "healthBatteryOptimized": "Die Akkuoptimierung ist aktiv: Ihr Telefon kann Vaktinde im Hintergrund beenden. Wählen Sie in den App-Einstellungen unter Akku „Nicht eingeschränkt“ (auf manchen Telefonen „Keine Beschränkungen“).",
+    "healthBackgroundTitle": "Hintergrundaktivität",
+    "healthBackgroundToday": "Zuletzt ausgeführt: heute um {time}",
+    "@healthBackgroundToday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundYesterday": "Zuletzt ausgeführt: gestern um {time}",
+    "@healthBackgroundYesterday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundStale": "Vaktinde lief in den letzten 24 Stunden nicht im Hintergrund: Ihr Telefon beendet die App möglicherweise.",
+    "healthShowSteps": "Schritte anzeigen",
+    "healthGuideTitle": "Einstellungen für {brand}",
+    "@healthGuideTitle": {
+        "placeholders": {
+            "brand": {
+                "type": "String"
+            }
+        }
+    },
+    "healthGuideTitleGeneric": "Einstellungen für Ihr Telefon",
+    "healthGuideStale": "Die Hintergrundaktivität scheint gestoppt zu sein. Damit der Adhan pünktlich ertönt, ändern Sie diese Einstellungen:",
+    "healthGuideMore": "Ausführliche Anleitungen für Ihr Modell (auf Englisch)",
+    "healthTestTitle": "Test-Adhan",
+    "healthTestInfo": "In 1 Minute kommt eine Testbenachrichtigung mit demselben Ton und denselben Einstellungen wie ein echter Adhan.",
+    "healthTestButton": "Test-Adhan in 1 Min.",
+    "healthTestScheduled": "Der Test-Adhan ertönt in 1 Minute. Sie können die App schließen.",
+    "healthTestNotifBody": "Wenn Sie diese Benachrichtigung sehen, funktionieren die Adhan-Benachrichtigungen.",
+    "healthStepXiaomiAutostart": "Aktivieren Sie in den App-Einstellungen „Autostart“.",
+    "healthStepXiaomiBattery": "Wählen Sie auf demselben Bildschirm unter Energiesparmodus (bzw. Akku) „Keine Beschränkungen“.",
+    "healthStepHuaweiLaunch": "Öffnen Sie in den Einstellungen „App-Start“ (unter Akku oder Apps). Deaktivieren Sie für Vaktinde die automatische Verwaltung und lassen Sie im folgenden Fenster alle Optionen aktiviert.",
+    "healthStepOppoBackground": "Erlauben Sie in den App-Einstellungen unter Akkunutzung die Hintergrundaktivität und den automatischen Start.",
+    "healthStepVivoBackground": "Erlauben Sie unter Einstellungen > Akku für Vaktinde einen hohen Energieverbrauch im Hintergrund.",
+    "healthStepAutostartIn": "Aktivieren Sie den Autostart für Vaktinde in den Einstellungen oder in der App {app}.",
+    "@healthStepAutostartIn": {
+        "placeholders": {
+            "app": {
+                "type": "String"
+            }
+        }
+    },
+    "healthStepAppBattery": "Wählen Sie in den App-Einstellungen unter Akku „Nicht eingeschränkt“.",
+    "healthStepSamsungSleeping": "Fügen Sie Vaktinde unter Einstellungen > Akku > Grenzen der Hintergrundnutzung zu „Apps, die nie im Standby sind“ hinzu.",
+    "healthStepLockRecents": "Sperren Sie Vaktinde in der Ansicht der zuletzt verwendeten Apps (falls Ihr Telefon diese Option bietet).",
+    "healthDetails": "Details",
     "alarmHealthExactAction": "Erlauben",
     "alarmHealthNotificationsOff": "Benachrichtigungen sind aus, der Adhan ertönt nicht.",
     "alarmHealthNotificationsAction": "Aktivieren",

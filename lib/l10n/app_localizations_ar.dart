@@ -201,6 +201,193 @@ class AppLocalizationsAr extends AppLocalizations {
       'إذن المنبّه معطّل: قد يتأخر الأذان والتذكيرات حتى ساعة تقريبًا (بما في ذلك الإمساك والسحور).';
 
   @override
+  String get healthTitle => 'فحص الإشعارات';
+
+  @override
+  String get healthSub => 'إذا لم يعمل الأذان، افحص الإعدادات خطوة بخطوة';
+
+  @override
+  String get healthSectionStatus => 'الحالة';
+
+  @override
+  String get healthEzansTitle => 'منبّهات الأذان';
+
+  @override
+  String healthEzansOn(String names) {
+    return 'مفعّلة: $names';
+  }
+
+  @override
+  String get healthEzansNone => 'الأذان غير مفعّل لأي صلاة.';
+
+  @override
+  String get healthNextTitle => 'الأذان التالي';
+
+  @override
+  String get healthNextNone => 'لم يُعثر على أذان مجدول.';
+
+  @override
+  String get healthReschedule => 'إعادة الجدولة';
+
+  @override
+  String get healthNotificationsTitle => 'الإشعارات';
+
+  @override
+  String get healthNotificationsOk => 'مفعّلة.';
+
+  @override
+  String get healthOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get healthExactTitle => 'المنبّهات والتذكيرات';
+
+  @override
+  String get healthExactOk => 'مسموح: يُرفع الأذان في وقته تمامًا.';
+
+  @override
+  String get healthVolumeTitle => 'الصوت';
+
+  @override
+  String get healthVolumeOk => 'صوت الإشعارات مفعّل.';
+
+  @override
+  String get healthVolumeAlarmOk => 'صوت المنبّه مفعّل.';
+
+  @override
+  String get healthVolumeSilent =>
+      'الهاتف في الوضع الصامت أو وضع الاهتزاز: لن يُسمع صوت الأذان.';
+
+  @override
+  String get healthVolumeNotificationMuted =>
+      'صوت الإشعارات مكتوم: لن يُسمع صوت الأذان.';
+
+  @override
+  String get healthVolumeAlarmMuted =>
+      'صوت المنبّه مكتوم: لن يُسمع صوت الأذان.';
+
+  @override
+  String healthAlarmStreamTip(String setting) {
+    return 'عند تفعيل «$setting» يُرفع الأذان بمستوى صوت المنبّه.';
+  }
+
+  @override
+  String get healthDndTitle => 'عدم الإزعاج';
+
+  @override
+  String get healthDndOff => 'غير مفعّل.';
+
+  @override
+  String get healthDndOn => 'مفعّل: قد لا يُسمع صوت الأذان.';
+
+  @override
+  String healthDndAlarm(String setting) {
+    return 'مفعّل، لكن بفضل «$setting» يُرفع الأذان بمستوى صوت المنبّه.';
+  }
+
+  @override
+  String get healthBatteryTitle => 'استخدام البطارية';
+
+  @override
+  String get healthBatteryOk => 'تحسين البطارية متوقف لتطبيق Vaktinde.';
+
+  @override
+  String get healthBatteryOptimized =>
+      'تحسين البطارية مفعّل: قد يوقف هاتفك تطبيق Vaktinde في الخلفية. افتح إعدادات التطبيق ثم البطارية واختر «غير مقيد» (قد يختلف الاسم حسب الهاتف).';
+
+  @override
+  String get healthBackgroundTitle => 'العمل في الخلفية';
+
+  @override
+  String healthBackgroundToday(String time) {
+    return 'آخر تشغيل: اليوم الساعة $time';
+  }
+
+  @override
+  String healthBackgroundYesterday(String time) {
+    return 'آخر تشغيل: أمس الساعة $time';
+  }
+
+  @override
+  String get healthBackgroundStale =>
+      'لم يعمل Vaktinde في الخلفية خلال آخر 24 ساعة: ربما يوقفه هاتفك.';
+
+  @override
+  String get healthShowSteps => 'عرض الخطوات';
+
+  @override
+  String healthGuideTitle(String brand) {
+    return 'إعدادات هواتف $brand';
+  }
+
+  @override
+  String get healthGuideTitleGeneric => 'إعدادات هاتفك';
+
+  @override
+  String get healthGuideStale =>
+      'يبدو أن العمل في الخلفية متوقف. لكي لا يتأخر الأذان، غيّر هذه الإعدادات:';
+
+  @override
+  String get healthGuideMore => 'شرح مفصّل حسب طراز هاتفك (بالإنجليزية)';
+
+  @override
+  String get healthTestTitle => 'أذان تجريبي';
+
+  @override
+  String get healthTestInfo =>
+      'يصلك إشعار تجريبي بعد دقيقة واحدة بالصوت والإعدادات نفسها التي يستخدمها الأذان الحقيقي.';
+
+  @override
+  String get healthTestButton => 'أذان تجريبي بعد دقيقة';
+
+  @override
+  String get healthTestScheduled =>
+      'سيُرفع الأذان التجريبي بعد دقيقة واحدة. يمكنك إغلاق التطبيق.';
+
+  @override
+  String get healthTestNotifBody =>
+      'إذا ظهر لك هذا الإشعار فإشعارات الأذان تعمل.';
+
+  @override
+  String get healthStepXiaomiAutostart =>
+      'فعّل التشغيل التلقائي من إعدادات التطبيق.';
+
+  @override
+  String get healthStepXiaomiBattery =>
+      'من الشاشة نفسها، افتح موفّر البطارية (أو البطارية) وألغِ كل القيود.';
+
+  @override
+  String get healthStepHuaweiLaunch =>
+      'افتح إدارة تشغيل التطبيقات في الإعدادات (ضمن البطارية أو التطبيقات)، وأوقف الإدارة التلقائية لتطبيق Vaktinde، واترك كل الخيارات مفعّلة في النافذة التي تظهر.';
+
+  @override
+  String get healthStepOppoBackground =>
+      'من إعدادات التطبيق > استخدام البطارية، اسمح بالنشاط في الخلفية وبالتشغيل التلقائي.';
+
+  @override
+  String get healthStepVivoBackground =>
+      'من الإعدادات > البطارية، اسمح لتطبيق Vaktinde باستهلاك طاقة مرتفع في الخلفية.';
+
+  @override
+  String healthStepAutostartIn(String app) {
+    return 'فعّل التشغيل التلقائي لتطبيق Vaktinde من الإعدادات أو من تطبيق $app.';
+  }
+
+  @override
+  String get healthStepAppBattery =>
+      'من إعدادات التطبيق > البطارية، اختر «غير مقيد».';
+
+  @override
+  String get healthStepSamsungSleeping =>
+      'من الإعدادات > البطارية > حدود الاستخدام في الخلفية، أضف Vaktinde إلى التطبيقات التي لا تدخل وضع السكون أبدًا.';
+
+  @override
+  String get healthStepLockRecents =>
+      'اقفل Vaktinde في شاشة التطبيقات الحديثة (إن كان هاتفك يتيح ذلك).';
+
+  @override
+  String get healthDetails => 'التفاصيل';
+
+  @override
   String get alarmHealthExactAction => 'سماح';
 
   @override

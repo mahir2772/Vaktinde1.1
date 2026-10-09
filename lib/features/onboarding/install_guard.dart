@@ -45,6 +45,7 @@ class InstallGuard {
     'alarm_plan_meta', // PrayerRefreshService: kurulu ezanların saat/ayar kaydı
     'schedule_mode_v2', // PrayerRefreshService: bildirimler yeni kiple kuruldu
     'notifications_enabled', // NotificationService: bildirim izni durumu
+    'last_headless_run', // PrayerRefreshService: arka plan görevinin son koşusu
   ];
 
   /// Testte platform kontrolünü aşmak için

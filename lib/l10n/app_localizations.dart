@@ -458,6 +458,318 @@ abstract class AppLocalizations {
   /// **'Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).'**
   String get alarmHealthExactOff;
 
+  /// No description provided for @healthTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Kontrolü'**
+  String get healthTitle;
+
+  /// No description provided for @healthSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan gelmiyorsa ayarları adım adım kontrol edin'**
+  String get healthSub;
+
+  /// No description provided for @healthSectionStatus.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum'**
+  String get healthSectionStatus;
+
+  /// No description provided for @healthEzansTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan alarmları'**
+  String get healthEzansTitle;
+
+  /// No description provided for @healthEzansOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık: {names}'**
+  String healthEzansOn(String names);
+
+  /// No description provided for @healthEzansNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hiçbir vakit için ezan açık değil.'**
+  String get healthEzansNone;
+
+  /// No description provided for @healthNextTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıradaki ezan'**
+  String get healthNextTitle;
+
+  /// No description provided for @healthNextNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurulu ezan bulunamadı.'**
+  String get healthNextNone;
+
+  /// No description provided for @healthReschedule.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeniden kur'**
+  String get healthReschedule;
+
+  /// No description provided for @healthNotificationsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler'**
+  String get healthNotificationsTitle;
+
+  /// No description provided for @healthNotificationsOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık.'**
+  String get healthNotificationsOk;
+
+  /// No description provided for @healthOpenSettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarları aç'**
+  String get healthOpenSettings;
+
+  /// No description provided for @healthExactTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarmlar ve hatırlatıcılar'**
+  String get healthExactTitle;
+
+  /// No description provided for @healthExactOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzin verildi: ezan tam vaktinde çalar.'**
+  String get healthExactOk;
+
+  /// No description provided for @healthVolumeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses'**
+  String get healthVolumeTitle;
+
+  /// No description provided for @healthVolumeOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim sesi açık.'**
+  String get healthVolumeOk;
+
+  /// No description provided for @healthVolumeAlarmOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm sesi açık.'**
+  String get healthVolumeAlarmOk;
+
+  /// No description provided for @healthVolumeSilent.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon sessiz ya da titreşim modunda: ezan sesi duyulmaz.'**
+  String get healthVolumeSilent;
+
+  /// No description provided for @healthVolumeNotificationMuted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim sesi kapalı: ezan sesi duyulmaz.'**
+  String get healthVolumeNotificationMuted;
+
+  /// No description provided for @healthVolumeAlarmMuted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm sesi kapalı: ezan sesi duyulmaz.'**
+  String get healthVolumeAlarmMuted;
+
+  /// No description provided for @healthAlarmStreamTip.
+  ///
+  /// In tr, this message translates to:
+  /// **'“{setting}” açıkken ezan alarm sesiyle çalar.'**
+  String healthAlarmStreamTip(String setting);
+
+  /// No description provided for @healthDndTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahatsız Etmeyin'**
+  String get healthDndTitle;
+
+  /// No description provided for @healthDndOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapalı.'**
+  String get healthDndOff;
+
+  /// No description provided for @healthDndOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık: ezan sesi duyulmayabilir.'**
+  String get healthDndOn;
+
+  /// No description provided for @healthDndAlarm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık, ancak “{setting}” sayesinde ezan alarm sesiyle çalar.'**
+  String healthDndAlarm(String setting);
+
+  /// No description provided for @healthBatteryTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pil kullanımı'**
+  String get healthBatteryTitle;
+
+  /// No description provided for @healthBatteryOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pil optimizasyonu Vaktinde için kapalı.'**
+  String get healthBatteryOk;
+
+  /// No description provided for @healthBatteryOptimized.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pil optimizasyonu açık: telefon Vaktinde\'yi arka planda durdurabilir. Uygulama ayarlarında Pil bölümünden “Kısıtlanmamış” seçeneğini işaretleyin (bazı telefonlarda “Sınırsız” ya da “Kısıtlama yok”).'**
+  String get healthBatteryOptimized;
+
+  /// No description provided for @healthBackgroundTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka planda çalışma'**
+  String get healthBackgroundTitle;
+
+  /// No description provided for @healthBackgroundToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son çalışma: bugün {time}'**
+  String healthBackgroundToday(String time);
+
+  /// No description provided for @healthBackgroundYesterday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son çalışma: dün {time}'**
+  String healthBackgroundYesterday(String time);
+
+  /// No description provided for @healthBackgroundStale.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde son 24 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.'**
+  String get healthBackgroundStale;
+
+  /// No description provided for @healthShowSteps.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adımları göster'**
+  String get healthShowSteps;
+
+  /// No description provided for @healthGuideTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{brand} için ayarlar'**
+  String healthGuideTitle(String brand);
+
+  /// No description provided for @healthGuideTitleGeneric.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonunuz için ayarlar'**
+  String get healthGuideTitleGeneric;
+
+  /// No description provided for @healthGuideStale.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka planda çalışma durmuş görünüyor. Ezanın gecikmemesi için şu ayarları yapın:'**
+  String get healthGuideStale;
+
+  /// No description provided for @healthGuideMore.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon modelinize göre ayrıntılı anlatım (İngilizce)'**
+  String get healthGuideMore;
+
+  /// No description provided for @healthTestTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Test ezanı'**
+  String get healthTestTitle;
+
+  /// No description provided for @healthTestInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gerçek ezanla aynı ses ve ayarlarla 1 dakika sonra bir test bildirimi gelir.'**
+  String get healthTestInfo;
+
+  /// No description provided for @healthTestButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'1 dk sonra test ezanı'**
+  String get healthTestButton;
+
+  /// No description provided for @healthTestScheduled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Test ezanı 1 dakika sonra çalacak. Uygulamayı kapatabilirsiniz.'**
+  String get healthTestScheduled;
+
+  /// No description provided for @healthTestNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu bildirim geldiyse ezan bildirimleri çalışıyor.'**
+  String get healthTestNotifBody;
+
+  /// No description provided for @healthStepXiaomiAutostart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama ayarlarında “Otomatik başlatma” seçeneğini açın.'**
+  String get healthStepXiaomiAutostart;
+
+  /// No description provided for @healthStepXiaomiBattery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aynı ekranda Pil tasarrufu (ya da Pil) bölümünden “Kısıtlama yok” seçeneğini işaretleyin.'**
+  String get healthStepXiaomiBattery;
+
+  /// No description provided for @healthStepHuaweiLaunch.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar\'da “Uygulama başlatma” bölümünü açın (Pil ya da Uygulamalar altında). Vaktinde için otomatik yönetimi kapatın ve açılan penceredeki tüm seçenekleri açık bırakın.'**
+  String get healthStepHuaweiLaunch;
+
+  /// No description provided for @healthStepOppoBackground.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama ayarları > Pil kullanımı bölümünde arka planda çalışmaya ve otomatik başlatmaya izin verin.'**
+  String get healthStepOppoBackground;
+
+  /// No description provided for @healthStepVivoBackground.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar > Pil bölümünde Vaktinde\'nin arka planda yüksek güç tüketmesine izin verin.'**
+  String get healthStepVivoBackground;
+
+  /// No description provided for @healthStepAutostartIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar\'da ya da {app} uygulamasında Vaktinde için otomatik başlatmayı açın.'**
+  String healthStepAutostartIn(String app);
+
+  /// No description provided for @healthStepAppBattery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama ayarları > Pil bölümünde “Kısıtlanmamış” seçeneğini işaretleyin.'**
+  String get healthStepAppBattery;
+
+  /// No description provided for @healthStepSamsungSleeping.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar > Pil > Arka plan kullanım sınırları bölümünde Vaktinde\'yi hiç uyku moduna alınmayan uygulamalara ekleyin.'**
+  String get healthStepSamsungSleeping;
+
+  /// No description provided for @healthStepLockRecents.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son uygulamalar ekranında Vaktinde\'yi kilitleyin (telefonunuzda bu seçenek varsa).'**
+  String get healthStepLockRecents;
+
+  /// No description provided for @healthDetails.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayrıntılar'**
+  String get healthDetails;
+
   /// No description provided for @alarmHealthExactAction.
   ///
   /// In tr, this message translates to:

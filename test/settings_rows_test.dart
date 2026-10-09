@@ -5,6 +5,7 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
+import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -133,6 +134,22 @@ void main() {
     await tester.pump();
     expect(vm.dailyToggles, [false, true]);
     expect(toggle().value, isTrue);
+    expect(tester.takeException(), isNull);
+    await finish(tester);
+  });
+
+  testWidgets('Bildirim Kontrolü: tek satır ekranı açar; eski "Bildirim '
+      'İzinleri" ve "Bildirim Gelmiyor mu?" satırları yok', (tester) async {
+    await pumpSettings(tester);
+    await scrollTo(tester, loc.healthTitle);
+    expect(find.text(loc.healthSub), findsOneWidget);
+    expect(find.text(loc.menuNotifications), findsNothing);
+    expect(find.text(loc.menuTroubleshoot), findsNothing);
+    await tester.tap(find.text(loc.healthTitle));
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.byType(NotificationHealthView), findsOneWidget);
     expect(tester.takeException(), isNull);
     await finish(tester);
   });

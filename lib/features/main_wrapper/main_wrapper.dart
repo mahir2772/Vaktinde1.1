@@ -56,6 +56,7 @@ class _MainWrapperState extends State<MainWrapper> {
           !_isTourRunning(),
     );
     AdHelper.instance.loadInterstitialAd();
+    HomeView.alarmsTabRequests.addListener(_showHomeTab);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -98,8 +99,15 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   void dispose() {
+    HomeView.alarmsTabRequests.removeListener(_showHomeTab);
     _reviewPrompt.dispose();
     super.dispose();
+  }
+
+  // "Alarmlar" sekmesi istendi (Bildirim Kontrolü): ana sayfa sekmesi seçilir
+  void _showHomeTab() {
+    if (_currentIndex == 0) return;
+    setState(() => _currentIndex = 0);
   }
 
   /// Turu ekranda olan hedeflerle başlatır (5.x'te eksik hedef turu erken

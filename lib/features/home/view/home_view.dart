@@ -30,6 +30,12 @@ import '../widgets/ramadan_card.dart';
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
+  /// "Alarmlar" sekmesini açma istekleri (Bildirim Kontrolü): MainWrapper ana sayfa
+  /// sekmesine, HomeView "Alarmlar" sekmesine geçer
+  static final ValueNotifier<int> alarmsTabRequests = ValueNotifier(0);
+
+  static void openAlarmsTab() => alarmsTabRequests.value++;
+
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -44,6 +50,7 @@ class _HomeViewState extends State<HomeView>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    HomeView.alarmsTabRequests.addListener(_showAlarmsTab);
     // Vakit girince arka plan rengi ve vurgu değişir
     _ticker = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted) return;
@@ -54,10 +61,13 @@ class _HomeViewState extends State<HomeView>
 
   @override
   void dispose() {
+    HomeView.alarmsTabRequests.removeListener(_showAlarmsTab);
     _ticker?.cancel();
     _tabController.dispose();
     super.dispose();
   }
+
+  void _showAlarmsTab() => _tabController.animateTo(1);
 
   String? _computeNextKey(HomeViewModel vm) {
     final times = vm.prayerTimes;

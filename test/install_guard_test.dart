@@ -25,6 +25,7 @@ void main() {
     'alarm_plan_meta': '{"52":"x"}',
     'schedule_mode_v2': true,
     'notifications_enabled': false,
+    'last_headless_run': install - day,
   };
   final userData = <String, Object>{
     'language_code': 'tr',
