@@ -1326,6 +1326,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolReligiousDaysDesc => 'الليالي المباركة والأعياد';
 
   @override
+  String get nearbyMosquesTitle => 'المساجد القريبة';
+
+  @override
+  String get toolNearbyMosquesDesc => 'ابحث عن أقرب المساجد على الخريطة';
+
+  @override
+  String get nearbyMosquesQuery => 'مسجد';
+
+  @override
+  String get nearbyMosquesError => 'تعذّر فتح الخريطة.';
+
+  @override
   String get toolEsmaDesc => 'الأسماء الحسنى ومعانيها';
 
   @override

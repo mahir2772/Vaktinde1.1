@@ -1,5 +1,6 @@
 // Reklam: içerik sınırı (PG) reklam SDK'sı başlamadan verilir, hata açılışı
-// bozmaz; Araçlar'dan Ayarlar geçiş reklamsız açılır.
+// bozmaz; Araçlar'dan Ayarlar ve Yakındaki Camiler (harita) geçiş reklamsız
+// açılır.
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
@@ -18,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const _umpChannel = 'plugins.flutter.io/google_mobile_ads/ump';
 const _adsChannel = 'plugins.flutter.io/google_mobile_ads';
+const _urlLauncher = MethodChannel('plugins.flutter.io/url_launcher');
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -96,9 +98,14 @@ void main() {
     expect(AdConsent.canRequestAds.value, isFalse);
   });
 
-  testWidgets('Araçlar: Ayarlar reklamsız, araçlar geçiş reklamıyla açılır', (
-    tester,
-  ) async {
+  testWidgets('Araçlar: Ayarlar ve Yakındaki Camiler reklamsız, araçlar geçiş '
+      'reklamıyla açılır', (tester) async {
+    final launches = <String>[];
+    messenger.setMockMethodCallHandler(_urlLauncher, (call) async {
+      launches.add((call.arguments as Map)['url'] as String);
+      return true;
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(_urlLauncher, null));
     SharedPreferences.setMockInitialValues({
       'language_code': 'tr',
       'is_language_selected': true,
@@ -140,6 +147,7 @@ void main() {
       }
     }
 
+    await tester.scrollUntilVisible(find.text(loc.menuTitle), 200);
     await tester.tap(find.text(loc.menuTitle));
     await settle();
     expect(find.byType(SettingsView), findsOneWidget);
@@ -147,6 +155,14 @@ void main() {
 
     Navigator.of(tester.element(find.byType(SettingsView))).pop();
     await settle();
+    // Uygulamadan çıkıp haritayı açar: reklam yok
+    await tester.scrollUntilVisible(find.text(loc.nearbyMosquesTitle), -200);
+    await tester.tap(find.text(loc.nearbyMosquesTitle));
+    await settle();
+    expect(launches, hasLength(1));
+    expect(ads.debugShowRequests, before);
+
+    await tester.scrollUntilVisible(find.text(loc.missedPrayersTitle), -200);
     await tester.tap(find.text(loc.missedPrayersTitle));
     await tester.pump();
     expect(ads.debugShowRequests, before + 1);

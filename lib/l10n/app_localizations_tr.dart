@@ -1319,6 +1319,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get toolReligiousDaysDesc => 'Kandiller ve bayramlar';
 
   @override
+  String get nearbyMosquesTitle => 'Yakındaki Camiler';
+
+  @override
+  String get toolNearbyMosquesDesc => 'Size en yakın camileri haritada bulun';
+
+  @override
+  String get nearbyMosquesQuery => 'cami';
+
+  @override
+  String get nearbyMosquesError => 'Harita açılamadı.';
+
+  @override
   String get toolEsmaDesc => 'Allah\'ın 99 ismi ve anlamları';
 
   @override

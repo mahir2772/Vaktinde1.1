@@ -247,21 +247,8 @@ class SettingsView extends StatelessWidget {
 class _AppearanceSheet extends StatelessWidget {
   const _AppearanceSheet();
 
-  // assets/images/backgrounds/ içindeki görseller
-  static const List<String> _mosques = [
-    'bg_mosque1.webp',
-    'bg_mosque2.webp',
-    'bg_mosque3.webp',
-    'bg_mosque4.webp',
-    'bg_mosque5.webp',
-    'bg_mosque6.webp',
-  ];
-  static const List<String> _kaabas = [
-    'bg_kaaba1.webp',
-    'bg_kaaba2.webp',
-    'bg_kaaba3.webp',
-    'bg_kaaba4.webp',
-  ];
+  static const List<String> _mosques = ThemeProvider.mosqueBackgrounds;
+  static const List<String> _kaabas = ThemeProvider.kaabaBackgrounds;
 
   @override
   Widget build(BuildContext context) {
@@ -383,9 +370,11 @@ class _BackgroundOption extends StatelessWidget {
             decoration: image == null
                 ? null
                 : BoxDecoration(
+                    // Yüklenemezse boş kutu kalır; hata bildirilmez
                     image: DecorationImage(
                       image: AssetImage('assets/images/backgrounds/$image'),
                       fit: BoxFit.cover,
+                      onError: (_, _) {},
                     ),
                   ),
             child: InkWell(

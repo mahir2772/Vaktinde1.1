@@ -1321,6 +1321,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolReligiousDaysDesc => 'Holy nights and Eids';
 
   @override
+  String get nearbyMosquesTitle => 'Nearby Mosques';
+
+  @override
+  String get toolNearbyMosquesDesc => 'Find the nearest mosques on the map';
+
+  @override
+  String get nearbyMosquesQuery => 'mosque';
+
+  @override
+  String get nearbyMosquesError => 'Could not open the map.';
+
+  @override
   String get toolEsmaDesc => 'The 99 names and their meanings';
 
   @override
