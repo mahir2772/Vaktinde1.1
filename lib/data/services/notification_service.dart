@@ -22,6 +22,9 @@ enum NotificationKind {
 
   /// Günün ayeti / hadisi (ID 1000 / 1900)
   dailyContent,
+
+  /// Dini gün ve kandil bildirimi (ID 2000-2399)
+  religiousDay,
 }
 
 class NotificationService {
@@ -53,14 +56,16 @@ class NotificationService {
   /// "sonraki alarm") sadece ezan için: tam zamanlı izin varken (bilinmiyorsa önce
   /// denenir) ve bildirimler açıkken (bilinmiyorsa açık sayılır). Hatırlatmalar
   /// simgesiz tam zamanlı (exactAllowWhileIdle). İzin yoksa hepsi
-  /// inexactAllowWhileIdle: gecikebilir ama yine çalar. Günün ayeti/hadisi her
-  /// zaman gecikmeli (dakikası önemli değil).
+  /// inexactAllowWhileIdle: gecikebilir ama yine çalar. Günün ayeti/hadisi ve
+  /// dini gün bildirimi her zaman gecikmeli (dakikası önemli değil).
   static AndroidScheduleMode scheduleModeFor(
     NotificationKind kind, {
     required bool? exactAllowed,
     required bool? notificationsEnabled,
   }) {
-    if (kind == NotificationKind.dailyContent || exactAllowed == false) {
+    if (kind == NotificationKind.dailyContent ||
+        kind == NotificationKind.religiousDay ||
+        exactAllowed == false) {
       return AndroidScheduleMode.inexactAllowWhileIdle;
     }
     if (kind == NotificationKind.prayer && notificationsEnabled != false) {
@@ -371,6 +376,35 @@ class NotificationService {
       ),
       kind: NotificationKind.endReminder,
       payload: payload,
+    );
+  }
+
+  /// Dini gün ve kandil bildirimi (ID 2000-2399): ayrı kanal, gecikmeli kip
+  Future<void> scheduleReligiousDay({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledTime,
+    required String localizedChannelName,
+  }) async {
+    if (scheduledTime.isBefore(DateTime.now())) return;
+    await _zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(scheduledTime, tz.local),
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'religious_days_channel',
+          localizedChannelName,
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/launcher_icon',
+          styleInformation: BigTextStyleInformation(body),
+        ),
+        iOS: const DarwinNotificationDetails(),
+      ),
+      kind: NotificationKind.religiousDay,
     );
   }
 

@@ -458,6 +458,85 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sends an ayah every morning and a hadith every evening.';
 
   @override
+  String get religiousDaysNotifTitle =>
+      'Religious Day & Holy Night Notifications';
+
+  @override
+  String get religiousDaysNotifSub =>
+      'Sends a morning reminder for holy nights, Eids and other religious days.';
+
+  @override
+  String get religiousDaysChannel => 'Religious Days & Holy Nights';
+
+  @override
+  String get ucAylarBaslangici => 'Start of the Three Holy Months';
+
+  @override
+  String get ramazanArefesi => 'Last Day of Ramadan';
+
+  @override
+  String get kurbanArefesi => 'Day of Arafah';
+
+  @override
+  String get ucAylarNotifBody =>
+      'The three holy months of Rajab, Sha\'ban and Ramadan begin today. May they bring you many blessings.';
+
+  @override
+  String get ucAylarRegaipTitle => 'Three Holy Months & Laylat al-Raghaib';
+
+  @override
+  String get ucAylarRegaipNotifBody =>
+      'The three holy months begin today, and tonight is Laylat al-Raghaib. Wishing you a blessed night and blessed months ahead.';
+
+  @override
+  String get regaipKandiliNotifBody =>
+      'Tonight is Laylat al-Raghaib. Have a blessed night!';
+
+  @override
+  String get miracKandiliNotifBody =>
+      'Tonight is the Night of Isra and Mi\'raj. Have a blessed night!';
+
+  @override
+  String get beratKandiliNotifBody =>
+      'Tonight is the Night of Mid-Sha\'ban (Bara\'at). Have a blessed night!';
+
+  @override
+  String get mevlidKandiliNotifBody =>
+      'Tonight is Mawlid al-Nabi. Have a blessed night!';
+
+  @override
+  String get kadirGecesiNotifBody =>
+      'Tonight is Laylat al-Qadr. Have a blessed night!';
+
+  @override
+  String get ramazanBaslangiciNotifBody =>
+      'Ramadan begins tomorrow: the first tarawih and suhoor are tonight. Have a blessed Ramadan!';
+
+  @override
+  String get ramazanArefesiNotifBody =>
+      'Eid al-Fitr is tomorrow. Wishing you a blessed Eid in advance!';
+
+  @override
+  String get ramazanBayramiNotifBody =>
+      'Eid Mubarak! May Allah accept from us and from you.';
+
+  @override
+  String get kurbanArefesiNotifBody =>
+      'Eid al-Adha is tomorrow. Wishing you a blessed Eid in advance!';
+
+  @override
+  String get kurbanBayramiNotifBody =>
+      'Eid Mubarak! May Allah accept your sacrifices and good deeds.';
+
+  @override
+  String get hicriYilbasiNotifBody =>
+      'Today is the Islamic New Year. May it bring you goodness and blessings.';
+
+  @override
+  String get asureGunuNotifBody =>
+      'Today is the Day of Ashura. May it bring you goodness and blessings.';
+
+  @override
   String get privacyPolicy => 'Privacy Policy';
 
   @override

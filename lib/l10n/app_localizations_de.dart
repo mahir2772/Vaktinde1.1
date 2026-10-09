@@ -465,6 +465,86 @@ class AppLocalizationsDe extends AppLocalizations {
       'Sendet jeden Morgen einen Vers und jeden Abend einen Hadith.';
 
   @override
+  String get religiousDaysNotifTitle =>
+      'Benachrichtigungen für religiöse Tage und gesegnete Nächte';
+
+  @override
+  String get religiousDaysNotifSub =>
+      'Erinnert morgens an gesegnete Nächte, Feste und andere religiöse Tage.';
+
+  @override
+  String get religiousDaysChannel => 'Religiöse Tage und gesegnete Nächte';
+
+  @override
+  String get ucAylarBaslangici => 'Beginn der drei heiligen Monate';
+
+  @override
+  String get ramazanArefesi => 'Letzter Tag des Ramadan';
+
+  @override
+  String get kurbanArefesi => 'Arafat-Tag';
+
+  @override
+  String get ucAylarNotifBody =>
+      'Heute beginnen die drei heiligen Monate Radschab, Schaban und Ramadan. Mögen sie Ihnen viel Segen bringen.';
+
+  @override
+  String get ucAylarRegaipTitle =>
+      'Drei heilige Monate und Lailat al-Ragha\'ib';
+
+  @override
+  String get ucAylarRegaipNotifBody =>
+      'Heute beginnen die drei heiligen Monate, und heute Nacht ist Lailat al-Ragha\'ib. Eine gesegnete Nacht und gesegnete Monate!';
+
+  @override
+  String get regaipKandiliNotifBody =>
+      'Heute Nacht ist Lailat al-Ragha\'ib. Eine gesegnete Nacht!';
+
+  @override
+  String get miracKandiliNotifBody =>
+      'Heute Nacht ist die Nacht von Isra und Mi\'radsch. Eine gesegnete Nacht!';
+
+  @override
+  String get beratKandiliNotifBody =>
+      'Heute Nacht ist Lailat al-Bara\'a. Eine gesegnete Nacht!';
+
+  @override
+  String get mevlidKandiliNotifBody =>
+      'Heute Nacht ist Mawlid an-Nabi. Eine gesegnete Nacht!';
+
+  @override
+  String get kadirGecesiNotifBody =>
+      'Heute Nacht ist Lailat al-Qadr. Eine gesegnete Nacht!';
+
+  @override
+  String get ramazanBaslangiciNotifBody =>
+      'Morgen beginnt der Ramadan. Heute Nacht finden das erste Tarawih-Gebet und der erste Suhur statt. Gesegneten Ramadan!';
+
+  @override
+  String get ramazanArefesiNotifBody =>
+      'Morgen ist Eid al-Fitr (Zuckerfest). Schon jetzt ein gesegnetes Fest!';
+
+  @override
+  String get ramazanBayramiNotifBody =>
+      'Gesegnetes Fest! Möge Allah unser Fasten und unsere Gebete annehmen.';
+
+  @override
+  String get kurbanArefesiNotifBody =>
+      'Morgen ist Eid al-Adha (Opferfest). Schon jetzt ein gesegnetes Fest!';
+
+  @override
+  String get kurbanBayramiNotifBody =>
+      'Gesegnetes Opferfest! Möge Allah Ihre Opfer und guten Taten annehmen.';
+
+  @override
+  String get hicriYilbasiNotifBody =>
+      'Heute ist das islamische Neujahr. Möge es Ihnen Gutes und Segen bringen.';
+
+  @override
+  String get asureGunuNotifBody =>
+      'Heute ist der Aschura-Tag. Möge er Ihnen Gutes und Segen bringen.';
+
+  @override
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override

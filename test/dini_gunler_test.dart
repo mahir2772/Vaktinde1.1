@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
+import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -225,6 +227,103 @@ void main() {
       );
       expect(ramazan.isim, loc.ramazanBaslangici);
       expect(ramazan.tarih, DateTime(2026, 2, 19));
+    });
+  });
+
+  group('Bildirim günleri', () {
+    late List<ResmiDiniGun> gunler;
+    setUpAll(() {
+      gunler = DiniGunlerService.parseBildirimGunleri(raw);
+    });
+    List<DiniGunTuru> on(DateTime d) => [
+      for (final g in gunler)
+        if (g.tarih == d) g.tur,
+    ];
+    List<DateTime> of(DiniGunTuru tur) => [
+      for (final g in gunler)
+        if (g.tur == tur) g.tarih,
+    ];
+
+    test('ekrandaki günler + Üç Aylar ve arefeler; ortak kayıt iki gün, '
+        'bayramın 2-4. günü yok', () {
+      for (final r in resmi) {
+        expect(on(r.tarih), contains(r.tur), reason: '$r');
+      }
+      expect(on(DateTime(2026, 12, 10)).toSet(), {
+        DiniGunTuru.ucAylar,
+        DiniGunTuru.regaipKandili,
+      });
+      expect(on(DateTime(2025, 1, 1)), [DiniGunTuru.ucAylar]);
+      expect(on(DateTime(2027, 3, 8)), [DiniGunTuru.ramazanArefesi]);
+      expect(on(DateTime(2027, 5, 15)), [DiniGunTuru.kurbanArefesi]);
+      expect(on(DateTime(2027, 3, 10)), isEmpty);
+      expect(on(DateTime(2027, 5, 19)), isEmpty);
+      expect(of(DiniGunTuru.ucAylar), hasLength(5));
+      expect(of(DiniGunTuru.ramazanArefesi), hasLength(4));
+      expect(of(DiniGunTuru.kurbanArefesi), hasLength(4));
+    });
+
+    test('bozuk ve belirsiz kayıtlar atlanır', () {
+      final parsed = DiniGunlerService.parseBildirimGunleri([
+        null,
+        {'name': 'Arefe', 'date': '01 Ocak 2026'},
+        {'name': 'Üç Ayların Başlangıcı', 'date': '31 Şubat 2026'},
+        {'name': 'Kurban Bayramı 2. Gün', 'date': '28 Mayıs 2026'},
+        {'name': 'Arefe (Kurban)', 'date': '26 Mayıs 2026'},
+      ]);
+      expect(parsed, hasLength(1));
+      expect(parsed.single.tur, DiniGunTuru.kurbanArefesi);
+      expect(parsed.single.tarih, DateTime(2026, 5, 26));
+    });
+
+    test('religious_days.json tutarlı: gün adları tarihlere uyar, sıralı; '
+        'Kadir = Ramazan + 25 gün, arefe bayramdan bir gün önce, Regaib '
+        'perşembe ve Üç Aylar\'a en çok 6 gün', () {
+      const gunAdlari = [
+        'Pazartesi',
+        'Salı',
+        'Çarşamba',
+        'Perşembe',
+        'Cuma',
+        'Cumartesi',
+        'Pazar',
+      ];
+      DateTime? onceki;
+      for (final e in raw) {
+        final tarih = parseTurkishDate(e['date'] as String)!;
+        expect(e['day'], gunAdlari[tarih.weekday - 1], reason: '${e['date']}');
+        expect(e['year'], tarih.year, reason: '${e['date']}');
+        expect(
+          onceki?.isAfter(tarih) ?? false,
+          isFalse,
+          reason: '${e['date']}',
+        );
+        onceki = tarih;
+      }
+      int fark(DateTime a, DateTime b) => PrayerTracker.daysBetween(a, b);
+      final ramazan = of(DiniGunTuru.ramazanBaslangici);
+      final bayram = of(DiniGunTuru.ramazanBayrami);
+      final kadir = of(DiniGunTuru.kadirGecesi);
+      expect(kadir, hasLength(ramazan.length));
+      for (var i = 0; i < ramazan.length; i++) {
+        expect(fark(ramazan[i], kadir[i]), 25, reason: '${kadir[i]}');
+        expect(fark(ramazan[i], bayram[i]), inInclusiveRange(29, 30));
+      }
+      for (final (arefe, bayramlar) in [
+        (DiniGunTuru.ramazanArefesi, bayram),
+        (DiniGunTuru.kurbanArefesi, of(DiniGunTuru.kurbanBayrami)),
+      ]) {
+        expect([
+          for (final d in of(arefe)) PrayerTracker.addDays(d, 1),
+        ], bayramlar);
+      }
+      for (final ucAylar in of(DiniGunTuru.ucAylar)) {
+        final regaib = of(
+          DiniGunTuru.regaipKandili,
+        ).where((d) => fark(ucAylar, d).abs() <= 6);
+        expect(regaib, hasLength(1), reason: '$ucAylar');
+        expect(regaib.single.weekday, DateTime.thursday);
+      }
     });
   });
 }

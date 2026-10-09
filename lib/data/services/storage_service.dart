@@ -261,6 +261,19 @@ class StorageService {
     await prefs.setBool(dailyContentEnabledKey, enabled);
   }
 
+  /// Dini gün ve kandil bildirimleri (ID 2000-2399; varsayılan açık)
+  static const String religiousDaysEnabledKey = 'religious_days_enabled';
+
+  Future<bool> loadReligiousDaysEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(religiousDaysEnabledKey) ?? true;
+  }
+
+  Future<void> saveReligiousDaysEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(religiousDaysEnabledKey, enabled);
+  }
+
   Future<void> saveDailyHadith(HadithModel hadith, String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('daily_hadith_content', hadith.content ?? "");

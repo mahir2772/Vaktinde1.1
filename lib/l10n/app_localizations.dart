@@ -878,6 +878,132 @@ abstract class AppLocalizations {
   /// **'Her gün sabah bir ayet, akşam bir hadis gönderir.'**
   String get dailyContentNotifSub;
 
+  /// No description provided for @religiousDaysNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dini Gün ve Kandil Bildirimleri'**
+  String get religiousDaysNotifTitle;
+
+  /// No description provided for @religiousDaysNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kandil, bayram ve diğer dini günlerde sabah bildirim gönderir.'**
+  String get religiousDaysNotifSub;
+
+  /// No description provided for @religiousDaysChannel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dini Günler ve Kandiller'**
+  String get religiousDaysChannel;
+
+  /// No description provided for @ucAylarBaslangici.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üç Ayların Başlangıcı'**
+  String get ucAylarBaslangici;
+
+  /// No description provided for @ramazanArefesi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Bayramı Arefesi'**
+  String get ramazanArefesi;
+
+  /// No description provided for @kurbanArefesi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurban Bayramı Arefesi'**
+  String get kurbanArefesi;
+
+  /// No description provided for @ucAylarNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Recep, Şaban ve Ramazan aylarından oluşan üç aylar bugün başladı. Üç aylarınız mübarek olsun.'**
+  String get ucAylarNotifBody;
+
+  /// No description provided for @ucAylarRegaipTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üç Aylar ve Regaib Kandili'**
+  String get ucAylarRegaipTitle;
+
+  /// No description provided for @ucAylarRegaipNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üç aylar bugün başladı, bu gece de Regaib Kandili. Üç aylarınız ve kandiliniz mübarek olsun.'**
+  String get ucAylarRegaipNotifBody;
+
+  /// No description provided for @regaipKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Regaib Kandili. Kandiliniz mübarek olsun.'**
+  String get regaipKandiliNotifBody;
+
+  /// No description provided for @miracKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Miraç Kandili. Kandiliniz mübarek olsun.'**
+  String get miracKandiliNotifBody;
+
+  /// No description provided for @beratKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Berat Kandili. Kandiliniz mübarek olsun.'**
+  String get beratKandiliNotifBody;
+
+  /// No description provided for @mevlidKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Mevlid Kandili. Kandiliniz mübarek olsun.'**
+  String get mevlidKandiliNotifBody;
+
+  /// No description provided for @kadirGecesiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Kadir Gecesi. Kadir Geceniz mübarek olsun.'**
+  String get kadirGecesiNotifBody;
+
+  /// No description provided for @ramazanBaslangiciNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan yarın başlıyor; ilk teravih ve sahur bu gece. Hayırlı Ramazanlar!'**
+  String get ramazanBaslangiciNotifBody;
+
+  /// No description provided for @ramazanArefesiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün arefe, yarın Ramazan Bayramı. Bayramınız şimdiden mübarek olsun.'**
+  String get ramazanArefesiNotifBody;
+
+  /// No description provided for @ramazanBayramiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Bayramınız mübarek olsun. Nice bayramlara!'**
+  String get ramazanBayramiNotifBody;
+
+  /// No description provided for @kurbanArefesiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün arefe, yarın Kurban Bayramı. Bayramınız şimdiden mübarek olsun.'**
+  String get kurbanArefesiNotifBody;
+
+  /// No description provided for @kurbanBayramiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurban Bayramınız mübarek, kurbanlarınız kabul olsun.'**
+  String get kurbanBayramiNotifBody;
+
+  /// No description provided for @hicriYilbasiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün Hicri Yılbaşı. Yeni yılınız hayırlara vesile olsun.'**
+  String get hicriYilbasiNotifBody;
+
+  /// No description provided for @asureGunuNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün Aşure Günü. Hayırlara vesile olsun.'**
+  String get asureGunuNotifBody;
+
   /// No description provided for @privacyPolicy.
   ///
   /// In tr, this message translates to:
