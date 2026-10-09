@@ -125,16 +125,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueAction => 'متابعة';
 
   @override
-  String get ok => 'حسناً';
-
-  @override
   String get nextPrayer => 'الوقت التالي';
 
   @override
   String get hadithTitle => 'حديث اليوم';
-
-  @override
-  String get readMore => 'اقرأ المزيد...';
 
   @override
   String get share => 'مشاركة';
@@ -144,9 +138,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loading => 'جارٍ حساب الأوقات...';
-
-  @override
-  String get error => 'خطأ';
 
   @override
   String get retry => 'حاول مرة أخرى';
@@ -255,7 +246,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get healthVolumeSilent =>
-      'الهاتف في الوضع الصامت أو وضع الاهتزاز: لن يُسمع صوت الأذان.';
+      'هاتفك في الوضع الصامت أو وضع الاهتزاز: لن يُسمع صوت الأذان.';
 
   @override
   String get healthVolumeNotificationMuted =>
@@ -288,11 +279,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get healthBatteryTitle => 'استخدام البطارية';
 
   @override
-  String get healthBatteryOk => 'تحسين البطارية متوقف لتطبيق Vaktinde.';
+  String get healthBatteryOk => 'تحسين البطارية غير مفعّل لتطبيق Vaktinde.';
 
   @override
   String get healthBatteryOptimized =>
-      'تحسين البطارية مفعّل: قد يوقف هاتفك تطبيق Vaktinde في الخلفية. افتح إعدادات التطبيق ثم البطارية واختر «غير مقيد» (قد يختلف الاسم حسب الهاتف).';
+      'تحسين البطارية مفعّل: قد يوقف هاتفك تطبيق Vaktinde في الخلفية. افتح إعدادات التطبيق ثم البطارية واختر الاستخدام غير المقيّد (قد يختلف اسم الخيار حسب الهاتف).';
 
   @override
   String get healthBackgroundTitle => 'العمل في الخلفية';
@@ -374,7 +365,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get healthStepAppBattery =>
-      'من إعدادات التطبيق > البطارية، اختر «غير مقيد».';
+      'من إعدادات التطبيق > البطارية، اختر الاستخدام غير المقيّد.';
 
   @override
   String get healthStepSamsungSleeping =>
@@ -382,7 +373,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get healthStepLockRecents =>
-      'اقفل Vaktinde في شاشة التطبيقات الحديثة (إن كان هاتفك يتيح ذلك).';
+      'اقفل Vaktinde في شاشة التطبيقات المستخدمة مؤخرًا (إن كان هاتفك يتيح ذلك).';
 
   @override
   String get healthDetails => 'التفاصيل';
@@ -479,9 +470,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navQibla => 'القبلة';
 
   @override
-  String get navMenu => 'القائمة';
-
-  @override
   String get menuTitle => 'الإعدادات';
 
   @override
@@ -494,30 +482,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get citySelect => 'اختر المدينة';
 
   @override
-  String get districtSelect => 'اختر المنطقة';
-
-  @override
   String get save => 'حفظ';
 
   @override
   String get cancel => 'إلغاء';
-
-  @override
-  String get locationWarning =>
-      'اختيار المنطقة مهم للحصول على أوقات دقيقة للصلاة.';
-
-  @override
-  String get menuNotifications => 'أذونات الإشعارات';
-
-  @override
-  String get menuNotificationsSub => 'تحقق هنا إذا لم تسمع أصواتًا.';
-
-  @override
-  String get menuTroubleshoot => 'لا تصلك الإشعارات؟';
-
-  @override
-  String get menuTroubleshootSub =>
-      'قم بضبط إعدادات البطارية لأجهزة Samsung/Xiaomi.';
 
   @override
   String get timeAdjustTitle => 'ضبط أوقات الصلاة';
@@ -780,22 +748,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get batteryDialogTitle => 'حل مشكلة الإشعارات';
-
-  @override
-  String get batteryDialogBody =>
-      'قد يقوم هاتفك بإغلاق التطبيق لتوفير البطارية. لمنع ذلك:\n\n1. افتح شاشة التطبيقات الحديثة.\n2. اضغط مطولاً على تطبيق \'Vaktinde\' أو انقر على شعاره.\n3. اضغط على أيقونة القفل 🔒 لقفله.\n\nأيضاً، اذهب إلى الإعدادات > التطبيقات > Vaktinde > البطارية > اختر غير مقيد.';
-
-  @override
   String get okUnderstood => 'حسناً، فهمت';
 
   @override
   String get religiousDaysTitle => 'المناسبات الدينية';
-
-  @override
-  String errorOccurred(String error) {
-    return 'حدث خطأ: $error';
-  }
 
   @override
   String get noDataFound => 'لم يتم العثور على بيانات.';
@@ -852,9 +808,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get esmaulHusnaTitle => 'أسماء الله الحسنى';
 
   @override
-  String get closeCaps => 'إغلاق';
-
-  @override
   String get zakatTitle => 'حاسبة الزكاة';
 
   @override
@@ -868,9 +821,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'جُلبت الأسعار تلقائيًا، ويمكنك تعديلها يدويًا إذا رغبت.';
 
   @override
-  String get sectionGold => 'أصول الذهب';
-
-  @override
   String get goldType => 'نوع الذهب';
 
   @override
@@ -880,9 +830,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goldUnitPrice => 'سعر الوحدة';
 
   @override
-  String get sectionCurrency => 'الأصول النقدية والعملات';
-
-  @override
   String get currencyType => 'نوع العملة';
 
   @override
@@ -890,15 +837,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get currencyRate => 'سعر الصرف الحالي';
-
-  @override
-  String get sectionCashDebt => 'النقد والديون';
-
-  @override
-  String get cashAmount => 'النقد المتوفر وفي البنك';
-
-  @override
-  String get debtAmount => 'إجمالي الديون (للخصم)';
 
   @override
   String get calculateButton => 'احسب';
@@ -917,15 +855,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get locationPermissionDenied => 'تم رفض إذن الموقع.';
-
-  @override
-  String get locationPermissionForever =>
-      'تم رفض إذن الموقع بشكل دائم. يرجى تفعيله من الإعدادات.';
-
-  @override
-  String compassError(String error) {
-    return 'خطأ في المستشعر: $error';
-  }
 
   @override
   String get noCompass => 'لا توجد بوصلة في هذا الجهاز.';
@@ -996,12 +925,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bgKaaba => 'الكعبة';
 
   @override
-  String get bgQuran => 'القرآن';
-
-  @override
-  String get none => 'لا شيء';
-
-  @override
   String get zakatEligible => 'تجب الزكاة';
 
   @override
@@ -1046,19 +969,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tickerEzan => 'وقت الصلاة';
 
   @override
-  String get stickyChannelName => 'عداد دائم';
-
-  @override
-  String get stickyChannelDesc => 'يعرض الوقت المتبقي';
-
-  @override
-  String get timeLeftTo => 'المتبقي على خروج الوقت: ';
-
-  @override
-  String get locationFallbackMessage =>
-      'تعذر الحصول على الموقع، يتم استخدام القيم الافتراضية.';
-
-  @override
   String get fetchingLocation => 'جارٍ الحصول على الموقع...';
 
   @override
@@ -1074,17 +984,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get directionWest => 'غ';
 
   @override
-  String get calibrationInstruction => '(ارسم رقم \'8\' للمعايرة)';
-
-  @override
   String get zakatDescription =>
       'احسب زكاتك بالتفصيل وفقًا لفتاوى رئاسة الشؤون الدينية التركية وأسعار السوق الحالية.';
 
   @override
   String get cashAndCurrencyTitle => 'النقد والعملات';
-
-  @override
-  String get cashTurkishLira => 'النقد بالليرة التركية (₺)';
 
   @override
   String get goldAndSilverTitle => 'الذهب والفضة';
@@ -1238,9 +1142,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dhikrOther => 'أخرى (ذكر مخصص)';
 
   @override
-  String get customDhikrTitle => 'إضافة ذكر مخصص';
-
-  @override
   String get customDhikrHint => 'اكتب الذكر الخاص بك';
 
   @override
@@ -1263,36 +1164,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get themeClassic => 'مسبحة كلاسيكية';
-
-  @override
-  String get introTitle1 => 'مرحباً بك في Vaktinde';
-
-  @override
-  String get introDesc1 =>
-      'تتبع أوقات الصلاة، الأذكار، والأيام الدينية بسهولة مع واجهتنا الحديثة والأنيقة.';
-
-  @override
-  String get introTitle2 => 'إشعارات ذكية';
-
-  @override
-  String get introDesc2 =>
-      'احصل على تنبيهات بصوت الإشعار الذي تختاره في أوقات الصلاة. لا تفوت عباداتك أبداً.';
-
-  @override
-  String get introTitle3 => 'أدوات متقدمة';
-
-  @override
-  String get introDesc3 =>
-      'عزز روحانيتك مع المسبحة المتحركة، متتبع الصلوات الفائتة، أسماء الله الحسنى، وحاسبة الزكاة.';
-
-  @override
-  String get introSkip => 'تخطي';
-
-  @override
-  String get introNext => 'التالي';
-
-  @override
-  String get introStart => 'ابدأ الآن';
 
   @override
   String get dhikrListTitle => 'قائمة الأذكار';
@@ -1414,26 +1285,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailyAyahTitle => 'آية اليوم';
 
   @override
-  String get remainingTime => 'المتبقي';
-
-  @override
   String get onboardingWelcome => 'Hoş Geldiniz / مرحباً بكم';
 
   @override
   String get onboardingSelectLanguage =>
       'Lütfen kullanmak istediğiniz dili seçin.\nيرجى تحديد لغتك المفضلة.';
-
-  @override
-  String get turnRight => 'انعطف يميناً ➔';
-
-  @override
-  String get turnSlightRight => 'انعطف يميناً قليلاً ➔';
-
-  @override
-  String get turnLeft => '⬅ انعطف يساراً';
-
-  @override
-  String get turnSlightLeft => '⬅ انعطف يساراً قليلاً';
 
   @override
   String get calibrationRequired => 'المعايرة مطلوبة';
@@ -1549,22 +1405,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get currencyTry => 'ليرة تركية';
 
   @override
-  String get holdToEdit => 'اضغط مطولاً للتعديل';
-
-  @override
   String get editCounterTitle => 'تعديل العداد';
 
   @override
-  String get editCounterHint => 'مثال: 2000';
-
-  @override
-  String get editTargetHint => 'مثال: 99';
-
-  @override
   String get resetCounterConfirm => 'هل أنت متأكد أنك تريد إعادة تعيين العداد؟';
-
-  @override
-  String get dhikrTarget => 'الهدف:';
 
   @override
   String get imsakiyeTitle => 'جدول المواقيت';

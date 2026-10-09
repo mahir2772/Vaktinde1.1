@@ -320,12 +320,6 @@ abstract class AppLocalizations {
   /// **'Devam'**
   String get continueAction;
 
-  /// No description provided for @ok.
-  ///
-  /// In tr, this message translates to:
-  /// **'Tamam'**
-  String get ok;
-
   /// No description provided for @nextPrayer.
   ///
   /// In tr, this message translates to:
@@ -337,12 +331,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Günün Hadisi'**
   String get hadithTitle;
-
-  /// No description provided for @readMore.
-  ///
-  /// In tr, this message translates to:
-  /// **'Devamını Oku...'**
-  String get readMore;
 
   /// No description provided for @share.
   ///
@@ -361,12 +349,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Vakitler Hesaplanıyor...'**
   String get loading;
-
-  /// No description provided for @error.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hata'**
-  String get error;
 
   /// No description provided for @retry.
   ///
@@ -932,12 +914,6 @@ abstract class AppLocalizations {
   /// **'Kıble'**
   String get navQibla;
 
-  /// No description provided for @navMenu.
-  ///
-  /// In tr, this message translates to:
-  /// **'Menü'**
-  String get navMenu;
-
   /// No description provided for @menuTitle.
   ///
   /// In tr, this message translates to:
@@ -962,12 +938,6 @@ abstract class AppLocalizations {
   /// **'İl Seçiniz'**
   String get citySelect;
 
-  /// No description provided for @districtSelect.
-  ///
-  /// In tr, this message translates to:
-  /// **'İlçe Seçiniz'**
-  String get districtSelect;
-
   /// No description provided for @save.
   ///
   /// In tr, this message translates to:
@@ -979,36 +949,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'İptal'**
   String get cancel;
-
-  /// No description provided for @locationWarning.
-  ///
-  /// In tr, this message translates to:
-  /// **'Doğru namaz vakitleri için ilçe seçimi önemlidir.'**
-  String get locationWarning;
-
-  /// No description provided for @menuNotifications.
-  ///
-  /// In tr, this message translates to:
-  /// **'Bildirim İzinleri'**
-  String get menuNotifications;
-
-  /// No description provided for @menuNotificationsSub.
-  ///
-  /// In tr, this message translates to:
-  /// **'Ses gelmiyorsa buradan kontrol edin.'**
-  String get menuNotificationsSub;
-
-  /// No description provided for @menuTroubleshoot.
-  ///
-  /// In tr, this message translates to:
-  /// **'Bildirim Gelmiyor mu?'**
-  String get menuTroubleshoot;
-
-  /// No description provided for @menuTroubleshootSub.
-  ///
-  /// In tr, this message translates to:
-  /// **'Samsung/Xiaomi için pil ayarı yapın.'**
-  String get menuTroubleshootSub;
 
   /// No description provided for @timeAdjustTitle.
   ///
@@ -1400,18 +1340,6 @@ abstract class AppLocalizations {
   /// **'Harika bir ezan vakti uygulaması buldum! İndir: {link}'**
   String shareText(String link);
 
-  /// No description provided for @batteryDialogTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Bildirim Sorunu Çözümü'**
-  String get batteryDialogTitle;
-
-  /// No description provided for @batteryDialogBody.
-  ///
-  /// In tr, this message translates to:
-  /// **'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya simgesine dokunun.\n3. Kilit simgesine 🔒 dokunarak uygulamayı kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil bölümünden \'Kısıtlanmamış\' seçeneğini işaretleyin.'**
-  String get batteryDialogBody;
-
   /// No description provided for @okUnderstood.
   ///
   /// In tr, this message translates to:
@@ -1423,12 +1351,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Dini Günler'**
   String get religiousDaysTitle;
-
-  /// No description provided for @errorOccurred.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hata oluştu: {error}'**
-  String errorOccurred(String error);
 
   /// No description provided for @noDataFound.
   ///
@@ -1520,12 +1442,6 @@ abstract class AppLocalizations {
   /// **'Esmaül Hüsna'**
   String get esmaulHusnaTitle;
 
-  /// No description provided for @closeCaps.
-  ///
-  /// In tr, this message translates to:
-  /// **'KAPAT'**
-  String get closeCaps;
-
   /// No description provided for @zakatTitle.
   ///
   /// In tr, this message translates to:
@@ -1550,12 +1466,6 @@ abstract class AppLocalizations {
   /// **'Otomatik çekilen kurları isterseniz el ile düzeltebilirsiniz.'**
   String get liveRatesInfo;
 
-  /// No description provided for @sectionGold.
-  ///
-  /// In tr, this message translates to:
-  /// **'Altın Varlığı'**
-  String get sectionGold;
-
   /// No description provided for @goldType.
   ///
   /// In tr, this message translates to:
@@ -1574,12 +1484,6 @@ abstract class AppLocalizations {
   /// **'Birim Fiyatı'**
   String get goldUnitPrice;
 
-  /// No description provided for @sectionCurrency.
-  ///
-  /// In tr, this message translates to:
-  /// **'Döviz Varlığı'**
-  String get sectionCurrency;
-
   /// No description provided for @currencyType.
   ///
   /// In tr, this message translates to:
@@ -1597,24 +1501,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Güncel Kur (TL)'**
   String get currencyRate;
-
-  /// No description provided for @sectionCashDebt.
-  ///
-  /// In tr, this message translates to:
-  /// **'Nakit & Borçlar'**
-  String get sectionCashDebt;
-
-  /// No description provided for @cashAmount.
-  ///
-  /// In tr, this message translates to:
-  /// **'Eldeki & Bankadaki Nakit (TL)'**
-  String get cashAmount;
-
-  /// No description provided for @debtAmount.
-  ///
-  /// In tr, this message translates to:
-  /// **'Toplam Borçlar (Düşülecek)'**
-  String get debtAmount;
 
   /// No description provided for @calculateButton.
   ///
@@ -1651,18 +1537,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Konum izni reddedildi.'**
   String get locationPermissionDenied;
-
-  /// No description provided for @locationPermissionForever.
-  ///
-  /// In tr, this message translates to:
-  /// **'Konum izni kalıcı olarak engellendi. Ayarlardan açmalısınız.'**
-  String get locationPermissionForever;
-
-  /// No description provided for @compassError.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sensör hatası: {error}'**
-  String compassError(String error);
 
   /// No description provided for @noCompass.
   ///
@@ -1796,18 +1670,6 @@ abstract class AppLocalizations {
   /// **'Kabe'**
   String get bgKaaba;
 
-  /// No description provided for @bgQuran.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kur\'an'**
-  String get bgQuran;
-
-  /// No description provided for @none.
-  ///
-  /// In tr, this message translates to:
-  /// **'Yok'**
-  String get none;
-
   /// No description provided for @zakatEligible.
   ///
   /// In tr, this message translates to:
@@ -1886,30 +1748,6 @@ abstract class AppLocalizations {
   /// **'Ezan Vakti'**
   String get tickerEzan;
 
-  /// No description provided for @stickyChannelName.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kalıcı Sayaç'**
-  String get stickyChannelName;
-
-  /// No description provided for @stickyChannelDesc.
-  ///
-  /// In tr, this message translates to:
-  /// **'Vakte kalan süreyi gösterir'**
-  String get stickyChannelDesc;
-
-  /// No description provided for @timeLeftTo.
-  ///
-  /// In tr, this message translates to:
-  /// **'Vaktin Çıkmasına: '**
-  String get timeLeftTo;
-
-  /// No description provided for @locationFallbackMessage.
-  ///
-  /// In tr, this message translates to:
-  /// **'Konum alınamadı, varsayılan değer kullanılıyor.'**
-  String get locationFallbackMessage;
-
   /// No description provided for @fetchingLocation.
   ///
   /// In tr, this message translates to:
@@ -1940,12 +1778,6 @@ abstract class AppLocalizations {
   /// **'B'**
   String get directionWest;
 
-  /// No description provided for @calibrationInstruction.
-  ///
-  /// In tr, this message translates to:
-  /// **'(Kalibrasyon için \'8\' çizin)'**
-  String get calibrationInstruction;
-
   /// No description provided for @zakatDescription.
   ///
   /// In tr, this message translates to:
@@ -1957,12 +1789,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Nakit ve Döviz Varlıkları'**
   String get cashAndCurrencyTitle;
-
-  /// No description provided for @cashTurkishLira.
-  ///
-  /// In tr, this message translates to:
-  /// **'Nakit Türk Lirası (TL)'**
-  String get cashTurkishLira;
 
   /// No description provided for @goldAndSilverTitle.
   ///
@@ -2258,12 +2084,6 @@ abstract class AppLocalizations {
   /// **'Diğer (Özel Zikir)'**
   String get dhikrOther;
 
-  /// No description provided for @customDhikrTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Özel Zikir Ekle'**
-  String get customDhikrTitle;
-
   /// No description provided for @customDhikrHint.
   ///
   /// In tr, this message translates to:
@@ -2311,60 +2131,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Klasik Tesbih'**
   String get themeClassic;
-
-  /// No description provided for @introTitle1.
-  ///
-  /// In tr, this message translates to:
-  /// **'Vaktinde\'ye Hoş Geldiniz'**
-  String get introTitle1;
-
-  /// No description provided for @introDesc1.
-  ///
-  /// In tr, this message translates to:
-  /// **'Namaz vakitlerini, zikirlerinizi ve dini günleri en modern ve şık arayüzle kolayca takip edin.'**
-  String get introDesc1;
-
-  /// No description provided for @introTitle2.
-  ///
-  /// In tr, this message translates to:
-  /// **'Akıllı Bildirimler'**
-  String get introTitle2;
-
-  /// No description provided for @introDesc2.
-  ///
-  /// In tr, this message translates to:
-  /// **'Ezan vakitlerinde dilediğiniz bildirim sesiyle uyarı alın. İbadetlerinizi asla kaçırmayın.'**
-  String get introDesc2;
-
-  /// No description provided for @introTitle3.
-  ///
-  /// In tr, this message translates to:
-  /// **'Gelişmiş Araçlar'**
-  String get introTitle3;
-
-  /// No description provided for @introDesc3.
-  ///
-  /// In tr, this message translates to:
-  /// **'Animasyonlu Zikirmatik, Kaza Takibi, Esmaül Hüsna ve Zekat hesaplama ile maneviyatınızı güçlendirin.'**
-  String get introDesc3;
-
-  /// No description provided for @introSkip.
-  ///
-  /// In tr, this message translates to:
-  /// **'Geç'**
-  String get introSkip;
-
-  /// No description provided for @introNext.
-  ///
-  /// In tr, this message translates to:
-  /// **'İleri'**
-  String get introNext;
-
-  /// No description provided for @introStart.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hemen Başla'**
-  String get introStart;
 
   /// No description provided for @dhikrListTitle.
   ///
@@ -2600,12 +2366,6 @@ abstract class AppLocalizations {
   /// **'Günün Ayeti'**
   String get dailyAyahTitle;
 
-  /// No description provided for @remainingTime.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kalan'**
-  String get remainingTime;
-
   /// No description provided for @onboardingWelcome.
   ///
   /// In tr, this message translates to:
@@ -2617,30 +2377,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.'**
   String get onboardingSelectLanguage;
-
-  /// No description provided for @turnRight.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sağa dönün ➔'**
-  String get turnRight;
-
-  /// No description provided for @turnSlightRight.
-  ///
-  /// In tr, this message translates to:
-  /// **'Biraz sağa dönün ➔'**
-  String get turnSlightRight;
-
-  /// No description provided for @turnLeft.
-  ///
-  /// In tr, this message translates to:
-  /// **'⬅ Sola dönün'**
-  String get turnLeft;
-
-  /// No description provided for @turnSlightLeft.
-  ///
-  /// In tr, this message translates to:
-  /// **'⬅ Biraz sola dönün'**
-  String get turnSlightLeft;
 
   /// No description provided for @calibrationRequired.
   ///
@@ -2852,41 +2588,17 @@ abstract class AppLocalizations {
   /// **'Türk Lirası'**
   String get currencyTry;
 
-  /// No description provided for @holdToEdit.
-  ///
-  /// In tr, this message translates to:
-  /// **'Düzenlemek için basılı tutun'**
-  String get holdToEdit;
-
   /// No description provided for @editCounterTitle.
   ///
   /// In tr, this message translates to:
   /// **'Sayacı Düzenle'**
   String get editCounterTitle;
 
-  /// No description provided for @editCounterHint.
-  ///
-  /// In tr, this message translates to:
-  /// **'Örn: 2000'**
-  String get editCounterHint;
-
-  /// No description provided for @editTargetHint.
-  ///
-  /// In tr, this message translates to:
-  /// **'Örn: 99'**
-  String get editTargetHint;
-
   /// No description provided for @resetCounterConfirm.
   ///
   /// In tr, this message translates to:
   /// **'Sayacı sıfırlamak istediğinize emin misiniz?'**
   String get resetCounterConfirm;
-
-  /// No description provided for @dhikrTarget.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hedef:'**
-  String get dhikrTarget;
 
   /// No description provided for @imsakiyeTitle.
   ///

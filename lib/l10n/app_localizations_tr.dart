@@ -127,16 +127,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get continueAction => 'Devam';
 
   @override
-  String get ok => 'Tamam';
-
-  @override
   String get nextPrayer => 'Sıradaki Vakit';
 
   @override
   String get hadithTitle => 'Günün Hadisi';
-
-  @override
-  String get readMore => 'Devamını Oku...';
 
   @override
   String get share => 'Paylaş';
@@ -146,9 +140,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loading => 'Vakitler Hesaplanıyor...';
-
-  @override
-  String get error => 'Hata';
 
   @override
   String get retry => 'Tekrar Dene';
@@ -481,9 +472,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navQibla => 'Kıble';
 
   @override
-  String get navMenu => 'Menü';
-
-  @override
   String get menuTitle => 'Ayarlar';
 
   @override
@@ -496,29 +484,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get citySelect => 'İl Seçiniz';
 
   @override
-  String get districtSelect => 'İlçe Seçiniz';
-
-  @override
   String get save => 'Kaydet';
 
   @override
   String get cancel => 'İptal';
-
-  @override
-  String get locationWarning =>
-      'Doğru namaz vakitleri için ilçe seçimi önemlidir.';
-
-  @override
-  String get menuNotifications => 'Bildirim İzinleri';
-
-  @override
-  String get menuNotificationsSub => 'Ses gelmiyorsa buradan kontrol edin.';
-
-  @override
-  String get menuTroubleshoot => 'Bildirim Gelmiyor mu?';
-
-  @override
-  String get menuTroubleshootSub => 'Samsung/Xiaomi için pil ayarı yapın.';
 
   @override
   String get timeAdjustTitle => 'Vakit İnce Ayarı';
@@ -769,22 +738,10 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get batteryDialogTitle => 'Bildirim Sorunu Çözümü';
-
-  @override
-  String get batteryDialogBody =>
-      'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya simgesine dokunun.\n3. Kilit simgesine 🔒 dokunarak uygulamayı kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil bölümünden \'Kısıtlanmamış\' seçeneğini işaretleyin.';
-
-  @override
   String get okUnderstood => 'Tamam, Anladım';
 
   @override
   String get religiousDaysTitle => 'Dini Günler';
-
-  @override
-  String errorOccurred(String error) {
-    return 'Hata oluştu: $error';
-  }
 
   @override
   String get noDataFound => 'Veri bulunamadı.';
@@ -841,9 +798,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get esmaulHusnaTitle => 'Esmaül Hüsna';
 
   @override
-  String get closeCaps => 'KAPAT';
-
-  @override
   String get zakatTitle => 'Zekat Hesapla';
 
   @override
@@ -857,9 +811,6 @@ class AppLocalizationsTr extends AppLocalizations {
       'Otomatik çekilen kurları isterseniz el ile düzeltebilirsiniz.';
 
   @override
-  String get sectionGold => 'Altın Varlığı';
-
-  @override
   String get goldType => 'Altın Türü';
 
   @override
@@ -869,9 +820,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get goldUnitPrice => 'Birim Fiyatı';
 
   @override
-  String get sectionCurrency => 'Döviz Varlığı';
-
-  @override
   String get currencyType => 'Döviz Türü';
 
   @override
@@ -879,15 +827,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get currencyRate => 'Güncel Kur (TL)';
-
-  @override
-  String get sectionCashDebt => 'Nakit & Borçlar';
-
-  @override
-  String get cashAmount => 'Eldeki & Bankadaki Nakit (TL)';
-
-  @override
-  String get debtAmount => 'Toplam Borçlar (Düşülecek)';
 
   @override
   String get calculateButton => 'HESAPLA';
@@ -906,15 +845,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get locationPermissionDenied => 'Konum izni reddedildi.';
-
-  @override
-  String get locationPermissionForever =>
-      'Konum izni kalıcı olarak engellendi. Ayarlardan açmalısınız.';
-
-  @override
-  String compassError(String error) {
-    return 'Sensör hatası: $error';
-  }
 
   @override
   String get noCompass => 'Cihazda pusula yok.';
@@ -985,12 +915,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get bgKaaba => 'Kabe';
 
   @override
-  String get bgQuran => 'Kur\'an';
-
-  @override
-  String get none => 'Yok';
-
-  @override
   String get zakatEligible => 'Zekat Verilmesi Gerekir';
 
   @override
@@ -1035,19 +959,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tickerEzan => 'Ezan Vakti';
 
   @override
-  String get stickyChannelName => 'Kalıcı Sayaç';
-
-  @override
-  String get stickyChannelDesc => 'Vakte kalan süreyi gösterir';
-
-  @override
-  String get timeLeftTo => 'Vaktin Çıkmasına: ';
-
-  @override
-  String get locationFallbackMessage =>
-      'Konum alınamadı, varsayılan değer kullanılıyor.';
-
-  @override
   String get fetchingLocation => 'Konum alınıyor...';
 
   @override
@@ -1063,17 +974,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get directionWest => 'B';
 
   @override
-  String get calibrationInstruction => '(Kalibrasyon için \'8\' çizin)';
-
-  @override
   String get zakatDescription =>
       'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre zekatınızı detaylı olarak hesaplayın.';
 
   @override
   String get cashAndCurrencyTitle => 'Nakit ve Döviz Varlıkları';
-
-  @override
-  String get cashTurkishLira => 'Nakit Türk Lirası (TL)';
 
   @override
   String get goldAndSilverTitle => 'Altın ve Gümüş';
@@ -1227,9 +1132,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dhikrOther => 'Diğer (Özel Zikir)';
 
   @override
-  String get customDhikrTitle => 'Özel Zikir Ekle';
-
-  @override
   String get customDhikrHint => 'Çekeceğiniz zikri yazın';
 
   @override
@@ -1252,36 +1154,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get themeClassic => 'Klasik Tesbih';
-
-  @override
-  String get introTitle1 => 'Vaktinde\'ye Hoş Geldiniz';
-
-  @override
-  String get introDesc1 =>
-      'Namaz vakitlerini, zikirlerinizi ve dini günleri en modern ve şık arayüzle kolayca takip edin.';
-
-  @override
-  String get introTitle2 => 'Akıllı Bildirimler';
-
-  @override
-  String get introDesc2 =>
-      'Ezan vakitlerinde dilediğiniz bildirim sesiyle uyarı alın. İbadetlerinizi asla kaçırmayın.';
-
-  @override
-  String get introTitle3 => 'Gelişmiş Araçlar';
-
-  @override
-  String get introDesc3 =>
-      'Animasyonlu Zikirmatik, Kaza Takibi, Esmaül Hüsna ve Zekat hesaplama ile maneviyatınızı güçlendirin.';
-
-  @override
-  String get introSkip => 'Geç';
-
-  @override
-  String get introNext => 'İleri';
-
-  @override
-  String get introStart => 'Hemen Başla';
 
   @override
   String get dhikrListTitle => 'Zikir Listesi';
@@ -1403,26 +1275,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dailyAyahTitle => 'Günün Ayeti';
 
   @override
-  String get remainingTime => 'Kalan';
-
-  @override
   String get onboardingWelcome => 'Hoş Geldiniz / Welcome';
 
   @override
   String get onboardingSelectLanguage =>
       'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.';
-
-  @override
-  String get turnRight => 'Sağa dönün ➔';
-
-  @override
-  String get turnSlightRight => 'Biraz sağa dönün ➔';
-
-  @override
-  String get turnLeft => '⬅ Sola dönün';
-
-  @override
-  String get turnSlightLeft => '⬅ Biraz sola dönün';
 
   @override
   String get calibrationRequired => 'Kalibrasyon Gerekli';
@@ -1540,23 +1397,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get currencyTry => 'Türk Lirası';
 
   @override
-  String get holdToEdit => 'Düzenlemek için basılı tutun';
-
-  @override
   String get editCounterTitle => 'Sayacı Düzenle';
-
-  @override
-  String get editCounterHint => 'Örn: 2000';
-
-  @override
-  String get editTargetHint => 'Örn: 99';
 
   @override
   String get resetCounterConfirm =>
       'Sayacı sıfırlamak istediğinize emin misiniz?';
-
-  @override
-  String get dhikrTarget => 'Hedef:';
 
   @override
   String get imsakiyeTitle => 'İmsakiye';

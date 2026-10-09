@@ -126,16 +126,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueAction => 'Continue';
 
   @override
-  String get ok => 'OK';
-
-  @override
   String get nextPrayer => 'Next Prayer';
 
   @override
   String get hadithTitle => 'Hadith of the Day';
-
-  @override
-  String get readMore => 'Read More...';
 
   @override
   String get share => 'Share';
@@ -145,9 +139,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loading => 'Calculating Times...';
-
-  @override
-  String get error => 'Error';
 
   @override
   String get retry => 'Retry';
@@ -250,22 +241,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthVolumeTitle => 'Sound';
 
   @override
-  String get healthVolumeOk => 'Notification volume is on.';
+  String get healthVolumeOk => 'Notification sound is on.';
 
   @override
-  String get healthVolumeAlarmOk => 'Alarm volume is on.';
+  String get healthVolumeAlarmOk => 'Alarm sound is on.';
 
   @override
   String get healthVolumeSilent =>
-      'The phone is on silent or vibrate: the adhan won\'t be heard.';
+      'Your phone is on silent or vibrate: you won\'t hear the adhan.';
 
   @override
   String get healthVolumeNotificationMuted =>
-      'Notification volume is off: the adhan won\'t be heard.';
+      'Notification sound is off: you won\'t hear the adhan.';
 
   @override
   String get healthVolumeAlarmMuted =>
-      'Alarm volume is off: the adhan won\'t be heard.';
+      'Alarm sound is off: you won\'t hear the adhan.';
 
   @override
   String healthAlarmStreamTip(String setting) {
@@ -279,11 +270,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get healthDndOff => 'Off.';
 
   @override
-  String get healthDndOn => 'On: the adhan may not be heard.';
+  String get healthDndOn => 'On: you may not hear the adhan.';
 
   @override
   String healthDndAlarm(String setting) {
-    return 'On, but thanks to “$setting” the adhan plays at alarm volume.';
+    return 'On, but thanks to “$setting”, the adhan plays at alarm volume.';
   }
 
   @override
@@ -336,10 +327,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthTestInfo =>
-      'A test notification arrives in 1 minute, with the same sound and settings as a real adhan.';
+      'You\'ll get a test notification in 1 minute, with the same sound and settings as the real adhan.';
 
   @override
-  String get healthTestButton => 'Test adhan in 1 min';
+  String get healthTestButton => 'Test adhan in 1 min';
 
   @override
   String get healthTestScheduled =>
@@ -384,7 +375,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get healthStepLockRecents =>
-      'Lock Vaktinde in the recent apps screen (if your phone offers this option).';
+      'Lock Vaktinde on the recent apps screen (if your phone has this option).';
 
   @override
   String get healthDetails => 'Details';
@@ -481,9 +472,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navQibla => 'Qibla';
 
   @override
-  String get navMenu => 'Menu';
-
-  @override
   String get menuTitle => 'Settings';
 
   @override
@@ -496,29 +484,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get citySelect => 'Select City';
 
   @override
-  String get districtSelect => 'Select District';
-
-  @override
   String get save => 'Save';
 
   @override
   String get cancel => 'Cancel';
-
-  @override
-  String get locationWarning =>
-      'Selecting a district is important for accurate prayer times.';
-
-  @override
-  String get menuNotifications => 'Notification Permissions';
-
-  @override
-  String get menuNotificationsSub => 'Check here if you don\'t hear sounds.';
-
-  @override
-  String get menuTroubleshoot => 'Not Getting Notifications?';
-
-  @override
-  String get menuTroubleshootSub => 'Set battery settings for Samsung/Xiaomi.';
 
   @override
   String get timeAdjustTitle => 'Prayer Time Adjustment';
@@ -774,22 +743,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get batteryDialogTitle => 'Fix Notification Issues';
-
-  @override
-  String get batteryDialogBody =>
-      'Your phone might be closing the app to save battery. To prevent this:\n\n1. Open the Recent Apps screen.\n2. Long-press the \'Vaktinde\' app or tap its icon.\n3. Tap the lock icon 🔒 to lock it.\n\nAlso go to Settings > Apps > Vaktinde > Battery and select Unrestricted.';
-
-  @override
   String get okUnderstood => 'OK, I Understand';
 
   @override
   String get religiousDaysTitle => 'Religious Days';
-
-  @override
-  String errorOccurred(String error) {
-    return 'An error occurred: $error';
-  }
 
   @override
   String get noDataFound => 'No data found.';
@@ -846,9 +803,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get esmaulHusnaTitle => 'Names of Allah';
 
   @override
-  String get closeCaps => 'CLOSE';
-
-  @override
   String get zakatTitle => 'Zakat Calculator';
 
   @override
@@ -862,9 +816,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'You can manually edit the automatically fetched rates if you wish.';
 
   @override
-  String get sectionGold => 'Gold Assets';
-
-  @override
   String get goldType => 'Gold Type';
 
   @override
@@ -874,9 +825,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goldUnitPrice => 'Unit Price';
 
   @override
-  String get sectionCurrency => 'Currency Assets';
-
-  @override
   String get currencyType => 'Currency Type';
 
   @override
@@ -884,15 +832,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get currencyRate => 'Current Rate';
-
-  @override
-  String get sectionCashDebt => 'Cash & Debts';
-
-  @override
-  String get cashAmount => 'Cash on Hand & in Bank';
-
-  @override
-  String get debtAmount => 'Total Debts (To be deducted)';
 
   @override
   String get calculateButton => 'CALCULATE';
@@ -912,15 +851,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get locationPermissionDenied => 'Location permission denied.';
-
-  @override
-  String get locationPermissionForever =>
-      'Location permission is permanently denied. Please enable it in settings.';
-
-  @override
-  String compassError(String error) {
-    return 'Sensor error: $error';
-  }
 
   @override
   String get noCompass => 'No compass on this device.';
@@ -991,12 +921,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bgKaaba => 'Kaaba';
 
   @override
-  String get bgQuran => 'Quran';
-
-  @override
-  String get none => 'None';
-
-  @override
   String get zakatEligible => 'Zakat is Required';
 
   @override
@@ -1041,19 +965,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tickerEzan => 'Prayer Time';
 
   @override
-  String get stickyChannelName => 'Persistent Counter';
-
-  @override
-  String get stickyChannelDesc => 'Shows the remaining time';
-
-  @override
-  String get timeLeftTo => 'Time Left Until: ';
-
-  @override
-  String get locationFallbackMessage =>
-      'Could not get location, using default values.';
-
-  @override
   String get fetchingLocation => 'Fetching location...';
 
   @override
@@ -1069,17 +980,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get directionWest => 'W';
 
   @override
-  String get calibrationInstruction => '(Draw an \'8\' for calibration)';
-
-  @override
   String get zakatDescription =>
       'Calculate your zakat in detail based on the fatwas of Diyanet (Turkey\'s Presidency of Religious Affairs) and current market rates.';
 
   @override
   String get cashAndCurrencyTitle => 'Cash and Currency Assets';
-
-  @override
-  String get cashTurkishLira => 'Cash (Local Currency)';
 
   @override
   String get goldAndSilverTitle => 'Gold and Silver';
@@ -1233,9 +1138,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dhikrOther => 'Other (Custom Dhikr)';
 
   @override
-  String get customDhikrTitle => 'Add Custom Dhikr';
-
-  @override
   String get customDhikrHint => 'Type your dhikr';
 
   @override
@@ -1258,36 +1160,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeClassic => 'Classic Tasbih';
-
-  @override
-  String get introTitle1 => 'Welcome to Vaktinde';
-
-  @override
-  String get introDesc1 =>
-      'Easily track prayer times, dhikrs, and religious days with our modern and elegant interface.';
-
-  @override
-  String get introTitle2 => 'Smart Notifications';
-
-  @override
-  String get introDesc2 =>
-      'Get alerts with the notification sound of your choice at prayer times. Never miss your worship.';
-
-  @override
-  String get introTitle3 => 'Advanced Tools';
-
-  @override
-  String get introDesc3 =>
-      'Strengthen your spirituality with the Animated Dhikr Counter, Missed Prayers Tracker, Names of Allah, and Zakat Calculator.';
-
-  @override
-  String get introSkip => 'Skip';
-
-  @override
-  String get introNext => 'Next';
-
-  @override
-  String get introStart => 'Start Now';
 
   @override
   String get dhikrListTitle => 'Dhikr List';
@@ -1409,26 +1281,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyAyahTitle => 'Ayah of the Day';
 
   @override
-  String get remainingTime => 'Remaining';
-
-  @override
   String get onboardingWelcome => 'Hoş Geldiniz / Welcome';
 
   @override
   String get onboardingSelectLanguage =>
       'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.';
-
-  @override
-  String get turnRight => 'Turn right ➔';
-
-  @override
-  String get turnSlightRight => 'Turn slight right ➔';
-
-  @override
-  String get turnLeft => '⬅ Turn left';
-
-  @override
-  String get turnSlightLeft => '⬅ Turn slight left';
 
   @override
   String get calibrationRequired => 'Calibration Required';
@@ -1545,23 +1402,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currencyTry => 'Turkish Lira';
 
   @override
-  String get holdToEdit => 'Hold to edit';
-
-  @override
   String get editCounterTitle => 'Edit Counter';
-
-  @override
-  String get editCounterHint => 'E.g. 2000';
-
-  @override
-  String get editTargetHint => 'E.g. 99';
 
   @override
   String get resetCounterConfirm =>
       'Are you sure you want to reset the counter?';
-
-  @override
-  String get dhikrTarget => 'Target:';
 
   @override
   String get imsakiyeTitle => 'Prayer Timetable';

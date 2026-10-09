@@ -143,8 +143,9 @@ void main() {
     await pumpSettings(tester);
     await scrollTo(tester, loc.healthTitle);
     expect(find.text(loc.healthSub), findsOneWidget);
-    expect(find.text(loc.menuNotifications), findsNothing);
-    expect(find.text(loc.menuTroubleshoot), findsNothing);
+    // Eski satırların metinleri ARB'den silindi; adlarıyla aranır
+    expect(find.text('Bildirim İzinleri'), findsNothing);
+    expect(find.text('Bildirim Gelmiyor mu?'), findsNothing);
     await tester.tap(find.text(loc.healthTitle));
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 100));
