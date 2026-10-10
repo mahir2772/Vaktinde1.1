@@ -177,7 +177,7 @@ void main() {
   }
 
   group('Araçlar', () {
-    testWidgets('8 araç + Ayarlar satırı tek listede', (tester) async {
+    testWidgets('9 araç + Ayarlar satırı tek listede', (tester) async {
       await _pumpScreen(tester, const ToolsView(), textScale: 1);
       final loc = lookupAppLocalizations(const Locale('tr'));
       for (final title in [
@@ -189,6 +189,7 @@ void main() {
         loc.esmaulHusnaTitle,
         loc.fridayMessagesTitle,
         loc.zakatTitle,
+        loc.fitreTitle,
         loc.menuTitle,
       ]) {
         await tester.scrollUntilVisible(find.text(title), 200);
@@ -198,9 +199,8 @@ void main() {
       await _dispose(tester);
     });
 
-    testWidgets('411×891 ekranda Zekat ve Ayarlar kaydırmadan görünür', (
-      tester,
-    ) async {
+    testWidgets('411×891 ekranda araçlar kaydırmadan görünür, Ayarlar '
+        'kenardan görünür (kaydırma ipucu)', (tester) async {
       // Alt menü yüksekliği kadar (≈ 80dp) kısaltılmış gövde
       await _pumpScreen(
         tester,
@@ -211,10 +211,13 @@ void main() {
       );
       final loc = lookupAppLocalizations(const Locale('tr'));
       final screen = tester.getRect(find.byType(ToolsView));
-      for (final title in [loc.zakatTitle, loc.menuTitle]) {
+      for (final title in [loc.zakatTitle, loc.fitreTitle]) {
         final rect = tester.getRect(find.text(title));
         expect(rect.bottom, lessThanOrEqualTo(screen.bottom), reason: title);
       }
+      // Fitre ve Fidye ile liste uzadı: Ayarlar satırı en az kısmen ekranda
+      final settings = tester.getRect(find.text(loc.menuTitle));
+      expect(settings.top, lessThan(screen.bottom));
       await _dispose(tester);
     });
   });

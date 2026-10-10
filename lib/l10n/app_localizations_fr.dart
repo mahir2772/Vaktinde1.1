@@ -855,6 +855,101 @@ class AppLocalizationsFr extends AppLocalizations {
   String get zakatTitle => 'Calculatrice de Zakat';
 
   @override
+  String get fitreTitle => 'Fitra et fidya';
+
+  @override
+  String get toolFitreDesc => 'Calcul de la fitra et de la fidya';
+
+  @override
+  String get fitreInfo =>
+      'Le montant par personne est la fitra (sadaqat al-fitr) minimale fixée par la Diyanet, l\'autorité religieuse turque ; la fitra peut être donnée en argent ou en nourriture. La fidya est due par les personnes qui ne peuvent pas jeûner en raison de leur grand âge ou d\'une maladie sans espoir de guérison : une fitra pour chaque jour. Si vous vivez hors de Turquie, vous pouvez saisir le montant fixé là où vous vivez.';
+
+  @override
+  String get fitreAmountLabel => 'Montant par personne';
+
+  @override
+  String fitreSource(String source, String year) {
+    return 'Source : $source, $year';
+  }
+
+  @override
+  String get fitreResetAmount => 'Rétablir le montant par défaut';
+
+  @override
+  String get fitreSectionTitle => 'Fitra';
+
+  @override
+  String get fitrePeopleLabel => 'Nombre de personnes';
+
+  @override
+  String get fidyeSectionTitle => 'Fidya';
+
+  @override
+  String get fidyeDaysLabel => 'Nombre de jours';
+
+  @override
+  String get fitreTotal => 'Total';
+
+  @override
+  String get fastTitle => 'Jeûne du Ramadan';
+
+  @override
+  String fastCount(int done, int total) {
+    return '$done/$total jours';
+  }
+
+  @override
+  String get fastInfo =>
+      'Appuyez sur les jours où vous avez jeûné. Les jours manqués sont ajoutés une seule fois au compteur de jeûnes à rattraper ; si vous avez finalement jeûné un jour ajouté au qada, appuyez dessus pour le déduire du compteur.';
+
+  @override
+  String get fastLegendFasted => 'Jeûné';
+
+  @override
+  String get fastLegendKaza => 'Ajouté au qada';
+
+  @override
+  String get fastKazaButton => 'Ajouter les jeûnes manqués au qada';
+
+  @override
+  String fastKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count jours non cochés seront ajoutés au compteur de jeûnes à rattraper. Continuer ?',
+      one:
+          '1 jour non coché sera ajouté au compteur de jeûnes à rattraper. Continuer ?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fastKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours ajoutés au qada.',
+      one: '1 jour ajouté au qada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fastKazaNone => 'Aucun jour à ajouter au qada.';
+
+  @override
+  String get fastKazaRemoveTitle => 'Retirer du qada ?';
+
+  @override
+  String fastKazaRemoveConfirm(int from, int to) {
+    return 'Ce jour sera marqué comme jeûné et le nombre de jeûnes à rattraper passera de $from à $to.';
+  }
+
+  @override
+  String get fastFastedAction => 'J\'ai jeûné';
+
+  @override
   String get zakatCalculatorTitle => 'Calculatrice intelligente de Zakat';
 
   @override

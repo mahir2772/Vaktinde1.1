@@ -468,6 +468,73 @@
     "fridayMessagesTitle": "Cuma Mesajları",
     "esmaulHusnaTitle": "Esmaül Hüsna",
     "zakatTitle": "Zekat Hesapla",
+    "fitreTitle": "Fitre ve Fidye",
+    "toolFitreDesc": "Fitre ve fidye tutarı hesabı",
+    "fitreInfo": "Kişi başı tutar, Diyanet'in belirlediği en az fitre (fıtır sadakası) miktarıdır; fitre para ya da gıda olarak verilebilir. Fidye, yaşlılık ya da iyileşme umudu olmayan bir hastalık nedeniyle oruç tutamayanların her gün için verdiği bir fitre tutarıdır. Türkiye dışındaysanız bulunduğunuz yerdeki tutarı yazabilirsiniz.",
+    "fitreAmountLabel": "Kişi başı tutar",
+    "fitreSource": "Kaynak: {source}, {year}",
+    "@fitreSource": {
+        "placeholders": {
+            "source": {
+                "type": "String"
+            },
+            "year": {
+                "type": "String"
+            }
+        }
+    },
+    "fitreResetAmount": "Varsayılan tutara dön",
+    "fitreSectionTitle": "Fitre",
+    "fitrePeopleLabel": "Kişi sayısı",
+    "fidyeSectionTitle": "Fidye",
+    "fidyeDaysLabel": "Gün sayısı",
+    "fitreTotal": "Toplam",
+    "fastTitle": "Ramazan Orucu",
+    "fastCount": "{done}/{total} gün",
+    "@fastCount": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "fastInfo": "Tuttuğunuz günlere dokunun. Tutulmayan günler kaza orucu sayacına bir kez eklenir; kazaya eklenen bir günü tuttuysanız üzerine dokunun, sayaçtan düşülür.",
+    "fastLegendFasted": "Tutuldu",
+    "fastLegendKaza": "Kazaya eklendi",
+    "fastKazaButton": "Tutulmayanları kaza orucuna ekle",
+    "fastKazaConfirm": "{count, plural, other{İşaretlenmemiş {count} gün kaza orucu sayacına eklenecek. Devam edilsin mi?}}",
+    "@fastKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "fastKazaDone": "{count, plural, other{{count} gün kaza orucuna eklendi.}}",
+    "@fastKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "fastKazaNone": "Kazaya eklenecek gün yok.",
+    "fastKazaRemoveTitle": "Kazadan çıkarılsın mı?",
+    "fastKazaRemoveConfirm": "Bu gün tutuldu olarak işaretlenecek ve kaza orucu sayısı {from} yerine {to} olacak.",
+    "@fastKazaRemoveConfirm": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "fastFastedAction": "Tuttum",
     "zakatCalculatorTitle": "Akıllı Zekat Hesaplama",
     "liveRatesLoading": "Güncel kurlar çekiliyor...",
     "liveRatesInfo": "Otomatik çekilen kurları isterseniz el ile düzeltebilirsiniz.",

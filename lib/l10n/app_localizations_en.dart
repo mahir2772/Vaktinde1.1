@@ -840,6 +840,101 @@ class AppLocalizationsEn extends AppLocalizations {
   String get zakatTitle => 'Zakat Calculator';
 
   @override
+  String get fitreTitle => 'Fitra & Fidya';
+
+  @override
+  String get toolFitreDesc => 'Fitra and fidya amounts';
+
+  @override
+  String get fitreInfo =>
+      'The amount per person is the minimum fitra (sadaqat al-fitr) set by Diyanet, Turkey\'s religious authority; fitra can be given in cash or as food. Fidya is paid by those who cannot fast because of old age or an illness with no hope of recovery: one fitra for each day. If you live outside Turkey, you can enter the amount set where you live.';
+
+  @override
+  String get fitreAmountLabel => 'Amount per person';
+
+  @override
+  String fitreSource(String source, String year) {
+    return 'Source: $source, $year';
+  }
+
+  @override
+  String get fitreResetAmount => 'Reset to default amount';
+
+  @override
+  String get fitreSectionTitle => 'Fitra';
+
+  @override
+  String get fitrePeopleLabel => 'Number of people';
+
+  @override
+  String get fidyeSectionTitle => 'Fidya';
+
+  @override
+  String get fidyeDaysLabel => 'Number of days';
+
+  @override
+  String get fitreTotal => 'Total';
+
+  @override
+  String get fastTitle => 'Ramadan Fasting';
+
+  @override
+  String fastCount(int done, int total) {
+    return '$done/$total days';
+  }
+
+  @override
+  String get fastInfo =>
+      'Tap the days you fasted. Missed days are added to your qada fasting counter once; if you did fast a day that was added to qada, tap it and it will be subtracted from the counter.';
+
+  @override
+  String get fastLegendFasted => 'Fasted';
+
+  @override
+  String get fastLegendKaza => 'Added to qada';
+
+  @override
+  String get fastKazaButton => 'Add missed fasts to qada';
+
+  @override
+  String fastKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count unmarked days will be added to your qada fasting counter. Continue?',
+      one:
+          '1 unmarked day will be added to your qada fasting counter. Continue?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fastKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days added to qada.',
+      one: '1 day added to qada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fastKazaNone => 'No days to add to qada.';
+
+  @override
+  String get fastKazaRemoveTitle => 'Remove from qada?';
+
+  @override
+  String fastKazaRemoveConfirm(int from, int to) {
+    return 'This day will be marked as fasted and your qada fasting count will change from $from to $to.';
+  }
+
+  @override
+  String get fastFastedAction => 'I fasted';
+
+  @override
   String get zakatCalculatorTitle => 'Smart Zakat Calculator';
 
   @override

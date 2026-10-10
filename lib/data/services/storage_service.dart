@@ -210,6 +210,31 @@ class StorageService {
     await prefs.setString('prayer_log_since', dateKey);
   }
 
+  // --- Ramazan orucu takibi: tutulan / kaza orucuna eklenen günler (yyyy-MM-dd) ---
+
+  Future<Set<String>> loadFastLog() => _loadDaySet('fast_log');
+
+  Future<void> saveFastLog(Set<String> days) => _saveDaySet('fast_log', days);
+
+  Future<Set<String>> loadFastKazaAdded() => _loadDaySet('fast_kaza_added');
+
+  Future<void> saveFastKazaAdded(Set<String> days) =>
+      _saveDaySet('fast_kaza_added', days);
+
+  Future<Set<String>> _loadDaySet(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      return {...?prefs.getStringList(key)};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  Future<void> _saveDaySet(String key, Set<String> days) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(key, days.toList()..sort());
+  }
+
   Future<Map<String, int>> _loadMaskMap(String key) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.reload();

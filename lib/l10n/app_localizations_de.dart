@@ -851,6 +851,101 @@ class AppLocalizationsDe extends AppLocalizations {
   String get zakatTitle => 'Zakat-Rechner';
 
   @override
+  String get fitreTitle => 'Fitra & Fidya';
+
+  @override
+  String get toolFitreDesc => 'Fitra und Fidya berechnen';
+
+  @override
+  String get fitreInfo =>
+      'Der Betrag pro Person ist die von Diyanet, der türkischen Religionsbehörde, festgelegte Mindest-Fitra (Sadaqat al-Fitr); die Fitra kann als Geld oder in Form von Lebensmitteln gegeben werden. Fidya zahlen Menschen, die wegen hohen Alters oder einer Krankheit ohne Aussicht auf Heilung nicht fasten können: eine Fitra für jeden Tag. Wenn Sie außerhalb der Türkei leben, können Sie den dort geltenden Betrag eingeben.';
+
+  @override
+  String get fitreAmountLabel => 'Betrag pro Person';
+
+  @override
+  String fitreSource(String source, String year) {
+    return 'Quelle: $source, $year';
+  }
+
+  @override
+  String get fitreResetAmount => 'Standardbetrag wiederherstellen';
+
+  @override
+  String get fitreSectionTitle => 'Fitra';
+
+  @override
+  String get fitrePeopleLabel => 'Anzahl der Personen';
+
+  @override
+  String get fidyeSectionTitle => 'Fidya';
+
+  @override
+  String get fidyeDaysLabel => 'Anzahl der Tage';
+
+  @override
+  String get fitreTotal => 'Gesamt';
+
+  @override
+  String get fastTitle => 'Ramadan-Fasten';
+
+  @override
+  String fastCount(int done, int total) {
+    return '$done/$total Tage';
+  }
+
+  @override
+  String get fastInfo =>
+      'Tippen Sie auf die Tage, an denen Sie gefastet haben. Versäumte Tage werden einmal zum Qada-Fastenzähler hinzugefügt; wenn Sie einen zu Qada hinzugefügten Tag doch gefastet haben, tippen Sie darauf, dann wird er vom Zähler abgezogen.';
+
+  @override
+  String get fastLegendFasted => 'Gefastet';
+
+  @override
+  String get fastLegendKaza => 'Zu Qada hinzugefügt';
+
+  @override
+  String get fastKazaButton => 'Versäumte Fastentage zu Qada hinzufügen';
+
+  @override
+  String fastKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count nicht markierte Tage werden zum Qada-Fastenzähler hinzugefügt. Fortfahren?',
+      one:
+          '1 nicht markierter Tag wird zum Qada-Fastenzähler hinzugefügt. Fortfahren?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fastKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tage zu Qada hinzugefügt.',
+      one: '1 Tag zu Qada hinzugefügt.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fastKazaNone => 'Keine Tage zum Hinzufügen.';
+
+  @override
+  String get fastKazaRemoveTitle => 'Aus Qada entfernen?';
+
+  @override
+  String fastKazaRemoveConfirm(int from, int to) {
+    return 'Dieser Tag wird als gefastet markiert und die Anzahl der Qada-Fastentage ändert sich von $from auf $to.';
+  }
+
+  @override
+  String get fastFastedAction => 'Gefastet';
+
+  @override
   String get zakatCalculatorTitle => 'Smarter Zakat-Rechner';
 
   @override

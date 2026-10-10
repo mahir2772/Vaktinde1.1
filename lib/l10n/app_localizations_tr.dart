@@ -835,6 +835,98 @@ class AppLocalizationsTr extends AppLocalizations {
   String get zakatTitle => 'Zekat Hesapla';
 
   @override
+  String get fitreTitle => 'Fitre ve Fidye';
+
+  @override
+  String get toolFitreDesc => 'Fitre ve fidye tutarı hesabı';
+
+  @override
+  String get fitreInfo =>
+      'Kişi başı tutar, Diyanet\'in belirlediği en az fitre (fıtır sadakası) miktarıdır; fitre para ya da gıda olarak verilebilir. Fidye, yaşlılık ya da iyileşme umudu olmayan bir hastalık nedeniyle oruç tutamayanların her gün için verdiği bir fitre tutarıdır. Türkiye dışındaysanız bulunduğunuz yerdeki tutarı yazabilirsiniz.';
+
+  @override
+  String get fitreAmountLabel => 'Kişi başı tutar';
+
+  @override
+  String fitreSource(String source, String year) {
+    return 'Kaynak: $source, $year';
+  }
+
+  @override
+  String get fitreResetAmount => 'Varsayılan tutara dön';
+
+  @override
+  String get fitreSectionTitle => 'Fitre';
+
+  @override
+  String get fitrePeopleLabel => 'Kişi sayısı';
+
+  @override
+  String get fidyeSectionTitle => 'Fidye';
+
+  @override
+  String get fidyeDaysLabel => 'Gün sayısı';
+
+  @override
+  String get fitreTotal => 'Toplam';
+
+  @override
+  String get fastTitle => 'Ramazan Orucu';
+
+  @override
+  String fastCount(int done, int total) {
+    return '$done/$total gün';
+  }
+
+  @override
+  String get fastInfo =>
+      'Tuttuğunuz günlere dokunun. Tutulmayan günler kaza orucu sayacına bir kez eklenir; kazaya eklenen bir günü tuttuysanız üzerine dokunun, sayaçtan düşülür.';
+
+  @override
+  String get fastLegendFasted => 'Tutuldu';
+
+  @override
+  String get fastLegendKaza => 'Kazaya eklendi';
+
+  @override
+  String get fastKazaButton => 'Tutulmayanları kaza orucuna ekle';
+
+  @override
+  String fastKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'İşaretlenmemiş $count gün kaza orucu sayacına eklenecek. Devam edilsin mi?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fastKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gün kaza orucuna eklendi.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fastKazaNone => 'Kazaya eklenecek gün yok.';
+
+  @override
+  String get fastKazaRemoveTitle => 'Kazadan çıkarılsın mı?';
+
+  @override
+  String fastKazaRemoveConfirm(int from, int to) {
+    return 'Bu gün tutuldu olarak işaretlenecek ve kaza orucu sayısı $from yerine $to olacak.';
+  }
+
+  @override
+  String get fastFastedAction => 'Tuttum';
+
+  @override
   String get zakatCalculatorTitle => 'Akıllı Zekat Hesaplama';
 
   @override
