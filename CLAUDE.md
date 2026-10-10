@@ -159,6 +159,11 @@ lib/
     prayer_tracker/streak_review.dart      StreakReviewPrompt: 7 günlük tam seride tek değerlendirme isteği (MainWrapper) +
                                            UsageReviewPrompt: 5 farklı kullanım günü ('usage_days_count', 'usage_last_day'),
                                            açılışta/yeni güne dönüşte; ikisi 'review_requested' ve süreç kilidini paylaşır
+    fitre/view/fitre_view.dart             Fitre & Fidye (Araçlar > Hesap): data/services/fitre_service.dart — assets/data/fitre.json
+                                           + uzak https://mahir2772.github.io/fitre.json (docs/site/fitre.json yüklenir; prefs
+                                           'fitre_remote_json'); validFrom ≤ bugün olan en yeni tutar. Yeni yıl: girdi EKLE, silme
+    prayer_tracker/widgets/ramadan_fast_card.dart  Ramazan orucu kartı (Ramazan + bitişten 30 gün): data/services/
+                                           fast_tracker(.dart|_service.dart), 'fast_log', 'fast_kaza_added' → kaza_Oruç (tekil, geri alınır)
     common/share_card.dart                 ShareCard (1080×1350 PNG, teal, Amiri, "Google Play'de Vaktinde") + shareAsImage/
                                            shareAsText (metin sonuna AppLinks.playStoreLink(kampanya)) + MessageCard (Cuma, tebrik)
                                            + SheetMessenger (alt sayfada SnackBar). Kampanyalar: friday/daily/greeting/invite
