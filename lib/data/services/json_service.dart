@@ -38,6 +38,23 @@ class JsonService {
     }
   }
 
+  /// Dini gün tebrikleri: tür adı (DiniGunTuru.name) → mesajlar
+  Future<Map<String, List<String>>> getGreetings(String languageCode) async {
+    String response;
+    try {
+      response = await rootBundle.loadString(
+        'assets/data/greetings_$languageCode.json',
+      );
+    } catch (e) {
+      response = await rootBundle.loadString('assets/data/greetings_tr.json');
+    }
+    final Map<String, dynamic> data = json.decode(response);
+    return {
+      for (final entry in data.entries)
+        entry.key: List<String>.from(entry.value),
+    };
+  }
+
   Future<List<HadithModel>> getHadiths() async {
     final String response = await rootBundle.loadString(
       'assets/data/hadiths.json',

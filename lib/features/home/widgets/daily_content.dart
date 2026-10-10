@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../core/ui/app_card.dart';
 import '../../../core/ui/app_theme.dart';
 import '../../../core/ui/app_tokens.dart';
 import '../../../data/models/hadith_model.dart';
+import '../../common/share_card.dart';
 import '../../quran/ayah_model.dart';
 
 /// Günün ayeti / hadisi: tek kartta iki kısa giriş; dokununca okunabilir sayfa
-/// (kendiliğinden kapanmaz, kaydırılabilir, kopyala/paylaş).
+/// (kendiliğinden kapanmaz, kaydırılabilir, kopyala / metin ya da resim paylaş).
 class DailyContentRow extends StatelessWidget {
   final AyahModel? ayah;
   final HadithModel? hadith;
@@ -169,13 +169,15 @@ Future<void> _showReadingSheet(
       initialChildSize: 0.7,
       minChildSize: 0.4,
       maxChildSize: 0.95,
-      builder: (context, controller) => _ReadingContent(
-        controller: controller,
-        icon: icon,
-        title: title,
-        arabic: arabic,
-        text: text,
-        source: source,
+      builder: (context, controller) => SheetMessenger(
+        child: _ReadingContent(
+          controller: controller,
+          icon: icon,
+          title: title,
+          arabic: arabic,
+          text: text,
+          source: source,
+        ),
       ),
     ),
   );
@@ -229,11 +231,21 @@ class _ReadingContentState extends State<_ReadingContent> {
     });
   }
 
-  Future<void> _share() async {
-    try {
-      await Share.share('$_plainText\n\n${widget.title} · Vaktinde');
-    } catch (_) {}
-  }
+  Future<void> _shareText() => shareAsText(
+    context,
+    text: _plainText,
+    title: widget.title,
+    campaign: 'daily',
+  );
+
+  Future<void> _shareImage() => shareAsImage(
+    context,
+    title: widget.title,
+    message: widget.text,
+    arabic: widget.arabic,
+    source: widget.source,
+    campaign: 'daily',
+  );
 
   @override
   void dispose() {
@@ -307,10 +319,15 @@ class _ReadingContentState extends State<_ReadingContent> {
               icon: Icon(_copied ? Icons.check : Icons.copy_rounded),
               label: Text(_copied ? loc.textCopied : loc.copy),
             ),
-            FilledButton.tonalIcon(
-              onPressed: _share,
+            OutlinedButton.icon(
+              onPressed: _shareText,
               icon: const Icon(Icons.share_rounded),
-              label: Text(loc.share),
+              label: Text(loc.shareAsText),
+            ),
+            FilledButton.tonalIcon(
+              onPressed: _shareImage,
+              icon: const Icon(Icons.image_outlined),
+              label: Text(loc.shareAsImage),
             ),
           ],
         ),

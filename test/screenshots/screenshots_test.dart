@@ -17,10 +17,12 @@ import 'dart:ui' as ui;
 
 import 'package:ezan_saati/data/models/hadith_model.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
+import 'package:ezan_saati/features/common/share_card.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/esmaul_husna/view/esmaul_husna_view.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
@@ -737,6 +739,10 @@ void main() {
     // Uygulama boyu önbelleklenen Future ilk testin sahte zaman bölgesinde
     // oluşursa sonraki testlerde hiç tamamlanmaz; gerçek bölgede önceden yüklenir
     await loadRamadanCalendar();
+    await DiniGunlerService.loadResmiGunler();
+    for (final lang in ['tr', 'ar']) {
+      await rootBundle.loadString('assets/data/greetings_$lang.json');
+    }
   });
 
   setUp(() {
@@ -871,6 +877,60 @@ void main() {
       await _finish(tester);
     });
   });
+
+  // Dini günler: "Tebrik gönder" sayfası + paylaşılan resim kartı (1080x1350)
+  for (final lang in ['tr', 'ar']) {
+    testWidgets(
+      '$lang: tebrik mesajları ve paylaşım kartı',
+      skip: skip,
+      variant: _android,
+      (tester) async {
+        await _run(tester, () async {
+          await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
+          final loc = lookupAppLocalizations(Locale(lang));
+          _currentScreen = '${lang}_45b_greetings';
+          _navigator(tester).push(
+            MaterialPageRoute<void>(builder: (_) => const ReligiousDaysView()),
+          );
+          await _settle(tester, steps: 10);
+          // Yılın kalan günü yoksa (Aralık sonu) sıradaki gün sonraki yılda
+          if (find.text(loc.sendGreeting).evaluate().isEmpty) {
+            await tester.tap(find.byTooltip(loc.nextYear));
+            await _settle(tester);
+          }
+          final button = find.text(loc.sendGreeting).first;
+          await tester.ensureVisible(button);
+          await tester.tap(button);
+          await _settle(tester, steps: 10);
+          await _shot(tester, '${lang}_45b_greetings');
+          _navigator(tester).pop();
+          await _settle(tester, steps: 6);
+          _navigator(tester).pop();
+          await _settle(tester, steps: 6);
+
+          final greetings =
+              jsonDecode(
+                    File('assets/data/greetings_$lang.json').readAsStringSync(),
+                  )
+                  as Map<String, dynamic>;
+          await _openRoute(
+            tester,
+            '${lang}_45c_share_card',
+            Scaffold(
+              body: Center(
+                child: ShareCard(
+                  title: loc.regaipKandili,
+                  message: (greetings['regaipKandili'] as List).first as String,
+                  footer: loc.shareCardFooter,
+                ),
+              ),
+            ),
+          );
+          await _finish(tester);
+        });
+      },
+    );
+  }
 
   testWidgets(
     'tr: dolu ana ekran (kerahat, takip) + büyük yazı',
@@ -1081,7 +1141,7 @@ void main() {
         await tester.tap(find.text(loc.dailyAyahTitle));
         await _settle(tester, steps: 6);
         await tester.scrollUntilVisible(
-          find.text(loc.share),
+          find.text(loc.shareAsImage),
           300,
           scrollable: find
               .descendant(

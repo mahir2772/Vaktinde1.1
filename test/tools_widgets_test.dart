@@ -2,10 +2,12 @@
 // taşmadan çizilmeli; zekat açılır listeleri her dilde geçerli değerle açılmalı.
 import 'dart:io';
 
+import 'package:ezan_saati/core/app_links.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
+import 'package:ezan_saati/features/common/share_card.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/esmaul_husna/view/esmaul_husna_view.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
@@ -136,6 +138,7 @@ void main() {
     for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
       await rootBundle.loadString('assets/data/esmaul_husna_$lang.json');
       await rootBundle.loadString('assets/data/friday_messages_$lang.json');
+      await rootBundle.loadString('assets/data/greetings_$lang.json');
     }
   });
 
@@ -437,6 +440,36 @@ void main() {
       );
       await _dispose(tester);
     });
+
+    for (final lang in ['tr', 'ar']) {
+      testWidgets('$lang: sıradaki günün tebrik mesajları, %130 yazı', (
+        tester,
+      ) async {
+        await _pumpScreen(tester, const ReligiousDaysView(), lang: lang);
+        final loc = lookupAppLocalizations(Locale(lang));
+        // Yılın kalan günü yoksa (Aralık sonu) sıradaki gün sonraki yılda
+        if (find.text(loc.sendGreeting).evaluate().isEmpty) {
+          await tester.tap(find.byTooltip(loc.nextYear));
+          await _settle(tester);
+        }
+        final button = find.text(loc.sendGreeting).first;
+        await tester.ensureVisible(button);
+        await tester.pump();
+        await tester.tap(button);
+        await _settle(tester);
+        expect(find.text(loc.greetingsTitle), findsOneWidget);
+        expect(find.byType(MessageCard), findsWidgets);
+        expect(find.text(loc.shareAsImage), findsWidgets);
+        expect(tester.takeException(), isNull);
+        final sheet = find.byType(DraggableScrollableSheet);
+        for (var i = 0; i < 8; i++) {
+          await tester.dragFrom(tester.getCenter(sheet), const Offset(0, -300));
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        expect(tester.takeException(), isNull);
+        await _dispose(tester);
+      });
+    }
   });
 
   group('Cuma mesajları', () {
@@ -465,6 +498,28 @@ void main() {
       await tester.pump();
       expect(copied, isNotNull);
       expect(find.text(loc.messageCopied), findsOneWidget);
+      await _dispose(tester);
+    });
+
+    testWidgets('metin paylaşımı Play bağlantısıyla biter', (tester) async {
+      const channel = MethodChannel('dev.fluttercommunity.plus/share');
+      String? text;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        text = (call.arguments as Map)['text'] as String?;
+        return null;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+      await _pumpScreen(tester, const FridayMessagesView(), textScale: 1);
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await tester.tap(find.text(loc.shareAsText).first);
+      await tester.pump();
+      expect(
+        text,
+        endsWith(
+          '\n\n${loc.fridayGreeting} · Vaktinde\n'
+          '${AppLinks.playStoreLink('friday')}',
+        ),
+      );
       await _dispose(tester);
     });
   });

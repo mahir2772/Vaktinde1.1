@@ -97,6 +97,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get messagesShuffled => 'Mesajlar karıştırıldı';
 
   @override
+  String get shareAsImage => 'Resimli paylaş';
+
+  @override
+  String get shareAsText => 'Metni paylaş';
+
+  @override
+  String get shareCardFooter => 'Google Play\'de Vaktinde';
+
+  @override
+  String get fridayGreeting => 'Hayırlı Cumalar';
+
+  @override
+  String get sendGreeting => 'Tebrik gönder';
+
+  @override
+  String get greetingsTitle => 'Tebrik mesajları';
+
+  @override
   String get shuffle => 'Karıştır';
 
   @override
