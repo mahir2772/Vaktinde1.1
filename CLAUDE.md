@@ -136,7 +136,8 @@ lib/
     settings/view/settings_view.dart       Konum & Vakitler: EndReminderSetting altında "Günün ayeti ve hadisi" ve "Dini gün ve kandil"
                                            anahtarları (HomeViewModel.setDailyContentEnabled / setReligiousDaysEnabled), "Bildirim Kontrolü"
                                            satırı. Destek'te "Gizlilik Politikası" (core/app_links.dart AppLinks.privacyPolicy = Google Sites,
-                                           harici tarayıcı; boşsa gizli). Metnin kaynağı docs/gizlilik_politikasi.md
+                                           harici tarayıcı; boşsa gizli). Metnin kaynağı docs/gizlilik_politikasi.md.
+                                           Play linki tek yer: AppLinks.playStore / playStoreLink(kampanya) (utm_source=app_share)
     notification_health/notification_health.dart  saf: HealthStatus, DeviceStatus, vendorOf (üretici), guideSteps, volumeIssue,
                                            dndStatus, backgroundStatus (son WorkManager koşusu 48 sa'ten eskiyse uyarı)
     notification_health/view/notification_health_view.dart  Bildirim Kontrolü: durum kartı (açık ezan, sıradaki ezan, bildirim,
@@ -155,7 +156,16 @@ lib/
                                            oturumda bir kez, bitince 'permissions_primed') + primePermissionsIfNeeded;
                                            main.dart turu da aynı fonksiyonu navigatorKey bağlamıyla kullanır
     onboarding/install_guard.dart          yedekten / başka telefondan gelen prefs'te cihaza özgü bayrakları siler (main.dart)
-    prayer_tracker/streak_review.dart      StreakReviewPrompt: 7 günlük tam seride tek değerlendirme isteği (MainWrapper)
+    prayer_tracker/streak_review.dart      StreakReviewPrompt: 7 günlük tam seride tek değerlendirme isteği (MainWrapper) +
+                                           UsageReviewPrompt: 5 farklı kullanım günü ('usage_days_count', 'usage_last_day'),
+                                           açılışta/yeni güne dönüşte; ikisi 'review_requested' ve süreç kilidini paylaşır
+    common/share_card.dart                 ShareCard (1080×1350 PNG, teal, Amiri, "Google Play'de Vaktinde") + shareAsImage/
+                                           shareAsText (metin sonuna AppLinks.playStoreLink(kampanya)) + MessageCard (Cuma, tebrik)
+                                           + SheetMessenger (alt sayfada SnackBar). Kampanyalar: friday/daily/greeting/invite
+    religious_days/view/religious_days_view.dart  "Tebrik gönder" alt sayfası (assets/data/greetings_<dil>.json,
+                                           JsonService.getGreetings; gün yaklaşırken ve 3 gün sonrasına kadar; Regaib + Üç Aylar)
+    settings/view/add_widget_sheet.dart    "Ana Ekrana Widget Ekle" (HomeWidget.requestPinWidget, sağlayıcı adı manifestle aynı;
+                                           satır sadece başlatıcı destekliyorsa)
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
     imsakiye/view/imsakiye_view.dart       aylık/Ramazan imsakiyesi (forDate ile); paylaşım = ekran dışı RepaintBoundary → PNG

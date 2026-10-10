@@ -27,12 +27,6 @@ class SettingsView extends StatelessWidget {
       "https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde";
   static const String _supportMail = 'mmdigitall.dev@gmail.com';
 
-  /// "Uygulamayı paylaş" linki: Play Console edinme raporlarında kaynak
-  /// app_share olarak görünür
-  static const String _inviteLink =
-      'https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde'
-      '&referrer=utm_source%3Dapp_share%26utm_campaign%3Dinvite';
-
   /// Gizlilik politikası adresi ([AppLinks.privacyPolicy]); boşken satır gizli.
   /// Testte doldurulabilir.
   @visibleForTesting
@@ -153,7 +147,7 @@ class SettingsView extends StatelessWidget {
                 AppListTile(
                   leadingIcon: Icons.share_outlined,
                   title: loc.shareApp,
-                  onTap: () => Share.share(loc.shareText(_inviteLink)),
+                  onTap: () => Share.share(loc.shareText(AppLinks.playStoreLink('invite'))),
                 ),
                 AppListTile(
                   leadingIcon: Icons.star_outline,

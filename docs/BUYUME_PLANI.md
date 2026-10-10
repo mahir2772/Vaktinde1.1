@@ -48,7 +48,7 @@
 ## 3. Uygulama yol haritası
 Amaç: günde birkaç kez açılan, paylaşılan, rakipten daha güvenilir uygulama.
 
-**Faz 1 — Paylaşım ve puan (10 Aralık'tan önce yayında)**
+**Faz 1 — Paylaşım ve puan (10 Aralık'tan önce yayında)** ✅ kodlandı
 1. Resimli paylaşım kartı (uygulama adı + Play linki): Cuma mesajı, günün ayeti/hadisi, kandil/bayram tebriği.
 2. Dini Günler'de kandil/bayram tebrik mesajları (5 dil) + resimli paylaşım.
 3. Geniş puan isteği: 5 farklı gün kullanımdan sonra bir kez (7 günlük seri tetiği de kalır).
