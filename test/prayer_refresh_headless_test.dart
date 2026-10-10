@@ -114,6 +114,7 @@ void main() {
         'VaktindeWidgetSmallProvider',
         'VaktindeWidgetLargeProvider',
         'VaktindeWidgetSmall2Provider',
+        'VaktindeWidgetRamadanProvider',
         'NotificationUpdater',
       },
     );

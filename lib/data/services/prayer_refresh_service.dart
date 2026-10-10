@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/core/ui/app_format.dart';
 import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
@@ -301,6 +302,18 @@ class PrayerRefreshService {
         guncelKonum = "$city, $district";
       }
 
+      // Ramazan widget'ı: içinde bulunulan / sıradaki Ramazan. Tarih metni seçili
+      // dilde: arka plan görevinde (WorkManager) intl tarih verisi yüklü değil
+      Map<String, String>? ramazan;
+      try {
+        await initializeDateFormatting();
+        ramazan = WidgetService.ramadanData(
+          now: now,
+          calendar: await _ramadanCalendar(),
+          loc: loc,
+        );
+      } catch (e) {}
+
       await WidgetService.widgetiGuncelle(
         baslik: dinamikBaslik,
         hedefZamanMs: sonrakiVakitTarihi!.millisecondsSinceEpoch,
@@ -312,6 +325,7 @@ class PrayerRefreshService {
         tarih: _dateKey(now),
         yarinVakitler: yarinVakitler,
         yarinHijriDateText: yarinHijri,
+        ramazan: ramazan,
       );
     } catch (e) {}
   });

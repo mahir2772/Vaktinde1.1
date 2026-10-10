@@ -707,6 +707,17 @@
     "editCounterTitle": "Zähler bearbeiten",
     "resetCounterConfirm": "Sind Sie sicher, dass Sie den Zähler zurücksetzen möchten?",
     "imsakiyeTitle": "Gebetskalender",
+    "widgetRamadanName": "Ramadan-Countdown",
+    "widgetRamadanDesc": "Quadrat: Zeit bis zum Iftar und bis zum Ende des Suhur; außerhalb des Ramadan die Tage bis zu seinem Beginn",
+    "widgetRamadanDay": "Ramadan · Tag {day}",
+    "@widgetRamadanDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "widgetRamadanUntil": "Tage bis zum Ramadan",
     "toolsGroupPrayer": "Gebet",
     "toolsGroupInfo": "Wissen",
     "toolsGroupCalc": "Rechner",

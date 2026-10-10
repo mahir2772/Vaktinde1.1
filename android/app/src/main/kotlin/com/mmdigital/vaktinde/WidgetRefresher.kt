@@ -17,7 +17,7 @@ import java.util.Calendar
 /**
  * Vakti geçmiş sayaçların kendini onarması. Vakit anındaki yenileme alarmı bazı üreticilerin
  * güç yöneticilerinde (Honor vb.) geç gelir ya da hiç gelmez; RemoteViews Chronometer sıfırda
- * duramadığı için sayaç eksiye düşer ("İkindiye −17:08"). Her yüzey (3 widget türü + kalıcı
+ * duramadığı için sayaç eksiye düşer ("İkindiye −17:08"). Her yüzey (4 widget türü + kalıcı
  * bildirim) çizdiği hedefi ve günü kaydeder; süreç başlayınca, ekran / kilit açılınca ve ekran
  * açıkken dakikada bir (TIME_TICK) hesaplanan hedefle karşılaştırılır, farklıysa sadece o yüzey
  * yeniden çizilir. Yenileme alarmları, updatePeriodMillis ve saat değişimi yayınları aynen kalır.
@@ -33,6 +33,7 @@ object WidgetRefresher {
         VaktindeWidgetSmallProvider::class.java to { VaktindeWidgetSmallProvider() },
         VaktindeWidgetSmall2Provider::class.java to { VaktindeWidgetSmall2Provider() },
         VaktindeWidgetLargeProvider::class.java to { VaktindeWidgetLargeProvider() },
+        VaktindeWidgetRamadanProvider::class.java to { VaktindeWidgetRamadanProvider() },
     )
 
     /** Çizilen durum: hedef vakit (ms, veri yoksa 0) + gün (gece yarısı gün seti / hicri tarih de yenilenir) */
@@ -42,6 +43,18 @@ object WidgetRefresher {
         val next = PrayerWidgetData.nextPrayer(data, PrayerWidgetData.today(data, now), now)
         return Drawn(next?.time ?: 0L, PrayerWidgetData.dateKey(now))
     }
+
+    /**
+     * Sağlayıcının şu an çizmesi gereken durum. Ramazan widget'ının hedefi kendi değişim anı
+     * (imsak, akşam ya da gece yarısı); bunlar sıradaki vaktin de değiştiği anlar olduğundan
+     * Watcher'ın [current] karşılaştırması onu da kapsar.
+     */
+    private fun expected(providerClass: Class<*>, data: SharedPreferences, now: Calendar, current: Drawn): Drawn =
+        if (providerClass == VaktindeWidgetRamadanProvider::class.java) {
+            Drawn(VaktindeWidgetRamadanProvider.state(data, now).switchAt, current.day)
+        } else {
+            current
+        }
 
     /**
      * Application.onCreate ([app] = Application): tek dinleyici + bir denetim (ana iş parçacığına
@@ -78,19 +91,19 @@ object WidgetRefresher {
      */
     fun refreshStale(context: Context, now: Calendar = Calendar.getInstance()): Boolean = try {
         val data = context.getSharedPreferences(PrayerWidgetData.PREFS, Context.MODE_PRIVATE)
-        redrawStale(context, data, current(data, now))
+        redrawStale(context, data, current(data, now), now)
     } catch (t: Throwable) {
         t.printStackTrace()
         false
     }
 
-    private fun redrawStale(context: Context, data: SharedPreferences, current: Drawn): Boolean {
+    private fun redrawStale(context: Context, data: SharedPreferences, current: Drawn, now: Calendar): Boolean {
         var clean = true
         try {
             val state = context.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE)
             for ((providerClass, create) in PROVIDERS) {
-                if (drawn(state, providerClass.name) == current) continue
                 try {
+                    if (drawn(state, providerClass.name) == expected(providerClass, data, now, current)) continue
                     val manager = AppWidgetManager.getInstance(context) ?: continue
                     val ids = manager.getAppWidgetIds(ComponentName(context, providerClass))
                     if (ids != null && ids.isNotEmpty()) create().onUpdate(context, manager, ids)
@@ -178,9 +191,10 @@ object WidgetRefresher {
         fun check() {
             try {
                 val data = app.getSharedPreferences(PrayerWidgetData.PREFS, Context.MODE_PRIVATE)
-                val current = current(data, Calendar.getInstance())
+                val now = Calendar.getInstance()
+                val current = current(data, now)
                 if (current == lastClean) return
-                if (redrawStale(app, data, current)) lastClean = current
+                if (redrawStale(app, data, current, now)) lastClean = current
             } catch (t: Throwable) {
                 t.printStackTrace()
             }

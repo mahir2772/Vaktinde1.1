@@ -707,6 +707,17 @@
     "editCounterTitle": "Edit Counter",
     "resetCounterConfirm": "Are you sure you want to reset the counter?",
     "imsakiyeTitle": "Prayer Timetable",
+    "widgetRamadanName": "Ramadan Countdown",
+    "widgetRamadanDesc": "Square: time left until iftar and until suhoor ends; outside Ramadan, the days until it begins",
+    "widgetRamadanDay": "Ramadan · day {day}",
+    "@widgetRamadanDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "widgetRamadanUntil": "Days until Ramadan",
     "toolsGroupPrayer": "Prayer",
     "toolsGroupInfo": "Knowledge",
     "toolsGroupCalc": "Calculators",

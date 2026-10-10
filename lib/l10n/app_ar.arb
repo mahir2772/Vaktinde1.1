@@ -707,6 +707,17 @@
     "editCounterTitle": "تعديل العداد",
     "resetCounterConfirm": "هل أنت متأكد أنك تريد إعادة تعيين العداد؟",
     "imsakiyeTitle": "جدول المواقيت",
+    "widgetRamadanName": "العد التنازلي لرمضان",
+    "widgetRamadanDesc": "مربع: الوقت المتبقي للإفطار ولانتهاء السحور، وخارج رمضان الأيام المتبقية حتى بدايته",
+    "widgetRamadanDay": "رمضان · اليوم {day}",
+    "@widgetRamadanDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "widgetRamadanUntil": "الأيام المتبقية حتى رمضان",
     "toolsGroupPrayer": "الصلاة",
     "toolsGroupInfo": "معلومات",
     "toolsGroupCalc": "الحاسبات",

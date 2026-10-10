@@ -130,6 +130,19 @@
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small2" />
         </receiver>
 
+        <!-- Ramazan: iftar/sahur sayacı, Ramazan dışında Ramazan'a kalan gün -->
+        <receiver android:name=".VaktindeWidgetRamadanProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_ramadan_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_ramadan" />
+        </receiver>
+
         <receiver android:name=".NotificationUpdater" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

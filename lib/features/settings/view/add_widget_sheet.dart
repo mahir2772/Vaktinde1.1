@@ -15,6 +15,10 @@ enum HomeScreenWidget {
   small(
     'com.mmdigital.vaktinde.VaktindeWidgetSmallProvider',
     Icons.timer_outlined,
+  ),
+  ramadan(
+    'com.mmdigital.vaktinde.VaktindeWidgetRamadanProvider',
+    Icons.nightlight_outlined,
   );
 
   const HomeScreenWidget(this.qualifiedAndroidName, this.icon);
@@ -27,12 +31,14 @@ enum HomeScreenWidget {
     HomeScreenWidget.large => loc.widgetLargeName,
     HomeScreenWidget.wide => loc.widgetWideName,
     HomeScreenWidget.small => loc.widgetSmallName,
+    HomeScreenWidget.ramadan => loc.widgetRamadanName,
   };
 
   String description(AppLocalizations loc) => switch (this) {
     HomeScreenWidget.large => loc.widgetLargeDesc,
     HomeScreenWidget.wide => loc.widgetWideDesc,
     HomeScreenWidget.small => loc.widgetSmallDesc,
+    HomeScreenWidget.ramadan => loc.widgetRamadanDesc,
   };
 }
 
