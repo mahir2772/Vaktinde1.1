@@ -95,6 +95,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get messagesShuffled => 'تم ترتيب الرسائل عشوائيًا';
 
   @override
+  String get shareAsImage => 'مشاركة كصورة';
+
+  @override
+  String get shareAsText => 'مشاركة النص';
+
+  @override
+  String get shareCardFooter => 'Vaktinde على Google Play';
+
+  @override
+  String get fridayGreeting => 'جمعة مباركة';
+
+  @override
+  String get sendGreeting => 'إرسال تهنئة';
+
+  @override
+  String get greetingsTitle => 'رسائل التهنئة';
+
+  @override
   String get shuffle => 'ترتيب عشوائي';
 
   @override

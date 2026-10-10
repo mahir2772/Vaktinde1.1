@@ -96,6 +96,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messagesShuffled => 'Messages shuffled';
 
   @override
+  String get shareAsImage => 'Share as image';
+
+  @override
+  String get shareAsText => 'Share text';
+
+  @override
+  String get shareCardFooter => 'Vaktinde on Google Play';
+
+  @override
+  String get fridayGreeting => 'Jumu\'ah Mubarak';
+
+  @override
+  String get sendGreeting => 'Send greetings';
+
+  @override
+  String get greetingsTitle => 'Greeting messages';
+
+  @override
   String get shuffle => 'Shuffle';
 
   @override

@@ -266,6 +266,42 @@ abstract class AppLocalizations {
   /// **'Mesajlar karıştırıldı'**
   String get messagesShuffled;
 
+  /// No description provided for @shareAsImage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Resimli paylaş'**
+  String get shareAsImage;
+
+  /// No description provided for @shareAsText.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metni paylaş'**
+  String get shareAsText;
+
+  /// No description provided for @shareCardFooter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Google Play\'de Vaktinde'**
+  String get shareCardFooter;
+
+  /// No description provided for @fridayGreeting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hayırlı Cumalar'**
+  String get fridayGreeting;
+
+  /// No description provided for @sendGreeting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tebrik gönder'**
+  String get sendGreeting;
+
+  /// No description provided for @greetingsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tebrik mesajları'**
+  String get greetingsTitle;
+
   /// No description provided for @shuffle.
   ///
   /// In tr, this message translates to:

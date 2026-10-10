@@ -4,12 +4,17 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../data/services/dini_gunler_service.dart';
+import '../../../data/services/json_service.dart';
 import '../../../data/services/prayer_tracker.dart';
+import '../../common/share_card.dart';
+
+typedef _GreetingGroup = ({DiniGunTuru tur, List<String> messages});
 
 /// Dini günler: yıl seçici + liste. Tarihler Diyanet listesinden
 /// (religious_days.json), listede olmayan yıl/günler hicri hesaptan.
 /// Sıradaki gün "x gün kaldı" ile vurgulanır (açılışta ona kaydırılır),
-/// geçmiş günler soluk gösterilir.
+/// geçmiş günler soluk gösterilir. Tebrik mesajı olan günlerde "Tebrik gönder"
+/// (greetings_<dil>.json; kopyala / metin / resimli paylaş).
 class ReligiousDaysView extends StatefulWidget {
   const ReligiousDaysView({super.key});
 
@@ -25,6 +30,9 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
   bool _scrolledToNext = false;
   // Diyanet tarihleri yüklenene kadar null (yükleniyor)
   List<ResmiDiniGun>? _resmi;
+  // Tebrik mesajları (tür adı → mesajlar); yüklenemezse null, düğme çıkmaz
+  Map<String, List<String>>? _greetings;
+  String? _language;
 
   @override
   void initState() {
@@ -36,6 +44,58 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
     DiniGunlerService.loadResmiGunler().then((resmi) {
       if (mounted) setState(() => _resmi = resmi);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final language = Localizations.localeOf(context).languageCode;
+    if (language != _language) {
+      _language = language;
+      _loadGreetings(language);
+    }
+  }
+
+  Future<void> _loadGreetings(String language) async {
+    try {
+      final greetings = await JsonService().getGreetings(language);
+      if (mounted && language == _language) {
+        setState(() => _greetings = greetings);
+      }
+    } catch (_) {}
+  }
+
+  /// Günün tebrikleri; Regaib üç ayların ilk haftasında olduğundan üç aylar
+  /// tebrikleri de sunulur
+  List<_GreetingGroup> _greetingGroups(DiniGunTuru? tur) {
+    final greetings = _greetings;
+    if (greetings == null || tur == null) return const [];
+    return [
+      for (final t in [
+        tur,
+        if (tur == DiniGunTuru.regaipKandili) DiniGunTuru.ucAylar,
+      ])
+        if (greetings[t.name]?.isNotEmpty ?? false)
+          (tur: t, messages: greetings[t.name]!),
+    ];
+  }
+
+  void _showGreetings(List<_GreetingGroup> groups) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (_) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.75,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        builder: (_, controller) => SheetMessenger(
+          child: _GreetingSheet(controller: controller, groups: groups),
+        ),
+      ),
+    );
   }
 
   void _changeYear(int delta) {
@@ -126,6 +186,10 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
             day.isim == next.isim &&
             PrayerTracker.daysBetween(next.tarih, day.tarih) == 0;
         hasNext |= isNext;
+        // Bayram birkaç gün sürer: geçen günün tebriği 3 gün daha gönderilebilir
+        final greetings = diff >= -3
+            ? _greetingGroups(day.tur)
+            : const <_GreetingGroup>[];
         children.add(
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -139,19 +203,27 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
                   ? _DayState.next
                   : (diff < 0 ? _DayState.past : _DayState.upcoming),
               countdown: isNext ? loc.daysLeft(diff) : null,
+              onGreeting: greetings.isEmpty
+                  ? null
+                  : () => _showGreetings(greetings),
             ),
           ),
         );
       }
       if (hasNext) _scrollToNextOnce();
-      list = ListView(
+      // Hepsi çizilir (yılda ~12 gün): yılın sonlarında da sıradaki güne
+      // kaydırılabilsin (tembel listede henüz çizilmemiş kart bulunamıyordu)
+      list = SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.lg,
           AppSpacing.xs,
           AppSpacing.lg,
           AppSpacing.lg,
         ),
-        children: children,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
       );
     }
 
@@ -227,6 +299,7 @@ class _DayCard extends StatelessWidget {
   final String date;
   final _DayState state;
   final String? countdown;
+  final VoidCallback? onGreeting;
 
   const _DayCard({
     super.key,
@@ -234,6 +307,7 @@ class _DayCard extends StatelessWidget {
     required this.date,
     required this.state,
     this.countdown,
+    this.onGreeting,
   });
 
   @override
@@ -319,12 +393,77 @@ class _DayCard extends StatelessWidget {
                       ),
                     ),
                   ],
+                  if (onGreeting != null) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    TextButton.icon(
+                      onPressed: onGreeting,
+                      style: isNext
+                          ? TextButton.styleFrom(
+                              foregroundColor: colors.onNextContainer,
+                            )
+                          : null,
+                      icon: const Icon(Icons.send_rounded, size: 20),
+                      label: Text(AppLocalizations.of(context)!.sendGreeting),
+                    ),
+                  ],
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Tebrik mesajları: tür başına başlık + mesaj kartları (Cuma mesajlarıyla
+/// aynı kart: kopyala / metni paylaş / resimli paylaş)
+class _GreetingSheet extends StatelessWidget {
+  final ScrollController controller;
+  final List<_GreetingGroup> groups;
+
+  const _GreetingSheet({required this.controller, required this.groups});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return ListView(
+      controller: controller,
+      // + gezinme çubuğu (uçtan uca): son kart altında kalmasın
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.xl + MediaQuery.paddingOf(context).bottom,
+      ),
+      children: [
+        Semantics(
+          header: true,
+          child: Text(
+            loc.greetingsTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        for (final group in groups) ...[
+          SectionHeader(
+            DiniGunlerService.isimOf(group.tur, loc),
+            onImage: false,
+            padding: const EdgeInsetsDirectional.only(
+              top: AppSpacing.lg,
+              bottom: AppSpacing.sm,
+            ),
+          ),
+          for (final message in group.messages)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
+              child: MessageCard(
+                message: message,
+                title: DiniGunlerService.isimOf(group.tur, loc),
+                campaign: 'greeting',
+              ),
+            ),
+        ],
+      ],
     );
   }
 }

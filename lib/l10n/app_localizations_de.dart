@@ -99,6 +99,24 @@ class AppLocalizationsDe extends AppLocalizations {
   String get messagesShuffled => 'Nachrichten gemischt';
 
   @override
+  String get shareAsImage => 'Als Bild teilen';
+
+  @override
+  String get shareAsText => 'Text teilen';
+
+  @override
+  String get shareCardFooter => 'Vaktinde bei Google Play';
+
+  @override
+  String get fridayGreeting => 'Gesegneter Freitag';
+
+  @override
+  String get sendGreeting => 'Glückwünsche senden';
+
+  @override
+  String get greetingsTitle => 'Grußbotschaften';
+
+  @override
   String get shuffle => 'Mischen';
 
   @override
