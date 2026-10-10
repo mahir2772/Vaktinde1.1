@@ -10,7 +10,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import java.util.Calendar
+import java.util.GregorianCalendar
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.abs
 
 /**
@@ -31,6 +33,7 @@ object PrayerWidgetData {
     private const val HIJRI_KEY = "hijri_date_text"
     private const val TOMORROW_HIJRI_KEY = "tomorrow_hijri_date_text"
     private val DATE_PATTERN = Regex("\\d{4}-\\d{2}-\\d{2}")
+    private const val DAY_MS = 24 * 60 * 60 * 1000L
 
     // Sağlayıcı başına tek güncelleme alarmı; kurulum ve iptal aynı requestCode + intent
     private const val UPDATE_REQUEST_CODE = 0
@@ -67,9 +70,13 @@ object PrayerWidgetData {
         }
     }
 
+    /** Vaktin adı (0 imsak … 5 yatsı): Dart'ın label_<vakit> anahtarı, yoksa Türkçe */
+    fun label(data: SharedPreferences, index: Int): String =
+        data.getString(LABEL_KEYS[index], DEFAULT_LABELS[index]) ?: DEFAULT_LABELS[index]
+
     /** Sıradaki vakit; veri yoksa null */
     fun nextPrayer(data: SharedPreferences, day: Day, now: Calendar): NextPrayer? {
-        val labels = LABEL_KEYS.mapIndexed { i, key -> data.getString(key, DEFAULT_LABELS[i]) ?: DEFAULT_LABELS[i] }
+        val labels = LABEL_KEYS.indices.map { label(data, it) }
         val candidates = day.times.mapIndexed { i, time -> NextPrayer(timeMs(time, 0, now), labels[i], i) } +
             NextPrayer(timeMs(day.nextImsak, 1, now), labels[0], 0)
         val nowMs = now.timeInMillis
@@ -127,6 +134,16 @@ object PrayerWidgetData {
         Locale.US, "%04d-%02d-%02d",
         c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH)
     )
+
+    /** "yyyy-MM-dd" → 1970'ten beri gün (UTC: yaz saati farkı yok); geçersizse null */
+    fun epochDay(key: String?): Long? {
+        if (key == null || !DATE_PATTERN.matches(key)) return null
+        val parts = key.split("-")
+        val c = GregorianCalendar(TimeZone.getTimeZone("UTC"))
+        c.clear()
+        c.set(parts[0].toInt(), parts[1].toInt() - 1, parts[2].toInt())
+        return c.timeInMillis / DAY_MS
+    }
 
     private fun updateIntent(context: Context, providerClass: Class<*>): Intent =
         Intent(context, providerClass).apply { action = AppWidgetManager.ACTION_APPWIDGET_UPDATE }

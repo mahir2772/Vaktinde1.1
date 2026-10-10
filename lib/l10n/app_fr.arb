@@ -678,6 +678,17 @@
     "editCounterTitle": "Modifier le compteur",
     "resetCounterConfirm": "Voulez-vous vraiment réinitialiser le compteur ?",
     "imsakiyeTitle": "Calendrier des prières",
+    "widgetRamadanName": "Compte à rebours du Ramadan",
+    "widgetRamadanDesc": "Carré : temps restant avant l'iftar et la fin du suhoor ; hors Ramadan, jours restants avant son début",
+    "widgetRamadanDay": "Ramadan · jour {day}",
+    "@widgetRamadanDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "widgetRamadanUntil": "Jours avant le Ramadan",
     "toolsGroupPrayer": "Prière",
     "toolsGroupInfo": "Connaissances",
     "toolsGroupCalc": "Calculs",

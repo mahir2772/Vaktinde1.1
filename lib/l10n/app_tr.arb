@@ -699,6 +699,17 @@
     "editCounterTitle": "Sayacı Düzenle",
     "resetCounterConfirm": "Sayacı sıfırlamak istediğinize emin misiniz?",
     "imsakiyeTitle": "İmsakiye",
+    "widgetRamadanName": "Ramazan Sayacı",
+    "widgetRamadanDesc": "Kare: iftara ve sahura kalan süre; Ramazan dışında Ramazan'a kalan gün",
+    "widgetRamadanDay": "Ramazan · {day}. gün",
+    "@widgetRamadanDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "widgetRamadanUntil": "Ramazan'a Kalan Gün",
     "toolsGroupPrayer": "Namaz",
     "toolsGroupInfo": "Bilgi",
     "toolsGroupCalc": "Hesaplama",

@@ -1441,6 +1441,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get imsakiyeTitle => 'İmsakiye';
 
   @override
+  String get widgetRamadanName => 'Ramazan Sayacı';
+
+  @override
+  String get widgetRamadanDesc =>
+      'Kare: iftara ve sahura kalan süre; Ramazan dışında Ramazan\'a kalan gün';
+
+  @override
+  String widgetRamadanDay(String day) {
+    return 'Ramazan · $day. gün';
+  }
+
+  @override
+  String get widgetRamadanUntil => 'Ramazan\'a Kalan Gün';
+
+  @override
   String get toolsGroupPrayer => 'Namaz';
 
   @override

@@ -1446,6 +1446,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imsakiyeTitle => 'Prayer Timetable';
 
   @override
+  String get widgetRamadanName => 'Ramadan Countdown';
+
+  @override
+  String get widgetRamadanDesc =>
+      'Square: time left until iftar and until suhoor ends; outside Ramadan, the days until it begins';
+
+  @override
+  String widgetRamadanDay(String day) {
+    return 'Ramadan · day $day';
+  }
+
+  @override
+  String get widgetRamadanUntil => 'Days until Ramadan';
+
+  @override
   String get toolsGroupPrayer => 'Prayer';
 
   @override

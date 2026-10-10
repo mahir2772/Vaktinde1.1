@@ -1460,6 +1460,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imsakiyeTitle => 'Gebetskalender';
 
   @override
+  String get widgetRamadanName => 'Ramadan-Countdown';
+
+  @override
+  String get widgetRamadanDesc =>
+      'Quadrat: Zeit bis zum Iftar und bis zum Ende des Suhur; außerhalb des Ramadan die Tage bis zu seinem Beginn';
+
+  @override
+  String widgetRamadanDay(String day) {
+    return 'Ramadan · Tag $day';
+  }
+
+  @override
+  String get widgetRamadanUntil => 'Tage bis zum Ramadan';
+
+  @override
   String get toolsGroupPrayer => 'Gebet';
 
   @override

@@ -6,6 +6,8 @@
     <string name="vaktinde_widget_large_description">Location, Hijri date, today\'s prayer times and the time left until the next prayer</string>
     <string name="vaktinde_widget_small2_label">Next Prayer</string>
     <string name="vaktinde_widget_small2_description">Location, Hijri date and the time left until the next prayer</string>
+    <string name="vaktinde_widget_ramadan_label">Ramadan Countdown</string>
+    <string name="vaktinde_widget_ramadan_description">Time left until iftar and until suhoor ends; outside Ramadan, the days until it begins</string>
 
     <string name="vaktinde_widget_location">Location</string>
     <string name="vaktinde_widget_hijri_sample">25 Dhu Al-Hijjah</string>
@@ -17,4 +19,7 @@
     <string name="vaktinde_widget_ikindi">Asr</string>
     <string name="vaktinde_widget_aksam">Maghrib</string>
     <string name="vaktinde_widget_yatsi">Isha</string>
+    <string name="vaktinde_widget_ramadan_day_sample">Ramadan · day 12</string>
+    <string name="vaktinde_widget_ramadan_title_sample">Iftar in</string>
+    <string name="vaktinde_widget_ramadan_time_sample">Maghrib 19:05</string>
 </resources>

@@ -4,6 +4,8 @@ import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
+import 'package:ezan_saati/data/services/widget_service.dart';
+import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -117,11 +119,46 @@ void main() {
           'VaktindeWidgetSmallProvider',
           'VaktindeWidgetLargeProvider',
           'VaktindeWidgetSmall2Provider',
+          'VaktindeWidgetRamadanProvider',
           'NotificationUpdater',
         },
       );
     },
   );
+
+  test('Ramazan widget\'ının tarihleri ve metinleri seçili dilde yazılır', () async {
+    SharedPreferences.setMockInitialValues({
+      'saved_lat': 41.0,
+      'saved_lng': 29.0,
+    });
+    final en = lookupAppLocalizations(const Locale('en'));
+    await write(allMidnight, loc: en);
+
+    final data = saved();
+    final expected = WidgetService.ramadanData(
+      now: DateTime.now(),
+      calendar: await loadRamadanCalendar(),
+      loc: en,
+    );
+    for (final entry in expected.entries) {
+      expect(data[entry.key], entry.value, reason: entry.key);
+    }
+    for (final key in [
+      'ramadan_start',
+      'ramadan_end',
+      'ramadan_next_start',
+    ]) {
+      expect(data[key], matches(RegExp(r'^\d{4}-\d{2}-\d{2}$')), reason: key);
+    }
+    // Tarih metni seçili dilde (intl tarih verisi yazmadan önce yüklenir)
+    expect(data['ramadan_start_text'], isNot(contains('.')));
+    expect(data['ramadan_title_iftar'], en.ramadanIftarLeft);
+    expect(data['ramadan_day_text'], 'Ramadan · day %d');
+    // Ramazan anahtarları widget'lar yenilenmeden önce yazılır
+    final lastSave = calls.lastIndexWhere((c) => c.method == 'saveWidgetData');
+    final firstUpdate = calls.indexWhere((c) => c.method == 'updateWidget');
+    expect(lastSave, lessThan(firstUpdate));
+  });
 
   test('Yatsıdan sonra hedef yarının gerçek imsakı', () async {
     SharedPreferences.setMockInitialValues({
@@ -260,7 +297,7 @@ void main() {
           )
           .map((c) => c.method == 'updateWidget' ? 'U' : c.arguments['data'])
           .join();
-      expect(trace, 'A, FatihUUUUB, FatihUUUU');
+      expect(trace, 'A, FatihUUUUUB, FatihUUUUU');
       expect(saved()['location_text'], 'B, Fatih');
     },
   );
@@ -315,6 +352,11 @@ void main() {
       final ar = lookupAppLocalizations(const Locale('ar'));
       expect(data['title_ogle'], ar.toOgle);
       expect(data['title_yatsi'], ar.toYatsi);
+      // Ramazan widget'ı da (tarih metni Arapça: arka planda intl verisi yüklenir)
+      expect(data['ramadan_title_iftar'], ar.ramadanIftarLeft);
+      expect(data['ramadan_day_text'], ar.widgetRamadanDay('%d'));
+      expect(data['ramadan_start'], matches(RegExp(r'^\d{4}-\d{2}-\d{2}$')));
+      expect(data['ramadan_start_text'], isNot(matches(RegExp(r'^\d\d\.'))));
     });
   });
 }

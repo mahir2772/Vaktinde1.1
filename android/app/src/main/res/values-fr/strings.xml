@@ -6,6 +6,8 @@
     <string name="vaktinde_widget_large_description">Lieu, date hégirienne, horaires du jour et temps restant avant la prochaine prière</string>
     <string name="vaktinde_widget_small2_label">Prochaine prière</string>
     <string name="vaktinde_widget_small2_description">Lieu, date hégirienne et temps restant avant la prochaine prière</string>
+    <string name="vaktinde_widget_ramadan_label">Compte à rebours du Ramadan</string>
+    <string name="vaktinde_widget_ramadan_description">Temps restant avant l\'iftar et la fin du suhoor ; hors Ramadan, jours restants avant son début</string>
 
     <string name="vaktinde_widget_location">Lieu</string>
     <string name="vaktinde_widget_hijri_sample">25 Dhu Al-Hijjah</string>
@@ -17,4 +19,7 @@
     <string name="vaktinde_widget_ikindi">Asr</string>
     <string name="vaktinde_widget_aksam">Maghrib</string>
     <string name="vaktinde_widget_yatsi">Isha</string>
+    <string name="vaktinde_widget_ramadan_day_sample">Ramadan · jour 12</string>
+    <string name="vaktinde_widget_ramadan_title_sample">Temps avant l\'iftar</string>
+    <string name="vaktinde_widget_ramadan_time_sample">Maghrib 19:05</string>
 </resources>

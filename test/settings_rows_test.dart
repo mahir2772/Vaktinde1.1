@@ -283,7 +283,7 @@ void main() {
         if (receiver.contains('android.appwidget.provider'))
           RegExp(r'android:name="([\w.]+)"').firstMatch(receiver)![1]!,
     }.map((n) => n.startsWith('.') ? 'com.mmdigital.vaktinde$n' : n).toSet();
-    expect(providers, hasLength(3));
+    expect(providers, hasLength(4));
     expect(
       HomeScreenWidget.values.map((w) => w.qualifiedAndroidName).toSet(),
       providers,

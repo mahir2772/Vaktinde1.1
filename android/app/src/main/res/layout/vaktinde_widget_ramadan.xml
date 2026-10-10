@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ramazan widget'ı (VaktindeWidgetRamadanProvider): Ramazan'da gün + iftar/sahur sayacı +
+     hedef vakit; dışında Ramazan'a kalan gün (tv_ramadan_days_left) + başlangıç tarihi.
+     Metinler önizleme / ilk çizim yer tutucusu; görünürlükleri sağlayıcı belirler -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv_ramadan_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/vaktinde_widget_ramadan_day_sample"
+        android:textColor="#FFCA28"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_ramadan_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="@string/vaktinde_widget_ramadan_title_sample"
+        android:textColor="#00E5A8"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- Varsayılan yazı tipinin rakamları eş genişlikte: sayaç titremez; monospace dar
+         widget'a sığmıyor -->
+    <Chronometer
+        android:id="@+id/chronometer_ramadan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:countDown="true"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_ramadan_days_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="--"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_ramadan_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/vaktinde_widget_ramadan_time_sample"
+        android:textColor="#CCFFFFFF"
+        android:textSize="12sp" />
+
+</LinearLayout>

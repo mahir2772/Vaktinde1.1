@@ -1448,6 +1448,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get imsakiyeTitle => 'جدول المواقيت';
 
   @override
+  String get widgetRamadanName => 'العد التنازلي لرمضان';
+
+  @override
+  String get widgetRamadanDesc =>
+      'مربع: الوقت المتبقي للإفطار ولانتهاء السحور، وخارج رمضان الأيام المتبقية حتى بدايته';
+
+  @override
+  String widgetRamadanDay(String day) {
+    return 'رمضان · اليوم $day';
+  }
+
+  @override
+  String get widgetRamadanUntil => 'الأيام المتبقية حتى رمضان';
+
+  @override
   String get toolsGroupPrayer => 'الصلاة';
 
   @override

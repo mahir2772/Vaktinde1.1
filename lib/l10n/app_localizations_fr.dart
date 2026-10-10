@@ -1466,6 +1466,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get imsakiyeTitle => 'Calendrier des prières';
 
   @override
+  String get widgetRamadanName => 'Compte à rebours du Ramadan';
+
+  @override
+  String get widgetRamadanDesc =>
+      'Carré : temps restant avant l\'iftar et la fin du suhoor ; hors Ramadan, jours restants avant son début';
+
+  @override
+  String widgetRamadanDay(String day) {
+    return 'Ramadan · jour $day';
+  }
+
+  @override
+  String get widgetRamadanUntil => 'Jours avant le Ramadan';
+
+  @override
   String get toolsGroupPrayer => 'Prière';
 
   @override

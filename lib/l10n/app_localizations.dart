@@ -2666,6 +2666,30 @@ abstract class AppLocalizations {
   /// **'İmsakiye'**
   String get imsakiyeTitle;
 
+  /// No description provided for @widgetRamadanName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Sayacı'**
+  String get widgetRamadanName;
+
+  /// No description provided for @widgetRamadanDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kare: iftara ve sahura kalan süre; Ramazan dışında Ramazan\'a kalan gün'**
+  String get widgetRamadanDesc;
+
+  /// No description provided for @widgetRamadanDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan · {day}. gün'**
+  String widgetRamadanDay(String day);
+
+  /// No description provided for @widgetRamadanUntil.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan\'a Kalan Gün'**
+  String get widgetRamadanUntil;
+
   /// No description provided for @toolsGroupPrayer.
   ///
   /// In tr, this message translates to:
