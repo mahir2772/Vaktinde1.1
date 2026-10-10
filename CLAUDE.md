@@ -88,7 +88,8 @@ lib/
                             günün alarmı da yazılmaz. Güneş, hatırlatma ve vakit çıkış hatırlatması korunmaz
       widget_service        home_widget → Android widget'larına veri yazar (+ gün dönümü: times_date, tomorrow_*;
                             koordinat yoksa silinir; vakte kalan başlıkları title_imsak…title_yatsi = loc.toX, titleKeys).
-                            updateHomeWidget yazımları SerialQueue ile sıralı
+                            updateHomeWidget yazımları SerialQueue ile sıralı. Ramazan widget'ı: ramadanData (saf) → 'ramadan_start/_end/
+                            _next_start' (+ _text), başlıklar, 'ramadan_day_text' (%d) — 4. sağlayıcı VaktindeWidgetRamadanProvider
       hadith_service        hadeethenc.com API + yerel json fallback
       ayah_service          api.alquran.cloud
       economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır
@@ -169,7 +170,7 @@ lib/
                                            + SheetMessenger (alt sayfada SnackBar). Kampanyalar: friday/daily/greeting/invite
     religious_days/view/religious_days_view.dart  "Tebrik gönder" alt sayfası (assets/data/greetings_<dil>.json,
                                            JsonService.getGreetings; gün yaklaşırken ve 3 gün sonrasına kadar; Regaib + Üç Aylar)
-    settings/view/add_widget_sheet.dart    "Ana Ekrana Widget Ekle" (HomeWidget.requestPinWidget, sağlayıcı adı manifestle aynı;
+    settings/view/add_widget_sheet.dart    "Ana Ekrana Widget Ekle" (4 widget; HomeWidget.requestPinWidget, sağlayıcı adı manifestle aynı;
                                            satır sadece başlatıcı destekliyorsa)
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
@@ -200,10 +201,12 @@ android/app/src/main/
                           setRefreshAlarm: tam zamanlı (setExactAndAllowWhileIdle); izin yoksa (Android 12/12L) uyandırmayan
                           setWindow(RTC, 10 dk): izinsiz setAlarmClock SecurityException atar, setAndAllowWhileIdle ise Doze'da
                           ezanla aynı "9 dk'da bir" kotasını paylaşıp ezanı geciktirir. NextPrayer(time, label, index);
-                          title(): Dart'ın title_<vakit> anahtarı ("İkindiye"), yoksa title_text (±60 sn) / vakit adı
+                          title(): Dart'ın title_<vakit> anahtarı ("İkindiye"), yoksa title_text (±60 sn) / vakit adı; label(), epochDay()
+    VaktindeWidgetRamadanProvider.kt  Ramazan widget'ı (2x2): Ramazan'da iftar/sahur Chronometer + "N. gün", dışında
+                          "Ramazan'a N gün"; gün sayısını tarihten kendisi hesaplar; yenileme imsak/akşam/gece yarısı
     VaktindeApplication.kt + WidgetRefresher.kt  kendini onaran sayaç (alarm geç/hiç gelmeyen üreticiler): onCreate'te tek dinamik
-                          alıcı (TIME_TICK, SCREEN_ON, USER_PRESENT; 33+ NOT_EXPORTED) + açılışta bir denetim. Her yüzey (3 widget
-                          türü + 888) çizdiği hedef + günü 'vaktinde_widget_state'e yazar (markWidgetsDrawn/markNotificationDrawn);
+                          alıcı (TIME_TICK, SCREEN_ON, USER_PRESENT; 33+ NOT_EXPORTED) + açılışta bir denetim. Her yüzey (4 widget
+                          türü + 888, sağlayıcı başına beklenen durum) çizdiği hedef + günü 'vaktinde_widget_state'e yazar (markWidgetsDrawn/markNotificationDrawn);
                           hesaplanandan farklıysa sadece o yüzey süreç içinde yeniden çizilir (888 sadece açıksa). Hiçbir yol
                           fırlatmaz. Widget yenilemede setAlarmClock KULLANILMAZ (durum çubuğu alarm simgesi)
   res/layout/vaktinde_widget_*.xml, custom_notification.xml; res/xml/widget_info_* (30 dk, açıklama, previewLayout);

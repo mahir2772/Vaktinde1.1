@@ -56,10 +56,10 @@ Amaç: günde birkaç kez açılan, paylaşılan, rakipten daha güvenilir uygul
 5. Widget "Ana ekrana ekle" (Ayarlar + Alarmlar): widget kullanan kullanıcı kalıcıdır.
 
 **Faz 2 — Ramazan (10 Ocak 2027'ye kadar yayında)**
-6. Ramazan widget'ı: iftar/sahur sayacı.
+6. ✅ Ramazan widget'ı: iftar/sahur sayacı.
 7. Paylaşılabilir iftar sayacı kartı ("İftara 1 sa 12 dk · İstanbul").
-8. Fitre/fidye hesabı (tutar json'da, güncellenebilir).
-9. Oruç takibi (Ramazan günleri, kaza orucuna ekle).
+8. ✅ Fitre/fidye hesabı (tutar json'da, güncellenebilir).
+9. ✅ Oruç takibi (Ramazan günleri, kaza orucuna ekle).
 
 **Faz 3 — Günlük kullanım (Ramazan sonrası)**
 10. Dualar: sabah/akşam, namaz sonrası tesbihat (zikirmatikle), yemek/yolculuk duaları (çevrimdışı).
