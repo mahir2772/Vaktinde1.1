@@ -312,6 +312,15 @@
             }
         }
     },
+    "addWidgetTitle": "Ajouter un widget à l'écran d'accueil",
+    "addWidgetSub": "Voir les horaires sans ouvrir l'application",
+    "addWidgetHint": "Choisissez-en un ; votre écran d'accueil vous demandera de confirmer.",
+    "widgetLargeName": "Horaires du jour",
+    "widgetLargeDesc": "Grand format : lieu, date hégirienne, horaires du jour et temps restant",
+    "widgetWideName": "Prochaine prière",
+    "widgetWideDesc": "Bandeau horizontal : lieu, date hégirienne et temps restant avant la prochaine prière",
+    "widgetSmallName": "Compte à rebours",
+    "widgetSmallDesc": "Petit carré : temps restant avant la prochaine prière",
     "trackerLegendPrayed": "Accomplie",
     "trackerLegendKaza": "Ajoutée au qada",
     "kerahatActive": "Temps makruh en cours : {range}",

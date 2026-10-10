@@ -312,6 +312,15 @@
             }
         }
     },
+    "addWidgetTitle": "Add Home Screen Widget",
+    "addWidgetSub": "See prayer times without opening the app",
+    "addWidgetHint": "Pick one; your home screen will ask you to confirm.",
+    "widgetLargeName": "Today's Prayer Times",
+    "widgetLargeDesc": "Large: location, Hijri date, today's prayer times and time left",
+    "widgetWideName": "Next Prayer",
+    "widgetWideDesc": "Wide strip: location, Hijri date and time left until the next prayer",
+    "widgetSmallName": "Prayer Countdown",
+    "widgetSmallDesc": "Small square: time left until the next prayer",
     "trackerLegendPrayed": "Prayed",
     "trackerLegendKaza": "Added to qada",
     "kerahatActive": "Makruh time now: {range}",

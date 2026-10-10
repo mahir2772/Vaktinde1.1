@@ -333,6 +333,15 @@
             }
         }
     },
+    "addWidgetTitle": "Ana Ekrana Widget Ekle",
+    "addWidgetSub": "Vakitleri uygulamayı açmadan görün",
+    "addWidgetHint": "Birini seçin; ana ekranınız eklemeden önce onay isteyecek.",
+    "widgetLargeName": "Günün Vakitleri",
+    "widgetLargeDesc": "Büyük boy: konum, hicri tarih, günün vakitleri ve kalan süre",
+    "widgetWideName": "Sıradaki Vakit",
+    "widgetWideDesc": "Yatay şerit: konum, hicri tarih ve sıradaki vakte kalan süre",
+    "widgetSmallName": "Vakit Sayacı",
+    "widgetSmallDesc": "Küçük kare: sıradaki vakte kalan süre",
     "trackerLegendPrayed": "Kılındı",
     "trackerLegendKaza": "Kazaya eklendi",
     "kerahatActive": "Şu an kerahat vakti: {range}",

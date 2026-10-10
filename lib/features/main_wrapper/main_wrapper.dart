@@ -41,8 +41,10 @@ class _MainWrapperState extends State<MainWrapper> {
   // Tur birden fazla kez başlamasın
   bool _isTutorialChecked = false;
 
-  // 7 günlük tam seride bir kez değerlendirme isteği (açılış akışından sonra)
+  // Değerlendirme isteği (açılış akışından sonra; ömür boyu tek istek ortak):
+  // 7 günlük tam seride ya da uygulama 5 farklı günde açılınca
   late final StreakReviewPrompt _reviewPrompt;
+  late final UsageReviewPrompt _usagePrompt;
 
   @override
   void initState() {
@@ -50,11 +52,9 @@ class _MainWrapperState extends State<MainWrapper> {
     final viewModel = context.read<HomeViewModel>();
     _reviewPrompt = StreakReviewPrompt(
       todayTimes: () => viewModel.prayerTimes,
-      canPrompt: () =>
-          !permissionPrimingActive &&
-          !AdConsent.isGatheringConsent &&
-          !_isTourRunning(),
+      canPrompt: _canPromptReview,
     );
+    _usagePrompt = UsageReviewPrompt(canPrompt: _canPromptReview);
     AdHelper.instance.loadInterstitialAd();
     HomeView.alarmsTabRequests.addListener(_showHomeTab);
 
@@ -85,9 +85,18 @@ class _MainWrapperState extends State<MainWrapper> {
       await context.read<HomeViewModel>().requestBatteryOptimizationOnce();
     } finally {
       // Değerlendirme isteği açılış pencereleriyle çakışmaz
-      if (mounted) _reviewPrompt.start();
+      if (mounted) {
+        _reviewPrompt.start();
+        _usagePrompt.start();
+      }
     }
   }
+
+  // İzin, rıza formu ya da tanıtım turu açıkken değerlendirme istenmez
+  bool _canPromptReview() =>
+      !permissionPrimingActive &&
+      !AdConsent.isGatheringConsent &&
+      !_isTourRunning();
 
   bool _isTourRunning() {
     try {
@@ -101,6 +110,7 @@ class _MainWrapperState extends State<MainWrapper> {
   void dispose() {
     HomeView.alarmsTabRequests.removeListener(_showHomeTab);
     _reviewPrompt.dispose();
+    _usagePrompt.dispose();
     super.dispose();
   }
 

@@ -9,10 +9,10 @@ import '../../data/services/prayer_tracker.dart';
 import '../../data/services/prayer_tracker_service.dart';
 
 /// Namaz takibinde 7 günlük tam seri uygulama içinde tamamlanınca Play'in
-/// uygulama içi değerlendirme penceresi istenir: ömür boyu en fazla bir kez,
-/// sadece [InAppReview.isAvailable] ise. MainWrapper açılış pencerelerinden
-/// sonra başlatır (ön plan, ana isolate); bildirimdeki "Kıldım" ayrı isolate'te
-/// çalıştığından bunu tetiklemez.
+/// uygulama içi değerlendirme penceresi istenir: ömür boyu en fazla bir kez
+/// ([UsageReviewPrompt] ile ortak), sadece [InAppReview.isAvailable] ise.
+/// MainWrapper açılış pencerelerinden sonra başlatır (ön plan, ana isolate);
+/// bildirimdeki "Kıldım" ayrı isolate'te çalıştığından bunu tetiklemez.
 class StreakReviewPrompt {
   StreakReviewPrompt({
     required this.todayTimes,
@@ -20,7 +20,7 @@ class StreakReviewPrompt {
     this.delay = const Duration(seconds: 1),
   });
 
-  /// Değerlendirme istendi mi (bir daha istenmez)
+  /// Değerlendirme istendi mi (bir daha istenmez; iki tetik için ortak)
   static const String requestedKey = 'review_requested';
   static const int goalDays = 7;
 
@@ -38,7 +38,8 @@ class StreakReviewPrompt {
   bool _done = false;
   Future<void> _chain = Future<void>.value();
 
-  // Süreçte tek istek: aynı anda iki örnek (ör. yeniden kurulan ekran) istemesin
+  // Süreçte tek istek: aynı anda iki örnek (ör. yeniden kurulan ekran) ya da
+  // iki tetik (seri, kullanım günü) istemesin
   static bool _requestedThisRun = false;
 
   @visibleForTesting
@@ -108,30 +109,144 @@ class StreakReviewPrompt {
       final before = _baseline;
       _baseline = streak;
       if (reachedGoal(before: before, after: streak)) {
-        await _request(prefs);
+        _done = await _requestReview(
+          prefs,
+          delay: delay,
+          canShow: () => _active && _calmForeground(canPrompt),
+        );
       }
     } catch (e) {
       debugPrint('Değerlendirme isteği yapılamadı: $e');
     }
   }
+}
 
-  Future<void> _request(SharedPreferences prefs) async {
-    if (delay > Duration.zero) await Future<void>.delayed(delay);
-    if (!_canShowNow()) return;
-    final review = InAppReview.instance;
-    if (!await review.isAvailable()) return;
-    if (!_canShowNow() || _requestedThisRun) return;
-    // Önce kayıt: istek hata verse de bir daha sorulmaz
-    _requestedThisRun = true;
-    _done = true;
-    await prefs.setBool(requestedKey, true);
-    await review.requestReview();
+/// Uygulama 5 farklı günde ön planda açılınca (seriden bağımsız) aynı ömür boyu
+/// tek değerlendirme isteği ([StreakReviewPrompt.requestedKey]). Kayıt küçük:
+/// sayılan gün sayısı + son sayılan gün. MainWrapper açılış pencerelerinden
+/// sonra başlatır; istek açılışta ya da yeni günün ilk ön plana gelişinde
+/// (reklamdan/ayarlardan dönüşte değil), birkaç saniye sonra ve başka pencere
+/// yokken denenir.
+class UsageReviewPrompt {
+  UsageReviewPrompt({
+    this.canPrompt,
+    this.delay = const Duration(seconds: 3),
+    DateTime Function()? clock,
+  }) : _clock = clock ?? DateTime.now;
+
+  /// Uygulamanın ön planda açıldığı farklı gün sayısı
+  static const String countKey = 'usage_days_count';
+
+  /// Son sayılan gün ([PrayerTracker.epochDay])
+  static const String lastDayKey = 'usage_last_day';
+  static const int goalDays = 5;
+
+  /// Başka bir pencere (izin, rıza formu, tanıtım turu) açıksa false
+  final bool Function()? canPrompt;
+
+  /// Açılışta vakitler görünsün diye bekleme
+  final Duration delay;
+
+  final DateTime Function() _clock;
+
+  AppLifecycleListener? _lifecycle;
+  bool _done = false;
+  Future<void> _chain = Future<void>.value();
+
+  /// Ön planda açılış: bugün sayılmadıysa bir gün eklenir (aynı gün ikinci
+  /// açılış sayılmaz). İstek açılışta ([launch]) ya da yeni günün ilk ön plana
+  /// gelişinde, gün sayısı hedefteyse istenir.
+  static ({int count, bool ask}) onOpen({
+    required int count,
+    required int? lastDay,
+    required int today,
+    required bool launch,
+  }) {
+    final newDay = lastDay != today;
+    final next = newDay ? count + 1 : count;
+    return (count: next, ask: (launch || newDay) && next >= goalDays);
   }
 
-  bool _canShowNow() {
-    if (!_active) return false;
-    final state = WidgetsBinding.instance.lifecycleState;
-    if (state != null && state != AppLifecycleState.resumed) return false;
-    return canPrompt?.call() ?? true;
+  /// Açılışı sayar ve ön plana her dönüşü dinler (tekrar çağrı etkisiz)
+  void start() {
+    if (_lifecycle != null) return;
+    _lifecycle = AppLifecycleListener(onResume: () => _enqueue(launch: false));
+    _enqueue(launch: true);
   }
+
+  void dispose() {
+    _lifecycle?.dispose();
+    _lifecycle = null;
+  }
+
+  /// Sıradaki denetimler bitince tamamlanır
+  @visibleForTesting
+  Future<void> get settled => _chain;
+
+  void _enqueue({required bool launch}) {
+    _chain = _chain.then((_) => _evaluate(launch: launch));
+  }
+
+  Future<void> _evaluate({required bool launch}) async {
+    if (_lifecycle == null || _done || StreakReviewPrompt._requestedThisRun) {
+      return;
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool(StreakReviewPrompt.requestedKey) ?? false) {
+        _done = true;
+        return;
+      }
+      // Arka planda sayılmaz: ön plana dönüşte (onResume) sayılır
+      if (!_inForeground()) return;
+      final today = PrayerTracker.epochDay(_clock());
+      final before = prefs.getInt(countKey) ?? 0;
+      final open = onOpen(
+        count: before,
+        lastDay: prefs.getInt(lastDayKey),
+        today: today,
+        launch: launch,
+      );
+      if (open.count != before) {
+        await prefs.setInt(countKey, open.count);
+        await prefs.setInt(lastDayKey, today);
+      }
+      if (open.ask) {
+        _done = await _requestReview(
+          prefs,
+          delay: delay,
+          canShow: () => _lifecycle != null && _calmForeground(canPrompt),
+        );
+      }
+    } catch (e) {
+      debugPrint('Değerlendirme isteği yapılamadı: $e');
+    }
+  }
+}
+
+bool _inForeground() {
+  final state = WidgetsBinding.instance.lifecycleState;
+  return state == null || state == AppLifecycleState.resumed;
+}
+
+/// Uygulama ön planda ve başka pencere (izin, rıza formu, tur) açık değil
+bool _calmForeground(bool Function()? canPrompt) =>
+    _inForeground() && (canPrompt?.call() ?? true);
+
+/// [delay] sonra hâlâ uygunsa ([canShow]) ve Play değerlendirmesi varsa ister;
+/// istendiyse true. Önce kayıt: istek hata verse de bir daha sorulmaz.
+Future<bool> _requestReview(
+  SharedPreferences prefs, {
+  required Duration delay,
+  required bool Function() canShow,
+}) async {
+  if (delay > Duration.zero) await Future<void>.delayed(delay);
+  if (!canShow() || StreakReviewPrompt._requestedThisRun) return false;
+  final review = InAppReview.instance;
+  if (!await review.isAvailable()) return false;
+  if (!canShow() || StreakReviewPrompt._requestedThisRun) return false;
+  StreakReviewPrompt._requestedThisRun = true;
+  await prefs.setBool(StreakReviewPrompt.requestedKey, true);
+  await review.requestReview();
+  return true;
 }

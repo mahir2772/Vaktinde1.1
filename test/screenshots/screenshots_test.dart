@@ -383,6 +383,11 @@ void _mockPlatform() {
       _ => null,
     },
   );
+  // Başlatıcı widget eklemeyi destekler: Ayarlar'da "Ana ekrana widget ekle"
+  messenger.setMockMethodCallHandler(
+    const MethodChannel('home_widget'),
+    (call) async => call.method == 'isRequestPinWidgetSupported' ? true : null,
+  );
   // Bildirimler açık; alarm izni [_exactAllowed]; kurulu ezanlar
   AndroidFlutterLocalNotificationsPlugin.registerWith();
   messenger.setMockMethodCallHandler(
@@ -1108,7 +1113,7 @@ void main() {
         await _tapTab(tester, 3);
         await _shot(tester, 'tr_edge_40_tools');
 
-        // Ayarlar + dil ve görünüm sayfaları
+        // Ayarlar + dil, görünüm ve widget ekleme sayfaları
         _currentScreen = 'tr_edge_50_settings';
         _navigator(
           tester,
@@ -1118,6 +1123,7 @@ void main() {
         for (final (title, name) in [
           (loc.changeLanguage, 'tr_edge_53_language_sheet'),
           (loc.appearanceSettings, 'tr_edge_54_appearance_sheet'),
+          (loc.addWidgetTitle, 'tr_edge_55_add_widget_sheet'),
         ]) {
           await tester.tap(find.text(title).first);
           await _settle(tester, steps: 6);

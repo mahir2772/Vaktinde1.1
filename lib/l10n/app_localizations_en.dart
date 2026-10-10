@@ -593,6 +593,36 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get addWidgetTitle => 'Add Home Screen Widget';
+
+  @override
+  String get addWidgetSub => 'See prayer times without opening the app';
+
+  @override
+  String get addWidgetHint =>
+      'Pick one; your home screen will ask you to confirm.';
+
+  @override
+  String get widgetLargeName => 'Today\'s Prayer Times';
+
+  @override
+  String get widgetLargeDesc =>
+      'Large: location, Hijri date, today\'s prayer times and time left';
+
+  @override
+  String get widgetWideName => 'Next Prayer';
+
+  @override
+  String get widgetWideDesc =>
+      'Wide strip: location, Hijri date and time left until the next prayer';
+
+  @override
+  String get widgetSmallName => 'Prayer Countdown';
+
+  @override
+  String get widgetSmallDesc => 'Small square: time left until the next prayer';
+
+  @override
   String get trackerLegendPrayed => 'Prayed';
 
   @override

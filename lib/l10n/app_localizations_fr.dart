@@ -606,6 +606,37 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get addWidgetTitle => 'Ajouter un widget à l\'écran d\'accueil';
+
+  @override
+  String get addWidgetSub => 'Voir les horaires sans ouvrir l\'application';
+
+  @override
+  String get addWidgetHint =>
+      'Choisissez-en un ; votre écran d\'accueil vous demandera de confirmer.';
+
+  @override
+  String get widgetLargeName => 'Horaires du jour';
+
+  @override
+  String get widgetLargeDesc =>
+      'Grand format : lieu, date hégirienne, horaires du jour et temps restant';
+
+  @override
+  String get widgetWideName => 'Prochaine prière';
+
+  @override
+  String get widgetWideDesc =>
+      'Bandeau horizontal : lieu, date hégirienne et temps restant avant la prochaine prière';
+
+  @override
+  String get widgetSmallName => 'Compte à rebours';
+
+  @override
+  String get widgetSmallDesc =>
+      'Petit carré : temps restant avant la prochaine prière';
+
+  @override
   String get trackerLegendPrayed => 'Accomplie';
 
   @override

@@ -286,6 +286,196 @@ void main() {
     );
   });
 
+  group('Kullanım günü', () {
+    // Saat enjekte edilir: gün dönümü elle ilerletilir
+    var now = DateTime(2026, 10, 10, 9);
+    const day = PrayerTracker.epochDay;
+
+    setUp(() async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      now = DateTime(2026, 10, 10, 9);
+      await lifecycle(AppLifecycleState.resumed);
+    });
+    tearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    UsageReviewPrompt startUsage({bool Function()? canPrompt}) {
+      final prompt = UsageReviewPrompt(
+        canPrompt: canPrompt,
+        delay: Duration.zero,
+        clock: () => now,
+      );
+      addTearDown(prompt.dispose);
+      prompt.start();
+      return prompt;
+    }
+
+    /// Dördüncü gün dün sayılmış: bugünkü açılış beşinci gün
+    Map<String, Object> fourDays() => {
+      UsageReviewPrompt.countKey: 4,
+      UsageReviewPrompt.lastDayKey: day(now) - 1,
+    };
+
+    Future<int?> storedCount() async => (await SharedPreferences.getInstance())
+        .getInt(UsageReviewPrompt.countKey);
+
+    // Ön plana dönüş (bildirim çekmecesi kapanınca da olur)
+    Future<void> resume() async {
+      await lifecycle(AppLifecycleState.inactive);
+      await lifecycle(AppLifecycleState.resumed);
+    }
+
+    test('sayım kuralı: yeni gün bir sayılır, aynı gün tekrar sayılmaz; 5. '
+        'günde açılışta ya da yeni günün ilk ön plana gelişinde istenir', () {
+      ({int count, bool ask}) open(
+        int count,
+        int? last, {
+        bool launch = false,
+      }) => UsageReviewPrompt.onOpen(
+        count: count,
+        lastDay: last,
+        today: 100,
+        launch: launch,
+      );
+      expect(open(0, null, launch: true), (count: 1, ask: false));
+      expect(open(3, 100), (count: 3, ask: false));
+      expect(open(3, 100, launch: true), (count: 3, ask: false));
+      expect(open(3, 99), (count: 4, ask: false));
+      expect(open(4, 90), (count: 5, ask: true)); // aradaki boş günler sayılmaz
+      expect(open(4, 100, launch: true), (count: 4, ask: false));
+      // Hedefteyken aynı gün ön plana dönüş (reklam, ayarlar) istemez
+      expect(open(5, 100), (count: 5, ask: false));
+      expect(open(5, 100, launch: true), (count: 5, ask: true));
+      expect(open(9, 99), (count: 10, ask: true));
+    });
+
+    test('5. gün açılışında bir kez istenir; kayıt seriyle ortak, sonra '
+        'hiç istenmez', () async {
+      SharedPreferences.setMockInitialValues(fourDays());
+      final prompt = startUsage();
+      await prompt.settled;
+      expect(reviewRequests, 1);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool(StreakReviewPrompt.requestedKey), isTrue);
+      expect(prefs.getInt(UsageReviewPrompt.countKey), 5);
+      expect(prefs.getInt(UsageReviewPrompt.lastDayKey), day(now));
+
+      // Sonraki oturumda, yeni günde de (kayıttan) istenmez
+      prompt.dispose();
+      StreakReviewPrompt.debugReset();
+      now = now.add(const Duration(days: 1));
+      final next = startUsage();
+      await next.settled;
+      await resume();
+      await next.settled;
+      expect(reviewRequests, 1);
+    });
+
+    test('aynı gün tekrar açılış ve ön plana dönüş sayılmaz; uygulama '
+        'açıkken gün dönünce ön plana gelişte sayılır', () async {
+      SharedPreferences.setMockInitialValues({
+        UsageReviewPrompt.countKey: 3,
+        UsageReviewPrompt.lastDayKey: day(now),
+      });
+      final prompt = startUsage();
+      await prompt.settled;
+      await resume();
+      await prompt.settled;
+      expect(await storedCount(), 3);
+
+      now = now.add(const Duration(days: 1));
+      await resume();
+      await prompt.settled;
+      await resume();
+      await prompt.settled;
+      expect(await storedCount(), 4);
+      expect(reviewRequests, 0);
+
+      now = now.add(const Duration(days: 1));
+      await resume();
+      await prompt.settled;
+      expect(await storedCount(), 5);
+      expect(reviewRequests, 1);
+    });
+
+    test('arka plandayken sayılmaz ve istenmez; ön plana gelince sayılır ve '
+        'istenir', () async {
+      SharedPreferences.setMockInitialValues(fourDays());
+      await lifecycle(AppLifecycleState.paused);
+      final prompt = startUsage();
+      await prompt.settled;
+      expect(await storedCount(), 4);
+      expect(reviewRequests, 0);
+
+      await lifecycle(AppLifecycleState.hidden);
+      await lifecycle(AppLifecycleState.inactive);
+      await lifecycle(AppLifecycleState.resumed);
+      await prompt.settled;
+      expect(await storedCount(), 5);
+      expect(reviewRequests, 1);
+    });
+
+    test('başka pencere açıkken istenmez; aynı gün ön plana dönüşte de '
+        'istenmez, sonraki açılışta istenir', () async {
+      var dialogOpen = true;
+      SharedPreferences.setMockInitialValues(fourDays());
+      final prompt = startUsage(canPrompt: () => !dialogOpen);
+      await prompt.settled;
+      expect(await storedCount(), 5);
+      expect(reviewRequests, 0);
+
+      dialogOpen = false;
+      await resume();
+      await prompt.settled;
+      expect(reviewRequests, 0);
+
+      prompt.dispose();
+      final next = startUsage(canPrompt: () => !dialogOpen);
+      await next.settled;
+      expect(reviewRequests, 1);
+    });
+
+    test('Play değerlendirmesi yoksa istenmez, kayıt yazılmaz', () async {
+      available = false;
+      SharedPreferences.setMockInitialValues(fourDays());
+      final prompt = startUsage();
+      await prompt.settled;
+      expect(reviewRequests, 0);
+      expect(await storedCount(), 5);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool(StreakReviewPrompt.requestedKey), isNull);
+    });
+
+    test('seri tetiği istediyse kullanım günü istemez, saymaz', () async {
+      SharedPreferences.setMockInitialValues({
+        ...fourDays(),
+        StreakReviewPrompt.requestedKey: true,
+      });
+      final prompt = startUsage();
+      await prompt.settled;
+      expect(reviewRequests, 0);
+      expect(await storedCount(), 4);
+    });
+
+    test('iki tetik aynı oturumda: tek istek', () async {
+      SharedPreferences.setMockInitialValues({
+        ...streakPrefs(6),
+        ...fourDays(),
+      });
+      final usage = startUsage();
+      final streak = StreakReviewPrompt(
+        todayTimes: () => times,
+        delay: Duration.zero,
+      );
+      addTearDown(streak.dispose);
+      streak.start();
+      await Future.wait([usage.settled, streak.settled]);
+      expect(reviewRequests, 1);
+      await PrayerTrackerService().setPrayed(today, 'Yatsı', true);
+      await streak.settled;
+      expect(reviewRequests, 1);
+    });
+  });
+
   group('Ana ekran (MainWrapper)', () {
     var locationPermission = 2; // kullanırken
 
@@ -388,6 +578,44 @@ void main() {
       expect(find.text(loc.permissionPrimingTitle), findsOneWidget);
       await PrayerTrackerService().setPrayed(today, 'Yatsı', true);
       await _pumpFor(tester, const Duration(seconds: 2));
+      expect(reviewRequests, 0);
+      await finish(tester);
+    });
+
+    /// Dördüncü gün dün sayılmış: bu açılış beşinci gün
+    Map<String, Object> fourUsageDays() => {
+      UsageReviewPrompt.countKey: 4,
+      UsageReviewPrompt.lastDayKey: PrayerTracker.epochDay(DateTime.now()) - 1,
+    };
+
+    testWidgets('5. kullanım günü: açılış akışından birkaç saniye sonra '
+        'istenir', (tester) async {
+      await pumpMain(tester, {
+        ...fourUsageDays(),
+        tourSeenKey: false,
+        permissionsPrimedKey: true,
+      });
+      expect(reviewRequests, 0); // önce vakitler görünsün
+      await _pumpFor(tester, const Duration(seconds: 3));
+      expect(reviewRequests, 1);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt(UsageReviewPrompt.countKey), 5);
+      await finish(tester);
+    });
+
+    testWidgets('5. kullanım günü: tanıtım turu ya da izin penceresi '
+        'sürerken istenmez', (tester) async {
+      await pumpMain(tester, {...fourUsageDays(), permissionsPrimedKey: true});
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      expect(find.text(loc.showcaseLanguage), findsOneWidget);
+      await _pumpFor(tester, const Duration(seconds: 4));
+      expect(reviewRequests, 0);
+      await finish(tester);
+
+      locationPermission = 0;
+      await pumpMain(tester, {...fourUsageDays(), tourSeenKey: false});
+      expect(find.text(loc.permissionPrimingTitle), findsOneWidget);
+      await _pumpFor(tester, const Duration(seconds: 4));
       expect(reviewRequests, 0);
       await finish(tester);
     });

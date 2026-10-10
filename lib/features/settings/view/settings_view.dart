@@ -14,6 +14,7 @@ import '../../common/theme_provider.dart';
 import '../../home/view_model/home_view_model.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../notification_health/view/notification_health_view.dart';
+import 'add_widget_sheet.dart';
 import 'end_reminder_setting.dart';
 import 'language_sheet.dart';
 import 'time_adjust_view.dart';
@@ -25,6 +26,12 @@ class SettingsView extends StatelessWidget {
   static const String appLink =
       "https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde";
   static const String _supportMail = 'mmdigitall.dev@gmail.com';
+
+  /// "Uygulamayı paylaş" linki: Play Console edinme raporlarında kaynak
+  /// app_share olarak görünür
+  static const String _inviteLink =
+      'https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde'
+      '&referrer=utm_source%3Dapp_share%26utm_campaign%3Dinvite';
 
   /// Gizlilik politikası adresi ([AppLinks.privacyPolicy]); boşken satır gizli.
   /// Testte doldurulabilir.
@@ -41,22 +48,32 @@ class SettingsView extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.xl),
         children: [
-          AppListSection(
-            title: loc.sectionAppearance,
-            children: [
-              AppListTile(
-                leadingIcon: Icons.language,
-                title: loc.changeLanguage,
-                subtitle: languageNativeName(languageCode),
-                onTap: () => showLanguageSheet(context),
-              ),
-              AppListTile(
-                leadingIcon: Icons.palette_outlined,
-                title: loc.appearanceSettings,
-                subtitle: loc.appearanceSub,
-                onTap: () => _showAppearanceSettings(context),
-              ),
-            ],
+          HomeWidgetPinSupport(
+            builder: (context, canPinWidget) => AppListSection(
+              title: loc.sectionAppearance,
+              children: [
+                AppListTile(
+                  leadingIcon: Icons.language,
+                  title: loc.changeLanguage,
+                  subtitle: languageNativeName(languageCode),
+                  onTap: () => showLanguageSheet(context),
+                ),
+                AppListTile(
+                  leadingIcon: Icons.palette_outlined,
+                  title: loc.appearanceSettings,
+                  subtitle: loc.appearanceSub,
+                  onTap: () => _showAppearanceSettings(context),
+                ),
+                // Başlatıcı uygulamadan eklemeyi destekliyorsa (Android 8+)
+                if (canPinWidget)
+                  AppListTile(
+                    leadingIcon: Icons.widgets_outlined,
+                    title: loc.addWidgetTitle,
+                    subtitle: loc.addWidgetSub,
+                    onTap: () => showAddWidgetSheet(context),
+                  ),
+              ],
+            ),
           ),
           AppListSection(
             title: loc.sectionLocation,
@@ -136,7 +153,7 @@ class SettingsView extends StatelessWidget {
                 AppListTile(
                   leadingIcon: Icons.share_outlined,
                   title: loc.shareApp,
-                  onTap: () => Share.share(loc.shareText(appLink)),
+                  onTap: () => Share.share(loc.shareText(_inviteLink)),
                 ),
                 AppListTile(
                   leadingIcon: Icons.star_outline,

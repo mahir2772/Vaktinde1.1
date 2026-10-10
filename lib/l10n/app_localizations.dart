@@ -1094,6 +1094,60 @@ abstract class AppLocalizations {
   /// **'Bu vakit kılındı olarak işaretlenecek ve {name} kaza sayısı {from} yerine {to} olacak.'**
   String trackerKazaRemoveConfirm(String name, int from, int to);
 
+  /// No description provided for @addWidgetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana Ekrana Widget Ekle'**
+  String get addWidgetTitle;
+
+  /// No description provided for @addWidgetSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitleri uygulamayı açmadan görün'**
+  String get addWidgetSub;
+
+  /// No description provided for @addWidgetHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Birini seçin; ana ekranınız eklemeden önce onay isteyecek.'**
+  String get addWidgetHint;
+
+  /// No description provided for @widgetLargeName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günün Vakitleri'**
+  String get widgetLargeName;
+
+  /// No description provided for @widgetLargeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Büyük boy: konum, hicri tarih, günün vakitleri ve kalan süre'**
+  String get widgetLargeDesc;
+
+  /// No description provided for @widgetWideName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıradaki Vakit'**
+  String get widgetWideName;
+
+  /// No description provided for @widgetWideDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatay şerit: konum, hicri tarih ve sıradaki vakte kalan süre'**
+  String get widgetWideDesc;
+
+  /// No description provided for @widgetSmallName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Sayacı'**
+  String get widgetSmallName;
+
+  /// No description provided for @widgetSmallDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Küçük kare: sıradaki vakte kalan süre'**
+  String get widgetSmallDesc;
+
   /// No description provided for @trackerLegendPrayed.
   ///
   /// In tr, this message translates to:

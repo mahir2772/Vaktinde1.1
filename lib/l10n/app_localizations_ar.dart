@@ -600,6 +600,36 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get addWidgetTitle => 'إضافة أداة إلى الشاشة الرئيسية';
+
+  @override
+  String get addWidgetSub => 'اطّلع على المواقيت دون فتح التطبيق';
+
+  @override
+  String get addWidgetHint =>
+      'اختر واحدة، وستطلب منك الشاشة الرئيسية تأكيد الإضافة.';
+
+  @override
+  String get widgetLargeName => 'مواقيت اليوم';
+
+  @override
+  String get widgetLargeDesc =>
+      'حجم كبير: الموقع والتاريخ الهجري ومواقيت اليوم والوقت المتبقي';
+
+  @override
+  String get widgetWideName => 'الصلاة القادمة';
+
+  @override
+  String get widgetWideDesc =>
+      'شريط عريض: الموقع والتاريخ الهجري والوقت المتبقي حتى الصلاة القادمة';
+
+  @override
+  String get widgetSmallName => 'العد التنازلي للصلاة';
+
+  @override
+  String get widgetSmallDesc => 'مربع صغير: الوقت المتبقي حتى الصلاة القادمة';
+
+  @override
   String get trackerLegendPrayed => 'مؤداة';
 
   @override

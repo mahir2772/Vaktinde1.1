@@ -590,6 +590,36 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get addWidgetTitle => 'Ana Ekrana Widget Ekle';
+
+  @override
+  String get addWidgetSub => 'Vakitleri uygulamayı açmadan görün';
+
+  @override
+  String get addWidgetHint =>
+      'Birini seçin; ana ekranınız eklemeden önce onay isteyecek.';
+
+  @override
+  String get widgetLargeName => 'Günün Vakitleri';
+
+  @override
+  String get widgetLargeDesc =>
+      'Büyük boy: konum, hicri tarih, günün vakitleri ve kalan süre';
+
+  @override
+  String get widgetWideName => 'Sıradaki Vakit';
+
+  @override
+  String get widgetWideDesc =>
+      'Yatay şerit: konum, hicri tarih ve sıradaki vakte kalan süre';
+
+  @override
+  String get widgetSmallName => 'Vakit Sayacı';
+
+  @override
+  String get widgetSmallDesc => 'Küçük kare: sıradaki vakte kalan süre';
+
+  @override
   String get trackerLegendPrayed => 'Kılındı';
 
   @override

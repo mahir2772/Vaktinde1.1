@@ -601,6 +601,37 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get addWidgetTitle => 'Widget zum Startbildschirm hinzufügen';
+
+  @override
+  String get addWidgetSub => 'Gebetszeiten sehen, ohne die App zu öffnen';
+
+  @override
+  String get addWidgetHint =>
+      'Wählen Sie ein Widget aus – Ihr Startbildschirm fragt dann nach einer Bestätigung.';
+
+  @override
+  String get widgetLargeName => 'Heutige Gebetszeiten';
+
+  @override
+  String get widgetLargeDesc =>
+      'Großes Format: Standort, islamisches Datum, heutige Gebetszeiten und verbleibende Zeit';
+
+  @override
+  String get widgetWideName => 'Nächste Gebetszeit';
+
+  @override
+  String get widgetWideDesc =>
+      'Breiter Streifen: Standort, islamisches Datum und verbleibende Zeit bis zum nächsten Gebet';
+
+  @override
+  String get widgetSmallName => 'Gebets-Countdown';
+
+  @override
+  String get widgetSmallDesc =>
+      'Kleines Quadrat: verbleibende Zeit bis zum nächsten Gebet';
+
+  @override
   String get trackerLegendPrayed => 'Verrichtet';
 
   @override

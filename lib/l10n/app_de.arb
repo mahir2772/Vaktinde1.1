@@ -312,6 +312,15 @@
             }
         }
     },
+    "addWidgetTitle": "Widget zum Startbildschirm hinzufügen",
+    "addWidgetSub": "Gebetszeiten sehen, ohne die App zu öffnen",
+    "addWidgetHint": "Wählen Sie ein Widget aus – Ihr Startbildschirm fragt dann nach einer Bestätigung.",
+    "widgetLargeName": "Heutige Gebetszeiten",
+    "widgetLargeDesc": "Großes Format: Standort, islamisches Datum, heutige Gebetszeiten und verbleibende Zeit",
+    "widgetWideName": "Nächste Gebetszeit",
+    "widgetWideDesc": "Breiter Streifen: Standort, islamisches Datum und verbleibende Zeit bis zum nächsten Gebet",
+    "widgetSmallName": "Gebets-Countdown",
+    "widgetSmallDesc": "Kleines Quadrat: verbleibende Zeit bis zum nächsten Gebet",
     "trackerLegendPrayed": "Verrichtet",
     "trackerLegendKaza": "Zu Qada hinzugefügt",
     "kerahatActive": "Jetzt Makruh-Zeit: {range}",
