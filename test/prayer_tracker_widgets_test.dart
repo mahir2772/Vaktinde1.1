@@ -3,6 +3,7 @@ import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/home/widgets/kerahat_card.dart';
 import 'package:ezan_saati/features/home/widgets/prayer_tracker_row.dart';
+import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/settings/view/end_reminder_setting.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -11,6 +12,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Ramazan orucu kartı gizli: testler çalıştıkları tarihten bağımsız
+PrayerTrackerView _trackerView() => PrayerTrackerView(
+  fastClock: () => DateTime(2026, 10, 10),
+  ramadanCalendar: RamadanCalendar.hijriOnly,
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -102,7 +109,7 @@ void main() {
         'prayer_log': '{"${dk(1)}":31,"${dk(2)}":1}',
         'prayer_kaza_added': '{"${dk(3)}":31}',
       });
-      await pumpApp(tester, lang, const PrayerTrackerView());
+      await pumpApp(tester, lang, _trackerView());
       expect(tester.takeException(), isNull);
       final loc = lookupAppLocalizations(Locale(lang));
       expect(find.text(loc.trackerLast7Days), findsOneWidget);
@@ -212,7 +219,7 @@ void main() {
 
   testWidgets('Takip ekranı da kaydı düzenli yeniden okur', (tester) async {
     SharedPreferences.setMockInitialValues({'prayer_log_since': dk(3)});
-    await pumpApp(tester, 'tr', const PrayerTrackerView());
+    await pumpApp(tester, 'tr', _trackerView());
     expect(find.byIcon(Icons.check), findsNWidgets(1)); // açıklama
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('prayer_log', '{"${dk(1)}":31}');

@@ -6,6 +6,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../common/ad_helper.dart';
 import '../../common/theme_provider.dart';
 import '../../esmaul_husna/view/esmaul_husna_view.dart';
+import '../../fitre/view/fitre_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../imsakiye/view/imsakiye_view.dart';
 import '../../missed_prayers/view/missed_prayers_view.dart';
@@ -95,6 +96,12 @@ class ToolsView extends StatelessWidget {
             loc.zakatTitle,
             loc.toolZakatDesc,
             () => const ZakatView(),
+          ),
+          _ToolItem(
+            Icons.volunteer_activism_outlined,
+            loc.fitreTitle,
+            loc.toolFitreDesc,
+            () => const FitreView(),
           ),
         ],
       ),

@@ -863,6 +863,105 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zakatTitle => 'حاسبة الزكاة';
 
   @override
+  String get fitreTitle => 'زكاة الفطر والفدية';
+
+  @override
+  String get toolFitreDesc => 'حساب زكاة الفطر والفدية';
+
+  @override
+  String get fitreInfo =>
+      'المبلغ للشخص الواحد هو الحد الأدنى لزكاة الفطر الذي حددته رئاسة الشؤون الدينية التركية (ديانت)، ويجوز إخراجها نقدًا أو طعامًا. أما الفدية فيدفعها من لا يستطيع الصيام بسبب الكِبَر أو مرض لا يُرجى شفاؤه: مقدار زكاة الفطر عن كل يوم. إذا كنت تقيم خارج تركيا، يمكنك إدخال المبلغ المعتمد في بلدك.';
+
+  @override
+  String get fitreAmountLabel => 'المبلغ للشخص الواحد';
+
+  @override
+  String fitreSource(String source, String year) {
+    return 'المصدر: $source، $year';
+  }
+
+  @override
+  String get fitreResetAmount => 'الرجوع إلى المبلغ الافتراضي';
+
+  @override
+  String get fitreSectionTitle => 'زكاة الفطر';
+
+  @override
+  String get fitrePeopleLabel => 'عدد الأشخاص';
+
+  @override
+  String get fidyeSectionTitle => 'الفدية';
+
+  @override
+  String get fidyeDaysLabel => 'عدد الأيام';
+
+  @override
+  String get fitreTotal => 'المجموع';
+
+  @override
+  String get fastTitle => 'صيام رمضان';
+
+  @override
+  String fastCount(int done, int total) {
+    return '$done/$total يومًا';
+  }
+
+  @override
+  String get fastInfo =>
+      'اضغط على الأيام التي صمتها. تُضاف الأيام الفائتة إلى عداد قضاء الصيام مرة واحدة؛ وإذا كنت قد صمت يومًا أُضيف إلى القضاء، فاضغط عليه ليُطرح من العداد.';
+
+  @override
+  String get fastLegendFasted => 'تم صيامه';
+
+  @override
+  String get fastLegendKaza => 'أُضيف إلى القضاء';
+
+  @override
+  String get fastKazaButton => 'إضافة أيام الصيام الفائتة إلى القضاء';
+
+  @override
+  String fastKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'سيُضاف $count يومًا غير معلَّم إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+      few:
+          'ستُضاف $count أيام غير معلَّمة إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+      two: 'سيُضاف يومان غير معلَّمين إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+      one: 'سيُضاف يوم واحد غير معلَّم إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fastKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'أُضيف $count يومًا إلى القضاء.',
+      few: 'أُضيفت $count أيام إلى القضاء.',
+      two: 'أُضيف يومان إلى القضاء.',
+      one: 'أُضيف يوم واحد إلى القضاء.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fastKazaNone => 'لا توجد أيام لإضافتها إلى القضاء.';
+
+  @override
+  String get fastKazaRemoveTitle => 'إزالته من القضاء؟';
+
+  @override
+  String fastKazaRemoveConfirm(int from, int to) {
+    return 'سيُعلَّم هذا اليوم على أنه تم صيامه، وسيتغيّر عدد أيام قضاء الصيام من $from إلى $to.';
+  }
+
+  @override
+  String get fastFastedAction => 'صُمتُه';
+
+  @override
   String get zakatCalculatorTitle => 'حاسبة الزكاة الذكية';
 
   @override

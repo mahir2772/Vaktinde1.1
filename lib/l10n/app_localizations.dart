@@ -1544,6 +1544,144 @@ abstract class AppLocalizations {
   /// **'Zekat Hesapla'**
   String get zakatTitle;
 
+  /// No description provided for @fitreTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fitre ve Fidye'**
+  String get fitreTitle;
+
+  /// No description provided for @toolFitreDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fitre ve fidye tutarı hesabı'**
+  String get toolFitreDesc;
+
+  /// No description provided for @fitreInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi başı tutar, Diyanet\'in belirlediği en az fitre (fıtır sadakası) miktarıdır; fitre para ya da gıda olarak verilebilir. Fidye, yaşlılık ya da iyileşme umudu olmayan bir hastalık nedeniyle oruç tutamayanların her gün için verdiği bir fitre tutarıdır. Türkiye dışındaysanız bulunduğunuz yerdeki tutarı yazabilirsiniz.'**
+  String get fitreInfo;
+
+  /// No description provided for @fitreAmountLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi başı tutar'**
+  String get fitreAmountLabel;
+
+  /// No description provided for @fitreSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaynak: {source}, {year}'**
+  String fitreSource(String source, String year);
+
+  /// No description provided for @fitreResetAmount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Varsayılan tutara dön'**
+  String get fitreResetAmount;
+
+  /// No description provided for @fitreSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fitre'**
+  String get fitreSectionTitle;
+
+  /// No description provided for @fitrePeopleLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi sayısı'**
+  String get fitrePeopleLabel;
+
+  /// No description provided for @fidyeSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fidye'**
+  String get fidyeSectionTitle;
+
+  /// No description provided for @fidyeDaysLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gün sayısı'**
+  String get fidyeDaysLabel;
+
+  /// No description provided for @fitreTotal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam'**
+  String get fitreTotal;
+
+  /// No description provided for @fastTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Orucu'**
+  String get fastTitle;
+
+  /// No description provided for @fastCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{done}/{total} gün'**
+  String fastCount(int done, int total);
+
+  /// No description provided for @fastInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tuttuğunuz günlere dokunun. Tutulmayan günler kaza orucu sayacına bir kez eklenir; kazaya eklenen bir günü tuttuysanız üzerine dokunun, sayaçtan düşülür.'**
+  String get fastInfo;
+
+  /// No description provided for @fastLegendFasted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutuldu'**
+  String get fastLegendFasted;
+
+  /// No description provided for @fastLegendKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklendi'**
+  String get fastLegendKaza;
+
+  /// No description provided for @fastKazaButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutulmayanları kaza orucuna ekle'**
+  String get fastKazaButton;
+
+  /// No description provided for @fastKazaConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{İşaretlenmemiş {count} gün kaza orucu sayacına eklenecek. Devam edilsin mi?}}'**
+  String fastKazaConfirm(int count);
+
+  /// No description provided for @fastKazaDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} gün kaza orucuna eklendi.}}'**
+  String fastKazaDone(int count);
+
+  /// No description provided for @fastKazaNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklenecek gün yok.'**
+  String get fastKazaNone;
+
+  /// No description provided for @fastKazaRemoveTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazadan çıkarılsın mı?'**
+  String get fastKazaRemoveTitle;
+
+  /// No description provided for @fastKazaRemoveConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gün tutuldu olarak işaretlenecek ve kaza orucu sayısı {from} yerine {to} olacak.'**
+  String fastKazaRemoveConfirm(int from, int to);
+
+  /// No description provided for @fastFastedAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tuttum'**
+  String get fastFastedAction;
+
   /// No description provided for @zakatCalculatorTitle.
   ///
   /// In tr, this message translates to:

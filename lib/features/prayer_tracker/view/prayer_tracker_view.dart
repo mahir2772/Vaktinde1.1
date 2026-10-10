@@ -11,6 +11,8 @@ import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../../../data/services/prayer_tracker_service.dart';
 import '../../home/view_model/home_view_model.dart';
+import '../../imsakiye/imsakiye_logic.dart';
+import '../widgets/ramadan_fast_card.dart';
 
 /// Takip edilen vakitlerin ekran adları ("İmsak" anahtarı = sabah namazı)
 Map<String, String> trackerPrayerNames(AppLocalizations loc) => {
@@ -21,9 +23,14 @@ Map<String, String> trackerPrayerNames(AppLocalizations loc) => {
   "Yatsı": loc.yatsi,
 };
 
-/// Namaz takibi: son 7 gün, 30 günlük oran, seri ve kılınmayanları kazaya ekleme
+/// Namaz takibi: son 7 gün, 30 günlük oran, seri ve kılınmayanları kazaya ekleme;
+/// Ramazan'da (ve sonraki 30 gün) üstte Ramazan orucu kartı
 class PrayerTrackerView extends StatefulWidget {
-  const PrayerTrackerView({super.key});
+  /// Test: oruç kartının günü ve Ramazan takvimi (varsayılan: şimdi, Diyanet)
+  final DateTime Function()? fastClock;
+  final RamadanCalendar? ramadanCalendar;
+
+  const PrayerTrackerView({super.key, this.fastClock, this.ramadanCalendar});
 
   @override
   State<PrayerTrackerView> createState() => _PrayerTrackerViewState();
@@ -265,6 +272,10 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
           : ListView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
+                RamadanFastCard(
+                  clock: widget.fastClock,
+                  calendar: widget.ramadanCalendar,
+                ),
                 _buildStats(times, loc),
                 const SizedBox(height: AppSpacing.md),
                 _buildGrid(times, loc),

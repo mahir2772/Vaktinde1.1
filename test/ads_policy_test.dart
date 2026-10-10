@@ -147,7 +147,9 @@ void main() {
       }
     }
 
+    // scrollUntilVisible son kaydırmayı çizmez: dokunmadan önce bir kare
     await tester.scrollUntilVisible(find.text(loc.menuTitle), 200);
+    await tester.pump();
     await tester.tap(find.text(loc.menuTitle));
     await settle();
     expect(find.byType(SettingsView), findsOneWidget);
@@ -157,12 +159,14 @@ void main() {
     await settle();
     // Uygulamadan çıkıp haritayı açar: reklam yok
     await tester.scrollUntilVisible(find.text(loc.nearbyMosquesTitle), -200);
+    await tester.pump();
     await tester.tap(find.text(loc.nearbyMosquesTitle));
     await settle();
     expect(launches, hasLength(1));
     expect(ads.debugShowRequests, before);
 
     await tester.scrollUntilVisible(find.text(loc.missedPrayersTitle), -200);
+    await tester.pump();
     await tester.tap(find.text(loc.missedPrayersTitle));
     await tester.pump();
     expect(ads.debugShowRequests, before + 1);
