@@ -13,6 +13,11 @@ import java.util.Calendar
 
 class NotificationUpdater : BroadcastReceiver() {
 
+    companion object {
+        /** Vakitten sonra bildirimin kaldırılmasına kadar pay: zamanında gelen alarm önce yeniler */
+        const val TIMEOUT_GRACE_MS = 5_000L
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
         // Notification.Builder(context, kanal) API 26+ ister; eski sürümde servisin kendi bildirimi kalır
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
@@ -66,7 +71,14 @@ class NotificationUpdater : BroadcastReceiver() {
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent)
-            
+            // Yenileme alarmı gelmezse (üretici güç yöneticisi süreci öldürdü) sayaç eksiye düşmesin:
+            // sistem bildirimi vakitten hemen sonra kaldırır, ilk yenilemede (alarm, WidgetHealJobService,
+            // açılış) geri gelir. Ön plan servisinin bildirimine uygulanmaz; o zaman süreç ayaktadır ve
+            // WidgetRefresher dakikada bir onarır.
+            if (nextPrayer != null && nextPrayer.time > currentTime) {
+                builder.setTimeoutAfter(nextPrayer.time - currentTime + TIMEOUT_GRACE_MS)
+            }
+
             notificationManager.notify(888, builder.build())
             // Alarm gelmezse WidgetRefresher bu kayda bakıp yeniden çizer (888 açıksa)
             WidgetRefresher.markNotificationDrawn(context, nextPrayer?.time ?: 0L, now)

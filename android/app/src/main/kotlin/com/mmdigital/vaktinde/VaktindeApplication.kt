@@ -18,5 +18,7 @@ class VaktindeApplication : Application() {
         } catch (t: Throwable) {
             t.printStackTrace()
         }
+        // Süreç yokken de vakti geçmiş sayaçlar onarılsın (üretici alarmı iletmediğinde)
+        WidgetHealJobService.schedule(this)
     }
 }

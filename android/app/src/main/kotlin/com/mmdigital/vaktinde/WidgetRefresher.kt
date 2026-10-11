@@ -21,7 +21,8 @@ import java.util.Calendar
  * bildirim) çizdiği hedefi ve günü kaydeder; süreç başlayınca, ekran / kilit açılınca ve ekran
  * açıkken dakikada bir (TIME_TICK) hesaplanan hedefle karşılaştırılır, farklıysa sadece o yüzey
  * yeniden çizilir. Yenileme alarmları, updatePeriodMillis ve saat değişimi yayınları aynen kalır.
- * Application.onCreate'ten çağrılır: hiçbir yol fırlatmaz.
+ * Süreç yokken de WidgetHealJobService ~15 dk'da bir [refreshStale] çağırır (Doze'dan çıkınca kısa
+ * sürede). Application.onCreate'ten çağrılır: hiçbir yol fırlatmaz.
  */
 object WidgetRefresher {
     private const val STATE_PREFS = "vaktinde_widget_state"
@@ -68,6 +69,7 @@ object WidgetRefresher {
                     addAction(Intent.ACTION_TIME_TICK)
                     addAction(Intent.ACTION_SCREEN_ON)
                     addAction(Intent.ACTION_USER_PRESENT)
+                    addAction(Intent.ACTION_USER_UNLOCKED)
                 }
                 // Sistem yayınları dışa kapalı alıcıya da gelir; Android 13+ bayrak verilir
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -114,12 +116,16 @@ object WidgetRefresher {
             }
             // API 26 altında NotificationUpdater çizmez (servisin kendi bildirimi kalır); vakit
             // yazılmadıysa servisin yer tutucusu boş sayaçla ezilmez
+            val notification = drawn(state, NOTIFICATION_SURFACE)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && PrayerWidgetData.hasTimes(data) &&
-                drawn(state, NOTIFICATION_SURFACE) != current
+                notification != current
             ) {
                 try {
-                    // 888 aynı zamanda ön plan servisinin bildirimi: açık değilse yeniden çıkarılmaz
-                    if (isNotificationActive(context)) {
+                    // Açıksa yenilenir. Hedef vakti geçtiyse kapalı da olsa geri getirilir: sistem
+                    // setTimeoutAfter ile kaldırmıştır ve zamanında gelen yenileme alarmı da aynısını
+                    // yapardı. Vakitten önce kullanıcı kapattıysa dokunulmaz (sıradaki vakitte döner).
+                    val expired = notification != null && notification.target in 1..now.timeInMillis
+                    if (expired || isNotificationActive(context)) {
                         NotificationUpdater().onReceive(context, Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
                     }
                 } catch (t: Throwable) {

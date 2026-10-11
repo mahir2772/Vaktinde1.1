@@ -153,6 +153,12 @@
             </intent-filter>
         </receiver>
 
+        <!-- Süreç yokken vakti geçmiş widget/bildirim sayaçlarını onaran periyodik iş (WidgetHealJobService) -->
+        <service
+            android:name=".WidgetHealJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
         <!-- WorkManager'ın dataSync tipli ön plan servisi kullanılmıyor (Play FGS beyanı gerekmesin) -->
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"

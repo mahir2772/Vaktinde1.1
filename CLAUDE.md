@@ -221,7 +221,13 @@ android/app/src/main/
                           alıcı (TIME_TICK, SCREEN_ON, USER_PRESENT; 33+ NOT_EXPORTED) + açılışta bir denetim. Her yüzey (4 widget
                           türü + 888, sağlayıcı başına beklenen durum) çizdiği hedef + günü 'vaktinde_widget_state'e yazar (markWidgetsDrawn/markNotificationDrawn);
                           hesaplanandan farklıysa sadece o yüzey süreç içinde yeniden çizilir (888 sadece açıksa). Hiçbir yol
-                          fırlatmaz. Widget yenilemede setAlarmClock KULLANILMAZ (durum çubuğu alarm simgesi)
+                          fırlatmaz. Widget yenilemede setAlarmClock KULLANILMAZ (durum çubuğu alarm simgesi).
+                          Çizilen hedefi geçmiş ama kapalı 888 (setTimeoutAfter kaldırdı / servis durdu) geri getirilir;
+                          hedef geçmeden kapatılan dokunulmaz. Dinleyici: TIME_TICK, SCREEN_ON, USER_PRESENT, USER_UNLOCKED
+    NotificationUpdater.kt  888'e setTimeoutAfter(hedef + 5 sn): yenileme alarmı gelmezse sistem bildirimi kaldırır, eksi
+                          sayaç kalmaz (ön plan servisinin bildirimine uygulanmaz; o zaman süreç ayakta, WidgetRefresher onarır)
+    WidgetHealJobService.kt  JobScheduler periyodik iş (15 dk, kalıcı, JOB_ID 0x56414B54 — WorkManager kimliklerinden uzak):
+                          süreç yokken WidgetRefresher.refreshStale; VaktindeApplication.onCreate kurar (kuruluysa dokunmaz)
   res/layout/vaktinde_widget_*.xml, custom_notification.xml; res/xml/widget_info_* (30 dk, açıklama, previewLayout);
   res/values*/strings.xml (widget adları/açıklamaları, tr varsayılan + en/de/fr/ar)
 assets/data/  esma/cuma mesajları (dil başına json), religious_days.json
