@@ -2942,6 +2942,108 @@ abstract class AppLocalizations {
   /// **'Paylaşmaya hazır mesajlar'**
   String get toolFridayDesc;
 
+  /// No description provided for @quranTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an-ı Kerim'**
+  String get quranTitle;
+
+  /// No description provided for @toolQuranDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sureler, Arapça metin ve meal'**
+  String get toolQuranDesc;
+
+  /// No description provided for @quranContinue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaldığın yerden devam et'**
+  String get quranContinue;
+
+  /// No description provided for @quranAyahRef.
+  ///
+  /// In tr, this message translates to:
+  /// **'{surah} {ayah}. ayet'**
+  String quranAyahRef(String surah, int ayah);
+
+  /// No description provided for @quranAyahCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ayet'**
+  String quranAyahCount(int count);
+
+  /// No description provided for @quranMeccan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mekke'**
+  String get quranMeccan;
+
+  /// No description provided for @quranMedinan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Medine'**
+  String get quranMedinan;
+
+  /// No description provided for @quranLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sure yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.'**
+  String get quranLoadError;
+
+  /// No description provided for @quranBookmarkSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaldığın yer olarak kaydet'**
+  String get quranBookmarkSave;
+
+  /// No description provided for @quranBookmarkRemove.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaldığın yeri sil'**
+  String get quranBookmarkRemove;
+
+  /// No description provided for @quranBookmarkSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaldığın yer kaydedildi'**
+  String get quranBookmarkSaved;
+
+  /// No description provided for @quranBookmarkRemoved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaldığın yer silindi'**
+  String get quranBookmarkRemoved;
+
+  /// No description provided for @quranShareAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayeti paylaş'**
+  String get quranShareAyah;
+
+  /// No description provided for @quranFontSmaller.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça yazıyı küçült'**
+  String get quranFontSmaller;
+
+  /// No description provided for @quranFontLarger.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça yazıyı büyüt'**
+  String get quranFontLarger;
+
+  /// No description provided for @quranTextSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça metin: Tanzil Projesi (tanzil.net)'**
+  String get quranTextSource;
+
+  /// No description provided for @quranTranslationSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal: {name}'**
+  String quranTranslationSource(String name);
+
   /// No description provided for @toolZakatDesc.
   ///
   /// In tr, this message translates to:

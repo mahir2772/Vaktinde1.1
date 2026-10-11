@@ -796,6 +796,47 @@
     "nearbyMosquesError": "Harita açılamadı.",
     "toolEsmaDesc": "Allah'ın 99 ismi ve anlamları",
     "toolFridayDesc": "Paylaşmaya hazır mesajlar",
+    "quranTitle": "Kur'an-ı Kerim",
+    "toolQuranDesc": "Sureler, Arapça metin ve meal",
+    "quranContinue": "Kaldığın yerden devam et",
+    "quranAyahRef": "{surah} {ayah}. ayet",
+    "@quranAyahRef": {
+        "placeholders": {
+            "surah": {
+                "type": "String"
+            },
+            "ayah": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahCount": "{count} ayet",
+    "@quranAyahCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranMeccan": "Mekke",
+    "quranMedinan": "Medine",
+    "quranLoadError": "Sure yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+    "quranBookmarkSave": "Kaldığın yer olarak kaydet",
+    "quranBookmarkRemove": "Kaldığın yeri sil",
+    "quranBookmarkSaved": "Kaldığın yer kaydedildi",
+    "quranBookmarkRemoved": "Kaldığın yer silindi",
+    "quranShareAyah": "Ayeti paylaş",
+    "quranFontSmaller": "Arapça yazıyı küçült",
+    "quranFontLarger": "Arapça yazıyı büyüt",
+    "quranTextSource": "Arapça metin: Tanzil Projesi (tanzil.net)",
+    "quranTranslationSource": "Meal: {name}",
+    "@quranTranslationSource": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "toolZakatDesc": "Zekat ve öşür hesabı",
     "toolSettingsDesc": "Konum, bildirimler, görünüm",
     "daysLeft": "{count, plural, =0{Bugün} =1{Yarın} other{{count} gün kaldı}}",

@@ -1619,6 +1619,73 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolFridayDesc => 'رسائل جاهزة للمشاركة';
 
   @override
+  String get quranTitle => 'القرآن الكريم';
+
+  @override
+  String get toolQuranDesc => 'سور القرآن الكريم بالرسم العثماني';
+
+  @override
+  String get quranContinue => 'متابعة القراءة من حيث توقفت';
+
+  @override
+  String quranAyahRef(String surah, int ayah) {
+    return '$surah، الآية $ayah';
+  }
+
+  @override
+  String quranAyahCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count آية',
+      many: '$count آية',
+      few: '$count آيات',
+      two: 'آيتان',
+      one: 'آية واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quranMeccan => 'مكية';
+
+  @override
+  String get quranMedinan => 'مدنية';
+
+  @override
+  String get quranLoadError =>
+      'تعذّر تحميل السورة. تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.';
+
+  @override
+  String get quranBookmarkSave => 'حفظ موضع القراءة';
+
+  @override
+  String get quranBookmarkRemove => 'إزالة موضع القراءة';
+
+  @override
+  String get quranBookmarkSaved => 'تم حفظ موضع القراءة';
+
+  @override
+  String get quranBookmarkRemoved => 'تمت إزالة موضع القراءة';
+
+  @override
+  String get quranShareAyah => 'مشاركة الآية';
+
+  @override
+  String get quranFontSmaller => 'تصغير خط الآيات';
+
+  @override
+  String get quranFontLarger => 'تكبير خط الآيات';
+
+  @override
+  String get quranTextSource => 'النص القرآني: مشروع تنزيل (tanzil.net)';
+
+  @override
+  String quranTranslationSource(String name) {
+    return 'الترجمة: $name';
+  }
+
+  @override
   String get toolZakatDesc => 'حساب الزكاة والعُشر';
 
   @override

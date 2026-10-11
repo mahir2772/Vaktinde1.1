@@ -203,7 +203,7 @@ void main() {
     });
 
     testWidgets('411×891 ekranda araçlar kaydırmadan görünür, Ayarlar '
-        'kenardan görünür (kaydırma ipucu)', (tester) async {
+        'kaydırınca görünür', (tester) async {
       // Alt menü yüksekliği kadar (≈ 80dp) kısaltılmış gövde
       await _pumpScreen(
         tester,
@@ -214,13 +214,14 @@ void main() {
       );
       final loc = lookupAppLocalizations(const Locale('tr'));
       final screen = tester.getRect(find.byType(ToolsView));
-      for (final title in [loc.zakatTitle, loc.fitreTitle]) {
+      for (final title in [loc.quranTitle, loc.zakatTitle, loc.fitreTitle]) {
         final rect = tester.getRect(find.text(title));
         expect(rect.bottom, lessThanOrEqualTo(screen.bottom), reason: title);
       }
-      // Fitre ve Fidye ile liste uzadı: Ayarlar satırı en az kısmen ekranda
-      final settings = tester.getRect(find.text(loc.menuTitle));
-      expect(settings.top, lessThan(screen.bottom));
+      // Kur'an-ı Kerim ile liste bir ekranı aştı (son araç kenarda kesilir):
+      // Ayarlar satırı kaydırınca görünür
+      await tester.scrollUntilVisible(find.text(loc.menuTitle), 200);
+      expect(find.text(loc.menuTitle), findsOneWidget);
       await _dispose(tester);
     });
   });

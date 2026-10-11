@@ -1605,6 +1605,64 @@ class AppLocalizationsTr extends AppLocalizations {
   String get toolFridayDesc => 'Paylaşmaya hazır mesajlar';
 
   @override
+  String get quranTitle => 'Kur\'an-ı Kerim';
+
+  @override
+  String get toolQuranDesc => 'Sureler, Arapça metin ve meal';
+
+  @override
+  String get quranContinue => 'Kaldığın yerden devam et';
+
+  @override
+  String quranAyahRef(String surah, int ayah) {
+    return '$surah $ayah. ayet';
+  }
+
+  @override
+  String quranAyahCount(int count) {
+    return '$count ayet';
+  }
+
+  @override
+  String get quranMeccan => 'Mekke';
+
+  @override
+  String get quranMedinan => 'Medine';
+
+  @override
+  String get quranLoadError =>
+      'Sure yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';
+
+  @override
+  String get quranBookmarkSave => 'Kaldığın yer olarak kaydet';
+
+  @override
+  String get quranBookmarkRemove => 'Kaldığın yeri sil';
+
+  @override
+  String get quranBookmarkSaved => 'Kaldığın yer kaydedildi';
+
+  @override
+  String get quranBookmarkRemoved => 'Kaldığın yer silindi';
+
+  @override
+  String get quranShareAyah => 'Ayeti paylaş';
+
+  @override
+  String get quranFontSmaller => 'Arapça yazıyı küçült';
+
+  @override
+  String get quranFontLarger => 'Arapça yazıyı büyüt';
+
+  @override
+  String get quranTextSource => 'Arapça metin: Tanzil Projesi (tanzil.net)';
+
+  @override
+  String quranTranslationSource(String name) {
+    return 'Meal: $name';
+  }
+
+  @override
   String get toolZakatDesc => 'Zekat ve öşür hesabı';
 
   @override

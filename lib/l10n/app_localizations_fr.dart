@@ -1634,6 +1634,70 @@ class AppLocalizationsFr extends AppLocalizations {
   String get toolFridayDesc => 'Messages prêts à partager';
 
   @override
+  String get quranTitle => 'Le Saint Coran';
+
+  @override
+  String get toolQuranDesc => 'Sourates, texte arabe et traduction';
+
+  @override
+  String get quranContinue => 'Reprendre la lecture';
+
+  @override
+  String quranAyahRef(String surah, int ayah) {
+    return '$surah, verset $ayah';
+  }
+
+  @override
+  String quranAyahCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count versets',
+      one: '1 verset',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quranMeccan => 'Mecquoise';
+
+  @override
+  String get quranMedinan => 'Médinoise';
+
+  @override
+  String get quranLoadError =>
+      'Impossible de charger la sourate. Vérifiez votre connexion Internet et réessayez.';
+
+  @override
+  String get quranBookmarkSave => 'Enregistrer comme position de lecture';
+
+  @override
+  String get quranBookmarkRemove => 'Supprimer la position de lecture';
+
+  @override
+  String get quranBookmarkSaved => 'Position de lecture enregistrée';
+
+  @override
+  String get quranBookmarkRemoved => 'Position de lecture supprimée';
+
+  @override
+  String get quranShareAyah => 'Partager le verset';
+
+  @override
+  String get quranFontSmaller => 'Réduire le texte arabe';
+
+  @override
+  String get quranFontLarger => 'Agrandir le texte arabe';
+
+  @override
+  String get quranTextSource => 'Texte arabe : projet Tanzil (tanzil.net)';
+
+  @override
+  String quranTranslationSource(String name) {
+    return 'Traduction : $name';
+  }
+
+  @override
   String get toolZakatDesc => 'Calcul de la zakat et de l\'ouchr';
 
   @override

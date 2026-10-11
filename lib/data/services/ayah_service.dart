@@ -2,40 +2,24 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'http_client.dart';
+import 'quran_service.dart';
 
 class AyahService {
   // Kurandaki toplam ayet sayısı
-  static const int totalAyahs = 6236;
+  static const int totalAyahs = QuranService.totalAyahs;
 
   Future<AyahModel?> getRandomAyah(String languageCode) async {
     // 1 ile 6236 arasında rastgele bir ayet numarası seç
     final randomAyahNumber = Random().nextInt(totalAyahs) + 1;
 
-    // Dil koduna göre API'nin desteklediği meal çevirmenlerini belirliyoruz
-    String edition;
-    switch (languageCode) {
-      case 'tr':
-        edition = 'tr.diyanet';
-        break;
-      case 'en':
-        edition = 'en.sahih';
-        break;
-      case 'de':
-        edition = 'de.aburida';
-        break;
-      case 'fr':
-        edition = 'fr.hamidullah';
-        break;
-      case 'ar':
-        edition = 'quran-uthmani'; // Zaten Arapçaysa sadece Arapça döner
-        break;
-      default:
-        edition = 'en.sahih'; // Desteklenmeyen dillerde varsayılan İngilizce
-    }
+    // Meal baskısı Kur'an okuyucuyla ortak (QuranEdition); Arapça arayüzde
+    // meal yerine yine Arapça metin döner
+    final edition =
+        QuranEdition.translationFor(languageCode) ?? QuranEdition.arabic;
 
     // Hem Arapça orijinalini (quran-uthmani) hem de meali aynı anda çeken endpoint
     final String url =
-        'https://api.alquran.cloud/v1/ayah/$randomAyahNumber/editions/quran-uthmani,$edition';
+        '${QuranEdition.apiBase}/ayah/$randomAyahNumber/editions/${QuranEdition.arabic},$edition';
 
     try {
       final response = await httpGet(Uri.parse(url));
