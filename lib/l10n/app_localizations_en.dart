@@ -1730,6 +1730,89 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quranTitle => 'Holy Quran';
 
   @override
+  String get quranTabSurahs => 'Surahs';
+
+  @override
+  String get quranTabJuz => 'Juz';
+
+  @override
+  String get quranSearchHint => 'Search surah by name or number';
+
+  @override
+  String get quranNoResults => 'No surah matches your search';
+
+  @override
+  String quranJuz(int juz) {
+    return 'Juz $juz';
+  }
+
+  @override
+  String quranPage(int page) {
+    return 'Page $page';
+  }
+
+  @override
+  String quranAyahRange(int from, int to) {
+    return 'Verses $from–$to';
+  }
+
+  @override
+  String get quranBookmark => 'Bookmark';
+
+  @override
+  String get quranViewSettings => 'View';
+
+  @override
+  String get quranModePage => 'Page';
+
+  @override
+  String get quranModePageDesc =>
+      'Continuous Arabic text, laid out like the Mushaf';
+
+  @override
+  String get quranModeAyah => 'Verse by verse';
+
+  @override
+  String get quranModeAyahDesc =>
+      'Each verse on its own card, with its translation';
+
+  @override
+  String get quranModeTranslation => 'Translation';
+
+  @override
+  String get quranModeTranslationDesc =>
+      'Translation only, for continuous reading';
+
+  @override
+  String get quranArabicSize => 'Arabic text';
+
+  @override
+  String get quranTranslationSize => 'Translation text';
+
+  @override
+  String get quranTranslationSmaller => 'Smaller translation text';
+
+  @override
+  String get quranTranslationLarger => 'Larger translation text';
+
+  @override
+  String get quranGoToAyah => 'Go to verse';
+
+  @override
+  String quranAyahNumberLabel(int count) {
+    return 'Verse number (1–$count)';
+  }
+
+  @override
+  String get quranGo => 'Go';
+
+  @override
+  String get quranPreviousSurah => 'Previous surah';
+
+  @override
+  String get quranNextSurah => 'Next surah';
+
+  @override
   String get toolQuranDesc => 'Surahs with Arabic text and translation';
 
   @override
@@ -1762,16 +1845,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Couldn\'t load the surah. Check your internet connection and try again.';
 
   @override
-  String get quranBookmarkSave => 'Save as reading position';
+  String get quranBookmarkSave => 'Add bookmark';
 
   @override
-  String get quranBookmarkRemove => 'Remove reading position';
+  String get quranBookmarkRemove => 'Remove bookmark';
 
   @override
-  String get quranBookmarkSaved => 'Reading position saved';
+  String get quranBookmarkSaved => 'Bookmark added';
 
   @override
-  String get quranBookmarkRemoved => 'Reading position removed';
+  String get quranBookmarkRemoved => 'Bookmark removed';
 
   @override
   String get quranShareAyah => 'Share verse';

@@ -836,6 +836,61 @@
     },
     "toolFridayDesc": "Messages ready to share",
     "quranTitle": "Holy Quran",
+    "quranTabSurahs": "Surahs",
+    "quranTabJuz": "Juz",
+    "quranSearchHint": "Search surah by name or number",
+    "quranNoResults": "No surah matches your search",
+    "quranJuz": "Juz {juz}",
+    "@quranJuz": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "quranPage": "Page {page}",
+    "@quranPage": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahRange": "Verses {from}–{to}",
+    "@quranAyahRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "quranBookmark": "Bookmark",
+    "quranViewSettings": "View",
+    "quranModePage": "Page",
+    "quranModePageDesc": "Continuous Arabic text, laid out like the Mushaf",
+    "quranModeAyah": "Verse by verse",
+    "quranModeAyahDesc": "Each verse on its own card, with its translation",
+    "quranModeTranslation": "Translation",
+    "quranModeTranslationDesc": "Translation only, for continuous reading",
+    "quranArabicSize": "Arabic text",
+    "quranTranslationSize": "Translation text",
+    "quranTranslationSmaller": "Smaller translation text",
+    "quranTranslationLarger": "Larger translation text",
+    "quranGoToAyah": "Go to verse",
+    "quranAyahNumberLabel": "Verse number (1–{count})",
+    "@quranAyahNumberLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranGo": "Go",
+    "quranPreviousSurah": "Previous surah",
+    "quranNextSurah": "Next surah",
     "toolQuranDesc": "Surahs with Arabic text and translation",
     "quranContinue": "Continue where you left off",
     "quranAyahRef": "{surah}, verse {ayah}",
@@ -860,10 +915,10 @@
     "quranMeccan": "Meccan",
     "quranMedinan": "Medinan",
     "quranLoadError": "Couldn't load the surah. Check your internet connection and try again.",
-    "quranBookmarkSave": "Save as reading position",
-    "quranBookmarkRemove": "Remove reading position",
-    "quranBookmarkSaved": "Reading position saved",
-    "quranBookmarkRemoved": "Reading position removed",
+    "quranBookmarkSave": "Add bookmark",
+    "quranBookmarkRemove": "Remove bookmark",
+    "quranBookmarkSaved": "Bookmark added",
+    "quranBookmarkRemoved": "Bookmark removed",
     "quranShareAyah": "Share verse",
     "quranFontSmaller": "Smaller Arabic text",
     "quranFontLarger": "Larger Arabic text",

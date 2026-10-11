@@ -1752,6 +1752,88 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quranTitle => 'Le Saint Coran';
 
   @override
+  String get quranTabSurahs => 'Sourates';
+
+  @override
+  String get quranTabJuz => 'Juz';
+
+  @override
+  String get quranSearchHint => 'Rechercher une sourate (nom ou numéro)';
+
+  @override
+  String get quranNoResults => 'Aucune sourate ne correspond à votre recherche';
+
+  @override
+  String quranJuz(int juz) {
+    return 'Juz $juz';
+  }
+
+  @override
+  String quranPage(int page) {
+    return 'Page $page';
+  }
+
+  @override
+  String quranAyahRange(int from, int to) {
+    return 'Versets $from à $to';
+  }
+
+  @override
+  String get quranBookmark => 'Signet';
+
+  @override
+  String get quranViewSettings => 'Affichage';
+
+  @override
+  String get quranModePage => 'Page';
+
+  @override
+  String get quranModePageDesc => 'Texte arabe continu, comme dans le Mushaf';
+
+  @override
+  String get quranModeAyah => 'Verset par verset';
+
+  @override
+  String get quranModeAyahDesc =>
+      'Chaque verset sur sa propre carte, avec sa traduction';
+
+  @override
+  String get quranModeTranslation => 'Traduction';
+
+  @override
+  String get quranModeTranslationDesc =>
+      'Traduction seule, en lecture continue';
+
+  @override
+  String get quranArabicSize => 'Texte arabe';
+
+  @override
+  String get quranTranslationSize => 'Texte de la traduction';
+
+  @override
+  String get quranTranslationSmaller => 'Réduire la traduction';
+
+  @override
+  String get quranTranslationLarger => 'Agrandir la traduction';
+
+  @override
+  String get quranGoToAyah => 'Aller au verset';
+
+  @override
+  String quranAyahNumberLabel(int count) {
+    return 'Numéro du verset (1–$count)';
+  }
+
+  @override
+  String get quranGo => 'Aller';
+
+  @override
+  String get quranPreviousSurah => 'Sourate précédente';
+
+  @override
+  String get quranNextSurah => 'Sourate suivante';
+
+  @override
   String get toolQuranDesc => 'Sourates, texte arabe et traduction';
 
   @override
@@ -1784,16 +1866,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de charger la sourate. Vérifiez votre connexion Internet et réessayez.';
 
   @override
-  String get quranBookmarkSave => 'Enregistrer comme position de lecture';
+  String get quranBookmarkSave => 'Ajouter un signet';
 
   @override
-  String get quranBookmarkRemove => 'Supprimer la position de lecture';
+  String get quranBookmarkRemove => 'Retirer le signet';
 
   @override
-  String get quranBookmarkSaved => 'Position de lecture enregistrée';
+  String get quranBookmarkSaved => 'Signet ajouté';
 
   @override
-  String get quranBookmarkRemoved => 'Position de lecture supprimée';
+  String get quranBookmarkRemoved => 'Signet retiré';
 
   @override
   String get quranShareAyah => 'Partager le verset';

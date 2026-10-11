@@ -21,6 +21,7 @@ import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/share_card.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
@@ -36,6 +37,8 @@ import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
+import 'package:ezan_saati/features/quran/view/quran_view.dart';
+import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/settings/view/time_adjust_view.dart';
@@ -1387,5 +1390,169 @@ void main() {
         await _finish(tester);
       });
     });
+  }
+
+  // Kur'an: liste (son okunan + yer imi), cüzler, sayfa görünümü (varsayılan;
+  // Mülk fikstürü: 3 mushaf sayfası), ayet alt sayfası, Görünüm; tr'de meal
+  // görünümü, koyu tema ve 320dp %130 yazı
+  for (final lang in ['tr', 'ar']) {
+    testWidgets("$lang: Kur'an sayfa görünümü", skip: skip, variant: _android, (
+      tester,
+    ) async {
+      await _run(tester, () async {
+        final loc = lookupAppLocalizations(Locale(lang));
+        final quran = _QuranShots(lang);
+        _currentScreen = '${lang}_70_quran_list';
+        await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
+        await quran.savePositions();
+        _navigator(tester).push(
+          MaterialPageRoute<void>(
+            builder: (_) => QuranView(service: quran.service),
+          ),
+        );
+        await _settle(tester, steps: 10);
+        await _shot(tester, '${lang}_70_quran_list');
+        await tester.tap(find.text(loc.quranTabJuz));
+        await _settle(tester, steps: 6);
+        await _shot(tester, '${lang}_71_quran_juz');
+
+        await quran.openMulk(tester, '${lang}_72_quran_page');
+        await _shot(tester, '${lang}_72_quran_page');
+        await _setViewport(tester, height: 2700);
+        await _settle(tester, steps: 4);
+        await _shot(tester, '${lang}_72_quran_page_full');
+        await _setViewport(tester);
+        await _settle(tester, steps: 4);
+
+        _currentScreen = '${lang}_73_quran_ayah_sheet';
+        await tester.tapOnText(find.textRange.ofSubstring(quran.arabic(2)));
+        await _settle(tester, steps: 6);
+        await _shot(tester, '${lang}_73_quran_ayah_sheet');
+        _navigator(tester).pop();
+        await _settle(tester, steps: 6);
+
+        // Ayete git: pencere ve sayfa içindeki ayete atlama (vurgulu)
+        _currentScreen = '${lang}_76_quran_go_to';
+        await tester.tap(find.byTooltip(loc.quranGoToAyah));
+        await _settle(tester, steps: 6);
+        await tester.enterText(find.byType(TextField), '20');
+        await _settle(tester, steps: 2);
+        await _shot(tester, '${lang}_76_quran_go_to');
+        await tester.tap(find.text(loc.quranGo));
+        await _settle(tester, steps: 6);
+        await _shot(tester, '${lang}_76b_quran_jumped');
+
+        _currentScreen = '${lang}_74_quran_view_settings';
+        await tester.tap(find.byTooltip(loc.quranViewSettings));
+        await _settle(tester, steps: 6);
+        await _shot(tester, '${lang}_74_quran_view_settings');
+        if (lang == 'tr') {
+          await tester.tap(find.text(loc.quranModeTranslation));
+          await _settle(tester, steps: 4);
+          _navigator(tester).pop();
+          await _settle(tester, steps: 6);
+          await _shot(tester, '${lang}_75_quran_meal');
+          _currentScreen = '${lang}_78_quran_ayah_mode';
+          await tester.tap(find.byTooltip(loc.quranViewSettings));
+          await _settle(tester, steps: 6);
+          await tester.tap(find.text(loc.quranModeAyah));
+          await _settle(tester, steps: 4);
+          _navigator(tester).pop();
+          await _settle(tester, steps: 6);
+          await _shot(tester, '${lang}_78_quran_ayah_mode');
+        } else {
+          _navigator(tester).pop();
+          await _settle(tester, steps: 6);
+        }
+        await _finish(tester);
+      });
+    });
+  }
+
+  testWidgets(
+    "tr koyu ve 320dp %130: Kur'an sayfa görünümü",
+    skip: skip,
+    variant: _android,
+    (tester) async {
+      await _run(tester, () async {
+        final quran = _QuranShots('tr');
+        _currentScreen = 'tr_dark_72_quran_page';
+        await _pumpApp(tester, lang: 'tr', homeVm: _homeVm('tr'), themeMode: 2);
+        await quran.openMulk(tester, 'tr_dark_72_quran_page');
+        await _shot(tester, 'tr_dark_72_quran_page');
+        await _finish(tester);
+
+        tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+        try {
+          for (final lang in ['tr', 'ar']) {
+            final shots = _QuranShots(lang);
+            final name = '${lang}_77_quran_page_320_text130';
+            _currentScreen = name;
+            await _setViewport(tester, width: 320, height: 640);
+            await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
+            await shots.openMulk(tester, name);
+            await _shot(tester, name);
+            await _finish(tester);
+          }
+        } finally {
+          tester.platformDispatcher.clearTextScaleFactorTestValue();
+        }
+      });
+    },
+  );
+}
+
+/// Kur'an ekran görüntüleri: gömülü sure listesi ve fikstürlerden yanıt veren
+/// sahte ağ (Mülk: gerçek sayfa/cüz bilgisi; diğer sureler İhlâs'tan)
+class _QuranShots {
+  final String lang;
+  final List<Surah> surahs = QuranService.parseSurahs(
+    File(QuranService.surahsAsset).readAsStringSync(),
+  );
+  final Map<String, dynamic> _mulk =
+      jsonDecode(File('test/fixtures/quran_surah_67.json').readAsStringSync())
+          as Map<String, dynamic>;
+
+  _QuranShots(this.lang);
+
+  late final QuranService service = QuranService(
+    loadAsset: () async => File(QuranService.surahsAsset).readAsStringSync(),
+    fetch: (url) async {
+      final translation = '$url'.contains(',');
+      final data = _mulk['data'] as List;
+      return jsonEncode({
+        'code': 200,
+        'data': translation ? data : [data.first],
+      });
+    },
+  );
+
+  /// Mülk'ün [ayah]. ayetinin Arapçası (1. ayette besmelesiz)
+  String arabic(int ayah) {
+    final text =
+        (((_mulk['data'] as List).first as Map)['ayahs'] as List)[ayah - 1]
+            as Map;
+    final value = text['text'] as String;
+    return ayah == 1 ? QuranService.splitBismillah(value)!.rest : value;
+  }
+
+  Future<void> savePositions() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(QuranService.lastReadKey, '{"surah":67,"ayah":13}');
+    await prefs.setString(QuranService.bookmarkKey, '{"surah":2,"ayah":255}');
+  }
+
+  Future<void> openMulk(WidgetTester tester, String name) async {
+    _currentScreen = name;
+    _navigator(tester).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SurahReaderView(
+          surah: surahs[66],
+          service: service,
+          surahs: surahs,
+        ),
+      ),
+    );
+    await _settle(tester, steps: 10);
   }
 }

@@ -1,6 +1,10 @@
-// Kur'an-ı Kerim: gömülü sure listesi (114 sure, 6236 ayet), alquran.cloud
-// yanıtının ayrıştırılması (besmele ayrı başlıkta), cihazdaki kopya (sınırlı
-// önbellek), kaldığın yer, yazı boyutu ve tr/ar %130 yazıda liste + okuyucu.
+// Kur'an-ı Kerim: gömülü sure listesi (114 sure, 6236 ayet), sure arama ve
+// 30 cüz; alquran.cloud yanıtının ayrıştırılması (besmele ayrı başlıkta,
+// mushaf bilgisi: sayfa/cüz/hizb/secde), cihazdaki kopya (sınırlı önbellek,
+// eski kopya), yer imi, son okunan, görünüm ve yazı boyutları; okuyucunun üç
+// görünümü (sayfa, ayet ayet, meal), ayet alt sayfası, "Ayete git",
+// önceki/sonraki sure ve tr/ar %130 yazıda tüm görünümler.
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,9 +15,14 @@ import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
+import 'package:ezan_saati/features/quran/widgets/ayah_sheet.dart';
+import 'package:ezan_saati/features/quran/widgets/mushaf_page.dart';
+import 'package:ezan_saati/features/quran/widgets/translation_page.dart';
+import 'package:ezan_saati/features/quran/widgets/view_settings_sheet.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -23,20 +32,22 @@ final String _surahsJson = File('assets/data/surahs.json').readAsStringSync();
 final List<Surah> _surahs = QuranService.parseSurahs(_surahsJson);
 Surah _surah(int number) => _surahs[number - 1];
 
+List<Map<String, dynamic>> _editionsOf(String raw) => [
+  for (final e in (jsonDecode(raw) as Map)['data'] as List)
+    e as Map<String, dynamic>,
+];
+
+List<String> _textsOf(Map<String, dynamic> edition) => [
+  for (final a in edition['ayahs'] as List) (a as Map)['text'] as String,
+];
+
 /// alquran.cloud `surah/112/editions/quran-uthmani,tr.diyanet` yanıtı
 final String _fixture = File(
   'test/fixtures/quran_surah_112.json',
 ).readAsStringSync();
-final List<Map<String, dynamic>> _fixtureEditions = [
-  for (final e in (jsonDecode(_fixture) as Map)['data'] as List)
-    e as Map<String, dynamic>,
-];
-List<String> _fixtureTexts(int edition) => [
-  for (final a in _fixtureEditions[edition]['ayahs'] as List)
-    (a as Map)['text'] as String,
-];
-final List<String> _arabic = _fixtureTexts(0);
-final List<String> _meal = _fixtureTexts(1);
+final List<Map<String, dynamic>> _fixtureEditions = _editionsOf(_fixture);
+final List<String> _arabic = _textsOf(_fixtureEditions[0]);
+final List<String> _meal = _textsOf(_fixtureEditions[1]);
 
 /// Besmelesiz ilk ayet ("Kul hüvallâhü ehad")
 final String _ikhlas1 = _arabic[0].substring(
@@ -50,8 +61,53 @@ final String _fixtureArabicOnly = jsonEncode({
   'data': [_fixtureEditions[0]],
 });
 
+/// Mülk (67) fikstürü, alquran.cloud biçiminde: 30 ayet, gerçek mushaf
+/// bilgisi (sayfa 562: 1–12, 563: 13–26, 564: 27–30; cüz 29)
+final String _mulkFixture = File(
+  'test/fixtures/quran_surah_67.json',
+).readAsStringSync();
+final List<Map<String, dynamic>> _mulkEditions = _editionsOf(_mulkFixture);
+final List<String> _mulkMeal = _textsOf(_mulkEditions[1]);
+
+/// Mülk ayetinin okuyucudaki Arapçası (1. ayet besmelesiz)
+String _mulk(int ayah) {
+  final text = _textsOf(_mulkEditions[0])[ayah - 1];
+  return ayah == 1 ? QuranService.splitBismillah(text)!.rest : text;
+}
+
+/// Mülk yanıtı: meal baskısının kimliği isteğe göre (Arapça arayüzde meal yok)
+String _mulkResponse(String? translation) {
+  if (translation == null) {
+    return jsonEncode({
+      'code': 200,
+      'data': [_mulkEditions[0]],
+    });
+  }
+  final meal = jsonDecode(jsonEncode(_mulkEditions[1])) as Map<String, dynamic>;
+  (meal['edition'] as Map)['identifier'] = translation;
+  return jsonEncode({
+    'code': 200,
+    'data': [_mulkEditions[0], meal],
+  });
+}
+
+/// Bakara'nın mushaf sayfa başları (sayfa 2–49; quran-meta ile aynı)
+const List<int> _bakaraPageStarts = [
+  1, 6, 17, 25, 30, 38, 49, 58, 62, 70, 77, 84, 89, 94, 102, 106, 113, //
+  120, 127, 135, 142, 146, 154, 164, 170, 177, 182, 187, 191, 197, 203,
+  211, 216, 220, 225, 231, 234, 238, 246, 249, 253, 257, 260, 265, 270,
+  275, 282, 283,
+];
+
+/// Bakara ayetlerinin sayfası (1–5: 2 … 283–286: 49)
+final List<int> _bakaraPages = [
+  for (var a = 1; a <= 286; a++)
+    _bakaraPageStarts.lastIndexWhere((s) => s <= a) + 2,
+];
+
 /// alquran.cloud biçiminde yanıt (ilk ayetin başında besmele, Fâtiha ve Tevbe
-/// hariç — API'deki gibi)
+/// hariç — API'deki gibi). [pages] verilirse ayetlerde mushaf bilgisi
+/// (sayfa, cüz, hizb çeyreği, secde) de olur.
 String _response(
   int surah,
   List<String> arabic, {
@@ -59,6 +115,7 @@ String _response(
   String translationId = 'tr.diyanet',
   bool identifiers = true,
   bool withBismillah = true,
+  List<int>? pages,
 }) {
   final texts = [...arabic];
   if (withBismillah && surah != 1 && surah != 9) {
@@ -69,7 +126,17 @@ String _response(
     'numberOfAyahs': ayahs.length,
     'ayahs': [
       for (var i = 0; i < ayahs.length; i++)
-        {'number': 5000 + i, 'text': ayahs[i], 'numberInSurah': i + 1},
+        {
+          'number': 5000 + i,
+          'text': ayahs[i],
+          'numberInSurah': i + 1,
+          if (pages != null) ...{
+            'page': pages[i],
+            'juz': QuranService.juzOf(surah, i + 1),
+            'hizbQuarter': 1,
+            'sajda': false,
+          },
+        },
     ],
     if (identifiers) 'edition': {'identifier': id},
   };
@@ -88,7 +155,8 @@ List<String> _texts(int n, String word) => [
   for (var i = 1; i <= n; i++) '$word $i',
 ];
 
-/// Yapay ağ: 112 için fikstür, diğer sureler için üretilmiş yanıt
+/// Yapay ağ: 112 ve 67 için fikstür, Bakara gerçek sayfa bilgisiyle, diğer
+/// sureler sayfa bilgisi olmadan üretilmiş yanıt
 String _fakeResponse(Uri url) {
   final match = RegExp(r'/surah/(\d+)/editions/(.+)$').firstMatch('$url')!;
   final number = int.parse(match.group(1)!);
@@ -97,12 +165,14 @@ String _fakeResponse(Uri url) {
   if (number == 112) {
     return translation == null ? _fixtureArabicOnly : _fixture;
   }
+  if (number == 67) return _mulkResponse(translation);
   final count = _surah(number).ayahCount;
   return _response(
     number,
     _texts(count, 'آية'),
     translation: translation == null ? null : _texts(count, 'meal'),
     translationId: translation ?? 'tr.diyanet',
+    pages: number == 2 ? _bakaraPages : null,
   );
 }
 
@@ -117,6 +187,16 @@ QuranService _service({
   },
 );
 
+/// Eski (sürüm 1, mushaf bilgisi yok) İhlâs kopyası
+String _legacyIkhlasCache() => jsonEncode({
+  'v': 1,
+  'surah': 112,
+  'edition': 'tr.diyanet',
+  'bismillah': QuranService.bismillahText,
+  'arabic': [_ikhlas1, ..._arabic.skip(1)],
+  'translation': _meal,
+});
+
 Future<void> _loadFont(String family, List<String> paths) async {
   final loader = FontLoader(family);
   for (final path in paths) {
@@ -125,6 +205,14 @@ Future<void> _loadFont(String family, List<String> paths) async {
   }
   await loader.load();
 }
+
+/// Okuyucu / liste kaydırması (TabBarView ve metin alanının yatay
+/// kaydırıcıları değil)
+Finder _vertical() => find
+    .byWidgetPredicate(
+      (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+    )
+    .first;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -261,6 +349,120 @@ void main() {
     });
   });
 
+  group('Sure arama', () {
+    List<int> search(String query) => [
+      for (final s in QuranService.searchSurahs(_surahs, query)) s.number,
+    ];
+
+    test('harf işaretleri, büyük/küçük harf, boşluk ve tire yok sayılır', () {
+      expect(QuranService.searchKey('Yâsîn'), 'yasin');
+      expect(QuranService.searchKey('Ya-Sin'), 'yasin');
+      expect(QuranService.searchKey('Âl-i İmrân'), 'aliimran');
+      expect(QuranService.searchKey("Ali 'Imran"), 'aliimran');
+      expect(QuranService.searchKey("En'âm"), 'enam');
+      expect(QuranService.searchKey('ŞÛRÂ'), 'sura');
+      expect(QuranService.searchKey('الإخلاص'), 'الاخلاص');
+      expect(QuranService.searchKey('١١٢'), '112');
+      for (final query in ['yasin', 'YASİN', 'Yâsîn', 'ya sin', 'Ya-Sin']) {
+        expect(search(query), [36], reason: query);
+      }
+      expect(search('ali imran'), [3]);
+      // Dart'ın küçültmesi: 'İ' → i + U+0307 (üst nokta) de olur
+      expect(search('âl-i ${'İmrân'.toLowerCase()}'), [3]);
+      expect(search('ihlas'), [112]);
+      expect(search('İHLÂS'), [112]);
+      expect(search('ikhlas'), [112]); // Latin okunuş (Al-Ikhlas)
+      expect(search('bakara'), [2]);
+      expect(search('baqarah'), [2]);
+    });
+
+    test('Arapça ad: hareke ve hemze yazılışı fark etmez', () {
+      expect(search('البقرة'), [2]);
+      expect(search('الاخلاص'), [112]);
+      expect(search('الإِخْلَاص'), [112]);
+      expect(search('الملك'), [67]);
+      expect(search('يس'), contains(36));
+    });
+
+    test(
+      'numara: yazılan rakamlarla başlayan sureler; Arapça-Hint rakamlar',
+      () {
+        expect(search('36'), [36]);
+        expect(search('٣٦'), [36]);
+        expect(search('036'), [36]);
+        expect(search('11'), [11, 110, 111, 112, 113, 114]);
+        expect(search('115'), isEmpty);
+        expect(search('0'), isEmpty);
+      },
+    );
+
+    test('boş sorgu tüm liste; eşleşme yoksa boş', () {
+      expect(search(''), hasLength(114));
+      expect(search('  - '), hasLength(114));
+      expect(search('zzz'), isEmpty);
+    });
+  });
+
+  group('Cüzler', () {
+    test('30 cüz başlangıcı (Hafs, Medine mushafı)', () {
+      expect(QuranService.juzStarts, hasLength(QuranService.juzCount));
+      expect(
+        [for (final s in QuranService.juzStarts) '${s.surah}:${s.ayah}'],
+        [
+          '1:1', '2:142', '2:253', '3:93', '4:24', '4:148', '5:82', //
+          '6:111', '7:88', '8:41', '9:93', '11:6', '12:53', '15:1', '17:1',
+          '18:75', '21:1', '23:1', '25:21', '27:56', '29:46', '33:31',
+          '36:28', '39:32', '41:47', '46:1', '51:31', '58:1', '67:1', '78:1',
+        ],
+      );
+      // Sırayla artar; her başlangıç suresinin ayet sayısı içinde
+      for (var i = 0; i < QuranService.juzStarts.length; i++) {
+        final start = QuranService.juzStarts[i];
+        expect(start.ayah, lessThanOrEqualTo(_surah(start.surah).ayahCount));
+        if (i == 0) continue;
+        final previous = QuranService.juzStarts[i - 1];
+        expect(
+          start.surah > previous.surah ||
+              (start.surah == previous.surah && start.ayah > previous.ayah),
+          isTrue,
+          reason: 'cüz ${i + 1}',
+        );
+      }
+    });
+
+    test('ayetin cüzü', () {
+      expect(QuranService.juzOf(1, 1), 1);
+      expect(QuranService.juzOf(2, 141), 1);
+      expect(QuranService.juzOf(2, 142), 2);
+      expect(QuranService.juzOf(2, 252), 2);
+      expect(QuranService.juzOf(2, 253), 3);
+      expect(QuranService.juzOf(36, 27), 22);
+      expect(QuranService.juzOf(36, 28), 23);
+      expect(QuranService.juzOf(66, 12), 28);
+      expect(QuranService.juzOf(67, 1), 29);
+      expect(QuranService.juzOf(77, 50), 29);
+      expect(QuranService.juzOf(78, 1), 30);
+      expect(QuranService.juzOf(114, 6), 30);
+      for (var juz = 1; juz <= 30; juz++) {
+        final start = QuranService.juzStarts[juz - 1];
+        expect(QuranService.juzOf(start.surah, start.ayah), juz);
+      }
+    });
+
+    test('fikstürlerin cüz bilgisi tabloyla aynı', () {
+      for (final (raw, surah) in [(_fixture, 112), (_mulkFixture, 67)]) {
+        for (final a in _editionsOf(raw)[0]['ayahs'] as List) {
+          final ayah = a as Map;
+          expect(
+            ayah['juz'],
+            QuranService.juzOf(surah, ayah['numberInSurah'] as int),
+            reason: '$surah:${ayah['numberInSurah']}',
+          );
+        }
+      }
+    });
+  });
+
   group('Baskılar (günün ayeti ile ortak)', () {
     test('dile göre meal; Arapça arayüzde sadece Arapça', () {
       expect(QuranEdition.translationFor('tr'), 'tr.diyanet');
@@ -328,6 +530,54 @@ void main() {
       expect(text.ayahs.first.translation, "De ki: O, Allah'tır, bir tektir.");
     });
 
+    test('mushaf bilgisi Arapça baskıdan: sayfa, cüz, hizb çeyreği, secde', () {
+      final ikhlas = parse(_fixture)!;
+      expect(ikhlas.hasPageInfo, isTrue);
+      for (final a in ikhlas.ayahs) {
+        expect([a.page, a.juz, a.hizbQuarter, a.sajda], [604, 30, 240, false]);
+      }
+      final mulk = parse(_mulkFixture, surah: 67)!;
+      expect(mulk.hasPageInfo, isTrue);
+      expect(mulk.ayahs.first.arabic, _mulk(1));
+      expect(mulk.ayahs.map((a) => a.translation), _mulkMeal);
+      expect(
+        [for (final a in mulk.ayahs) a.page],
+        [for (var n = 1; n <= 30; n++) n <= 12 ? 562 : (n <= 26 ? 563 : 564)],
+      );
+      expect(mulk.ayahs.map((a) => a.juz).toSet(), {29});
+      expect(mulk.ayahs.every((a) => !a.sajda), isTrue);
+
+      // Secde ayetinde nesne gelir
+      String withAyah2(Object? field, Object? value) {
+        final copy = jsonDecode(_fixture) as Map<String, dynamic>;
+        ((copy['data'] as List)[0]['ayahs'] as List)[1][field] = value;
+        return jsonEncode(copy);
+      }
+
+      final sajda = {'id': 1, 'recommended': true, 'obligatory': false};
+      expect(parse(withAyah2('sajda', sajda))!.ayahs[1].sajda, isTrue);
+      expect(parse(withAyah2('sajda', true))!.ayahs[1].sajda, isTrue);
+      expect(parse(withAyah2('sajda', 'evet'))!.ayahs[1].sajda, isFalse);
+      // Bozuk/eksik sayfa: ayet yine açılır, sayfa bilgisi yok sayılır
+      for (final page in [0, 605, '604', null, 603]) {
+        final text = parse(withAyah2('page', page))!;
+        expect(text.ayahs, hasLength(4), reason: '$page');
+        expect(text.hasPageInfo, isFalse, reason: '$page'); // 603: geri gider
+      }
+      expect(parse(withAyah2('juz', 31))!.ayahs[1].juz, isNull);
+      expect(
+        parse(withAyah2('hizbQuarter', 241))!.ayahs[1].hizbQuarter,
+        isNull,
+      );
+      // Sayfa bilgisi olmayan yanıt
+      final plain = parse(
+        _response(113, _texts(5, 'آية'), translation: _texts(5, 'meal')),
+        surah: 113,
+      )!;
+      expect(plain.hasPageInfo, isFalse);
+      expect(plain.ayahs.every((a) => a.page == null && a.juz == null), isTrue);
+    });
+
     test('Arapça arayüz: tek baskı, meal yok; data tek nesne de olabilir', () {
       final text = parse(_fixtureArabicOnly, translation: null)!;
       expect(text.translationEdition, isNull);
@@ -343,6 +593,7 @@ void main() {
       });
       expect(parse(reversed)!.ayahs.first.translation, _meal[0]);
       expect(parse(reversed)!.ayahs.first.arabic, _ikhlas1);
+      expect(parse(reversed)!.ayahs.first.page, 604);
       final noIds = _response(
         113,
         _texts(5, 'آية'),
@@ -357,15 +608,24 @@ void main() {
     test('besmele farklı yazılışlarla da ayrılır', () {
       const b = QuranService.bismillahText;
       final variants = <String, String>{
-        'BOM': '\uFEFF$b',
+        'BOM': '${String.fromCharCode(0xFEFF)}$b',
         'tatvil': b.replaceFirst(
-          '\u0645\u064E\u0670',
-          '\u0645\u064E\u0640\u0670',
+          String.fromCharCodes([0x0645, 0x064E, 0x0670]),
+          String.fromCharCodes([0x0645, 0x064E, 0x0640, 0x0670]),
         ),
-        'şedde/üstün sırası': b.replaceAll('\u0651\u064E', '\u064E\u0651'),
-        'şeddeli be': b.replaceFirst('\u0628\u0650', '\u0628\u0651\u0650'),
+        'şedde/üstün sırası': b.replaceAll(
+          String.fromCharCodes([0x0651, 0x064E]),
+          String.fromCharCodes([0x064E, 0x0651]),
+        ),
+        'şeddeli be': b.replaceFirst(
+          String.fromCharCodes([0x0628, 0x0650]),
+          String.fromCharCodes([0x0628, 0x0651, 0x0650]),
+        ),
         'harekesiz': 'بسم الله الرحمن الرحيم',
-        'sükun (U+0652)': b.replaceAll('\u06E1', '\u0652'),
+        'sükun (U+0652)': b.replaceAll(
+          String.fromCharCode(0x06E1),
+          String.fromCharCode(0x0652),
+        ),
       };
       for (final MapEntry(key: name, value: prefix) in variants.entries) {
         expect(prefix, isNot(b), reason: name); // gerçekten farklı yazılış
@@ -460,6 +720,99 @@ void main() {
     });
   });
 
+  group('Sayfalar', () {
+    SurahText parse(String raw, int surah, {String? translation}) =>
+        QuranService.parseSurahResponse(
+          raw,
+          surah: surah,
+          ayahCount: _surah(surah).ayahCount,
+          translationEdition: translation,
+        )!;
+
+    List<int> numbers(QuranPageGroup g) => [for (final a in g.ayahs) a.number];
+
+    test('aynı mushaf sayfasındaki ayetler bir arada (API sayfa bilgisi)', () {
+      final mulk = QuranService.pageGroups(
+        parse(_mulkFixture, 67, translation: 'tr.diyanet'),
+      );
+      expect([for (final g in mulk) g.page], [562, 563, 564]);
+      expect([for (final g in mulk) g.juz], [29, 29, 29]);
+      expect(numbers(mulk[0]), [for (var n = 1; n <= 12; n++) n]);
+      expect(numbers(mulk[1]), [for (var n = 13; n <= 26; n++) n]);
+      expect(numbers(mulk[2]), [27, 28, 29, 30]);
+      expect(mulk[1].contains(13), isTrue);
+      expect(mulk[1].contains(27), isFalse);
+      expect([mulk[2].firstAyah, mulk[2].lastAyah], [27, 30]);
+
+      final bakara = QuranService.pageGroups(
+        parse(_response(2, _texts(286, 'آية'), pages: _bakaraPages), 2),
+      );
+      expect(bakara, hasLength(48));
+      expect([bakara.first.page, bakara.first.juz], [2, 1]);
+      expect(numbers(bakara.first), [1, 2, 3, 4, 5]);
+      // Cüz başı sayfa başı: 2:142 sayfa 22, 2:253 sayfa 42
+      final juz2 = bakara.firstWhere((g) => g.contains(142));
+      expect([juz2.page, juz2.firstAyah, juz2.juz], [22, 142, 2]);
+      final juz3 = bakara.firstWhere((g) => g.contains(253));
+      expect([juz3.page, juz3.firstAyah, juz3.juz], [42, 253, 3]);
+      expect([bakara.last.page, bakara.last.firstAyah], [49, 283]);
+      // Uzun ayet tek başına bir sayfa (2:282)
+      expect(numbers(bakara.firstWhere((g) => g.page == 48)), [282]);
+      // Her ayet bir kez, sırayla
+      expect(
+        [for (final g in bakara) ...numbers(g)],
+        [for (var n = 1; n <= 286; n++) n],
+      );
+    });
+
+    test('sayfa bilgisi yoksa (eski kopya) 10 ayetlik gruplar, cüz başında '
+        'yeni grup', () {
+      final ikhlas = QuranService.pageGroups(
+        parse(_response(112, _texts(4, 'آية')), 112),
+      );
+      expect(ikhlas, hasLength(1));
+      expect([ikhlas.single.page, ikhlas.single.juz], [null, 30]);
+      expect(numbers(ikhlas.single), [1, 2, 3, 4]);
+
+      final bakara = QuranService.pageGroups(
+        parse(_response(2, _texts(286, 'آية')), 2),
+      );
+      expect(bakara.every((g) => g.page == null), isTrue);
+      expect(
+        bakara.every((g) => g.ayahs.length <= QuranService.fallbackPageSize),
+        isTrue,
+      );
+      expect(numbers(bakara.first), [for (var n = 1; n <= 10; n++) n]);
+      // 1. cüz 141'de biter, 2. cüz 142'de başlar
+      expect(numbers(bakara.firstWhere((g) => g.contains(141))), [141]);
+      final juz2 = bakara.firstWhere((g) => g.contains(142));
+      expect([juz2.firstAyah, juz2.lastAyah, juz2.juz], [142, 151, 2]);
+      expect(numbers(bakara.firstWhere((g) => g.contains(252))), [252]);
+      expect(bakara.firstWhere((g) => g.contains(253)).juz, 3);
+      expect(
+        [for (final g in bakara) ...numbers(g)],
+        [for (var n = 1; n <= 286; n++) n],
+      );
+    });
+
+    test('ayet sonu işareti: süslü parantez içinde Arapça-Hint rakamları', () {
+      expect(QuranService.arabicIndicDigits(7).codeUnits, [0x0667]);
+      expect(QuranService.arabicIndicDigits(286).codeUnits, [
+        0x0662,
+        0x0668,
+        0x0666,
+      ]);
+      // Mantıksal sıra (sağdan sola): U+FD3F, rakamlar, U+FD3E → ﴿١٢﴾
+      expect(QuranService.ayahEndMarker(12).codeUnits, [
+        0xFD3F,
+        0x0661,
+        0x0662,
+        0xFD3E,
+      ]);
+      expect(QuranService.ayahEndMarker(12), '﴿١٢﴾');
+    });
+  });
+
   group('Cihazdaki kopya', () {
     setUp(() => SharedPreferences.setMockInitialValues({}));
 
@@ -488,6 +841,7 @@ void main() {
         first.ayahs.map((a) => a.arabic),
       );
       expect(cached.ayahs.map((a) => a.translation), _meal);
+      expect(cached.ayahs.map((a) => a.page), everyElement(604));
 
       // Başka dil: ayrı kopya (Arapça arayüzde meal yok)
       final ar = await online.loadSurah(_surah(112), 'ar');
@@ -501,6 +855,145 @@ void main() {
         offline.loadSurah(_surah(1), 'tr'),
         throwsA(isA<SocketException>()),
       );
+    });
+
+    test('sürüm 2: sayfa, cüz, hizb ve secde saklanır; sayfa bilgisi '
+        'olmayan kopya yeniden indirilmez', () async {
+      final copy = jsonDecode(_mulkFixture) as Map<String, dynamic>;
+      ((copy['data'] as List)[0]['ayahs'] as List)[4]['sajda'] = {
+        'id': 9,
+        'recommended': true,
+        'obligatory': false,
+      };
+      final calls = <Uri>[];
+      final service = _service(
+        calls: calls,
+        fetch: (url) async => '$url'.contains('/surah/67/')
+            ? jsonEncode(copy)
+            : _fakeResponse(url),
+      );
+      final text = await service.loadSurah(_surah(67), 'tr');
+      expect(text.ayahs[4].sajda, isTrue);
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(QuranService.cacheKey(67, 'tr.diyanet'))!;
+      final saved = jsonDecode(raw) as Map<String, dynamic>;
+      expect(saved['v'], 2);
+      expect(saved['page'], [for (final a in text.ayahs) a.page]);
+      expect(saved['juz'], everyElement(29));
+      expect(saved['hizb'], hasLength(30));
+      expect(saved['sajda'], [5]);
+
+      final cached = await service.loadSurah(_surah(67), 'tr');
+      expect(calls, hasLength(1));
+      for (var i = 0; i < 30; i++) {
+        final (a, b) = (text.ayahs[i], cached.ayahs[i]);
+        expect(
+          [b.arabic, b.translation, b.page, b.juz, b.hizbQuarter, b.sajda],
+          [a.arabic, a.translation, a.page, a.juz, a.hizbQuarter, a.sajda],
+        );
+      }
+      // Sayfa bilgisi gelmeyen sure (113) de saklanır, tekrar istenmez
+      await service.loadSurah(_surah(113), 'tr');
+      await service.loadSurah(_surah(113), 'tr');
+      expect(calls.where((u) => '$u'.contains('/surah/113/')), hasLength(1));
+      expect(
+        (jsonDecode(prefs.getString(QuranService.cacheKey(113, 'tr.diyanet'))!)
+                as Map)
+            .containsKey('page'),
+        isFalse,
+      );
+    });
+
+    test('bozuk mushaf bilgili kopya silinip yeniden indirilir', () async {
+      final calls = <Uri>[];
+      final service = _service(calls: calls);
+      await service.loadSurah(_surah(67), 'tr');
+      final prefs = await SharedPreferences.getInstance();
+      final key = QuranService.cacheKey(67, 'tr.diyanet');
+      final good = jsonDecode(prefs.getString(key)!) as Map<String, dynamic>;
+      for (final (name, field, value) in [
+        ('sayfa 0', 'page', [0, ...List.filled(29, 562)]),
+        ('eksik sayfa', 'page', List.filled(29, 562)),
+        ('cüz metin', 'juz', List.filled(30, '29')),
+        ('hizb 241', 'hizb', List.filled(30, 241)),
+      ]) {
+        final bad = {...good, field: value};
+        expect(
+          QuranService.decodeCache(jsonEncode(bad), _surah(67), 'tr.diyanet'),
+          isNull,
+          reason: name,
+        );
+        await prefs.setString(key, jsonEncode(bad));
+        final text = await service.loadSurah(_surah(67), 'tr');
+        expect(text.hasPageInfo, isTrue, reason: name);
+      }
+      expect(calls, hasLength(5));
+      expect(
+        QuranService.decodeCache(
+          prefs.getString(key),
+          _surah(67),
+          'tr.diyanet',
+        ),
+        isNotNull,
+      );
+    });
+
+    test('eski kopya (sürüm 1, mushaf bilgisi yok): ağ yoksa kopya açılır, '
+        'ağ varsa sayfa bilgisiyle yenilenir', () async {
+      final key = QuranService.cacheKey(112, 'tr.diyanet');
+      final legacy = _legacyIkhlasCache();
+      SharedPreferences.setMockInitialValues({
+        key: legacy,
+        QuranService.cacheIndexKey: [key],
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final calls = <Uri>[];
+      final offline = _service(
+        calls: calls,
+        fetch: (_) async => throw const SocketException('yok'),
+      );
+      final old = await offline.loadSurah(_surah(112), 'tr');
+      expect(calls, [QuranService.surahUrl(112, 'tr')]); // yenileme denendi
+      expect(old.hasPageInfo, isFalse);
+      expect(old.bismillah, QuranService.bismillahText);
+      expect(old.ayahs.first.arabic, _ikhlas1);
+      expect(old.ayahs.map((a) => a.translation), _meal);
+      expect(prefs.getString(key), legacy); // silinmedi
+      final groups = QuranService.pageGroups(old);
+      expect(groups, hasLength(1));
+      expect([groups.single.page, groups.single.juz], [null, 30]);
+
+      calls.clear();
+      final fresh = await _service(calls: calls).loadSurah(_surah(112), 'tr');
+      expect(calls, [QuranService.surahUrl(112, 'tr')]);
+      expect(fresh.hasPageInfo, isTrue);
+      expect((jsonDecode(prefs.getString(key)!) as Map)['v'], 2);
+
+      calls.clear();
+      final cached = await offline.loadSurah(_surah(112), 'tr');
+      expect(calls, isEmpty);
+      expect(cached.ayahs.map((a) => a.page), everyElement(604));
+    });
+
+    testWidgets('eski kopyanın yenilemesi yavaşsa '
+        '${QuranService.upgradeTimeout.inSeconds} sn sonra kopya açılır', (
+      tester,
+    ) async {
+      final key = QuranService.cacheKey(112, 'tr.diyanet');
+      SharedPreferences.setMockInitialValues({key: _legacyIkhlasCache()});
+      final never = Completer<String?>();
+      SurahText? result;
+      _service(
+        fetch: (_) => never.future,
+      ).loadSurah(_surah(112), 'tr').then((text) => result = text);
+      await tester.pump(
+        QuranService.upgradeTimeout - const Duration(seconds: 1),
+      );
+      expect(result, isNull);
+      await tester.pump(const Duration(seconds: 2));
+      expect(result, isNotNull);
+      expect(result!.hasPageInfo, isFalse);
+      expect(result!.ayahs.first.arabic, _ikhlas1);
     });
 
     test(
@@ -556,12 +1049,13 @@ void main() {
     });
 
     test('sınır: en çok ${QuranService.maxCachedSurahs} sure; en eski silinir, '
-        'kaldığın yerin suresi korunur', () async {
+        'yer iminin ve son okunanın suresi korunur', () async {
       final calls = <Uri>[];
       final service = _service(calls: calls);
       await service.saveBookmark(const QuranBookmark(surah: 104, ayah: 2));
-      // 104..114: 11 kısa sure
-      for (var n = 104; n <= 114; n++) {
+      await service.saveLastRead(const QuranBookmark(surah: 105, ayah: 1));
+      // 103..114: 12 kısa sure
+      for (var n = 103; n <= 114; n++) {
         await service.loadSurah(_surah(n), 'tr');
       }
       final prefs = await SharedPreferences.getInstance();
@@ -569,8 +1063,11 @@ void main() {
       expect(index, hasLength(QuranService.maxCachedSurahs));
       expect(index.first, QuranService.cacheKey(114, 'tr.diyanet'));
       expect(index, contains(QuranService.cacheKey(104, 'tr.diyanet')));
-      expect(index, isNot(contains(QuranService.cacheKey(105, 'tr.diyanet'))));
-      expect(prefs.getString(QuranService.cacheKey(105, 'tr.diyanet')), isNull);
+      expect(index, contains(QuranService.cacheKey(105, 'tr.diyanet')));
+      for (final n in [103, 106]) {
+        expect(index, isNot(contains(QuranService.cacheKey(n, 'tr.diyanet'))));
+        expect(prefs.getString(QuranService.cacheKey(n, 'tr.diyanet')), isNull);
+      }
       expect(
         prefs.getKeys().where((k) => k.startsWith(QuranService.cachePrefix)),
         hasLength(QuranService.maxCachedSurahs),
@@ -578,9 +1075,10 @@ void main() {
 
       calls.clear();
       await service.loadSurah(_surah(104), 'tr'); // korundu: ağsız
+      await service.loadSurah(_surah(105), 'tr');
       expect(calls, isEmpty);
-      await service.loadSurah(_surah(105), 'tr'); // silindi: yeniden indirilir
-      expect(calls, [QuranService.surahUrl(105, 'tr')]);
+      await service.loadSurah(_surah(106), 'tr'); // silindi: yeniden indirilir
+      expect(calls, [QuranService.surahUrl(106, 'tr')]);
     });
 
     test('karakter sınırı: uzun sure eskileri siler, kendisi kalır', () async {
@@ -613,10 +1111,10 @@ void main() {
     });
   });
 
-  group('Kaldığın yer ve yazı boyutu', () {
+  group('Yer imi, son okunan, görünüm ve yazı boyutu', () {
     setUp(() => SharedPreferences.setMockInitialValues({}));
 
-    test('kaydedilir, okunur, silinir', () async {
+    test('yer imi: kaydedilir, okunur, silinir', () async {
       final service = _service();
       expect(await service.loadBookmark(), isNull);
       await service.saveBookmark(const QuranBookmark(surah: 2, ayah: 255));
@@ -634,6 +1132,24 @@ void main() {
       expect(prefs.containsKey(QuranService.bookmarkKey), isFalse);
     });
 
+    test('son okunan ayet yer iminden ayrı saklanır', () async {
+      final service = _service();
+      expect(await service.loadLastRead(), isNull);
+      await service.saveLastRead(const QuranBookmark(surah: 36, ayah: 12));
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        prefs.getString(QuranService.lastReadKey),
+        '{"surah":36,"ayah":12}',
+      );
+      expect(await service.loadBookmark(), isNull);
+      expect(
+        await _service().loadLastRead(),
+        const QuranBookmark(surah: 36, ayah: 12),
+      );
+      await prefs.setString(QuranService.lastReadKey, '{"surah":0,"ayah":1}');
+      expect(await service.loadLastRead(), isNull);
+    });
+
     test('bozuk kayıt yok sayılır', () async {
       for (final raw in [
         'bozuk',
@@ -644,28 +1160,83 @@ void main() {
         '{"surah":2,"ayah":0}',
         '{"surah":"2","ayah":1}',
       ]) {
-        SharedPreferences.setMockInitialValues({QuranService.bookmarkKey: raw});
+        SharedPreferences.setMockInitialValues({
+          QuranService.bookmarkKey: raw,
+          QuranService.lastReadKey: raw,
+        });
         expect(await _service().loadBookmark(), isNull, reason: raw);
+        expect(await _service().loadLastRead(), isNull, reason: raw);
       }
-      SharedPreferences.setMockInitialValues({QuranService.bookmarkKey: 7});
+      SharedPreferences.setMockInitialValues({
+        QuranService.bookmarkKey: 7,
+        QuranService.lastReadKey: 7,
+      });
       expect(await _service().loadBookmark(), isNull);
+      expect(await _service().loadLastRead(), isNull);
     });
 
-    test('yazı boyutu: varsayılan 1, sınırlar ve 0,1 adım', () async {
+    test('görünüm: varsayılan sayfa, seçim saklanır; Arapça arayüzde meal '
+        'yerine sayfa', () async {
       final service = _service();
-      expect(await service.loadFontScale(), 1);
-      await service.saveFontScale(1.2000000001);
+      expect(await service.loadViewMode(), QuranViewMode.page);
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getDouble(QuranService.fontScaleKey), 1.2);
-      expect(await service.loadFontScale(), 1.2);
-      expect(QuranService.clampFontScale(0.3), QuranService.minFontScale);
-      expect(QuranService.clampFontScale(9), QuranService.maxFontScale);
-      expect(QuranService.clampFontScale(1.04), 1.0);
-      expect(QuranService.clampFontScale(double.nan), 1);
-      expect(QuranService.clampFontScale(0.9 + 0.1), 1.0);
-      await prefs.setDouble(QuranService.fontScaleKey, 5);
-      expect(await service.loadFontScale(), QuranService.maxFontScale);
+      for (final mode in QuranViewMode.values) {
+        await service.saveViewMode(mode);
+        expect(prefs.getString(QuranService.viewModeKey), mode.name);
+        expect(await _service().loadViewMode(), mode);
+      }
+      expect(
+        [for (final m in QuranViewMode.values) m.name],
+        ['page', 'ayah', 'translation'],
+      );
+      for (final raw in ['', 'mushaf', 'PAGE']) {
+        await prefs.setString(QuranService.viewModeKey, raw);
+        expect(await service.loadViewMode(), QuranViewMode.page, reason: raw);
+      }
+      await prefs.setInt(QuranService.viewModeKey, 1);
+      expect(await service.loadViewMode(), QuranViewMode.page);
+
+      expect(
+        QuranService.effectiveViewMode(QuranViewMode.translation, 'ar'),
+        QuranViewMode.page,
+      );
+      expect(
+        QuranService.effectiveViewMode(QuranViewMode.ayah, 'ar'),
+        QuranViewMode.ayah,
+      );
+      for (final lang in ['tr', 'en', 'de', 'fr']) {
+        for (final mode in QuranViewMode.values) {
+          expect(QuranService.effectiveViewMode(mode, lang), mode);
+        }
+      }
     });
+
+    test(
+      'yazı boyutu: varsayılan 1, sınırlar ve 0,1 adım; meal ayrı',
+      () async {
+        final service = _service();
+        expect(await service.loadFontScale(), 1);
+        expect(await service.loadTranslationScale(), 1);
+        await service.saveFontScale(1.2000000001);
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getDouble(QuranService.fontScaleKey), 1.2);
+        expect(await service.loadFontScale(), 1.2);
+        expect(await service.loadTranslationScale(), 1);
+        await service.saveTranslationScale(0.84);
+        expect(prefs.getDouble(QuranService.translationScaleKey), 0.8);
+        expect(await service.loadTranslationScale(), 0.8);
+        expect(await service.loadFontScale(), 1.2);
+        expect(QuranService.clampFontScale(0.3), QuranService.minFontScale);
+        expect(QuranService.clampFontScale(9), QuranService.maxFontScale);
+        expect(QuranService.clampFontScale(1.04), 1.0);
+        expect(QuranService.clampFontScale(double.nan), 1);
+        expect(QuranService.clampFontScale(0.9 + 0.1), 1.0);
+        await prefs.setDouble(QuranService.fontScaleKey, 5);
+        await prefs.setDouble(QuranService.translationScaleKey, 0.1);
+        expect(await service.loadFontScale(), QuranService.maxFontScale);
+        expect(await service.loadTranslationScale(), QuranService.minFontScale);
+      },
+    );
   });
 
   group('Ekran', () {
@@ -733,6 +1304,13 @@ void main() {
       await settle(tester);
     }
 
+    /// Tipik telefon (411x891 dp), %100 yazı
+    Future<void> pumpPhone(
+      WidgetTester tester,
+      Widget home, {
+      String lang = 'tr',
+    }) => pump(tester, home, lang: lang, width: 411, height: 891, textScale: 1);
+
     Future<void> dispose(WidgetTester tester) async {
       await tester.pumpWidget(const SizedBox());
       await tester.pump(const Duration(seconds: 3));
@@ -740,9 +1318,39 @@ void main() {
 
     Future<void> scrollThrough(WidgetTester tester) async {
       for (var i = 0; i < 8; i++) {
-        await tester.drag(find.byType(Scrollable).first, const Offset(0, -400));
+        await tester.drag(_vertical(), const Offset(0, -400));
         await tester.pump(const Duration(milliseconds: 100));
       }
+    }
+
+    Future<void> scrollToTop(WidgetTester tester) async {
+      for (var i = 0; i < 8; i++) {
+        await tester.drag(_vertical(), const Offset(0, 600));
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await settle(tester);
+    }
+
+    Future<void> closeSheet(WidgetTester tester, Type sheet) async {
+      Navigator.of(tester.element(find.byType(sheet))).pop();
+      await settle(tester);
+    }
+
+    /// "Görünüm" alt sayfasından görünüm seçer (sayfa açıkken taşma denetlenir)
+    Future<void> chooseMode(
+      WidgetTester tester,
+      AppLocalizations loc,
+      String label,
+    ) async {
+      await tester.tap(find.byTooltip(loc.quranViewSettings));
+      await settle(tester);
+      expect(find.byType(QuranViewSettings), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.text(label));
+      await tester.pump();
+      await tester.tap(find.text(label));
+      await settle(tester);
+      await closeSheet(tester, QuranViewSettings);
     }
 
     Finder ayahCard(String arabic) =>
@@ -754,17 +1362,46 @@ void main() {
       await tester.scrollUntilVisible(
         find.text(arabic),
         150,
-        scrollable: find.byType(Scrollable).first,
+        scrollable: _vertical(),
       );
       await tester.pump();
       await tester.ensureVisible(ayahCard(arabic));
       await tester.pump();
     }
 
+    MushafPage mushafPageOf(WidgetTester tester, String arabic) =>
+        tester.widget<MushafPage>(
+          find.ancestor(
+            of: find.textContaining(arabic),
+            matching: find.byType(MushafPage),
+          ),
+        );
+
+    /// Okuyucu listesinin üst kenarı (AppBar altı)
+    double listTop(WidgetTester tester) =>
+        tester.getRect(find.byType(AppBar)).bottom;
+
+    /// Sayfa metninde [ayah] metninin başladığı satırın ekrandaki üstü
+    double lineTopOf(WidgetTester tester, String ayah) {
+      final paragraph = tester.renderObject<RenderParagraph>(
+        find.descendant(
+          of: find.textContaining(ayah),
+          matching: find.byType(RichText),
+        ),
+      );
+      final index = paragraph.text.toPlainText().indexOf(ayah);
+      final caret = paragraph.getOffsetForCaret(
+        TextPosition(offset: index),
+        Rect.zero,
+      );
+      return paragraph.localToGlobal(caret).dy;
+    }
+
     for (final lang in ['tr', 'ar']) {
       for (final dark in [false, true]) {
-        testWidgets('$lang ${dark ? 'koyu' : 'açık'}: liste ve okuyucu, '
-            '320dp, %130 yazı, taşma yok', (tester) async {
+        testWidgets('$lang ${dark ? 'koyu' : 'açık'}: liste, cüzler, '
+            'okuyucunun tüm görünümleri ve pencereler, 320dp, %130 yazı, '
+            'taşma yok', (tester) async {
           final calls = <Uri>[];
           await pump(
             tester,
@@ -775,44 +1412,658 @@ void main() {
           final loc = lookupAppLocalizations(Locale(lang));
           final isArabic = lang == 'ar';
           expect(find.text(loc.quranTitle), findsOneWidget);
+          expect(find.text(loc.quranTabSurahs), findsOneWidget);
           expect(find.text(isArabic ? 'الفاتحة' : 'Fâtiha'), findsOneWidget);
           expect(find.text(loc.quranContinue), findsNothing);
+          expect(find.text(loc.quranBookmark), findsNothing);
           expect(calls, isEmpty); // liste gömülü
           expect(tester.takeException(), isNull);
 
+          // Cüzler
+          await tester.tap(find.text(loc.quranTabJuz));
+          await settle(tester);
+          expect(find.text(loc.quranJuz(1)), findsOneWidget);
+          await tester.scrollUntilVisible(
+            find.text(loc.quranJuz(30)),
+            500,
+            scrollable: _vertical(),
+          );
+          await tester.pump();
+          expect(tester.takeException(), isNull);
+          await tester.tap(find.text(loc.quranTabSurahs));
+          await settle(tester);
+
           final ikhlas = find.text(isArabic ? 'الإخلاص' : 'İhlâs');
-          await tester.scrollUntilVisible(ikhlas, 500);
+          await tester.scrollUntilVisible(ikhlas, 500, scrollable: _vertical());
           await tester.pump();
           expect(tester.takeException(), isNull);
           await tester.tap(ikhlas);
           await settle(tester);
 
+          // Sayfa görünümü (varsayılan)
           expect(find.byType(SurahReaderView), findsOneWidget);
           expect(calls, [QuranService.surahUrl(112, lang)]);
+          expect(find.byType(MushafPage), findsOneWidget);
           expect(find.text(QuranService.bismillahText), findsOneWidget);
-          expect(find.text(_ikhlas1), findsOneWidget);
-          expect(find.text(_meal[0]), isArabic ? findsNothing : findsOneWidget);
+          expect(find.textContaining(_ikhlas1), findsOneWidget);
+          // Dar ekranda satıra az kelime sığar: iki yana yaslanmaz
+          expect(
+            tester.widget<Text>(find.textContaining(_ikhlas1)).textAlign,
+            TextAlign.start,
+          );
+          expect(
+            find.text(
+              '${loc.quranPage(604)} · ${loc.quranJuz(30)}',
+              skipOffstage: false,
+            ),
+            findsOneWidget,
+          );
           expect(tester.takeException(), isNull);
-
           await scrollThrough(tester);
-          expect(find.text(_arabic[3]), findsOneWidget);
           expect(find.text(loc.quranTextSource), findsOneWidget);
           expect(
             find.text(loc.quranTranslationSource('Diyanet İşleri')),
             isArabic ? findsNothing : findsOneWidget,
           );
           expect(tester.takeException(), isNull);
+
+          // Ayet alt sayfası
+          await scrollToTop(tester);
+          await tester.ensureVisible(find.textContaining(_arabic[1]));
+          await tester.pump();
+          await tester.tapOnText(find.textRange.ofSubstring(_arabic[1]));
+          await settle(tester);
+          expect(find.byType(AyahSheet), findsOneWidget);
+          expect(
+            find.text(loc.quranAyahRef(_surah(112).displayName(lang), 2)),
+            findsOneWidget,
+          );
+          expect(tester.takeException(), isNull);
+          await closeSheet(tester, AyahSheet);
+
+          // Ayet ayet
+          await chooseMode(tester, loc, loc.quranModeAyah);
+          expect(find.byType(MushafPage), findsNothing);
+          await scrollThrough(tester);
+          expect(find.text(_arabic[3]), findsOneWidget);
+          expect(find.text(_meal[3]), isArabic ? findsNothing : findsOneWidget);
+          expect(tester.takeException(), isNull);
+
+          // Meal (Arapça arayüzde yok)
+          if (!isArabic) {
+            await chooseMode(tester, loc, loc.quranModeTranslation);
+            expect(find.byType(TranslationPage), findsOneWidget);
+            expect(find.textContaining(_meal[0]), findsOneWidget);
+            expect(find.textContaining(_ikhlas1), findsNothing);
+            await scrollThrough(tester);
+            expect(tester.takeException(), isNull);
+          }
+
+          // Ayete git
+          await tester.tap(find.byTooltip(loc.quranGoToAyah));
+          await settle(tester);
+          expect(find.text(loc.quranAyahNumberLabel(4)), findsOneWidget);
+          expect(tester.takeException(), isNull);
+          await tester.tap(find.text(loc.cancel));
+          await settle(tester);
+          expect(tester.takeException(), isNull);
           await dispose(tester);
         });
       }
     }
 
-    testWidgets('kaldığın yer: ikonla kaydedilir, listede devam kartı, '
-        'karttan o ayetten açılır', (tester) async {
+    testWidgets('görünüm: varsayılan sayfa; seçim saklanır, yeniden açılışta '
+        'gelir; Arapça arayüzde meal seçeneği yok', (tester) async {
+      final prefs = await SharedPreferences.getInstance();
+      Future<void> open({String lang = 'tr'}) => pumpPhone(
+        tester,
+        SurahReaderView(surah: _surah(67), service: _service()),
+        lang: lang,
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+
+      await open();
+      expect(find.byType(MushafPage), findsWidgets);
+      expect(prefs.getString(QuranService.viewModeKey), isNull);
+      expect(
+        find.byIcon(quranViewModeIcon(QuranViewMode.page)),
+        findsOneWidget,
+      );
+      await tester.tap(find.byTooltip(loc.quranViewSettings));
+      await settle(tester);
+      for (final label in [
+        loc.quranModePage,
+        loc.quranModeAyah,
+        loc.quranModeTranslation,
+        loc.quranArabicSize,
+        loc.quranTranslationSize,
+      ]) {
+        expect(find.text(label), findsOneWidget, reason: label);
+      }
+      await tester.tap(find.text(loc.quranModeAyah));
+      await settle(tester);
+      // Seçim hemen uygulanır (alt sayfa açık kalır) ve saklanır
+      expect(find.byType(QuranViewSettings), findsOneWidget);
+      expect(prefs.getString(QuranService.viewModeKey), 'ayah');
+      expect(find.byType(MushafPage), findsNothing);
+      await closeSheet(tester, QuranViewSettings);
+      expect(find.text(_mulk(1)), findsOneWidget);
+      expect(
+        find.byIcon(quranViewModeIcon(QuranViewMode.ayah)),
+        findsOneWidget,
+      );
+      await dispose(tester);
+
+      await open();
+      expect(find.byType(MushafPage), findsNothing);
+      expect(find.text(_mulk(1)), findsOneWidget);
+      await chooseMode(tester, loc, loc.quranModeTranslation);
+      expect(prefs.getString(QuranService.viewModeKey), 'translation');
+      expect(find.byType(TranslationPage), findsWidgets);
+      await dispose(tester);
+
+      // Arapça arayüz: meal yok, sayfa görünümü açılır; seçim saklı kalır
+      final ar = lookupAppLocalizations(const Locale('ar'));
+      await open(lang: 'ar');
+      expect(find.byType(TranslationPage), findsNothing);
+      expect(find.byType(MushafPage), findsWidgets);
+      await tester.tap(find.byTooltip(ar.quranViewSettings));
+      await settle(tester);
+      expect(find.text(ar.quranModePage), findsOneWidget);
+      expect(find.text(ar.quranModeAyah), findsOneWidget);
+      expect(find.text(ar.quranModeTranslation), findsNothing);
+      expect(find.text(ar.quranTranslationSize), findsNothing);
+      expect(prefs.getString(QuranService.viewModeKey), 'translation');
+      await closeSheet(tester, QuranViewSettings);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('sayfa görünümü: mushaf sayfaları (API sayfa bilgisi), '
+        '"Sayfa · Cüz" başlıkları, ayet sonunda işaret', (tester) async {
+      await pumpPhone(
+        tester,
+        SurahReaderView(surah: _surah(67), service: _service()),
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      final first = tester.widget<MushafPage>(find.byType(MushafPage).first);
+      expect(first.group.page, 562);
+      expect(first.group.ayahs.map((a) => a.number), [
+        for (var n = 1; n <= 12; n++) n,
+      ]);
+      expect(
+        find.text('${loc.quranPage(562)} · ${loc.quranJuz(29)}'),
+        findsOneWidget,
+      );
+      // Sayfa tek Text.rich: ayetler sırayla, her birinin sonunda ﴿n﴾
+      final page = tester.widget<Text>(find.textContaining(_mulk(1)));
+      final plain = page.textSpan!.toPlainText();
+      final nbsp = String.fromCharCode(0xA0);
+      var from = 0;
+      for (var n = 1; n <= 12; n++) {
+        final part = '${_mulk(n)}$nbsp${QuranService.ayahEndMarker(n)}';
+        final at = plain.indexOf(part, from);
+        expect(at, greaterThanOrEqualTo(from), reason: '$n');
+        from = at + part.length;
+      }
+      expect(plain, isNot(contains(_mulk(13))));
+      expect(page.textDirection, TextDirection.rtl);
+      expect(page.textAlign, TextAlign.justify);
+      expect(page.style!.fontFamily, AppTheme.arabicFamily);
+      expect(page.style!.fontSize, mushafFontSize);
+      // Sonraki sayfalar kaydırınca
+      for (final (number, firstAyah) in [(563, 13), (564, 27)]) {
+        await tester.scrollUntilVisible(
+          find.text('${loc.quranPage(number)} · ${loc.quranJuz(29)}'),
+          400,
+          scrollable: _vertical(),
+        );
+        await tester.pump();
+        expect(mushafPageOf(tester, _mulk(firstAyah)).group.page, number);
+      }
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('eski kopya (sayfa bilgisi yok, ağ yok): 10 ayetlik grup, '
+        'başlıkta ayet aralığı ve cüz', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        QuranService.cacheKey(112, 'tr.diyanet'): _legacyIkhlasCache(),
+      });
+      final calls = <Uri>[];
+      await pumpPhone(
+        tester,
+        SurahReaderView(
+          surah: _surah(112),
+          service: _service(
+            calls: calls,
+            fetch: (_) async => throw const SocketException('yok'),
+          ),
+        ),
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      expect(calls, [QuranService.surahUrl(112, 'tr')]);
+      expect(find.text(loc.quranLoadError), findsNothing);
+      expect(
+        find.text('${loc.quranAyahRange(1, 4)} · ${loc.quranJuz(30)}'),
+        findsOneWidget,
+      );
+      expect(
+        tester.widget<MushafPage>(find.byType(MushafPage)).group.page,
+        isNull,
+      );
+      expect(find.textContaining(_ikhlas1), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('sayfa görünümü: ayete dokununca alt sayfa — Arapça + meal, '
+        'yer imi, kopyala, resimli paylaş', (tester) async {
+      final temp = Directory.systemTemp.createTempSync('vaktinde_quran');
+      addTearDown(() => temp.deleteSync(recursive: true));
+      const pathProvider = MethodChannel('plugins.flutter.io/path_provider');
+      const share = MethodChannel('dev.fluttercommunity.plus/share');
+      messenger.setMockMethodCallHandler(
+        pathProvider,
+        (call) async => temp.path,
+      );
+      MethodCall? shared;
+      messenger.setMockMethodCallHandler(share, (call) async {
+        shared = call;
+        return 'dev.fluttercommunity.plus/share/success';
+      });
+      String? clipboard;
+      messenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
+        if (call.method == 'Clipboard.setData') {
+          clipboard = (call.arguments as Map)['text'] as String?;
+        }
+        return null;
+      });
+      addTearDown(() {
+        messenger.setMockMethodCallHandler(pathProvider, null);
+        messenger.setMockMethodCallHandler(share, null);
+        messenger.setMockMethodCallHandler(SystemChannels.platform, null);
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await pumpPhone(
+        tester,
+        SurahReaderView(surah: _surah(67), service: _service()),
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+
+      await tester.tapOnText(find.textRange.ofSubstring(_mulk(2)));
+      await settle(tester);
+      final sheet = find.byType(AyahSheet);
+      expect(sheet, findsOneWidget);
+      Finder inSheet(Finder finder) =>
+          find.descendant(of: sheet, matching: finder);
+      expect(inSheet(find.text(loc.quranAyahRef('Mülk', 2))), findsOneWidget);
+      expect(
+        inSheet(find.text('${loc.quranPage(562)} · ${loc.quranJuz(29)}')),
+        findsOneWidget,
+      );
+      expect(inSheet(find.textContaining(_mulk(2))), findsOneWidget);
+      expect(inSheet(find.text(_mulkMeal[1])), findsOneWidget);
+      // Ayet sayfada vurgulanır
+      expect(mushafPageOf(tester, _mulk(1)).selectedAyah, 2);
+
+      // Yer imi
+      await tester.tap(inSheet(find.text(loc.quranBookmarkSave)));
+      await settle(tester);
+      expect(
+        prefs.getString(QuranService.bookmarkKey),
+        '{"surah":67,"ayah":2}',
+      );
+      expect(inSheet(find.text(loc.quranBookmarkRemove)), findsOneWidget);
+      expect(mushafPageOf(tester, _mulk(1)).bookmarkedAyah, 2);
+
+      // Kopyala: Arapça, meal ve kaynak
+      await tester.tap(inSheet(find.text(loc.copy)));
+      await settle(tester);
+      expect(
+        clipboard,
+        [
+          _mulk(2),
+          _mulkMeal[1],
+          '— ${loc.quranAyahRef('Mülk', 2)}',
+        ].join('\n\n'),
+      );
+      expect(inSheet(find.text(loc.textCopied)), findsOneWidget);
+
+      // Resimli paylaş (kampanya quran)
+      await tester.tap(inSheet(find.text(loc.shareAsImage)));
+      for (var i = 0; i < 100 && shared == null; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        await tester.pump();
+      }
+      expect(shared?.method, 'shareFiles');
+      expect(
+        (shared!.arguments as Map)['text'],
+        'Mülk 2. ayet · Vaktinde\n${AppLinks.playStoreLink('quran')}',
+      );
+
+      // Yer imini kaldır; kapanınca vurgu kalkar
+      await tester.tap(inSheet(find.text(loc.quranBookmarkRemove)));
+      await settle(tester);
+      expect(prefs.containsKey(QuranService.bookmarkKey), isFalse);
+      await closeSheet(tester, AyahSheet);
+      expect(find.byType(AyahSheet), findsNothing);
+      final page = mushafPageOf(tester, _mulk(1));
+      expect([page.selectedAyah, page.bookmarkedAyah], [null, null]);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('meal görünümü: numaralı meal paragrafları; dokununca ayetin '
+        'Arapçası alt sayfada', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        QuranService.viewModeKey: 'translation',
+      });
+      await pumpPhone(
+        tester,
+        SurahReaderView(surah: _surah(67), service: _service()),
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      expect(find.byType(TranslationPage), findsWidgets);
+      expect(find.byType(MushafPage), findsNothing);
+      expect(
+        find.text('${loc.quranPage(562)} · ${loc.quranJuz(29)}'),
+        findsOneWidget,
+      );
+      // Arapça ayet metni yok (yalnızca başlıktaki besmele)
+      expect(find.textContaining(_mulk(2)), findsNothing);
+      final paragraph = find.textContaining(_mulkMeal[1]);
+      expect(paragraph, findsOneWidget);
+      expect(
+        tester.widget<Text>(paragraph).textSpan!.toPlainText(),
+        startsWith('2'),
+      );
+      await tester.tap(paragraph);
+      await settle(tester);
+      expect(find.byType(AyahSheet), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AyahSheet),
+          matching: find.textContaining(_mulk(2)),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<TranslationPage>(find.byType(TranslationPage).first)
+            .selectedAyah,
+        2,
+      );
+      await closeSheet(tester, AyahSheet);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('son okunan: açılışta ve kaydırma durunca görünen ilk ayet '
+        'saklanır; listede devam kartı o ayetten açar', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        QuranService.viewModeKey: 'ayah',
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await pumpPhone(tester, QuranView(service: _service()));
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await tester.enterText(find.byType(TextField), 'mülk');
+      await tester.pump();
+      await tester.tap(find.text('Mülk'));
+      await settle(tester);
+      expect(
+        prefs.getString(QuranService.lastReadKey),
+        '{"surah":67,"ayah":1}',
+      );
+
+      await tester.drag(_vertical(), const Offset(0, -1500));
+      await settle(tester);
+      // Görünen ilk kart: üst kenarın 16 dp altını kesen kart
+      final top = listTop(tester) + AppSpacing.lg;
+      int? visible;
+      for (var n = 1; n <= 30 && visible == null; n++) {
+        final card = ayahCard(_mulk(n));
+        if (card.evaluate().isEmpty) continue;
+        if (tester.getRect(card).bottom > top) visible = n;
+      }
+      expect(visible, greaterThan(1));
+      expect(
+        prefs.getString(QuranService.lastReadKey),
+        '{"surah":67,"ayah":$visible}',
+      );
+
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(find.text(loc.quranContinue), findsOneWidget);
+      expect(find.text(loc.quranAyahRef('Mülk', visible!)), findsOneWidget);
+      expect(find.text(loc.quranBookmark), findsNothing);
+      await tester.tap(find.text(loc.quranContinue));
+      await settle(tester);
+      expect(
+        tester.getRect(ayahCard(_mulk(visible))).top - listTop(tester),
+        inInclusiveRange(0, AppSpacing.lg),
+      );
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('Ayete git: sayfadaki ayetin satırına kayar, ayet kısa süre '
+        'vurgulanır ve son okunan olur; geçersiz numara kabul edilmez', (
+      tester,
+    ) async {
+      final prefs = await SharedPreferences.getInstance();
+      await pumpPhone(
+        tester,
+        SurahReaderView(surah: _surah(67), service: _service()),
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await tester.tap(find.byTooltip(loc.quranGoToAyah));
+      await settle(tester);
+      expect(find.text(loc.quranAyahNumberLabel(30)), findsOneWidget);
+      FilledButton go() => tester.widget<FilledButton>(
+        find.widgetWithText(FilledButton, loc.quranGo),
+      );
+      expect(go().onPressed, isNull);
+      for (final invalid in ['0', '31', '999']) {
+        await tester.enterText(find.byType(TextField), invalid);
+        await tester.pump();
+        expect(go().onPressed, isNull, reason: invalid);
+      }
+      // Harf girilmez; Arapça-Hint rakamlar olur
+      await tester.enterText(find.byType(TextField), 'a2');
+      await tester.pump();
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        '2',
+      );
+      await tester.enterText(find.byType(TextField), '٢٠');
+      await tester.pump();
+      expect(go().onPressed, isNotNull);
+      await tester.tap(find.text(loc.quranGo));
+      await settle(tester);
+
+      expect(
+        lineTopOf(tester, _mulk(20)) - listTop(tester),
+        inInclusiveRange(0, AppSpacing.xl),
+      );
+      final page = mushafPageOf(tester, _mulk(20));
+      expect(page.group.page, 563);
+      expect(page.selectedAyah, 20);
+      expect(
+        prefs.getString(QuranService.lastReadKey),
+        '{"surah":67,"ayah":20}',
+      );
+      await tester.pump(const Duration(seconds: 3));
+      expect(mushafPageOf(tester, _mulk(20)).selectedAyah, isNull);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('Cüzler: dokununca sure cüzün başladığı ayetten (sayfa '
+        'görünümünde o sayfa en üstte) açılır', (tester) async {
+      final prefs = await SharedPreferences.getInstance();
+      await pumpPhone(tester, QuranView(service: _service()));
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await tester.tap(find.text(loc.quranTabJuz));
+      await settle(tester);
+      expect(find.text(loc.quranAyahRef('Fâtiha', 1)), findsOneWidget);
+      expect(find.text(loc.quranAyahRef('Bakara', 142)), findsOneWidget);
+      await tester.tap(find.text(loc.quranJuz(2)));
+      await settle(tester);
+      final reader = tester.widget<SurahReaderView>(
+        find.byType(SurahReaderView),
+      );
+      expect([reader.surah.number, reader.initialAyah], [2, 142]);
+      final label = find.text('${loc.quranPage(22)} · ${loc.quranJuz(2)}');
+      expect(label, findsOneWidget);
+      expect(
+        tester.getRect(label).top - listTop(tester),
+        inInclusiveRange(0, 48),
+      );
+      expect(
+        prefs.getString(QuranService.lastReadKey),
+        '{"surah":2,"ayah":142}',
+      );
+
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      // Liste cüz sekmesinde kalır; son cüz Nebe' başı
+      await tester.scrollUntilVisible(
+        find.text(loc.quranJuz(30)),
+        500,
+        scrollable: _vertical(),
+      );
+      await tester.pump();
+      await tester.tap(find.text(loc.quranJuz(30)));
+      await settle(tester);
+      final last = tester.widget<SurahReaderView>(find.byType(SurahReaderView));
+      expect([last.surah.number, last.initialAyah], [78, 1]);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('sure arama: işaretsiz ad, Arapça ad, numara; sonuç yok; '
+        'temizle', (tester) async {
+      await pumpPhone(tester, QuranView(service: _service()));
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      Future<void> search(String query) async {
+        await tester.enterText(find.byType(TextField), query);
+        await tester.pump();
+      }
+
+      expect(find.text(loc.quranSearchHint), findsOneWidget);
+      await search('yasin');
+      expect(find.text('Yâsîn'), findsOneWidget);
+      expect(find.text('Fâtiha'), findsNothing);
+      await search('36');
+      expect(find.text('Yâsîn'), findsOneWidget);
+      expect(find.text('Bakara'), findsNothing);
+      await search('الملك');
+      expect(find.text('Mülk'), findsOneWidget);
+      expect(find.text('Yâsîn'), findsNothing);
+      await search('zzz');
+      expect(find.text(loc.quranNoResults), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.clear));
+      await tester.pump();
+      expect(find.text('Fâtiha'), findsOneWidget);
+      expect(find.text(loc.quranNoResults), findsNothing);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('önceki / sonraki sure: başta önceki, sonda sonraki; listeye '
+        'dönünce son okunan yenilenir', (tester) async {
+      final prefs = await SharedPreferences.getInstance();
+      await pumpPhone(tester, QuranView(service: _service()));
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await tester.enterText(find.byType(TextField), '112');
+      await tester.pump();
+      await tester.tap(find.text('İhlâs'));
+      await settle(tester);
+      expect(find.text(loc.quranPreviousSurah), findsOneWidget);
+      expect(find.text(_surah(111).name), findsOneWidget);
+      await scrollThrough(tester);
+      expect(find.text(loc.quranNextSurah), findsOneWidget);
+      await tester.tap(find.text('Felak'));
+      await settle(tester);
+      expect(
+        tester
+            .widget<SurahReaderView>(find.byType(SurahReaderView))
+            .surah
+            .number,
+        113,
+      );
+      expect(
+        prefs.getString(QuranService.lastReadKey),
+        '{"surah":113,"ayah":1}',
+      );
+      // Liste, yerine geçen okuyucular kapanana kadar yenilenmez
+      expect(find.text(loc.quranContinue, skipOffstage: false), findsNothing);
+      // Önceki sure düğmesi geri getirir (yerine geçer)
+      expect(find.text('İhlâs'), findsOneWidget);
+      await tester.tap(find.text('İhlâs'));
+      await settle(tester);
+      expect(
+        tester
+            .widget<SurahReaderView>(find.byType(SurahReaderView))
+            .surah
+            .number,
+        112,
+      );
+      // Geri: doğrudan listeye; liste kapanan okuyucunun yerini gösterir
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(find.byType(SurahReaderView), findsNothing);
+      expect(find.text(loc.quranAyahRef('İhlâs', 1)), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('Bakara (286 ayet, 48 sayfa): sayfalar tembel kurulur, uzun '
+        'kaydırmada taşma yok', (tester) async {
+      await pump(
+        tester,
+        SurahReaderView(surah: _surah(2), service: _service()),
+        width: 411,
+        height: 891,
+      );
+      expect(
+        tester.widget<MushafPage>(find.byType(MushafPage).first).group.page,
+        2,
+      );
+      int built() =>
+          find.byType(MushafPage, skipOffstage: false).evaluate().length;
+      expect(built(), lessThan(10));
+      for (var i = 0; i < 25; i++) {
+        await tester.drag(_vertical(), const Offset(0, -800));
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      expect(built(), lessThan(10));
+      final pages = [
+        for (final e in find.byType(MushafPage).evaluate())
+          (e.widget as MushafPage).group.page!,
+      ];
+      expect(pages.first, greaterThan(10));
+      await dispose(tester);
+    });
+
+    testWidgets('ayet ayet: yer imi ikonla eklenir, listede "Yer imi" kartı '
+        '(son okunandan ayrı), karttan o ayetten açılır', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        QuranService.viewModeKey: 'ayah',
+      });
       await pump(tester, QuranView(service: _service()), textScale: 1);
       final loc = lookupAppLocalizations(const Locale('tr'));
       final prefs = await SharedPreferences.getInstance();
-      await tester.scrollUntilVisible(find.text('İhlâs'), 500);
+      await tester.scrollUntilVisible(
+        find.text('İhlâs'),
+        500,
+        scrollable: _vertical(),
+      );
       await tester.pump();
       await tester.tap(find.text('İhlâs'));
       await settle(tester);
@@ -838,21 +2089,36 @@ void main() {
         findsOneWidget,
       );
 
+      // Başa dön: son okunan 1. ayet, yer imi 3. ayet
+      await scrollToTop(tester);
       await tester.tap(find.byType(BackButton));
       await settle(tester);
-      await tester.scrollUntilVisible(find.text(loc.quranContinue), -2000);
+      expect(
+        prefs.getString(QuranService.lastReadKey),
+        '{"surah":112,"ayah":1}',
+      );
+      // Liste başı: önce son okunan, altında yer imi
+      await tester.scrollUntilVisible(
+        find.text(loc.quranContinue),
+        -2000,
+        scrollable: _vertical(),
+      );
       await tester.pump();
+      expect(
+        tester.getRect(find.text(loc.quranBookmark)).top,
+        greaterThan(tester.getRect(find.text(loc.quranContinue)).top),
+      );
+      expect(find.text(loc.quranAyahRef('İhlâs', 1)), findsOneWidget);
       expect(find.text(loc.quranAyahRef('İhlâs', 3)), findsOneWidget);
       expect(loc.quranAyahRef('İhlâs', 3), 'İhlâs 3. ayet');
 
-      await tester.tap(find.text(loc.quranContinue));
+      await tester.tap(find.text(loc.quranBookmark));
       await settle(tester);
       // 3. ayet en üstte; başlık ve önceki ayetler yukarıda
-      final appBar = tester.getRect(find.byType(AppBar));
       final top = tester.getRect(ayahCard(_arabic[2])).top;
-      expect(top - appBar.bottom, inInclusiveRange(0, AppSpacing.lg));
+      expect(top - listTop(tester), inInclusiveRange(0, AppSpacing.lg));
       expect(find.text(QuranService.bismillahText), findsNothing);
-      await tester.drag(find.byType(CustomScrollView), const Offset(0, 800));
+      await tester.drag(_vertical(), const Offset(0, 800));
       await settle(tester);
       expect(find.text(QuranService.bismillahText), findsOneWidget);
       expect(find.text(_ikhlas1), findsOneWidget);
@@ -870,14 +2136,17 @@ void main() {
       expect(find.text(loc.quranBookmarkRemoved), findsOneWidget);
       await tester.tap(find.byType(BackButton));
       await settle(tester);
-      expect(find.text(loc.quranContinue), findsNothing);
+      expect(find.text(loc.quranBookmark), findsNothing);
+      expect(find.text(loc.quranContinue), findsOneWidget);
       expect(tester.takeException(), isNull);
       await dispose(tester);
     });
 
-    testWidgets('uzun basma kaydeder; A+/A- Arapça yazı boyutunu saklar', (
-      tester,
-    ) async {
+    testWidgets('ayet ayet: uzun basma yer imi ekler; A+/A- (Görünüm) Arapça '
+        'yazı boyutunu saklar, sayfa görünümüne de uygulanır', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        QuranService.viewModeKey: 'ayah',
+      });
       final loc = lookupAppLocalizations(const Locale('tr'));
       final prefs = await SharedPreferences.getInstance();
       Future<void> open() => pump(
@@ -895,6 +2164,11 @@ void main() {
           matching: find.byType(IconButton),
         ),
       );
+      Future<void> tapScale(String tooltip) async {
+        await tester.tap(find.byTooltip(tooltip));
+        await tester.pump();
+        await tester.pump();
+      }
 
       await open();
       await reveal(tester, _arabic[1]);
@@ -910,18 +2184,17 @@ void main() {
       expect(prefs.getString(QuranService.bookmarkKey), isNotNull);
 
       expect(size(), 26);
-      await tester.tap(find.byTooltip(loc.quranFontLarger));
-      await tester.pump();
-      await tester.tap(find.byTooltip(loc.quranFontLarger));
-      await tester.pump();
+      await tester.tap(find.byTooltip(loc.quranViewSettings));
+      await settle(tester);
+      await tapScale(loc.quranFontLarger);
+      await tapScale(loc.quranFontLarger);
       expect(size(), closeTo(26 * 1.2, 1e-9));
       expect(prefs.getDouble(QuranService.fontScaleKey), 1.2);
-      await tester.tap(find.byTooltip(loc.quranFontSmaller));
-      await tester.pump();
+      expect(find.text('%120'), findsOneWidget);
+      await tapScale(loc.quranFontSmaller);
       expect(prefs.getDouble(QuranService.fontScaleKey), 1.1);
       for (var i = 0; i < 10; i++) {
-        await tester.tap(find.byTooltip(loc.quranFontLarger));
-        await tester.pump();
+        await tapScale(loc.quranFontLarger);
       }
       expect(
         prefs.getDouble(QuranService.fontScaleKey),
@@ -929,13 +2202,29 @@ void main() {
       );
       expect(button(loc.quranFontLarger).onPressed, isNull);
       expect(button(loc.quranFontSmaller).onPressed, isNotNull);
+      // Meal yazısı ayrı
+      await tapScale(loc.quranTranslationSmaller);
+      expect(prefs.getDouble(QuranService.translationScaleKey), 0.9);
+      expect(
+        tester
+            .widget<Text>(find.text(_meal[1], skipOffstage: false))
+            .style!
+            .fontSize,
+        closeTo(16 * 0.9, 1e-9),
+      );
+      await closeSheet(tester, QuranViewSettings);
       expect(tester.takeException(), isNull);
       await dispose(tester);
 
-      // Yeniden açılışta saklanan boyut
+      // Yeniden açılışta saklanan boyut; sayfa görünümünde de
       await open();
       await reveal(tester, _arabic[1]);
       expect(size(), closeTo(26 * QuranService.maxFontScale, 1e-9));
+      await chooseMode(tester, loc, loc.quranModePage);
+      expect(
+        tester.widget<Text>(find.textContaining(_ikhlas1)).style!.fontSize,
+        closeTo(mushafFontSize * QuranService.maxFontScale, 1e-9),
+      );
       expect(tester.takeException(), isNull);
       await dispose(tester);
     });
@@ -962,14 +2251,16 @@ void main() {
       await tester.tap(find.text(loc.retry));
       await settle(tester);
       expect(find.text(loc.quranLoadError), findsNothing);
-      expect(find.text(_ikhlas1), findsOneWidget);
+      expect(find.textContaining(_ikhlas1), findsOneWidget);
       expect(tester.takeException(), isNull);
       await dispose(tester);
     });
 
-    testWidgets('ayet paylaşımı: başlık "<Sure> <n>. ayet", kampanya quran', (
-      tester,
-    ) async {
+    testWidgets('ayet ayet: kart paylaşımı başlığı "<Sure> <n>. ayet", '
+        'kampanya quran', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        QuranService.viewModeKey: 'ayah',
+      });
       final temp = Directory.systemTemp.createTempSync('vaktinde_quran');
       addTearDown(() => temp.deleteSync(recursive: true));
       const pathProvider = MethodChannel('plugins.flutter.io/path_provider');

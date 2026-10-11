@@ -1,18 +1,38 @@
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../data/services/quran_service.dart';
 import '../../common/share_card.dart';
+import '../widgets/ayah_sheet.dart';
+import '../widgets/go_to_ayah_dialog.dart';
+import '../widgets/mushaf_page.dart';
 import '../widgets/quran_number_badge.dart';
+import '../widgets/quran_page_frame.dart';
+import '../widgets/reader_item.dart';
+import '../widgets/surah_nav_tile.dart';
+import '../widgets/translation_page.dart';
+import '../widgets/view_settings_sheet.dart';
 
-/// Sure okuyucu: başlık kartı (Arapça ad, iniş yeri, ayet sayısı, besmele),
-/// ayet kartları (Arapça Amiri ile sağdan sola + meal) ve sonda kaynak.
-/// Ayet başına "kaldığın yer" (ikon ya da uzun basma) ve resimli paylaşım;
-/// Arapça yazı boyutu A-/A+ ile ('quran_font_scale').
+/// Sure okuyucu. Üç görünüm ('quran_view_mode', "Görünüm" alt sayfasından):
+/// - Sayfa (varsayılan): mushaf sayfaları (API'nin sayfa bilgisi; eski
+///   kopyada ~10 ayetlik gruplar), kesintisiz Arapça; ayete dokununca alt
+///   sayfa (Arapça + meal, yer imi, kopyala, resimli paylaş)
+/// - Ayet ayet: ayet kartları (yer imi ikonu / uzun basma, paylaşım)
+/// - Meal: yalnızca meal paragrafları (Arapça arayüzde yok)
+///
+/// Başta başlık kartı (önceki sure düğmesi, Arapça ad, besmele), sonda
+/// sonraki sure ve kaynak. Görünen ilk ayet kaydırma durunca ve çıkarken
+/// son okunan olarak saklanır ('quran_last_read'). "Ayete git" ve görünüm /
+/// yazı boyutu değişince okunan yer korunur.
 ///
 /// [initialAyah] verilirse liste o ayetten başlar (tembel liste: CustomScrollView
-/// merkezi o ayet, öncekiler yukarı kaydırınca görünür).
+/// merkezi ayetin ögesi, öncekiler yukarı kaydırınca görünür; sayfa içindeki
+/// ayete ilk karede kaydırılır).
 class SurahReaderView extends StatefulWidget {
   final Surah surah;
   final int? initialAyah;
@@ -20,28 +40,71 @@ class SurahReaderView extends StatefulWidget {
   /// Test için (varsayılan: alquran.cloud + cihazdaki kopya)
   final QuranService? service;
 
+  /// Önceki / sonraki sure için liste (verilmezse gömülü listeden okunur)
+  final List<Surah>? surahs;
+
   const SurahReaderView({
     super.key,
     required this.surah,
     this.initialAyah,
     this.service,
+    this.surahs,
   });
 
   @override
   State<SurahReaderView> createState() => _SurahReaderViewState();
 }
 
-class _SurahReaderViewState extends State<SurahReaderView> {
+class _SurahReaderViewState extends State<SurahReaderView>
+    with WidgetsBindingObserver {
   late final QuranService _service = widget.service ?? QuranService();
+  final ScrollController _controller = ScrollController();
+  final ReaderItemRegistry _registry = ReaderItemRegistry();
+  final GlobalKey _viewportKey = GlobalKey();
   final Key _centerKey = UniqueKey();
-  Future<SurahText>? _text;
+
   String? _language;
+  int _loadId = 0;
+  SurahText? _text;
+  bool _loadFailed = false;
+
+  bool _settingsLoaded = false;
   double _fontScale = 1;
+  double _translationScale = 1;
+
+  /// Seçilen görünüm (Arapça arayüzde meal seçiliyse sayfa gösterilir)
+  QuranViewMode _mode = QuranViewMode.page;
   QuranBookmark? _bookmark;
+  List<Surah>? _surahs;
+
+  /// Listenin merkezindeki ayet; her değişimde [_generation] artar (yeni
+  /// kaydırma görünümü o ayetten başlar)
+  late int? _anchor = widget.initialAyah;
+  int _generation = 0;
+  int _laidOutGeneration = -1;
+  bool _visibleCheckScheduled = false;
+  bool _jumping = false;
+  int? _currentAyah;
+  int? _savedAyah;
+
+  /// Vurgu: alt sayfası açık ayet ve "Ayete git" ile gelinen (2 sn)
+  int? _sheetAyah;
+  int? _flashAyah;
+  Timer? _flashTimer;
+
+  SurahText? _groupsText;
+  List<QuranPageGroup> _groups = const [];
+
+  QuranViewMode get _viewMode =>
+      QuranService.effectiveViewMode(_mode, _language ?? 'tr');
+
+  bool get _hasTranslation =>
+      QuranEdition.translationFor(_language ?? 'tr') != null;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadSettings();
   }
 
@@ -51,37 +114,269 @@ class _SurahReaderViewState extends State<SurahReaderView> {
     final language = Localizations.localeOf(context).languageCode;
     if (language != _language) {
       _language = language;
-      _text = _service.loadSurah(widget.surah, language);
+      _loadText();
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Uygulamadan çıkarken okunan yer saklansın
+    if (state != AppLifecycleState.resumed) _updateVisibleAyah();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _flashTimer?.cancel();
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> _loadSettings() async {
     final scale = await _service.loadFontScale();
+    final translationScale = await _service.loadTranslationScale();
+    final mode = await _service.loadViewMode();
     final bookmark = await _service.loadBookmark();
+    var surahs = widget.surahs;
+    if (surahs == null) {
+      try {
+        surahs = await _service.loadSurahs();
+      } catch (_) {}
+    }
     if (!mounted) return;
     setState(() {
       _fontScale = scale;
+      _translationScale = translationScale;
+      _mode = mode;
       _bookmark = bookmark;
+      _surahs = surahs;
+      _settingsLoaded = true;
     });
   }
 
-  void _retry() {
-    setState(() {
-      _text = _service.loadSurah(widget.surah, _language!);
-    });
+  /// Sure metnini yükler (dil değişince yeniden: okunan ayetten devam);
+  /// eski istek sonucu yok sayılır
+  void _loadText() {
+    final id = ++_loadId;
+    if (_text != null) {
+      _anchor = _currentAyah ?? _anchor;
+      _generation++;
+    }
+    _text = null;
+    _loadFailed = false;
+    _service
+        .loadSurah(widget.surah, _language!)
+        .then(
+          (text) {
+            if (mounted && id == _loadId) setState(() => _text = text);
+          },
+          onError: (Object _) {
+            if (mounted && id == _loadId) setState(() => _loadFailed = true);
+          },
+        );
   }
 
-  void _changeFontScale(int direction) {
-    final next = QuranService.clampFontScale(
-      _fontScale + direction * QuranService.fontScaleStep,
+  void _retry() => setState(_loadText);
+
+  List<QuranPageGroup> _pageGroups(SurahText text) {
+    if (!identical(text, _groupsText)) {
+      _groupsText = text;
+      _groups = QuranService.pageGroups(text);
+    }
+    return _groups;
+  }
+
+  /// Ayetin liste dizini (0: başlık); sayfa görünümünde sayfasının dizini
+  int _itemOfAyah(int ayah, List<QuranPageGroup>? groups, int ayahCount) {
+    final number = ayah.clamp(1, ayahCount);
+    if (groups == null) return number;
+    final index = groups.indexWhere((g) => g.contains(number));
+    return index < 0 ? 0 : index + 1;
+  }
+
+  // ----------------------------------------------------- Okunan yer
+
+  /// Görünen ilk ayet: görünür ögelerin en üstteki, görünüm alanının üst
+  /// kenarının denk geldiği satır
+  int? _firstVisibleAyah() {
+    final viewport = _viewportKey.currentContext?.findRenderObject();
+    if (viewport is! RenderBox || !viewport.attached || !viewport.hasSize) {
+      return null;
+    }
+    final top = viewport.localToGlobal(Offset.zero).dy;
+    final bottom = top + viewport.size.height;
+    // Üst kenarda birkaç piksel kalan satır / kart okunan sayılmaz
+    final probe = math.min(top + _visibleProbe, bottom);
+    AyahLocator? best;
+    var bestTop = double.infinity;
+    for (final item in _registry.items) {
+      if (!item.mounted) continue;
+      final box = item.context.findRenderObject();
+      if (box is! RenderBox || !box.attached || !box.hasSize) continue;
+      final itemTop = box.localToGlobal(Offset.zero).dy;
+      if (itemTop + box.size.height <= probe || itemTop >= bottom) continue;
+      if (itemTop < bestTop) {
+        best = item;
+        bestTop = itemTop;
+      }
+    }
+    return best?.ayahAt(math.max(0, probe - bestTop));
+  }
+
+  static const double _visibleProbe = AppSpacing.lg;
+
+  void _updateVisibleAyah() {
+    final ayah = _firstVisibleAyah();
+    if (ayah == null) return;
+    _currentAyah = ayah;
+    _saveLastRead(ayah);
+  }
+
+  void _saveLastRead(int ayah) {
+    if (ayah == _savedAyah) return;
+    _savedAyah = ayah;
+    _service.saveLastRead(
+      QuranBookmark(surah: widget.surah.number, ayah: ayah),
     );
-    if (next == _fontScale) return;
-    setState(() => _fontScale = next);
-    _service.saveFontScale(next);
   }
 
-  /// [toggle]: ikon (kayıtlı ayette siler); uzun basma her zaman kaydeder
-  Future<void> _setBookmark(int ayah, {required bool toggle}) async {
+  /// Kaydırma durunca (yerleşim bittikten sonra) görünen ayet saklanır
+  void _scheduleVisibleCheck() {
+    if (_visibleCheckScheduled) return;
+    _visibleCheckScheduled = true;
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _visibleCheckScheduled = false;
+      if (mounted) _updateVisibleAyah();
+    });
+    SchedulerBinding.instance.ensureVisualUpdate();
+  }
+
+  /// Yeni kaydırma görünümünün ilk karesinden sonra: merkez öge çok ayetliyse
+  /// (sayfa) hedef ayetin satırına kaydırılır. Gidilen ayet (devam, cüz,
+  /// "Ayete git") son okunan olur; baştan açılışta görünen ilk ayet.
+  void _afterLayout() {
+    if (_laidOutGeneration == _generation) return;
+    _laidOutGeneration = _generation;
+    final generation = _generation;
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || generation != _generation) return;
+      final anchor = _anchor;
+      final text = _text;
+      if (anchor == null || text == null) {
+        _scheduleVisibleCheck();
+        return;
+      }
+      final target = anchor.clamp(1, text.ayahs.length);
+      if (target > 1) {
+        final groups = _viewMode == QuranViewMode.ayah
+            ? null
+            : _pageGroups(text);
+        final item = _registry[_itemOfAyah(target, groups, text.ayahs.length)];
+        final offset = item?.offsetOf(target) ?? 0;
+        if (offset > AppSpacing.sm && _controller.hasClients) {
+          final position = _controller.position;
+          // Bu kaydırmanın bitişi son okunanı değiştirmez (hedef ayet saklanır)
+          _jumping = true;
+          try {
+            _controller.jumpTo(
+              (offset - AppSpacing.sm).clamp(
+                position.minScrollExtent,
+                position.maxScrollExtent,
+              ),
+            );
+          } finally {
+            _jumping = false;
+          }
+        }
+      }
+      _currentAyah = target;
+      _saveLastRead(target);
+    });
+  }
+
+  /// Okunan ayet korunarak yeniden kurar (görünüm / yazı boyutu değişimi)
+  void _reanchor(VoidCallback change) {
+    final ayah = _firstVisibleAyah() ?? _currentAyah ?? _anchor;
+    setState(() {
+      change();
+      _anchor = ayah;
+      _generation++;
+    });
+  }
+
+  void _jumpTo(int ayah) {
+    _flashTimer?.cancel();
+    setState(() {
+      _anchor = ayah;
+      _generation++;
+      _flashAyah = ayah;
+    });
+    _flashTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _flashAyah = null);
+    });
+  }
+
+  // ------------------------------------------------------ Ayarlar
+
+  void _setMode(QuranViewMode mode) {
+    if (mode == _mode) return;
+    _reanchor(() => _mode = mode);
+    _service.saveViewMode(mode);
+  }
+
+  void _setFontScale(double scale) {
+    if (scale == _fontScale) return;
+    _reanchor(() => _fontScale = scale);
+    _service.saveFontScale(scale);
+  }
+
+  void _setTranslationScale(double scale) {
+    if (scale == _translationScale) return;
+    _reanchor(() => _translationScale = scale);
+    _service.saveTranslationScale(scale);
+  }
+
+  void _openViewSettings() {
+    showQuranViewSettings(
+      context,
+      mode: _viewMode,
+      translationAvailable: _hasTranslation,
+      fontScale: _fontScale,
+      translationScale: _translationScale,
+      onModeChanged: _setMode,
+      onFontScaleChanged: _setFontScale,
+      onTranslationScaleChanged: _setTranslationScale,
+    );
+  }
+
+  Future<void> _goToAyah() async {
+    final ayah = await showGoToAyahDialog(
+      context,
+      ayahCount: widget.surah.ayahCount,
+    );
+    if (ayah != null && mounted) _jumpTo(ayah);
+  }
+
+  void _openSurah(Surah surah) {
+    _updateVisibleAyah();
+    final route = MaterialPageRoute<void>(
+      builder: (_) =>
+          SurahReaderView(surah: surah, service: _service, surahs: _surahs),
+    );
+    // Listeye dönüş, değiştirilen okuyucunun kapanmasını bekler (son okunan
+    // yer orada yenilenir)
+    Navigator.of(context).pushReplacement(route, result: route.popped);
+  }
+
+  // ----------------------------------------------------- Ayet işlemleri
+
+  /// [toggle]: kayıtlı ayette siler (ikon, alt sayfa); uzun basma her zaman
+  /// kaydeder. Yeni durumu döner (kayıt olmazsa null).
+  Future<bool?> _setBookmark(
+    int ayah, {
+    required bool toggle,
+    bool snack = true,
+  }) async {
     final loc = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.maybeOf(context);
     final mark = QuranBookmark(surah: widget.surah.number, ayah: ayah);
@@ -93,15 +388,18 @@ class _SurahReaderViewState extends State<SurahReaderView> {
         await _service.saveBookmark(mark);
       }
     } catch (_) {
-      _showSnack(messenger, loc.shareFailed);
-      return;
+      if (snack) _showSnack(messenger, loc.shareFailed);
+      return null;
     }
-    if (!mounted) return;
+    if (!mounted) return null;
     setState(() => _bookmark = remove ? null : mark);
-    _showSnack(
-      messenger,
-      remove ? loc.quranBookmarkRemoved : loc.quranBookmarkSaved,
-    );
+    if (snack) {
+      _showSnack(
+        messenger,
+        remove ? loc.quranBookmarkRemoved : loc.quranBookmarkSaved,
+      );
+    }
+    return !remove;
   }
 
   void _share(QuranAyah ayah) {
@@ -119,91 +417,221 @@ class _SurahReaderViewState extends State<SurahReaderView> {
     );
   }
 
+  Future<void> _openAyahSheet(QuranAyah ayah) async {
+    final text = _text;
+    if (text == null) return;
+    final loc = AppLocalizations.of(context)!;
+    final group = _pageGroups(
+      text,
+    ).where((g) => g.contains(ayah.number)).firstOrNull;
+    final page = group?.page;
+    final juz =
+        group?.juz ?? QuranService.juzOf(widget.surah.number, ayah.number);
+    setState(() => _sheetAyah = ayah.number);
+    await showAyahSheet(
+      context,
+      surah: widget.surah,
+      ayah: ayah,
+      language: _language!,
+      pageLabel: page == null
+          ? loc.quranJuz(juz)
+          : '${loc.quranPage(page)} · ${loc.quranJuz(juz)}',
+      fontScale: _fontScale,
+      translationScale: _translationScale,
+      bookmarked:
+          _bookmark ==
+          QuranBookmark(surah: widget.surah.number, ayah: ayah.number),
+      onToggleBookmark: () =>
+          _setBookmark(ayah.number, toggle: true, snack: false),
+    );
+    if (mounted) setState(() => _sheetAyah = null);
+  }
+
+  // ------------------------------------------------------------ Ekran
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    return AppScaffold(
-      title: widget.surah.displayName(_language!),
-      actions: [
-        IconButton(
-          tooltip: loc.quranFontSmaller,
-          onPressed: _fontScale > QuranService.minFontScale
-              ? () => _changeFontScale(-1)
-              : null,
-          icon: const Icon(Icons.text_decrease),
-        ),
-        IconButton(
-          tooltip: loc.quranFontLarger,
-          onPressed: _fontScale < QuranService.maxFontScale
-              ? () => _changeFontScale(1)
-              : null,
-          icon: const Icon(Icons.text_increase),
-        ),
-      ],
-      body: FutureBuilder<SurahText>(
-        future: _text,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const LoadingState();
-          }
-          if (snapshot.hasError || !snapshot.hasData) {
-            return ErrorState(message: loc.quranLoadError, onRetry: _retry);
-          }
-          return _buildList(snapshot.data!);
-        },
+    final text = _text;
+    final ready = _settingsLoaded && text != null;
+    final Widget body;
+    if (_loadFailed) {
+      body = ErrorState(message: loc.quranLoadError, onRetry: _retry);
+    } else if (!ready) {
+      body = const LoadingState();
+    } else {
+      body = _buildContent(text);
+    }
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) _updateVisibleAyah();
+      },
+      child: AppScaffold(
+        title: widget.surah.displayName(_language!),
+        actions: [
+          IconButton(
+            tooltip: loc.quranGoToAyah,
+            onPressed: ready ? _goToAyah : null,
+            icon: const Icon(Icons.numbers),
+          ),
+          IconButton(
+            tooltip: loc.quranViewSettings,
+            onPressed: _settingsLoaded ? _openViewSettings : null,
+            icon: Icon(quranViewModeIcon(_viewMode)),
+          ),
+        ],
+        body: body,
       ),
     );
   }
 
-  Widget _buildList(SurahText text) {
+  Widget _buildContent(SurahText text) {
+    final loc = AppLocalizations.of(context)!;
+    final language = _language!;
+    final mode = _viewMode;
     final ayahs = text.ayahs;
-    // 0: başlık, 1..n: ayetler, n + 1: kaynak
-    final count = ayahs.length + 2;
-    final center = (widget.initialAyah ?? 0).clamp(0, ayahs.length);
+    final groups = mode == QuranViewMode.ayah ? null : _pageGroups(text);
+    // 0: başlık, 1..n: sayfalar ya da ayetler, n + 1: sonraki sure ve kaynak
+    final count = (groups?.length ?? ayahs.length) + 2;
+    final anchor = _anchor;
+    final center = anchor == null || anchor <= 1
+        ? 0
+        : _itemOfAyah(anchor, groups, ayahs.length);
+    _afterLayout();
+
+    final surahs = _surahs;
+    final number = widget.surah.number;
+    final previous = surahs?.where((s) => s.number == number - 1).firstOrNull;
+    final next = surahs?.where((s) => s.number == number + 1).firstOrNull;
+    final bookmark = _bookmark;
+    final bookmarked = bookmark?.surah == number ? bookmark!.ayah : null;
+    final selected = _sheetAyah ?? _flashAyah;
+    final surahName = widget.surah.displayName(language);
 
     Widget item(int index) {
       if (index == 0) {
-        return _SurahHeader(
-          surah: widget.surah,
-          language: _language!,
-          bismillah: text.bismillah,
-          fontScale: _fontScale,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (previous != null)
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.md),
+                child: SurahNavTile(
+                  label: loc.quranPreviousSurah,
+                  surah: previous,
+                  language: language,
+                  forward: false,
+                  onTap: () => _openSurah(previous),
+                ),
+              ),
+            _SurahHeader(
+              surah: widget.surah,
+              language: language,
+              bismillah: text.bismillah,
+              fontScale: _fontScale,
+            ),
+          ],
         );
       }
       if (index == count - 1) {
-        return _SourceNote(translationEdition: text.translationEdition);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (next != null)
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.md),
+                child: SurahNavTile(
+                  label: loc.quranNextSurah,
+                  surah: next,
+                  language: language,
+                  forward: true,
+                  onTap: () => _openSurah(next),
+                ),
+              ),
+            _SourceNote(translationEdition: text.translationEdition),
+          ],
+        );
       }
-      final ayah = ayahs[index - 1];
-      return _AyahCard(
-        ayah: ayah,
-        fontScale: _fontScale,
-        bookmarked:
-            _bookmark ==
-            QuranBookmark(surah: widget.surah.number, ayah: ayah.number),
-        onBookmark: () => _setBookmark(ayah.number, toggle: true),
-        onLongPress: () => _setBookmark(ayah.number, toggle: false),
-        onShare: () => _share(ayah),
-      );
+      switch (mode) {
+        case QuranViewMode.ayah:
+          final ayah = ayahs[index - 1];
+          return SingleAyahItem(
+            registry: _registry,
+            index: index,
+            ayah: ayah.number,
+            child: _AyahCard(
+              ayah: ayah,
+              fontScale: _fontScale,
+              translationScale: _translationScale,
+              bookmarked: bookmarked == ayah.number,
+              highlighted: _flashAyah == ayah.number,
+              onBookmark: () => _setBookmark(ayah.number, toggle: true),
+              onLongPress: () => _setBookmark(ayah.number, toggle: false),
+              onShare: () => _share(ayah),
+            ),
+          );
+        case QuranViewMode.page:
+          final group = groups![index - 1];
+          return MushafPage(
+            registry: _registry,
+            index: index,
+            group: group,
+            label: quranPageLabel(loc, group, surahName: surahName),
+            fontScale: _fontScale,
+            selectedAyah: selected,
+            bookmarkedAyah: bookmarked,
+            onAyahTap: _openAyahSheet,
+          );
+        case QuranViewMode.translation:
+          final group = groups![index - 1];
+          return TranslationPage(
+            registry: _registry,
+            index: index,
+            group: group,
+            label: quranPageLabel(loc, group, surahName: surahName),
+            translationScale: _translationScale,
+            selectedAyah: selected,
+            bookmarkedAyah: bookmarked,
+            onAyahTap: _openAyahSheet,
+          );
+      }
     }
 
-    return CustomScrollView(
-      center: _centerKey,
-      slivers: [
-        // Merkezden önceki öğeler ters sırayla yukarı doğru dizilir
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, i) => item(center - 1 - i),
-            childCount: center,
-          ),
+    return KeyedSubtree(
+      key: _viewportKey,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification is ScrollEndNotification &&
+              notification.depth == 0 &&
+              !_jumping) {
+            _scheduleVisibleCheck();
+          }
+          return false;
+        },
+        child: CustomScrollView(
+          key: ValueKey(_generation),
+          controller: _controller,
+          center: _centerKey,
+          slivers: [
+            // Merkezden önceki öğeler ters sırayla yukarı doğru dizilir
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, i) => item(center - 1 - i),
+                childCount: center,
+              ),
+            ),
+            SliverList(
+              key: _centerKey,
+              delegate: SliverChildBuilderDelegate(
+                (context, i) => item(center + i),
+                childCount: count - center,
+              ),
+            ),
+          ],
         ),
-        SliverList(
-          key: _centerKey,
-          delegate: SliverChildBuilderDelegate(
-            (context, i) => item(center + i),
-            childCount: count - center,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -298,7 +726,11 @@ class _SurahHeader extends StatelessWidget {
 class _AyahCard extends StatelessWidget {
   final QuranAyah ayah;
   final double fontScale;
+  final double translationScale;
   final bool bookmarked;
+
+  /// "Ayete git" ile gelinen ayet (kısa süre)
+  final bool highlighted;
   final VoidCallback onBookmark;
   final VoidCallback onLongPress;
   final VoidCallback onShare;
@@ -306,7 +738,9 @@ class _AyahCard extends StatelessWidget {
   const _AyahCard({
     required this.ayah,
     required this.fontScale,
+    required this.translationScale,
     required this.bookmarked,
+    required this.highlighted,
     required this.onBookmark,
     required this.onLongPress,
     required this.onShare,
@@ -318,14 +752,16 @@ class _AyahCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final translation = ayah.translation;
-    // Kaldığın yer: hafif marka tonu (opak; arka plan resminde de okunur)
+    // Yer imi / gelinen ayet: hafif marka tonu (opak; arka plan resminde de
+    // okunur)
     final cardColor = theme.cardTheme.color ?? scheme.surfaceContainerLowest;
-    final color = bookmarked
-        ? Color.alphaBlend(
-            scheme.primaryContainer.withValues(alpha: 0.5),
+    final tint = highlighted ? 0.8 : (bookmarked ? 0.5 : 0.0);
+    final color = tint == 0
+        ? null
+        : Color.alphaBlend(
+            scheme.primaryContainer.withValues(alpha: tint),
             cardColor,
-          )
-        : null;
+          );
 
     return AppCard(
       margin: const EdgeInsets.symmetric(
@@ -389,6 +825,7 @@ class _AyahCard extends StatelessWidget {
                     Text(
                       translation,
                       style: theme.textTheme.bodyLarge!.copyWith(
+                        fontSize: 16 * translationScale,
                         height: 1.55,
                         color: scheme.onSurface,
                       ),

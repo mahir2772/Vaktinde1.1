@@ -836,6 +836,61 @@
     },
     "toolFridayDesc": "رسائل جاهزة للمشاركة",
     "quranTitle": "القرآن الكريم",
+    "quranTabSurahs": "السور",
+    "quranTabJuz": "الأجزاء",
+    "quranSearchHint": "ابحث عن سورة بالاسم أو الرقم",
+    "quranNoResults": "لا توجد سورة تطابق البحث",
+    "quranJuz": "الجزء {juz}",
+    "@quranJuz": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "quranPage": "الصفحة {page}",
+    "@quranPage": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahRange": "الآيات من {from} إلى {to}",
+    "@quranAyahRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "quranBookmark": "العلامة المرجعية",
+    "quranViewSettings": "طريقة العرض",
+    "quranModePage": "صفحات المصحف",
+    "quranModePageDesc": "نص متصل كما في المصحف",
+    "quranModeAyah": "آية آية",
+    "quranModeAyahDesc": "كل آية في بطاقة مستقلة",
+    "quranModeTranslation": "الترجمة",
+    "quranModeTranslationDesc": "الترجمة فقط، لقراءة متصلة",
+    "quranArabicSize": "حجم خط الآيات",
+    "quranTranslationSize": "حجم خط الترجمة",
+    "quranTranslationSmaller": "تصغير خط الترجمة",
+    "quranTranslationLarger": "تكبير خط الترجمة",
+    "quranGoToAyah": "الانتقال إلى آية",
+    "quranAyahNumberLabel": "رقم الآية (من 1 إلى {count})",
+    "@quranAyahNumberLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranGo": "انتقال",
+    "quranPreviousSurah": "السورة السابقة",
+    "quranNextSurah": "السورة التالية",
     "toolQuranDesc": "سور القرآن الكريم بالرسم العثماني",
     "quranContinue": "متابعة القراءة من حيث توقفت",
     "quranAyahRef": "{surah}، الآية {ayah}",
@@ -860,10 +915,10 @@
     "quranMeccan": "مكية",
     "quranMedinan": "مدنية",
     "quranLoadError": "تعذّر تحميل السورة. تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.",
-    "quranBookmarkSave": "حفظ موضع القراءة",
-    "quranBookmarkRemove": "إزالة موضع القراءة",
-    "quranBookmarkSaved": "تم حفظ موضع القراءة",
-    "quranBookmarkRemoved": "تمت إزالة موضع القراءة",
+    "quranBookmarkSave": "إضافة علامة مرجعية",
+    "quranBookmarkRemove": "إزالة العلامة المرجعية",
+    "quranBookmarkSaved": "تمت إضافة العلامة المرجعية",
+    "quranBookmarkRemoved": "تمت إزالة العلامة المرجعية",
     "quranShareAyah": "مشاركة الآية",
     "quranFontSmaller": "تصغير خط الآيات",
     "quranFontLarger": "تكبير خط الآيات",

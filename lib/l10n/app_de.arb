@@ -836,6 +836,61 @@
     },
     "toolFridayDesc": "Fertige Grüße zum Teilen",
     "quranTitle": "Der Heilige Koran",
+    "quranTabSurahs": "Suren",
+    "quranTabJuz": "Juz",
+    "quranSearchHint": "Sure nach Name oder Nummer suchen",
+    "quranNoResults": "Keine passende Sure gefunden",
+    "quranJuz": "Juz {juz}",
+    "@quranJuz": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "quranPage": "Seite {page}",
+    "@quranPage": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahRange": "Verse {from}–{to}",
+    "@quranAyahRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "quranBookmark": "Lesezeichen",
+    "quranViewSettings": "Ansicht",
+    "quranModePage": "Seite",
+    "quranModePageDesc": "Fortlaufender arabischer Text wie im Mushaf",
+    "quranModeAyah": "Vers für Vers",
+    "quranModeAyahDesc": "Jeder Vers mit Übersetzung auf einer eigenen Karte",
+    "quranModeTranslation": "Übersetzung",
+    "quranModeTranslationDesc": "Nur die Übersetzung, als fortlaufender Text",
+    "quranArabicSize": "Arabische Schrift",
+    "quranTranslationSize": "Übersetzungstext",
+    "quranTranslationSmaller": "Übersetzung verkleinern",
+    "quranTranslationLarger": "Übersetzung vergrößern",
+    "quranGoToAyah": "Zu Vers springen",
+    "quranAyahNumberLabel": "Versnummer (1–{count})",
+    "@quranAyahNumberLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranGo": "Springen",
+    "quranPreviousSurah": "Vorherige Sure",
+    "quranNextSurah": "Nächste Sure",
     "toolQuranDesc": "Suren mit arabischem Text und Übersetzung",
     "quranContinue": "Weiterlesen, wo Sie aufgehört haben",
     "quranAyahRef": "{surah}, Vers {ayah}",
@@ -860,10 +915,10 @@
     "quranMeccan": "Mekkanisch",
     "quranMedinan": "Medinensisch",
     "quranLoadError": "Die Sure konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
-    "quranBookmarkSave": "Als Leseposition speichern",
-    "quranBookmarkRemove": "Leseposition entfernen",
-    "quranBookmarkSaved": "Leseposition gespeichert",
-    "quranBookmarkRemoved": "Leseposition entfernt",
+    "quranBookmarkSave": "Lesezeichen setzen",
+    "quranBookmarkRemove": "Lesezeichen entfernen",
+    "quranBookmarkSaved": "Lesezeichen gesetzt",
+    "quranBookmarkRemoved": "Lesezeichen entfernt",
     "quranShareAyah": "Vers teilen",
     "quranFontSmaller": "Arabische Schrift verkleinern",
     "quranFontLarger": "Arabische Schrift vergrößern",
