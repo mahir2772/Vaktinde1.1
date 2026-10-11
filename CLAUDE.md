@@ -95,7 +95,11 @@ lib/
                             updateHomeWidget yazımları SerialQueue ile sıralı. Ramazan widget'ı: ramadanData (saf) → 'ramadan_start/_end/
                             _next_start' (+ _text), başlıklar, 'ramadan_day_text' (%d) — 4. sağlayıcı VaktindeWidgetRamadanProvider
       hadith_service        hadeethenc.com API + yerel json fallback
-      ayah_service          api.alquran.cloud
+      ayah_service          api.alquran.cloud (meal eşlemesi tek yer: quran_service.dart QuranEdition — tr.diyanet, en.sahih,
+                            de.aburida, fr.hamidullah; ar sadece Arapça)
+      quran_service         sure çekme (alquran.cloud, quran-uthmani + meal), Besmele 1. ayetten ayrılır (1 ve 9 hariç),
+                            önbellek SharedPreferences (en çok 10 sure / 400k karakter, LRU; yer imli sure korunur),
+                            'quran_bookmark' {surah, ayah}, 'quran_font_scale' 0.8–1.6
       economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır
       http_client           httpGet(): tüm dış isteklerde 10 sn timeout
       error_reporter        reportNonFatal(): Crashlytics ölümcül olmayan kayıt; Firebase yoksa (WorkManager isolate) başlatmayı dener, fırlatmaz.
@@ -169,6 +173,8 @@ lib/
                                            'fitre_remote_json'); validFrom ≤ bugün olan en yeni tutar. Yeni yıl: girdi EKLE, silme
     prayer_tracker/widgets/ramadan_fast_card.dart  Ramazan orucu kartı (Ramazan + bitişten 30 gün): data/services/
                                            fast_tracker(.dart|_service.dart), 'fast_log', 'fast_kaza_added' → kaza_Oruç (tekil, geri alınır)
+    quran/view/{quran_view,surah_reader_view}.dart  Kur'an (Araçlar > Bilgi): assets/data/surahs.json (114, 6236 ayet),
+                                           "Kaldığın yerden devam", A-/A+, ayet paylaşımı (quran), sonda Tanzil + mütercim notu
     duas/                                  Dualar (Araçlar > Namaz): assets/data/duas.json (4 kategori, 21 dua: Arapça + tr okunuş + 5 dil
                                            anlam, kaynak) + dua_data.dart; tesbihat_view.dart: namaz sonrası adım adım sayaç
                                            (Âyetü'l-Kürsî, 33×3, tevhid). Arapça standart imla, harekeli; yeni dua eklerken harf harf kontrol

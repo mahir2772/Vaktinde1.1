@@ -63,7 +63,7 @@ Amaç: günde birkaç kez açılan, paylaşılan, rakipten daha güvenilir uygul
 
 **Faz 3 — Günlük kullanım (Ramazan sonrası)**
 10. ✅ Dualar: sabah/akşam, namaz sonrası tesbihat (zikirmatikle), yemek/yolculuk duaları (çevrimdışı).
-11. Kur'an: sure listesi + Arapça + meal (lisans kontrolü), kaldığın yer.
+11. ✅ Kur'an: sure listesi + Arapça + meal (lisans kontrolü), kaldığın yer.
 12. ✅ Kadın modu (özel gün; takip) · "Namazdayım" sessiz modu (yapılmadı).
 13. Yedekle/geri yükle, 81 il/973 ilçe gömülü koordinat, erişilebilirlik, yeni widget'lar.
 

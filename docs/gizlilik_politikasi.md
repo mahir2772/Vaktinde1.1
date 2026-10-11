@@ -19,7 +19,7 @@ Konum izni verirseniz telefonunuzun konumu (enlem ve boylam) namaz vakitlerini v
 Konum izni vermeden şehrinizi elle seçebilirsiniz.
 
 3. İçerik servisleri
-Günün ayeti (alquran.cloud), günün hadisi (hadeethenc.com), zekât ekranındaki altın/döviz kurları (CollectAPI) ve fitre/fidye ekranındaki Diyanet tutarı (uygulamanın GitHub Pages sayfası, mahir2772.github.io) bu servislerden indirilir. Bu isteklerde kişisel veri gönderilmez; her internet isteğinde olduğu gibi servisler IP adresinizi görebilir.
+Günün ayeti ve Kur'an okuyucudaki ayet ve mealler (alquran.cloud), günün hadisi (hadeethenc.com), zekât ekranındaki altın/döviz kurları (CollectAPI) ve fitre/fidye ekranındaki Diyanet tutarı (uygulamanın GitHub Pages sayfası, mahir2772.github.io) bu servislerden indirilir. Bu isteklerde kişisel veri gönderilmez; her internet isteğinde olduğu gibi servisler IP adresinizi görebilir.
 
 4. Analiz ve hata raporları (Google Firebase)
 Uygulamayı geliştirmek için Google Firebase hizmetleri kullanılır:

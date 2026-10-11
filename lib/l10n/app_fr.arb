@@ -835,6 +835,47 @@
         }
     },
     "toolFridayDesc": "Messages prêts à partager",
+    "quranTitle": "Le Saint Coran",
+    "toolQuranDesc": "Sourates, texte arabe et traduction",
+    "quranContinue": "Reprendre la lecture",
+    "quranAyahRef": "{surah}, verset {ayah}",
+    "@quranAyahRef": {
+        "placeholders": {
+            "surah": {
+                "type": "String"
+            },
+            "ayah": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahCount": "{count, plural, =1{1 verset} other{{count} versets}}",
+    "@quranAyahCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranMeccan": "Mecquoise",
+    "quranMedinan": "Médinoise",
+    "quranLoadError": "Impossible de charger la sourate. Vérifiez votre connexion Internet et réessayez.",
+    "quranBookmarkSave": "Enregistrer comme position de lecture",
+    "quranBookmarkRemove": "Supprimer la position de lecture",
+    "quranBookmarkSaved": "Position de lecture enregistrée",
+    "quranBookmarkRemoved": "Position de lecture supprimée",
+    "quranShareAyah": "Partager le verset",
+    "quranFontSmaller": "Réduire le texte arabe",
+    "quranFontLarger": "Agrandir le texte arabe",
+    "quranTextSource": "Texte arabe : projet Tanzil (tanzil.net)",
+    "quranTranslationSource": "Traduction : {name}",
+    "@quranTranslationSource": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "toolZakatDesc": "Calcul de la zakat et de l'ouchr",
     "toolSettingsDesc": "Position, notifications, apparence",
     "daysLeft": "{count, plural, =0{Aujourd'hui} =1{Demain} other{Dans {count} jours}}",

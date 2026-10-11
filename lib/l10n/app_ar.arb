@@ -835,6 +835,47 @@
         }
     },
     "toolFridayDesc": "رسائل جاهزة للمشاركة",
+    "quranTitle": "القرآن الكريم",
+    "toolQuranDesc": "سور القرآن الكريم بالرسم العثماني",
+    "quranContinue": "متابعة القراءة من حيث توقفت",
+    "quranAyahRef": "{surah}، الآية {ayah}",
+    "@quranAyahRef": {
+        "placeholders": {
+            "surah": {
+                "type": "String"
+            },
+            "ayah": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahCount": "{count, plural, =1{آية واحدة} =2{آيتان} few{{count} آيات} many{{count} آية} other{{count} آية}}",
+    "@quranAyahCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranMeccan": "مكية",
+    "quranMedinan": "مدنية",
+    "quranLoadError": "تعذّر تحميل السورة. تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.",
+    "quranBookmarkSave": "حفظ موضع القراءة",
+    "quranBookmarkRemove": "إزالة موضع القراءة",
+    "quranBookmarkSaved": "تم حفظ موضع القراءة",
+    "quranBookmarkRemoved": "تمت إزالة موضع القراءة",
+    "quranShareAyah": "مشاركة الآية",
+    "quranFontSmaller": "تصغير خط الآيات",
+    "quranFontLarger": "تكبير خط الآيات",
+    "quranTextSource": "النص القرآني: مشروع تنزيل (tanzil.net)",
+    "quranTranslationSource": "الترجمة: {name}",
+    "@quranTranslationSource": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "toolZakatDesc": "حساب الزكاة والعُشر",
     "toolSettingsDesc": "الموقع والإشعارات والمظهر",
     "daysLeft": "{count, plural, =0{اليوم} =1{غدًا} =2{بعد يومين} few{بعد {count} أيام} many{بعد {count} يومًا} other{بعد {count} يوم}}",

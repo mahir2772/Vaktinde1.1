@@ -835,6 +835,47 @@
         }
     },
     "toolFridayDesc": "Fertige Grüße zum Teilen",
+    "quranTitle": "Der Heilige Koran",
+    "toolQuranDesc": "Suren mit arabischem Text und Übersetzung",
+    "quranContinue": "Weiterlesen, wo Sie aufgehört haben",
+    "quranAyahRef": "{surah}, Vers {ayah}",
+    "@quranAyahRef": {
+        "placeholders": {
+            "surah": {
+                "type": "String"
+            },
+            "ayah": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahCount": "{count, plural, =1{1 Vers} other{{count} Verse}}",
+    "@quranAyahCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranMeccan": "Mekkanisch",
+    "quranMedinan": "Medinensisch",
+    "quranLoadError": "Die Sure konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+    "quranBookmarkSave": "Als Leseposition speichern",
+    "quranBookmarkRemove": "Leseposition entfernen",
+    "quranBookmarkSaved": "Leseposition gespeichert",
+    "quranBookmarkRemoved": "Leseposition entfernt",
+    "quranShareAyah": "Vers teilen",
+    "quranFontSmaller": "Arabische Schrift verkleinern",
+    "quranFontLarger": "Arabische Schrift vergrößern",
+    "quranTextSource": "Arabischer Text: Tanzil-Projekt (tanzil.net)",
+    "quranTranslationSource": "Übersetzung: {name}",
+    "@quranTranslationSource": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "toolZakatDesc": "Zakat und Ernteabgabe (Uschr) berechnen",
     "toolSettingsDesc": "Standort, Benachrichtigungen, Darstellung",
     "daysLeft": "{count, plural, =0{Heute} =1{Morgen} other{Noch {count} Tage}}",
