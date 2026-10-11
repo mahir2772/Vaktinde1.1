@@ -201,10 +201,10 @@ void main() {
       await _dispose(tester);
     });
 
-    testWidgets('411×891 ekranda Zekat ve Ayarlar kaydırmadan görünür', (
-      tester,
-    ) async {
-      // Alt menü yüksekliği kadar (≈ 80dp) kısaltılmış gövde
+    testWidgets('411×891 ekranda Zekat kaydırmadan görünür', (tester) async {
+      // Alt menü yüksekliği kadar (≈ 80dp) kısaltılmış gövde. Dualar eklenince
+      // Ayarlar satırı ilk ekranın altına indi (kaydırınca görünür; üstteki
+      // test)
       await _pumpScreen(
         tester,
         const ToolsView(),
@@ -214,7 +214,7 @@ void main() {
       );
       final loc = lookupAppLocalizations(const Locale('tr'));
       final screen = tester.getRect(find.byType(ToolsView));
-      for (final title in [loc.zakatTitle, loc.menuTitle]) {
+      for (final title in [loc.zakatTitle]) {
         final rect = tester.getRect(find.text(title));
         expect(rect.bottom, lessThanOrEqualTo(screen.bottom), reason: title);
       }

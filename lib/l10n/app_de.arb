@@ -696,6 +696,92 @@
     "nearbyMosquesQuery": "Moschee",
     "nearbyMosquesError": "Die Karte konnte nicht geöffnet werden.",
     "toolEsmaDesc": "Die 99 Namen und ihre Bedeutung",
+    "duasTitle": "Bittgebete",
+    "toolDuasDesc": "Tasbih, Morgen-, Abend- und Alltagsbittgebete",
+    "duaTransliteration": "Umschrift",
+    "duaMeaning": "Bedeutung",
+    "tesbihatTitle": "Tasbih nach dem Gebet",
+    "tesbihatDesc": "Ayat al-Kursi, je 33 Tasbih und Bittgebet",
+    "tesbihatStep": "Schritt {current} von {total}",
+    "@tesbihatStep": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "tesbihatTapWhenRead": "Nach dem Rezitieren tippen",
+    "tesbihatRestart": "Neu beginnen",
+    "ramadanShareTitle": "Ramadan · Tag {day}",
+    "@ramadanShareTitle": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareIftarIn": "Iftar in {time}",
+    "@ramadanShareIftarIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareSahurIn": "Suhur endet in {time}",
+    "@ramadanShareSahurIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareIftarAt": "Iftar {time}",
+    "@ramadanShareIftarAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareImsakAt": "Imsak {time}",
+    "@ramadanShareImsakAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareHoursMinutes": "{hours} Std. {minutes} Min.",
+    "@ramadanShareHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareHours": "{hours} Std.",
+    "@ramadanShareHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareMinutes": "{minutes} Min.",
+    "@ramadanShareMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
     "toolFridayDesc": "Fertige Grüße zum Teilen",
     "toolZakatDesc": "Zakat und Ernteabgabe (Uschr) berechnen",
     "toolSettingsDesc": "Standort, Benachrichtigungen, Darstellung",

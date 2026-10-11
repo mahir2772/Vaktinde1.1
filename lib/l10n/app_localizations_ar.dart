@@ -1502,6 +1502,75 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolEsmaDesc => 'الأسماء الحسنى ومعانيها';
 
   @override
+  String get duasTitle => 'الأدعية';
+
+  @override
+  String get toolDuasDesc => 'التسبيح وأذكار الصباح والمساء والأدعية اليومية';
+
+  @override
+  String get duaTransliteration => 'النطق';
+
+  @override
+  String get duaMeaning => 'المعنى';
+
+  @override
+  String get tesbihatTitle => 'التسبيح بعد الصلاة';
+
+  @override
+  String get tesbihatDesc => 'آية الكرسي والتسبيح ثلاثًا وثلاثين والدعاء';
+
+  @override
+  String tesbihatStep(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get tesbihatTapWhenRead => 'انقر بعد القراءة';
+
+  @override
+  String get tesbihatRestart => 'البدء من جديد';
+
+  @override
+  String ramadanShareTitle(int day) {
+    return 'رمضان · اليوم $day';
+  }
+
+  @override
+  String ramadanShareIftarIn(String time) {
+    return 'الإفطار بعد $time';
+  }
+
+  @override
+  String ramadanShareSahurIn(String time) {
+    return 'ينتهي السحور بعد $time';
+  }
+
+  @override
+  String ramadanShareIftarAt(String time) {
+    return 'الإفطار $time';
+  }
+
+  @override
+  String ramadanShareImsakAt(String time) {
+    return 'الإمساك $time';
+  }
+
+  @override
+  String ramadanShareHoursMinutes(int hours, int minutes) {
+    return '$hours س $minutes د';
+  }
+
+  @override
+  String ramadanShareHours(int hours) {
+    return '$hours س';
+  }
+
+  @override
+  String ramadanShareMinutes(int minutes) {
+    return '$minutes د';
+  }
+
+  @override
   String get toolFridayDesc => 'رسائل جاهزة للمشاركة';
 
   @override

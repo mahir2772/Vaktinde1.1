@@ -717,6 +717,92 @@
     "nearbyMosquesQuery": "cami",
     "nearbyMosquesError": "Harita açılamadı.",
     "toolEsmaDesc": "Allah'ın 99 ismi ve anlamları",
+    "duasTitle": "Dualar",
+    "toolDuasDesc": "Tesbihat, sabah-akşam ve günlük dualar",
+    "duaTransliteration": "Okunuşu",
+    "duaMeaning": "Anlamı",
+    "tesbihatTitle": "Namaz Sonrası Tesbihat",
+    "tesbihatDesc": "Âyetü'l-Kürsî, 33'er tesbih ve dua",
+    "tesbihatStep": "Adım {current}/{total}",
+    "@tesbihatStep": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "tesbihatTapWhenRead": "Okuduktan sonra dokunun",
+    "tesbihatRestart": "Baştan Başla",
+    "ramadanShareTitle": "Ramazan · {day}. gün",
+    "@ramadanShareTitle": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareIftarIn": "İftara {time}",
+    "@ramadanShareIftarIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareSahurIn": "Sahura {time}",
+    "@ramadanShareSahurIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareIftarAt": "İftar {time}",
+    "@ramadanShareIftarAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareImsakAt": "İmsak {time}",
+    "@ramadanShareImsakAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareHoursMinutes": "{hours} sa {minutes} dk",
+    "@ramadanShareHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareHours": "{hours} sa",
+    "@ramadanShareHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareMinutes": "{minutes} dk",
+    "@ramadanShareMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
     "toolFridayDesc": "Paylaşmaya hazır mesajlar",
     "toolZakatDesc": "Zekat ve öşür hesabı",
     "toolSettingsDesc": "Konum, bildirimler, görünüm",

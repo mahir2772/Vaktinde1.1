@@ -2774,6 +2774,108 @@ abstract class AppLocalizations {
   /// **'Allah\'ın 99 ismi ve anlamları'**
   String get toolEsmaDesc;
 
+  /// No description provided for @duasTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dualar'**
+  String get duasTitle;
+
+  /// No description provided for @toolDuasDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat, sabah-akşam ve günlük dualar'**
+  String get toolDuasDesc;
+
+  /// No description provided for @duaTransliteration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okunuşu'**
+  String get duaTransliteration;
+
+  /// No description provided for @duaMeaning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anlamı'**
+  String get duaMeaning;
+
+  /// No description provided for @tesbihatTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Sonrası Tesbihat'**
+  String get tesbihatTitle;
+
+  /// No description provided for @tesbihatDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Âyetü\'l-Kürsî, 33\'er tesbih ve dua'**
+  String get tesbihatDesc;
+
+  /// No description provided for @tesbihatStep.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adım {current}/{total}'**
+  String tesbihatStep(int current, int total);
+
+  /// No description provided for @tesbihatTapWhenRead.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okuduktan sonra dokunun'**
+  String get tesbihatTapWhenRead;
+
+  /// No description provided for @tesbihatRestart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Baştan Başla'**
+  String get tesbihatRestart;
+
+  /// No description provided for @ramadanShareTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan · {day}. gün'**
+  String ramadanShareTitle(int day);
+
+  /// No description provided for @ramadanShareIftarIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftara {time}'**
+  String ramadanShareIftarIn(String time);
+
+  /// No description provided for @ramadanShareSahurIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahura {time}'**
+  String ramadanShareSahurIn(String time);
+
+  /// No description provided for @ramadanShareIftarAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftar {time}'**
+  String ramadanShareIftarAt(String time);
+
+  /// No description provided for @ramadanShareImsakAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsak {time}'**
+  String ramadanShareImsakAt(String time);
+
+  /// No description provided for @ramadanShareHoursMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{hours} sa {minutes} dk'**
+  String ramadanShareHoursMinutes(int hours, int minutes);
+
+  /// No description provided for @ramadanShareHours.
+  ///
+  /// In tr, this message translates to:
+  /// **'{hours} sa'**
+  String ramadanShareHours(int hours);
+
+  /// No description provided for @ramadanShareMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{minutes} dk'**
+  String ramadanShareMinutes(int minutes);
+
   /// No description provided for @toolFridayDesc.
   ///
   /// In tr, this message translates to:

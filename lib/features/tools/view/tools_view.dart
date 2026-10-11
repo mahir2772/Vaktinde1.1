@@ -5,6 +5,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../common/ad_helper.dart';
 import '../../common/theme_provider.dart';
+import '../../duas/view/duas_view.dart';
 import '../../esmaul_husna/view/esmaul_husna_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../imsakiye/view/imsakiye_view.dart';
@@ -55,6 +56,12 @@ class ToolsView extends StatelessWidget {
             loc.missedPrayersTitle,
             loc.toolKazaDesc,
             () => const MissedPrayersView(),
+          ),
+          _ToolItem(
+            Icons.auto_stories_outlined,
+            loc.duasTitle,
+            loc.toolDuasDesc,
+            () => const DuasView(),
           ),
           _ToolItem.external(
             Icons.mosque_outlined,

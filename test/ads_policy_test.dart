@@ -163,6 +163,8 @@ void main() {
     expect(ads.debugShowRequests, before);
 
     await tester.scrollUntilVisible(find.text(loc.missedPrayersTitle), -200);
+    // Kaydırma sonrası yerleşim: satır AppBar altında kalmasın
+    await tester.pump();
     await tester.tap(find.text(loc.missedPrayersTitle));
     await tester.pump();
     expect(ads.debugShowRequests, before + 1);

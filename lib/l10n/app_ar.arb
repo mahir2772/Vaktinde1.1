@@ -696,6 +696,92 @@
     "nearbyMosquesQuery": "مسجد",
     "nearbyMosquesError": "تعذّر فتح الخريطة.",
     "toolEsmaDesc": "الأسماء الحسنى ومعانيها",
+    "duasTitle": "الأدعية",
+    "toolDuasDesc": "التسبيح وأذكار الصباح والمساء والأدعية اليومية",
+    "duaTransliteration": "النطق",
+    "duaMeaning": "المعنى",
+    "tesbihatTitle": "التسبيح بعد الصلاة",
+    "tesbihatDesc": "آية الكرسي والتسبيح ثلاثًا وثلاثين والدعاء",
+    "tesbihatStep": "الخطوة {current} من {total}",
+    "@tesbihatStep": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "tesbihatTapWhenRead": "انقر بعد القراءة",
+    "tesbihatRestart": "البدء من جديد",
+    "ramadanShareTitle": "رمضان · اليوم {day}",
+    "@ramadanShareTitle": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareIftarIn": "الإفطار بعد {time}",
+    "@ramadanShareIftarIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareSahurIn": "ينتهي السحور بعد {time}",
+    "@ramadanShareSahurIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareIftarAt": "الإفطار {time}",
+    "@ramadanShareIftarAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareImsakAt": "الإمساك {time}",
+    "@ramadanShareImsakAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareHoursMinutes": "{hours} س {minutes} د",
+    "@ramadanShareHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareHours": "{hours} س",
+    "@ramadanShareHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareMinutes": "{minutes} د",
+    "@ramadanShareMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
     "toolFridayDesc": "رسائل جاهزة للمشاركة",
     "toolZakatDesc": "حساب الزكاة والعُشر",
     "toolSettingsDesc": "الموقع والإشعارات والمظهر",
