@@ -371,15 +371,84 @@ void main() {
   });
 
   group('Reklam', () {
-    test('zekat ve genel geçiş reklamı ortak soğuma süresine uyar', () {
-      final ads = AdHelper.instance;
+    test('zekat ve genel geçiş reklamı ortak sıklık sınırına uyar: 4 dk '
+        'soğuma, günde en çok 8; saat geri alınınca beklemez', () {
+      final ads = AdHelper.instance..debugReset();
+      addTearDown(ads.debugReset);
       final t = DateTime(2026, 1, 1, 12);
+      expect(ads.canShowInterstitial(t), isTrue);
       ads.markInterstitialShown(t);
-      expect(ads.isCoolingDown(t.add(const Duration(minutes: 1))), isTrue);
-      expect(ads.isCoolingDown(t.add(const Duration(minutes: 4))), isTrue);
-      expect(ads.isCoolingDown(t.add(const Duration(minutes: 5))), isFalse);
-      expect(ads.isCoolingDown(t.add(const Duration(hours: 1))), isFalse);
+      expect(
+        ads.canShowInterstitial(t.add(const Duration(minutes: 1))),
+        isFalse,
+      );
+      expect(
+        ads.canShowInterstitial(t.add(const Duration(minutes: 3))),
+        isFalse,
+      );
+      expect(
+        ads.canShowInterstitial(t.add(const Duration(minutes: 4))),
+        isTrue,
+      );
+      expect(ads.canShowInterstitial(t.add(const Duration(hours: 1))), isTrue);
+      expect(
+        ads.canShowInterstitial(t.subtract(const Duration(hours: 2))),
+        isTrue,
+      );
+
+      // Aynı gün 8 reklam (soğuma aralıklarıyla) → günün geri kalanı reklamsız
+      for (var i = 1; i < AdHelper.dailyCap; i++) {
+        ads.markInterstitialShown(t.add(Duration(minutes: 5 * i)));
+      }
+      final late = t.add(const Duration(hours: 6));
+      expect(ads.canShowInterstitial(late), isFalse);
+      // Ertesi gün sayaç sıfırdan
+      expect(ads.canShowInterstitial(DateTime(2026, 1, 2, 0, 1)), isTrue);
+      ads.markInterstitialShown(DateTime(2026, 1, 2, 0, 1));
+      expect(ads.canShowInterstitial(DateTime(2026, 1, 2, 0, 10)), isTrue);
     });
+
+    test(
+      'süreç yeniden başlayınca son gösterim ve günün sayısı korunur',
+      () async {
+        final ads = AdHelper.instance..debugReset();
+        addTearDown(ads.debugReset);
+        SharedPreferences.setMockInitialValues({});
+        final t = DateTime(2026, 1, 1, 12);
+        for (var i = 0; i < AdHelper.dailyCap; i++) {
+          ads.markInterstitialShown(t.add(Duration(minutes: 5 * i)));
+        }
+        await Future<void>.delayed(Duration.zero);
+        final prefs = await SharedPreferences.getInstance();
+        final last = t.add(Duration(minutes: 5 * (AdHelper.dailyCap - 1)));
+        expect(
+          prefs.getString(AdHelper.logKey),
+          '${last.millisecondsSinceEpoch}|2026-01-01|${AdHelper.dailyCap}',
+        );
+
+        ads.debugReset();
+        expect(
+          ads.canShowInterstitial(t.add(const Duration(hours: 6))),
+          isTrue,
+        );
+        await ads.restoreLog();
+        expect(
+          ads.canShowInterstitial(last.add(const Duration(minutes: 1))),
+          isFalse,
+        );
+        expect(
+          ads.canShowInterstitial(t.add(const Duration(hours: 6))),
+          isFalse,
+        );
+        expect(ads.canShowInterstitial(DateTime(2026, 1, 2, 9)), isTrue);
+
+        // Bozuk kayıt yok sayılır
+        ads.debugReset();
+        SharedPreferences.setMockInitialValues({AdHelper.logKey: 'x|y'});
+        await ads.restoreLog();
+        expect(ads.canShowInterstitial(t), isTrue);
+      },
+    );
   });
 
   group('Kaza', () {

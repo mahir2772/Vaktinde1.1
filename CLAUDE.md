@@ -30,8 +30,8 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
   (UMP'nin IABTCF_*); amaç 1 → analytics/ad storage, 1+3+4 → ad user data/personalization, gdprApplies 0 → hepsi açık. AdConsent
   açılışta (AB'de önce ret), form sonrası ve "Reklam gizlilik ayarları" sonrası yeniden uygular.
 
-`MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): 5 sekme `MainTab` — HomeView,
-QuranView(asTab: true; kendi banner/geri düğmesi yok), QiblaView, ZikirView, ToolsView ("Araçlar"; Kur'an satırı yok). Turda Kur'an adımı var. Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma; Ayarlar satırı reklamsız). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
+`MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): 5 sekme `MainTab` (`main_tabs.dart`; sekme içinden geçiş `MainTabRequests.show`, çerçeve yoksa false) — HomeView,
+QuranView(asTab: true; kendi banner/geri düğmesi yok), QiblaView, ZikirView, ToolsView ("Araçlar"; Kur'an satırı yok). Turda Kur'an adımı var. Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok. Geçiş reklamı sadece kullanıcının açtığı ekrana geçişte: Araçlar'daki araçlar, ana ekranda "Bugün için" Cuma mesajları/dini günler ve "Bugün" takip satırı. Kur'an, Kıble, Zikir, Dualar/Tesbihat, Ayarlar, Bildirim Kontrolü, Yakındaki Camiler reklamsız. Sıklık `AdHelper.canShowInterstitial`: 4 dk soğuma + günde en çok 8 (zekat dahil ortak; 'interstitial_log' ile süreç kapansa da korunur). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
 Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. Akış bitince (tur yolunda da) `StreakReviewPrompt.start()`: `PrayerTrackerService.changes` ile seri 7+'ya çıkınca bir kez `InAppReview.requestReview` ('review_requested'; isAvailable, ön plan, izin/rıza/tur penceresi yokken). SettingsView araçlar ekranındaki karttan açılır ("Bize Puan Ver" = openStoreListing).
 `ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar; üst çubukta Ayarlar dişlisi, liste ekrana sığmıyor) → Imsakiye, PrayerTracker, MissedPrayers, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
 
@@ -135,8 +135,9 @@ lib/
                                            konum; ızgarada vakte dokun → o vaktin alarm alt sayfası (alarm_settings_list: PrayerAlarmControls,
                                            showPrayerAlarmSheet; kapanınca HomeViewModel.stopPreview). HomeView.clock (test)
     home/widgets/today_hub.dart            "Bugün için": Cuma → Cuma mesajı; dini gün −3..+3 gün → başa + "Tebrik gönder"
-                                           (religious_days_view: greetingGroupsFor/showGreetingsSheet); Kur'an kaldığın yer; Tesbihat;
-                                           yoksa sıradaki dini gün sonda. 3, en çok 4 satır; dönüşte/resume/30 sn'de yenilenir; reklamsız
+                                           (religious_days_view: greetingGroupsFor/showGreetingsSheet); Kur'an kaldığın yer (Kur'an
+                                           sekmesine geçer, okuyucu üstüne açılır → geri = sure listesi); Tesbihat; yoksa sıradaki dini
+                                           gün sonda. 3, en çok 4 satır; dönüşte/resume/30 sn'de yenilenir; Cuma/dini gün geçiş reklamlı
     home/prayer_schedule.dart              saf: upcomingPrayer (yatsıdan sonra yarının imsakı), prayerRowStates (sıradaki/şu an/
                                            geçmiş; güneşten öğleye "şu an" yok), localizedPrayerName — test/prayer_schedule_test.dart
     home/widgets/countdown_widget.dart     sıradaki vakit adı + saati + 44sp TabularText sayaç (saniyelik)
@@ -197,7 +198,7 @@ lib/
                                            liste: Sureler | Cüzler sekmesi (30 cüz başı QuranService'te, quran-meta ile teyitli),
                                            aksan/harekeden bağımsız arama; okuyucu kipleri 'quran_view_mode': Sayfa (varsayılan;
                                            API'nin `page` alanıyla gerçek mushaf sayfası, ﴿١٢﴾, ayete dokun → alt sayfa: meal, yer imi,
-                                           kopyala, resimli paylaş) / Ayet ayet / Meal (ar'da yok). 'quran_last_read' kendiliğinden
+                                           kopyala, resimli paylaş) / Ayet ayet / Meal (ar'da yok). 'quran_last_read' kendiliğinden (QuranService.lastReadChanges → liste hemen yenilenir)
                                            ("Kaldığın yerden devam"), 'quran_bookmark' = Yer imi; Görünüm alt sayfası: A-/A+ Arapça,
                                            'quran_translation_scale'; Ayete git; önceki/sonraki sure. Önbellek sürüm 2 (page/juz/hizb/
                                            sajda); sürüm 1 açılınca 5 sn'de yenilenir, olmazsa ≤10 ayetlik gruplar. widgets/: mushaf_page,
@@ -220,7 +221,7 @@ lib/
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
     imsakiye/view/imsakiye_view.dart       aylık/Ramazan imsakiyesi (forDate ile); paylaşım = ekran dışı RepaintBoundary → PNG
-    common/ad_helper.dart                  interstitial singleton (5 dk cooldown; rıza yoksa AdConsent.whenAdsStarted ile bekler)
+    common/ad_helper.dart                  interstitial singleton (4 dk soğuma + günde 8, 'interstitial_log'; rıza yoksa AdConsent.whenAdsStarted ile bekler)
     common/ad_consent.dart                 AdMob UMP rızası + MobileAds.initialize + gizlilik seçenekleri formu; kendi
                                            reklamını yükleyen ekran önce AdConsent.canRequestAds.value'ya bakmalı
     common/app_analytics.dart              Firebase Analytics tek kapısı (izinli parametre listesi)

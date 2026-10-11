@@ -11,6 +11,7 @@ import '../../../data/services/prayer_tracker_service.dart';
 import '../../../core/ui/app_card.dart';
 import '../../../core/ui/app_tokens.dart';
 import '../../../core/ui/prayer_colors.dart';
+import '../../common/ad_helper.dart';
 import '../../prayer_tracker/view/prayer_tracker_view.dart';
 import '../view_model/home_view_model.dart';
 
@@ -162,7 +163,9 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     }
   }
 
+  // Ana ekrandan araca geçiş: geçiş reklamı (sıklık sınırı AdHelper'da)
   void _openTracker() {
+    AdHelper.instance.showInterstitialAd();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const PrayerTrackerView()),

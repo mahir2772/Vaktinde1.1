@@ -1975,7 +1975,7 @@ void main() {
     });
 
     testWidgets('önceki / sonraki sure: başta önceki, sonda sonraki; listeye '
-        'dönünce son okunan yenilenir', (tester) async {
+        'dönünce son okunan görünür', (tester) async {
       final prefs = await SharedPreferences.getInstance();
       await pumpPhone(tester, QuranView(service: _service()));
       final loc = lookupAppLocalizations(const Locale('tr'));
@@ -2000,8 +2000,12 @@ void main() {
         prefs.getString(QuranService.lastReadKey),
         '{"surah":113,"ayah":1}',
       );
-      // Liste, yerine geçen okuyucular kapanana kadar yenilenmez
-      expect(find.text(loc.quranContinue, skipOffstage: false), findsNothing);
+      // Liste arkada hemen yenilenir (ana ekran kartı okuyucuyu sekmenin
+      // üstünde açar; geri gelince güncel yer görünür)
+      expect(
+        find.text(loc.quranAyahRef('Felak', 1), skipOffstage: false),
+        findsOneWidget,
+      );
       // Önceki sure düğmesi geri getirir (yerine geçer)
       expect(find.text('İhlâs'), findsOneWidget);
       await tester.tap(find.text('İhlâs'));

@@ -23,9 +23,9 @@ import '../nearby_mosques.dart';
 class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
 
-  // Araç açılışında geçiş reklamı (AdHelper 5 dk soğuma süresini kendisi
-  // uygular). Ayarlar (sorun giderme, izinler, destek) ve uygulamadan çıkan
-  // Yakındaki Camiler (harita) reklamsız açılır.
+  // Araç açılışında geçiş reklamı (sıklık sınırını AdHelper uygular).
+  // Ayarlar (sorun giderme, izinler, destek), Dualar (ibadet; Kur'an, Kıble,
+  // Zikir gibi) ve uygulamadan çıkan Yakındaki Camiler reklamsız açılır.
   static void _open(BuildContext context, Widget page, {bool showAd = true}) {
     if (showAd) AdHelper.instance.showInterstitialAd();
     Navigator.push(context, MaterialPageRoute(builder: (_) => page));
@@ -63,6 +63,7 @@ class ToolsView extends StatelessWidget {
             loc.duasTitle,
             loc.toolDuasDesc,
             () => const DuasView(),
+            showAd: false,
           ),
           _ToolItem.external(
             Icons.mosque_outlined,
@@ -139,7 +140,9 @@ class ToolsView extends StatelessWidget {
                     leadingIcon: item.icon,
                     title: item.title,
                     subtitle: item.subtitle,
-                    onTap: item.onTap ?? () => _open(context, item.page!()),
+                    onTap:
+                        item.onTap ??
+                        () => _open(context, item.page!(), showAd: item.showAd),
                   ),
               ],
             ),
@@ -171,19 +174,24 @@ class _ToolItem {
   /// Sayfa yerine uygulama dışına çıkan araç (harita): geçiş reklamı yok
   final VoidCallback? onTap;
 
+  /// Açılışta geçiş reklamı (ibadet ekranlarında yok)
+  final bool showAd;
+
   const _ToolItem(
     this.icon,
     this.title,
     this.subtitle,
-    Widget Function() this.page,
-  ) : onTap = null;
+    Widget Function() this.page, {
+    this.showAd = true,
+  }) : onTap = null;
 
   const _ToolItem.external(
     this.icon,
     this.title,
     this.subtitle,
     VoidCallback this.onTap,
-  ) : page = null;
+  ) : page = null,
+      showAd = false;
 }
 
 /// Grup başlığı; arka plan görseli seçiliyse okunur kalsın diye opak kapsül içinde

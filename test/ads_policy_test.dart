@@ -1,11 +1,13 @@
 // Reklam: içerik sınırı (PG) reklam SDK'sı başlamadan verilir, hata açılışı
-// bozmaz; Araçlar'dan Ayarlar ve Yakındaki Camiler (harita) geçiş reklamsız
-// açılır.
+// bozmaz; Araçlar'dan Ayarlar, Dualar ve Yakındaki Camiler (harita) geçiş
+// reklamsız açılır.
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/duas/dua_data.dart';
+import 'package:ezan_saati/features/duas/view/duas_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
@@ -98,8 +100,11 @@ void main() {
     expect(AdConsent.canRequestAds.value, isFalse);
   });
 
-  testWidgets('Araçlar: Ayarlar ve Yakındaki Camiler reklamsız, araçlar geçiş '
-      'reklamıyla açılır', (tester) async {
+  testWidgets('Araçlar: Ayarlar, Dualar ve Yakındaki Camiler reklamsız, '
+      'araçlar geçiş reklamıyla açılır', (tester) async {
+    // Dualar varlığı gerçek bölgede yüklenir (önbellekli Future sahte
+    // zamanda asılı kalmasın)
+    await tester.runAsync(DuaLibrary.load);
     final launches = <String>[];
     messenger.setMockMethodCallHandler(_urlLauncher, (call) async {
       launches.add((call.arguments as Map)['url'] as String);
@@ -164,6 +169,16 @@ void main() {
     await settle();
     expect(launches, hasLength(1));
     expect(ads.debugShowRequests, before);
+
+    // İbadet ekranı: reklamsız
+    await tester.scrollUntilVisible(find.text(loc.duasTitle), -200);
+    await tester.pump();
+    await tester.tap(find.text(loc.duasTitle));
+    await settle();
+    expect(find.byType(DuasView), findsOneWidget);
+    expect(ads.debugShowRequests, before);
+    Navigator.of(tester.element(find.byType(DuasView))).pop();
+    await settle();
 
     await tester.scrollUntilVisible(find.text(loc.missedPrayersTitle), -200);
     // Kaydırma sonrası yerleşim: satır AppBar altında kalmasın

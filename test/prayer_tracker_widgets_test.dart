@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/home/widgets/kerahat_card.dart';
 import 'package:ezan_saati/features/home/widgets/prayer_tracker_row.dart';
@@ -110,6 +111,14 @@ void main() {
         prefs.getString('prayer_log'),
         '{"${dk(0)}":${PrayerTracker.bit('İmsak')}}',
       );
+
+      // Başlığa dokununca takip ekranı geçiş reklamıyla açılır
+      final ads = AdHelper.instance.debugShowRequests;
+      await tester.tap(find.text(loc.trackerToday));
+      await tester.pump();
+      expect(AdHelper.instance.debugShowRequests, ads + 1);
+      await tester.pumpAndSettle();
+      expect(find.byType(PrayerTrackerView), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox());
     });

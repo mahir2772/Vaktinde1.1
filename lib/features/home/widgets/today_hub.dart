@@ -9,11 +9,13 @@ import '../../../data/services/dini_gunler_service.dart';
 import '../../../data/services/json_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../../../data/services/quran_service.dart';
+import '../../common/ad_helper.dart';
 import '../../duas/dua_data.dart';
 import '../../duas/view/tesbihat_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../quran/view/quran_view.dart';
 import '../../quran/view/surah_reader_view.dart';
+import '../../main_wrapper/main_tabs.dart';
 import '../../religious_days/view/religious_days_view.dart';
 
 /// Dini günün tebrik penceresi (gün): günden önce ve sonra (bayram birkaç gün
@@ -58,7 +60,8 @@ FeaturedReligiousDay? featuredReligiousDay(
 /// - Namaz sonrası tesbihat
 /// - Değilse sıradaki dini gün ve kalan gün (en altta)
 ///
-/// Geçiş reklamı yok. Gün dönümü ve başka ekranda okunan Kur'an 30 sn'de bir
+/// Cuma mesajları ve dini günler geçiş reklamıyla (sıklık sınırı AdHelper'da),
+/// Kur'an ve tesbihat reklamsız açılır. Gün dönümü ve başka ekranda okunan Kur'an 30 sn'de bir
 /// (ve uygulamaya dönünce) yansır.
 class TodayHub extends StatefulWidget {
   /// Şimdiki zaman (testler için); verilmezse DateTime.now
@@ -166,7 +169,10 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _push(Widget page) async {
+  /// [showAd]: geçiş reklamı (Cuma mesajları, dini günler); Kur'an ve
+  /// tesbihat reklamsız
+  Future<void> _push(Widget page, {bool showAd = false}) async {
+    if (showAd) AdHelper.instance.showInterstitialAd();
     await Navigator.push(
       context,
       MaterialPageRoute<void>(builder: (_) => page),
@@ -186,10 +192,13 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
         .firstOrNull;
   }
 
+  // Ana çerçevede Kur'an sekmesine geçilir, okuyucu onun üstünde açılır:
+  // geri gelince sure listesi görünür
   void _openQuran() {
     final surah = _lastReadSurah();
+    final inTab = MainTabRequests.show(MainTab.quran);
     if (surah == null) {
-      _push(QuranView(service: _quran));
+      if (!inTab) _push(QuranView(service: _quran));
       return;
     }
     _push(
@@ -245,7 +254,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
           leadingIcon: Icons.forum_outlined,
           title: loc.fridayGreeting,
           subtitle: loc.todayFridayMessage,
-          onTap: () => _push(const FridayMessagesView()),
+          onTap: () => _push(const FridayMessagesView(), showAd: true),
         ),
       if (inWindow) _religiousRow(loc, featured),
       _quranRow(loc, language),
@@ -314,7 +323,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
       subtitle: left >= 0
           ? loc.daysLeft(left)
           : DateFormat.MMMMEEEEd(loc.localeName).format(day.tarih),
-      onTap: () => _push(const ReligiousDaysView()),
+      onTap: () => _push(const ReligiousDaysView(), showAd: true),
     );
     final groups = left.abs() <= greetingWindowDays
         ? greetingGroupsFor(_greetings, day.tur)

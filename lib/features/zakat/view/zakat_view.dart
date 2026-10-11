@@ -163,13 +163,13 @@ class _ZakatViewState extends State<ZakatView> {
   }
 
   // Sonuç reklamı beklemez; reklam (varsa) ziyaret başına en çok bir kez ve
-  // genel geçiş reklamıyla ortak soğuma süresine uyarak gösterilir (Araçlar'dan
+  // genel geçiş reklamıyla ortak sıklık sınırına uyarak gösterilir (Araçlar'dan
   // açılışta reklam çıktıysa hemen ardından ikinci reklam çıkmaz)
   void _maybeShowAd() {
     if (!AdConsent.canRequestAds.value) return;
     final ad = _interstitialAd;
     if (ad == null || _adShown) return;
-    if (AdHelper.instance.isCoolingDown()) return;
+    if (!AdHelper.instance.canShowInterstitial()) return;
     _adShown = true;
     _interstitialAd = null;
     AdHelper.instance.markInterstitialShown();

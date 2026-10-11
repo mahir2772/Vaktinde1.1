@@ -25,6 +25,7 @@ import 'package:ezan_saati/features/home/widgets/prayer_times_grid.dart';
 import 'package:ezan_saati/features/home/widgets/today_hub.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
+import 'package:ezan_saati/features/main_wrapper/main_tabs.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
@@ -304,8 +305,10 @@ void main() {
       expect(at(DateTime(2027, 1, 6))!.daysLeft, -2);
     });
 
-    testWidgets('dokununca: Kur\'an kaldığın ayetten, tesbihat, Cuma '
-        'mesajları ve dini günler açılır (reklamsız)', (tester) async {
+    testWidgets('dokununca: Kur\'an kaldığın ayetten ve tesbihat reklamsız; '
+        'Cuma mesajları ve dini günler geçiş reklamıyla açılır', (
+      tester,
+    ) async {
       await pumpHub(
         tester,
         now: _friday,
@@ -323,13 +326,15 @@ void main() {
       _navigator(tester).pop();
       await _settle(tester);
 
-      for (final (text, type) in [
-        (loc.tesbihatTitle, TesbihatView),
-        (loc.fridayGreeting, FridayMessagesView),
-        (loc.regaipKandili, ReligiousDaysView),
+      for (final (text, type, ad) in [
+        (loc.tesbihatTitle, TesbihatView, 0),
+        (loc.fridayGreeting, FridayMessagesView, 1),
+        (loc.regaipKandili, ReligiousDaysView, 1),
       ]) {
+        final before = AdHelper.instance.debugShowRequests;
         await tester.tap(find.text(text));
         await _settle(tester);
+        expect(AdHelper.instance.debugShowRequests, before + ad, reason: text);
         expect(find.byType(type), findsOneWidget, reason: text);
         if (type == TesbihatView) {
           expect(
@@ -340,7 +345,42 @@ void main() {
         _navigator(tester).pop();
         await _settle(tester);
       }
-      expect(AdHelper.instance.debugShowRequests, ads);
+      expect(AdHelper.instance.debugShowRequests, ads + 2);
+      expect(tester.takeException(), isNull);
+      await _dispose(tester);
+    });
+
+    testWidgets('ana çerçevede: Kur\'an sekmesine geçilir, okuyucu üstünde '
+        'açılır; kaldığın yer yoksa ayrıca liste açılmaz', (tester) async {
+      final requests = <MainTab>[];
+      bool handler(MainTab tab) {
+        requests.add(tab);
+        return true;
+      }
+
+      MainTabRequests.attach(handler);
+      addTearDown(() => MainTabRequests.detach(handler));
+
+      await pumpHub(
+        tester,
+        now: _sunday,
+        prefs: {QuranService.lastReadKey: _lastReadBakara},
+      );
+      await tester.tap(find.text(loc.quranContinue));
+      await _settle(tester);
+      expect(requests, [MainTab.quran]);
+      expect(find.byType(SurahReaderView), findsOneWidget);
+      _navigator(tester).pop();
+      await _settle(tester);
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(QuranService.lastReadKey);
+      await _dispose(tester);
+      await pumpHub(tester, now: _sunday);
+      await tester.tap(find.text(loc.todayQuranOpen));
+      await _settle(tester);
+      expect(requests, [MainTab.quran, MainTab.quran]);
+      expect(find.byType(QuranView), findsNothing);
       expect(tester.takeException(), isNull);
       await _dispose(tester);
     });

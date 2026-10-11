@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ad_consent.dart';
 
@@ -27,17 +28,32 @@ class AdIds {
       : _testInterstitial;
 }
 
+/// Geçiş reklamı yerleri ve sıklığı. Reklam sadece kullanıcının açtığı bir
+/// ekrana geçişte istenir (kendiliğinden, açılışta ya da çıkışta değil):
+/// Araçlar'daki araçlar (Dualar, Ayarlar, Yakındaki Camiler hariç), ana
+/// ekranda "Bugün için" Cuma mesajları / dini günler ve Namaz Takibi. Kur'an,
+/// Kıble, Zikir, Dualar/Tesbihat ve Ayarlar hiç reklam göstermez.
 class AdHelper {
   // Singleton yapısı: Uygulama boyunca sadece 1 tane AdHelper yaşar
   static final AdHelper instance = AdHelper._internal();
   AdHelper._internal();
 
+  /// İki geçiş reklamı arasında en az bu kadar süre olur
+  static const Duration cooldown = Duration(minutes: 4);
+
+  /// Günde en çok bu kadar geçiş reklamı
+  static const int dailyCap = 8;
+
+  /// Son gösterim + günün sayısı (süreç kapansa da sıklık korunur):
+  /// "<epoch ms>|<yyyy-MM-dd>|<sayı>"
+  static const String logKey = 'interstitial_log';
+
   InterstitialAd? _interstitialAd;
   bool _loading = false;
   DateTime? _lastAdShowTime;
-
-  // SOĞUMA SÜRESİ: 5 dakika geçmeden 2. kez tam ekran reklam ÇIKMAZ.
-  final int _cooldownMinutes = 5;
+  String? _countDay;
+  int _countToday = 0;
+  bool _restored = false;
 
   // Şimdilik sadece Android'de reklam var
   bool get _isSupported => Platform.isAndroid;
@@ -47,6 +63,7 @@ class AdHelper {
   // Arka planda reklamı önceden yükler (rıza/SDK hazır değilse hazır olunca)
   void loadInterstitialAd() {
     if (!_isSupported) return;
+    restoreLog();
     if (!AdConsent.canRequestAds.value) {
       if (!_waitingForConsent) {
         _waitingForConsent = true;
@@ -90,38 +107,96 @@ class AdHelper {
     );
   }
 
-  /// Son tam ekran reklamdan bu yana soğuma süresi dolmadı mı. Uygulamadaki
-  /// tüm geçiş reklamları (genel + zekat) bu ortak süreye uyar.
-  bool isCoolingDown([DateTime? now]) {
+  static String _day(DateTime t) =>
+      '${t.year}-${t.month.toString().padLeft(2, '0')}-'
+      '${t.day.toString().padLeft(2, '0')}';
+
+  /// Şu an geçiş reklamı gösterilebilir mi: son reklamdan [cooldown] geçti ve
+  /// bugün [dailyCap]'e ulaşılmadı. Uygulamadaki tüm geçiş reklamları (genel +
+  /// zekat) bu ortak sınıra uyar. Saat geri alındıysa soğuma beklenmez.
+  bool canShowInterstitial([DateTime? now]) {
+    final t = now ?? DateTime.now();
     final last = _lastAdShowTime;
-    if (last == null) return false;
-    return (now ?? DateTime.now()).difference(last).inMinutes <
-        _cooldownMinutes;
+    if (last != null && !t.isBefore(last) && t.difference(last) < cooldown) {
+      return false;
+    }
+    return !(_countDay == _day(t) && _countToday >= dailyCap);
   }
 
-  /// Başka bir geçiş reklamı (ör. zekat) gösterildi: ortak süre başlar
+  /// Bir geçiş reklamı gösterildi (genel ya da zekat): süre ve günlük sayı
   void markInterstitialShown([DateTime? at]) {
-    _lastAdShowTime = at ?? DateTime.now();
+    final t = at ?? DateTime.now();
+    final day = _day(t);
+    _lastAdShowTime = t;
+    _countToday = day == _countDay ? _countToday + 1 : 1;
+    _countDay = day;
+    _save();
+  }
+
+  Future<void> _save() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        logKey,
+        '${_lastAdShowTime!.millisecondsSinceEpoch}|$_countDay|$_countToday',
+      );
+    } catch (e) {
+      debugPrint('Reklam kaydı yazılamadı: $e');
+    }
+  }
+
+  /// Önceki süreçteki son gösterim ve günün sayısı (bellekteki daha yeniyse o);
+  /// ilk yüklemede bir kez
+  Future<void> restoreLog() async {
+    if (_restored) return;
+    _restored = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final parts = prefs.getString(logKey)?.split('|');
+      if (parts == null || parts.length != 3) return;
+      final ms = int.tryParse(parts[0]);
+      final count = int.tryParse(parts[2]);
+      if (ms == null || count == null) return;
+      final last = DateTime.fromMillisecondsSinceEpoch(ms);
+      if (_lastAdShowTime == null || last.isAfter(_lastAdShowTime!)) {
+        _lastAdShowTime = last;
+      }
+      if (_countDay == null || _countDay == parts[1]) {
+        _countDay = parts[1];
+        if (count > _countToday) _countToday = count;
+      }
+    } catch (e) {
+      debugPrint('Reklam kaydı okunamadı: $e');
+    }
+  }
+
+  /// Testler: sıklık durumu sıfırlanır
+  @visibleForTesting
+  void debugReset() {
+    _lastAdShowTime = null;
+    _countDay = null;
+    _countToday = 0;
+    _restored = false;
   }
 
   /// Gösterme istekleri (test için; soğuma ve hazır olmama dahil)
   @visibleForTesting
   int debugShowRequests = 0;
 
-  // Reklam gösterme fonksiyonu (Süreyi kontrol eder)
+  /// Kullanıcının açtığı ekrana geçişte çağrılır; sıklık sınırındaysa ya da
+  /// reklam hazır değilse hiçbir şey göstermez (hazır değilse yükler)
   void showInterstitialAd() {
     debugShowRequests++;
     final now = DateTime.now();
 
-    // Soğuma süresi kontrolü
-    if (isCoolingDown(now)) {
-      debugPrint('Reklam soğuma süresinde. Kullanıcıyı darlamıyoruz.');
+    if (!canShowInterstitial(now)) {
+      debugPrint('Reklam sıklık sınırında. Kullanıcıyı darlamıyoruz.');
       return;
     }
 
     if (_interstitialAd != null) {
       _interstitialAd!.show();
-      _lastAdShowTime = now;
+      markInterstitialShown(now);
     } else {
       loadInterstitialAd(); // Yüklü değilse arkadan yükle
     }

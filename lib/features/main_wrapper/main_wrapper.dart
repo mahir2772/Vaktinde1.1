@@ -17,6 +17,9 @@ import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dar
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 
 import 'app_showcase.dart';
+import 'main_tabs.dart';
+
+export 'main_tabs.dart';
 
 export 'app_showcase.dart'
     show
@@ -30,12 +33,8 @@ export 'app_showcase.dart'
 /// Tanıtım turu görüldü mü (false = görüldü; tur başlarken yazılır)
 const String tourSeenKey = 'is_first_launch_showcase_v3';
 
-/// Alt menü sekmeleri (alt menüdeki sırayla)
-enum MainTab { home, quran, qibla, zikir, tools }
-
 /// Alt menü (Ana Sayfa, Kur'an, Kıble, Zikir, Araçlar) + banner + tanıtım turu.
-/// Sekme değişiminde reklam yok; geçiş reklamı sadece Araçlar'dan açılan
-/// araçlarda. Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada
+/// Sekme değişiminde reklam yok; geçiş reklamı yerleri AdHelper'da. Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada
 /// başlatır.
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -70,6 +69,7 @@ class _MainWrapperState extends State<MainWrapper> {
     _usagePrompt = UsageReviewPrompt(canPrompt: _canPromptReview);
     AdHelper.instance.loadInterstitialAd();
     HomeView.alarmsTabRequests.addListener(_showHomeTab);
+    MainTabRequests.attach(_showTab);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -122,9 +122,22 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   void dispose() {
     HomeView.alarmsTabRequests.removeListener(_showHomeTab);
+    MainTabRequests.detach(_showTab);
     _reviewPrompt.dispose();
     _usagePrompt.dispose();
     super.dispose();
+  }
+
+  // Sekme içinden istenen geçiş (ör. ana ekranın Kur'an kartı)
+  bool _showTab(MainTab tab) {
+    if (!mounted) return false;
+    if (_currentIndex != tab.index) {
+      setState(() {
+        _visited.add(tab.index);
+        _currentIndex = tab.index;
+      });
+    }
+    return true;
   }
 
   // "Alarmlar" sekmesi istendi (Bildirim Kontrolü): ana sayfa sekmesi seçilir

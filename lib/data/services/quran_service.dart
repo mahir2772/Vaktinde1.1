@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show ValueNotifier;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -889,8 +890,13 @@ class QuranService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(lastReadKey, _encodePosition(position));
+      lastReadChanges.value++;
     } catch (_) {}
   }
+
+  /// Kaldığın yer yazıldı (Kur'an sekmesinin listesi, okuyucu başka yerden
+  /// açılsa da güncel kalır)
+  static final ValueNotifier<int> lastReadChanges = ValueNotifier<int>(0);
 
   // -------------------------------------------------------------- Görünüm
 

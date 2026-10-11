@@ -36,10 +36,12 @@ class _QuranViewState extends State<QuranView> {
   void initState() {
     super.initState();
     _loadPositions();
+    QuranService.lastReadChanges.addListener(_loadPositions);
   }
 
   @override
   void dispose() {
+    QuranService.lastReadChanges.removeListener(_loadPositions);
     _search.dispose();
     super.dispose();
   }
