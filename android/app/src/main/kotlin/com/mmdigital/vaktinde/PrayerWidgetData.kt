@@ -9,6 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.RelativeSizeSpan
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.Locale
@@ -20,10 +23,13 @@ import kotlin.math.abs
  * Dart bugünün vakitlerini ("HH:mm"), bu setin gününü (times_date, yyyy-MM-dd) ve koordinat
  * varsa yarının vakitlerini (tomorrow_*) yazar. Yeni anahtarlar yoksa (eski sürüm verisi)
  * eski davranış: yatsıdan sonra bugünün imsakı +1 gün.
+ * Hesap hep "HH:mm" anahtarlarıyla; ekrana yazılan saat Dart'ın aynı anahtar + "_text" metni
+ * (uygulama dilinde: en/ar 12 saat "4:08 PM", diğerleri 24 saat), yoksa "HH:mm".
  */
 object PrayerWidgetData {
     const val PREFS = "HomeWidgetPreferences"
     private val TIME_KEYS = arrayOf("imsak_time", "gunes_time", "ogle_time", "ikindi_time", "aksam_time", "yatsi_time")
+    private const val TEXT_SUFFIX = "_text"
     private val LABEL_KEYS = arrayOf("label_imsak", "label_gunes", "label_ogle", "label_ikindi", "label_aksam", "label_yatsi")
     // Dart'ın yönelme hâli başlıkları ("İmsaka", "İkindiye"); yoksa title_text / vakit adı
     private val TITLE_KEYS = arrayOf("title_imsak", "title_gunes", "title_ogle", "title_ikindi", "title_aksam", "title_yatsi")
@@ -41,8 +47,17 @@ object PrayerWidgetData {
     // İzinsiz yenileme penceresi (Android 12+ en kısa pencere 10 dk)
     private const val REFRESH_WINDOW_MS = 10 * 60 * 1000L
 
-    /** Bugün gösterilecek 6 vakit, yatsıdan sonraki imsak; [rolledOver]: gün dönmüş, yarının seti bugünün */
-    class Day(val times: List<String>, val nextImsak: String, val rolledOver: Boolean)
+    /**
+     * Bugün gösterilecek 6 vakit ("HH:mm"), yatsıdan sonraki imsak; [rolledOver]: gün dönmüş, yarının
+     * seti bugünün. [texts] / [nextImsakText]: aynı vakitlerin ekrandaki yazımı ([displayTime])
+     */
+    class Day(
+        val times: List<String>,
+        val nextImsak: String,
+        val rolledOver: Boolean,
+        val texts: List<String> = times,
+        val nextImsakText: String = nextImsak,
+    )
 
     /** Sıradaki vakit: zaman (ms), ad, sıra (0 imsak … 5 yatsı; ertesi günün imsakı da 0) */
     class NextPrayer(val time: Long, val label: String, val index: Int)
@@ -56,17 +71,63 @@ object PrayerWidgetData {
     fun today(data: SharedPreferences, now: Calendar): Day {
         val todaySet = TIME_KEYS.map { data.getString(it, "") ?: "" }
         val tomorrowSet = TIME_KEYS.map { data.getString(TOMORROW_PREFIX + it, "") ?: "" }
+        val todayTexts = texts(data, "", todaySet)
         val stored = data.getString(DATE_KEY, null)
         if (stored == null || !DATE_PATTERN.matches(stored) || tomorrowSet.any { timeMs(it, 0, now) == 0L }) {
-            return Day(todaySet, todaySet[0], false)
+            return Day(todaySet, todaySet[0], false, todayTexts, todayTexts[0])
         }
+        val tomorrowTexts = texts(data, TOMORROW_PREFIX, tomorrowSet)
         val current = dateKey(now)
         return when {
-            stored == current -> Day(todaySet, tomorrowSet[0], false)
+            stored == current -> Day(todaySet, tomorrowSet[0], false, todayTexts, tomorrowTexts[0])
             // Gece yarısı geçti, Dart henüz yazmadı: yarının seti bugünün (sonraki imsak yaklaşık)
-            stored < current -> Day(tomorrowSet, tomorrowSet[0], true)
+            stored < current -> Day(tomorrowSet, tomorrowSet[0], true, tomorrowTexts, tomorrowTexts[0])
             // Saat geri alınmış: eski davranış
-            else -> Day(todaySet, todaySet[0], false)
+            else -> Day(todaySet, todaySet[0], false, todayTexts, todayTexts[0])
+        }
+    }
+
+    // [prefix] setinin ("" bugün, "tomorrow_" yarın) ekrandaki yazımı
+    private fun texts(data: SharedPreferences, prefix: String, times: List<String>): List<String> =
+        TIME_KEYS.mapIndexed { i, key -> displayTime(times[i], data.getString(prefix + key + TEXT_SUFFIX, null)) }
+
+    /**
+     * "HH:mm" vaktinin ekrandaki yazımı: Dart'ın biçimlediği [text] ("4:08 PM", "4:08 م", "16:08"),
+     * saati ve dakikası vakitle tutuyorsa; yoksa (eski veri, yarım kalmış yazım) [time] olduğu gibi.
+     * Başka bir vaktin saati asla gösterilmez.
+     */
+    fun displayTime(time: String, text: String?): String {
+        if (text.isNullOrBlank()) return time
+        val parts = time.split(":")
+        val hour = parts.getOrNull(0)?.trim()?.toIntOrNull() ?: return time
+        val minute = parts.getOrNull(1)?.trim()?.toIntOrNull() ?: return time
+        // Metindeki ilk iki sayı (Character.digit: Arapça-Hint rakamları da)
+        val numbers = mutableListOf<Int>()
+        var current = -1
+        for (c in text) {
+            val d = Character.digit(c, 10)
+            if (d >= 0) {
+                current = if (current < 0) d else current * 10 + d
+            } else if (current >= 0) {
+                numbers.add(current)
+                current = -1
+            }
+        }
+        if (current >= 0) numbers.add(current)
+        if (numbers.size < 2 || numbers[1] != minute) return time
+        val hour12 = if (hour % 12 == 0) 12 else hour % 12
+        return if (numbers[0] == hour || numbers[0] == hour12) text else time
+    }
+
+    /**
+     * Saat içeren yazı ("4:08 PM", "Maghrib 7:05 PM", "المغرب 7:05 م"): sondaki öğleden önce/sonra
+     * eki <small> boyutunda (dar widget'ta saat sığsın). Son parça rakamlıysa (24 saat) olduğu gibi.
+     */
+    fun styledTime(text: String): CharSequence {
+        val space = text.indexOfLast { it.isWhitespace() }
+        if (space <= 0 || space == text.length - 1 || text.substring(space + 1).any { Character.isDigit(it) }) return text
+        return SpannableString(text).apply {
+            setSpan(RelativeSizeSpan(0.8f), space + 1, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
 

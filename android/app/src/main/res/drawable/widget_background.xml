@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Dört widget'ın (ve büyük widget'taki hicri tarih kapsülünün) zemini. Duvar kâğıdından bağımsız
+     okunur: uygulamanın koyu primaryContainer rengi (#00504A) %95 opak. Beyaz duvar kâğıdında bile
+     beyaz ≥8:1, %70 beyaz etiket / sarı / nane yazılar ≥4,9:1 (WCAG AA); eski #B3009688'de 1,5–2,5:1 idi -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#B3009688" />
+    <solid android:color="#F200504A" />
     <corners android:radius="22dp" />
 </shape>

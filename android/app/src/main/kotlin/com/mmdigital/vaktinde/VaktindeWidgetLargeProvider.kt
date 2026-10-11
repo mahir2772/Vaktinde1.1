@@ -39,12 +39,13 @@ class VaktindeWidgetLargeProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.tv_location, widgetData.getString("location_text", ""))
                 setTextViewText(R.id.tv_hijri_date, PrayerWidgetData.hijriText(widgetData, day))
 
-                setTextViewText(R.id.tv_imsak_l, day.times[0])
-                setTextViewText(R.id.tv_gunes_l, day.times[1])
-                setTextViewText(R.id.tv_ogle_l, day.times[2])
-                setTextViewText(R.id.tv_ikindi_l, day.times[3])
-                setTextViewText(R.id.tv_aksam_l, day.times[4])
-                setTextViewText(R.id.tv_yatsi_l, day.times[5])
+                // Uygulama dilindeki yazım (en/ar 12 saat; Dart'ın *_time_text'i, yoksa "HH:mm")
+                setTextViewText(R.id.tv_imsak_l, PrayerWidgetData.styledTime(day.texts[0]))
+                setTextViewText(R.id.tv_gunes_l, PrayerWidgetData.styledTime(day.texts[1]))
+                setTextViewText(R.id.tv_ogle_l, PrayerWidgetData.styledTime(day.texts[2]))
+                setTextViewText(R.id.tv_ikindi_l, PrayerWidgetData.styledTime(day.texts[3]))
+                setTextViewText(R.id.tv_aksam_l, PrayerWidgetData.styledTime(day.texts[4]))
+                setTextViewText(R.id.tv_yatsi_l, PrayerWidgetData.styledTime(day.texts[5]))
 
                 if (nextPrayer != null && nextPrayer.time > 0L) {
                     val baseTime = SystemClock.elapsedRealtime() + (nextPrayer.time - currentTime)

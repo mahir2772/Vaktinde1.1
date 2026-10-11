@@ -326,6 +326,7 @@ class PrayerRefreshService {
         yarinVakitler: yarinVakitler,
         yarinHijriDateText: yarinHijri,
         ramazan: ramazan,
+        dil: loc?.localeName,
       );
     } catch (e) {}
   });

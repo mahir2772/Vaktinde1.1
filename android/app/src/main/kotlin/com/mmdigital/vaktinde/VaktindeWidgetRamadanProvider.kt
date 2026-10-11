@@ -23,8 +23,9 @@ class VaktindeWidgetRamadanProvider : HomeWidgetProvider() {
     enum class Mode { NONE, SAHUR, IFTAR, UNTIL }
 
     /**
-     * Çizilecek durum. [target]: sayacın hedefi (SAHUR/IFTAR), [day]: Ramazan günü ya da (UNTIL)
-     * Ramazan'a kalan gün, [switchAt]: görünümün değiştiği an (yenileme alarmı; NONE'da 0).
+     * Çizilecek durum. [target]: sayacın hedefi (SAHUR/IFTAR), [targetText]: onun ekrandaki saati
+     * (uygulama dilinde, PrayerWidgetData.displayTime), [day]: Ramazan günü ya da (UNTIL) Ramazan'a
+     * kalan gün, [switchAt]: görünümün değiştiği an (yenileme alarmı; NONE'da 0).
      */
     class State(
         val mode: Mode,
@@ -84,7 +85,7 @@ class VaktindeWidgetRamadanProvider : HomeWidgetProvider() {
                     val eve = today == start - 1
                     // Arefe akşamı ilk sahur
                     if (eve && !ahead(aksam)) {
-                        return State(Mode.SAHUR, nextImsak, day.nextImsak, 1, switchAt = nextImsak)
+                        return State(Mode.SAHUR, nextImsak, day.nextImsakText, 1, switchAt = nextImsak)
                     }
                     return State(
                         Mode.UNTIL, day = (start - today).toInt(), startText = startText,
@@ -94,10 +95,10 @@ class VaktindeWidgetRamadanProvider : HomeWidgetProvider() {
                 if (end == null || today > end) return null
                 val n = (today - start + 1).toInt()
                 return when {
-                    ahead(imsak) -> State(Mode.SAHUR, imsak, day.times[0], n, switchAt = imsak)
-                    ahead(aksam) -> State(Mode.IFTAR, aksam, day.times[4], n, switchAt = aksam)
+                    ahead(imsak) -> State(Mode.SAHUR, imsak, day.texts[0], n, switchAt = imsak)
+                    ahead(aksam) -> State(Mode.IFTAR, aksam, day.texts[4], n, switchAt = aksam)
                     // Akşamdan sonra yarının sahuru (yarının oruç günü)
-                    today < end -> State(Mode.SAHUR, nextImsak, day.nextImsak, n + 1, switchAt = nextImsak)
+                    today < end -> State(Mode.SAHUR, nextImsak, day.nextImsakText, n + 1, switchAt = nextImsak)
                     else -> null
                 }
             }
@@ -137,10 +138,13 @@ class VaktindeWidgetRamadanProvider : HomeWidgetProvider() {
 
                 if (counting) {
                     val sahur = state.mode == Mode.SAHUR
-                    // "Ramazan · 12. gün", "İftara Kalan" + sayaç, "Akşam 19:05"
+                    // "Ramazan · 12. gün", "İftara Kalan" + sayaç, "Akşam 19:05" (en: "Maghrib 7:05 PM")
                     setTextViewText(R.id.tv_ramadan_day, text(widgetData, DAY_TEXT_KEY).replace("%d", state.day.toString()))
                     setTextViewText(R.id.tv_ramadan_title, text(widgetData, if (sahur) SAHUR_TITLE_KEY else IFTAR_TITLE_KEY))
-                    setTextViewText(R.id.tv_ramadan_time, PrayerWidgetData.label(widgetData, if (sahur) 0 else 4) + " " + state.targetText)
+                    setTextViewText(
+                        R.id.tv_ramadan_time,
+                        PrayerWidgetData.styledTime(PrayerWidgetData.label(widgetData, if (sahur) 0 else 4) + " " + state.targetText),
+                    )
 
                     val baseTime = SystemClock.elapsedRealtime() + (state.target - currentTime)
                     setChronometer(R.id.chronometer_ramadan, baseTime, null, true)

@@ -2,10 +2,27 @@ import 'package:flutter/widgets.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 
+import 'package:ezan_saati/core/ui/app_format.dart';
 import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 class WidgetService {
+  // Bugünün vakitleri ("HH:mm"; Kotlin bunlarla hesaplar: PrayerWidgetData.kt)
+  static const Map<String, String> timeKeys = {
+    'İmsak': 'imsak_time',
+    'Güneş': 'gunes_time',
+    'Öğle': 'ogle_time',
+    'İkindi': 'ikindi_time',
+    'Akşam': 'aksam_time',
+    'Yatsı': 'yatsi_time',
+  };
+
+  /// Vakit anahtarının ([timeKeys], [tomorrowKeys]) ekrandaki yazımı:
+  /// "imsak_time" → "imsak_time_text". Uygulama dilinde [formatPrayerTime]
+  /// (en/ar 12 saat "4:08 PM", diğerleri 24 saat); Kotlin varsa bunu gösterir,
+  /// yoksa (eski veri) "HH:mm".
+  static String textKey(String timeKey) => '${timeKey}_text';
+
   // Gün dönümü anahtarları (Kotlin: PrayerWidgetData.kt): bugünün setinin günü
   // (yyyy-MM-dd) ve yarının vakitleri. Yarının verisi yoksa anahtarlar silinir;
   // Kotlin eski davranışa (bugünün imsakı +1 gün) döner.
@@ -82,6 +99,7 @@ class WidgetService {
     Map<String, String>? yarinVakitler,
     String? yarinHijriDateText,
     Map<String, String>? ramazan, // [ramadanData]; null: Ramazan anahtarları değişmez
+    String? dil, // AppLocalizations.localeName: saat yazımı ([textKey]); null: 24 saat
   }) async {
     try {
       await HomeWidget.saveWidgetData<String>('title_text', baslik);
@@ -92,36 +110,24 @@ class WidgetService {
         hijriDateText,
       ); // 🔥 YENİ
 
-      await HomeWidget.saveWidgetData<String>(
-        'imsak_time',
-        vakitler['İmsak'] ?? "",
-      );
-      await HomeWidget.saveWidgetData<String>(
-        'gunes_time',
-        vakitler['Güneş'] ?? "",
-      );
-      await HomeWidget.saveWidgetData<String>(
-        'ogle_time',
-        vakitler['Öğle'] ?? "",
-      );
-      await HomeWidget.saveWidgetData<String>(
-        'ikindi_time',
-        vakitler['İkindi'] ?? "",
-      );
-      await HomeWidget.saveWidgetData<String>(
-        'aksam_time',
-        vakitler['Akşam'] ?? "",
-      );
-      await HomeWidget.saveWidgetData<String>(
-        'yatsi_time',
-        vakitler['Yatsı'] ?? "",
-      );
+      // Her vakit "HH:mm" + ekrandaki yazımı (dil değişince 24/12 saat de değişir)
+      String yazim(String vakit) => formatPrayerTime(vakit, dil ?? 'tr');
+      for (final entry in timeKeys.entries) {
+        final vakit = vakitler[entry.key] ?? "";
+        await HomeWidget.saveWidgetData<String>(entry.value, vakit);
+        await HomeWidget.saveWidgetData<String>(
+          textKey(entry.value),
+          yazim(vakit),
+        );
+      }
 
       await HomeWidget.saveWidgetData<String>(dateKey, tarih);
       for (final entry in tomorrowKeys.entries) {
+        final vakit = yarinVakitler?[entry.key];
+        await HomeWidget.saveWidgetData<String>(entry.value, vakit);
         await HomeWidget.saveWidgetData<String>(
-          entry.value,
-          yarinVakitler?[entry.key],
+          textKey(entry.value),
+          vakit == null ? null : yazim(vakit),
         );
       }
       await HomeWidget.saveWidgetData<String>(

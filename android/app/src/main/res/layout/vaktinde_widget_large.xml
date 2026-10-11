@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Büyük widget (VaktindeWidgetLargeProvider). Saatler uygulama dilinde (en/ar 12 saat, AM/PM eki
+     küçük: PrayerWidgetData.styledTime). Konum ve vakit adları tek satır (dar widget / büyük yazıda
+     satır kırılıp alttaki vakitleri dışarı itmesin); saat adından 4dp ayrık (Arapçada "ص" ada yapışmasın) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
@@ -33,6 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/vaktinde_widget_location"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
@@ -82,6 +87,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vaktinde_widget_imsak"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -89,6 +96,7 @@
                     android:id="@+id/tv_imsak_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
@@ -113,6 +121,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vaktinde_widget_gunes"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -120,6 +130,7 @@
                     android:id="@+id/tv_gunes_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
@@ -148,6 +159,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vaktinde_widget_ogle"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -155,6 +168,7 @@
                     android:id="@+id/tv_ogle_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
@@ -179,6 +193,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vaktinde_widget_ikindi"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -186,6 +202,7 @@
                     android:id="@+id/tv_ikindi_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
@@ -213,6 +230,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vaktinde_widget_aksam"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -220,6 +239,7 @@
                     android:id="@+id/tv_aksam_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"
@@ -244,6 +264,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/vaktinde_widget_yatsi"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textColor="#B3FFFFFF"
                     android:textSize="14sp" />
 
@@ -251,6 +273,7 @@
                     android:id="@+id/tv_yatsi_l"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="--"
                     android:textColor="#FFFFFF"
                     android:textSize="15sp"

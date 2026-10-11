@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.SystemClock
+import android.view.View
 import android.widget.RemoteViews
 import java.util.Calendar
 
@@ -54,7 +55,10 @@ class NotificationUpdater : BroadcastReceiver() {
                 // Vakit gelince bildirim kendini yeniler (uygulama açılmasa da sayaç eksiye düşmez)
                 scheduleNextUpdate(context, targetTime)
             } else {
+                // Sıradaki vakit yok (geçersiz veri): yer tutucu ad ya da donmuş "00:00" gösterilmez
+                views.setTextViewText(R.id.notif_next_prayer_name, "")
                 views.setChronometer(R.id.notif_countdown, SystemClock.elapsedRealtime(), null, false)
+                views.setViewVisibility(R.id.notif_countdown, View.GONE)
             }
 
             // Bildirime tıklanınca uygulamayı açacak intent
