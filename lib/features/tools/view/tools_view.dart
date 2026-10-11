@@ -5,6 +5,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../common/ad_helper.dart';
 import '../../common/theme_provider.dart';
+import '../../duas/view/duas_view.dart';
 import '../../esmaul_husna/view/esmaul_husna_view.dart';
 import '../../fitre/view/fitre_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
@@ -56,6 +57,12 @@ class ToolsView extends StatelessWidget {
             loc.missedPrayersTitle,
             loc.toolKazaDesc,
             () => const MissedPrayersView(),
+          ),
+          _ToolItem(
+            Icons.auto_stories_outlined,
+            loc.duasTitle,
+            loc.toolDuasDesc,
+            () => const DuasView(),
           ),
           _ToolItem.external(
             Icons.mosque_outlined,
@@ -111,6 +118,14 @@ class ToolsView extends StatelessWidget {
       title: loc.navTools,
       showBanner: false, // alt menüde zaten banner var
       automaticallyImplyLeading: false,
+      // Liste uzun: Ayarlar kaydırmadan da açılsın
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.settings_outlined),
+          tooltip: loc.menuTitle,
+          onPressed: () => _open(context, const SettingsView(), showAd: false),
+        ),
+      ],
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.xl),
         children: [

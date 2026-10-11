@@ -26,7 +26,7 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 
 `MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma; Ayarlar satırı reklamsız). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
 Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. Akış bitince (tur yolunda da) `StreakReviewPrompt.start()`: `PrayerTrackerService.changes` ile seri 7+'ya çıkınca bir kez `InAppReview.requestReview` ('review_requested'; isAvailable, ön plan, izin/rıza/tur penceresi yokken). SettingsView araçlar ekranındaki karttan açılır ("Bize Puan Ver" = openStoreListing).
-`ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar) → Imsakiye, PrayerTracker, MissedPrayers, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
+`ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar; üst çubukta Ayarlar dişlisi, liste ekrana sığmıyor) → Imsakiye, PrayerTracker, MissedPrayers, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
 
 ## Klasörler
 ```
@@ -133,7 +133,7 @@ lib/
                                            sekmesinin başında "Sessiz modda da çal" (HomeViewModel.setEzanAlarmStream; 8.0 altında gizli:
                                            checkAlarmStreamSupport → alarmStreamSupported)
     home/widgets/hero_chip.dart            hero bilgi kapsülü
-    home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (hero kapsülü)
+    home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (hero kapsülü) + resimli paylaşım (ramadanShareContent)
     home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse; onHero: kapsül, değilse InfoBanner
     home/widgets/prayer_tracker_row.dart   "Bugün" 5 vakit işareti (resume'da yenilenir) → prayer_tracker/view/prayer_tracker_view.dart
                                            (7 gün ızgara, 30 gün oran, seri, kılınmayanları kazaya ekle; araçlarda da kart)
@@ -169,9 +169,12 @@ lib/
                                            'fitre_remote_json'); validFrom ≤ bugün olan en yeni tutar. Yeni yıl: girdi EKLE, silme
     prayer_tracker/widgets/ramadan_fast_card.dart  Ramazan orucu kartı (Ramazan + bitişten 30 gün): data/services/
                                            fast_tracker(.dart|_service.dart), 'fast_log', 'fast_kaza_added' → kaza_Oruç (tekil, geri alınır)
+    duas/                                  Dualar (Araçlar > Namaz): assets/data/duas.json (4 kategori, 21 dua: Arapça + tr okunuş + 5 dil
+                                           anlam, kaynak) + dua_data.dart; tesbihat_view.dart: namaz sonrası adım adım sayaç
+                                           (Âyetü'l-Kürsî, 33×3, tevhid). Arapça standart imla, harekeli; yeni dua eklerken harf harf kontrol
     common/share_card.dart                 ShareCard (1080×1350 PNG, teal, Amiri, "Google Play'de Vaktinde") + shareAsImage/
                                            shareAsText (metin sonuna AppLinks.playStoreLink(kampanya)) + MessageCard (Cuma, tebrik)
-                                           + SheetMessenger (alt sayfada SnackBar). Kampanyalar: friday/daily/greeting/invite
+                                           + SheetMessenger (alt sayfada SnackBar). Kampanyalar: friday/daily/greeting/invite/dua/iftar/quran
     religious_days/view/religious_days_view.dart  "Tebrik gönder" alt sayfası (assets/data/greetings_<dil>.json,
                                            JsonService.getGreetings; gün yaklaşırken ve 3 gün sonrasına kadar; Regaib + Üç Aylar)
     settings/view/add_widget_sheet.dart    "Ana Ekrana Widget Ekle" (4 widget; HomeWidget.requestPinWidget, sağlayıcı adı manifestle aynı;

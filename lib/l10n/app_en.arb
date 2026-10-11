@@ -748,6 +748,92 @@
     "nearbyMosquesQuery": "mosque",
     "nearbyMosquesError": "Could not open the map.",
     "toolEsmaDesc": "The 99 names and their meanings",
+    "duasTitle": "Duas",
+    "toolDuasDesc": "Tasbih, morning-evening and daily duas",
+    "duaTransliteration": "Transliteration",
+    "duaMeaning": "Meaning",
+    "tesbihatTitle": "Tasbih After Prayer",
+    "tesbihatDesc": "Ayat al-Kursi, 33 × 3 tasbih and dua",
+    "tesbihatStep": "Step {current} of {total}",
+    "@tesbihatStep": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "tesbihatTapWhenRead": "Tap after reciting",
+    "tesbihatRestart": "Start Over",
+    "ramadanShareTitle": "Ramadan · Day {day}",
+    "@ramadanShareTitle": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareIftarIn": "Iftar in {time}",
+    "@ramadanShareIftarIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareSahurIn": "Suhoor ends in {time}",
+    "@ramadanShareSahurIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareIftarAt": "Iftar {time}",
+    "@ramadanShareIftarAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareImsakAt": "Imsak {time}",
+    "@ramadanShareImsakAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareHoursMinutes": "{hours} h {minutes} min",
+    "@ramadanShareHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareHours": "{hours} h",
+    "@ramadanShareHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareMinutes": "{minutes} min",
+    "@ramadanShareMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
     "toolFridayDesc": "Messages ready to share",
     "toolZakatDesc": "Zakat and harvest (ushr) calculation",
     "toolSettingsDesc": "Location, notifications, appearance",

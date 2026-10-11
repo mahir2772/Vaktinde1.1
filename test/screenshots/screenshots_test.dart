@@ -24,6 +24,9 @@ import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/share_card.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/duas/dua_data.dart';
+import 'package:ezan_saati/features/duas/view/duas_view.dart';
+import 'package:ezan_saati/features/duas/view/tesbihat_view.dart';
 import 'package:ezan_saati/features/esmaul_husna/view/esmaul_husna_view.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
@@ -1349,4 +1352,40 @@ void main() {
       });
     },
   );
+
+  // Dualar: liste, dua sayfası (Arapça + okunuş + anlam), tesbihat
+  for (final lang in ['tr', 'ar']) {
+    testWidgets('$lang: dualar', skip: skip, variant: _android, (tester) async {
+      await _run(tester, () async {
+        final library = (await tester.runAsync(DuaLibrary.load))!;
+        final duas = [for (final c in library.categories) ...c.duas];
+        Dua dua(String id) => duas.firstWhere((d) => d.id == id);
+        _currentScreen = '${lang}_60_duas';
+        await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
+        await _openRoute(
+          tester,
+          '${lang}_60_duas',
+          const DuasView(),
+          tallHeight: 1700,
+        );
+        await _openRoute(
+          tester,
+          '${lang}_61_dua_subhaneke',
+          DuaDetailView(dua: dua('subhaneke')),
+        );
+        await _openRoute(
+          tester,
+          '${lang}_62_dua_ayetel_kursi',
+          DuaDetailView(dua: dua('ayetel_kursi')),
+          tallHeight: 2000,
+        );
+        await _openRoute(
+          tester,
+          '${lang}_63_tesbihat',
+          TesbihatView(steps: library.tesbihat),
+        );
+        await _finish(tester);
+      });
+    });
+  }
 }

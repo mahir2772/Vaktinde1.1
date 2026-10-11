@@ -57,12 +57,12 @@ Amaç: günde birkaç kez açılan, paylaşılan, rakipten daha güvenilir uygul
 
 **Faz 2 — Ramazan (10 Ocak 2027'ye kadar yayında)**
 6. ✅ Ramazan widget'ı: iftar/sahur sayacı.
-7. Paylaşılabilir iftar sayacı kartı ("İftara 1 sa 12 dk · İstanbul").
+7. ✅ Paylaşılabilir iftar sayacı kartı ("İftara 1 sa 12 dk · İstanbul").
 8. ✅ Fitre/fidye hesabı (tutar json'da, güncellenebilir).
 9. ✅ Oruç takibi (Ramazan günleri, kaza orucuna ekle).
 
 **Faz 3 — Günlük kullanım (Ramazan sonrası)**
-10. Dualar: sabah/akşam, namaz sonrası tesbihat (zikirmatikle), yemek/yolculuk duaları (çevrimdışı).
+10. ✅ Dualar: sabah/akşam, namaz sonrası tesbihat (zikirmatikle), yemek/yolculuk duaları (çevrimdışı).
 11. Kur'an: sure listesi + Arapça + meal (lisans kontrolü), kaldığın yer.
 12. ✅ Kadın modu (özel gün; takip) · "Namazdayım" sessiz modu (yapılmadı).
 13. Yedekle/geri yükle, 81 il/973 ilçe gömülü koordinat, erişilebilirlik, yeni widget'lar.

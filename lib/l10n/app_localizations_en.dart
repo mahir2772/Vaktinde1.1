@@ -1655,6 +1655,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolEsmaDesc => 'The 99 names and their meanings';
 
   @override
+  String get duasTitle => 'Duas';
+
+  @override
+  String get toolDuasDesc => 'Tasbih, morning-evening and daily duas';
+
+  @override
+  String get duaTransliteration => 'Transliteration';
+
+  @override
+  String get duaMeaning => 'Meaning';
+
+  @override
+  String get tesbihatTitle => 'Tasbih After Prayer';
+
+  @override
+  String get tesbihatDesc => 'Ayat al-Kursi, 33 × 3 tasbih and dua';
+
+  @override
+  String tesbihatStep(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get tesbihatTapWhenRead => 'Tap after reciting';
+
+  @override
+  String get tesbihatRestart => 'Start Over';
+
+  @override
+  String ramadanShareTitle(int day) {
+    return 'Ramadan · Day $day';
+  }
+
+  @override
+  String ramadanShareIftarIn(String time) {
+    return 'Iftar in $time';
+  }
+
+  @override
+  String ramadanShareSahurIn(String time) {
+    return 'Suhoor ends in $time';
+  }
+
+  @override
+  String ramadanShareIftarAt(String time) {
+    return 'Iftar $time';
+  }
+
+  @override
+  String ramadanShareImsakAt(String time) {
+    return 'Imsak $time';
+  }
+
+  @override
+  String ramadanShareHoursMinutes(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String ramadanShareHours(int hours) {
+    return '$hours h';
+  }
+
+  @override
+  String ramadanShareMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
   String get toolFridayDesc => 'Messages ready to share';
 
   @override

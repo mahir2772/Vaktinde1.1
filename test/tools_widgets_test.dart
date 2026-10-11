@@ -202,9 +202,11 @@ void main() {
       await _dispose(tester);
     });
 
-    testWidgets('411×891 ekranda araçlar kaydırmadan görünür, Ayarlar '
-        'kenardan görünür (kaydırma ipucu)', (tester) async {
-      // Alt menü yüksekliği kadar (≈ 80dp) kısaltılmış gövde
+    testWidgets('411×891 ekranda Ayarlar üst çubuktan kaydırmadan açılır', (
+      tester,
+    ) async {
+      // Alt menü yüksekliği kadar (≈ 80dp) kısaltılmış gövde. Liste uzadığı
+      // için en alttaki Ayarlar satırının yanında üst çubukta da düğme var
       await _pumpScreen(
         tester,
         const ToolsView(),
@@ -214,13 +216,13 @@ void main() {
       );
       final loc = lookupAppLocalizations(const Locale('tr'));
       final screen = tester.getRect(find.byType(ToolsView));
-      for (final title in [loc.zakatTitle, loc.fitreTitle]) {
-        final rect = tester.getRect(find.text(title));
-        expect(rect.bottom, lessThanOrEqualTo(screen.bottom), reason: title);
-      }
-      // Fitre ve Fidye ile liste uzadı: Ayarlar satırı en az kısmen ekranda
-      final settings = tester.getRect(find.text(loc.menuTitle));
-      expect(settings.top, lessThan(screen.bottom));
+      final gear = find.byTooltip(loc.menuTitle);
+      expect(gear, findsOneWidget);
+      expect(tester.getRect(gear).bottom, lessThanOrEqualTo(screen.bottom));
+      final button = tester.widget<IconButton>(
+        find.ancestor(of: gear, matching: find.byType(IconButton)),
+      );
+      expect(button.onPressed, isNotNull);
       await _dispose(tester);
     });
   });
