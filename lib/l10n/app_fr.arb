@@ -920,6 +920,61 @@
     },
     "toolFridayDesc": "Messages prêts à partager",
     "quranTitle": "Le Saint Coran",
+    "quranTabSurahs": "Sourates",
+    "quranTabJuz": "Juz",
+    "quranSearchHint": "Rechercher une sourate (nom ou numéro)",
+    "quranNoResults": "Aucune sourate ne correspond à votre recherche",
+    "quranJuz": "Juz {juz}",
+    "@quranJuz": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "quranPage": "Page {page}",
+    "@quranPage": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahRange": "Versets {from} à {to}",
+    "@quranAyahRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "quranBookmark": "Signet",
+    "quranViewSettings": "Affichage",
+    "quranModePage": "Page",
+    "quranModePageDesc": "Texte arabe continu, comme dans le Mushaf",
+    "quranModeAyah": "Verset par verset",
+    "quranModeAyahDesc": "Chaque verset sur sa propre carte, avec sa traduction",
+    "quranModeTranslation": "Traduction",
+    "quranModeTranslationDesc": "Traduction seule, en lecture continue",
+    "quranArabicSize": "Texte arabe",
+    "quranTranslationSize": "Texte de la traduction",
+    "quranTranslationSmaller": "Réduire la traduction",
+    "quranTranslationLarger": "Agrandir la traduction",
+    "quranGoToAyah": "Aller au verset",
+    "quranAyahNumberLabel": "Numéro du verset (1–{count})",
+    "@quranAyahNumberLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranGo": "Aller",
+    "quranPreviousSurah": "Sourate précédente",
+    "quranNextSurah": "Sourate suivante",
     "toolQuranDesc": "Sourates, texte arabe et traduction",
     "quranContinue": "Reprendre la lecture",
     "quranAyahRef": "{surah}, verset {ayah}",
@@ -944,10 +999,10 @@
     "quranMeccan": "Mecquoise",
     "quranMedinan": "Médinoise",
     "quranLoadError": "Impossible de charger la sourate. Vérifiez votre connexion Internet et réessayez.",
-    "quranBookmarkSave": "Enregistrer comme position de lecture",
-    "quranBookmarkRemove": "Supprimer la position de lecture",
-    "quranBookmarkSaved": "Position de lecture enregistrée",
-    "quranBookmarkRemoved": "Position de lecture supprimée",
+    "quranBookmarkSave": "Ajouter un signet",
+    "quranBookmarkRemove": "Retirer le signet",
+    "quranBookmarkSaved": "Signet ajouté",
+    "quranBookmarkRemoved": "Signet retiré",
     "quranShareAyah": "Partager le verset",
     "quranFontSmaller": "Réduire le texte arabe",
     "quranFontLarger": "Agrandir le texte arabe",

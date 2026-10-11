@@ -3212,6 +3212,150 @@ abstract class AppLocalizations {
   /// **'Kur\'an-ı Kerim'**
   String get quranTitle;
 
+  /// No description provided for @quranTabSurahs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sureler'**
+  String get quranTabSurahs;
+
+  /// No description provided for @quranTabJuz.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüzler'**
+  String get quranTabJuz;
+
+  /// No description provided for @quranSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sure ara (ad ya da numara)'**
+  String get quranSearchHint;
+
+  /// No description provided for @quranNoResults.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aramanıza uyan sure bulunamadı'**
+  String get quranNoResults;
+
+  /// No description provided for @quranJuz.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüz {juz}'**
+  String quranJuz(int juz);
+
+  /// No description provided for @quranPage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa {page}'**
+  String quranPage(int page);
+
+  /// No description provided for @quranAyahRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'{from}–{to}. ayetler'**
+  String quranAyahRange(int from, int to);
+
+  /// No description provided for @quranBookmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer imi'**
+  String get quranBookmark;
+
+  /// No description provided for @quranViewSettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görünüm'**
+  String get quranViewSettings;
+
+  /// No description provided for @quranModePage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa'**
+  String get quranModePage;
+
+  /// No description provided for @quranModePageDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mushaf düzeninde, kesintisiz Arapça metin'**
+  String get quranModePageDesc;
+
+  /// No description provided for @quranModeAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayet ayet'**
+  String get quranModeAyah;
+
+  /// No description provided for @quranModeAyahDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her ayet, Arapçası ve mealiyle ayrı kartta'**
+  String get quranModeAyahDesc;
+
+  /// No description provided for @quranModeTranslation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal'**
+  String get quranModeTranslation;
+
+  /// No description provided for @quranModeTranslationDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yalnızca meal, kesintisiz okuma'**
+  String get quranModeTranslationDesc;
+
+  /// No description provided for @quranArabicSize.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça yazı'**
+  String get quranArabicSize;
+
+  /// No description provided for @quranTranslationSize.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal yazısı'**
+  String get quranTranslationSize;
+
+  /// No description provided for @quranTranslationSmaller.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal yazısını küçült'**
+  String get quranTranslationSmaller;
+
+  /// No description provided for @quranTranslationLarger.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal yazısını büyüt'**
+  String get quranTranslationLarger;
+
+  /// No description provided for @quranGoToAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayete git'**
+  String get quranGoToAyah;
+
+  /// No description provided for @quranAyahNumberLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayet numarası (1–{count})'**
+  String quranAyahNumberLabel(int count);
+
+  /// No description provided for @quranGo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Git'**
+  String get quranGo;
+
+  /// No description provided for @quranPreviousSurah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki sure'**
+  String get quranPreviousSurah;
+
+  /// No description provided for @quranNextSurah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki sure'**
+  String get quranNextSurah;
+
   /// No description provided for @toolQuranDesc.
   ///
   /// In tr, this message translates to:
@@ -3257,25 +3401,25 @@ abstract class AppLocalizations {
   /// No description provided for @quranBookmarkSave.
   ///
   /// In tr, this message translates to:
-  /// **'Kaldığın yer olarak kaydet'**
+  /// **'Yer imi ekle'**
   String get quranBookmarkSave;
 
   /// No description provided for @quranBookmarkRemove.
   ///
   /// In tr, this message translates to:
-  /// **'Kaldığın yeri sil'**
+  /// **'Yer imini kaldır'**
   String get quranBookmarkRemove;
 
   /// No description provided for @quranBookmarkSaved.
   ///
   /// In tr, this message translates to:
-  /// **'Kaldığın yer kaydedildi'**
+  /// **'Yer imi eklendi'**
   String get quranBookmarkSaved;
 
   /// No description provided for @quranBookmarkRemoved.
   ///
   /// In tr, this message translates to:
-  /// **'Kaldığın yer silindi'**
+  /// **'Yer imi kaldırıldı'**
   String get quranBookmarkRemoved;
 
   /// No description provided for @quranShareAyah.

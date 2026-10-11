@@ -1836,6 +1836,86 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranTitle => 'القرآن الكريم';
 
   @override
+  String get quranTabSurahs => 'السور';
+
+  @override
+  String get quranTabJuz => 'الأجزاء';
+
+  @override
+  String get quranSearchHint => 'ابحث عن سورة بالاسم أو الرقم';
+
+  @override
+  String get quranNoResults => 'لا توجد سورة تطابق البحث';
+
+  @override
+  String quranJuz(int juz) {
+    return 'الجزء $juz';
+  }
+
+  @override
+  String quranPage(int page) {
+    return 'الصفحة $page';
+  }
+
+  @override
+  String quranAyahRange(int from, int to) {
+    return 'الآيات من $from إلى $to';
+  }
+
+  @override
+  String get quranBookmark => 'العلامة المرجعية';
+
+  @override
+  String get quranViewSettings => 'طريقة العرض';
+
+  @override
+  String get quranModePage => 'صفحات المصحف';
+
+  @override
+  String get quranModePageDesc => 'نص متصل كما في المصحف';
+
+  @override
+  String get quranModeAyah => 'آية آية';
+
+  @override
+  String get quranModeAyahDesc => 'كل آية في بطاقة مستقلة';
+
+  @override
+  String get quranModeTranslation => 'الترجمة';
+
+  @override
+  String get quranModeTranslationDesc => 'الترجمة فقط، لقراءة متصلة';
+
+  @override
+  String get quranArabicSize => 'حجم خط الآيات';
+
+  @override
+  String get quranTranslationSize => 'حجم خط الترجمة';
+
+  @override
+  String get quranTranslationSmaller => 'تصغير خط الترجمة';
+
+  @override
+  String get quranTranslationLarger => 'تكبير خط الترجمة';
+
+  @override
+  String get quranGoToAyah => 'الانتقال إلى آية';
+
+  @override
+  String quranAyahNumberLabel(int count) {
+    return 'رقم الآية (من 1 إلى $count)';
+  }
+
+  @override
+  String get quranGo => 'انتقال';
+
+  @override
+  String get quranPreviousSurah => 'السورة السابقة';
+
+  @override
+  String get quranNextSurah => 'السورة التالية';
+
+  @override
   String get toolQuranDesc => 'سور القرآن الكريم بالرسم العثماني';
 
   @override
@@ -1871,16 +1951,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّر تحميل السورة. تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.';
 
   @override
-  String get quranBookmarkSave => 'حفظ موضع القراءة';
+  String get quranBookmarkSave => 'إضافة علامة مرجعية';
 
   @override
-  String get quranBookmarkRemove => 'إزالة موضع القراءة';
+  String get quranBookmarkRemove => 'إزالة العلامة المرجعية';
 
   @override
-  String get quranBookmarkSaved => 'تم حفظ موضع القراءة';
+  String get quranBookmarkSaved => 'تمت إضافة العلامة المرجعية';
 
   @override
-  String get quranBookmarkRemoved => 'تمت إزالة موضع القراءة';
+  String get quranBookmarkRemoved => 'تمت إزالة العلامة المرجعية';
 
   @override
   String get quranShareAyah => 'مشاركة الآية';

@@ -985,6 +985,61 @@
     },
     "toolFridayDesc": "Paylaşmaya hazır mesajlar",
     "quranTitle": "Kur'an-ı Kerim",
+    "quranTabSurahs": "Sureler",
+    "quranTabJuz": "Cüzler",
+    "quranSearchHint": "Sure ara (ad ya da numara)",
+    "quranNoResults": "Aramanıza uyan sure bulunamadı",
+    "quranJuz": "Cüz {juz}",
+    "@quranJuz": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "quranPage": "Sayfa {page}",
+    "@quranPage": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahRange": "{from}–{to}. ayetler",
+    "@quranAyahRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "quranBookmark": "Yer imi",
+    "quranViewSettings": "Görünüm",
+    "quranModePage": "Sayfa",
+    "quranModePageDesc": "Mushaf düzeninde, kesintisiz Arapça metin",
+    "quranModeAyah": "Ayet ayet",
+    "quranModeAyahDesc": "Her ayet, Arapçası ve mealiyle ayrı kartta",
+    "quranModeTranslation": "Meal",
+    "quranModeTranslationDesc": "Yalnızca meal, kesintisiz okuma",
+    "quranArabicSize": "Arapça yazı",
+    "quranTranslationSize": "Meal yazısı",
+    "quranTranslationSmaller": "Meal yazısını küçült",
+    "quranTranslationLarger": "Meal yazısını büyüt",
+    "quranGoToAyah": "Ayete git",
+    "quranAyahNumberLabel": "Ayet numarası (1–{count})",
+    "@quranAyahNumberLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranGo": "Git",
+    "quranPreviousSurah": "Önceki sure",
+    "quranNextSurah": "Sonraki sure",
     "toolQuranDesc": "Sureler, Arapça metin ve meal",
     "quranContinue": "Kaldığın yerden devam et",
     "quranAyahRef": "{surah} {ayah}. ayet",
@@ -1009,10 +1064,10 @@
     "quranMeccan": "Mekke",
     "quranMedinan": "Medine",
     "quranLoadError": "Sure yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.",
-    "quranBookmarkSave": "Kaldığın yer olarak kaydet",
-    "quranBookmarkRemove": "Kaldığın yeri sil",
-    "quranBookmarkSaved": "Kaldığın yer kaydedildi",
-    "quranBookmarkRemoved": "Kaldığın yer silindi",
+    "quranBookmarkSave": "Yer imi ekle",
+    "quranBookmarkRemove": "Yer imini kaldır",
+    "quranBookmarkSaved": "Yer imi eklendi",
+    "quranBookmarkRemoved": "Yer imi kaldırıldı",
     "quranShareAyah": "Ayeti paylaş",
     "quranFontSmaller": "Arapça yazıyı küçült",
     "quranFontLarger": "Arapça yazıyı büyüt",

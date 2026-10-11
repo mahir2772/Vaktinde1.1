@@ -1821,6 +1821,88 @@ class AppLocalizationsDe extends AppLocalizations {
   String get quranTitle => 'Der Heilige Koran';
 
   @override
+  String get quranTabSurahs => 'Suren';
+
+  @override
+  String get quranTabJuz => 'Juz';
+
+  @override
+  String get quranSearchHint => 'Sure nach Name oder Nummer suchen';
+
+  @override
+  String get quranNoResults => 'Keine passende Sure gefunden';
+
+  @override
+  String quranJuz(int juz) {
+    return 'Juz $juz';
+  }
+
+  @override
+  String quranPage(int page) {
+    return 'Seite $page';
+  }
+
+  @override
+  String quranAyahRange(int from, int to) {
+    return 'Verse $from–$to';
+  }
+
+  @override
+  String get quranBookmark => 'Lesezeichen';
+
+  @override
+  String get quranViewSettings => 'Ansicht';
+
+  @override
+  String get quranModePage => 'Seite';
+
+  @override
+  String get quranModePageDesc => 'Fortlaufender arabischer Text wie im Mushaf';
+
+  @override
+  String get quranModeAyah => 'Vers für Vers';
+
+  @override
+  String get quranModeAyahDesc =>
+      'Jeder Vers mit Übersetzung auf einer eigenen Karte';
+
+  @override
+  String get quranModeTranslation => 'Übersetzung';
+
+  @override
+  String get quranModeTranslationDesc =>
+      'Nur die Übersetzung, als fortlaufender Text';
+
+  @override
+  String get quranArabicSize => 'Arabische Schrift';
+
+  @override
+  String get quranTranslationSize => 'Übersetzungstext';
+
+  @override
+  String get quranTranslationSmaller => 'Übersetzung verkleinern';
+
+  @override
+  String get quranTranslationLarger => 'Übersetzung vergrößern';
+
+  @override
+  String get quranGoToAyah => 'Zu Vers springen';
+
+  @override
+  String quranAyahNumberLabel(int count) {
+    return 'Versnummer (1–$count)';
+  }
+
+  @override
+  String get quranGo => 'Springen';
+
+  @override
+  String get quranPreviousSurah => 'Vorherige Sure';
+
+  @override
+  String get quranNextSurah => 'Nächste Sure';
+
+  @override
   String get toolQuranDesc => 'Suren mit arabischem Text und Übersetzung';
 
   @override
@@ -1853,16 +1935,16 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Sure konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.';
 
   @override
-  String get quranBookmarkSave => 'Als Leseposition speichern';
+  String get quranBookmarkSave => 'Lesezeichen setzen';
 
   @override
-  String get quranBookmarkRemove => 'Leseposition entfernen';
+  String get quranBookmarkRemove => 'Lesezeichen entfernen';
 
   @override
-  String get quranBookmarkSaved => 'Leseposition gespeichert';
+  String get quranBookmarkSaved => 'Lesezeichen gesetzt';
 
   @override
-  String get quranBookmarkRemoved => 'Leseposition entfernt';
+  String get quranBookmarkRemoved => 'Lesezeichen entfernt';
 
   @override
   String get quranShareAyah => 'Vers teilen';

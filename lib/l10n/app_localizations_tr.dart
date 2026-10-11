@@ -1794,6 +1794,86 @@ class AppLocalizationsTr extends AppLocalizations {
   String get quranTitle => 'Kur\'an-ı Kerim';
 
   @override
+  String get quranTabSurahs => 'Sureler';
+
+  @override
+  String get quranTabJuz => 'Cüzler';
+
+  @override
+  String get quranSearchHint => 'Sure ara (ad ya da numara)';
+
+  @override
+  String get quranNoResults => 'Aramanıza uyan sure bulunamadı';
+
+  @override
+  String quranJuz(int juz) {
+    return 'Cüz $juz';
+  }
+
+  @override
+  String quranPage(int page) {
+    return 'Sayfa $page';
+  }
+
+  @override
+  String quranAyahRange(int from, int to) {
+    return '$from–$to. ayetler';
+  }
+
+  @override
+  String get quranBookmark => 'Yer imi';
+
+  @override
+  String get quranViewSettings => 'Görünüm';
+
+  @override
+  String get quranModePage => 'Sayfa';
+
+  @override
+  String get quranModePageDesc => 'Mushaf düzeninde, kesintisiz Arapça metin';
+
+  @override
+  String get quranModeAyah => 'Ayet ayet';
+
+  @override
+  String get quranModeAyahDesc => 'Her ayet, Arapçası ve mealiyle ayrı kartta';
+
+  @override
+  String get quranModeTranslation => 'Meal';
+
+  @override
+  String get quranModeTranslationDesc => 'Yalnızca meal, kesintisiz okuma';
+
+  @override
+  String get quranArabicSize => 'Arapça yazı';
+
+  @override
+  String get quranTranslationSize => 'Meal yazısı';
+
+  @override
+  String get quranTranslationSmaller => 'Meal yazısını küçült';
+
+  @override
+  String get quranTranslationLarger => 'Meal yazısını büyüt';
+
+  @override
+  String get quranGoToAyah => 'Ayete git';
+
+  @override
+  String quranAyahNumberLabel(int count) {
+    return 'Ayet numarası (1–$count)';
+  }
+
+  @override
+  String get quranGo => 'Git';
+
+  @override
+  String get quranPreviousSurah => 'Önceki sure';
+
+  @override
+  String get quranNextSurah => 'Sonraki sure';
+
+  @override
   String get toolQuranDesc => 'Sureler, Arapça metin ve meal';
 
   @override
@@ -1820,16 +1900,16 @@ class AppLocalizationsTr extends AppLocalizations {
       'Sure yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';
 
   @override
-  String get quranBookmarkSave => 'Kaldığın yer olarak kaydet';
+  String get quranBookmarkSave => 'Yer imi ekle';
 
   @override
-  String get quranBookmarkRemove => 'Kaldığın yeri sil';
+  String get quranBookmarkRemove => 'Yer imini kaldır';
 
   @override
-  String get quranBookmarkSaved => 'Kaldığın yer kaydedildi';
+  String get quranBookmarkSaved => 'Yer imi eklendi';
 
   @override
-  String get quranBookmarkRemoved => 'Kaldığın yer silindi';
+  String get quranBookmarkRemoved => 'Yer imi kaldırıldı';
 
   @override
   String get quranShareAyah => 'Ayeti paylaş';

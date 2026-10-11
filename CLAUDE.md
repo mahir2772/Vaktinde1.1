@@ -181,8 +181,15 @@ lib/
                                            'fitre_remote_json'); validFrom ≤ bugün olan en yeni tutar. Yeni yıl: girdi EKLE, silme
     prayer_tracker/widgets/ramadan_fast_card.dart  Ramazan orucu kartı (Ramazan + bitişten 30 gün): data/services/
                                            fast_tracker(.dart|_service.dart), 'fast_log', 'fast_kaza_added' → kaza_Oruç (tekil, geri alınır)
-    quran/view/{quran_view,surah_reader_view}.dart  Kur'an (Araçlar > Bilgi): assets/data/surahs.json (114, 6236 ayet),
-                                           "Kaldığın yerden devam", A-/A+, ayet paylaşımı (quran), sonda Tanzil + mütercim notu
+    quran/view/{quran_view,surah_reader_view}.dart  Kur'an (Araçlar > Bilgi): assets/data/surahs.json (114, 6236 ayet);
+                                           liste: Sureler | Cüzler sekmesi (30 cüz başı QuranService'te, quran-meta ile teyitli),
+                                           aksan/harekeden bağımsız arama; okuyucu kipleri 'quran_view_mode': Sayfa (varsayılan;
+                                           API'nin `page` alanıyla gerçek mushaf sayfası, ﴿١٢﴾, ayete dokun → alt sayfa: meal, yer imi,
+                                           kopyala, resimli paylaş) / Ayet ayet / Meal (ar'da yok). 'quran_last_read' kendiliğinden
+                                           ("Kaldığın yerden devam"), 'quran_bookmark' = Yer imi; Görünüm alt sayfası: A-/A+ Arapça,
+                                           'quran_translation_scale'; Ayete git; önceki/sonraki sure. Önbellek sürüm 2 (page/juz/hizb/
+                                           sajda); sürüm 1 açılınca 5 sn'de yenilenir, olmazsa ≤10 ayetlik gruplar. widgets/: mushaf_page,
+                                           translation_page, quran_page_frame, ayah_sheet, view_settings_sheet… Sonda Tanzil + mütercim notu
     duas/                                  Dualar (Araçlar > Namaz): assets/data/duas.json (4 kategori, 21 dua: Arapça + tr okunuş + 5 dil
                                            anlam, kaynak) + dua_data.dart; tesbihat_view.dart: namaz sonrası adım adım sayaç
                                            (Âyetü'l-Kürsî, 33×3, tevhid). Arapça standart imla, harekeli; yeni dua eklerken harf harf kontrol
