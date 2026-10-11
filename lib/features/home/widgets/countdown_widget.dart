@@ -9,10 +9,15 @@ import '../prayer_schedule.dart';
 
 /// Ana ekranın odak noktası: sıradaki vakit adı, saati ve geri sayım.
 /// Hero (gradyan/fotoğraf) üzerinde beyaz yazıyla çizilir; saniyede bir yenilenir.
+/// Ekran okuyucu tek etiket okur ("Öğle vaktine 1 saat 12 dakika kaldı");
+/// etiket dakikada bir değişir, saniyeler okunmaz.
 class CountdownWidget extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
 
-  const CountdownWidget({super.key, required this.prayerTimes});
+  /// Şimdiki zaman (testler için); verilmezse DateTime.now
+  final DateTime Function()? clock;
+
+  const CountdownWidget({super.key, required this.prayerTimes, this.clock});
 
   @override
   State<CountdownWidget> createState() => _CountdownWidgetState();
@@ -20,13 +25,15 @@ class CountdownWidget extends StatefulWidget {
 
 class _CountdownWidgetState extends State<CountdownWidget> {
   Timer? _timer;
-  DateTime _now = DateTime.now();
+  late DateTime _now = _clock();
+
+  DateTime _clock() => (widget.clock ?? DateTime.now)();
 
   @override
   void initState() {
     super.initState();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() => _now = DateTime.now());
+      if (mounted) setState(() => _now = _clock());
     });
   }
 
@@ -49,14 +56,16 @@ class _CountdownWidgetState extends State<CountdownWidget> {
       prayerTimeOf(widget.prayerTimes, next.key),
       loc.localeName,
     );
-    final remaining = formatCountdown(next.time.difference(_now));
+    final left = next.time.difference(_now);
+    final remaining = formatCountdown(left);
     final timeLabel = next.isTomorrow ? '$time ${loc.tomorrow}' : time;
 
     return Semantics(
       container: true,
+      // Saniyeli sayaç değil, dakikalık süre: odaktayken her saniye okunmaz
       label:
-          '${loc.nextPrayer}: $name $timeLabel. '
-          '${loc.timeLeftFor(name)} $remaining',
+          '${loc.nextPrayer}: $name, $timeLabel. '
+          '${loc.a11yTimeUntil(name, formatSpokenDuration(left, loc))}',
       excludeSemantics: true,
       child: Column(
         mainAxisSize: MainAxisSize.min,

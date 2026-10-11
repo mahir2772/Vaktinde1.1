@@ -402,11 +402,13 @@ class _HomeViewState extends State<HomeView>
                             color: colors.onHero,
                           ),
                           const SizedBox(width: 6),
+                          // Büyük yazıda il / ilçe kesilmez, ikinci satıra iner
                           Flexible(
                             child: Text(
                               location,
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                               style: theme.textTheme.titleMedium!.copyWith(
                                 color: colors.onHero,
                                 fontSize: 18,

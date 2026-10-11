@@ -10,6 +10,90 @@
     "showcaseZikir": "Zikirlerinizi buradan takip edebilirsiniz.",
     "refreshLocation": "Konumu yenile",
     "navTools": "Araçlar",
+    "a11yHours": "{count, plural, other{{count} saat}}",
+    "@a11yHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yMinutes": "{count, plural, other{{count} dakika}}",
+    "@a11yMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yHoursMinutes": "{hours} {minutes}",
+    "@a11yHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "String"
+            },
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yTimeUntil": "{vakit} vaktine {duration} kaldı",
+    "@a11yTimeUntil": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yPrayerPassed": "geçti",
+    "a11yTrackerCell": "{day}, {prayer}: {state}",
+    "@a11yTrackerCell": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            },
+            "prayer": {
+                "type": "String"
+            },
+            "state": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yNotPrayed": "Kılınmadı",
+    "a11yNotDue": "Vakti girmedi",
+    "a11yExcusedDay": "Özel gün",
+    "a11yQiblaTurnRight": "Kıbleye dönmek için {deg} derece sağa dönün",
+    "@a11yQiblaTurnRight": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaTurnLeft": "Kıbleye dönmek için {deg} derece sola dönün",
+    "@a11yQiblaTurnLeft": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaAligned": "Kıble yönündesiniz",
+    "a11yDecrease": "Azalt",
+    "a11yIncrease": "Artır",
+    "a11yPlaySound": "{sound} sesini dinle",
+    "@a11yPlaySound": {
+        "placeholders": {
+            "sound": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yStopSound": "Durdur",
     "hadithNotFound": "Hadis metni bulunamadı.",
     "timesLoadError": "Vakitler yüklenemedi. Lütfen tekrar deneyin.",
     "sunriseNotPrayer": "Güneşin doğuşu, namaz vakti değildir",

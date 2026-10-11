@@ -42,6 +42,104 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navTools => 'الأدوات';
 
   @override
+  String a11yHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ساعة',
+      many: '$count ساعة',
+      few: '$count ساعات',
+      two: 'ساعتان',
+      one: 'ساعة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دقيقة',
+      many: '$count دقيقة',
+      few: '$count دقائق',
+      two: 'دقيقتان',
+      one: 'دقيقة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yHoursMinutes(String hours, String minutes) {
+    return '$hours و$minutes';
+  }
+
+  @override
+  String a11yTimeUntil(String vakit, String duration) {
+    return 'الوقت المتبقي حتى $vakit: $duration';
+  }
+
+  @override
+  String get a11yPrayerPassed => 'انقضى الوقت';
+
+  @override
+  String a11yTrackerCell(String day, String prayer, String state) {
+    return '$day، $prayer: $state';
+  }
+
+  @override
+  String get a11yNotPrayed => 'لم تُؤدَّ';
+
+  @override
+  String get a11yNotDue => 'لم يدخل وقتها بعد';
+
+  @override
+  String get a11yExcusedDay => 'يوم عذر';
+
+  @override
+  String a11yQiblaTurnRight(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'استدر $deg درجة إلى اليمين لمواجهة القبلة',
+      few: 'استدر $deg درجات إلى اليمين لمواجهة القبلة',
+      two: 'استدر درجتين إلى اليمين لمواجهة القبلة',
+      one: 'استدر درجة واحدة إلى اليمين لمواجهة القبلة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yQiblaTurnLeft(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'استدر $deg درجة إلى اليسار لمواجهة القبلة',
+      few: 'استدر $deg درجات إلى اليسار لمواجهة القبلة',
+      two: 'استدر درجتين إلى اليسار لمواجهة القبلة',
+      one: 'استدر درجة واحدة إلى اليسار لمواجهة القبلة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get a11yQiblaAligned => 'أنت متجه نحو القبلة';
+
+  @override
+  String get a11yDecrease => 'إنقاص';
+
+  @override
+  String get a11yIncrease => 'زيادة';
+
+  @override
+  String a11yPlaySound(String sound) {
+    return 'تشغيل $sound';
+  }
+
+  @override
+  String get a11yStopSound => 'إيقاف';
+
+  @override
   String get hadithNotFound => 'تعذّر العثور على نص الحديث.';
 
   @override

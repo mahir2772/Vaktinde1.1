@@ -1,5 +1,7 @@
 // Vakit ve süre biçimleri (tüm ekranlarda aynı).
 
+import '../../l10n/app_localizations.dart';
+
 bool _uses12Hour(String localeName) =>
     localeName.startsWith('en') || localeName.startsWith('ar');
 
@@ -37,4 +39,16 @@ String formatCountdown(Duration d) {
   if (total < 0) total = 0;
   String two(int n) => n.toString().padLeft(2, '0');
   return '${two(total ~/ 3600)}:${two((total % 3600) ~/ 60)}:${two(total % 60)}';
+}
+
+/// Ekran okuyucu için kalan süre: "1 saat 12 dakika". Dakika hassasiyeti
+/// (saniyede değişmez); sayaçta görünen saat:dakika ile aynı, 1 dakikanın altı
+/// "1 dakika".
+String formatSpokenDuration(Duration d, AppLocalizations loc) {
+  final minutes = d.inMinutes < 1 ? 1 : d.inMinutes;
+  final hours = minutes ~/ 60;
+  final rest = minutes % 60;
+  if (hours == 0) return loc.a11yMinutes(rest);
+  if (rest == 0) return loc.a11yHours(hours);
+  return loc.a11yHoursMinutes(loc.a11yHours(hours), loc.a11yMinutes(rest));
 }

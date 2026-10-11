@@ -596,10 +596,13 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
         const SizedBox(height: AppSpacing.md),
         // İp ve boncuklar: dokun veya aşağı çek
         Expanded(
+          // Dokununca yeni sayı aynı düğmede okunur
           child: Semantics(
             container: true,
             button: true,
-            label: loc.tapToCount,
+            label: widget.dhikrName,
+            value: '$count',
+            hint: loc.tapToCount,
             onTap: _pullBead,
             excludeSemantics: true,
             child: GestureDetector(

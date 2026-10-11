@@ -472,11 +472,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     final now = DateTime.now();
     final localeCode = Localizations.localeOf(context).toString();
 
-    String dayLabel(int daysAgo, DateTime date) {
+    String dayLabel(int daysAgo, DateTime date, {bool spoken = false}) {
       if (daysAgo == 0) return loc.trackerToday;
       if (daysAgo == 1) return loc.trackerYesterday;
       try {
-        return DateFormat('EEE d', localeCode).format(date);
+        // Ekran okuyucu kısaltma değil tam gün adı okur ("Pazartesi"; 7 günde
+        // tekrar etmez)
+        return DateFormat(spoken ? 'EEEE' : 'EEE d', localeCode).format(date);
       } catch (e) {
         return PrayerTracker.dateKey(date).substring(5);
       }
@@ -550,6 +552,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
                 _buildGridRow(
                   PrayerTracker.addDays(now, -i),
                   dayLabel(i, PrayerTracker.addDays(now, -i)),
+                  dayLabel(i, PrayerTracker.addDays(now, -i), spoken: true),
                   times,
                   loc,
                   labelWidth,
@@ -594,17 +597,21 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   Widget _buildGridRow(
     DateTime date,
     String label,
+    String spokenDay,
     PrayerTimesModel? times,
     AppLocalizations loc,
     double labelWidth,
   ) {
     final theme = Theme.of(context);
     final excused = PrayerTracker.isExcused(_excused, date);
+    final names = trackerPrayerNames(loc);
     return Row(
       children: [
         // Gün adına basılı tutunca özel gün işareti açılır/kapanır
         Semantics(
-          value: excused ? loc.trackerExcusedTitle : null,
+          container: true,
+          label: spokenDay,
+          value: excused ? loc.a11yExcusedDay : null,
           onLongPressHint: excused
               ? loc.trackerExcusedUnmark
               : loc.trackerExcusedMark,
@@ -622,14 +629,17 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: excused
-                          ? theme.colorScheme.onSurfaceVariant
-                          : null,
+                  // Kısaltma ("Pzt 6") yerine tam gün adı okunur
+                  child: ExcludeSemantics(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: excused
+                            ? theme.colorScheme.onSurfaceVariant
+                            : null,
+                      ),
                     ),
                   ),
                 ),
@@ -640,10 +650,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
         for (final key in PrayerTracker.prayerKeys)
           Expanded(
             child: _buildCell(
+              day: spokenDay,
+              prayer: names[key]!,
               prayed: PrayerTracker.isPrayed(_log, date, key),
               kaza: PrayerTracker.isPrayed(_kazaAdded, date, key),
               due: _isDue(date, key, times),
               excused: excused,
+              loc: loc,
               onTap: () => _toggle(date, key, times, loc),
             ),
           ),
@@ -652,10 +665,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   }
 
   Widget _buildCell({
+    required String day,
+    required String prayer,
     required bool prayed,
     required bool kaza,
     required bool due,
     required bool excused,
+    required AppLocalizations loc,
     required VoidCallback onTap,
   }) {
     final scheme = Theme.of(context).colorScheme;
@@ -678,9 +694,22 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     } else if (!due) {
       icon = Icon(Icons.schedule, color: scheme.outline, size: 14);
     }
+    // Ekran okuyucu: "Pazartesi, Öğle: Kılındı" (durum renkle değil sözle);
+    // hücreler düğme (dokununca işaret değişir)
+    final state = excused
+        ? loc.a11yExcusedDay
+        : prayed
+        ? loc.trackerLegendPrayed
+        : kaza
+        ? loc.trackerLegendKaza
+        : due
+        ? loc.a11yNotPrayed
+        : loc.a11yNotDue;
     // Dokunma alanı hücrenin tamamı (en az 48dp yükseklik)
     return Semantics(
-      checked: excused ? null : prayed,
+      container: true,
+      button: true,
+      label: loc.a11yTrackerCell(day, prayer, state),
       enabled: excused ? false : null,
       child: InkWell(
         onTap: onTap,

@@ -46,6 +46,94 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navTools => 'Outils';
 
   @override
+  String a11yHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count heures',
+      one: '$count heure',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes',
+      one: '$count minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yHoursMinutes(String hours, String minutes) {
+    return '$hours $minutes';
+  }
+
+  @override
+  String a11yTimeUntil(String vakit, String duration) {
+    return '$vakit dans $duration';
+  }
+
+  @override
+  String get a11yPrayerPassed => 'heure passée';
+
+  @override
+  String a11yTrackerCell(String day, String prayer, String state) {
+    return '$day, $prayer : $state';
+  }
+
+  @override
+  String get a11yNotPrayed => 'Non accomplie';
+
+  @override
+  String get a11yNotDue => 'Pas encore l\'heure';
+
+  @override
+  String get a11yExcusedDay => 'Jour d\'excuse';
+
+  @override
+  String a11yQiblaTurnRight(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'Tournez de $deg degrés vers la droite pour faire face à la qibla',
+      one: 'Tournez de $deg degré vers la droite pour faire face à la qibla',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yQiblaTurnLeft(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'Tournez de $deg degrés vers la gauche pour faire face à la qibla',
+      one: 'Tournez de $deg degré vers la gauche pour faire face à la qibla',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get a11yQiblaAligned => 'Vous faites face à la qibla';
+
+  @override
+  String get a11yDecrease => 'Diminuer';
+
+  @override
+  String get a11yIncrease => 'Augmenter';
+
+  @override
+  String a11yPlaySound(String sound) {
+    return 'Écouter $sound';
+  }
+
+  @override
+  String get a11yStopSound => 'Arrêter';
+
+  @override
   String get hadithNotFound => 'Texte du hadith introuvable.';
 
   @override

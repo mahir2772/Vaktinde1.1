@@ -199,8 +199,10 @@ class _RamadanCardState extends State<RamadanCard> {
         children: [
           Semantics(
             container: true,
+            // Dakikalık süre: odaktayken saniyeler okunmaz
             label:
-                '$label $remaining. ${loc.ramadanDayLabel(countdown.fastDay)}',
+                '$label ${formatSpokenDuration(_remaining, loc)}. '
+                '${loc.ramadanDayLabel(countdown.fastDay)}',
             excludeSemantics: true,
             child: HeroChip(
               icon: isSahur ? Icons.nightlight_round : Icons.wb_twilight,

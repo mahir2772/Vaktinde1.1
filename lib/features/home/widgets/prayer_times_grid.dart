@@ -17,7 +17,10 @@ import '../prayer_schedule.dart';
 class PrayerTimesGrid extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
 
-  const PrayerTimesGrid({super.key, required this.prayerTimes});
+  /// Şimdiki zaman (testler için); verilmezse DateTime.now
+  final DateTime Function()? clock;
+
+  const PrayerTimesGrid({super.key, required this.prayerTimes, this.clock});
 
   @override
   State<PrayerTimesGrid> createState() => _PrayerTimesGridState();
@@ -27,10 +30,12 @@ class _PrayerTimesGridState extends State<PrayerTimesGrid> {
   Timer? _timer;
   late Map<String, PrayerRowState> _states;
 
+  DateTime _now() => (widget.clock ?? DateTime.now)();
+
   @override
   void initState() {
     super.initState();
-    _states = prayerRowStates(widget.prayerTimes, DateTime.now());
+    _states = prayerRowStates(widget.prayerTimes, _now());
     // Sadece durum değişince yeniden çizilir
     _timer = Timer.periodic(const Duration(seconds: 5), (_) => _refresh());
   }
@@ -39,13 +44,13 @@ class _PrayerTimesGridState extends State<PrayerTimesGrid> {
   void didUpdateWidget(covariant PrayerTimesGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.prayerTimes != widget.prayerTimes) {
-      _states = prayerRowStates(widget.prayerTimes, DateTime.now());
+      _states = prayerRowStates(widget.prayerTimes, _now());
     }
   }
 
   void _refresh() {
     if (!mounted) return;
-    final states = prayerRowStates(widget.prayerTimes, DateTime.now());
+    final states = prayerRowStates(widget.prayerTimes, _now());
     final changed = homePrayerKeys.any((k) => states[k] != _states[k]);
     if (changed) setState(() => _states = states);
   }
@@ -65,12 +70,16 @@ class _PrayerTimesGridState extends State<PrayerTimesGrid> {
         state: _states[key] ?? PrayerRowState.upcoming,
       ),
     );
-    Widget row(String a, String b) => Row(
-      children: [
-        cell(a),
-        const SizedBox(width: AppSpacing.sm),
-        cell(b),
-      ],
+    // Eşit yükseklik: büyük yazıda küçülen uzun ad hücreyi kısaltmaz
+    Widget row(String a, String b) => IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          cell(a),
+          const SizedBox(width: AppSpacing.sm),
+          cell(b),
+        ],
+      ),
     );
     return AppCard(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -128,11 +137,15 @@ class _PrayerCell extends StatelessWidget {
     final emphasized =
         state == PrayerRowState.next || state == PrayerRowState.current;
 
-    final semantics = StringBuffer('$name $formatted');
-    if (state == PrayerRowState.next) semantics.write(', ${loc.nextPrayer}');
-    if (state == PrayerRowState.current) {
-      semantics.write(', ${loc.currentPrayer}');
-    }
+    // "Öğle, 12:15, Sıradaki Vakit" / "İmsak, 05:40, geçti"
+    final semantics = StringBuffer('$name, $formatted');
+    final stateText = switch (state) {
+      PrayerRowState.next => loc.nextPrayer,
+      PrayerRowState.current => loc.currentPrayer,
+      PrayerRowState.past => loc.a11yPrayerPassed,
+      PrayerRowState.upcoming => null,
+    };
+    if (stateText != null) semantics.write(', $stateText');
     if (isSunrise) semantics.write(', ${loc.sunriseNotPrayer}');
 
     return Semantics(
@@ -170,16 +183,19 @@ class _PrayerCell extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.xs),
                 ],
+                // Büyük yazıda uzun ad ("Sonnenaufgang") kesilmez, küçülür
                 Flexible(
-                  child: Text(
-                    name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                      color: nameColor,
-                      fontWeight: emphasized
-                          ? FontWeight.w600
-                          : FontWeight.w500,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      name,
+                      maxLines: 1,
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: nameColor,
+                        fontWeight: emphasized
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),

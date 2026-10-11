@@ -43,6 +43,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTools => 'Tools';
 
   @override
+  String a11yHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours',
+      one: '1 hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes',
+      one: '1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yHoursMinutes(String hours, String minutes) {
+    return '$hours $minutes';
+  }
+
+  @override
+  String a11yTimeUntil(String vakit, String duration) {
+    return '$duration left until $vakit';
+  }
+
+  @override
+  String get a11yPrayerPassed => 'passed';
+
+  @override
+  String a11yTrackerCell(String day, String prayer, String state) {
+    return '$day, $prayer: $state';
+  }
+
+  @override
+  String get a11yNotPrayed => 'Not prayed';
+
+  @override
+  String get a11yNotDue => 'Not yet time';
+
+  @override
+  String get a11yExcusedDay => 'Excused day';
+
+  @override
+  String a11yQiblaTurnRight(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'Turn $deg degrees to the right to face the qibla',
+      one: 'Turn 1 degree to the right to face the qibla',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yQiblaTurnLeft(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'Turn $deg degrees to the left to face the qibla',
+      one: 'Turn 1 degree to the left to face the qibla',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get a11yQiblaAligned => 'You are facing the qibla';
+
+  @override
+  String get a11yDecrease => 'Decrease';
+
+  @override
+  String get a11yIncrease => 'Increase';
+
+  @override
+  String a11yPlaySound(String sound) {
+    return 'Play $sound';
+  }
+
+  @override
+  String get a11yStopSound => 'Stop';
+
+  @override
   String get hadithNotFound => 'Hadith text not found.';
 
   @override

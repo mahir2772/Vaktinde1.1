@@ -45,6 +45,82 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navTools => 'Werkzeuge';
 
   @override
+  String a11yHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Stunden',
+      one: '1 Stunde',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Minuten',
+      one: '1 Minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yHoursMinutes(String hours, String minutes) {
+    return '$hours $minutes';
+  }
+
+  @override
+  String a11yTimeUntil(String vakit, String duration) {
+    return 'Noch $duration bis $vakit';
+  }
+
+  @override
+  String get a11yPrayerPassed => 'vorbei';
+
+  @override
+  String a11yTrackerCell(String day, String prayer, String state) {
+    return '$day, $prayer: $state';
+  }
+
+  @override
+  String get a11yNotPrayed => 'Nicht verrichtet';
+
+  @override
+  String get a11yNotDue => 'Gebetszeit noch nicht begonnen';
+
+  @override
+  String get a11yExcusedDay => 'Entschuldigter Tag';
+
+  @override
+  String a11yQiblaTurnRight(int deg) {
+    return 'Zur Qibla $deg Grad nach rechts drehen';
+  }
+
+  @override
+  String a11yQiblaTurnLeft(int deg) {
+    return 'Zur Qibla $deg Grad nach links drehen';
+  }
+
+  @override
+  String get a11yQiblaAligned => 'Sie sind zur Qibla ausgerichtet';
+
+  @override
+  String get a11yDecrease => 'Verringern';
+
+  @override
+  String get a11yIncrease => 'Erhöhen';
+
+  @override
+  String a11yPlaySound(String sound) {
+    return '$sound anhören';
+  }
+
+  @override
+  String get a11yStopSound => 'Stoppen';
+
+  @override
   String get hadithNotFound => 'Hadith-Text nicht gefunden.';
 
   @override

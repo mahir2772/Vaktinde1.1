@@ -10,6 +10,90 @@
     "showcaseZikir": "Hier zählen Sie Ihren Dhikr.",
     "refreshLocation": "Standort aktualisieren",
     "navTools": "Werkzeuge",
+    "a11yHours": "{count, plural, =1{1 Stunde} other{{count} Stunden}}",
+    "@a11yHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yMinutes": "{count, plural, =1{1 Minute} other{{count} Minuten}}",
+    "@a11yMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yHoursMinutes": "{hours} {minutes}",
+    "@a11yHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "String"
+            },
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yTimeUntil": "Noch {duration} bis {vakit}",
+    "@a11yTimeUntil": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yPrayerPassed": "vorbei",
+    "a11yTrackerCell": "{day}, {prayer}: {state}",
+    "@a11yTrackerCell": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            },
+            "prayer": {
+                "type": "String"
+            },
+            "state": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yNotPrayed": "Nicht verrichtet",
+    "a11yNotDue": "Gebetszeit noch nicht begonnen",
+    "a11yExcusedDay": "Entschuldigter Tag",
+    "a11yQiblaTurnRight": "Zur Qibla {deg} Grad nach rechts drehen",
+    "@a11yQiblaTurnRight": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaTurnLeft": "Zur Qibla {deg} Grad nach links drehen",
+    "@a11yQiblaTurnLeft": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaAligned": "Sie sind zur Qibla ausgerichtet",
+    "a11yDecrease": "Verringern",
+    "a11yIncrease": "Erhöhen",
+    "a11yPlaySound": "{sound} anhören",
+    "@a11yPlaySound": {
+        "placeholders": {
+            "sound": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yStopSound": "Stoppen",
     "hadithNotFound": "Hadith-Text nicht gefunden.",
     "timesLoadError": "Gebetszeiten konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
     "sunriseNotPrayer": "Sonnenaufgang, keine Gebetszeit",

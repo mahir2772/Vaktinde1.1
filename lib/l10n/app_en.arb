@@ -10,6 +10,90 @@
     "showcaseZikir": "Keep track of your dhikr here.",
     "refreshLocation": "Refresh location",
     "navTools": "Tools",
+    "a11yHours": "{count, plural, =1{1 hour} other{{count} hours}}",
+    "@a11yHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yMinutes": "{count, plural, =1{1 minute} other{{count} minutes}}",
+    "@a11yMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yHoursMinutes": "{hours} {minutes}",
+    "@a11yHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "String"
+            },
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yTimeUntil": "{duration} left until {vakit}",
+    "@a11yTimeUntil": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yPrayerPassed": "passed",
+    "a11yTrackerCell": "{day}, {prayer}: {state}",
+    "@a11yTrackerCell": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            },
+            "prayer": {
+                "type": "String"
+            },
+            "state": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yNotPrayed": "Not prayed",
+    "a11yNotDue": "Not yet time",
+    "a11yExcusedDay": "Excused day",
+    "a11yQiblaTurnRight": "{deg, plural, =1{Turn 1 degree to the right to face the qibla} other{Turn {deg} degrees to the right to face the qibla}}",
+    "@a11yQiblaTurnRight": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaTurnLeft": "{deg, plural, =1{Turn 1 degree to the left to face the qibla} other{Turn {deg} degrees to the left to face the qibla}}",
+    "@a11yQiblaTurnLeft": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaAligned": "You are facing the qibla",
+    "a11yDecrease": "Decrease",
+    "a11yIncrease": "Increase",
+    "a11yPlaySound": "Play {sound}",
+    "@a11yPlaySound": {
+        "placeholders": {
+            "sound": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yStopSound": "Stop",
     "hadithNotFound": "Hadith text not found.",
     "timesLoadError": "Prayer times could not be loaded. Please try again.",
     "sunriseNotPrayer": "Sunrise, not a prayer time",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'app_tokens.dart';
 
 /// − değer + : 48dp düğmeli sayı ayarlayıcı. [min]/[max] sınırında ilgili düğme
@@ -59,6 +60,7 @@ class CounterStepper extends StatelessWidget {
       disabledForegroundColor: scheme.onSurfaceVariant.withValues(alpha: 0.5),
     );
 
+    final loc = AppLocalizations.of(context);
     return Semantics(
       label: semanticLabel,
       value: text,
@@ -70,12 +72,16 @@ class CounterStepper extends StatelessWidget {
           : null,
       onIncrease: _canIncrease ? _increase : null,
       onDecrease: _canDecrease ? _decrease : null,
+      // Değere dokunma (elle giriş) ekran okuyucuda da çift dokunuşla açılır
+      onTap: onValueTap,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Düğmeler ekran okuyucuda artır/azalt eylemi; ipucu görenler için
           ExcludeSemantics(
             child: IconButton(
               style: buttonStyle,
+              tooltip: loc?.a11yDecrease,
               onPressed: _canDecrease ? _decrease : null,
               icon: const Icon(Icons.remove),
             ),
@@ -106,6 +112,7 @@ class CounterStepper extends StatelessWidget {
           ExcludeSemantics(
             child: IconButton(
               style: buttonStyle,
+              tooltip: loc?.a11yIncrease,
               onPressed: _canIncrease ? _increase : null,
               icon: const Icon(Icons.add),
             ),
