@@ -23,6 +23,9 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 - Güncelleme: tek akış, Play esnek güncelleme (`_checkForUpdate`): iner, "Yeniden başlat" SnackBar'ı (`scaffoldMessengerKey`) ile kullanıcı onaylayınca `completeFlexibleUpdate`. UpgradeAlert yok.
 - Kurulum denetimi (`onboarding/install_guard.dart`): Android yedeği / cihazdan cihaza aktarım prefs'i yeni kuruluma taşır. 'install_marker' ≠ `PackageInfo.installTime` (firstInstallTime) → `InstallGuard.deviceKeys` silinir ('permissions_primed', 'battery_optimization_asked', 'alarms_scheduled_date', 'qibla_calibration_dialog_seen', 'exact_alarms_allowed', 'alarm_plan_meta', 'schedule_mode_v2', 'notifications_enabled', 'last_headless_run'; yeni cihaza özgü bayrak buraya ve test/install_guard_test.dart fikstürüne eklenir). İşaretsiz eski veri: kurulum bu cihazda güncellenmişse sessizce işaretlenir, hiç güncellenmemişse (yedek) silinir.
 - Analytics: tek kapı `common/app_analytics.dart` (`AppAnalytics.logEvent`; sadece `allowedParameters`, konum/vakit gönderilmez). `FirebaseAnalytics` başka yerde kullanılmaz (testli).
+  AB rızası (Consent Mode v2): `AnalyticsConsent.fromTcf` + `AppAnalytics.applyConsent`; TCF değerleri 'vaktinde/device' `tcfConsent`
+  (UMP'nin IABTCF_*); amaç 1 → analytics/ad storage, 1+3+4 → ad user data/personalization, gdprApplies 0 → hepsi açık. AdConsent
+  açılışta (AB'de önce ret), form sonrası ve "Reklam gizlilik ayarları" sonrası yeniden uygular.
 
 `MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma; Ayarlar satırı reklamsız). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
 Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. Akış bitince (tur yolunda da) `StreakReviewPrompt.start()`: `PrayerTrackerService.changes` ile seri 7+'ya çıkınca bir kez `InAppReview.requestReview` ('review_requested'; isAvailable, ön plan, izin/rıza/tur penceresi yokken). SettingsView araçlar ekranındaki karttan açılır ("Bize Puan Ver" = openStoreListing).
@@ -185,6 +188,11 @@ lib/
                                            + SheetMessenger (alt sayfada SnackBar). Kampanyalar: friday/daily/greeting/invite/dua/iftar/quran
     religious_days/view/religious_days_view.dart  "Tebrik gönder" alt sayfası (assets/data/greetings_<dil>.json,
                                            JsonService.getGreetings; gün yaklaşırken ve 3 gün sonrasına kadar; Regaib + Üç Aylar)
+    settings/view/backup_setting.dart      Ayarlar > Yedekleme: data/services/backup_service.dart — {app, version 1, created, data};
+                                           BEYAZ LİSTE `BackupService._fields` (yeni kullanıcı verisi anahtarı buraya, cihaza özgü olan
+                                           InstallGuard.deviceKeys'e). Dışa: share_plus dosya; içe: 'vaktinde/device' `pickBackupFile`
+                                           (MainActivity, ACTION_OPEN_DOCUMENT, ≤1 MB) → doğrula → onay → yaz → PrayerTrackerService.
+                                           replaceRecords + HomeViewModel.reloadFromStorage (vakit, widget, bildirim, alarmlar)
     settings/view/add_widget_sheet.dart    "Ana Ekrana Widget Ekle" (4 widget; HomeWidget.requestPinWidget, sağlayıcı adı manifestle aynı;
                                            satır sadece başlatıcı destekliyorsa)
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
