@@ -61,7 +61,11 @@ lib/
       prayer_tracker_service kayıt + kaza ekleme (SerialQueue ile sıralı), "Kıldım" arka plan işleyicisi (ayrı isolate; prefs.reload şart),
                             kılınan vaktin hatırlatmasını iptal eder; kazaya eklenmiş vakit işaretlenmez (takipte hücreye dokununca
                             removeFromKaza: kılındı + kaza sayacı −1, sayaç >0 ise onay; Kaza Takibi sayacı geçmiş işareti
-                            değiştirmez, yoksa aynı vakit yeniden kazaya eklenirdi). Ekranlar 30 sn'de bir kaydı yeniden okur
+                            değiştirmez, yoksa aynı vakit yeniden kazaya eklenirdi). Ekranlar 30 sn'de bir kaydı yeniden okur.
+                            Özel gün (hayız/nifas): 'tracker_excused' (tarih kümesi; loadExcused/setExcused; saf isExcused/withExcused/
+                            pruneExcused) → streak/completionRate/kazaCandidates `excused:` ile o günü atlar; işaretlenince o günün
+                            kazaya eklenmiş namazları çıkarılır (sayaç −, onaylı). Gün adına/“Bugün” başlığına uzun basınca; oruç kazası
+                            etkilenmez (kaza orucu gerekir)
       background_manager    flutter_background_service foreground servisi; sadece ilk bildirim metni ('bg_display'), asıl içerik NotificationUpdater'da
       prayer_refresh_service BuildContext'siz ortak mantık: widget/kalıcı bildirim verisi, 5 günlük alarm planı (buildAlarmPlan),
                             günlük ayet/hadis bildirimi, hicri tarih (de/fr → en). runHeadless(): WorkManager görevi — bugünün
