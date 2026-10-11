@@ -130,7 +130,12 @@ lib/
     home/view/home_view.dart               hero (sıradaki vakte göre gradyan + karartma; dokunulabilir konum → LocationSearchDialog,
                                            miladi · hicri tarih, sayaç, kerahat/Ramazan kapsülleri) + tek parça zemin (DecoratedSliver)
                                            üstünde ızgara, Bugün, günün ayet/hadisi; "Alarmlar" sekmesi; yükleniyor/hata/veri yok
-                                           durumları (çevirili ErrorState + "Konum Değiştir")
+                                           durumları (çevirili ErrorState + "Konum Değiştir"). Üst çubuk: Ayarlar dişlisi (reklamsız) +
+                                           konum; ızgarada vakte dokun → o vaktin alarm alt sayfası (alarm_settings_list: PrayerAlarmControls,
+                                           showPrayerAlarmSheet; kapanınca HomeViewModel.stopPreview). HomeView.clock (test)
+    home/widgets/today_hub.dart            "Bugün için": Cuma → Cuma mesajı; dini gün −3..+3 gün → başa + "Tebrik gönder"
+                                           (religious_days_view: greetingGroupsFor/showGreetingsSheet); Kur'an kaldığın yer; Tesbihat;
+                                           yoksa sıradaki dini gün sonda. 3, en çok 4 satır; dönüşte/resume/30 sn'de yenilenir; reklamsız
     home/prayer_schedule.dart              saf: upcomingPrayer (yatsıdan sonra yarının imsakı), prayerRowStates (sıradaki/şu an/
                                            geçmiş; güneşten öğleye "şu an" yok), localizedPrayerName — test/prayer_schedule_test.dart
     home/widgets/countdown_widget.dart     sıradaki vakit adı + saati + 44sp TabularText sayaç (saniyelik)
