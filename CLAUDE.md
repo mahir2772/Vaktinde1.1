@@ -92,6 +92,8 @@ lib/
                             günün alarmı da yazılmaz. Güneş, hatırlatma ve vakit çıkış hatırlatması korunmaz
       widget_service        home_widget → Android widget'larına veri yazar (+ gün dönümü: times_date, tomorrow_*;
                             koordinat yoksa silinir; vakte kalan başlıkları title_imsak…title_yatsi = loc.toX, titleKeys).
+                            Her vakit anahtarının yanında '<anahtar>_text' (formatPrayerTime: en/ar 12 saat; bugün + tomorrow_*;
+                            dil değişince hepsi yeniden yazılır); hesap hep "HH:mm"den.
                             updateHomeWidget yazımları SerialQueue ile sıralı. Ramazan widget'ı: ramadanData (saf) → 'ramadan_start/_end/
                             _next_start' (+ _text), başlıklar, 'ramadan_day_text' (%d) — 4. sağlayıcı VaktindeWidgetRamadanProvider
       hadith_service        hadeethenc.com API + yerel json fallback
@@ -214,7 +216,8 @@ android/app/src/main/
                           setRefreshAlarm: tam zamanlı (setExactAndAllowWhileIdle); izin yoksa (Android 12/12L) uyandırmayan
                           setWindow(RTC, 10 dk): izinsiz setAlarmClock SecurityException atar, setAndAllowWhileIdle ise Doze'da
                           ezanla aynı "9 dk'da bir" kotasını paylaşıp ezanı geciktirir. NextPrayer(time, label, index);
-                          title(): Dart'ın title_<vakit> anahtarı ("İkindiye"), yoksa title_text (±60 sn) / vakit adı; label(), epochDay()
+                          title(): Dart'ın title_<vakit> anahtarı ("İkindiye"), yoksa title_text (±60 sn) / vakit adı; label(), epochDay();
+                          displayTime (metin vakitle tutmuyorsa "HH:mm"), styledTime (AM/PM 0.8)
     VaktindeWidgetRamadanProvider.kt  Ramazan widget'ı (2x2): Ramazan'da iftar/sahur Chronometer + "N. gün", dışında
                           "Ramazan'a N gün"; gün sayısını tarihten kendisi hesaplar; yenileme imsak/akşam/gece yarısı
     VaktindeApplication.kt + WidgetRefresher.kt  kendini onaran sayaç (alarm geç/hiç gelmeyen üreticiler): onCreate'te tek dinamik
@@ -228,7 +231,8 @@ android/app/src/main/
                           sayaç kalmaz (ön plan servisinin bildirimine uygulanmaz; o zaman süreç ayakta, WidgetRefresher onarır)
     WidgetHealJobService.kt  JobScheduler periyodik iş (15 dk, kalıcı, JOB_ID 0x56414B54 — WorkManager kimliklerinden uzak):
                           süreç yokken WidgetRefresher.refreshStale; VaktindeApplication.onCreate kurar (kuruluysa dokunmaz)
-  res/layout/vaktinde_widget_*.xml, custom_notification.xml; res/xml/widget_info_* (30 dk, açıklama, previewLayout);
+  res/layout/vaktinde_widget_*.xml, custom_notification.xml (sistem TextAppearance.Material.Notification*, sabit renk ve
+  yer tutucu yok); drawable/widget_background #F200504A (her duvar kâğıdında AA); res/xml/widget_info_* (30 dk, açıklama, previewLayout);
   res/values*/strings.xml (widget adları/açıklamaları, tr varsayılan + en/de/fr/ar)
 assets/data/  esma/cuma mesajları (dil başına json), religious_days.json
 assets/google_fonts/ (Poppins), assets/fonts/amiri/ (Amiri + OFL)
