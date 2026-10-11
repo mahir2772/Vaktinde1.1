@@ -37,6 +37,7 @@ class StreakReviewPrompt {
 
   int? _baseline;
   Set<String>? _excusedBaseline;
+  int? _replacementsBaseline;
   bool _active = false;
   bool _done = false;
   Future<void> _chain = Future<void>.value();
@@ -104,6 +105,7 @@ class StreakReviewPrompt {
       }
       final now = DateTime.now();
       final service = PrayerTrackerService();
+      final replacementsBefore = PrayerTrackerService.replacements;
       final log = await service.loadLog();
       final excused = await service.loadExcused();
       final streak = PrayerTracker.streak(
@@ -114,12 +116,21 @@ class StreakReviewPrompt {
       );
       final before = _baseline;
       // Özel gün işareti aradaki günleri atlatıp seriyi uzatabilir; bu bir
-      // kılınan namaz değildir: değerlendirme istenmez, sadece taban güncellenir
+      // kılınan namaz değildir: değerlendirme istenmez, sadece taban güncellenir.
+      // Yedekten geri yüklenen kayıt da öyle (okuma sırasında yüklenmiş olabilir).
       final excusedChanged =
           _excusedBaseline != null && !setEquals(_excusedBaseline, excused);
+      final replacements = PrayerTrackerService.replacements;
+      final replaced =
+          replacements != replacementsBefore ||
+          (_replacementsBaseline != null &&
+              _replacementsBaseline != replacementsBefore);
       _baseline = streak;
       _excusedBaseline = excused;
-      if (!excusedChanged && reachedGoal(before: before, after: streak)) {
+      _replacementsBaseline = replacements;
+      if (!excusedChanged &&
+          !replaced &&
+          reachedGoal(before: before, after: streak)) {
         _done = await _requestReview(
           prefs,
           delay: delay,

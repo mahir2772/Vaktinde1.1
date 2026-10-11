@@ -1812,6 +1812,48 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolSettingsDesc => 'Standort, Benachrichtigungen, Darstellung';
 
   @override
+  String get sectionBackup => 'DATENSICHERUNG';
+
+  @override
+  String get backupExportTitle => 'Daten sichern';
+
+  @override
+  String get backupExportSub =>
+      'Gebetsprotokoll, Qada, Dhikr und Einstellungen (inkl. Standort) in einer Datei';
+
+  @override
+  String get backupImportTitle => 'Sicherung wiederherstellen';
+
+  @override
+  String get backupImportSub =>
+      'Wählen Sie eine zuvor gespeicherte Sicherungsdatei';
+
+  @override
+  String get backupShareSubject => 'Vaktinde-Sicherung';
+
+  @override
+  String get backupRestoreConfirmTitle => 'Sicherung wiederherstellen?';
+
+  @override
+  String backupRestoreConfirmMessage(String date) {
+    return 'Die Sicherung vom $date wird geladen. Ihre aktuellen Daten werden durch die Daten der Sicherung ersetzt: Gebets- und Fastenprotokoll, Qada-Zähler, Dhikr, Adhan- und Benachrichtigungseinstellungen, Standort und Darstellung. Dies kann nicht rückgängig gemacht werden.';
+  }
+
+  @override
+  String get backupRestoreConfirm => 'Wiederherstellen';
+
+  @override
+  String get backupRestored => 'Sicherung wiederhergestellt.';
+
+  @override
+  String get backupInvalidFile =>
+      'Diese Datei ist keine gültige Vaktinde-Sicherung.';
+
+  @override
+  String get backupNewerVersion =>
+      'Diese Sicherung wurde mit einer neueren Version der App erstellt. Aktualisieren Sie die App und versuchen Sie es erneut.';
+
+  @override
   String daysLeft(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

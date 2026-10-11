@@ -26,6 +26,24 @@ class PrayerTrackerService {
   /// Uygulama içi değişiklik sayacı (ana ekran satırı / takip ekranı dinler)
   static final ValueNotifier<int> changes = ValueNotifier<int>(0);
 
+  /// Kayıt bütünüyle değiştirilirken ve değiştirildikten sonra artar (yedekten
+  /// geri yükleme): bu yolla uzayan seri kullanıcının işareti değildir
+  /// (StreakReviewPrompt değerlendirme istemez)
+  static int replacements = 0;
+
+  /// Kaydı bütünüyle değiştirir (yedekten geri yükleme): [write] diğer kayıt
+  /// işleriyle sırayla çalışır, sonra dinleyiciler (ana ekran satırı, takip
+  /// ekranı) yeniden okur
+  static Future<void> replaceRecords(Future<void> Function() write) async {
+    replacements++;
+    try {
+      await runExclusive(write);
+    } finally {
+      replacements++;
+      changes.value++;
+    }
+  }
+
   static final SerialQueue _queue = SerialQueue();
 
   /// Oku-değiştir-yaz işlemleri ve hatırlatma senkronu sırayla çalışır.

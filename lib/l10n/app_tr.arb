@@ -943,6 +943,25 @@
     },
     "toolZakatDesc": "Zekat ve öşür hesabı",
     "toolSettingsDesc": "Konum, bildirimler, görünüm",
+    "sectionBackup": "YEDEKLEME",
+    "backupExportTitle": "Verileri Yedekle",
+    "backupExportSub": "Namaz takibi, kaza, zikir ve ayarlar (konum dahil) tek dosyada",
+    "backupImportTitle": "Yedeği Geri Yükle",
+    "backupImportSub": "Daha önce aldığınız yedek dosyasını seçin",
+    "backupShareSubject": "Vaktinde yedeği",
+    "backupRestoreConfirmTitle": "Yedek geri yüklensin mi?",
+    "backupRestoreConfirmMessage": "{date} tarihli yedek yüklenecek. Mevcut veriler yedektekilerle değiştirilecek: namaz ve oruç takibi, kaza sayaçları, zikirler, ezan ve bildirim ayarları, konum ve görünüm. Bu işlem geri alınamaz.",
+    "@backupRestoreConfirmMessage": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "backupRestoreConfirm": "Geri Yükle",
+    "backupRestored": "Yedek geri yüklendi.",
+    "backupInvalidFile": "Bu dosya geçerli bir Vaktinde yedeği değil.",
+    "backupNewerVersion": "Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyip tekrar deneyin.",
     "daysLeft": "{count, plural, =0{Bugün} =1{Yarın} other{{count} gün kaldı}}",
     "@daysLeft": {
         "placeholders": {

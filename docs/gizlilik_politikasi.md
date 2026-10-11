@@ -9,6 +9,7 @@ Aşağıdaki bilgiler yalnızca telefonunuzda saklanır, bize gönderilmez:
 • Ezan ve hatırlatma ayarları, ses seçimleri, dil ve tema tercihleri
 • Namaz takibi kayıtları, kaza namazı ve oruç sayıları, zikir sayaçları, zekât hesapları
 Namaz vakitleri ve kıble yönü telefonunuzda, internet bağlantısı olmadan hesaplanır.
+Ayarlar > Yedekleme > "Verileri Yedekle" bu bilgileri (konumunuz dahil) tek bir dosyaya yazar ve dosyayı yalnızca sizin seçtiğiniz uygulamayla (ör. Google Drive, e-posta) paylaşır; dosya bize ya da başka bir yere kendiliğinden gönderilmez. Yedek dosyası konumunuzu ve namaz kayıtlarınızı içerdiğinden onu güvendiğiniz bir yerde saklayın. "Yedeği Geri Yükle" seçtiğiniz dosyayı yalnızca telefonunuzda okur. İzin durumları gibi cihaza özgü bilgiler ve reklam tercihleriniz yedeğe girmez.
 
 2. Konum
 Konum izni verirseniz telefonunuzun konumu (enlem ve boylam) namaz vakitlerini ve kıble yönünü hesaplamak için kullanılır.
@@ -24,6 +25,7 @@ Günün ayeti ve Kur'an okuyucudaki ayet ve mealler (alquran.cloud), günün had
 4. Analiz ve hata raporları (Google Firebase)
 Uygulamayı geliştirmek için Google Firebase hizmetleri kullanılır:
 • Firebase Analytics: hangi özelliklerin kullanıldığına dair sınırlı olaylar, uygulama örnek kimliği, cihaz modeli, işletim sistemi, uygulama sürümü, dil ve IP adresinden çıkarılan yaklaşık ülke/bölge. Konumunuz ve namaz vakitleriniz gönderilmez.
+• Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'de Firebase Analytics, reklam izni penceresinde (Google UMP) verdiğiniz tercihe uyar: "cihazda bilgi depolama ve/veya bilgiye erişme" amacını onaylamazsanız Analytics cihazınızda analiz ve reklam tanımlayıcısı saklamaz; kişiselleştirilmiş reklam amaçlarını onaylamazsanız Analytics verileri reklam amacıyla kullanılmaz. Tercihinizi Ayarlar > Destek > "Reklam gizlilik ayarları" bölümünden değiştirebilirsiniz.
 • Firebase Crashlytics: Uygulama çöktüğünde ya da bir hata oluştuğunda hata kaydı, cihaz modeli, işletim sistemi, uygulama sürümü ve kurulum kimliği.
 Bu veriler sizi doğrudan tanımlamaz, Google tarafından işlenir ve sınırlı süre saklanır (Crashlytics kayıtları 90 gün, Analytics verileri en fazla 14 ay).
 
@@ -46,7 +48,7 @@ Google'ın verileri nasıl kullandığı: https://policies.google.com/technologi
 Verilerinizi satmayız. Firebase ve AdMob verileri Google tarafından Türkiye dışındaki sunucularda işlenebilir.
 
 8. Saklama ve silme
-Telefonunuzdaki verileri Ayarlar > Uygulamalar > Vaktinde > Depolama > "Verileri temizle" ile ya da Uygulamayı kaldırarak silebilirsiniz. Google hizmetlerindeki kayıtlar yukarıdaki sürelerin sonunda silinir; silinmesini istediğiniz veriler için bize e-posta gönderebilirsiniz.
+Telefonunuzdaki verileri Ayarlar > Uygulamalar > Vaktinde > Depolama > "Verileri temizle" ile ya da Uygulamayı kaldırarak silebilirsiniz. Oluşturduğunuz yedek dosyaları bu yolla silinmez; onları kaydettiğiniz yerden kendiniz silebilirsiniz. Google hizmetlerindeki kayıtlar yukarıdaki sürelerin sonunda silinir; silinmesini istediğiniz veriler için bize e-posta gönderebilirsiniz.
 
 9. Çocukların gizliliği
 Uygulama genel kitleye yöneliktir; 13 yaşından küçük çocuklardan bilerek kişisel veri toplamayız. Çocuğunuza ait bilgilerin toplandığını düşünüyorsanız bize yazın.

@@ -1,6 +1,7 @@
 package com.mmdigital.vaktinde
 
 import android.app.NotificationManager
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.hardware.GeomagneticField
@@ -17,6 +18,8 @@ import android.provider.Settings
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import kotlin.math.sqrt
 
 /** "vaktinde/device" kanalı (MainActivity) */
@@ -48,8 +51,56 @@ object DeviceMethods {
                 if (opened == null) result.error("bad_args", "target: app, notifications, battery, dnd, sound", null)
                 else result.success(opened)
             }
+            // Firebase Analytics izinleri (Consent Mode v2) için reklam rızası kaydı
+            "tcfConsent" -> {
+                val context = appContext ?: return result.error("no_context", null, null)
+                result.success(tcfConsent(context))
+            }
             else -> result.notImplemented()
         }
+    }
+
+    /** Yedek dosyası en çok bu kadar okunur (Dart BackupService.maxBytes ile aynı) */
+    const val MAX_DOCUMENT_BYTES = 1024 * 1024
+
+    /**
+     * Seçilen belgenin UTF-8 metni; [maxBytes]'tan büyükse null (tamamı okunmaz). Akış
+     * açılamazsa/okunamazsa fırlatır (çağıran yakalar).
+     */
+    fun readDocument(resolver: ContentResolver, uri: Uri, maxBytes: Int): String? {
+        val input = resolver.openInputStream(uri) ?: throw IOException("no input stream")
+        return input.use { stream ->
+            val out = ByteArrayOutputStream()
+            val buffer = ByteArray(8192)
+            while (true) {
+                val read = stream.read(buffer)
+                if (read < 0) break
+                if (out.size() + read > maxBytes) return null
+                out.write(buffer, 0, read)
+            }
+            String(out.toByteArray(), Charsets.UTF_8)
+        }
+    }
+
+    /**
+     * Reklam rızası (Google UMP, IAB TCF v2): UMP kararları uygulamanın varsayılan
+     * SharedPreferences dosyasına yazar. gdprApplies: IABTCF_gdprApplies (1 GDPR geçerli,
+     * 0 değil; yoksa null), purposeConsents: IABTCF_PurposeConsents ("1" ile başlıyorsa amaç 1
+     * onaylı; yoksa null). Bazı CMP'ler sayıyı metin yazar: o da okunur. Hiçbir yol fırlatmaz.
+     */
+    fun tcfConsent(context: Context): Map<String, Any?> {
+        val all = runCatching {
+            context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE).all
+        }.getOrNull().orEmpty()
+        val gdprApplies = when (val value = all["IABTCF_gdprApplies"]) {
+            is Number -> value.toInt()
+            is String -> value.trim().toIntOrNull()
+            else -> null
+        }
+        return mapOf(
+            "gdprApplies" to gdprApplies,
+            "purposeConsents" to all["IABTCF_PurposeConsents"] as? String,
+        )
     }
 
     /**

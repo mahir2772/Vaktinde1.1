@@ -1781,6 +1781,46 @@ class AppLocalizationsTr extends AppLocalizations {
   String get toolSettingsDesc => 'Konum, bildirimler, görünüm';
 
   @override
+  String get sectionBackup => 'YEDEKLEME';
+
+  @override
+  String get backupExportTitle => 'Verileri Yedekle';
+
+  @override
+  String get backupExportSub =>
+      'Namaz takibi, kaza, zikir ve ayarlar (konum dahil) tek dosyada';
+
+  @override
+  String get backupImportTitle => 'Yedeği Geri Yükle';
+
+  @override
+  String get backupImportSub => 'Daha önce aldığınız yedek dosyasını seçin';
+
+  @override
+  String get backupShareSubject => 'Vaktinde yedeği';
+
+  @override
+  String get backupRestoreConfirmTitle => 'Yedek geri yüklensin mi?';
+
+  @override
+  String backupRestoreConfirmMessage(String date) {
+    return '$date tarihli yedek yüklenecek. Mevcut veriler yedektekilerle değiştirilecek: namaz ve oruç takibi, kaza sayaçları, zikirler, ezan ve bildirim ayarları, konum ve görünüm. Bu işlem geri alınamaz.';
+  }
+
+  @override
+  String get backupRestoreConfirm => 'Geri Yükle';
+
+  @override
+  String get backupRestored => 'Yedek geri yüklendi.';
+
+  @override
+  String get backupInvalidFile => 'Bu dosya geçerli bir Vaktinde yedeği değil.';
+
+  @override
+  String get backupNewerVersion =>
+      'Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyip tekrar deneyin.';
+
+  @override
   String daysLeft(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

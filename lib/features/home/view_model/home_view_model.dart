@@ -539,6 +539,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       await _refreshService.cancelDailyContent();
       return;
     }
+    await _ensureDailyContent();
+  }
+
+  // Bugünün içeriği kurulur; alınamamış olan yeniden istenir (gelince kurulur)
+  Future<void> _ensureDailyContent() async {
     await _scheduleDailyContent();
     final loc = _currentLoc;
     if (loc == null) return;
@@ -550,6 +555,52 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       if (!DateUtils.isSameDay(_hadithDate, now))
         getDailyHadith(locale).catchError((Object e) {}),
     ]);
+  }
+
+  /// Yedekten geri yüklemeden sonra: ayarlar, konum ve vakitler kayıttan
+  /// yeniden okunur; ekran, widget'lar, kalıcı bildirim ve bildirimlerin hepsi
+  /// (ezan, hatırlatma, vakit çıkışı, dini günler, günün ayeti/hadisi) yeni
+  /// ayarlarla yeniden kurulur. Koordinatsız konum internetle çözümlenir.
+  Future<void> reloadFromStorage() async {
+    _audioPlayer?.stop();
+    currentlyPlayingSound = null;
+    await _loadSavedSettings();
+    final savedCity = await _storageService.loadLocation();
+    final savedDistrict = await _storageService.loadDistrict();
+    final times = await _calculateFromSavedCoordinates();
+    if (times != null) {
+      prayerTimes = times;
+      if (savedCity != null) {
+        city = savedCity;
+        district = savedDistrict;
+      }
+      isLoading = false;
+      errorMessageKey = "";
+      errorDetail = null;
+      _isDataLoaded = true;
+      _calculateHijriDate();
+      notifyListeners();
+      _sendTimesToBackgroundService(); // widget'ları da günceller
+      await _rescheduleAlarms();
+    } else if (savedCity != null && savedCity.isNotEmpty) {
+      // Eski (koordinatsız) kayıt: konum bir kez çözümlenir (alarmları da
+      // kurar); internet yoksa yeni ayarlar eldeki vakitlerle kurulur
+      await changeCityAndDistrict(savedCity, savedDistrict);
+      await (_rescheduleRun ?? _rescheduleAlarms());
+    } else {
+      notifyListeners();
+      await _rescheduleAlarms();
+    }
+    // Vakit yoksa alarm turu çalışmaz: dini günler ayrıca eşitlenir
+    if (prayerTimes == null && _currentLoc != null) {
+      await _refreshService.syncReligiousDays(_currentLoc!);
+    }
+    if (dailyContentEnabled) {
+      // Alınamamış içerik ağdan istenir (beklenmez; gelince kurulur)
+      unawaited(_ensureDailyContent());
+    } else {
+      await _refreshService.cancelDailyContent();
+    }
   }
 
   /// "Dini gün ve kandil bildirimleri": kapatılınca kurulu olanlar hemen iptal
