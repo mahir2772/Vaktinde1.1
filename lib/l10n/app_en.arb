@@ -878,6 +878,25 @@
     },
     "toolZakatDesc": "Zakat and harvest (ushr) calculation",
     "toolSettingsDesc": "Location, notifications, appearance",
+    "sectionBackup": "BACKUP",
+    "backupExportTitle": "Back Up Data",
+    "backupExportSub": "Prayer tracking, missed prayers, dhikr and settings (location included) in one file",
+    "backupImportTitle": "Restore Backup",
+    "backupImportSub": "Choose a backup file you saved earlier",
+    "backupShareSubject": "Vaktinde backup",
+    "backupRestoreConfirmTitle": "Restore this backup?",
+    "backupRestoreConfirmMessage": "The backup from {date} will be loaded. Your current data will be replaced with the data in the backup: prayer and fasting tracking, missed prayer counts, dhikr, adhan and notification settings, location and appearance. This cannot be undone.",
+    "@backupRestoreConfirmMessage": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "backupRestoreConfirm": "Restore",
+    "backupRestored": "Backup restored.",
+    "backupInvalidFile": "This file is not a valid Vaktinde backup.",
+    "backupNewerVersion": "This backup was made with a newer version of the app. Update the app and try again.",
     "daysLeft": "{count, plural, =0{Today} =1{Tomorrow} other{{count} days left}}",
     "@daysLeft": {
         "placeholders": {

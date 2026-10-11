@@ -2,11 +2,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import 'app_analytics.dart';
 
 /// AdMob UMP (AB/EEA rıza formu). Reklam SDK'sı ve reklam yüklemeleri ancak
 /// `canRequestAds` true olunca başlar. Hiçbir adım uygulamayı bekletmez ya da
 /// çökertmez: ağ yoksa/zaman aşımında önceki oturumun rızası geçerli kalır.
+/// Firebase Analytics izinleri (Consent Mode v2) de bu rızadan türetilir:
+/// UMP'nin yazdığı IAB TCF kaydı → [AnalyticsConsent.fromTcf].
 class AdConsent {
   AdConsent._();
 
@@ -21,6 +26,8 @@ class AdConsent {
   static Future<void>? _run;
   static bool _adsStarted = false;
   static bool _gathering = false;
+  // Rıza bilgisi bu oturumda UMP'den güncellendi (yoksa önceki oturumun bilgisi)
+  static bool _infoUpdated = false;
   static final List<VoidCallback> _onAdsStarted = [];
 
   /// Açılıştaki rıza güncellemesi / formu sürüyor mu (başka pencere açılmasın)
@@ -60,6 +67,7 @@ class AdConsent {
     _run = null;
     _adsStarted = false;
     _gathering = false;
+    _infoUpdated = false;
     _onAdsStarted.clear();
     canRequestAds.value = false;
     privacyOptionsRequired.value = false;
@@ -76,6 +84,9 @@ class AdConsent {
   }
 
   static Future<void> _gatherConsent() async {
+    // Önceki oturumdan AB/EEA olduğu biliniyorsa Analytics, UMP sonucuna kadar
+    // izinsiz (Consent Mode v2 varsayılanı)
+    await _applyAnalyticsDefault();
     // Önceki oturumda rıza alınmışsa reklamlar beklemeden başlar
     await _startIfAllowed();
     try {
@@ -103,6 +114,9 @@ class AdConsent {
         onTimeout: () => false,
       );
       if (ok) {
+        _infoUpdated = true;
+        // Bölge artık biliniyor: form açıkken AB/EEA'da Analytics izinsiz
+        await _applyAnalyticsConsent();
         // Gerekirse form gösterilir (kullanıcı kapatınca döner)
         await ConsentForm.loadAndShowConsentFormIfRequired((formError) {
           if (formError != null) {
@@ -114,6 +128,8 @@ class AdConsent {
       debugPrint('UMP hatası: $e');
     }
     await _updatePrivacyOptionsStatus();
+    // Formdaki seçim (güncellenemediyse önceki oturumun kaydı) Analytics'e
+    await _applyAnalyticsConsent();
     await _startIfAllowed();
   }
 
@@ -129,7 +145,8 @@ class AdConsent {
   }
 
   /// Ayarlardaki "Reklam gizlilik ayarları": rıza formunu yeniden açar;
-  /// kapanınca reklam izni yeniden okunur (geri çekildiyse yeni reklam istenmez)
+  /// kapanınca reklam izni yeniden okunur (geri çekildiyse yeni reklam istenmez),
+  /// Analytics izinleri yeni seçimle verilir
   static Future<void> showPrivacyOptions() async {
     try {
       final closed = Completer<void>();
@@ -157,6 +174,91 @@ class AdConsent {
       debugPrint('UMP izin durumu okunamadı: $e');
     }
     await _updatePrivacyOptionsStatus();
+    await _applyAnalyticsConsent();
+  }
+
+  static const MethodChannel _device = MethodChannel('vaktinde/device');
+
+  /// UMP durumlarından rıza gerekliliği: rıza "gerekli" (alınmamış) ise
+  /// bekleniyor; "alındı" ya da gizlilik seçenekleri girişi zorunluysa gerekli;
+  /// "gerekmiyor" ise değil
+  static ConsentRequirement requirementOf({
+    required ConsentStatus? status,
+    required PrivacyOptionsRequirementStatus? privacyOptions,
+  }) {
+    if (status == ConsentStatus.required) return ConsentRequirement.pending;
+    if (privacyOptions == PrivacyOptionsRequirementStatus.required ||
+        status == ConsentStatus.obtained) {
+      return ConsentRequirement.required;
+    }
+    if (status == ConsentStatus.notRequired) {
+      return ConsentRequirement.notRequired;
+    }
+    return ConsentRequirement.unknown;
+  }
+
+  // UMP'nin son bildiği durum (oturumlar arası saklanır); okunamayan bilinmiyor
+  static Future<ConsentRequirement> _consentRequirement() async {
+    ConsentStatus? status;
+    PrivacyOptionsRequirementStatus? privacyOptions;
+    try {
+      status = await ConsentInformation.instance.getConsentStatus();
+    } catch (e) {
+      debugPrint('UMP rıza durumu okunamadı: $e');
+    }
+    try {
+      privacyOptions = await ConsentInformation.instance
+          .getPrivacyOptionsRequirementStatus();
+    } catch (e) {
+      debugPrint('UMP gizlilik durumu okunamadı: $e');
+    }
+    return requirementOf(status: status, privacyOptions: privacyOptions);
+  }
+
+  // UMP'nin yazdığı IAB TCF kaydı (MainActivity kanalı); okunamazsa boş
+  static Future<({int? gdprApplies, String? purposeConsents})>
+  _readTcf() async {
+    try {
+      final tcf = await _device.invokeMapMethod<String, Object?>('tcfConsent');
+      final gdprApplies = tcf?['gdprApplies'];
+      final purposeConsents = tcf?['purposeConsents'];
+      return (
+        gdprApplies: gdprApplies is int ? gdprApplies : null,
+        purposeConsents: purposeConsents is String ? purposeConsents : null,
+      );
+    } catch (e) {
+      debugPrint('TCF kaydı okunamadı: $e');
+      return (gdprApplies: null, purposeConsents: null);
+    }
+  }
+
+  /// Consent Mode v2 varsayılanı (UMP sonucu beklenmeden): önceki oturumdan
+  /// rıza gerektiği biliniyorsa (UMP durumu ya da TCF'de GDPR geçerli) tüm
+  /// Analytics izinleri kapanır. Bilinmiyorsa dokunulmaz (SDK son kararı saklar).
+  static Future<void> _applyAnalyticsDefault() async {
+    final requirement = await _consentRequirement();
+    final tcf = await _readTcf();
+    if (requirement == ConsentRequirement.pending ||
+        requirement == ConsentRequirement.required ||
+        tcf.gdprApplies == 1) {
+      await AppAnalytics.applyConsent(AnalyticsConsent.denied);
+    }
+  }
+
+  /// Analytics izinleri UMP'nin TCF kaydından ([AnalyticsConsent.fromTcf]):
+  /// AB/EEA'da kayıt yoksa/okunamazsa kapalı; GDPR dışında açık (UMP
+  /// güncellenemediyse sadece TCF'de GDPR'ın geçmediği biliniyorsa)
+  static Future<void> _applyAnalyticsConsent() async {
+    final requirement = await _consentRequirement();
+    final tcf = await _readTcf();
+    await AppAnalytics.applyConsent(
+      AnalyticsConsent.fromTcf(
+        gdprApplies: tcf.gdprApplies,
+        purposeConsents: tcf.purposeConsents,
+        requirement: requirement,
+        updated: _infoUpdated,
+      ),
+    );
   }
 
   static Future<void> _startIfAllowed() async {

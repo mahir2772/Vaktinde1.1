@@ -3224,6 +3224,78 @@ abstract class AppLocalizations {
   /// **'Konum, bildirimler, görünüm'**
   String get toolSettingsDesc;
 
+  /// No description provided for @sectionBackup.
+  ///
+  /// In tr, this message translates to:
+  /// **'YEDEKLEME'**
+  String get sectionBackup;
+
+  /// No description provided for @backupExportTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Verileri Yedekle'**
+  String get backupExportTitle;
+
+  /// No description provided for @backupExportSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz takibi, kaza, zikir ve ayarlar (konum dahil) tek dosyada'**
+  String get backupExportSub;
+
+  /// No description provided for @backupImportTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedeği Geri Yükle'**
+  String get backupImportTitle;
+
+  /// No description provided for @backupImportSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Daha önce aldığınız yedek dosyasını seçin'**
+  String get backupImportSub;
+
+  /// No description provided for @backupShareSubject.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde yedeği'**
+  String get backupShareSubject;
+
+  /// No description provided for @backupRestoreConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek geri yüklensin mi?'**
+  String get backupRestoreConfirmTitle;
+
+  /// No description provided for @backupRestoreConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'{date} tarihli yedek yüklenecek. Mevcut veriler yedektekilerle değiştirilecek: namaz ve oruç takibi, kaza sayaçları, zikirler, ezan ve bildirim ayarları, konum ve görünüm. Bu işlem geri alınamaz.'**
+  String backupRestoreConfirmMessage(String date);
+
+  /// No description provided for @backupRestoreConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri Yükle'**
+  String get backupRestoreConfirm;
+
+  /// No description provided for @backupRestored.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek geri yüklendi.'**
+  String get backupRestored;
+
+  /// No description provided for @backupInvalidFile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu dosya geçerli bir Vaktinde yedeği değil.'**
+  String get backupInvalidFile;
+
+  /// No description provided for @backupNewerVersion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyip tekrar deneyin.'**
+  String get backupNewerVersion;
+
   /// No description provided for @daysLeft.
   ///
   /// In tr, this message translates to:

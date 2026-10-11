@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/backup_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/prayer_tracker_service.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
@@ -252,6 +253,34 @@ void main() {
       expect(reviewRequests, 0);
 
       await service.setPrayed(today, 'Yatsı', true); // 7 → 8
+      await prompt.settled;
+      expect(reviewRequests, 1);
+    });
+
+    test('yedekten geri yüklenen kayıt seriyi 7+\'ya çıkarsa da istenmez; '
+        'sonraki namazla istenir', () async {
+      SharedPreferences.setMockInitialValues(streakPrefs(2));
+      final service = PrayerTrackerService();
+      final prompt = startPrompt();
+      await prompt.settled;
+      // Yedekteki kayıt: seri 2 → 9
+      final restored = streakPrefs(9);
+      await PrayerTrackerService.replaceRecords(
+        () async => BackupService.restore(
+          await SharedPreferences.getInstance(),
+          BackupData(
+            created: DateTime.utc(2026, 10, 1),
+            values: {
+              'prayer_log': restored['prayer_log']!,
+              'prayer_log_since': restored['prayer_log_since']!,
+            },
+          ),
+        ),
+      );
+      await prompt.settled;
+      expect(reviewRequests, 0);
+
+      await service.setPrayed(today, 'Yatsı', true); // 9 → 10
       await prompt.settled;
       expect(reviewRequests, 1);
     });

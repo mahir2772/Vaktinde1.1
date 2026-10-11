@@ -15,11 +15,12 @@ import '../../home/view_model/home_view_model.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../notification_health/view/notification_health_view.dart';
 import 'add_widget_sheet.dart';
+import 'backup_setting.dart';
 import 'end_reminder_setting.dart';
 import 'language_sheet.dart';
 import 'time_adjust_view.dart';
 
-/// Ayarlar: dil ve görünüm, konum ve vakitler, destek, sürüm
+/// Ayarlar: dil ve görünüm, konum ve vakitler, yedekleme, destek, sürüm
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
@@ -138,6 +139,8 @@ class SettingsView extends StatelessWidget {
               ),
             ],
           ),
+          // Namaz takibi, kaza, zikir ve ayarlar tek dosyaya / dosyadan
+          const BackupSection(),
           // AB/EEA'da reklam rızası buradan sonradan değiştirilebilir (UMP zorunlu kılarsa)
           ValueListenableBuilder<bool>(
             valueListenable: AdConsent.privacyOptionsRequired,

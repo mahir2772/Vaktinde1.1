@@ -794,6 +794,13 @@ class ZikirViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Yedekten geri yüklemeden sonra kayıtlar yeniden okunur (kayıtta olmayan
+  /// istatistik boşalır)
+  Future<void> reload() async {
+    _dailyStats = {};
+    await _loadData();
+  }
+
   Future<void> _saveCount() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('dhikr_count_$_selectedDhikr', _count);

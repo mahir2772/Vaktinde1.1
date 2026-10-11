@@ -878,6 +878,25 @@
     },
     "toolZakatDesc": "حساب الزكاة والعُشر",
     "toolSettingsDesc": "الموقع والإشعارات والمظهر",
+    "sectionBackup": "النسخ الاحتياطي",
+    "backupExportTitle": "نسخ البيانات احتياطيًا",
+    "backupExportSub": "متابعة الصلوات والقضاء والأذكار والإعدادات (بما فيها الموقع) في ملف واحد",
+    "backupImportTitle": "استعادة نسخة احتياطية",
+    "backupImportSub": "اختر ملف نسخة احتياطية حفظته من قبل",
+    "backupShareSubject": "نسخة Vaktinde الاحتياطية",
+    "backupRestoreConfirmTitle": "استعادة النسخة الاحتياطية؟",
+    "backupRestoreConfirmMessage": "سيتم تحميل النسخة الاحتياطية المؤرخة في {date}. ستُستبدل بياناتك الحالية ببيانات النسخة الاحتياطية: متابعة الصلاة والصيام، وعدّادات القضاء، والأذكار، وإعدادات الأذان والإشعارات، والموقع والمظهر. لا يمكن التراجع عن هذا الإجراء.",
+    "@backupRestoreConfirmMessage": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "backupRestoreConfirm": "استعادة",
+    "backupRestored": "تمت استعادة النسخة الاحتياطية.",
+    "backupInvalidFile": "هذا الملف ليس نسخة احتياطية صالحة من Vaktinde.",
+    "backupNewerVersion": "أُنشئت هذه النسخة الاحتياطية بإصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.",
     "daysLeft": "{count, plural, =0{اليوم} =1{غدًا} =2{بعد يومين} few{بعد {count} أيام} many{بعد {count} يومًا} other{بعد {count} يوم}}",
     "@daysLeft": {
         "placeholders": {

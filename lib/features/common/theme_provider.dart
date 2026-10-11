@@ -69,11 +69,20 @@ class ThemeProvider extends ChangeNotifier {
     }
   }
 
+  /// Yedekten geri yüklemeden sonra kayıttan yeniden okunur (kayıt yoksa
+  /// sistem teması, arka plansız)
+  Future<void> reload() async {
+    _themeMode = ThemeMode.system;
+    await _loadThemeSettings();
+  }
+
   Future<void> _loadThemeSettings() async {
     final prefs = await SharedPreferences.getInstance();
 
     int? modeIndex = prefs.getInt('theme_mode');
-    if (modeIndex != null) {
+    if (modeIndex != null &&
+        modeIndex >= 0 &&
+        modeIndex < ThemeMode.values.length) {
       _themeMode = ThemeMode.values[modeIndex];
     }
 

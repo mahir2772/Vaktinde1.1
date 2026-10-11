@@ -1819,6 +1819,48 @@ class AppLocalizationsFr extends AppLocalizations {
   String get toolSettingsDesc => 'Position, notifications, apparence';
 
   @override
+  String get sectionBackup => 'SAUVEGARDE';
+
+  @override
+  String get backupExportTitle => 'Sauvegarder les données';
+
+  @override
+  String get backupExportSub =>
+      'Suivi et rattrapage des prières, dhikr et paramètres (position comprise) dans un seul fichier';
+
+  @override
+  String get backupImportTitle => 'Restaurer une sauvegarde';
+
+  @override
+  String get backupImportSub =>
+      'Choisissez un fichier de sauvegarde enregistré auparavant';
+
+  @override
+  String get backupShareSubject => 'Sauvegarde Vaktinde';
+
+  @override
+  String get backupRestoreConfirmTitle => 'Restaurer la sauvegarde ?';
+
+  @override
+  String backupRestoreConfirmMessage(String date) {
+    return 'La sauvegarde du $date va être chargée. Vos données actuelles seront remplacées par celles de la sauvegarde : suivi des prières et du jeûne, compteurs de rattrapage, dhikr, paramètres de l\'adhan et des notifications, position et apparence. Cette action est irréversible.';
+  }
+
+  @override
+  String get backupRestoreConfirm => 'Restaurer';
+
+  @override
+  String get backupRestored => 'Sauvegarde restaurée.';
+
+  @override
+  String get backupInvalidFile =>
+      'Ce fichier n\'est pas une sauvegarde Vaktinde valide.';
+
+  @override
+  String get backupNewerVersion =>
+      'Cette sauvegarde a été créée avec une version plus récente de l\'application. Mettez l\'application à jour, puis réessayez.';
+
+  @override
   String daysLeft(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

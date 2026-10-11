@@ -1808,6 +1808,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolSettingsDesc => 'الموقع والإشعارات والمظهر';
 
   @override
+  String get sectionBackup => 'النسخ الاحتياطي';
+
+  @override
+  String get backupExportTitle => 'نسخ البيانات احتياطيًا';
+
+  @override
+  String get backupExportSub =>
+      'متابعة الصلوات والقضاء والأذكار والإعدادات (بما فيها الموقع) في ملف واحد';
+
+  @override
+  String get backupImportTitle => 'استعادة نسخة احتياطية';
+
+  @override
+  String get backupImportSub => 'اختر ملف نسخة احتياطية حفظته من قبل';
+
+  @override
+  String get backupShareSubject => 'نسخة Vaktinde الاحتياطية';
+
+  @override
+  String get backupRestoreConfirmTitle => 'استعادة النسخة الاحتياطية؟';
+
+  @override
+  String backupRestoreConfirmMessage(String date) {
+    return 'سيتم تحميل النسخة الاحتياطية المؤرخة في $date. ستُستبدل بياناتك الحالية ببيانات النسخة الاحتياطية: متابعة الصلاة والصيام، وعدّادات القضاء، والأذكار، وإعدادات الأذان والإشعارات، والموقع والمظهر. لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String get backupRestoreConfirm => 'استعادة';
+
+  @override
+  String get backupRestored => 'تمت استعادة النسخة الاحتياطية.';
+
+  @override
+  String get backupInvalidFile =>
+      'هذا الملف ليس نسخة احتياطية صالحة من Vaktinde.';
+
+  @override
+  String get backupNewerVersion =>
+      'أُنشئت هذه النسخة الاحتياطية بإصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.';
+
+  @override
   String daysLeft(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

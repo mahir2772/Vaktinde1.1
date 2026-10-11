@@ -1797,6 +1797,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolSettingsDesc => 'Location, notifications, appearance';
 
   @override
+  String get sectionBackup => 'BACKUP';
+
+  @override
+  String get backupExportTitle => 'Back Up Data';
+
+  @override
+  String get backupExportSub =>
+      'Prayer tracking, missed prayers, dhikr and settings (location included) in one file';
+
+  @override
+  String get backupImportTitle => 'Restore Backup';
+
+  @override
+  String get backupImportSub => 'Choose a backup file you saved earlier';
+
+  @override
+  String get backupShareSubject => 'Vaktinde backup';
+
+  @override
+  String get backupRestoreConfirmTitle => 'Restore this backup?';
+
+  @override
+  String backupRestoreConfirmMessage(String date) {
+    return 'The backup from $date will be loaded. Your current data will be replaced with the data in the backup: prayer and fasting tracking, missed prayer counts, dhikr, adhan and notification settings, location and appearance. This cannot be undone.';
+  }
+
+  @override
+  String get backupRestoreConfirm => 'Restore';
+
+  @override
+  String get backupRestored => 'Backup restored.';
+
+  @override
+  String get backupInvalidFile => 'This file is not a valid Vaktinde backup.';
+
+  @override
+  String get backupNewerVersion =>
+      'This backup was made with a newer version of the app. Update the app and try again.';
+
+  @override
   String daysLeft(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
