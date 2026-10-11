@@ -22,7 +22,7 @@ class DailyContentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final items = <Widget>[
+    final items = <_DailyItem>[
       if (ayah != null)
         _DailyItem(
           icon: Icons.menu_book_rounded,
@@ -40,23 +40,87 @@ class DailyContentRow extends StatelessWidget {
         ),
     ];
     if (items.isEmpty) return const SizedBox.shrink();
-    final divider = Container(
-      width: 1,
-      margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-      color: Theme.of(context).colorScheme.outlineVariant,
+    final dividerColor = Theme.of(context).colorScheme.outlineVariant;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Büyük yazıda yan yana sığmayan başlık kesilirdi ("Vers des Ta…"):
+        // girişler alt alta, tam genişlikte
+        if (items.length > 1 &&
+            !_titlesFitSideBySide(context, constraints.maxWidth, [
+              for (final item in items) item.title,
+            ])) {
+          return AppCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                items[0],
+                Divider(
+                  height: 1,
+                  indent: AppSpacing.md,
+                  endIndent: AppSpacing.md,
+                  color: dividerColor,
+                ),
+                items[1],
+              ],
+            ),
+          );
+        }
+        final divider = Container(
+          width: 1,
+          margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          color: dividerColor,
+        );
+        return AppCard(
+          padding: EdgeInsets.zero,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: items[0]),
+                if (items.length > 1) ...[divider, Expanded(child: items[1])],
+              ],
+            ),
+          ),
+        );
+      },
     );
-    return AppCard(
-      padding: EdgeInsets.zero,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(child: items[0]),
-            if (items.length > 1) ...[divider, Expanded(child: items[1])],
-          ],
-        ),
-      ),
-    );
+  }
+
+  /// Yan yana yarım genişlikte her başlık en fazla iki satıra, kelimeler
+  /// bölünmeden sığıyor mu
+  static bool _titlesFitSideBySide(
+    BuildContext context,
+    double width,
+    List<String> titles,
+  ) {
+    if (!width.isFinite) return true;
+    final textWidth = (width - 1) / 2 - _DailyItem.chromeWidth;
+    if (textWidth <= 0) return false;
+    final style = Theme.of(context).textTheme.titleSmall;
+    final direction = Directionality.of(context);
+    final scaler = MediaQuery.textScalerOf(context);
+    bool fits(String text, {int? maxLines}) {
+      final painter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        textDirection: direction,
+        textScaler: scaler,
+        maxLines: maxLines,
+      )..layout(maxWidth: maxLines == null ? double.infinity : textWidth);
+      final ok = maxLines == null
+          ? painter.width <= textWidth
+          : !painter.didExceedMaxLines;
+      painter.dispose();
+      return ok;
+    }
+
+    for (final title in titles) {
+      if (!fits(title, maxLines: 2)) return false;
+      for (final word in title.split(' ')) {
+        if (word.isNotEmpty && !fits(word)) return false;
+      }
+    }
+    return true;
   }
 }
 
@@ -72,6 +136,9 @@ class _DailyItem extends StatelessWidget {
     required this.preview,
     required this.onTap,
   });
+
+  /// Başlık sütunu dışındaki genişlik: iç boşluklar + simge kutusu + aralık
+  static const double chromeWidth = 2 * AppSpacing.md + 40 + AppSpacing.md;
 
   @override
   Widget build(BuildContext context) {

@@ -45,6 +45,80 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navTools => 'Araçlar';
 
   @override
+  String a11yHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count saat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dakika',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yHoursMinutes(String hours, String minutes) {
+    return '$hours $minutes';
+  }
+
+  @override
+  String a11yTimeUntil(String vakit, String duration) {
+    return '$vakit vaktine $duration kaldı';
+  }
+
+  @override
+  String get a11yPrayerPassed => 'geçti';
+
+  @override
+  String a11yTrackerCell(String day, String prayer, String state) {
+    return '$day, $prayer: $state';
+  }
+
+  @override
+  String get a11yNotPrayed => 'Kılınmadı';
+
+  @override
+  String get a11yNotDue => 'Vakti girmedi';
+
+  @override
+  String get a11yExcusedDay => 'Özel gün';
+
+  @override
+  String a11yQiblaTurnRight(int deg) {
+    return 'Kıbleye dönmek için $deg derece sağa dönün';
+  }
+
+  @override
+  String a11yQiblaTurnLeft(int deg) {
+    return 'Kıbleye dönmek için $deg derece sola dönün';
+  }
+
+  @override
+  String get a11yQiblaAligned => 'Kıble yönündesiniz';
+
+  @override
+  String get a11yDecrease => 'Azalt';
+
+  @override
+  String get a11yIncrease => 'Artır';
+
+  @override
+  String a11yPlaySound(String sound) {
+    return '$sound sesini dinle';
+  }
+
+  @override
+  String get a11yStopSound => 'Durdur';
+
+  @override
   String get hadithNotFound => 'Hadis metni bulunamadı.';
 
   @override

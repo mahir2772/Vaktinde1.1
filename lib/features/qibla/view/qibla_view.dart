@@ -436,6 +436,16 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     return _isolateDegrees(loc.phoneHeading(value), value);
   }
 
+  /// Pusulanın ekran okuyucu yönergesi: "Kıbleye dönmek için 20 derece sağa
+  /// dönün" (5°'lik adımlarla değişir; canlı bölge değil, odaklanınca okunur)
+  String _turnSpoken(AppLocalizations loc, double heading, double bearing) {
+    final degrees = spokenTurnDegrees(heading, bearing);
+    if (degrees == 0) return loc.a11yQiblaAligned;
+    return degrees > 0
+        ? loc.a11yQiblaTurnRight(degrees)
+        : loc.a11yQiblaTurnLeft(-degrees);
+  }
+
   /// "Doğru sonuç için": ipuçları ve hesaplanan değerler (açılış anındaki)
   void _showAccuracyTips(double bearing) {
     showModalBottomSheet<void>(
@@ -553,10 +563,12 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
                       heading: heading,
                       bearing: bearing,
                       aligned: _aligned,
+                      // Anlık telefon yönü (her derecede değişir) yerine
+                      // yuvarlanmış dönüş yönergesi
                       semanticLabel: [
                         loc.qiblaDirection,
                         _angleText(loc, bearing),
-                        if (_hasHeading) _headingText(loc, _heading),
+                        if (_hasHeading) _turnSpoken(loc, _heading, bearing),
                       ].join('. '),
                     ),
                   ),
@@ -709,8 +721,13 @@ class _QiblaStatus extends StatelessWidget {
       );
     } else if (turn == QiblaTurn.aligned) {
       final color = onImage ? colors.onHero : colors.success;
+      // Canlı bölge sadece kıble yönüne girilince belirir: TalkBack bir kez
+      // "Kıble yönündesiniz" der (pusula oynadıkça tekrar okunmaz)
       child = Semantics(
+        container: true,
         liveRegion: true,
+        label: loc.a11yQiblaAligned,
+        excludeSemantics: true,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

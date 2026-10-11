@@ -21,6 +21,7 @@ import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/share_card.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
@@ -36,6 +37,7 @@ import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
+import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/settings/view/time_adjust_view.dart';
@@ -751,6 +753,9 @@ void main() {
     for (final lang in ['tr', 'ar']) {
       await rootBundle.loadString('assets/data/greetings_$lang.json');
     }
+    // %200 çeşitleri Dualar ve Kur'an listesini her dilde açar
+    await DuaLibrary.load();
+    await rootBundle.loadString(QuranService.surahsAsset);
   });
 
   setUp(() {
@@ -987,6 +992,94 @@ void main() {
       });
     },
   );
+
+  // Erişilebilirlik: sistem yazı boyutu %200 (Android 14 en büyük yazı; testte
+  // doğrusal, cihazdakinden sert): ana ekranlar taşmadan, kırpılmadan çizilmeli
+  for (final lang in ['tr', 'de', 'ar']) {
+    testWidgets('$lang %200: ana ekranlar', skip: skip, variant: _android, (
+      tester,
+    ) async {
+      await _run(tester, () async {
+        tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+        try {
+          final loc = lookupAppLocalizations(Locale(lang));
+          final p = '${lang}_200';
+          _currentScreen = '${p}_10_home';
+          await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
+          await _shot(tester, '${p}_10_home');
+          await _setViewport(tester, height: 2600);
+          await _settle(tester, steps: 4);
+          await _shot(tester, '${p}_11_home_full');
+          await _setViewport(tester);
+          await _settle(tester, steps: 2);
+          // Alarmlar sekmesi + açılmış Öğle kartı
+          await tester.tap(find.text(loc.tabAlarms));
+          await _settle(tester);
+          await _shot(tester, '${p}_12_home_alarms');
+          await tester.tap(find.text(loc.ogle).last);
+          await _settle(tester);
+          await _setViewport(tester, height: 2600);
+          await _settle(tester, steps: 4);
+          await _shot(tester, '${p}_13_home_alarms_expanded');
+          await _setViewport(tester);
+          await _settle(tester, steps: 2);
+          await tester.tap(find.text(loc.tabTimes));
+          await _settle(tester);
+
+          await _tapTab(tester, 1);
+          await _shot(tester, '${p}_20_qibla');
+          await _setViewport(tester, height: 1800);
+          await _settle(tester, steps: 4);
+          await _shot(tester, '${p}_21_qibla_full');
+          await _setViewport(tester);
+          await _settle(tester, steps: 2);
+          await _tapTab(tester, 2);
+          await _shot(tester, '${p}_30_zikirmatik');
+          await _tapTab(tester, 3);
+          await _setViewport(tester, height: 2600);
+          await _settle(tester, steps: 4);
+          await _shot(tester, '${p}_40_tools_full');
+          await _setViewport(tester);
+          await _settle(tester, steps: 2);
+
+          await _openRoute(
+            tester,
+            '${p}_50_settings',
+            const SettingsView(),
+            tallHeight: 3600,
+          );
+          await _openRoute(
+            tester,
+            '${p}_47_prayer_tracker',
+            const PrayerTrackerView(),
+            tallHeight: 2600,
+          );
+          await _openRoute(
+            tester,
+            '${p}_41_imsakiye',
+            const ImsakiyeView(),
+            tallHeight: 2000,
+          );
+          await _openRoute(
+            tester,
+            '${p}_46_missed_prayers',
+            const MissedPrayersView(),
+            tallHeight: 2600,
+          );
+          await _openRoute(
+            tester,
+            '${p}_60_duas',
+            const DuasView(),
+            tallHeight: 3000,
+          );
+          await _openRoute(tester, '${p}_65_quran', const QuranView());
+          await _finish(tester);
+        } finally {
+          tester.platformDispatcher.clearTextScaleFactorTestValue();
+        }
+      });
+    });
+  }
 
   testWidgets('tr: kıble kalibrasyon uyarısı', skip: skip, variant: _android, (
     tester,

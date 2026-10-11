@@ -10,6 +10,90 @@
     "showcaseZikir": "Comptez vos dhikrs ici.",
     "refreshLocation": "Actualiser la position",
     "navTools": "Outils",
+    "a11yHours": "{count, plural, one{{count} heure} other{{count} heures}}",
+    "@a11yHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yMinutes": "{count, plural, one{{count} minute} other{{count} minutes}}",
+    "@a11yMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yHoursMinutes": "{hours} {minutes}",
+    "@a11yHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "String"
+            },
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yTimeUntil": "{vakit} dans {duration}",
+    "@a11yTimeUntil": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yPrayerPassed": "heure passée",
+    "a11yTrackerCell": "{day}, {prayer} : {state}",
+    "@a11yTrackerCell": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            },
+            "prayer": {
+                "type": "String"
+            },
+            "state": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yNotPrayed": "Non accomplie",
+    "a11yNotDue": "Pas encore l'heure",
+    "a11yExcusedDay": "Jour d'excuse",
+    "a11yQiblaTurnRight": "{deg, plural, one{Tournez de {deg} degré vers la droite pour faire face à la qibla} other{Tournez de {deg} degrés vers la droite pour faire face à la qibla}}",
+    "@a11yQiblaTurnRight": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaTurnLeft": "{deg, plural, one{Tournez de {deg} degré vers la gauche pour faire face à la qibla} other{Tournez de {deg} degrés vers la gauche pour faire face à la qibla}}",
+    "@a11yQiblaTurnLeft": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaAligned": "Vous faites face à la qibla",
+    "a11yDecrease": "Diminuer",
+    "a11yIncrease": "Augmenter",
+    "a11yPlaySound": "Écouter {sound}",
+    "@a11yPlaySound": {
+        "placeholders": {
+            "sound": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yStopSound": "Arrêter",
     "hadithNotFound": "Texte du hadith introuvable.",
     "timesLoadError": "Les horaires de prière n'ont pas pu être chargés. Veuillez réessayer.",
     "sunriseNotPrayer": "Lever du soleil, pas une prière",

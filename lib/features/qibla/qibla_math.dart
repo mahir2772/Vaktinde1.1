@@ -57,6 +57,16 @@ QiblaTurn qiblaTurnFor(double heading, double bearing) {
   return QiblaTurn.slightLeft;
 }
 
+/// Ekran okuyucu için dönüş açısı: [step] dereceye yuvarlanmış (pusula
+/// titreşiminde etiket her derecede değişmesin), en az [step]. Pozitif sağa,
+/// negatif sola; kıble yönündeyse ([qiblaTurnFor] aligned) 0.
+int spokenTurnDegrees(double heading, double bearing, {int step = 5}) {
+  if (qiblaTurnFor(heading, bearing) == QiblaTurn.aligned) return 0;
+  final diff = signedDelta(heading, bearing);
+  final rounded = ((diff.abs() / step).round() * step).clamp(step, 180);
+  return diff > 0 ? rounded : -rounded;
+}
+
 // --- Manyetik kuzey düzeltmesi ---
 
 /// Konumun Dünya Manyetik Modeli değerleri (MainActivity 'geomagnetic')

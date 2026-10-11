@@ -331,7 +331,10 @@ class _SoundSelector extends StatelessWidget {
           ),
           IconButton(
             onPressed: () => viewModel.playPreview(value),
-            tooltip: _soundName(value, loc),
+            // Ekran okuyucu: sesin adı değil, düğmenin yaptığı iş
+            tooltip: playing
+                ? loc.a11yStopSound
+                : loc.a11yPlaySound(_soundName(value, loc)),
             icon: Icon(
               playing ? Icons.stop_circle : Icons.play_circle_fill,
               color: accent,

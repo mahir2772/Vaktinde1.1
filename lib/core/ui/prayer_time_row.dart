@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'app_theme.dart';
 import 'app_tokens.dart';
 import 'prayer_colors.dart';
@@ -50,6 +51,18 @@ class PrayerTimeRow extends StatelessWidget {
       fontWeight: emphasized ? FontWeight.w700 : FontWeight.w600,
       fontFeatures: AppTheme.tabularFigures,
     );
+    // Ekran okuyucu: "Öğle, 12:15, Sıradaki Vakit" / "İmsak, 05:40, geçti"
+    // (renkle verilen durum sözle de söylenir; saat adla tek parça okunur)
+    final loc = AppLocalizations.of(context);
+    final stateText = loc == null
+        ? null
+        : switch (state) {
+            PrayerRowState.next => loc.nextPrayer,
+            PrayerRowState.current => loc.currentPrayer,
+            PrayerRowState.past => loc.a11yPrayerPassed,
+            PrayerRowState.upcoming => null,
+          };
+    final spoken = [name, time, ?stateText].join(', ');
 
     final row = ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 52),
@@ -64,12 +77,20 @@ class PrayerTimeRow extends StatelessWidget {
               Icon(icon, size: 22, color: foreground),
               const SizedBox(width: AppSpacing.md),
             ],
-            Expanded(child: Text(name, style: nameStyle)),
+            Expanded(
+              child: Text(name, style: nameStyle, semanticsLabel: spoken),
+            ),
             if (trailing != null) ...[
               trailing!,
               const SizedBox(width: AppSpacing.sm),
             ],
-            Text(time, style: timeStyle, textDirection: TextDirection.ltr),
+            ExcludeSemantics(
+              child: Text(
+                time,
+                style: timeStyle,
+                textDirection: TextDirection.ltr,
+              ),
+            ),
           ],
         ),
       ),

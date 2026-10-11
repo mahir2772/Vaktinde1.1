@@ -170,6 +170,102 @@ abstract class AppLocalizations {
   /// **'Araçlar'**
   String get navTools;
 
+  /// No description provided for @a11yHours.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} saat}}'**
+  String a11yHours(int count);
+
+  /// No description provided for @a11yMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} dakika}}'**
+  String a11yMinutes(int count);
+
+  /// No description provided for @a11yHoursMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{hours} {minutes}'**
+  String a11yHoursMinutes(String hours, String minutes);
+
+  /// No description provided for @a11yTimeUntil.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vaktine {duration} kaldı'**
+  String a11yTimeUntil(String vakit, String duration);
+
+  /// No description provided for @a11yPrayerPassed.
+  ///
+  /// In tr, this message translates to:
+  /// **'geçti'**
+  String get a11yPrayerPassed;
+
+  /// No description provided for @a11yTrackerCell.
+  ///
+  /// In tr, this message translates to:
+  /// **'{day}, {prayer}: {state}'**
+  String a11yTrackerCell(String day, String prayer, String state);
+
+  /// No description provided for @a11yNotPrayed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılınmadı'**
+  String get a11yNotPrayed;
+
+  /// No description provided for @a11yNotDue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakti girmedi'**
+  String get a11yNotDue;
+
+  /// No description provided for @a11yExcusedDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün'**
+  String get a11yExcusedDay;
+
+  /// No description provided for @a11yQiblaTurnRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıbleye dönmek için {deg} derece sağa dönün'**
+  String a11yQiblaTurnRight(int deg);
+
+  /// No description provided for @a11yQiblaTurnLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıbleye dönmek için {deg} derece sola dönün'**
+  String a11yQiblaTurnLeft(int deg);
+
+  /// No description provided for @a11yQiblaAligned.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble yönündesiniz'**
+  String get a11yQiblaAligned;
+
+  /// No description provided for @a11yDecrease.
+  ///
+  /// In tr, this message translates to:
+  /// **'Azalt'**
+  String get a11yDecrease;
+
+  /// No description provided for @a11yIncrease.
+  ///
+  /// In tr, this message translates to:
+  /// **'Artır'**
+  String get a11yIncrease;
+
+  /// No description provided for @a11yPlaySound.
+  ///
+  /// In tr, this message translates to:
+  /// **'{sound} sesini dinle'**
+  String a11yPlaySound(String sound);
+
+  /// No description provided for @a11yStopSound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durdur'**
+  String get a11yStopSound;
+
   /// No description provided for @hadithNotFound.
   ///
   /// In tr, this message translates to:

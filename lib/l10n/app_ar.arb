@@ -10,6 +10,90 @@
     "showcaseZikir": "تابع أذكارك من هنا.",
     "refreshLocation": "تحديث الموقع",
     "navTools": "الأدوات",
+    "a11yHours": "{count, plural, =1{ساعة واحدة} =2{ساعتان} few{{count} ساعات} many{{count} ساعة} other{{count} ساعة}}",
+    "@a11yHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yMinutes": "{count, plural, =1{دقيقة واحدة} =2{دقيقتان} few{{count} دقائق} many{{count} دقيقة} other{{count} دقيقة}}",
+    "@a11yMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yHoursMinutes": "{hours} و{minutes}",
+    "@a11yHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "String"
+            },
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yTimeUntil": "الوقت المتبقي حتى {vakit}: {duration}",
+    "@a11yTimeUntil": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yPrayerPassed": "انقضى الوقت",
+    "a11yTrackerCell": "{day}، {prayer}: {state}",
+    "@a11yTrackerCell": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            },
+            "prayer": {
+                "type": "String"
+            },
+            "state": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yNotPrayed": "لم تُؤدَّ",
+    "a11yNotDue": "لم يدخل وقتها بعد",
+    "a11yExcusedDay": "يوم عذر",
+    "a11yQiblaTurnRight": "{deg, plural, =1{استدر درجة واحدة إلى اليمين لمواجهة القبلة} =2{استدر درجتين إلى اليمين لمواجهة القبلة} few{استدر {deg} درجات إلى اليمين لمواجهة القبلة} other{استدر {deg} درجة إلى اليمين لمواجهة القبلة}}",
+    "@a11yQiblaTurnRight": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaTurnLeft": "{deg, plural, =1{استدر درجة واحدة إلى اليسار لمواجهة القبلة} =2{استدر درجتين إلى اليسار لمواجهة القبلة} few{استدر {deg} درجات إلى اليسار لمواجهة القبلة} other{استدر {deg} درجة إلى اليسار لمواجهة القبلة}}",
+    "@a11yQiblaTurnLeft": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaAligned": "أنت متجه نحو القبلة",
+    "a11yDecrease": "إنقاص",
+    "a11yIncrease": "زيادة",
+    "a11yPlaySound": "تشغيل {sound}",
+    "@a11yPlaySound": {
+        "placeholders": {
+            "sound": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yStopSound": "إيقاف",
     "hadithNotFound": "تعذّر العثور على نص الحديث.",
     "timesLoadError": "تعذّر تحميل مواقيت الصلاة. يرجى المحاولة مرة أخرى.",
     "sunriseNotPrayer": "شروق الشمس، ليس وقت صلاة",
