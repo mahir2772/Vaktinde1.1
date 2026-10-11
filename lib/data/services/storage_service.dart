@@ -210,6 +210,13 @@ class StorageService {
     await prefs.setString('prayer_log_since', dateKey);
   }
 
+  /// Özel gün (hayız/nifas) olarak işaretlenen günler (yyyy-MM-dd); sadece
+  /// uygulama yazar (PrayerTrackerService.setExcused)
+  Future<Set<String>> loadTrackerExcused() => _loadDaySet('tracker_excused');
+
+  Future<void> saveTrackerExcused(Set<String> days) =>
+      _saveDaySet('tracker_excused', days);
+
   // --- Ramazan orucu takibi: tutulan / kaza orucuna eklenen günler (yyyy-MM-dd) ---
 
   Future<Set<String>> loadFastLog() => _loadDaySet('fast_log');

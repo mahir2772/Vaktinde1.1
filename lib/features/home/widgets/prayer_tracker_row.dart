@@ -15,7 +15,9 @@ import '../../prayer_tracker/view/prayer_tracker_view.dart';
 import '../view_model/home_view_model.dart';
 
 /// Ana ekranda "Bugün" satırı: 5 farz vakit için "kıldım" işaretleri.
-/// Vakti girmemiş namaz işaretlenemez. Başlığa dokununca takip ekranı açılır.
+/// Vakti girmemiş namaz işaretlenemez. Başlığa dokununca takip ekranı açılır;
+/// basılı tutunca bugün özel gün olur/olmaktan çıkar (takip ekranındaki gün
+/// adıyla aynı). Özel günde işaretler soluk ve kapalıdır.
 class PrayerTrackerRow extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
 
@@ -29,6 +31,7 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     with WidgetsBindingObserver {
   final PrayerTrackerService _service = PrayerTrackerService();
   Map<String, int> _log = const {};
+  Set<String> _excused = const {};
   Timer? _timer;
   // Kaydedilmemiş dokunuş varken okunan eski kayıt ekrana yazılmaz
   int _saving = 0;
@@ -66,9 +69,46 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     final generation = _generation;
     try {
       final log = await _service.loadLog();
+      final excused = await _service.loadExcused();
       if (!mounted || _saving > 0 || generation != _generation) return;
-      setState(() => _log = log);
+      setState(() {
+        _log = log;
+        _excused = excused;
+      });
     } catch (e) {}
+  }
+
+  void _snack(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  // Bugünün vakitleri kazaya eklenmiş olamaz (adaylar dünden başlar): onay yok
+  Future<void> _toggleExcused(AppLocalizations loc) async {
+    final now = DateTime.now();
+    final today = PrayerTracker.day(now);
+    final excused = !PrayerTracker.isExcused(_excused, today);
+    _saving++;
+    _generation++;
+    setState(() {
+      _excused = PrayerTracker.withExcused(
+        _excused,
+        today,
+        excused,
+        today: now,
+      );
+    });
+    try {
+      await _service.setExcused(today, excused);
+    } catch (e) {
+    } finally {
+      _saving--;
+    }
+    _load();
+    if (mounted) {
+      _snack(excused ? loc.trackerExcusedMarked : loc.trackerExcusedUnmarked);
+    }
   }
 
   bool _isDue(String key, DateTime now) {
@@ -91,13 +131,15 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
 
   Future<void> _toggle(String key, AppLocalizations loc) async {
     final now = DateTime.now();
-    if (!_isDue(key, now)) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(loc.trackerNotYet)));
+    final today = PrayerTracker.day(now);
+    if (PrayerTracker.isExcused(_excused, today)) {
+      _snack(loc.trackerExcusedCellSnack);
       return;
     }
-    final today = PrayerTracker.day(now);
+    if (!_isDue(key, now)) {
+      _snack(loc.trackerNotYet);
+      return;
+    }
     final prayed = !PrayerTracker.isPrayed(_log, today, key);
     final viewModel = context.read<HomeViewModel>();
     _saving++;
@@ -137,6 +179,7 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     final today = PrayerTracker.day(now);
     final doneCount = PrayerTracker.countOf(PrayerTracker.maskOf(_log, today));
     final total = PrayerTracker.prayerKeys.length;
+    final excused = PrayerTracker.isExcused(_excused, today);
 
     return AppCard(
       padding: const EdgeInsets.fromLTRB(
@@ -150,8 +193,13 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
           MergeSemantics(
             child: Semantics(
               button: true,
+              value: excused ? loc.trackerExcusedTitle : null,
+              onLongPressHint: excused
+                  ? loc.trackerExcusedUnmark
+                  : loc.trackerExcusedMark,
               child: InkWell(
                 onTap: _openTracker,
+                onLongPress: () => _toggleExcused(loc),
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(
@@ -171,12 +219,20 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
                             style: theme.textTheme.titleSmall,
                           ),
                         ),
-                        Text(
-                          "$doneCount/$total",
-                          style: theme.textTheme.labelLarge!.copyWith(
+                        // Özel günde sayı yerine sade işaret (sayılmaz)
+                        if (excused)
+                          Icon(
+                            kExcusedIcon,
                             color: scheme.onSurfaceVariant,
+                            size: 20,
+                          )
+                        else
+                          Text(
+                            "$doneCount/$total",
+                            style: theme.textTheme.labelLarge!.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
                           ),
-                        ),
                         Icon(
                           Icons.chevron_right,
                           color: scheme.onSurfaceVariant,
@@ -196,8 +252,11 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
                 Expanded(
                   child: _buildChip(
                     label: names[key]!,
-                    prayed: PrayerTracker.isPrayed(_log, today, key),
+                    // Özel günde işaretler kayıtta kalır ama gösterilmez
+                    prayed:
+                        !excused && PrayerTracker.isPrayed(_log, today, key),
                     due: _isDue(key, now),
+                    excused: excused,
                     onTap: () => _toggle(key, loc),
                   ),
                 ),
@@ -212,18 +271,26 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     required String label,
     required bool prayed,
     required bool due,
+    required bool excused,
     required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final colors = PrayerColors.of(context);
-    final Color borderColor = prayed
-        ? scheme.primary
-        : (due ? scheme.primary : scheme.outlineVariant);
+    final Color borderColor = excused
+        ? scheme.outlineVariant
+        : (prayed || due ? scheme.primary : scheme.outlineVariant);
+    final Widget? mark = excused
+        ? Icon(kExcusedIcon, color: scheme.onSurfaceVariant, size: 16)
+        : prayed
+        ? Icon(Icons.check, color: scheme.onPrimary, size: 20)
+        : (due
+              ? null
+              : Icon(Icons.schedule, color: scheme.onSurfaceVariant, size: 16));
     return Semantics(
       button: true,
-      toggled: prayed,
-      enabled: due || prayed,
+      toggled: excused ? null : prayed,
+      enabled: !excused && (due || prayed),
       label: label,
       excludeSemantics: true,
       child: InkWell(
@@ -237,19 +304,13 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: prayed ? scheme.primary : Colors.transparent,
+                  color: excused
+                      ? scheme.surfaceContainerHigh
+                      : (prayed ? scheme.primary : Colors.transparent),
                   shape: BoxShape.circle,
                   border: Border.all(color: borderColor, width: 2),
                 ),
-                child: prayed
-                    ? Icon(Icons.check, color: scheme.onPrimary, size: 20)
-                    : (due
-                          ? null
-                          : Icon(
-                              Icons.schedule,
-                              color: scheme.onSurfaceVariant,
-                              size: 16,
-                            )),
+                child: mark,
               ),
               const SizedBox(height: AppSpacing.xs),
               FittedBox(
@@ -258,7 +319,9 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
                   label,
                   maxLines: 1,
                   style: theme.textTheme.bodySmall!.copyWith(
-                    color: due || prayed ? scheme.onSurface : colors.past,
+                    color: !excused && (due || prayed)
+                        ? scheme.onSurface
+                        : colors.past,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

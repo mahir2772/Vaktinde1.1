@@ -535,6 +535,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackerTitle => 'Prayer Tracker';
 
   @override
+  String get trackerExcusedTitle => 'Excused days (menstruation)';
+
+  @override
+  String get trackerExcusedInfo =>
+      'Prayers missed during menstruation or postpartum bleeding don\'t need to be made up. Days marked as excused don\'t break your streak and are left out of the rate and of the prayers added to qada. Ramadan fasts missed on these days must still be made up. To mark a past day or remove the mark, press and hold the day\'s name.';
+
+  @override
+  String get trackerExcusedToday => 'Mark today as excused';
+
+  @override
+  String get trackerExcusedMark => 'Mark as excused';
+
+  @override
+  String get trackerExcusedUnmark => 'Remove excused mark';
+
+  @override
+  String get trackerExcusedMarked => 'Marked as excused.';
+
+  @override
+  String get trackerExcusedUnmarked => 'Excused mark removed.';
+
+  @override
+  String get trackerExcusedCellSnack =>
+      'This day is marked as excused, so its prayers aren\'t counted. To remove the mark, press and hold the day\'s name.';
+
+  @override
+  String trackerExcusedKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count prayers of this day that were added to qada will be subtracted from your qada counters.',
+      one:
+          '1 prayer of this day that was added to qada will be subtracted from your qada counters.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerLegendExcused => 'Excused (press and hold the day)';
+
+  @override
+  String get fastLegendExcused => 'Excused (to be made up)';
+
+  @override
   String get trackerToday => 'Today';
 
   @override

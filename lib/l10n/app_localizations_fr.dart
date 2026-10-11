@@ -545,6 +545,51 @@ class AppLocalizationsFr extends AppLocalizations {
   String get trackerTitle => 'Suivi des prières';
 
   @override
+  String get trackerExcusedTitle => 'Jours d\'excuse (menstruation)';
+
+  @override
+  String get trackerExcusedInfo =>
+      'Les prières manquées pendant les menstrues ou les lochies (nifas) n\'ont pas à être rattrapées. Les jours marqués comme jours d\'excuse n\'interrompent pas la série et ne comptent ni dans le taux ni dans les prières ajoutées au qada. Les jeûnes du Ramadan manqués ces jours-là doivent en revanche être rattrapés. Pour marquer un jour passé ou retirer la marque, appuyez longuement sur le nom du jour.';
+
+  @override
+  String get trackerExcusedToday => 'Marquer aujourd\'hui comme jour d\'excuse';
+
+  @override
+  String get trackerExcusedMark => 'Marquer comme jour d\'excuse';
+
+  @override
+  String get trackerExcusedUnmark => 'Retirer la marque de jour d\'excuse';
+
+  @override
+  String get trackerExcusedMarked => 'Marqué comme jour d\'excuse.';
+
+  @override
+  String get trackerExcusedUnmarked => 'Marque de jour d\'excuse retirée.';
+
+  @override
+  String get trackerExcusedCellSnack =>
+      'Ce jour est marqué comme jour d\'excuse : ses prières ne sont pas comptées. Pour retirer la marque, appuyez longuement sur le nom du jour.';
+
+  @override
+  String trackerExcusedKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count prières de ce jour ajoutées au qada seront déduites des compteurs de qada.',
+      one:
+          '1 prière de ce jour ajoutée au qada sera déduite des compteurs de qada.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerLegendExcused => 'Jour d\'excuse (appui long sur le jour)';
+
+  @override
+  String get fastLegendExcused => 'Jour d\'excuse (à rattraper)';
+
+  @override
   String get trackerToday => 'Aujourd\'hui';
 
   @override

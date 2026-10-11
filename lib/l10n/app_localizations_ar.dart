@@ -533,6 +533,53 @@ class AppLocalizationsAr extends AppLocalizations {
   String get trackerTitle => 'متابعة الصلوات';
 
   @override
+  String get trackerExcusedTitle => 'أيام العذر (الحيض والنفاس)';
+
+  @override
+  String get trackerExcusedInfo =>
+      'لا يجب قضاء الصلوات التي فاتت في أيام الحيض والنفاس. الأيام المعلَّمة كأيام عذر لا تقطع الأيام المتتالية، ولا تدخل في النسبة ولا في الصلوات المضافة إلى القضاء. أما ما فات في هذه الأيام من صيام رمضان فيجب قضاؤه. لتعليم يوم سابق أو إزالة علامته: ضغطة مطوّلة على اسم اليوم.';
+
+  @override
+  String get trackerExcusedToday => 'تعليم اليوم كيوم عذر';
+
+  @override
+  String get trackerExcusedMark => 'تعليم كيوم عذر';
+
+  @override
+  String get trackerExcusedUnmark => 'إزالة علامة يوم العذر';
+
+  @override
+  String get trackerExcusedMarked => 'عُلِّم كيوم عذر.';
+
+  @override
+  String get trackerExcusedUnmarked => 'أُزيلت علامة يوم العذر.';
+
+  @override
+  String get trackerExcusedCellSnack =>
+      'هذا اليوم معلَّم كيوم عذر، فلا تُحتسب صلواته. لإزالة العلامة: ضغطة مطوّلة على اسم اليوم.';
+
+  @override
+  String trackerExcusedKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'ستُطرح من عدادات القضاء $count صلاة من هذا اليوم أُضيفت إلى القضاء.',
+      few:
+          'ستُطرح من عدادات القضاء $count صلوات من هذا اليوم أُضيفت إلى القضاء.',
+      two: 'ستُطرح من عدادات القضاء صلاتان من هذا اليوم أُضيفتا إلى القضاء.',
+      one: 'ستُطرح من عدادات القضاء صلاة واحدة من هذا اليوم أُضيفت إلى القضاء.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerLegendExcused => 'يوم عذر (ضغطة مطوّلة على اليوم)';
+
+  @override
+  String get fastLegendExcused => 'يوم عذر (يُقضى)';
+
+  @override
   String get trackerToday => 'اليوم';
 
   @override

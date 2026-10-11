@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/widgets.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +9,8 @@ import '../../data/models/prayer_times_model.dart';
 import '../../data/services/prayer_tracker.dart';
 import '../../data/services/prayer_tracker_service.dart';
 
-/// Namaz takibinde 7 günlük tam seri uygulama içinde tamamlanınca Play'in
+/// Namaz takibinde 7 günlük tam seri (özel günler atlanır, takip ekranıyla aynı
+/// [PrayerTracker.streak]) uygulama içinde tamamlanınca Play'in
 /// uygulama içi değerlendirme penceresi istenir: ömür boyu en fazla bir kez
 /// ([UsageReviewPrompt] ile ortak), sadece [InAppReview.isAvailable] ise.
 /// MainWrapper açılış pencerelerinden sonra başlatır (ön plan, ana isolate);
@@ -34,6 +36,7 @@ class StreakReviewPrompt {
   final Duration delay;
 
   int? _baseline;
+  Set<String>? _excusedBaseline;
   bool _active = false;
   bool _done = false;
   Future<void> _chain = Future<void>.value();
@@ -100,15 +103,23 @@ class StreakReviewPrompt {
         return;
       }
       final now = DateTime.now();
-      final log = await PrayerTrackerService().loadLog();
+      final service = PrayerTrackerService();
+      final log = await service.loadLog();
+      final excused = await service.loadExcused();
       final streak = PrayerTracker.streak(
         log,
         now,
+        excused: excused,
         yesterdayYatsiOngoing: yesterdayYatsiOngoing(todayTimes(), now),
       );
       final before = _baseline;
+      // Özel gün işareti aradaki günleri atlatıp seriyi uzatabilir; bu bir
+      // kılınan namaz değildir: değerlendirme istenmez, sadece taban güncellenir
+      final excusedChanged =
+          _excusedBaseline != null && !setEquals(_excusedBaseline, excused);
       _baseline = streak;
-      if (reachedGoal(before: before, after: streak)) {
+      _excusedBaseline = excused;
+      if (!excusedChanged && reachedGoal(before: before, after: streak)) {
         _done = await _requestReview(
           prefs,
           delay: delay,

@@ -268,6 +268,24 @@
     },
     "timeAdjustSaved": "Horaires mis à jour",
     "trackerTitle": "Suivi des prières",
+    "trackerExcusedTitle": "Jours d'excuse (menstruation)",
+    "trackerExcusedInfo": "Les prières manquées pendant les menstrues ou les lochies (nifas) n'ont pas à être rattrapées. Les jours marqués comme jours d'excuse n'interrompent pas la série et ne comptent ni dans le taux ni dans les prières ajoutées au qada. Les jeûnes du Ramadan manqués ces jours-là doivent en revanche être rattrapés. Pour marquer un jour passé ou retirer la marque, appuyez longuement sur le nom du jour.",
+    "trackerExcusedToday": "Marquer aujourd'hui comme jour d'excuse",
+    "trackerExcusedMark": "Marquer comme jour d'excuse",
+    "trackerExcusedUnmark": "Retirer la marque de jour d'excuse",
+    "trackerExcusedMarked": "Marqué comme jour d'excuse.",
+    "trackerExcusedUnmarked": "Marque de jour d'excuse retirée.",
+    "trackerExcusedCellSnack": "Ce jour est marqué comme jour d'excuse : ses prières ne sont pas comptées. Pour retirer la marque, appuyez longuement sur le nom du jour.",
+    "trackerExcusedKazaConfirm": "{count, plural, =1{1 prière de ce jour ajoutée au qada sera déduite des compteurs de qada.} other{{count} prières de ce jour ajoutées au qada seront déduites des compteurs de qada.}}",
+    "@trackerExcusedKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerLegendExcused": "Jour d'excuse (appui long sur le jour)",
+    "fastLegendExcused": "Jour d'excuse (à rattraper)",
     "trackerToday": "Aujourd'hui",
     "trackerYesterday": "Hier",
     "trackerPrayedAction": "J'ai prié",

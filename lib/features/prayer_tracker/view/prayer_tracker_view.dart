@@ -23,8 +23,13 @@ Map<String, String> trackerPrayerNames(AppLocalizations loc) => {
   "Yatsı": loc.yatsi,
 };
 
+/// Özel gün (hayız/nifas) işareti: hücrelerde, açıklamada ve başlık düğmesinde
+const IconData kExcusedIcon = Icons.spa_outlined;
+
 /// Namaz takibi: son 7 gün, 30 günlük oran, seri ve kılınmayanları kazaya ekleme;
-/// Ramazan'da (ve sonraki 30 gün) üstte Ramazan orucu kartı
+/// Ramazan'da (ve sonraki 30 gün) üstte Ramazan orucu kartı. Özel gün: gün adına
+/// basılı tutunca (ya da başlıktaki düğmeyle bugün) işaretlenir; o günün hücreleri
+/// soluk ve kapalıdır, seri/oran/kaza hesabına girmez (PrayerTracker).
 class PrayerTrackerView extends StatefulWidget {
   /// Test: oruç kartının günü ve Ramazan takvimi (varsayılan: şimdi, Diyanet)
   final DateTime Function()? fastClock;
@@ -45,6 +50,10 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   final PrayerTrackerService _service = PrayerTrackerService();
   Map<String, int> _log = const {};
   Map<String, int> _kazaAdded = const {};
+  // Özel günler; açıklama sayfasındaki anahtar da dinler
+  final ValueNotifier<Set<String>> _excusedDays = ValueNotifier(const {});
+  Set<String> get _excused => _excusedDays.value;
+  set _excused(Set<String> value) => _excusedDays.value = value;
   DateTime? _since;
   bool _isLoading = true;
   bool _busy = false;
@@ -70,6 +79,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     WidgetsBinding.instance.removeObserver(this);
     PrayerTrackerService.changes.removeListener(_load);
     _timer?.cancel();
+    _excusedDays.dispose();
     super.dispose();
   }
 
@@ -84,11 +94,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     try {
       final log = await _service.loadLog();
       final added = await _service.loadKazaAdded();
+      final excused = await _service.loadExcused();
       final since = await _service.loadSince();
       if (!mounted || _saving > 0 || generation != _generation) return;
       setState(() {
         _log = log;
         _kazaAdded = added;
+        _excused = excused;
         _since = since;
         _isLoading = false;
       });
@@ -141,6 +153,11 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     PrayerTimesModel? times,
     AppLocalizations loc,
   ) async {
+    // Özel günün hücreleri kapalı: işaret gün adından kaldırılır
+    if (PrayerTracker.isExcused(_excused, date)) {
+      _snack(loc.trackerExcusedCellSnack);
+      return;
+    }
     if (!PrayerTracker.isPrayed(_log, date, key) &&
         PrayerTracker.isPrayed(_kazaAdded, date, key)) {
       await _removeFromKaza(date, key, loc);
@@ -220,6 +237,117 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     _load();
   }
 
+  /// [date] gününü özel gün yapar/kaldırır. O günün kazaya eklenmiş vakitleri
+  /// kaza sayacından düşülecekse önce onay; uygulandıysa true.
+  Future<bool> _setExcused(
+    DateTime date,
+    bool excused,
+    AppLocalizations loc,
+  ) async {
+    if (excused) {
+      final mask = PrayerTracker.maskOf(_kazaAdded, date);
+      var counted = false;
+      for (final key in PrayerTracker.prayerKeys) {
+        if ((mask & PrayerTracker.bit(key)) != 0 &&
+            await _service.loadKazaCount(key) > 0) {
+          counted = true;
+          break;
+        }
+      }
+      if (!mounted) return false;
+      if (counted) {
+        final confirmed = await showConfirmDialog(
+          context,
+          title: loc.trackerExcusedTitle,
+          message: loc.trackerExcusedKazaConfirm(PrayerTracker.countOf(mask)),
+          confirmLabel: loc.trackerExcusedMark,
+        );
+        if (!confirmed || !mounted) return false;
+      }
+    }
+    final now = DateTime.now();
+    _saving++;
+    _generation++;
+    setState(() {
+      _excused = PrayerTracker.withExcused(_excused, date, excused, today: now);
+      if (excused) {
+        _kazaAdded = {..._kazaAdded}..remove(PrayerTracker.dateKey(date));
+      }
+    });
+    try {
+      await _service.setExcused(date, excused);
+    } catch (e) {
+    } finally {
+      _saving--;
+    }
+    _load();
+    return true;
+  }
+
+  // Gün adına basılı tutma: özel gün işareti açılır/kapanır
+  Future<void> _toggleExcused(DateTime date, AppLocalizations loc) async {
+    final excused = !PrayerTracker.isExcused(_excused, date);
+    if (await _setExcused(date, excused, loc) && mounted) {
+      _snack(excused ? loc.trackerExcusedMarked : loc.trackerExcusedUnmarked);
+    }
+  }
+
+  /// Özel gün açıklaması + "Bugünü özel gün olarak işaretle" anahtarı
+  void _showExcusedSheet(AppLocalizations loc) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        return SingleChildScrollView(
+          // + gezinme çubuğu (uçtan uca): anahtar altında kalmasın
+          padding: EdgeInsetsDirectional.fromSTEB(
+            AppSpacing.lg,
+            0,
+            AppSpacing.lg,
+            AppSpacing.xl + MediaQuery.paddingOf(sheetContext).bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Semantics(
+                header: true,
+                child: Text(
+                  loc.trackerExcusedTitle,
+                  style: theme.textTheme.titleLarge,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                loc.trackerExcusedInfo,
+                style: theme.textTheme.bodyMedium!.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              ValueListenableBuilder<Set<String>>(
+                valueListenable: _excusedDays,
+                builder: (context, excused, _) {
+                  final today = PrayerTracker.day(DateTime.now());
+                  return SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    secondary: const Icon(kExcusedIcon),
+                    title: Text(loc.trackerExcusedToday),
+                    value: PrayerTracker.isExcused(excused, today),
+                    onChanged: (value) => _setExcused(today, value, loc),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _addToKaza(
     PrayerTimesModel? times,
     AppLocalizations loc,
@@ -232,6 +360,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
         _kazaAdded,
         DateTime.now(),
         since: _since,
+        excused: _excused,
         yesterdayYatsiOngoing: ongoing,
       ),
     );
@@ -275,6 +404,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
                 RamadanFastCard(
                   clock: widget.fastClock,
                   calendar: widget.ramadanCalendar,
+                  excused: _excused,
                 ),
                 _buildStats(times, loc),
                 const SizedBox(height: AppSpacing.md),
@@ -298,11 +428,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
       now,
       todayDue: todayDue,
       since: _since,
+      excused: _excused,
       yesterdayYatsiOngoing: ongoing,
     );
     final streak = PrayerTracker.streak(
       _log,
       now,
+      excused: _excused,
       yesterdayYatsiOngoing: ongoing,
     );
     final rateText = rate == null
@@ -353,7 +485,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     return AppCard(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.md,
-        AppSpacing.lg,
+        AppSpacing.sm,
         AppSpacing.md,
         AppSpacing.md,
       ),
@@ -367,17 +499,31 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    loc.trackerLast7Days,
-                    style: theme.textTheme.titleMedium,
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        start: AppSpacing.xs,
+                      ),
+                      child: Semantics(
+                        header: true,
+                        child: Text(
+                          loc.trackerLast7Days,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  // Özel gün: açıklama + bugünü işaretle (sade, ikon düğme)
+                  IconButton(
+                    onPressed: () => _showExcusedSheet(loc),
+                    tooltip: loc.trackerExcusedTitle,
+                    icon: Icon(kExcusedIcon, color: scheme.onSurfaceVariant),
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.xs),
               Row(
                 children: [
                   SizedBox(width: labelWidth),
@@ -427,6 +573,14 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
                       Icons.history,
                       loc.trackerLegendKaza,
                     ),
+                    // Özel günün nasıl işaretlendiği (tek satır, göze batmaz)
+                    _legend(
+                      scheme.surfaceContainerHigh,
+                      scheme.onSurfaceVariant,
+                      kExcusedIcon,
+                      loc.trackerLegendExcused,
+                      border: scheme.outlineVariant,
+                    ),
                   ],
                 ),
               ),
@@ -445,23 +599,39 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     double labelWidth,
   ) {
     final theme = Theme.of(context);
+    final excused = PrayerTracker.isExcused(_excused, date);
     return Row(
       children: [
-        SizedBox(
-          width: labelWidth,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.only(
-              start: AppSpacing.xs,
-              end: AppSpacing.xs,
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                label,
-                maxLines: 1,
-                style: theme.textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w500,
+        // Gün adına basılı tutunca özel gün işareti açılır/kapanır
+        Semantics(
+          value: excused ? loc.trackerExcusedTitle : null,
+          onLongPressHint: excused
+              ? loc.trackerExcusedUnmark
+              : loc.trackerExcusedMark,
+          child: InkWell(
+            onLongPress: () => _toggleExcused(date, loc),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            child: SizedBox(
+              width: labelWidth,
+              height: AppSizes.minTouch,
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  start: AppSpacing.xs,
+                  end: AppSpacing.xs,
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: excused
+                          ? theme.colorScheme.onSurfaceVariant
+                          : null,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -473,6 +643,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
               prayed: PrayerTracker.isPrayed(_log, date, key),
               kaza: PrayerTracker.isPrayed(_kazaAdded, date, key),
               due: _isDue(date, key, times),
+              excused: excused,
               onTap: () => _toggle(date, key, times, loc),
             ),
           ),
@@ -484,13 +655,19 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     required bool prayed,
     required bool kaza,
     required bool due,
+    required bool excused,
     required VoidCallback onTap,
   }) {
     final scheme = Theme.of(context).colorScheme;
     Color fill = Colors.transparent;
     Color border = due ? scheme.outline : scheme.outlineVariant;
     Widget? icon;
-    if (prayed) {
+    if (excused) {
+      // Özel gün: soluk, kapalı (dokununca açıklama); işaretler kayıtta kalır
+      fill = scheme.surfaceContainerHigh;
+      border = scheme.outlineVariant;
+      icon = Icon(kExcusedIcon, color: scheme.onSurfaceVariant, size: 14);
+    } else if (prayed) {
       fill = scheme.primary;
       border = scheme.primary;
       icon = Icon(Icons.check, color: scheme.onPrimary, size: 18);
@@ -503,7 +680,8 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     }
     // Dokunma alanı hücrenin tamamı (en az 48dp yükseklik)
     return Semantics(
-      checked: prayed,
+      checked: excused ? null : prayed,
+      enabled: excused ? false : null,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -526,7 +704,13 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     );
   }
 
-  Widget _legend(Color color, Color onColor, IconData icon, String text) {
+  Widget _legend(
+    Color color,
+    Color onColor,
+    IconData icon,
+    String text, {
+    Color? border,
+  }) {
     final theme = Theme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -534,7 +718,11 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
         Container(
           width: 20,
           height: 20,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: border == null ? null : Border.all(color: border),
+          ),
           child: Icon(icon, color: onColor, size: 14),
         ),
         const SizedBox(width: AppSpacing.sm),

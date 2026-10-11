@@ -35,7 +35,9 @@ class FastTracker {
       .length;
 
   /// Kaza orucuna eklenecek günler: bugünden önceki (bugünün orucu sürüyor
-  /// olabilir), tutulmamış ve daha önce eklenmemiş Ramazan günleri
+  /// olabilir), tutulmamış ve daha önce eklenmemiş Ramazan günleri.
+  /// Namaz takibindeki özel günler (hayız/nifas) bilerek ayrılmaz: o günlerin
+  /// namazı kaza edilmez ama tutulamayan Ramazan orucu kaza edilir.
   static List<DateTime> kazaCandidates(
     RamadanRange range,
     Set<String> fasted,

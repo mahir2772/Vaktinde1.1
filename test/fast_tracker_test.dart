@@ -366,11 +366,52 @@ void main() {
       await dispose(tester);
     });
 
+    testWidgets('özel gün: kartta ayrı görünür ama kaza orucuna yine eklenir', (
+      tester,
+    ) async {
+      // Namaz takibinde 2. ve 3. gün özel gün; 1. gün tutuldu
+      SharedPreferences.setMockInitialValues({
+        'fast_log': [_key(1)],
+        'tracker_excused': [_key(2), _key(3)],
+      });
+      await pumpTracker(tester, DateTime(2027, 2, 12, 14)); // 5. gün
+      final prefs = await SharedPreferences.getInstance();
+      expect(find.text(loc.fastLegendExcused), findsOneWidget);
+      expect(find.bySemanticsLabel(loc.ramadanDayLabel(2)), findsOneWidget);
+      expect(
+        tester
+            .getSemantics(find.bySemanticsLabel(loc.ramadanDayLabel(2)))
+            .value,
+        loc.fastLegendExcused,
+      );
+
+      // Özel gün de tutuldu işaretlenebilir (ör. özel hal akşamdan sonra başladı)
+      await tester.tap(find.text('2'));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.fastCount(2, 29)), findsOneWidget);
+      expect(prefs.getStringList('fast_log'), [_key(1), _key(2)]);
+      expect(find.text(loc.fastLegendExcused), findsOneWidget); // 3. gün
+
+      // Tutulamayan oruç kaza edilir: özel gün (3.) de sayılır, 4. gün de
+      await tester.tap(find.text(loc.fastKazaButton));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.fastKazaConfirm(2)), findsOneWidget);
+      await tester.tap(find.text(loc.trackerKazaAdd));
+      await tester.pumpAndSettle();
+      expect(prefs.getInt('kaza_Oruç'), 2);
+      expect(prefs.getStringList('fast_kaza_added'), [_key(3), _key(4)]);
+      // Kazaya eklenen gün artık "kazaya eklendi" görünür
+      expect(find.text(loc.fastLegendExcused), findsNothing);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
     for (final lang in ['tr', 'ar']) {
       testWidgets('$lang: 320dp, %130 yazı, kartta taşma yok', (tester) async {
         SharedPreferences.setMockInitialValues({
           'fast_log': [_key(1), _key(2)],
           'fast_kaza_added': [_key(3)],
+          'tracker_excused': [_key(4)],
         });
         await pumpTracker(
           tester,
@@ -384,6 +425,7 @@ void main() {
         final l = lookupAppLocalizations(Locale(lang));
         expect(find.text(l.fastTitle), findsOneWidget);
         expect(find.text(l.fastCount(2, 29)), findsOneWidget);
+        expect(find.text(l.fastLegendExcused), findsOneWidget);
         for (var i = 0; i < 10; i++) {
           await tester.drag(find.byType(ListView), const Offset(0, -300));
           await tester.pump();

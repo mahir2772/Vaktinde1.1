@@ -535,6 +535,49 @@ class AppLocalizationsTr extends AppLocalizations {
   String get trackerTitle => 'Namaz Takibi';
 
   @override
+  String get trackerExcusedTitle => 'Özel gün';
+
+  @override
+  String get trackerExcusedInfo =>
+      'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.';
+
+  @override
+  String get trackerExcusedToday => 'Bugünü özel gün olarak işaretle';
+
+  @override
+  String get trackerExcusedMark => 'Özel gün olarak işaretle';
+
+  @override
+  String get trackerExcusedUnmark => 'Özel gün işaretini kaldır';
+
+  @override
+  String get trackerExcusedMarked => 'Özel gün olarak işaretlendi.';
+
+  @override
+  String get trackerExcusedUnmarked => 'Özel gün işareti kaldırıldı.';
+
+  @override
+  String get trackerExcusedCellSnack =>
+      'Bu gün özel gün olarak işaretli; vakitleri sayılmaz. İşareti kaldırmak için gün adına basılı tutun.';
+
+  @override
+  String trackerExcusedKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Bu günün kazaya eklenmiş $count vakti kaza sayaçlarından düşülecek.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerLegendExcused => 'Özel gün (gün adına basılı tutun)';
+
+  @override
+  String get fastLegendExcused => 'Özel gün (kazası tutulur)';
+
+  @override
   String get trackerToday => 'Bugün';
 
   @override

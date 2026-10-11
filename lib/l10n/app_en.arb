@@ -268,6 +268,24 @@
     },
     "timeAdjustSaved": "Prayer times updated",
     "trackerTitle": "Prayer Tracker",
+    "trackerExcusedTitle": "Excused days (menstruation)",
+    "trackerExcusedInfo": "Prayers missed during menstruation or postpartum bleeding don't need to be made up. Days marked as excused don't break your streak and are left out of the rate and of the prayers added to qada. Ramadan fasts missed on these days must still be made up. To mark a past day or remove the mark, press and hold the day's name.",
+    "trackerExcusedToday": "Mark today as excused",
+    "trackerExcusedMark": "Mark as excused",
+    "trackerExcusedUnmark": "Remove excused mark",
+    "trackerExcusedMarked": "Marked as excused.",
+    "trackerExcusedUnmarked": "Excused mark removed.",
+    "trackerExcusedCellSnack": "This day is marked as excused, so its prayers aren't counted. To remove the mark, press and hold the day's name.",
+    "trackerExcusedKazaConfirm": "{count, plural, =1{1 prayer of this day that was added to qada will be subtracted from your qada counters.} other{{count} prayers of this day that were added to qada will be subtracted from your qada counters.}}",
+    "@trackerExcusedKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerLegendExcused": "Excused (press and hold the day)",
+    "fastLegendExcused": "Excused (to be made up)",
     "trackerToday": "Today",
     "trackerYesterday": "Yesterday",
     "trackerPrayedAction": "Prayed",

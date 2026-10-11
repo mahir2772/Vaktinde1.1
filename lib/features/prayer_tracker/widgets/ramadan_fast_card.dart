@@ -17,7 +17,19 @@ class RamadanFastCard extends StatefulWidget {
   final DateTime Function()? clock;
   final RamadanCalendar? calendar;
 
-  const RamadanFastCard({super.key, this.clock, this.calendar});
+  /// Namaz takibindeki özel günler (hayız/nifas). Sadece görünüm: o günün
+  /// namazı kaza edilmez ama tutulamayan Ramazan orucu kaza edilir, bu yüzden
+  /// tutulmamış özel gün "Tutulmayanları kaza orucuna ekle"de yine sayılır
+  /// (FastTracker.kazaCandidates özel günü ayırmaz). Gün yine işaretlenebilir
+  /// (ör. akşamdan sonra başlayan özel hal o günün orucunu bozmaz).
+  final Set<String> excused;
+
+  const RamadanFastCard({
+    super.key,
+    this.clock,
+    this.calendar,
+    this.excused = const {},
+  });
 
   @override
   State<RamadanFastCard> createState() => _RamadanFastCardState();
@@ -121,6 +133,8 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
 
   Future<void> _addToKaza(RamadanRange range, AppLocalizations loc) async {
     if (_busy) return;
+    // Özel günler de sayılır (widget.excused bilerek verilmez): orucun
+    // kazası gerekir
     final count = FastTracker.kazaCandidates(
       range,
       _log,
@@ -162,6 +176,9 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final days = range.days;
+    final showExcused = days.any(
+      (d) => _isExcusedOnly(PrayerTracker.dateKey(d)),
+    );
 
     return AppCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -209,6 +226,12 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
             children: [
               _legend(scheme.primary, loc.fastLegendFasted),
               _legend(scheme.tertiary, loc.fastLegendKaza),
+              if (showExcused)
+                _legend(
+                  scheme.surfaceContainerHigh,
+                  loc.fastLegendExcused,
+                  border: scheme.outlineVariant,
+                ),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -233,6 +256,7 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
     final key = PrayerTracker.dateKey(day);
     final fasted = _log.contains(key);
     final kaza = !fasted && _added.contains(key);
+    final excused = _isExcusedOnly(key);
     final future = FastTracker.isFuture(day, today);
     final isToday = PrayerTracker.daysBetween(today, day) == 0;
     Color fill = Colors.transparent;
@@ -248,6 +272,11 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
       fill = scheme.tertiary;
       border = scheme.tertiary;
       text = scheme.onTertiary;
+    } else if (excused) {
+      // Sadece görünüm: kaza orucu adayı olmaya devam eder
+      fill = scheme.surfaceContainerHigh;
+      if (!isToday) border = scheme.outlineVariant;
+      text = scheme.onSurfaceVariant;
     }
     // Dokunma alanı 48dp; gelecek günler kapalı
     return Semantics(
@@ -255,7 +284,9 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
       enabled: !future,
       checked: fasted,
       label: loc.ramadanDayLabel(number),
-      value: kaza ? loc.fastLegendKaza : null,
+      value: kaza
+          ? loc.fastLegendKaza
+          : (excused ? loc.fastLegendExcused : null),
       excludeSemantics: true,
       child: InkWell(
         onTap: future ? null : () => _toggle(day, loc),
@@ -290,7 +321,13 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
     );
   }
 
-  Widget _legend(Color color, String text) {
+  // Tutulmamış, kazaya eklenmemiş özel gün (namaz takibinde işaretli)
+  bool _isExcusedOnly(String key) =>
+      widget.excused.contains(key) &&
+      !_log.contains(key) &&
+      !_added.contains(key);
+
+  Widget _legend(Color color, String text, {Color? border}) {
     final theme = Theme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -298,7 +335,11 @@ class _RamadanFastCardState extends State<RamadanFastCard> {
         Container(
           width: 14,
           height: 14,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: border == null ? null : Border.all(color: border),
+          ),
         ),
         const SizedBox(width: AppSpacing.sm),
         Flexible(

@@ -289,6 +289,24 @@
     },
     "timeAdjustSaved": "Vakitler güncellendi",
     "trackerTitle": "Namaz Takibi",
+    "trackerExcusedTitle": "Özel gün",
+    "trackerExcusedInfo": "Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.",
+    "trackerExcusedToday": "Bugünü özel gün olarak işaretle",
+    "trackerExcusedMark": "Özel gün olarak işaretle",
+    "trackerExcusedUnmark": "Özel gün işaretini kaldır",
+    "trackerExcusedMarked": "Özel gün olarak işaretlendi.",
+    "trackerExcusedUnmarked": "Özel gün işareti kaldırıldı.",
+    "trackerExcusedCellSnack": "Bu gün özel gün olarak işaretli; vakitleri sayılmaz. İşareti kaldırmak için gün adına basılı tutun.",
+    "trackerExcusedKazaConfirm": "{count, plural, other{Bu günün kazaya eklenmiş {count} vakti kaza sayaçlarından düşülecek.}}",
+    "@trackerExcusedKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerLegendExcused": "Özel gün (gün adına basılı tutun)",
+    "fastLegendExcused": "Özel gün (kazası tutulur)",
     "trackerToday": "Bugün",
     "trackerYesterday": "Dün",
     "trackerPrayedAction": "Kıldım",

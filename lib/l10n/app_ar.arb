@@ -268,6 +268,24 @@
     },
     "timeAdjustSaved": "تم تحديث أوقات الصلاة",
     "trackerTitle": "متابعة الصلوات",
+    "trackerExcusedTitle": "أيام العذر (الحيض والنفاس)",
+    "trackerExcusedInfo": "لا يجب قضاء الصلوات التي فاتت في أيام الحيض والنفاس. الأيام المعلَّمة كأيام عذر لا تقطع الأيام المتتالية، ولا تدخل في النسبة ولا في الصلوات المضافة إلى القضاء. أما ما فات في هذه الأيام من صيام رمضان فيجب قضاؤه. لتعليم يوم سابق أو إزالة علامته: ضغطة مطوّلة على اسم اليوم.",
+    "trackerExcusedToday": "تعليم اليوم كيوم عذر",
+    "trackerExcusedMark": "تعليم كيوم عذر",
+    "trackerExcusedUnmark": "إزالة علامة يوم العذر",
+    "trackerExcusedMarked": "عُلِّم كيوم عذر.",
+    "trackerExcusedUnmarked": "أُزيلت علامة يوم العذر.",
+    "trackerExcusedCellSnack": "هذا اليوم معلَّم كيوم عذر، فلا تُحتسب صلواته. لإزالة العلامة: ضغطة مطوّلة على اسم اليوم.",
+    "trackerExcusedKazaConfirm": "{count, plural, =1{ستُطرح من عدادات القضاء صلاة واحدة من هذا اليوم أُضيفت إلى القضاء.} =2{ستُطرح من عدادات القضاء صلاتان من هذا اليوم أُضيفتا إلى القضاء.} few{ستُطرح من عدادات القضاء {count} صلوات من هذا اليوم أُضيفت إلى القضاء.} other{ستُطرح من عدادات القضاء {count} صلاة من هذا اليوم أُضيفت إلى القضاء.}}",
+    "@trackerExcusedKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerLegendExcused": "يوم عذر (ضغطة مطوّلة على اليوم)",
+    "fastLegendExcused": "يوم عذر (يُقضى)",
     "trackerToday": "اليوم",
     "trackerYesterday": "أمس",
     "trackerPrayedAction": "صلّيت",

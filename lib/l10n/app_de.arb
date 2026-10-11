@@ -268,6 +268,24 @@
     },
     "timeAdjustSaved": "Gebetszeiten aktualisiert",
     "trackerTitle": "Gebetstracker",
+    "trackerExcusedTitle": "Entschuldigte Tage (Menstruation)",
+    "trackerExcusedInfo": "Gebete, die während der Menstruation oder der Wochenbettblutung ausfallen, müssen nicht nachgeholt werden. Als entschuldigt markierte Tage unterbrechen die Serie nicht und zählen weder zur Quote noch zu den Qada-Gebeten. An diesen Tagen ausgelassenes Ramadan-Fasten muss jedoch nachgeholt werden. Um einen vergangenen Tag zu markieren oder die Markierung zu entfernen, halten Sie den Namen des Tages gedrückt.",
+    "trackerExcusedToday": "Heute als entschuldigt markieren",
+    "trackerExcusedMark": "Als entschuldigt markieren",
+    "trackerExcusedUnmark": "Markierung „entschuldigt“ entfernen",
+    "trackerExcusedMarked": "Als entschuldigt markiert.",
+    "trackerExcusedUnmarked": "Markierung „entschuldigt“ entfernt.",
+    "trackerExcusedCellSnack": "Dieser Tag ist als entschuldigt markiert, seine Gebete werden nicht gezählt. Um die Markierung zu entfernen, halten Sie den Namen des Tages gedrückt.",
+    "trackerExcusedKazaConfirm": "{count, plural, =1{1 zu Qada hinzugefügtes Gebet dieses Tages wird von den Qada-Zählern abgezogen.} other{{count} zu Qada hinzugefügte Gebete dieses Tages werden von den Qada-Zählern abgezogen.}}",
+    "@trackerExcusedKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerLegendExcused": "Entschuldigt (Tag gedrückt halten)",
+    "fastLegendExcused": "Entschuldigt (wird nachgeholt)",
     "trackerToday": "Heute",
     "trackerYesterday": "Gestern",
     "trackerPrayedAction": "Gebetet",

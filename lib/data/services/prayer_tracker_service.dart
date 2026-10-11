@@ -60,6 +60,47 @@ class PrayerTrackerService {
     return raw == null ? null : PrayerTracker.parseDateKey(raw);
   }
 
+  /// Özel gün (hayız/nifas) olarak işaretlenen günler
+  Future<Set<String>> loadExcused() => _storage.loadTrackerExcused();
+
+  /// [date] gününü özel gün yapar ya da işareti kaldırır; değiştiyse true.
+  /// O günde kılındı işaretleri kayıtta kalır (işaret kalkınca yine sayılır).
+  /// Özel gün yapılan günün kazaya eklenmiş vakitleri kazadan çıkar: kayıt
+  /// silinir, kaza sayaçlarından düşülür (sıfırın altına inmez; sıra kayıt →
+  /// sayaç, yarıda kalırsa sayaç en kötü ihtimalle fazla kalır, iki kez düşülmez).
+  /// İşaret kalkınca o günün kılınmayan vakitleri yeniden kaza adayı olur.
+  Future<bool> setExcused(DateTime date, bool excused) async {
+    final result = await runExclusive(() async {
+      final now = DateTime.now();
+      final days = await _storage.loadTrackerExcused();
+      if (PrayerTracker.isExcused(days, date) == excused) return false;
+      await _storage.saveTrackerExcused(
+        PrayerTracker.withExcused(days, date, excused, today: now),
+      );
+      if (!excused) return true;
+      final added = await _storage.loadKazaAdded();
+      final mask = PrayerTracker.maskOf(added, date);
+      if (mask == 0) return true;
+      final key = PrayerTracker.dateKey(date);
+      await _storage.saveKazaAdded(
+        PrayerTracker.prune({...added}..remove(key), now),
+      );
+      final counters = await _storage.loadMissedPrayers();
+      for (final e in PrayerTracker.kazaDeltas({key: mask}).entries) {
+        final count = counters[e.key] ?? 0;
+        if (count > 0) {
+          await _storage.updateMissedPrayer(
+            e.key,
+            count > e.value ? count - e.value : 0,
+          );
+        }
+      }
+      return true;
+    });
+    changes.value++;
+    return result;
+  }
+
   /// [date] günündeki [key] vaktini işaretler/kaldırır. Kılındıysa o vaktin bekleyen
   /// "vakit çıkıyor" hatırlatması iptal edilir. Kazaya eklenmiş vakit işaretlenmez
   /// (sayaç zaten artırıldı; [removeFromKaza]); değişiklik yapıldıysa true.
@@ -129,8 +170,8 @@ class PrayerTrackerService {
     return result;
   }
 
-  /// Kılınmayan geçmiş vakitleri kaza sayaçlarına ekler (her vakit bir kez).
-  /// Eklenen vakit sayısını döner.
+  /// Kılınmayan geçmiş vakitleri kaza sayaçlarına ekler (her vakit bir kez;
+  /// özel günler hariç). Eklenen vakit sayısını döner.
   Future<int> addMissedToKaza({bool yesterdayYatsiOngoing = false}) async {
     final added = await runExclusive(() async {
       final now = DateTime.now();
@@ -141,6 +182,7 @@ class PrayerTrackerService {
         already,
         now,
         since: await loadSince(),
+        excused: await _storage.loadTrackerExcused(),
         yesterdayYatsiOngoing: yesterdayYatsiOngoing,
       );
       final count = PrayerTracker.totalCount(candidates);

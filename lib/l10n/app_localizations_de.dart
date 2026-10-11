@@ -542,6 +542,51 @@ class AppLocalizationsDe extends AppLocalizations {
   String get trackerTitle => 'Gebetstracker';
 
   @override
+  String get trackerExcusedTitle => 'Entschuldigte Tage (Menstruation)';
+
+  @override
+  String get trackerExcusedInfo =>
+      'Gebete, die während der Menstruation oder der Wochenbettblutung ausfallen, müssen nicht nachgeholt werden. Als entschuldigt markierte Tage unterbrechen die Serie nicht und zählen weder zur Quote noch zu den Qada-Gebeten. An diesen Tagen ausgelassenes Ramadan-Fasten muss jedoch nachgeholt werden. Um einen vergangenen Tag zu markieren oder die Markierung zu entfernen, halten Sie den Namen des Tages gedrückt.';
+
+  @override
+  String get trackerExcusedToday => 'Heute als entschuldigt markieren';
+
+  @override
+  String get trackerExcusedMark => 'Als entschuldigt markieren';
+
+  @override
+  String get trackerExcusedUnmark => 'Markierung „entschuldigt“ entfernen';
+
+  @override
+  String get trackerExcusedMarked => 'Als entschuldigt markiert.';
+
+  @override
+  String get trackerExcusedUnmarked => 'Markierung „entschuldigt“ entfernt.';
+
+  @override
+  String get trackerExcusedCellSnack =>
+      'Dieser Tag ist als entschuldigt markiert, seine Gebete werden nicht gezählt. Um die Markierung zu entfernen, halten Sie den Namen des Tages gedrückt.';
+
+  @override
+  String trackerExcusedKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count zu Qada hinzugefügte Gebete dieses Tages werden von den Qada-Zählern abgezogen.',
+      one:
+          '1 zu Qada hinzugefügtes Gebet dieses Tages wird von den Qada-Zählern abgezogen.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerLegendExcused => 'Entschuldigt (Tag gedrückt halten)';
+
+  @override
+  String get fastLegendExcused => 'Entschuldigt (wird nachgeholt)';
+
+  @override
   String get trackerToday => 'Heute';
 
   @override

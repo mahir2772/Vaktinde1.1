@@ -1034,6 +1034,72 @@ abstract class AppLocalizations {
   /// **'Namaz Takibi'**
   String get trackerTitle;
 
+  /// No description provided for @trackerExcusedTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün'**
+  String get trackerExcusedTitle;
+
+  /// No description provided for @trackerExcusedInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.'**
+  String get trackerExcusedInfo;
+
+  /// No description provided for @trackerExcusedToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünü özel gün olarak işaretle'**
+  String get trackerExcusedToday;
+
+  /// No description provided for @trackerExcusedMark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün olarak işaretle'**
+  String get trackerExcusedMark;
+
+  /// No description provided for @trackerExcusedUnmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün işaretini kaldır'**
+  String get trackerExcusedUnmark;
+
+  /// No description provided for @trackerExcusedMarked.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün olarak işaretlendi.'**
+  String get trackerExcusedMarked;
+
+  /// No description provided for @trackerExcusedUnmarked.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün işareti kaldırıldı.'**
+  String get trackerExcusedUnmarked;
+
+  /// No description provided for @trackerExcusedCellSnack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gün özel gün olarak işaretli; vakitleri sayılmaz. İşareti kaldırmak için gün adına basılı tutun.'**
+  String get trackerExcusedCellSnack;
+
+  /// No description provided for @trackerExcusedKazaConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{Bu günün kazaya eklenmiş {count} vakti kaza sayaçlarından düşülecek.}}'**
+  String trackerExcusedKazaConfirm(int count);
+
+  /// No description provided for @trackerLegendExcused.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün (gün adına basılı tutun)'**
+  String get trackerLegendExcused;
+
+  /// No description provided for @fastLegendExcused.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün (kazası tutulur)'**
+  String get fastLegendExcused;
+
   /// No description provided for @trackerToday.
   ///
   /// In tr, this message translates to:

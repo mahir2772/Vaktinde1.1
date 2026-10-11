@@ -215,6 +215,47 @@ void main() {
       expect(reviewRequests, 1);
     });
 
+    test('özel gün seriyi bozmaz: arada özel gün varken 7. gün istenir', () async {
+      SharedPreferences.setMockInitialValues({
+        'prayer_log': jsonEncode({
+          for (var i = 1; i <= 7; i++)
+            if (i != 4) dk(i): PrayerTracker.fullMask,
+          dk(0): 15,
+        }),
+        'prayer_log_since': dk(7),
+        'tracker_excused': [dk(4)],
+      });
+      final prompt = startPrompt();
+      await prompt.settled;
+      expect(reviewRequests, 0);
+      await PrayerTrackerService().setPrayed(today, 'Yatsı', true); // 6 → 7
+      await prompt.settled;
+      expect(reviewRequests, 1);
+    });
+
+    test('özel gün işareti seriyi 7\'ye çıkarsa da istenmez; '
+        'sonraki namazla istenir', () async {
+      SharedPreferences.setMockInitialValues({
+        'prayer_log': jsonEncode({
+          for (var i = 1; i <= 8; i++)
+            if (i != 4) dk(i): PrayerTracker.fullMask,
+          dk(0): 15,
+        }),
+        'prayer_log_since': dk(8),
+      });
+      final service = PrayerTrackerService();
+      final prompt = startPrompt();
+      await prompt.settled;
+      // 4 gün önce özel gün: seri 3 → 7 (atlanan gün köprülenir)
+      await service.setExcused(PrayerTracker.addDays(today, -4), true);
+      await prompt.settled;
+      expect(reviewRequests, 0);
+
+      await service.setPrayed(today, 'Yatsı', true); // 7 → 8
+      await prompt.settled;
+      expect(reviewRequests, 1);
+    });
+
     test('aynı anda iki dinleyici olsa da tek istek', () async {
       SharedPreferences.setMockInitialValues(streakPrefs(6));
       final a = startPrompt();

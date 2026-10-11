@@ -1,5 +1,8 @@
 /// Namaz takibi ve "vakit çıkıyor" hatırlatmalarının saf hesapları (test edilebilir).
 /// Kayıt biçimi: yerel tarih "yyyy-MM-dd" → kılınan vakitlerin bit maskesi.
+/// Özel günler (hayız/nifas; "yyyy-MM-dd" kümesi): o günlerin namazı kaza
+/// edilmez → seri bu günleri atlar (bozmaz, saymaz), oran ve kaza adaylarına
+/// katılmaz. O günlerde işaretlenmiş vakitler kayıtta kalır, sayılmaz.
 class PrayerTracker {
   PrayerTracker._();
 
@@ -123,41 +126,81 @@ class PrayerTracker {
     };
   }
 
+  /// [date] özel gün (hayız/nifas) olarak işaretli mi
+  static bool isExcused(Set<String> excused, DateTime date) =>
+      excused.contains(dateKey(date));
+
+  /// [date] gününü özel gün yapar/kaldırır; geçersiz ve eski kayıtlar budanır.
+  static Set<String> withExcused(
+    Set<String> excused,
+    DateTime date,
+    bool value, {
+    required DateTime today,
+  }) {
+    final result = {...excused};
+    final k = dateKey(date);
+    if (value) {
+      result.add(k);
+    } else {
+      result.remove(k);
+    }
+    return pruneExcused(result, today);
+  }
+
+  /// Geçersiz ve [keepDays] günden eski özel gün kayıtlarını atar
+  static Set<String> pruneExcused(Set<String> excused, DateTime today) {
+    final cutoff = dateKey(addDays(today, -keepDays));
+    return {
+      for (final d in excused)
+        if (parseDateKey(d) != null && d.compareTo(cutoff) >= 0) d,
+    };
+  }
+
   /// Beş vaktin tamamının kılındığı ardışık günler. Bugün sadece tamamsa sayılır;
   /// [yesterdayYatsiOngoing] (imsak girmedi) ise dünün yatsısı da henüz eksik sayılmaz.
+  /// Özel günler ([excused]) atlanır: seriyi bozmaz, seriye de sayılmaz.
   static int streak(
     Map<String, int> log,
     DateTime today, {
+    Set<String> excused = const {},
     bool yesterdayYatsiOngoing = false,
   }) {
+    bool skipped(DateTime d) => isExcused(excused, d);
     int count = 0;
-    if (maskOf(log, today) == fullMask) count++;
+    if (!skipped(today) && maskOf(log, today) == fullMask) count++;
     DateTime d = addDays(today, -1);
     if (yesterdayYatsiOngoing) {
-      final mask = maskOf(log, d);
-      if (mask == fullMask) {
-        count++;
-      } else if ((mask | bit("Yatsı")) != fullMask) {
-        return count;
+      if (!skipped(d)) {
+        final mask = maskOf(log, d);
+        if (mask == fullMask) {
+          count++;
+        } else if ((mask | bit("Yatsı")) != fullMask) {
+          return count;
+        }
       }
       d = addDays(d, -1);
     }
-    while (maskOf(log, d) == fullMask) {
-      count++;
+    // Kayıt ve özel gün kümesi sonlu: en geç ikisinin de öncesinde biter
+    while (true) {
+      if (!skipped(d)) {
+        if (maskOf(log, d) != fullMask) return count;
+        count++;
+      }
       d = addDays(d, -1);
     }
-    return count;
   }
 
   /// Son [statsDays] günde (bugün dahil, takibe başlanan [since] gününden itibaren)
   /// kılınan / vakti girmiş farz oranı (0-1). [todayDue]: bugün vakti girmiş farz sayısı.
   /// [yesterdayYatsiOngoing]: dünün yatsısı kılınmadıysa henüz paydaya girmez.
+  /// Özel günler ([excused]) ne paya ne paydaya girer.
   /// Değerlendirilecek vakit yoksa null.
   static double? completionRate(
     Map<String, int> log,
     DateTime today, {
     required int todayDue,
     DateTime? since,
+    Set<String> excused = const {},
     bool yesterdayYatsiOngoing = false,
   }) {
     if (since == null) return null;
@@ -166,6 +209,7 @@ class PrayerTracker {
     for (int i = 0; i < statsDays; i++) {
       final d = addDays(today, -i);
       if (daysBetween(since, d) < 0) break;
+      if (isExcused(excused, d)) continue;
       final c = countOf(maskOf(log, d));
       int due = prayerKeys.length;
       if (i == 0) due = todayDue;
@@ -179,12 +223,14 @@ class PrayerTracker {
 
   /// Kazaya eklenecek (tarih → vakit maskesi): dünden geriye [kazaDays] gün, [since]
   /// öncesi hariç; kılındı işaretli ya da daha önce eklenmiş ([added]) vakitler hariç.
+  /// Özel günlerin ([excused]) namazı kaza edilmez, hiç aday olmaz.
   /// [yesterdayYatsiOngoing]: imsak girmediyse dünün yatsısı henüz kaza değildir.
   static Map<String, int> kazaCandidates(
     Map<String, int> log,
     Map<String, int> added,
     DateTime today, {
     DateTime? since,
+    Set<String> excused = const {},
     bool yesterdayYatsiOngoing = false,
   }) {
     final result = <String, int>{};
@@ -192,6 +238,7 @@ class PrayerTracker {
     for (int i = 1; i <= kazaDays; i++) {
       final d = addDays(today, -i);
       if (daysBetween(since, d) < 0) break;
+      if (isExcused(excused, d)) continue;
       int missing = fullMask & ~maskOf(log, d) & ~maskOf(added, d);
       if (i == 1 && yesterdayYatsiOngoing) missing &= ~bit("Yatsı");
       if (missing != 0) result[dateKey(d)] = missing;
