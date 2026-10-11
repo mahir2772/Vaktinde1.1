@@ -27,6 +27,42 @@ class AppLocalizationsTr extends AppLocalizations {
   String get a11yAlarmSettingsHint => 'Alarm ayarları';
 
   @override
+  String get navQuran => 'Kur\'an';
+
+  @override
+  String get showcaseQuran =>
+      'Kur\'an-ı Kerim\'i buradan okuyabilir, kaldığınız yerden devam edebilirsiniz.';
+
+  @override
+  String zikirRound(int round) {
+    return 'Tur $round';
+  }
+
+  @override
+  String zikirProgress(int count, int target) {
+    return '$count / $target';
+  }
+
+  @override
+  String get zikirPrevious => 'Önceki zikir';
+
+  @override
+  String get zikirNext => 'Sonraki zikir';
+
+  @override
+  String get zikirCountingSection => 'Sayma';
+
+  @override
+  String get zikirRoundMode => 'Hedefte sıfırdan devam et (tur say)';
+
+  @override
+  String get zikirVolumeKeys => 'Ses tuşlarıyla say';
+
+  @override
+  String get zikirVolumeKeysDesc =>
+      'Ses açma +1, ses kısma −1. Sadece Zikir ekranı açıkken; sistem sesi değişmez.';
+
+  @override
   String get adPrivacySettings => 'Reklam Gizlilik Ayarları';
 
   @override

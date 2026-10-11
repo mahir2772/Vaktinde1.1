@@ -6,6 +6,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
+import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
@@ -18,13 +19,24 @@ import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 import 'app_showcase.dart';
 
 export 'app_showcase.dart'
-    show homeLangKey, homeStoryKey, homeAlarmsKey, qiblaKey, zikirmatikKey;
+    show
+        homeLangKey,
+        homeStoryKey,
+        homeAlarmsKey,
+        quranKey,
+        qiblaKey,
+        zikirmatikKey;
 
 /// Tanıtım turu görüldü mü (false = görüldü; tur başlarken yazılır)
 const String tourSeenKey = 'is_first_launch_showcase_v3';
 
-/// Alt menü (Ana Sayfa, Kıble, Zikirmatik, Araçlar) + banner + tanıtım turu.
-/// Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada başlatır.
+/// Alt menü sekmeleri (alt menüdeki sırayla)
+enum MainTab { home, quran, qibla, zikir, tools }
+
+/// Alt menü (Ana Sayfa, Kur'an, Kıble, Zikir, Araçlar) + banner + tanıtım turu.
+/// Sekme değişiminde reklam yok; geçiş reklamı sadece Araçlar'dan açılan
+/// araçlarda. Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada
+/// başlatır.
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
 
@@ -35,8 +47,9 @@ class MainWrapper extends StatefulWidget {
 class _MainWrapperState extends State<MainWrapper> {
   int _currentIndex = 0;
 
-  // Sekmeler ilk ziyarette kurulur: pusula/konum açılışta başlamaz
-  final Set<int> _visited = {0};
+  // Sekmeler ilk ziyarette kurulur: pusula/konum ve Kur'an listesi açılışta
+  // başlamaz
+  final Set<int> _visited = {MainTab.home.index};
 
   // Tur birden fazla kez başlamasın
   bool _isTutorialChecked = false;
@@ -116,8 +129,8 @@ class _MainWrapperState extends State<MainWrapper> {
 
   // "Alarmlar" sekmesi istendi (Bildirim Kontrolü): ana sayfa sekmesi seçilir
   void _showHomeTab() {
-    if (_currentIndex == 0) return;
-    setState(() => _currentIndex = 0);
+    if (_currentIndex == MainTab.home.index) return;
+    setState(() => _currentIndex = MainTab.home.index);
   }
 
   /// Turu ekranda olan hedeflerle başlatır (5.x'te eksik hedef turu erken
@@ -129,6 +142,7 @@ class _MainWrapperState extends State<MainWrapper> {
         homeLangKey,
         homeStoryKey,
         homeAlarmsKey,
+        quranKey,
         qiblaKey,
         zikirmatikKey,
       ].where(view.isTargetRendered).toList();
@@ -156,11 +170,13 @@ class _MainWrapperState extends State<MainWrapper> {
 
   Widget _page(int index) {
     if (!_visited.contains(index)) return const SizedBox.shrink();
-    return switch (index) {
-      0 => const HomeView(),
-      1 => const QiblaView(),
-      2 => const ZikirView(),
-      _ => const ToolsView(),
+    return switch (MainTab.values[index]) {
+      MainTab.home => const HomeView(),
+      // Sekme: banner alt menüde (tek banner); sure okuyucu üstüne açılır
+      MainTab.quran => const QuranView(asTab: true),
+      MainTab.qibla => const QiblaView(),
+      MainTab.zikir => const ZikirView(),
+      MainTab.tools => const ToolsView(),
     };
   }
 
@@ -180,7 +196,7 @@ class _MainWrapperState extends State<MainWrapper> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: [for (var i = 0; i < 4; i++) _page(i)],
+        children: [for (var i = 0; i < MainTab.values.length; i++) _page(i)],
       ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -200,6 +216,15 @@ class _MainWrapperState extends State<MainWrapper> {
                 icon: const Icon(Icons.home_outlined),
                 selectedIcon: const Icon(Icons.home),
                 label: loc.navPrayer,
+              ),
+              AppShowcase(
+                showcaseKey: quranKey,
+                description: loc.showcaseQuran,
+                child: NavigationDestination(
+                  icon: const Icon(Icons.auto_stories_outlined),
+                  selectedIcon: const Icon(Icons.auto_stories),
+                  label: loc.navQuran,
+                ),
               ),
               AppShowcase(
                 showcaseKey: qiblaKey,

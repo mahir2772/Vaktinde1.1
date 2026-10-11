@@ -148,6 +148,8 @@ abstract final class BackupService {
     'zikir_sound': const _Field(_Kind.boolean),
     'zikir_awake': const _Field(_Kind.boolean),
     'zikir_view_mode': const _Field(_Kind.integer, _isNonNegative),
+    'zikir_round_mode': const _Field(_Kind.boolean),
+    'zikir_volume_keys': const _Field(_Kind.boolean),
     // Görünüm ve dil
     'theme_mode': const _Field(_Kind.integer, _isThemeMode),
     'background_image': const _Field(_Kind.text),
@@ -162,6 +164,8 @@ abstract final class BackupService {
     'dhikr_count_': _Field(_Kind.integer, _isNonNegative),
     // 0 hedef zikirde sıfıra bölme olurdu
     'dhikr_target_': _Field(_Kind.integer, _isPositive),
+    // Tur kipinde tamamlanan tur + 1 (1. tur kaydedilmez)
+    'dhikr_round_': _Field(_Kind.integer, _isPositive),
   };
 
   static _Field? _fieldOf(String key) {

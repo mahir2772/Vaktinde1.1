@@ -499,7 +499,7 @@ void main() {
       expect(vm().count, 27);
       expect(find.text(loc.targetCount(33)), findsOneWidget);
 
-      await tester.tap(find.byType(TabularText));
+      await tester.tap(find.byKey(ZikirView.counterKey));
       await _settle(tester, steps: 3);
       expect(vm().count, 28);
 
@@ -520,14 +520,14 @@ void main() {
       await _settle(tester, steps: 4);
       expect(vm().target, 99);
 
-      // Sıfırla: vazgeçince sayı kalır, onaylayınca sıfırlanır
-      await tester.tap(find.text(loc.resetCounter));
+      // Sıfırla (üst çubukta): vazgeçince sayı kalır, onaylayınca sıfırlanır
+      await tester.tap(find.byTooltip(loc.resetCounter));
       await _settle(tester, steps: 4);
       expect(find.text(loc.resetCounterConfirm), findsOneWidget);
       await tester.tap(find.text(loc.cancel));
       await _settle(tester, steps: 4);
       expect(vm().count, 500);
-      await tester.tap(find.text(loc.resetCounter));
+      await tester.tap(find.byTooltip(loc.resetCounter));
       await _settle(tester, steps: 4);
       await tester.tap(find.text(loc.resetCounter).last);
       await _settle(tester, steps: 4);
@@ -539,7 +539,7 @@ void main() {
     testWidgets('Uzun basınca sayaç düzenleme açılır', (tester) async {
       await _pumpScreen(tester, const ZikirView(), textScale: 1);
       final loc = _loc('tr');
-      await tester.longPress(find.byType(TabularText));
+      await tester.longPress(find.byKey(ZikirView.counterKey));
       await _settle(tester, steps: 4);
       expect(find.text(loc.editCounterTitle), findsWidgets);
       expect(find.byType(TextField), findsOneWidget);

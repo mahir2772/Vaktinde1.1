@@ -27,6 +27,41 @@ class AppLocalizationsAr extends AppLocalizations {
   String get a11yAlarmSettingsHint => 'فتح إعدادات المنبه';
 
   @override
+  String get navQuran => 'القرآن';
+
+  @override
+  String get showcaseQuran => 'اقرأ القرآن الكريم هنا وتابع من حيث توقفت.';
+
+  @override
+  String zikirRound(int round) {
+    return 'الدورة $round';
+  }
+
+  @override
+  String zikirProgress(int count, int target) {
+    return '$count / $target';
+  }
+
+  @override
+  String get zikirPrevious => 'الذكر السابق';
+
+  @override
+  String get zikirNext => 'الذكر التالي';
+
+  @override
+  String get zikirCountingSection => 'العدّ';
+
+  @override
+  String get zikirRoundMode => 'البدء من الصفر عند بلوغ الهدف (عدّ الدورات)';
+
+  @override
+  String get zikirVolumeKeys => 'العدّ بأزرار الصوت';
+
+  @override
+  String get zikirVolumeKeysDesc =>
+      'رفع الصوت +1، خفض الصوت −1. فقط أثناء فتح شاشة الذكر، ولا يتغير صوت النظام.';
+
+  @override
   String get adPrivacySettings => 'إعدادات خصوصية الإعلانات';
 
   @override

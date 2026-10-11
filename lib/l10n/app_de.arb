@@ -5,6 +5,33 @@
     "todayQuranOpen": "Den Heiligen Koran öffnen",
     "todayFridayMessage": "Freitagsgruß senden",
     "a11yAlarmSettingsHint": "Alarmeinstellungen öffnen",
+    "navQuran": "Koran",
+    "showcaseQuran": "Lesen Sie hier den Koran und machen Sie dort weiter, wo Sie aufgehört haben.",
+    "zikirRound": "Runde {round}",
+    "@zikirRound": {
+        "placeholders": {
+            "round": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirProgress": "{count} / {target}",
+    "@zikirProgress": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirPrevious": "Vorheriger Dhikr",
+    "zikirNext": "Nächster Dhikr",
+    "zikirCountingSection": "Zählen",
+    "zikirRoundMode": "Am Ziel von vorn beginnen (Runden zählen)",
+    "zikirVolumeKeys": "Mit den Lautstärketasten zählen",
+    "zikirVolumeKeysDesc": "Lauter +1, leiser −1. Nur bei geöffnetem Dhikr-Bildschirm; die Systemlautstärke ändert sich nicht.",
     "adPrivacySettings": "Werbe-Datenschutzeinstellungen",
     "adPrivacySettingsSub": "Einwilligung für personalisierte Werbung ändern",
     "showcaseLanguage": "Hier können Sie die App-Sprache und weitere Einstellungen ändern.",

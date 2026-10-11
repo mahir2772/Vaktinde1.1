@@ -5,6 +5,33 @@
     "todayQuranOpen": "Ouvrir le Saint Coran",
     "todayFridayMessage": "Envoyer un message du vendredi",
     "a11yAlarmSettingsHint": "Ouvrir les réglages d'alarme",
+    "navQuran": "Coran",
+    "showcaseQuran": "Lisez le Saint Coran ici et reprenez là où vous vous êtes arrêté.",
+    "zikirRound": "Tour {round}",
+    "@zikirRound": {
+        "placeholders": {
+            "round": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirProgress": "{count} / {target}",
+    "@zikirProgress": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirPrevious": "Dhikr précédent",
+    "zikirNext": "Dhikr suivant",
+    "zikirCountingSection": "Comptage",
+    "zikirRoundMode": "Recommencer à zéro à l'objectif (compter les tours)",
+    "zikirVolumeKeys": "Compter avec les touches de volume",
+    "zikirVolumeKeysDesc": "Volume haut +1, volume bas −1. Uniquement lorsque l'écran Dhikr est ouvert ; le volume du système ne change pas.",
     "adPrivacySettings": "Confidentialité des annonces",
     "adPrivacySettingsSub": "Modifier votre consentement aux annonces personnalisées",
     "showcaseLanguage": "Vous pouvez changer ici la langue de l'application et les autres réglages.",

@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +18,9 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterFragmentActivity() {
     // Kıble manyetometre akışı: sensör sadece Dart dinlerken ve ekran görünürken açık
     private var magnetic: MagneticStream? = null
+
+    // Zikirmatik "Ses tuşlarıyla say": ses tuşları sadece Dart açtığında sayaca gider
+    internal val volumeKeys = VolumeKeyCounter()
 
     // Yedek dosyası seçimi ("pickBackupFile"): sonucu bekleyen Dart çağrısı. Seçici açıkken
     // süreç ölür/aktivite yeniden kurulursa sonuç sahipsiz gelir ve yok sayılır.
@@ -44,20 +48,31 @@ class MainActivity : FlutterFragmentActivity() {
         super.configureFlutterEngine(flutterEngine)
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         // sdkInt ("Sessiz modda da çal" 8.0+), geomagnetic (kıble: manyetik sapma + beklenen alan);
-        // dosya seçici aktivite ister: burada
+        // dosya seçici ve ses tuşları aktivite ister: burada
         MethodChannel(messenger, "vaktinde/device").setMethodCallHandler { call, result ->
-            if (call.method == "pickBackupFile") pickDocument(result) else DeviceMethods.handle(call, result)
+            when (call.method) {
+                "pickBackupFile" -> pickDocument(result)
+                "setVolumeKeyCounting" -> {
+                    volumeKeys.setEnabled(call.arguments == true)
+                    result.success(null)
+                }
+                else -> DeviceMethods.handle(call, result)
+            }
         }
         magnetic?.stop()
         val stream = MagneticStream(applicationContext)
         magnetic = stream
         EventChannel(messenger, "vaktinde/magnetic").setStreamHandler(stream)
+        // Yeni motor (Dart yeniden başladı): eski bayrak taşınmaz, Zikir sekmesi yeniden açar
+        volumeKeys.detach()
+        EventChannel(messenger, "vaktinde/volume_keys").setStreamHandler(volumeKeys)
     }
 
     // Activity kapanınca (onDestroy → motor ayrılır) sensör dinleyicisi bırakılır
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         magnetic?.stop()
         magnetic = null
+        volumeKeys.detach()
         super.cleanUpFlutterEngine(flutterEngine)
     }
 
@@ -68,8 +83,15 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun onStop() {
         magnetic?.pause()
+        // Görünmezken ses tuşları sayılmaz; Dart ön plana dönünce (resumed) yeniden açar
+        volumeKeys.reset()
         super.onStop()
     }
+
+    // Ses tuşları görünüm ağacından (Flutter) ve sistemin ses ayarından önce: sadece sayılırken
+    // tüketilir, diğer her tuş ve durum olağan yoldan gider
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean =
+        volumeKeys.onKeyEvent(event) || super.dispatchKeyEvent(event)
 
     /**
      * Ayarlar > "Yedeği geri yükle": sistem dosya seçicisi (SAF; izin gerekmez). Tür süzülmez:

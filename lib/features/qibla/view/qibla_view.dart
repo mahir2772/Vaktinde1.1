@@ -89,6 +89,11 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   static const Duration _interferenceClearDelay = Duration(seconds: 1);
   // Bundan küçük yön değişimi yeniden çizim yaptırmaz
   static const double _minHeadingStep = 0.5;
+  // Hizalanma titreşimi: kıble yönüne (qiblaTurnFor aligned, < 4°) girişte
+  // bir kez. Eşikte titreyen pusula tekrar titretmesin: ancak hizadan bu
+  // kadar uzaklaşınca yeniden kurulur, iki titreşim arası da en az bu süre.
+  static const double _alignHapticRearm = 8;
+  static const Duration _alignHapticGap = Duration(milliseconds: 1500);
 
   bool _loading = true;
   bool _initStarted = false;
@@ -119,6 +124,10 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   double _heading = 0;
   double _unwrappedHeading = 0;
   bool _aligned = false;
+
+  /// Hizaya girişte titreşim kurulu mu; son titreşimden beri bekleme süresi
+  bool _alignHapticArmed = true;
+  Timer? _alignHapticCooldown;
 
   /// Son okunan doğruluklar: pusula (± derece) ve manyetometre (0..3)
   double? _compassAccuracy;
@@ -168,6 +177,7 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _stopCompass();
+    _alignHapticCooldown?.cancel();
     super.dispose();
   }
 
@@ -348,7 +358,7 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
     // Saniyede ~30 olay: fark edilmeyecek titreşimde yeniden çizilmez
     if (_hasHeading && !_noCompass && step.abs() < _minHeadingStep) return;
     final aligned = qiblaTurnFor(heading, _bearing!) == QiblaTurn.aligned;
-    if (aligned && !_aligned) HapticFeedback.heavyImpact();
+    _alignmentHaptic(aligned, signedDelta(heading, _bearing!).abs());
 
     setState(() {
       _hasHeading = true;
@@ -357,6 +367,22 @@ class _QiblaViewState extends State<QiblaView> with WidgetsBindingObserver {
       _unwrappedHeading += step;
       _aligned = aligned;
     });
+  }
+
+  /// Kıble yönüne girişte tek kısa titreşim. [offset]: kıbleden sapma
+  /// (derece). Histerezis: hizadan [_alignHapticRearm]'dan fazla uzaklaşmadan
+  /// yeniden titremez; giriş [_alignHapticGap] içinde tekrarlanırsa da
+  /// titremez (hızlı salınımda art arda titreşim olmaz).
+  void _alignmentHaptic(bool aligned, double offset) {
+    if (!aligned) {
+      if (offset > _alignHapticRearm) _alignHapticArmed = true;
+      return;
+    }
+    if (!_alignHapticArmed) return;
+    _alignHapticArmed = false;
+    if (_alignHapticCooldown?.isActive ?? false) return;
+    HapticFeedback.mediumImpact();
+    _alignHapticCooldown = Timer(_alignHapticGap, () {});
   }
 
   /// Doğruluk [_calibrationDelay] boyunca zayıf/bilinmiyorsa (ya da

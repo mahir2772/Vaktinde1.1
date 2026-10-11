@@ -34,6 +34,8 @@ import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/home/widgets/prayer_times_grid.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
+import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart'
+    show MainTab;
 import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
@@ -187,6 +189,7 @@ Map<String, Object> _prefs({
   bool languageSelected = true,
   int themeMode = 1, // ThemeMode.light
   String? background,
+  Map<String, Object> extra = const {},
 }) {
   final today = DateTime.now();
   String dk(int daysAgo) =>
@@ -245,6 +248,7 @@ Map<String, Object> _prefs({
     'last_headless_run': today
         .subtract(const Duration(hours: 50))
         .millisecondsSinceEpoch,
+    ...extra,
   };
 }
 
@@ -675,6 +679,7 @@ Future<void> _pumpApp(
   int themeMode = 1,
   bool languageSelected = true,
   String? background,
+  Map<String, Object> extraPrefs = const {},
 }) async {
   SharedPreferences.setMockInitialValues(
     _prefs(
@@ -682,6 +687,7 @@ Future<void> _pumpApp(
       languageSelected: languageSelected,
       themeMode: themeMode,
       background: background,
+      extra: extraPrefs,
     ),
   );
   await tester.pumpWidget(
@@ -730,9 +736,9 @@ Future<void> _openRoute(
   await _settle(tester, steps: 6);
 }
 
-Future<void> _tapTab(WidgetTester tester, int index) async {
-  _currentScreen = 'tab $index';
-  await tester.tap(find.byType(NavigationDestination).at(index));
+Future<void> _tapTab(WidgetTester tester, MainTab tab) async {
+  _currentScreen = 'tab ${tab.name}';
+  await tester.tap(find.byType(NavigationDestination).at(tab.index));
   await _settle(tester, steps: 6);
 }
 
@@ -829,12 +835,14 @@ void main() {
       await tester.tap(find.text('Vakitler'));
       await _settle(tester);
 
-      await _tapTab(tester, 1);
+      await _tapTab(tester, MainTab.quran);
+      await _shot(tester, 'tr_64_quran_tab');
+      await _tapTab(tester, MainTab.qibla);
       await _shot(tester, 'tr_20_qibla');
       await _qiblaTipsShot(tester, 'tr', 'tr_22_qibla_tips');
-      await _tapTab(tester, 2);
+      await _tapTab(tester, MainTab.zikir);
       await _shot(tester, 'tr_30_zikirmatik');
-      await _tapTab(tester, 3);
+      await _tapTab(tester, MainTab.tools);
       await _shot(tester, 'tr_40_tools');
 
       await _openRoute(
@@ -905,6 +913,54 @@ void main() {
       await _finish(tester);
     });
   });
+
+  // Zikirmatik tur kipi: yeni turun başında (hedefe ulaşıldı) ve klasik
+  // tesbihte tur; ayarların Sayma bölümü (tur kipi, ses tuşları)
+  for (final lang in ['tr', 'ar']) {
+    testWidgets(
+      '$lang: zikirmatik tur kipi ve ayarlar',
+      skip: skip,
+      variant: _android,
+      (tester) async {
+        await _run(tester, () async {
+          for (final (mode, name) in [(0, 'modern'), (1, 'classic')]) {
+            _currentScreen = '${lang}_34_zikir_round_$name';
+            await _pumpApp(
+              tester,
+              lang: lang,
+              homeVm: _homeVm(lang),
+              extraPrefs: {
+                'zikir_view_mode': mode,
+                ZikirViewModel.roundModeKey: true,
+                ZikirViewModel.volumeKeysKey: true,
+                'dhikr_count_Sübhanallah': mode == 0 ? 0 : 12,
+                '${ZikirViewModel.roundPrefix}Sübhanallah': 3,
+              },
+            );
+            await _tapTab(tester, MainTab.zikir);
+            await _shot(tester, '${lang}_34_zikir_round_$name');
+            await _finish(tester);
+          }
+          await _pumpApp(
+            tester,
+            lang: lang,
+            homeVm: _homeVm(lang),
+            extraPrefs: {
+              ZikirViewModel.roundModeKey: true,
+              ZikirViewModel.volumeKeysKey: true,
+            },
+          );
+          await _openRoute(
+            tester,
+            '${lang}_35_zikir_settings_counting',
+            const ZikirSettingsView(),
+            tallHeight: 1100,
+          );
+          await _finish(tester);
+        });
+      },
+    );
+  }
 
   // Dini günler: "Tebrik gönder" sayfası + paylaşılan resim kartı (1080x1350)
   for (final lang in ['tr', 'ar']) {
@@ -987,7 +1043,7 @@ void main() {
           _currentScreen = 'tr_15_home_text130';
           await _pumpApp(tester, lang: 'tr', homeVm: _homeVm('tr'));
           await _shot(tester, 'tr_15_home_text130');
-          await _tapTab(tester, 3);
+          await _tapTab(tester, MainTab.tools);
           await _shot(tester, 'tr_48_tools_text130');
           await _openRoute(
             tester,
@@ -1041,16 +1097,18 @@ void main() {
           await tester.tap(find.text(loc.tabTimes));
           await _settle(tester);
 
-          await _tapTab(tester, 1);
+          await _tapTab(tester, MainTab.quran);
+          await _shot(tester, '${p}_64_quran_tab');
+          await _tapTab(tester, MainTab.qibla);
           await _shot(tester, '${p}_20_qibla');
           await _setViewport(tester, height: 1800);
           await _settle(tester, steps: 4);
           await _shot(tester, '${p}_21_qibla_full');
           await _setViewport(tester);
           await _settle(tester, steps: 2);
-          await _tapTab(tester, 2);
+          await _tapTab(tester, MainTab.zikir);
           await _shot(tester, '${p}_30_zikirmatik');
-          await _tapTab(tester, 3);
+          await _tapTab(tester, MainTab.tools);
           await _setViewport(tester, height: 2600);
           await _settle(tester, steps: 4);
           await _shot(tester, '${p}_40_tools_full');
@@ -1102,7 +1160,7 @@ void main() {
     await _run(tester, () async {
       _mockCompass(heading: 150, accuracy: -1);
       await _pumpApp(tester, lang: 'tr', homeVm: _homeVm('tr'));
-      await _tapTab(tester, 1);
+      await _tapTab(tester, MainTab.qibla);
       // Uyarı 2 sn süren zayıf doğrulukta açılır
       await tester.pump(const Duration(seconds: 2));
       await _settle(tester, steps: 2);
@@ -1118,7 +1176,7 @@ void main() {
       // Beklenen 47 µT, ölçülen 95 µT (mıknatıslı kılıf): 1,5 sn sonra uyarı
       _mockMagnetic(microTesla: 95);
       await _pumpApp(tester, lang: 'tr', homeVm: _homeVm('tr'));
-      await _tapTab(tester, 1);
+      await _tapTab(tester, MainTab.qibla);
       await tester.pump(const Duration(seconds: 2));
       await _settle(tester, steps: 2);
       await _shot(tester, 'tr_23_qibla_interference');
@@ -1141,12 +1199,14 @@ void main() {
       await _shot(tester, 'tr_dark_12_home_alarms');
       await tester.tap(find.text('Vakitler'));
       await _settle(tester);
-      await _tapTab(tester, 1);
+      await _tapTab(tester, MainTab.quran);
+      await _shot(tester, 'tr_dark_64_quran_tab');
+      await _tapTab(tester, MainTab.qibla);
       await _shot(tester, 'tr_dark_20_qibla');
       await _qiblaTipsShot(tester, 'tr', 'tr_dark_22_qibla_tips');
-      await _tapTab(tester, 2);
+      await _tapTab(tester, MainTab.zikir);
       await _shot(tester, 'tr_dark_30_zikirmatik');
-      await _tapTab(tester, 3);
+      await _tapTab(tester, MainTab.tools);
       await _shot(tester, 'tr_dark_40_tools');
       await _openRoute(tester, 'tr_dark_50_settings', const SettingsView());
       await _openRoute(
@@ -1188,11 +1248,13 @@ void main() {
       await _shot(tester, 'tr_bg_11_home_full');
       await _setViewport(tester);
       await _settle(tester, steps: 2);
-      await _tapTab(tester, 1);
+      await _tapTab(tester, MainTab.quran);
+      await _shot(tester, 'tr_bg_64_quran_tab');
+      await _tapTab(tester, MainTab.qibla);
       await _shot(tester, 'tr_bg_20_qibla');
-      await _tapTab(tester, 2);
+      await _tapTab(tester, MainTab.zikir);
       await _shot(tester, 'tr_bg_30_zikirmatik');
-      await _tapTab(tester, 3);
+      await _tapTab(tester, MainTab.tools);
       await _shot(tester, 'tr_bg_40_tools');
       await _openRoute(tester, 'tr_bg_50_settings', const SettingsView());
       await _openRoute(
@@ -1276,12 +1338,14 @@ void main() {
         await tester.tap(find.text('Vakitler'));
         await _settle(tester);
 
-        await _tapTab(tester, 1);
+        await _tapTab(tester, MainTab.quran);
+        await _shot(tester, 'tr_edge_64_quran_tab');
+        await _tapTab(tester, MainTab.qibla);
         await _shot(tester, 'tr_edge_20_qibla');
         await _qiblaTipsShot(tester, 'tr', 'tr_edge_22_qibla_tips');
-        await _tapTab(tester, 2);
+        await _tapTab(tester, MainTab.zikir);
         await _shot(tester, 'tr_edge_30_zikirmatik');
-        await _tapTab(tester, 3);
+        await _tapTab(tester, MainTab.tools);
         await _shot(tester, 'tr_edge_40_tools');
 
         // Ayarlar + dil, görünüm ve widget ekleme sayfaları
@@ -1355,12 +1419,14 @@ void main() {
           await _shot(tester, '${lang}_11_home_full');
           await _setViewport(tester);
           await _settle(tester, steps: 2);
-          await _tapTab(tester, 1);
+          await _tapTab(tester, MainTab.quran);
+          await _shot(tester, '${lang}_64_quran_tab');
+          await _tapTab(tester, MainTab.qibla);
           await _shot(tester, '${lang}_20_qibla');
           await _qiblaTipsShot(tester, lang, '${lang}_22_qibla_tips');
-          await _tapTab(tester, 2);
+          await _tapTab(tester, MainTab.zikir);
           await _shot(tester, '${lang}_30_zikirmatik');
-          await _tapTab(tester, 3);
+          await _tapTab(tester, MainTab.tools);
           await _shot(tester, '${lang}_40_tools');
           await _openRoute(
             tester,
@@ -1404,7 +1470,11 @@ void main() {
           await _setViewport(tester, width: 320, height: 640);
           await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
           await _shot(tester, '${lang}_16_home_320_text130');
-          await _tapTab(tester, 1);
+          await _tapTab(tester, MainTab.quran);
+          await _shot(tester, '${lang}_28_quran_tab_320_text130');
+          await _tapTab(tester, MainTab.zikir);
+          await _shot(tester, '${lang}_36_zikir_320_text130');
+          await _tapTab(tester, MainTab.qibla);
           await _shot(tester, '${lang}_26_qibla_320_text130');
           // Kaydırınca görünen alt kısım (uyarı + doğruluk notu)
           await _setViewport(tester, width: 320, height: 1100);

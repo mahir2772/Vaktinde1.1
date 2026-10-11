@@ -1,7 +1,7 @@
 // Kıble pusulası pil kuralları: pusula (ve manyetometre) aboneliği sadece sekme
 // görünür ve uygulama ön plandayken açık (tek abonelik); kalibrasyon uyarısı
 // 2 sn süren zayıf doğrulukta açılır, iyi okumada kapanır; küçük titreşim
-// çizdirmez.
+// çizdirmez; kıble yönüne girişte tek kısa titreşim (histerezisli).
 import 'dart:async';
 
 import 'package:ezan_saati/core/ui/ui.dart';
@@ -507,6 +507,53 @@ void main() {
     expect(tester.binding.hasScheduledFrame, isTrue);
     await tester.pump();
     expect(find.text(_loc.lowAccuracyWarning), findsNothing);
+
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('kıble yönüne girişte tek kısa (orta) titreşim: eşikte salınım '
+      've hızlı tekrar titretmez', (tester) async {
+    final haptics = <Object?>[];
+    _messenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
+      if (call.method == 'HapticFeedback.vibrate') haptics.add(call.arguments);
+      return null;
+    });
+    final compass = _FakeCompass();
+    await _pumpQibla(tester, compass: compass);
+    // Kıble ≈ 151,6° (İstanbul); süzgeç her okumada farkın %25'ini alır:
+    // 40 okumada yöne oturur
+    Future<void> turnTo(double heading) async {
+      for (var i = 0; i < 40; i++) {
+        compass.emit(heading);
+      }
+      await tester.pump();
+    }
+
+    const medium = 'HapticFeedbackType.mediumImpact';
+    await turnTo(100);
+    expect(haptics, isEmpty);
+    await turnTo(151);
+    expect(haptics, [medium]);
+
+    // Eşikte salınım (hizadan 4°–8°): hizaya her dönüşte yeniden titremez
+    for (final heading in [157.0, 151.0, 158.5, 150.0, 157.5, 152.0]) {
+      await turnTo(heading);
+    }
+    expect(haptics, [medium]);
+
+    // Uzaklaşıp hemen (1,5 sn içinde) geri gelmek titretmez
+    await turnTo(120);
+    await turnTo(151);
+    expect(haptics, [medium]);
+    // Hizada beklemek de titretmez
+    await tester.pump(const Duration(seconds: 2));
+    await turnTo(151.5);
+    expect(haptics, [medium]);
+
+    // Uzaklaşıp yeniden girince bir kez daha
+    await turnTo(190);
+    await turnTo(151);
+    expect(haptics, [medium, medium]);
 
     await tester.pumpWidget(const SizedBox());
   });

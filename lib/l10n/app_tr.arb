@@ -5,6 +5,33 @@
     "todayQuranOpen": "Kur'an-ı Kerim'i aç",
     "todayFridayMessage": "Cuma mesajı gönder",
     "a11yAlarmSettingsHint": "Alarm ayarları",
+    "navQuran": "Kur'an",
+    "showcaseQuran": "Kur'an-ı Kerim'i buradan okuyabilir, kaldığınız yerden devam edebilirsiniz.",
+    "zikirRound": "Tur {round}",
+    "@zikirRound": {
+        "placeholders": {
+            "round": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirProgress": "{count} / {target}",
+    "@zikirProgress": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirPrevious": "Önceki zikir",
+    "zikirNext": "Sonraki zikir",
+    "zikirCountingSection": "Sayma",
+    "zikirRoundMode": "Hedefte sıfırdan devam et (tur say)",
+    "zikirVolumeKeys": "Ses tuşlarıyla say",
+    "zikirVolumeKeysDesc": "Ses açma +1, ses kısma −1. Sadece Zikir ekranı açıkken; sistem sesi değişmez.",
     "adPrivacySettings": "Reklam Gizlilik Ayarları",
     "adPrivacySettingsSub": "Kişiselleştirilmiş reklam iznini değiştirin",
     "showcaseLanguage": "Uygulama dilini ve diğer ayarları buradan değiştirebilirsiniz.",

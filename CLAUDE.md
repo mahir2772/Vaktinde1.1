@@ -30,7 +30,8 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
   (UMP'nin IABTCF_*); amaç 1 → analytics/ad storage, 1+3+4 → ad user data/personalization, gdprApplies 0 → hepsi açık. AdConsent
   açılışta (AB'de önce ret), form sonrası ve "Reklam gizlilik ayarları" sonrası yeniden uygular.
 
-`MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): HomeView, QiblaView, ZikirView, ToolsView ("Araçlar"). Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma; Ayarlar satırı reklamsız). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
+`MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): 5 sekme `MainTab` — HomeView,
+QuranView(asTab: true; kendi banner/geri düğmesi yok), QiblaView, ZikirView, ToolsView ("Araçlar"; Kur'an satırı yok). Turda Kur'an adımı var. Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok; interstitial sadece araç açılışlarında (5 dk soğuma; Ayarlar satırı reklamsız). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
 Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. Akış bitince (tur yolunda da) `StreakReviewPrompt.start()`: `PrayerTrackerService.changes` ile seri 7+'ya çıkınca bir kez `InAppReview.requestReview` ('review_requested'; isAvailable, ön plan, izin/rıza/tur penceresi yokken). SettingsView araçlar ekranındaki karttan açılır ("Bize Puan Ver" = openStoreListing).
 `ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar; üst çubukta Ayarlar dişlisi, liste ekrana sığmıyor) → Imsakiye, PrayerTracker, MissedPrayers, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
 
@@ -174,6 +175,12 @@ lib/
                                            yok); 'vaktinde/magnetic' akışı pusulayla aynı yaşam döngüsünde (sekme görünür + ön plan); altta
                                            her zaman "yaklaşık yön" notu + "Doğru sonuç için" alt sayfası (ipuçları, kıble açısı, sapma)
     zikirmatik/view/dhikr_names.dart       zikir adları/Arapça metinleri (Amiri)
+    zikirmatik/{zikir_logic,volume_keys}.dart  hedef halkası (27 / 33), tur ('zikir_round_mode', 'dhikr_round_<id>'), başlıkta
+                                           kaydır/oklarla zikir değiştir, Sıfırla üst çubukta (onaylı), boş alana dokun = say. Ses tuşları
+                                           ('zikir_volume_keys', varsayılan kapalı): 'vaktinde/device' setVolumeKeyCounting + EventChannel
+                                           'vaktinde/volume_keys'; MainActivity.dispatchKeyEvent (VolumeKeyCounter) sadece bayrak açık ve
+                                           dinleyici varken tüketir; sekme değişimi/pause/dispose/onStop'ta kapanır. Kıble: hizalanınca
+                                           bir kez mediumImpact (8° uzaklaşınca, ≥1,5 sn arayla yeniden)
     onboarding/view/onboarding_language_view.dart  dil seçimi + requestPermissionsWithPriming (açıklama penceresi → bildirim → konum;
                                            oturumda bir kez, bitince 'permissions_primed') + primePermissionsIfNeeded;
                                            main.dart turu da aynı fonksiyonu navigatorKey bağlamıyla kullanır

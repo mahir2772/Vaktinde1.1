@@ -7,17 +7,94 @@ import 'package:provider/provider.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../view_model/zikir_view_model.dart';
+import '../volume_keys.dart';
+import '../zikir_logic.dart';
 import 'dhikr_list_view.dart';
 import 'dhikr_names.dart';
 import 'dhikr_stats_view.dart';
 import 'zikir_settings_view.dart';
 
-/// Zikirmatik sekmesi: seçili zikir + hedef, büyük sayaç (modern düğme veya
-/// klasik tesbih), altta düzenle / sıfırla.
-class ZikirView extends StatelessWidget {
+/// Zikirmatik sekmesi: seçili zikir (kaydırınca / oklarla önceki-sonraki) +
+/// hedef, büyük sayaç (modern: hedef halkalı düğme, klasik: tesbih) ve altta
+/// "Sayacı Düzenle". Sıfırla üst çubukta (onaylı). Sayacın çevresindeki boş
+/// alana dokunmak da sayar. "Ses tuşlarıyla say" açıksa sekme görünür ve
+/// uygulama ön plandayken ses tuşları sayar (ZikirVolumeKeys).
+class ZikirView extends StatefulWidget {
   const ZikirView({super.key});
 
-  void _open(BuildContext context, Widget page) {
+  /// Büyük sayaç ve hedef halkası (testler)
+  static const Key counterKey = ValueKey('zikir_counter');
+  static const Key ringKey = ValueKey('zikir_ring');
+
+  /// Seçili zikir kartı (kaydırılır)
+  static const Key headerKey = ValueKey('zikir_header');
+
+  @override
+  State<ZikirView> createState() => _ZikirViewState();
+}
+
+class _ZikirViewState extends State<ZikirView> with WidgetsBindingObserver {
+  late final ZikirViewModel _viewModel;
+  late final ZikirVolumeKeys _volumeKeys;
+
+  // Sekme görünür (IndexedStack) ve üstünde sayfa/pencere yok
+  bool _visible = false;
+  bool _foreground = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Durum henüz bildirilmediyse (açılış) ön planda sayılır
+    final state = WidgetsBinding.instance.lifecycleState;
+    _foreground = state == null || state == AppLifecycleState.resumed;
+    _viewModel = context.read<ZikirViewModel>();
+    _volumeKeys = ZikirVolumeKeys(onKey: _onVolumeKey);
+    _viewModel.addListener(_syncVolumeKeys);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Gizli sekme (IndexedStack), üstüne açılan sayfa ya da pencere (sıfırla
+    // onayı, ayarlar): ses tuşları sisteme döner
+    _visible =
+        Visibility.of(context) &&
+        TickerMode.of(context) &&
+        (ModalRoute.isCurrentOf(context) ?? true);
+    _syncVolumeKeys();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // inactive/hidden/paused/detached: ses tuşları sayılmaz
+    _foreground = state == AppLifecycleState.resumed;
+    _syncVolumeKeys();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _viewModel.removeListener(_syncVolumeKeys);
+    _volumeKeys.dispose();
+    super.dispose();
+  }
+
+  void _syncVolumeKeys() {
+    _volumeKeys.update(
+      _visible && _foreground && _viewModel.isVolumeKeysEnabled,
+    );
+  }
+
+  void _onVolumeKey(int delta) {
+    if (delta > 0) {
+      _viewModel.increment();
+    } else {
+      _viewModel.decrement();
+    }
+  }
+
+  void _open(Widget page) {
     Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
   }
 
@@ -26,28 +103,30 @@ class ZikirView extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          loc.zikirmatikTitle,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        // Dört düğmeyle dar ekranda / büyük yazıda tam ad sığmazsa kısa ad
+        title: _FittingTitle(full: loc.zikirmatikTitle, short: loc.navZikir),
         automaticallyImplyLeading: false,
         centerTitle: false,
         actions: [
           IconButton(
+            icon: const Icon(Icons.restart_alt),
+            tooltip: loc.resetCounter,
+            onPressed: () => _confirmReset(context, _viewModel, loc),
+          ),
+          IconButton(
             icon: const Icon(Icons.list_alt_rounded),
             tooltip: loc.dhikrListTitle,
-            onPressed: () => _open(context, const DhikrListView()),
+            onPressed: () => _open(const DhikrListView()),
           ),
           IconButton(
             icon: const Icon(Icons.bar_chart_rounded),
             tooltip: loc.statisticsTitle,
-            onPressed: () => _open(context, const DhikrStatsView()),
+            onPressed: () => _open(const DhikrStatsView()),
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             tooltip: loc.zikirSettings,
-            onPressed: () => _open(context, const ZikirSettingsView()),
+            onPressed: () => _open(const ZikirSettingsView()),
           ),
         ],
       ),
@@ -56,6 +135,7 @@ class ZikirView extends StatelessWidget {
           builder: (context, viewModel, child) {
             final name = dhikrDisplayName(viewModel.selectedDhikr, loc);
             final arabic = viewModel.getArabicForDhikr(viewModel.selectedDhikr);
+            final progress = viewModel.progress;
             void editCount() => _editCount(context, viewModel, loc);
 
             return Column(
@@ -69,29 +149,31 @@ class ZikirView extends StatelessWidget {
                     0,
                   ),
                   child: _DhikrHeader(
+                    dhikrId: viewModel.selectedDhikr,
                     name: name,
                     arabic: arabic,
                     targetLabel: loc.targetCount(viewModel.target),
                     onEditTarget: () => _editTarget(context, viewModel, loc),
+                    onPrevious: () => viewModel.selectAdjacentDhikr(-1),
+                    onNext: () => viewModel.selectAdjacentDhikr(1),
                   ),
                 ),
                 Expanded(
                   child: viewModel.viewMode == 0
                       ? _ModernCounter(
                           viewModel: viewModel,
+                          progress: progress,
                           dhikrName: name,
                           onEdit: editCount,
                         )
                       : _ClassicTasbihView(
                           viewModel: viewModel,
+                          progress: progress,
                           dhikrName: name,
                           onEdit: editCount,
                         ),
                 ),
-                _ActionRow(
-                  onEdit: editCount,
-                  onReset: () => _confirmReset(context, viewModel, loc),
-                ),
+                _ActionRow(onEdit: editCount),
               ],
             );
           },
@@ -101,10 +183,35 @@ class ZikirView extends StatelessWidget {
   }
 }
 
-bool _targetReached(ZikirViewModel viewModel) =>
-    viewModel.target > 0 &&
-    viewModel.count > 0 &&
-    viewModel.count % viewModel.target == 0;
+/// Üst çubuk başlığı: [full] sığmıyorsa üç noktalı ad yerine [short]
+/// ("Compteur de dhi…" değil "Dhikr")
+class _FittingTitle extends StatelessWidget {
+  final String full;
+  final String short;
+
+  const _FittingTitle({required this.full, required this.short});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final painter = TextPainter(
+          text: TextSpan(text: full, style: DefaultTextStyle.of(context).style),
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+          maxLines: 1,
+        )..layout();
+        final fits = painter.width <= constraints.maxWidth;
+        painter.dispose();
+        return Text(
+          fits ? full : short,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+      },
+    );
+  }
+}
 
 Future<void> _editCount(
   BuildContext context,
@@ -114,7 +221,8 @@ Future<void> _editCount(
   final value = await _askNumber(
     context,
     title: loc.editCounterTitle,
-    initial: viewModel.count,
+    // Tur kipinde turun içindeki sayı (ekrandaki)
+    initial: viewModel.progress.count,
     hint: loc.exampleHint(2000),
     min: 0,
   );
@@ -238,82 +346,243 @@ class _NumberInputDialogState extends State<_NumberInputDialog> {
   }
 }
 
-/// Seçili zikir (ad + Arapça) ve hedef düğmesi
+/// Seçili zikir (ad + Arapça) ve hedef düğmesi. Yana kaydırınca ya da
+/// oklarla listedeki önceki/sonraki zikre geçilir (sağdan sola dilde yön de
+/// döner: "sonraki" okun ve kaydırmanın yönü okuma yönündedir).
 class _DhikrHeader extends StatelessWidget {
+  final String dhikrId;
   final String name;
   final String arabic;
   final String targetLabel;
   final VoidCallback onEditTarget;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
   const _DhikrHeader({
+    required this.dhikrId,
     required this.name,
     required this.arabic,
     required this.targetLabel,
     required this.onEditTarget,
+    required this.onPrevious,
+    required this.onNext,
   });
+
+  // Bundan yavaş yana çekme zikir değiştirmez (dikey kaydırmayla karışmasın)
+  static const double _minSwipeVelocity = 250;
+
+  void _onSwipe(BuildContext context, DragEndDetails details) {
+    final velocity = details.primaryVelocity ?? 0;
+    if (velocity.abs() < _minSwipeVelocity) return;
+    // Soldan sağa dilde sola kaydırmak sonraki; sağdan solada tersi
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final forward = rtl ? velocity > 0 : velocity < 0;
+    forward ? onNext() : onPrevious();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    return AppCard(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        AppSpacing.md,
-        AppSpacing.lg,
-        AppSpacing.md,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleMedium!.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+    final scheme = theme.colorScheme;
+    return GestureDetector(
+      key: ZikirView.headerKey,
+      onHorizontalDragEnd: (details) => _onSwipe(context, details),
+      child: AppCard(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xs,
+          AppSpacing.xs,
+          AppSpacing.xs,
+          AppSpacing.md,
+        ),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 180),
+          layoutBuilder: (current, previous) => Stack(
+            alignment: Alignment.topCenter,
+            children: [...previous, ?current],
           ),
-          if (arabic.isNotEmpty)
-            ConstrainedBox(
-              // Uzun dualar kartı büyütmez, kayar
-              constraints: const BoxConstraints(maxHeight: 84),
-              child: SingleChildScrollView(
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    arabic,
-                    textDirection: TextDirection.rtl,
-                    style: arabicDhikrStyle(context, fontSize: 24),
+          child: Column(
+            key: ValueKey(dhikrId),
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left),
+                    tooltip: loc.zikirPrevious,
+                    color: scheme.onSurfaceVariant,
+                    onPressed: onPrevious,
+                  ),
+                  Expanded(
+                    child: Text(
+                      name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right),
+                    tooltip: loc.zikirNext,
+                    color: scheme.onSurfaceVariant,
+                    onPressed: onNext,
+                  ),
+                ],
+              ),
+              if (arabic.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  child: ConstrainedBox(
+                    // Uzun dualar kartı büyütmez, kayar
+                    constraints: const BoxConstraints(maxHeight: 84),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        arabic,
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.center,
+                        style: arabicDhikrStyle(context, fontSize: 24),
+                      ),
+                    ),
                   ),
                 ),
+              const SizedBox(height: AppSpacing.sm),
+              Center(
+                child: FilledButton.tonalIcon(
+                  onPressed: onEditTarget,
+                  icon: const Icon(Icons.flag_outlined),
+                  label: Text(targetLabel),
+                ),
               ),
-            ),
-          const SizedBox(height: AppSpacing.sm),
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: FilledButton.tonalIcon(
-              onPressed: onEditTarget,
-              icon: const Icon(Icons.flag_outlined),
-              label: Text(targetLabel),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-/// Modern görünüm: dokunarak sayılan büyük daire (basılı tutunca düzenlenir)
+/// Hedef halkası: iz (soluk) ve hedefe doğru ilerleme (tepeden saat yönünde)
+class _RingPainter extends CustomPainter {
+  final double fraction;
+  final Color color;
+  final Color track;
+  final double width;
+
+  const _RingPainter({
+    required this.fraction,
+    required this.color,
+    required this.track,
+    required this.width,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = (Offset.zero & size).deflate(width / 2);
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width
+      ..color = track;
+    canvas.drawArc(rect, 0, 2 * math.pi, false, paint);
+    if (fraction <= 0) return;
+    paint
+      ..color = color
+      ..strokeCap = StrokeCap.round;
+    canvas.drawArc(
+      rect,
+      -math.pi / 2,
+      2 * math.pi * fraction.clamp(0.0, 1.0),
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_RingPainter old) =>
+      old.fraction != fraction ||
+      old.color != color ||
+      old.track != track ||
+      old.width != width;
+}
+
+/// "27 / 33" ve (tur kipinde ya da 2. turdan itibaren) "Tur 2" kapsülü
+class _ProgressLine extends StatelessWidget {
+  final ZikirProgress progress;
+
+  const _ProgressLine({required this.progress});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final reached = progress.reached;
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.xs,
+      children: [
+        TabularText(
+          loc.zikirProgress(progress.inRound, progress.target),
+          style: theme.textTheme.titleMedium!.copyWith(
+            color: scheme.onSurfaceVariant,
+          ),
+        ),
+        if (progress.showRound)
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              color: reached
+                  ? colors.successContainer
+                  : scheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+            ),
+            child: Text(
+              loc.zikirRound(progress.round),
+              style: theme.textTheme.labelLarge!.copyWith(
+                color: reached
+                    ? colors.onSuccessContainer
+                    : scheme.onSecondaryContainer,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Ekran okuyucunun sayaç değeri: sayı ve (gösteriliyorsa) tur
+String _spokenValue(ZikirProgress progress, AppLocalizations loc) =>
+    progress.showRound
+    ? '${progress.count}, ${loc.zikirRound(progress.round)}'
+    : '${progress.count}';
+
+/// Modern görünüm: hedef halkalı büyük daire; daireye ya da çevresindeki boş
+/// alana dokununca sayar, daireye basılı tutunca düzenlenir
 class _ModernCounter extends StatelessWidget {
   final ZikirViewModel viewModel;
+  final ZikirProgress progress;
   final String dhikrName;
   final VoidCallback onEdit;
 
   const _ModernCounter({
     required this.viewModel,
+    required this.progress,
     required this.dhikrName,
     required this.onEdit,
   });
+
+  static const double _ringWidth = 10;
+  static const double _ringInset = 8;
 
   @override
   Widget build(BuildContext context) {
@@ -322,90 +591,117 @@ class _ModernCounter extends StatelessWidget {
     final scheme = theme.colorScheme;
     final colors = PrayerColors.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final reached = _targetReached(viewModel);
+    final reached = progress.reached;
+    final accent = reached ? colors.success : scheme.primary;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final size = math.max(
-          0.0,
-          math.min(
-            300.0,
-            math.min(constraints.maxWidth - 48, constraints.maxHeight - 32),
-          ),
-        );
-        return Center(
-          child: Semantics(
-            container: true,
-            button: true,
-            label: dhikrName,
-            value: '${viewModel.count}',
-            hint: loc.tapToCount,
-            onLongPressHint: loc.editCounterTitle,
-            onTap: viewModel.increment,
-            onLongPress: onEdit,
-            excludeSemantics: true,
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: scheme.primary.withValues(
-                      alpha: isDark ? 0.18 : 0.25,
+    // Boş alana dokunmak da sayar (ekran okuyucu daireyi kullanır)
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      excludeFromSemantics: true,
+      onTap: viewModel.increment,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final size = math.max(
+            0.0,
+            math.min(
+              300.0,
+              math.min(constraints.maxWidth - 48, constraints.maxHeight - 32),
+            ),
+          );
+          return Center(
+            child: Semantics(
+              container: true,
+              button: true,
+              label: dhikrName,
+              value: _spokenValue(progress, loc),
+              hint: loc.tapToCount,
+              onLongPressHint: loc.editCounterTitle,
+              onTap: viewModel.increment,
+              onLongPress: onEdit,
+              excludeSemantics: true,
+              child: Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: scheme.primary.withValues(
+                        alpha: isDark ? 0.18 : 0.25,
+                      ),
+                      blurRadius: 40,
+                      spreadRadius: 4,
                     ),
-                    blurRadius: 40,
-                    spreadRadius: 4,
-                  ),
-                ],
-              ),
-              child: Material(
-                color: theme.cardTheme.color ?? scheme.surfaceContainerLowest,
-                shape: CircleBorder(
-                  side: BorderSide(
-                    color: reached
-                        ? colors.success
-                        : scheme.primary.withValues(alpha: 0.5),
-                    width: 8,
-                  ),
+                  ],
                 ),
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: viewModel.increment,
-                  onLongPress: onEdit,
-                  child: Padding(
-                    padding: EdgeInsets.all(size * 0.16),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TabularText(
-                            '${viewModel.count}',
-                            style: TextStyle(
-                              fontSize: 88,
-                              fontWeight: FontWeight.w700,
-                              height: 1.1,
-                              color: reached
-                                  ? colors.success
-                                  : scheme.onSurface,
+                child: Material(
+                  color: theme.cardTheme.color ?? scheme.surfaceContainerLowest,
+                  shape: const CircleBorder(),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: viewModel.increment,
+                    onLongPress: onEdit,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(_ringInset),
+                          child: TweenAnimationBuilder<double>(
+                            key: ZikirView.ringKey,
+                            tween: Tween(end: progress.fraction),
+                            duration: const Duration(milliseconds: 220),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, value, _) => CustomPaint(
+                              painter: _RingPainter(
+                                fraction: value,
+                                color: accent,
+                                track: accent.withValues(
+                                  alpha: isDark ? 0.24 : 0.16,
+                                ),
+                                width: _ringWidth,
+                              ),
                             ),
                           ),
-                          if (reached) ...[
-                            const SizedBox(height: AppSpacing.sm),
-                            _ReachedChip(text: loc.targetReached),
-                          ],
-                        ],
-                      ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(size * 0.17),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TabularText(
+                                  '${progress.count}',
+                                  key: ZikirView.counterKey,
+                                  style: TextStyle(
+                                    fontSize: 88,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.1,
+                                    color: reached
+                                        ? colors.success
+                                        : scheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
+                                _ProgressLine(progress: progress),
+                                if (reached) ...[
+                                  const SizedBox(height: AppSpacing.sm),
+                                  _ReachedChip(text: loc.targetReached),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -437,17 +733,16 @@ class _ReachedChip extends StatelessWidget {
   }
 }
 
-/// Altta görünür "Sayacı Düzenle" ve "Sıfırla" (dar ekranda alt alta)
+/// Altta "Sayacı Düzenle" (sıfırla üst çubukta). Fotoğraf arka planında da
+/// okunsun diye opak (tonal) düğme.
 class _ActionRow extends StatelessWidget {
   final VoidCallback onEdit;
-  final VoidCallback onReset;
 
-  const _ActionRow({required this.onEdit, required this.onReset});
+  const _ActionRow({required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
@@ -455,39 +750,29 @@ class _ActionRow extends StatelessWidget {
         AppSpacing.lg,
         AppSpacing.lg,
       ),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: AppSpacing.md,
-        runSpacing: AppSpacing.sm,
-        children: [
-          OutlinedButton.icon(
-            onPressed: onEdit,
-            icon: const Icon(Icons.edit_outlined),
-            label: Text(loc.editCounterTitle),
-          ),
-          OutlinedButton.icon(
-            onPressed: onReset,
-            icon: const Icon(Icons.refresh),
-            label: Text(loc.resetCounter),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: scheme.error,
-              side: BorderSide(color: scheme.error.withValues(alpha: 0.6)),
-            ),
-          ),
-        ],
+      child: Center(
+        child: FilledButton.tonalIcon(
+          onPressed: onEdit,
+          icon: const Icon(Icons.edit_outlined),
+          label: Text(loc.editCounterTitle),
+        ),
       ),
     );
   }
 }
 
-/// Klasik görünüm: aşağı çekilen (veya dokunulan) tesbih boncukları
+/// Klasik görünüm: aşağı çekilen (veya dokunulan) tesbih boncukları. Sayaç
+/// kartına ve çevresine dokunmak da sayar; ses tuşuyla sayınca da boncuk
+/// çekilir.
 class _ClassicTasbihView extends StatefulWidget {
   final ZikirViewModel viewModel;
+  final ZikirProgress progress;
   final String dhikrName;
   final VoidCallback onEdit;
 
   const _ClassicTasbihView({
     required this.viewModel,
+    required this.progress,
     required this.dhikrName,
     required this.onEdit,
   });
@@ -508,6 +793,11 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
 
   late final AnimationController _controller;
 
+  // Son çizilen zikir ve ilerleme: dokunuş dışından (ses tuşu) artınca da
+  // boncuk çekilir
+  late String _shownDhikr;
+  late (int, int) _shownProgress;
+
   @override
   void initState() {
     super.initState();
@@ -515,6 +805,23 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
       vsync: this,
       duration: const Duration(milliseconds: 150),
     );
+    _shownDhikr = widget.viewModel.selectedDhikr;
+    _shownProgress = (widget.progress.round, widget.progress.count);
+  }
+
+  @override
+  void didUpdateWidget(_ClassicTasbihView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final dhikr = widget.viewModel.selectedDhikr;
+    final progress = (widget.progress.round, widget.progress.count);
+    final advanced =
+        dhikr == _shownDhikr &&
+        (progress.$1 > _shownProgress.$1 ||
+            (progress.$1 == _shownProgress.$1 &&
+                progress.$2 > _shownProgress.$2));
+    if (advanced && !_controller.isAnimating) _controller.forward(from: 0.0);
+    _shownDhikr = dhikr;
+    _shownProgress = progress;
   }
 
   @override
@@ -525,8 +832,8 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
 
   void _pullBead() {
     if (_controller.isAnimating) return;
-    widget.viewModel.increment();
     _controller.forward(from: 0.0);
+    widget.viewModel.increment();
   }
 
   @override
@@ -535,129 +842,138 @@ class _ClassicTasbihViewState extends State<_ClassicTasbihView>
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final colors = PrayerColors.of(context);
-    final reached = _targetReached(widget.viewModel);
-    final count = widget.viewModel.count;
+    final progress = widget.progress;
+    final reached = progress.reached;
 
-    return Column(
-      children: [
-        const SizedBox(height: AppSpacing.lg),
-        // Sayaç (basılı tutunca düzenlenir)
-        Semantics(
-          container: true,
-          label: widget.dhikrName,
-          value: '$count',
-          onLongPressHint: loc.editCounterTitle,
-          onLongPress: widget.onEdit,
-          excludeSemantics: true,
-          child: Material(
-            color: theme.cardTheme.color ?? scheme.surfaceContainerLowest,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.xl),
-              side: BorderSide(
-                color: reached
-                    ? colors.success
-                    : scheme.primary.withValues(alpha: 0.35),
-                width: 3,
-              ),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onLongPress: widget.onEdit,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 160),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.xxl,
-                    vertical: AppSpacing.md,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TabularText(
-                        '$count',
-                        style: TextStyle(
-                          fontSize: 56,
-                          fontWeight: FontWeight.w700,
-                          height: 1.1,
-                          color: reached ? colors.success : scheme.onSurface,
-                        ),
-                      ),
-                      if (reached) ...[
-                        const SizedBox(height: AppSpacing.xs),
-                        _ReachedChip(text: loc.targetReached),
-                      ],
-                    ],
-                  ),
+    // Boş alana dokunmak da sayar (ekran okuyucu boncuk düğmesini kullanır)
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      excludeFromSemantics: true,
+      onTap: _pullBead,
+      child: Column(
+        children: [
+          const SizedBox(height: AppSpacing.lg),
+          // Sayaç (basılı tutunca düzenlenir)
+          Semantics(
+            container: true,
+            label: widget.dhikrName,
+            value: _spokenValue(progress, loc),
+            onLongPressHint: loc.editCounterTitle,
+            onLongPress: widget.onEdit,
+            excludeSemantics: true,
+            child: Material(
+              color: theme.cardTheme.color ?? scheme.surfaceContainerLowest,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.xl),
+                side: BorderSide(
+                  color: reached
+                      ? colors.success
+                      : scheme.primary.withValues(alpha: 0.35),
+                  width: 3,
                 ),
               ),
-            ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        // İp ve boncuklar: dokun veya aşağı çek
-        Expanded(
-          // Dokununca yeni sayı aynı düğmede okunur
-          child: Semantics(
-            container: true,
-            button: true,
-            label: widget.dhikrName,
-            value: '$count',
-            hint: loc.tapToCount,
-            onTap: _pullBead,
-            excludeSemantics: true,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onVerticalDragEnd: (details) {
-                final velocity = details.primaryVelocity;
-                if (velocity != null && velocity > 0) _pullBead();
-              },
-              onTap: _pullBead,
-              child: SizedBox(
-                width: double.infinity,
-                child: ClipRect(
-                  child: AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return Center(
-                        child: SizedBox(
-                          width: 150,
-                          child: Stack(
-                            alignment: Alignment.topCenter,
-                            children: [
-                              const Positioned.fill(
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 5,
-                                    child: ColoredBox(color: _cord),
-                                  ),
-                                ),
-                              ),
-                              for (int i = -1; i <= _visibleBeads; i++)
-                                Positioned(
-                                  top:
-                                      (i + _controller.value) * _beadHeight +
-                                      10,
-                                  child: Opacity(
-                                    opacity: (i == _visibleBeads)
-                                        ? 1.0 - _controller.value
-                                        : (i == -1)
-                                        ? _controller.value
-                                        : 1.0,
-                                    child: _buildBead(),
-                                  ),
-                                ),
-                            ],
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: _pullBead,
+                onLongPress: widget.onEdit,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 160),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xxl,
+                      vertical: AppSpacing.md,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TabularText(
+                          '${progress.count}',
+                          key: ZikirView.counterKey,
+                          style: TextStyle(
+                            fontSize: 56,
+                            fontWeight: FontWeight.w700,
+                            height: 1.1,
+                            color: reached ? colors.success : scheme.onSurface,
                           ),
                         ),
-                      );
-                    },
+                        _ProgressLine(progress: progress),
+                        if (reached) ...[
+                          const SizedBox(height: AppSpacing.xs),
+                          _ReachedChip(text: loc.targetReached),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: AppSpacing.md),
+          // İp ve boncuklar: dokun veya aşağı çek
+          Expanded(
+            // Dokununca yeni sayı aynı düğmede okunur
+            child: Semantics(
+              container: true,
+              button: true,
+              label: widget.dhikrName,
+              value: _spokenValue(progress, loc),
+              hint: loc.tapToCount,
+              onTap: _pullBead,
+              excludeSemantics: true,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onVerticalDragEnd: (details) {
+                  final velocity = details.primaryVelocity;
+                  if (velocity != null && velocity > 0) _pullBead();
+                },
+                onTap: _pullBead,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ClipRect(
+                    child: AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        return Center(
+                          child: SizedBox(
+                            width: 150,
+                            child: Stack(
+                              alignment: Alignment.topCenter,
+                              children: [
+                                const Positioned.fill(
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 5,
+                                      child: ColoredBox(color: _cord),
+                                    ),
+                                  ),
+                                ),
+                                for (int i = -1; i <= _visibleBeads; i++)
+                                  Positioned(
+                                    top:
+                                        (i + _controller.value) * _beadHeight +
+                                        10,
+                                    child: Opacity(
+                                      opacity: (i == _visibleBeads)
+                                          ? 1.0 - _controller.value
+                                          : (i == -1)
+                                          ? _controller.value
+                                          : 1.0,
+                                      child: _buildBead(),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

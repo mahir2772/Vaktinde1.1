@@ -27,6 +27,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String get a11yAlarmSettingsHint => 'Ouvrir les réglages d\'alarme';
 
   @override
+  String get navQuran => 'Coran';
+
+  @override
+  String get showcaseQuran =>
+      'Lisez le Saint Coran ici et reprenez là où vous vous êtes arrêté.';
+
+  @override
+  String zikirRound(int round) {
+    return 'Tour $round';
+  }
+
+  @override
+  String zikirProgress(int count, int target) {
+    return '$count / $target';
+  }
+
+  @override
+  String get zikirPrevious => 'Dhikr précédent';
+
+  @override
+  String get zikirNext => 'Dhikr suivant';
+
+  @override
+  String get zikirCountingSection => 'Comptage';
+
+  @override
+  String get zikirRoundMode =>
+      'Recommencer à zéro à l\'objectif (compter les tours)';
+
+  @override
+  String get zikirVolumeKeys => 'Compter avec les touches de volume';
+
+  @override
+  String get zikirVolumeKeysDesc =>
+      'Volume haut +1, volume bas −1. Uniquement lorsque l\'écran Dhikr est ouvert ; le volume du système ne change pas.';
+
+  @override
   String get adPrivacySettings => 'Confidentialité des annonces';
 
   @override
