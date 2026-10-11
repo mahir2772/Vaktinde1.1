@@ -265,6 +265,9 @@ void main() {
     await vm.alarmHealth.refresh();
     await settle(tester);
 
+    // Kerahat/Ramazan kapsülü hero'yu uzatınca düğme ekranın altında kalabilir
+    await tester.ensureVisible(find.text(loc.alarmHealthNotificationsAction));
+    await settle(tester);
     await tester.tap(find.text(loc.alarmHealthNotificationsAction));
     await settle(tester);
     expect(notificationRequests, 1);

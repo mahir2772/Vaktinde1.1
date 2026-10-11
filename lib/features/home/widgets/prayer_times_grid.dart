@@ -13,14 +13,23 @@ import '../prayer_schedule.dart';
 
 /// Ana ekrandaki 2×3 vakit ızgarası: sıradaki vakit dolu renkte, şu anki vakit
 /// çerçeveli, geçmiş vakitler soluk; Güneş namaz vakti olmadığı için ikonla
-/// ayrılır. Vakit girdikçe kendini yeniler.
+/// ayrılır. Vakit girdikçe kendini yeniler. [onPrayerTap] verilirse hücreye
+/// dokunulur (ana ekran: o vaktin alarm ayarları).
 class PrayerTimesGrid extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
 
   /// Şimdiki zaman (testler için); verilmezse DateTime.now
   final DateTime Function()? clock;
 
-  const PrayerTimesGrid({super.key, required this.prayerTimes, this.clock});
+  /// Dokunulan vaktin anahtarı ('Öğle'); null ise hücreler dokunulmaz
+  final ValueChanged<String>? onPrayerTap;
+
+  const PrayerTimesGrid({
+    super.key,
+    required this.prayerTimes,
+    this.clock,
+    this.onPrayerTap,
+  });
 
   @override
   State<PrayerTimesGrid> createState() => _PrayerTimesGridState();
@@ -63,11 +72,13 @@ class _PrayerTimesGridState extends State<PrayerTimesGrid> {
 
   @override
   Widget build(BuildContext context) {
+    final onPrayerTap = widget.onPrayerTap;
     Widget cell(String key) => Expanded(
       child: _PrayerCell(
         prayerKey: key,
         time: prayerTimeOf(widget.prayerTimes, key),
         state: _states[key] ?? PrayerRowState.upcoming,
+        onTap: onPrayerTap == null ? null : () => onPrayerTap(key),
       ),
     );
     // Eşit yükseklik: büyük yazıda küçülen uzun ad hücreyi kısaltmaz
@@ -100,11 +111,13 @@ class _PrayerCell extends StatelessWidget {
   final String prayerKey;
   final String time;
   final PrayerRowState state;
+  final VoidCallback? onTap;
 
   const _PrayerCell({
     required this.prayerKey,
     required this.time,
     required this.state,
+    this.onTap,
   });
 
   @override
@@ -148,18 +161,79 @@ class _PrayerCell extends StatelessWidget {
     if (stateText != null) semantics.write(', $stateText');
     if (isSunrise) semantics.write(', ${loc.sunriseNotPrayer}');
 
+    final radius = BorderRadius.circular(AppRadius.md);
+    // Zemin Ink ile kartın Material'ına çizilir: dokunma dalgası üstünde görünür
+    Widget content = Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: 10,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (isSunrise) ...[
+                Icon(
+                  Icons.wb_twilight,
+                  size: 16,
+                  color: state == PrayerRowState.next
+                      ? colors.onNextContainer
+                      : colors.sunrise,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+              ],
+              // Büyük yazıda uzun ad ("Sonnenaufgang") kesilmez, küçülür
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      color: nameColor,
+                      fontWeight: emphasized
+                          ? FontWeight.w600
+                          : FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              formatted,
+              maxLines: 1,
+              style: theme.textTheme.titleLarge!.copyWith(
+                color: timeColor,
+                fontWeight: emphasized ? FontWeight.w700 : FontWeight.w600,
+                height: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (onTap != null) {
+      content = InkWell(onTap: onTap, borderRadius: radius, child: content);
+    }
+
+    // Ekran okuyucu: aynı etiket; dokunulabiliyorsa düğme + "Alarm ayarları"
     return Semantics(
       container: true,
+      button: onTap != null,
       label: semantics.toString(),
+      onTap: onTap,
+      onTapHint: onTap == null ? null : loc.a11yAlarmSettingsHint,
       excludeSemantics: true,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: 10,
-        ),
+      child: Ink(
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderRadius: radius,
           border: Border.all(
             color: state == PrayerRowState.current
                 ? colors.current
@@ -167,55 +241,7 @@ class _PrayerCell extends StatelessWidget {
             width: 1.5,
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (isSunrise) ...[
-                  Icon(
-                    Icons.wb_twilight,
-                    size: 16,
-                    color: state == PrayerRowState.next
-                        ? colors.onNextContainer
-                        : colors.sunrise,
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                ],
-                // Büyük yazıda uzun ad ("Sonnenaufgang") kesilmez, küçülür
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      name,
-                      maxLines: 1,
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                        color: nameColor,
-                        fontWeight: emphasized
-                            ? FontWeight.w600
-                            : FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 2),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                formatted,
-                maxLines: 1,
-                style: theme.textTheme.titleLarge!.copyWith(
-                  color: timeColor,
-                  fontWeight: emphasized ? FontWeight.w700 : FontWeight.w600,
-                  height: 1.2,
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: content,
       ),
     );
   }

@@ -15,13 +15,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navZikir => 'Dhikr';
 
   @override
+  String get todayHubTitle => 'For today';
+
+  @override
+  String get todayQuranOpen => 'Open the Holy Quran';
+
+  @override
+  String get todayFridayMessage => 'Send a Friday message';
+
+  @override
+  String get a11yAlarmSettingsHint => 'Open alarm settings';
+
+  @override
   String get adPrivacySettings => 'Ad Privacy Settings';
 
   @override
   String get adPrivacySettingsSub => 'Change your consent for personalised ads';
 
   @override
-  String get showcaseLanguage => 'You can change the app language here.';
+  String get showcaseLanguage =>
+      'You can change the app language and other settings here.';
 
   @override
   String get showcaseStory => 'Read the ayah and hadith of the day here.';

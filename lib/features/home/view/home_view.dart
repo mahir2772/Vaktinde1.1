@@ -9,10 +9,10 @@ import '../../../core/ui/app_theme.dart';
 import '../../../core/ui/app_tokens.dart';
 import '../../../core/ui/prayer_colors.dart';
 import '../../../core/ui/state_views.dart';
-import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../main_wrapper/app_showcase.dart';
+import '../../settings/view/settings_view.dart';
 import '../prayer_schedule.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/alarm_health_banner.dart';
@@ -23,12 +23,18 @@ import '../widgets/kerahat_card.dart';
 import '../widgets/prayer_times_grid.dart';
 import '../widgets/prayer_tracker_row.dart';
 import '../widgets/ramadan_card.dart';
+import '../widgets/today_hub.dart';
 
 /// Ana ekran: hero (konum, tarih, sıradaki vakit + sayaç, kerahat/Ramazan),
-/// 2×3 vakit ızgarası, "Bugün" takibi, günün ayeti/hadisi; "Alarmlar" sekmesi.
-/// Veriyi MainWrapper'ın başlattığı HomeViewModel verir.
+/// 2×3 vakit ızgarası (dokununca o vaktin alarm ayarları), "Bugün" takibi,
+/// günün ayeti/hadisi, "Bugün için" kısayolları; "Alarmlar" sekmesi. Üst
+/// çubukta Ayarlar (dil ilk satırı) ve konumu yenile. Veriyi MainWrapper'ın
+/// başlattığı HomeViewModel verir.
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  /// Şimdiki zaman (testler için: ızgara ve "Bugün için"); verilmezse DateTime.now
+  final DateTime Function()? clock;
+
+  const HomeView({super.key, this.clock});
 
   /// "Alarmlar" sekmesini açma istekleri (Bildirim Kontrolü): MainWrapper ana sayfa
   /// sekmesine, HomeView "Alarmlar" sekmesine geçer
@@ -81,6 +87,14 @@ class _HomeViewState extends State<HomeView>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => const LocationSearchDialog(),
+    );
+  }
+
+  // Araçlar'daki gibi reklamsız (sorun giderme, izinler, dil)
+  void _openSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (_) => const SettingsView()),
     );
   }
 
@@ -150,25 +164,14 @@ class _HomeViewState extends State<HomeView>
         ),
       ),
       actions: [
+        // Tanıtım turunun ilk adımı (dil Ayarlar'ın ilk satırı)
         AppShowcase(
           showcaseKey: homeLangKey,
           description: loc.showcaseLanguage,
-          child: PopupMenuButton<Locale>(
-            tooltip: loc.changeLanguage,
-            icon: const Icon(Icons.language, color: onHero),
-            onSelected: (Locale newLocale) {
-              context.read<LanguageProvider>().setLanguage(newLocale);
-              final vm = context.read<HomeViewModel>();
-              vm.getDailyHadith(newLocale);
-              vm.getDailyAyah(newLocale);
-            },
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: Locale('tr'), child: Text("Türkçe")),
-              PopupMenuItem(value: Locale('en'), child: Text("English")),
-              PopupMenuItem(value: Locale('de'), child: Text("Deutsch")),
-              PopupMenuItem(value: Locale('fr'), child: Text("Français")),
-              PopupMenuItem(value: Locale('ar'), child: Text("العربية")),
-            ],
+          child: IconButton(
+            tooltip: loc.menuTitle,
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: _openSettings,
           ),
         ),
         IconButton(
@@ -270,7 +273,15 @@ class _HomeViewState extends State<HomeView>
         children: [
           // Bildirim/alarm izni sorunu varsa (yoksa yer kaplamaz)
           AlarmHealthBanner(viewModel: viewModel),
-          PrayerTimesGrid(prayerTimes: times),
+          PrayerTimesGrid(
+            prayerTimes: times,
+            clock: widget.clock,
+            onPrayerTap: (key) => showPrayerAlarmSheet(
+              context,
+              viewModel: viewModel,
+              prayerKey: key,
+            ),
+          ),
           const SizedBox(height: AppSpacing.md),
           PrayerTrackerRow(prayerTimes: times),
           if (hasDaily) ...[
@@ -285,6 +296,7 @@ class _HomeViewState extends State<HomeView>
               ),
             ),
           ],
+          TodayHub(clock: widget.clock),
         ],
       ),
     );

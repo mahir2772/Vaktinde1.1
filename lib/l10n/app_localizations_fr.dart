@@ -15,6 +15,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navZikir => 'Dhikr';
 
   @override
+  String get todayHubTitle => 'Pour aujourd\'hui';
+
+  @override
+  String get todayQuranOpen => 'Ouvrir le Saint Coran';
+
+  @override
+  String get todayFridayMessage => 'Envoyer un message du vendredi';
+
+  @override
+  String get a11yAlarmSettingsHint => 'Ouvrir les réglages d\'alarme';
+
+  @override
   String get adPrivacySettings => 'Confidentialité des annonces';
 
   @override
@@ -23,7 +35,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get showcaseLanguage =>
-      'Vous pouvez changer la langue de l\'application ici.';
+      'Vous pouvez changer ici la langue de l\'application et les autres réglages.';
 
   @override
   String get showcaseStory => 'Lisez ici le verset et le hadith du jour.';

@@ -8,7 +8,47 @@ import '../../../data/services/json_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../../common/share_card.dart';
 
-typedef _GreetingGroup = ({DiniGunTuru tur, List<String> messages});
+/// Bir dini günün tebrik mesajları (sayfada tür başlığıyla)
+typedef GreetingGroup = ({DiniGunTuru tur, List<String> messages});
+
+/// Günün tebrikleri ([greetings]: tür adı → mesajlar; yüklenemediyse null).
+/// Regaib üç ayların ilk haftasında olduğundan üç aylar tebrikleri de sunulur.
+List<GreetingGroup> greetingGroupsFor(
+  Map<String, List<String>>? greetings,
+  DiniGunTuru? tur,
+) {
+  if (greetings == null || tur == null) return const [];
+  return [
+    for (final t in [
+      tur,
+      if (tur == DiniGunTuru.regaipKandili) DiniGunTuru.ucAylar,
+    ])
+      if (greetings[t.name]?.isNotEmpty ?? false)
+        (tur: t, messages: greetings[t.name]!),
+  ];
+}
+
+/// "Tebrik gönder" alt sayfası (Dini Günler ve ana ekrandaki "Bugün için")
+Future<void> showGreetingsSheet(
+  BuildContext context,
+  List<GreetingGroup> groups,
+) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    showDragHandle: true,
+    builder: (_) => DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.75,
+      minChildSize: 0.4,
+      maxChildSize: 0.95,
+      builder: (_, controller) => SheetMessenger(
+        child: _GreetingSheet(controller: controller, groups: groups),
+      ),
+    ),
+  );
+}
 
 /// Dini günler: yıl seçici + liste. Tarihler Diyanet listesinden
 /// (religious_days.json), listede olmayan yıl/günler hicri hesaptan.
@@ -65,38 +105,11 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
     } catch (_) {}
   }
 
-  /// Günün tebrikleri; Regaib üç ayların ilk haftasında olduğundan üç aylar
-  /// tebrikleri de sunulur
-  List<_GreetingGroup> _greetingGroups(DiniGunTuru? tur) {
-    final greetings = _greetings;
-    if (greetings == null || tur == null) return const [];
-    return [
-      for (final t in [
-        tur,
-        if (tur == DiniGunTuru.regaipKandili) DiniGunTuru.ucAylar,
-      ])
-        if (greetings[t.name]?.isNotEmpty ?? false)
-          (tur: t, messages: greetings[t.name]!),
-    ];
-  }
+  List<GreetingGroup> _greetingGroups(DiniGunTuru? tur) =>
+      greetingGroupsFor(_greetings, tur);
 
-  void _showGreetings(List<_GreetingGroup> groups) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (_) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.75,
-        minChildSize: 0.4,
-        maxChildSize: 0.95,
-        builder: (_, controller) => SheetMessenger(
-          child: _GreetingSheet(controller: controller, groups: groups),
-        ),
-      ),
-    );
-  }
+  void _showGreetings(List<GreetingGroup> groups) =>
+      showGreetingsSheet(context, groups);
 
   void _changeYear(int delta) {
     final year = _selectedYear + delta;
@@ -189,7 +202,7 @@ class _ReligiousDaysViewState extends State<ReligiousDaysView> {
         // Bayram birkaç gün sürer: geçen günün tebriği 3 gün daha gönderilebilir
         final greetings = diff >= -3
             ? _greetingGroups(day.tur)
-            : const <_GreetingGroup>[];
+            : const <GreetingGroup>[];
         children.add(
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -420,7 +433,7 @@ class _DayCard extends StatelessWidget {
 /// aynı kart: kopyala / metni paylaş / resimli paylaş)
 class _GreetingSheet extends StatelessWidget {
   final ScrollController controller;
-  final List<_GreetingGroup> groups;
+  final List<GreetingGroup> groups;
 
   const _GreetingSheet({required this.controller, required this.groups});
 

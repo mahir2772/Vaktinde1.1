@@ -1,6 +1,7 @@
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
+import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/home/alarm_health.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -268,13 +269,17 @@ void main() {
       expect(vm.ezanAlarmStream, isTrue);
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool('ezan_alarm_stream'), isTrue);
-      // Yarının öğle ezanı (ID 16)
-      expect(channelOf(16), 'alarm_channel_ezan1');
+      // Yarının öğle ezanı (kimlik tarihe bağlı: bugününki geçmiş olabilir)
+      final ogle = PrayerRefreshService.alarmId(
+        PrayerTracker.addDays(DateTime.now(), 1),
+        2,
+      );
+      expect(channelOf(ogle), 'alarm_channel_ezan1');
 
       await vm.setEzanAlarmStream(false);
       await vm.alarmsSettled;
       expect(prefs.getBool('ezan_alarm_stream'), isFalse);
-      expect(channelOf(16), 'channel_ezan1');
+      expect(channelOf(ogle), 'channel_ezan1');
     },
   );
 }

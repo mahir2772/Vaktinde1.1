@@ -15,6 +15,18 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navZikir => 'Zikir';
 
   @override
+  String get todayHubTitle => 'Bugün için';
+
+  @override
+  String get todayQuranOpen => 'Kur\'an-ı Kerim\'i aç';
+
+  @override
+  String get todayFridayMessage => 'Cuma mesajı gönder';
+
+  @override
+  String get a11yAlarmSettingsHint => 'Alarm ayarları';
+
+  @override
   String get adPrivacySettings => 'Reklam Gizlilik Ayarları';
 
   @override
@@ -22,7 +34,8 @@ class AppLocalizationsTr extends AppLocalizations {
       'Kişiselleştirilmiş reklam iznini değiştirin';
 
   @override
-  String get showcaseLanguage => 'Uygulama dilini buradan değiştirebilirsiniz.';
+  String get showcaseLanguage =>
+      'Uygulama dilini ve diğer ayarları buradan değiştirebilirsiniz.';
 
   @override
   String get showcaseStory =>

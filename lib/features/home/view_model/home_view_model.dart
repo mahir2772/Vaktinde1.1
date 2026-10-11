@@ -754,6 +754,16 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     } catch (e) {}
   }
 
+  /// Çalan önizlemeyi durdurur (alarm alt sayfası kapanınca)
+  Future<void> stopPreview() async {
+    if (currentlyPlayingSound == null) return;
+    currentlyPlayingSound = null;
+    notifyListeners();
+    try {
+      await _audioPlayer?.stop();
+    } catch (e) {}
+  }
+
   // Alarm kurma işleri üst üste binmez: çalışırken gelen istekler bitince tek seferde,
   // en güncel ayarlarla yeniden çalıştırılır (kapatılan alarm kurulu kalmasın).
   // Toplu iptal yok: çekmecedeki ezan / "vakit çıkıyor" bildirimleri silinmez.

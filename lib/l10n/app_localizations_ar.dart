@@ -15,13 +15,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navZikir => 'الذكر';
 
   @override
+  String get todayHubTitle => 'لهذا اليوم';
+
+  @override
+  String get todayQuranOpen => 'قراءة القرآن الكريم';
+
+  @override
+  String get todayFridayMessage => 'إرسال رسالة الجمعة';
+
+  @override
+  String get a11yAlarmSettingsHint => 'فتح إعدادات المنبه';
+
+  @override
   String get adPrivacySettings => 'إعدادات خصوصية الإعلانات';
 
   @override
   String get adPrivacySettingsSub => 'غيّر موافقتك على الإعلانات المخصصة';
 
   @override
-  String get showcaseLanguage => 'يمكنك تغيير لغة التطبيق من هنا.';
+  String get showcaseLanguage =>
+      'يمكنك تغيير لغة التطبيق والإعدادات الأخرى من هنا.';
 
   @override
   String get showcaseStory => 'اقرأ آية اليوم وحديث اليوم من هنا.';

@@ -8,7 +8,8 @@ import 'alarm_health_banner.dart';
 
 /// "Alarmlar" sekmesi: en üstte izin uyarısı (varsa) ve "sessiz modda da çal" (8.0+);
 /// sonra her vakit için açılır kart (tam vakitte ezan, sessiz bildirim, ses
-/// seçimi, önceden uyarı). Sıradaki vakit vurgulanır.
+/// seçimi, önceden uyarı). Sıradaki vakit vurgulanır. Aynı denetimler ana
+/// ekranda vakit hücresine dokununca alt sayfada açılır ([showPrayerAlarmSheet]).
 class AlarmSettingsList extends StatelessWidget {
   final HomeViewModel viewModel;
   final String? nextKey;
@@ -98,16 +99,7 @@ class _AlarmCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final colors = PrayerColors.of(context);
-    final isOnTimeActive = viewModel.onTimeAlarms[prayerKey] ?? false;
-    final isReminderActive = viewModel.reminderAlarms[prayerKey] ?? false;
-    final isSilentActive = viewModel.silentModeSettings[prayerKey] ?? false;
-    final sureDegeri = (prayerKey == "İmsak" || prayerKey == "Güneş")
-        ? "30"
-        : "15";
-    final currentEzanId = viewModel.selectedSounds[prayerKey] ?? "ezan1";
-    final currentReminderId =
-        viewModel.selectedReminderSounds[prayerKey] ?? "bildirim1";
-    final anyActive = isOnTimeActive || isReminderActive;
+    final anyActive = _anyAlarmOn(viewModel, prayerKey);
 
     final cardColor = isNext
         ? scheme.primaryContainer
@@ -121,11 +113,6 @@ class _AlarmCard extends StatelessWidget {
                 ? BorderSide(color: scheme.outlineVariant)
                 : BorderSide.none),
     );
-    final switchTitle = theme.textTheme.titleSmall;
-    final switchSubtitle = theme.textTheme.bodySmall!.copyWith(
-      color: scheme.onSurfaceVariant,
-    );
-
     return Material(
       color: cardColor,
       shape: shape,
@@ -198,50 +185,209 @@ class _AlarmCard extends StatelessWidget {
           ),
           children: [
             Divider(color: scheme.outlineVariant),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(loc.exactAlarm, style: switchTitle),
-              subtitle: Text(loc.exactAlarmSub, style: switchSubtitle),
-              value: isOnTimeActive,
-              onChanged: (val) => viewModel.toggleAlarm(prayerKey, true, val),
-            ),
-            if (isOnTimeActive)
-              SwitchListTile(
-                contentPadding: const EdgeInsetsDirectional.only(
-                  start: AppSpacing.lg,
-                ),
-                title: Text(loc.silentNotif, style: switchTitle),
-                subtitle: Text(loc.silentNotifSub, style: switchSubtitle),
-                value: isSilentActive,
-                onChanged: (val) => viewModel.toggleSilentMode(prayerKey, val),
-              ),
-            if (isOnTimeActive && !isSilentActive)
-              _SoundSelector(
-                viewModel: viewModel,
-                prayerKey: prayerKey,
-                currentSoundId: currentEzanId,
-                soundList: viewModel.soundIds,
-                isReminder: false,
-              ),
-            const SizedBox(height: AppSpacing.xs),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(loc.warningAlarm(sureDegeri), style: switchTitle),
-              subtitle: Text(loc.warningAlarmSub, style: switchSubtitle),
-              value: isReminderActive,
-              onChanged: (val) => viewModel.toggleAlarm(prayerKey, false, val),
-            ),
-            if (isReminderActive)
-              _SoundSelector(
-                viewModel: viewModel,
-                prayerKey: prayerKey,
-                currentSoundId: currentReminderId,
-                soundList: viewModel.reminderSoundIds,
-                isReminder: true,
-              ),
+            PrayerAlarmControls(viewModel: viewModel, prayerKey: prayerKey),
           ],
         ),
       ),
+    );
+  }
+}
+
+bool _anyAlarmOn(HomeViewModel viewModel, String prayerKey) =>
+    (viewModel.onTimeAlarms[prayerKey] ?? false) ||
+    (viewModel.reminderAlarms[prayerKey] ?? false);
+
+/// Bir vaktin alarm denetimleri: tam vakitte ezan (+ sessiz bildirim, ezan
+/// sesi), önceden uyarı (+ uyarı sesi). "Alarmlar" sekmesindeki kartta ve ana
+/// ekranın alt sayfasında, aynı görünüm modeli yöntemleriyle.
+class PrayerAlarmControls extends StatelessWidget {
+  final HomeViewModel viewModel;
+  final String prayerKey;
+
+  const PrayerAlarmControls({
+    super.key,
+    required this.viewModel,
+    required this.prayerKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isOnTimeActive = viewModel.onTimeAlarms[prayerKey] ?? false;
+    final isReminderActive = viewModel.reminderAlarms[prayerKey] ?? false;
+    final isSilentActive = viewModel.silentModeSettings[prayerKey] ?? false;
+    final sureDegeri = (prayerKey == "İmsak" || prayerKey == "Güneş")
+        ? "30"
+        : "15";
+    final currentEzanId = viewModel.selectedSounds[prayerKey] ?? "ezan1";
+    final currentReminderId =
+        viewModel.selectedReminderSounds[prayerKey] ?? "bildirim1";
+    final switchTitle = theme.textTheme.titleSmall;
+    final switchSubtitle = theme.textTheme.bodySmall!.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(loc.exactAlarm, style: switchTitle),
+          subtitle: Text(loc.exactAlarmSub, style: switchSubtitle),
+          value: isOnTimeActive,
+          onChanged: (val) => viewModel.toggleAlarm(prayerKey, true, val),
+        ),
+        if (isOnTimeActive)
+          SwitchListTile(
+            contentPadding: const EdgeInsetsDirectional.only(
+              start: AppSpacing.lg,
+            ),
+            title: Text(loc.silentNotif, style: switchTitle),
+            subtitle: Text(loc.silentNotifSub, style: switchSubtitle),
+            value: isSilentActive,
+            onChanged: (val) => viewModel.toggleSilentMode(prayerKey, val),
+          ),
+        if (isOnTimeActive && !isSilentActive)
+          _SoundSelector(
+            viewModel: viewModel,
+            prayerKey: prayerKey,
+            currentSoundId: currentEzanId,
+            soundList: viewModel.soundIds,
+            isReminder: false,
+          ),
+        const SizedBox(height: AppSpacing.xs),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(loc.warningAlarm(sureDegeri), style: switchTitle),
+          subtitle: Text(loc.warningAlarmSub, style: switchSubtitle),
+          value: isReminderActive,
+          onChanged: (val) => viewModel.toggleAlarm(prayerKey, false, val),
+        ),
+        if (isReminderActive)
+          _SoundSelector(
+            viewModel: viewModel,
+            prayerKey: prayerKey,
+            currentSoundId: currentReminderId,
+            soundList: viewModel.reminderSoundIds,
+            isReminder: true,
+          ),
+      ],
+    );
+  }
+}
+
+/// Ana ekranda vakit hücresine dokununca: o vaktin alarm ayarları (başlıkta
+/// vakit adı ve saati; izin sorunu varsa uyarı şeridi). Kapanınca çalan ses
+/// önizlemesi durur (durduracak düğme kalmaz).
+Future<void> showPrayerAlarmSheet(
+  BuildContext context, {
+  required HomeViewModel viewModel,
+  required String prayerKey,
+}) async {
+  await showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    showDragHandle: true,
+    builder: (_) =>
+        PrayerAlarmSheet(viewModel: viewModel, prayerKey: prayerKey),
+  );
+  await viewModel.stopPreview();
+}
+
+/// [showPrayerAlarmSheet] içeriği; ayar değişince yeniden çizilir
+class PrayerAlarmSheet extends StatelessWidget {
+  final HomeViewModel viewModel;
+  final String prayerKey;
+
+  const PrayerAlarmSheet({
+    super.key,
+    required this.viewModel,
+    required this.prayerKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: viewModel,
+      builder: (context, _) {
+        final loc = AppLocalizations.of(context)!;
+        final theme = Theme.of(context);
+        final scheme = theme.colorScheme;
+        final times = viewModel.prayerTimes;
+        final anyActive = _anyAlarmOn(viewModel, prayerKey);
+        return SingleChildScrollView(
+          // + gezinme çubuğu (uçtan uca): son satır altında kalmasın
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            0,
+            AppSpacing.xl,
+            AppSpacing.lg + MediaQuery.paddingOf(context).bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: AppSizes.iconBox,
+                    height: AppSizes.iconBox,
+                    decoration: BoxDecoration(
+                      color: scheme.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      anyActive
+                          ? Icons.notifications_active
+                          : Icons.notifications_off_outlined,
+                      color: scheme.onPrimaryContainer,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  // Dar ekranda büyük yazıda vakit adı bölünmez, küçülür
+                  Expanded(
+                    child: Semantics(
+                      header: true,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          localizedPrayerName(prayerKey, loc),
+                          maxLines: 1,
+                          style: theme.textTheme.titleLarge,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (times != null) ...[
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      formatPrayerTime(
+                        prayerTimeOf(times, prayerKey),
+                        loc.localeName,
+                      ),
+                      style: theme.textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AlarmHealthBanner(
+                viewModel: viewModel,
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              ),
+              Divider(height: 1, color: scheme.outlineVariant),
+              PrayerAlarmControls(viewModel: viewModel, prayerKey: prayerKey),
+            ],
+          ),
+        );
+      },
     );
   }
 }

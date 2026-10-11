@@ -116,6 +116,30 @@ abstract class AppLocalizations {
   /// **'Zikir'**
   String get navZikir;
 
+  /// No description provided for @todayHubTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün için'**
+  String get todayHubTitle;
+
+  /// No description provided for @todayQuranOpen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an-ı Kerim\'i aç'**
+  String get todayQuranOpen;
+
+  /// No description provided for @todayFridayMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma mesajı gönder'**
+  String get todayFridayMessage;
+
+  /// No description provided for @a11yAlarmSettingsHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm ayarları'**
+  String get a11yAlarmSettingsHint;
+
   /// No description provided for @adPrivacySettings.
   ///
   /// In tr, this message translates to:
@@ -131,7 +155,7 @@ abstract class AppLocalizations {
   /// No description provided for @showcaseLanguage.
   ///
   /// In tr, this message translates to:
-  /// **'Uygulama dilini buradan değiştirebilirsiniz.'**
+  /// **'Uygulama dilini ve diğer ayarları buradan değiştirebilirsiniz.'**
   String get showcaseLanguage;
 
   /// No description provided for @showcaseStory.

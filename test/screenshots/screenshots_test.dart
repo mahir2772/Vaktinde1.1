@@ -31,6 +31,7 @@ import 'package:ezan_saati/features/duas/view/tesbihat_view.dart';
 import 'package:ezan_saati/features/esmaul_husna/view/esmaul_husna_view.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
+import 'package:ezan_saati/features/home/widgets/prayer_times_grid.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
 import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
@@ -803,12 +804,25 @@ void main() {
       await _shot(tester, 'tr_11_home_full');
       await _setViewport(tester);
       await _settle(tester, steps: 2);
+      final loc = lookupAppLocalizations(const Locale('tr'));
+
+      // Izgarada Öğle'ye dokununca o vaktin alarm sayfası
+      _currentScreen = 'tr_16_home_alarm_sheet';
+      await tester.tap(
+        find.descendant(
+          of: find.byType(PrayerTimesGrid),
+          matching: find.text(loc.ogle),
+        ),
+      );
+      await _settle(tester);
+      await _shot(tester, 'tr_16_home_alarm_sheet');
+      _navigator(tester).pop();
+      await _settle(tester, steps: 6);
 
       // Alarmlar sekmesi + açılmış Öğle kartı
       await tester.tap(find.text('Alarmlar'));
       await _settle(tester);
       await _shot(tester, 'tr_12_home_alarms');
-      final loc = lookupAppLocalizations(const Locale('tr'));
       await tester.tap(find.text(loc.ogle).last);
       await _settle(tester);
       await _shot(tester, 'tr_13_home_alarms_expanded');
