@@ -1,13 +1,21 @@
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
+import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
 import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
+import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
+import 'package:ezan_saati/features/quran/view/quran_view.dart';
+import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
+import 'package:ezan_saati/features/tools/view/tools_view.dart';
+import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view_model/zikir_view_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +27,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 // Uygulama düzeyi: açılış sırası (tur / izin / pil), reklam rızası (UMP),
 // Ayarlar'daki reklam gizlilik satırı, fotoğraf üstünde bölüm başlığı,
-// alt menü etiketleri.
+// alt menü (5 sekme, Kur'an sekmesi, tanıtım turu) ve etiketleri.
 
 class _FakeHomeViewModel extends HomeViewModel {
   int batteryRequests = 0;
@@ -398,13 +406,13 @@ void main() {
     for (var i = 0; i < 5; i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
-    expect(selected(), 3);
+    expect(selected(), MainTab.tools.index);
 
     HomeView.openAlarmsTab();
     for (var i = 0; i < 5; i++) {
       await tester.pump(const Duration(milliseconds: 100));
     }
-    expect(selected(), 0);
+    expect(selected(), MainTab.home.index);
     expect(find.text(loc.ezanAlarmStreamTitle).hitTestable(), findsOneWidget);
     expect(tester.takeException(), isNull);
     await finish(tester);
@@ -437,12 +445,162 @@ void main() {
     await finish(tester);
   });
 
+  group('Alt menü: 5 sekme', () {
+    setUpAll(() async {
+      // Kur'an sekmesi listeyi rootBundle'dan okur: önbellek gerçek zaman
+      // bölgesinde dolsun (sahte zamanda bekleyen Future kalmasın)
+      await rootBundle.loadString(QuranService.surahsAsset);
+    });
+
+    // Sekmelerin diğer eklentileri (zikir sesi, ekran açık, titreşim):
+    // "başarılı, null"
+    setUp(() {
+      messenger.allMessagesHandler = (channel, handler, message) {
+        if (handler != null) return handler(message);
+        if (channel.startsWith('flutter/')) {
+          return messenger.delegate.send(channel, message);
+        }
+        if (channel.startsWith('dev.flutter.pigeon.')) {
+          return Future.value(
+            const StandardMessageCodec().encodeMessage(<Object?>[null]),
+          );
+        }
+        return Future.value(
+          const StandardMethodCodec().encodeSuccessEnvelope(null),
+        );
+      };
+    });
+
+    tearDown(() => messenger.allMessagesHandler = null);
+
+    Future<void> settle(WidgetTester tester) async {
+      for (var round = 0; round < 2; round++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 20)),
+        );
+        for (var i = 0; i < 4; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+    }
+
+    int selected(WidgetTester tester) =>
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex;
+
+    testWidgets("Ana Sayfa · Kur'an · Kıble · Zikir · Araçlar; sekmeler ilk "
+        "ziyarette kurulur, Kur'an listesi açılır, sekme geçişinde reklam yok", (
+      tester,
+    ) async {
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await pumpApp(
+        tester,
+        mainWrapper(),
+        prefs: {tourSeenKey: false, permissionsPrimedKey: true},
+      );
+      final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
+      expect(bar.destinations, hasLength(MainTab.values.length));
+      expect(MainTab.values.length, 5);
+      final labels = [
+        loc.navPrayer,
+        loc.navQuran,
+        loc.navQibla,
+        loc.navZikir,
+        loc.navTools,
+      ];
+      final xs = [for (final l in labels) tester.getCenter(find.text(l)).dx];
+      expect(xs, orderedEquals([...xs]..sort()));
+      expect(selected(tester), MainTab.home.index);
+      // Açılışta sadece ana sayfa kurulur (pusula/konum ve Kur'an listesi yok)
+      for (final type in [QuranView, QiblaView, ZikirView, ToolsView]) {
+        expect(find.byType(type, skipOffstage: false), findsNothing);
+      }
+      final banners = find
+          .byType(AdBannerWidget, skipOffstage: false)
+          .evaluate()
+          .length;
+      final ads = AdHelper.instance.debugShowRequests;
+
+      await tester.tap(find.text(loc.navQuran));
+      await settle(tester);
+      expect(selected(tester), MainTab.quran.index);
+      expect(find.byType(QuranView), findsOneWidget);
+      expect(find.text(loc.quranTitle), findsOneWidget);
+      expect(find.text('Fâtiha'), findsOneWidget);
+      // Tek banner (alt menünün): Kur'an sekmesi kendi banner'ını eklemez
+      expect(
+        find.descendant(
+          of: find.byType(QuranView),
+          matching: find.byType(AdBannerWidget, skipOffstage: false),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byType(AdBannerWidget, skipOffstage: false).evaluate().length,
+        banners,
+      );
+      expect(
+        tester
+            .widgetList<AdBannerWidget>(
+              find.byType(AdBannerWidget, skipOffstage: false),
+            )
+            .map((b) => b.adUnitId),
+        contains(AdIds.mainBanner),
+      );
+
+      // Sekmeler arasında gezinmek reklam göstermez; durum korunur
+      for (final (label, tab) in [
+        (loc.navQibla, MainTab.qibla),
+        (loc.navZikir, MainTab.zikir),
+        (loc.navTools, MainTab.tools),
+        (loc.navPrayer, MainTab.home),
+        (loc.navQuran, MainTab.quran),
+      ]) {
+        await tester.tap(find.text(label));
+        await settle(tester);
+        expect(selected(tester), tab.index);
+      }
+      expect(AdHelper.instance.debugShowRequests, ads);
+      expect(find.byType(QuranView, skipOffstage: false), findsOneWidget);
+
+      // Sure okuyucu alt menünün üstüne açılır (reklamsız)
+      await tester.tap(find.text('Fâtiha'));
+      await settle(tester);
+      expect(find.byType(SurahReaderView), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
+      expect(AdHelper.instance.debugShowRequests, ads);
+      expect(tester.takeException(), isNull);
+      await finish(tester);
+    });
+
+    testWidgets("tanıtım turu alt menüde Kur'an, Kıble, Zikir sırasıyla", (
+      tester,
+    ) async {
+      await pumpApp(tester, mainWrapper());
+      final view = ShowcaseView.get();
+      expect(view.isShowcaseRunning, isTrue);
+      final seen = <GlobalKey>[];
+      for (var i = 0; i < 10 && view.isShowcaseRunning; i++) {
+        seen.add(view.getActiveShowcaseKey!);
+        view.next();
+        for (var j = 0; j < 5; j++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+      expect(seen.first, homeLangKey);
+      expect(seen, containsAllInOrder([quranKey, qiblaKey, zikirmatikKey]));
+      expect(seen.last, zikirmatikKey);
+      await finish(tester);
+    });
+  });
+
   group('Alt menü etiketleri tek satır', () {
-    for (final lang in ['tr', 'de', 'fr', 'ar']) {
+    for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
       testWidgets('$lang 320dp %130', (tester) async {
         final loc = lookupAppLocalizations(Locale(lang));
+        // 5 sekme: Ana Sayfa · Kur'an · Kıble · Zikir · Araçlar
         final labels = [
           loc.navPrayer,
+          loc.navQuran,
           loc.navQibla,
           loc.navZikir,
           loc.navTools,

@@ -44,10 +44,13 @@ const Map<String, Object> _userData = {
   'dhikr_count_Elhamdülillah': 17,
   'dhikr_target_Elhamdülillah': 99,
   'dhikr_count_Ya Latif': 129,
+  'dhikr_round_Ya Latif': 4,
   'zikir_vibration': false,
   'zikir_sound': true,
   'zikir_awake': true,
   'zikir_view_mode': 1,
+  'zikir_round_mode': true,
+  'zikir_volume_keys': true,
   'theme_mode': 2,
   'background_image': 'bg_mosque2.webp',
   'language_code': 'de',
@@ -77,6 +80,7 @@ final Map<String, Object> _notBackedUp = {
   'IABTCF_gdprApplies': 1,
   'IABTCF_PurposeConsents': '1111',
   'dhikr_count_': 5, // adsız zikir değil
+  'dhikr_round_': 2,
 };
 
 String _backupJson(Map<String, Object?> data, {Object? version = 1}) =>
@@ -294,6 +298,8 @@ void main() {
         'reminderSound_Öğle': '',
         'dhikr_target_Sübhanallah': 0,
         'dhikr_count_Sübhanallah': -1,
+        'dhikr_round_Sübhanallah': 0,
+        'zikir_volume_keys': 'evet',
         'dhikr_daily_stats': '{"2026-10-10":"çok"}',
         'prayer_log': '{bozuk',
         'prayer_kaza_added': '[1,2]',

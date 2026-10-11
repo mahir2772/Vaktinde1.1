@@ -15,6 +15,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navZikir => 'Dhikr';
 
   @override
+  String get navQuran => 'Quran';
+
+  @override
+  String get showcaseQuran =>
+      'Read the Holy Quran here and continue where you left off.';
+
+  @override
+  String zikirRound(int round) {
+    return 'Round $round';
+  }
+
+  @override
+  String zikirProgress(int count, int target) {
+    return '$count / $target';
+  }
+
+  @override
+  String get zikirPrevious => 'Previous dhikr';
+
+  @override
+  String get zikirNext => 'Next dhikr';
+
+  @override
+  String get zikirCountingSection => 'Counting';
+
+  @override
+  String get zikirRoundMode => 'Restart at the target (count rounds)';
+
+  @override
+  String get zikirVolumeKeys => 'Count with volume keys';
+
+  @override
+  String get zikirVolumeKeysDesc =>
+      'Volume up +1, volume down −1. Only while the Dhikr screen is open; the system volume does not change.';
+
+  @override
   String get adPrivacySettings => 'Ad Privacy Settings';
 
   @override

@@ -13,6 +13,7 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
 import 'package:ezan_saati/features/quran/widgets/ayah_sheet.dart';
@@ -2308,42 +2309,52 @@ void main() {
       await dispose(tester);
     });
 
-    testWidgets('Araçlar > Bilgi grubunun sonunda; geçiş reklamıyla açılır', (
-      tester,
-    ) async {
-      await pump(
-        tester,
-        const ToolsView(),
-        width: 411,
-        height: 891,
-        textScale: 1,
-      );
-      final loc = lookupAppLocalizations(const Locale('tr'));
-      await tester.scrollUntilVisible(find.text(loc.quranTitle), 200);
-      await tester.pump();
-      final quran = tester.getRect(find.text(loc.quranTitle));
-      expect(
-        quran.top,
-        greaterThan(tester.getRect(find.text(loc.fridayMessagesTitle)).top),
-      );
-      expect(
-        quran.top,
-        lessThan(tester.getRect(find.text(loc.toolsGroupCalc)).top),
-      );
-      expect(find.text(loc.toolQuranDesc), findsOneWidget);
+    testWidgets(
+      "Araçlar'da Kur'an satırı yok (alt menü sekmesi); sekmede banner ve "
+      'sure açılışında reklam yok',
+      (tester) async {
+        await pump(
+          tester,
+          const ToolsView(),
+          width: 411,
+          height: 891,
+          textScale: 1,
+        );
+        final loc = lookupAppLocalizations(const Locale('tr'));
+        // Bilgi grubu Cuma Mesajları ile biter, ardından Hesap grubu
+        await tester.scrollUntilVisible(find.text(loc.toolsGroupCalc), 200);
+        await tester.pump();
+        expect(find.text(loc.fridayMessagesTitle), findsOneWidget);
+        expect(find.text(loc.quranTitle), findsNothing);
+        expect(find.text(loc.toolQuranDesc), findsNothing);
 
-      final before = AdHelper.instance.debugShowRequests;
-      await tester.tap(find.text(loc.quranTitle));
-      await settle(tester);
-      expect(AdHelper.instance.debugShowRequests, before + 1);
-      expect(find.byType(QuranView), findsOneWidget);
-      expect(find.text('Fâtiha'), findsOneWidget);
-      // Sure açılışında reklam yok
-      await tester.tap(find.text('Fâtiha'));
-      await settle(tester);
-      expect(find.byType(SurahReaderView), findsOneWidget);
-      expect(AdHelper.instance.debugShowRequests, before + 1);
-      await dispose(tester);
-    });
+        // Alt menü sekmesi: kendi banner'ı yok (alt menüde tek banner)
+        final before = AdHelper.instance.debugShowRequests;
+        await pump(
+          tester,
+          const QuranView(asTab: true),
+          width: 411,
+          height: 891,
+          textScale: 1,
+        );
+        expect(find.byType(AdBannerWidget), findsNothing);
+        expect(
+          tester.widget<AppBar>(find.byType(AppBar)).automaticallyImplyLeading,
+          isFalse,
+        );
+        expect(find.text('Fâtiha'), findsOneWidget);
+        // Sure açılışında reklam yok
+        await tester.tap(find.text('Fâtiha'));
+        await settle(tester);
+        expect(find.byType(SurahReaderView), findsOneWidget);
+        expect(AdHelper.instance.debugShowRequests, before);
+        await dispose(tester);
+
+        // Sayfa olarak (sekme dışı) iç banner'ı korunur
+        await pumpPhone(tester, QuranView(service: _service()));
+        expect(find.byType(AdBannerWidget), findsOneWidget);
+        await dispose(tester);
+      },
+    );
   });
 }

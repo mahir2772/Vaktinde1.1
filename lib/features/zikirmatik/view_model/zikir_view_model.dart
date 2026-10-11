@@ -5,14 +5,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import '../zikir_logic.dart';
+
 class ZikirViewModel extends ChangeNotifier {
+  /// Ayarlar: "Hedefte sıfırdan devam et (tur say)" ve "Ses tuşlarıyla say"
+  /// (ikisi de varsayılan kapalı)
+  static const String roundModeKey = 'zikir_round_mode';
+  static const String volumeKeysKey = 'zikir_volume_keys';
+
+  /// Zikir adıyla tur (sayaç ve hedef gibi; 1. tur kaydedilmez)
+  static const String roundPrefix = 'dhikr_round_';
+
   String _selectedDhikr = "Sübhanallah";
   int _count = 0;
   int _target = 33;
+  int _round = 1;
 
   bool _isVibrationEnabled = true;
   bool _isSoundEnabled = false;
   bool _isKeepAwakeEnabled = false;
+  bool _isRoundModeEnabled = false;
+  bool _isVolumeKeysEnabled = false;
   int _viewMode = 0;
 
   // İSTATİSTİKLER İÇİN: Tarih (YYYY-MM-DD) -> O gün çekilen toplam zikir sayısı
@@ -24,10 +37,24 @@ class ZikirViewModel extends ChangeNotifier {
   String get selectedDhikr => _selectedDhikr;
   int get count => _count;
   int get target => _target;
+
+  /// Kayıtlı tur (tur kipinde sayılır; kapalıyken gösterilen tur [progress]'te
+  /// toplamdan hesaplanır)
+  int get round => _round;
   bool get isVibrationEnabled => _isVibrationEnabled;
   bool get isSoundEnabled => _isSoundEnabled;
   bool get isKeepAwakeEnabled => _isKeepAwakeEnabled;
+  bool get isRoundModeEnabled => _isRoundModeEnabled;
+  bool get isVolumeKeysEnabled => _isVolumeKeysEnabled;
   int get viewMode => _viewMode;
+
+  /// Ekranda gösterilen sayaç, hedef halkası ve tur
+  ZikirProgress get progress => ZikirProgress.of(
+    count: _count,
+    target: _target,
+    round: _round,
+    roundMode: _isRoundModeEnabled,
+  );
   Map<String, int> get dailyStats => _dailyStats;
   List<String> get customDhikrs => _customDhikrs;
 
@@ -774,12 +801,13 @@ class ZikirViewModel extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
 
     _selectedDhikr = prefs.getString('selected_dhikr') ?? "Sübhanallah";
-    _count = prefs.getInt('dhikr_count_$_selectedDhikr') ?? 0;
-    _target = prefs.getInt('dhikr_target_$_selectedDhikr') ?? 33;
+    _readCounter(prefs);
 
     _isVibrationEnabled = prefs.getBool('zikir_vibration') ?? true;
     _isSoundEnabled = prefs.getBool('zikir_sound') ?? false;
     _isKeepAwakeEnabled = prefs.getBool('zikir_awake') ?? false;
+    _isRoundModeEnabled = prefs.getBool(roundModeKey) ?? false;
+    _isVolumeKeysEnabled = prefs.getBool(volumeKeysKey) ?? false;
     _viewMode = prefs.getInt('zikir_view_mode') ?? 0;
 
     _customDhikrs = prefs.getStringList('custom_dhikrs_list') ?? [];
@@ -801,20 +829,53 @@ class ZikirViewModel extends ChangeNotifier {
     await _loadData();
   }
 
-  Future<void> _saveCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('dhikr_count_$_selectedDhikr', _count);
+  /// Seçili zikrin sayacı, hedefi (en az 1) ve turu (en az 1)
+  void _readCounter(SharedPreferences prefs) {
+    _count = prefs.getInt('dhikr_count_$_selectedDhikr') ?? 0;
+    final target = prefs.getInt('dhikr_target_$_selectedDhikr') ?? 33;
+    _target = target < 1 ? 33 : target;
+    final round = prefs.getInt('$roundPrefix$_selectedDhikr') ?? 1;
+    _round = round < 1 ? 1 : round;
   }
+
+  /// Sayaç ve tur seçili zikrin adıyla kaydedilir. Değerler beklemeden önce
+  /// alınır: yazım sürerken zikir değişse de doğru zikre yazılır.
+  Future<void> _saveCount() async {
+    final dhikr = _selectedDhikr;
+    final count = _count;
+    final round = _round;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('dhikr_count_$dhikr', count);
+    if (round > 1) {
+      await prefs.setInt('$roundPrefix$dhikr', round);
+    } else {
+      await prefs.remove('$roundPrefix$dhikr');
+    }
+  }
+
+  static String _today() =>
+      DateTime.now().toIso8601String().substring(0, 10); // YYYY-MM-DD
 
   // GÜNLÜK İSTATİSTİK KAYDEDİCİ
   Future<void> _recordDailyStat() async {
-    final prefs = await SharedPreferences.getInstance();
-    String today = DateTime.now().toIso8601String().substring(
-      0,
-      10,
-    ); // YYYY-MM-DD
-
+    final today = _today();
     _dailyStats[today] = (_dailyStats[today] ?? 0) + 1;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('dhikr_daily_stats', jsonEncode(_dailyStats));
+  }
+
+  /// Ses kısma tuşuyla geri alınan zikir bugünün sayısından düşülür (sıfırın
+  /// altına inmez)
+  Future<void> _undoDailyStat() async {
+    final today = _today();
+    final value = _dailyStats[today] ?? 0;
+    if (value <= 0) return;
+    if (value == 1) {
+      _dailyStats.remove(today);
+    } else {
+      _dailyStats[today] = value - 1;
+    }
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setString('dhikr_daily_stats', jsonEncode(_dailyStats));
   }
 
@@ -843,34 +904,66 @@ class ZikirViewModel extends ChangeNotifier {
   }
 
   // --- SAYICI İŞLEMLERİ ---
-  Future<void> increment() async {
-    _count++;
-    await _saveCount();
-    await _recordDailyStat(); // Her tıklamada grafiğe +1 ekle
 
-    if (_count > 0 && _count % _target == 0) {
-      if (_isVibrationEnabled) {
-        HapticFeedback.vibrate();
+  /// +1. Hedefe ulaşınca çift titreşim; tur kipinde tur artar ve sayaç
+  /// sıfırdan başlar. Ekran beklemeden güncellenir, kayıt arkadan gelir.
+  Future<void> increment() async {
+    final bool reached;
+    if (_isRoundModeEnabled) {
+      final before = carryRounds(_count, _target, _round);
+      final next = carryRounds(before.count + 1, _target, before.round);
+      reached = next.round > before.round;
+      _count = next.count;
+      _round = next.round;
+    } else {
+      _count++;
+      reached = _count % _target == 0;
+    }
+
+    if (_isVibrationEnabled) {
+      HapticFeedback.vibrate();
+      if (reached) {
         Future.delayed(
           const Duration(milliseconds: 150),
           () => HapticFeedback.vibrate(),
         );
       }
-      if (_isSoundEnabled) {
-        _audioPlayer.play(AssetSource('sounds/click.mp3'));
-      }
-    } else {
-      if (_isVibrationEnabled) HapticFeedback.vibrate();
-      if (_isSoundEnabled) {
-        _audioPlayer.play(AssetSource('sounds/click.mp3'));
-      }
     }
+    if (_isSoundEnabled) {
+      _audioPlayer.play(AssetSource('sounds/click.mp3'));
+    }
+    // Her tıklamada grafiğe +1 (bugünün sayısı hemen artar, kayıt arkadan)
+    final stat = _recordDailyStat();
     notifyListeners();
+
+    await _saveCount();
+    await stat;
   }
 
+  /// -1 (ses kısma tuşu): sıfırın altına inmez; tur kipinde turun başında
+  /// durur (önceki tura dönmez)
+  Future<void> decrement() async {
+    if (_isRoundModeEnabled) {
+      final now = carryRounds(_count, _target, _round);
+      if (now.count == 0) return;
+      _count = now.count - 1;
+      _round = now.round;
+    } else {
+      if (_count <= 0) return;
+      _count--;
+    }
+    if (_isVibrationEnabled) HapticFeedback.selectionClick();
+    final stat = _undoDailyStat();
+    notifyListeners();
+
+    await _saveCount();
+    await stat;
+  }
+
+  /// Sayaç ve tur sıfırlanır
   Future<void> reset() async {
     _count = 0;
-    await _saveCount();
+    _round = 1;
     if (_isVibrationEnabled) {
       HapticFeedback.vibrate();
       Future.delayed(
@@ -878,8 +971,8 @@ class ZikirViewModel extends ChangeNotifier {
         () => HapticFeedback.vibrate(),
       );
     }
-
     notifyListeners();
+    await _saveCount();
   }
 
   Future<void> changeDhikr(String newDhikr) async {
@@ -887,17 +980,51 @@ class ZikirViewModel extends ChangeNotifier {
     await prefs.setString('selected_dhikr', newDhikr);
 
     _selectedDhikr = newDhikr;
-    _count = prefs.getInt('dhikr_count_$_selectedDhikr') ?? 0;
-    _target = prefs.getInt('dhikr_target_$_selectedDhikr') ?? 33;
+    _readCounter(prefs);
 
     if (_isVibrationEnabled) HapticFeedback.selectionClick();
     notifyListeners();
   }
 
+  /// Kaydırma / oklarla geçilen zikirler: temel + kullanıcının zikirleri
+  List<String> get mainDhikrIds => [
+    for (final dhikr in predefinedDhikrsList) dhikr["id"]!,
+    ..._customDhikrs,
+  ];
+
+  List<String> get esmaDhikrIds => [
+    for (final dhikr in esmaulHusnaList) dhikr["id"]!,
+  ];
+
+  /// Listede önceki ([step] -1) / sonraki (+1) zikir (uçlarda döner)
+  String adjacentDhikrOf(int step) => adjacentDhikr(
+    current: _selectedDhikr,
+    main: mainDhikrIds,
+    esma: esmaDhikrIds,
+    step: step,
+  );
+
+  Future<void> selectAdjacentDhikr(int step) async {
+    final next = adjacentDhikrOf(step);
+    if (next == _selectedDhikr) return;
+    await changeDhikr(next);
+  }
+
   Future<void> setTarget(int newTarget) async {
+    final target = newTarget < 1 ? 1 : newTarget;
+    // Tur kipinde: gösterilen tur korunur, yeni hedefi aşan sayaç turlara
+    // aktarılır
+    final carry = _isRoundModeEnabled;
+    if (carry) {
+      final shown = carryRounds(_count, _target, _round);
+      final carried = carryRounds(shown.count, target, shown.round);
+      _count = carried.count;
+      _round = carried.round;
+    }
+    _target = target;
     final prefs = await SharedPreferences.getInstance();
-    _target = newTarget;
     await prefs.setInt('dhikr_target_$_selectedDhikr', _target);
+    if (carry) await _saveCount();
 
     if (_isVibrationEnabled) HapticFeedback.selectionClick();
     notifyListeners();
@@ -926,6 +1053,24 @@ class ZikirViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// "Hedefte sıfırdan devam et (tur say)": açıp kapatmak sayacı değiştirmez
+  /// (hedefi aşmış sayaç tur kipinde turlara aktarılmış gösterilir)
+  Future<void> toggleRoundMode(bool value) async {
+    _isRoundModeEnabled = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(roundModeKey, value);
+  }
+
+  /// "Ses tuşlarıyla say": Zikir ekranı görünür ve ön plandayken ses açma +1,
+  /// ses kısma -1 (ZikirVolumeKeys)
+  Future<void> toggleVolumeKeys(bool value) async {
+    _isVolumeKeysEnabled = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(volumeKeysKey, value);
+  }
+
   Future<void> setViewMode(int mode) async {
     _viewMode = mode;
     final prefs = await SharedPreferences.getInstance();
@@ -941,8 +1086,18 @@ class ZikirViewModel extends ChangeNotifier {
     }
   }
 
+  /// Elle girilen sayaç (tur kipinde turun içindeki sayı): gösterilen tur
+  /// korunur, hedefi aşan kısım turlara aktarılır
   Future<void> setCount(int newCount) async {
-    _count = newCount;
+    final count = newCount < 0 ? 0 : newCount;
+    if (_isRoundModeEnabled) {
+      final shown = carryRounds(_count, _target, _round);
+      final carried = carryRounds(count, _target, shown.round);
+      _count = carried.count;
+      _round = carried.round;
+    } else {
+      _count = count;
+    }
     await _saveCount();
     notifyListeners();
   }

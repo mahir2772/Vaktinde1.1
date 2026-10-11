@@ -12,7 +12,6 @@ import '../../friday_messages/view/friday_messages_view.dart';
 import '../../imsakiye/view/imsakiye_view.dart';
 import '../../missed_prayers/view/missed_prayers_view.dart';
 import '../../prayer_tracker/view/prayer_tracker_view.dart';
-import '../../quran/view/quran_view.dart';
 import '../../religious_days/view/religious_days_view.dart';
 import '../../settings/view/settings_view.dart';
 import '../../zakat/view/zakat_view.dart';
@@ -94,12 +93,7 @@ class ToolsView extends StatelessWidget {
             loc.toolFridayDesc,
             () => const FridayMessagesView(),
           ),
-          _ToolItem(
-            Icons.auto_stories_outlined,
-            loc.quranTitle,
-            loc.toolQuranDesc,
-            () => const QuranView(),
-          ),
+          // Kur'an alt menüde (MainWrapper sekmesi)
         ],
       ),
       (

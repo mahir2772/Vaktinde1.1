@@ -3,10 +3,12 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../../core/ui/app_tokens.dart';
 
-// İlk açılış tanıtım turu (5 adım) hedefleri
+// İlk açılış tanıtım turu (6 adım) hedefleri: ana sayfada dil, günün ayeti,
+// alarmlar; alt menüde Kur'an, Kıble, Zikir
 final GlobalKey homeLangKey = GlobalKey();
 final GlobalKey homeStoryKey = GlobalKey();
 final GlobalKey homeAlarmsKey = GlobalKey();
+final GlobalKey quranKey = GlobalKey();
 final GlobalKey qiblaKey = GlobalKey();
 final GlobalKey zikirmatikKey = GlobalKey();
 

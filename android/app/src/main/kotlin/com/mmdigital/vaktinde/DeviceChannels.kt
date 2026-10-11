@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.Settings
+import android.view.KeyEvent
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -273,5 +274,76 @@ class MagneticStream(private val context: Context) : EventChannel.StreamHandler,
     private companion object {
         const val UNKNOWN = -1
         const val MIN_INTERVAL_MS = 200L
+    }
+}
+
+/**
+ * Zikirmatik "Ses tuşlarıyla say" ("vaktinde/volume_keys" akışı, MainActivity.dispatchKeyEvent).
+ * Ses tuşları sadece Dart açıkça istediğinde ("vaktinde/device" setVolumeKeyCounting(true): Zikir
+ * sekmesi görünür, ayar açık, uygulama ön planda) VE akış dinlenirken tüketilir: sistem ses düzeyi
+ * değişmez, ses paneli açılmaz. Olay basış başına bir kez: ses açma +1, ses kısma -1 (Int); basılı
+ * tutmanın tekrarları sayılmaz. Tüketilen basışın tekrarları ve bırakması (ACTION_UP; bırakılmasa
+ * sistem "bip" çalar) da tüketilir; bayrak kapalıyken başlayan basışınkiler sisteme gider.
+ * Takılı kalmaz: onStop ve motor değişince bayrak kapanır (Dart ön plana dönüşte yeniden açar),
+ * Dart dinlemeyi bırakınca tuşlar sisteme döner. Ana iş parçacığında çağrılır.
+ */
+class VolumeKeyCounter : EventChannel.StreamHandler {
+    private var enabled = false
+    private var sink: EventChannel.EventSink? = null
+
+    // Tüketilen basışın tuşları: tekrarları ve bırakması da tüketilir
+    private val ownedKeys = mutableSetOf<Int>()
+
+    /** Ses tuşları şu an sayaca gidiyor mu (bayrak açık ve Dart dinliyor) */
+    val counting: Boolean get() = enabled && sink != null
+
+    /** Dart'tan (setVolumeKeyCounting); basılı tuşun bırakması yine tüketilir */
+    fun setEnabled(value: Boolean) {
+        enabled = value
+    }
+
+    /** Activity görünmez oldu (onStop) ya da yeni motor: Dart yeniden açana kadar sayılmaz */
+    fun reset() {
+        enabled = false
+        ownedKeys.clear()
+    }
+
+    /** Motor ayrıldı (cleanUpFlutterEngine): eski akış da bırakılır */
+    fun detach() {
+        reset()
+        sink = null
+    }
+
+    override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
+        sink = events
+    }
+
+    override fun onCancel(arguments: Any?) {
+        sink = null
+    }
+
+    /** true: olay tüketildi (görünüm ağacına ve sistemin ses ayarına gitmez) */
+    fun onKeyEvent(event: KeyEvent): Boolean {
+        val code = event.keyCode
+        val delta = when (code) {
+            KeyEvent.KEYCODE_VOLUME_UP -> 1
+            KeyEvent.KEYCODE_VOLUME_DOWN -> -1
+            else -> return false
+        }
+        return when (event.action) {
+            KeyEvent.ACTION_DOWN -> {
+                if (event.repeatCount > 0) return code in ownedKeys
+                val events = sink
+                if (!enabled || events == null) {
+                    ownedKeys.remove(code)
+                    return false
+                }
+                ownedKeys.add(code)
+                events.success(delta)
+                true
+            }
+            KeyEvent.ACTION_UP -> ownedKeys.remove(code)
+            else -> false
+        }
     }
 }

@@ -1,6 +1,33 @@
 {
     "appTitle": "Vaktinde",
     "navZikir": "Dhikr",
+    "navQuran": "Quran",
+    "showcaseQuran": "Read the Holy Quran here and continue where you left off.",
+    "zikirRound": "Round {round}",
+    "@zikirRound": {
+        "placeholders": {
+            "round": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirProgress": "{count} / {target}",
+    "@zikirProgress": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirPrevious": "Previous dhikr",
+    "zikirNext": "Next dhikr",
+    "zikirCountingSection": "Counting",
+    "zikirRoundMode": "Restart at the target (count rounds)",
+    "zikirVolumeKeys": "Count with volume keys",
+    "zikirVolumeKeysDesc": "Volume up +1, volume down −1. Only while the Dhikr screen is open; the system volume does not change.",
     "adPrivacySettings": "Ad Privacy Settings",
     "adPrivacySettingsSub": "Change your consent for personalised ads",
     "showcaseLanguage": "You can change the app language here.",

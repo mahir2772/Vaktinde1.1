@@ -1,6 +1,33 @@
 {
     "appTitle": "Vaktinde",
     "navZikir": "الذكر",
+    "navQuran": "القرآن",
+    "showcaseQuran": "اقرأ القرآن الكريم هنا وتابع من حيث توقفت.",
+    "zikirRound": "الدورة {round}",
+    "@zikirRound": {
+        "placeholders": {
+            "round": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirProgress": "{count} / {target}",
+    "@zikirProgress": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirPrevious": "الذكر السابق",
+    "zikirNext": "الذكر التالي",
+    "zikirCountingSection": "العدّ",
+    "zikirRoundMode": "البدء من الصفر عند بلوغ الهدف (عدّ الدورات)",
+    "zikirVolumeKeys": "العدّ بأزرار الصوت",
+    "zikirVolumeKeysDesc": "رفع الصوت +1، خفض الصوت −1. فقط أثناء فتح شاشة الذكر، ولا يتغير صوت النظام.",
     "adPrivacySettings": "إعدادات خصوصية الإعلانات",
     "adPrivacySettingsSub": "غيّر موافقتك على الإعلانات المخصصة",
     "showcaseLanguage": "يمكنك تغيير لغة التطبيق من هنا.",

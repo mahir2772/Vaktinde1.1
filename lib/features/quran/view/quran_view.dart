@@ -9,13 +9,17 @@ import 'surah_reader_view.dart';
 /// Kur'an-ı Kerim: iki sekme — Sureler (gömülü liste, internetsiz; ad ya da
 /// numarayla arama) ve Cüzler (30 cüz, başladığı sure:ayet). Üstte "Kaldığın
 /// yerden devam et" (son okunan ayet, okuyucu kendisi saklar) ve ondan
-/// farklıysa "Yer imi". Sure açılışında reklam yok (geçiş reklamı Araçlar'dan
-/// bu ekran açılırken).
+/// farklıysa "Yer imi". Alt menü sekmesi; sekme geçişinde ve sure açılışında
+/// reklam yok.
 class QuranView extends StatefulWidget {
   /// Test için (varsayılan: gömülü liste + alquran.cloud)
   final QuranService? service;
 
-  const QuranView({super.key, this.service});
+  /// Alt menü sekmesi (MainWrapper): banner alt menüde (çift banner olmaz),
+  /// geri düğmesi yok
+  final bool asTab;
+
+  const QuranView({super.key, this.service, this.asTab = false});
 
   @override
   State<QuranView> createState() => _QuranViewState();
@@ -81,6 +85,8 @@ class _QuranViewState extends State<QuranView> {
       length: 2,
       child: AppScaffold(
         title: loc.quranTitle,
+        showBanner: !widget.asTab,
+        automaticallyImplyLeading: !widget.asTab,
         bottom: TabBar(
           tabs: [
             Tab(text: loc.quranTabSurahs),

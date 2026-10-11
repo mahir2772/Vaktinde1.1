@@ -116,6 +116,66 @@ abstract class AppLocalizations {
   /// **'Zikir'**
   String get navZikir;
 
+  /// No description provided for @navQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an'**
+  String get navQuran;
+
+  /// No description provided for @showcaseQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an-ı Kerim\'i buradan okuyabilir, kaldığınız yerden devam edebilirsiniz.'**
+  String get showcaseQuran;
+
+  /// No description provided for @zikirRound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tur {round}'**
+  String zikirRound(int round);
+
+  /// No description provided for @zikirProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} / {target}'**
+  String zikirProgress(int count, int target);
+
+  /// No description provided for @zikirPrevious.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki zikir'**
+  String get zikirPrevious;
+
+  /// No description provided for @zikirNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki zikir'**
+  String get zikirNext;
+
+  /// No description provided for @zikirCountingSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayma'**
+  String get zikirCountingSection;
+
+  /// No description provided for @zikirRoundMode.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefte sıfırdan devam et (tur say)'**
+  String get zikirRoundMode;
+
+  /// No description provided for @zikirVolumeKeys.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses tuşlarıyla say'**
+  String get zikirVolumeKeys;
+
+  /// No description provided for @zikirVolumeKeysDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses açma +1, ses kısma −1. Sadece Zikir ekranı açıkken; sistem sesi değişmez.'**
+  String get zikirVolumeKeysDesc;
+
   /// No description provided for @adPrivacySettings.
   ///
   /// In tr, this message translates to:

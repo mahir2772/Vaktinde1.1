@@ -5,7 +5,8 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../view_model/zikir_view_model.dart';
 
-/// Zikirmatik ayarları: görünüm (modern/klasik), titreşim, ses, ekran açık
+/// Zikirmatik ayarları: görünüm (modern/klasik), titreşim, ses, ekran açık;
+/// sayma: hedefte sıfırdan devam (tur), ses tuşlarıyla sayma
 class ZikirSettingsView extends StatelessWidget {
   const ZikirSettingsView({super.key});
 
@@ -42,11 +43,13 @@ class ZikirSettingsView extends StatelessWidget {
             IconData icon,
             String title,
             bool value,
-            ValueChanged<bool> onChanged,
-          ) {
+            ValueChanged<bool> onChanged, {
+            String? subtitle,
+          }) {
             return AppListTile(
               leadingIcon: icon,
               title: title,
+              subtitle: subtitle,
               showChevron: false,
               trailing: Switch(value: value, onChanged: onChanged),
               onTap: () => onChanged(!value),
@@ -83,6 +86,25 @@ class ZikirSettingsView extends StatelessWidget {
                     loc.keepAwake,
                     viewModel.isKeepAwakeEnabled,
                     viewModel.toggleKeepAwake,
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              AppListSection(
+                title: loc.zikirCountingSection,
+                children: [
+                  switchRow(
+                    Icons.autorenew,
+                    loc.zikirRoundMode,
+                    viewModel.isRoundModeEnabled,
+                    viewModel.toggleRoundMode,
+                  ),
+                  switchRow(
+                    Icons.volume_down_outlined,
+                    loc.zikirVolumeKeys,
+                    viewModel.isVolumeKeysEnabled,
+                    viewModel.toggleVolumeKeys,
+                    subtitle: loc.zikirVolumeKeysDesc,
                   ),
                 ],
               ),
