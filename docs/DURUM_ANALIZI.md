@@ -2,6 +2,9 @@
 
 ## 1.3.0 öncesi sıradakiler (kullanıcı onayıyla; 1.3.0 bunlar bitince yayınlanır)
 Kod (önerilen sıra):
+0. HATA (kullanıcı bildirdi): günün ayeti/hadisi her açılışta değişiyor; gün boyu aynı kalmalı. Ayet:
+   ayah_service.getRandomAyah tohumsuz Random() → tarih tohumlu seçim + günlük önbellek; hadis (hadith_service, tohumlu
+   ama değişiyor) ve yerel json yedeği de kontrol edilsin. Bildirim (1000/1900) ile ana ekran aynı içeriği göstermeli.
 1. Ezan bildiriminde "Durdur" düğmesi (sesi keser).
 2. Özel günde (tracker_excused) ezan sessiz bildirim olarak gelir (ayar).
 3. Kaza hesaplama sihirbazı (yıl/yaş → tahmini kaza sayısı → Kaza Takibi).
