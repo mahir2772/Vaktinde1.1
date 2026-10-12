@@ -1,4 +1,18 @@
-# Vaktinde — Durum (v1.2.0+17 hazır; Play'de 1.1.2+16, 8 Ekim 2026)
+# Vaktinde — Durum (Play'de 1.2.0+17; 1.3.0 bu dalda hazırlanıyor, Ekim 2026)
+
+## 1.3.0 öncesi sıradakiler (kullanıcı onayıyla; 1.3.0 bunlar bitince yayınlanır)
+Kod (önerilen sıra):
+1. Ezan bildiriminde "Durdur" düğmesi (sesi keser).
+2. Özel günde (tracker_excused) ezan sessiz bildirim olarak gelir (ayar).
+3. Kaza hesaplama sihirbazı (yıl/yaş → tahmini kaza sayısı → Kaza Takibi).
+4. Uygulama açılış reklamı — kullanıcı AdMob'da "Uygulama açılışı" birimi açarsa (dönüşte, günde 1–2).
+5. İnternetsiz il/ilçe + Avrupa şehirleri, "memleket vakitleri" (M).
+6. Yeni widget'lar: sıradaki vakit halkası, etkileşimli "Bugün" takip widget'ı (M–L).
+7. Namaz hocası (abdest/namaz adım adım) (L).
+8. Ön plan servisini isteğe bağlı yapma (M).
+Kullanıcı işleri: Google Sites gizlilik metni (docs/gizlilik_politikasi.md), docs/site/fitre.json → mahir2772.github.io,
+AdMob GDPR mesajı + hassas kategoriler, Play Veri güvenliği (Crashlytics), CollectAPI anahtarını 1.3.0 derleme günü
+yenile, mağaza görselleri (Aralık başı Üç Aylar, ~11 Ocak Ramazan 2027 İmsakiye). Üç Aylar 10.12.2026 → 1.3.0 en geç Kasım sonu.
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
 
