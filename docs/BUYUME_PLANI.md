@@ -14,8 +14,8 @@ adres istediği için açılmadı → bio'da bağlantı yok, videoda "Play Store
 facebook.com/vaktindeapp (sadece iş hesabı yönetiyor; ana kişisel hesap çıkarıldı; Instagram'a bağlı, işletme
 portföyü "Vaktinde • Ezan Vakti ve Kıble"), YouTube @vaktindeapp. Bio bağlantıları UTM'li:
 `…&referrer=utm_source%3D<instagram|facebook|youtube>%26utm_medium%3D<bio|profil|kanal>` → Play Console'da kaynak ayrı görünür.
-Ortak paylaşım: Facebook + Instagram = Meta Business Suite; TikTok + YouTube = Buffer ücretsiz (3 kanal, kanal başına
-10 sıralı gönderi; kişisel TikTok desteği bağlarken denenecek, olmazsa TikTok'a telefondan).
+Paylaşım: Facebook + Instagram tek seferde Meta Business Suite'ten; TikTok ve YouTube Shorts kendi telefon
+uygulamalarından (üçüncü taraf araç yok; kullanıcı tercihi).
 **İlke:** İnsanlar uygulama reklamını değil, işine yarayan/duygusal içeriği izler. Hesap "içerik hesabı", uygulama araç.
 
 **Kurulum**
