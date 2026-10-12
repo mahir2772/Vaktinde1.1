@@ -13,6 +13,8 @@ Kod (önerilen sıra):
 Kullanıcı işleri ✅ (12 Ekim 2026): Google Sites gizlilik metni güncellendi, fitre.json mahir2772.github.io'da, AdMob
 GDPR mesajı yayında ("Vaktinde GDPR"; Reddet düğmesi tüm ülkelerde; eski taslak hiç yayınlanmamıştı) + hassas/kısıtlı
 kategoriler engellendi, Play Veri güvenliğinde Crashlytics (kilitlenme günlüğü, teşhis) zaten beyanlı.
+Özel mağaza girişi "Avrupa" (DE, AT, BE, FR, NL, CH, DK, SE, GB; kitle %50, kısa açıklamalar "Avrupa'da Diyanet yöntemiyle…"
+tr/de/fr/en, ar aynı) incelemeye gitti; birkaç hafta sonra varsayılanla karşılaştır → %100 (yüzde azaltılamaz).
 Kalan: CollectAPI anahtarını 1.3.0 derleme günü yenile (önce değil: 1.2.0'ın canlı kuru durur), mağaza görselleri (Aralık
 başı Üç Aylar, ~11 Ocak Ramazan 2027 İmsakiye) + aynı anda Play "Promosyon içeriği" etkinlikleri (Üç Aylar,
 Ramazan) ve özel mağaza girişleri (sosyal medya URL'li giriş: indirme ölçümü; AB ülkeleri girişi, tüm dil çevirileriyle),
