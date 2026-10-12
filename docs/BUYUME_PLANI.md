@@ -8,6 +8,14 @@
   Kadir 05.03.2027 · Ramazan Bayramı 09.03.2027 · Kurban Bayramı 16.05.2027 · her Cuma.
 
 ## 2. Sosyal medya (TikTok · YouTube Shorts · Instagram Reels)
+
+**Hesaplar (12 Ekim 2026):** Instagram @vaktinde.app (profesyonel), TikTok @vaktinde.app (kişisel; işletme hesabı açık
+adres istediği için açılmadı → bio'da bağlantı yok, videoda "Play Store'da Vaktinde ara"), Facebook sayfası
+facebook.com/vaktindeapp (sadece iş hesabı yönetiyor; ana kişisel hesap çıkarıldı; Instagram'a bağlı, işletme
+portföyü "Vaktinde • Ezan Vakti ve Kıble"), YouTube @vaktindeapp. Bio bağlantıları UTM'li:
+`…&referrer=utm_source%3D<instagram|facebook|youtube>%26utm_medium%3D<bio|profil|kanal>` → Play Console'da kaynak ayrı görünür.
+Ortak paylaşım: Facebook + Instagram = Meta Business Suite; TikTok + YouTube = Buffer ücretsiz (3 kanal, kanal başına
+10 sıralı gönderi; kişisel TikTok desteği bağlarken denenecek, olmazsa TikTok'a telefondan).
 **İlke:** İnsanlar uygulama reklamını değil, işine yarayan/duygusal içeriği izler. Hesap "içerik hesabı", uygulama araç.
 
 **Kurulum**
