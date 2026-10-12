@@ -14,7 +14,9 @@ Kullanıcı işleri ✅ (12 Ekim 2026): Google Sites gizlilik metni güncellendi
 GDPR mesajı yayında ("Vaktinde GDPR"; Reddet düğmesi tüm ülkelerde; eski taslak hiç yayınlanmamıştı) + hassas/kısıtlı
 kategoriler engellendi, Play Veri güvenliğinde Crashlytics (kilitlenme günlüğü, teşhis) zaten beyanlı.
 Kalan: CollectAPI anahtarını 1.3.0 derleme günü yenile (önce değil: 1.2.0'ın canlı kuru durur), mağaza görselleri (Aralık
-başı Üç Aylar, ~11 Ocak Ramazan 2027 İmsakiye), 2027 fitre tutarı açıklanınca fitre.json'a girdi. Üç Aylar 10.12.2026 →
+başı Üç Aylar, ~11 Ocak Ramazan 2027 İmsakiye) + aynı anda Play "Promosyon içeriği" etkinlikleri (Üç Aylar,
+Ramazan) ve özel mağaza girişleri (sosyal medya URL'li giriş: indirme ölçümü; AB ülkeleri girişi, tüm dil çevirileriyle),
+2027 fitre tutarı açıklanınca fitre.json'a girdi. Üç Aylar 10.12.2026 →
 1.3.0 en geç Kasım sonu.
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
