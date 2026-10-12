@@ -10,9 +10,12 @@ Kod (önerilen sıra):
 6. Yeni widget'lar: sıradaki vakit halkası, etkileşimli "Bugün" takip widget'ı (M–L).
 7. Namaz hocası (abdest/namaz adım adım) (L).
 8. Ön plan servisini isteğe bağlı yapma (M).
-Kullanıcı işleri: Google Sites gizlilik metni (docs/gizlilik_politikasi.md), docs/site/fitre.json → mahir2772.github.io,
-AdMob GDPR mesajı + hassas kategoriler, Play Veri güvenliği (Crashlytics), CollectAPI anahtarını 1.3.0 derleme günü
-yenile, mağaza görselleri (Aralık başı Üç Aylar, ~11 Ocak Ramazan 2027 İmsakiye). Üç Aylar 10.12.2026 → 1.3.0 en geç Kasım sonu.
+Kullanıcı işleri ✅ (12 Ekim 2026): Google Sites gizlilik metni güncellendi, fitre.json mahir2772.github.io'da, AdMob
+GDPR mesajı yayında ("Vaktinde GDPR"; Reddet düğmesi tüm ülkelerde; eski taslak hiç yayınlanmamıştı) + hassas/kısıtlı
+kategoriler engellendi, Play Veri güvenliğinde Crashlytics (kilitlenme günlüğü, teşhis) zaten beyanlı.
+Kalan: CollectAPI anahtarını 1.3.0 derleme günü yenile (önce değil: 1.2.0'ın canlı kuru durur), mağaza görselleri (Aralık
+başı Üç Aylar, ~11 Ocak Ramazan 2027 İmsakiye), 2027 fitre tutarı açıklanınca fitre.json'a girdi. Üç Aylar 10.12.2026 →
+1.3.0 en geç Kasım sonu.
 
 Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK derlenemiyor; `flutter analyze` + birim testi çalışıyor.
 
@@ -61,7 +64,6 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 
 ## Ertelenenler
 - CollectAPI anahtarı: koda yazılamıyor; derlemede `--dart-define=COLLECT_API_KEY=...` verilmezse zekat ekranında canlı kur gelmez. Anahtar yenilenmeli (git geçmişinde açık).
-- Play Console: Veri güvenliği formuna Crashlytics (kilitlenme günlükleri, tanılama) eklenmeli.
 
 ## v1.1.0 arayüz yenilemesi ✅ (evrimsel, aynı düzen)
 | Alan | Ne değişti |
@@ -78,7 +80,7 @@ Mimari: `CLAUDE.md`. Bu ortamda Android SDK yok (dl.google.com kapalı) → APK 
 | Bağımlılık | story_view + upgrader kaldırıldı (16 paket az), package_info_plus doğrudan |
 - Test: 330 geçiyor (+10 ekran görüntüsü testi env ile). Ekran görüntüsü düzeneğinde tr/de/fr/ar, açık/koyu/arka plan, 320dp + %130'da düzen hatası yok.
 - Kotlin (widget'lar, kalıcı bildirim, MainActivity) bulutta API 36 çerçevesine ve SDK'daki flutter.jar'a karşı derlendi, Robolectric testleri geçti (düzenek repo dışında); gerçek cihaz testinin yerini tutmaz.
-- AdMob: AB kullanıcıları için AdMob panelinde "Gizlilik ve mesajlaşma → GDPR mesajı" yayınlanmış olmalı; yoksa AB'de reklam gösterilmeyebilir (ertelendi, kullanıcı işi).
+- AdMob: AB GDPR mesajı 12 Ekim 2026'da yayınlandı (öncesinde sadece taslak vardı).
 
 ## Sonrası (bu dalda) ✅
 - Çeviri denetimi: 5 dil ana dil gözüyle denetlendi, ikinci ajan onaylı 360 düzeltme (`a40c3f4`); yinelenen arb anahtarları temizlendi.
