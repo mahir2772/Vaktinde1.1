@@ -48,7 +48,10 @@ lib/
       location_service      geolocator + geocoding → {city: administrativeArea, district: subAdministrativeArea|locality}; getCoordinatesFromAddress(il, ilçe)
       notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (namaz ID 0-71 = vaktin tarihine bağlı
                             PrayerRefreshService.alarmId: epochDay%6 × 12 + vakit×2 (+1 hatırlatma), vakit çıkış 100-124, günlük içerik 1000/1900, test ezanı 1999, dini gün 2000-2399, kalıcı 888).
-                            Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım")
+                            Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım", "Durdur")
+                            "Durdur" (stopAction) sadece sesli ezanda (Güneş, sahur/iftar, alarm kanalı, test ezanı dahil): cancelNotification ile
+                            ses anında kesilir; başlık+metin eylem kimliğinde JSON ('stop_ezan|[..]'), arka planda showSilentCopy aynı ID/metin/
+                            yükü sessiz kanalda (channel_silent_prayer, silent) yeniden gösterir, "Kıldım" korunur. Eylemler fingerprint'e girmez
                             Kip: scheduleModeFor(NotificationKind, exactAllowed:, notificationsEnabled:). alarmClock (durum çubuğunda alarm
                             simgesi + kilit ekranında "sonraki alarm") SADECE kullanıcının açtığı ezan (prayer) için, tam zamanlı izin ve bildirimler
                             açık/bilinmiyorken; hatırlatma (tek ID) ve vakit çıkış (100-124) exactAllowWhileIdle (simgesiz); günün ayeti/hadisi
@@ -72,7 +75,13 @@ lib/
                             Özel gün (hayız/nifas): 'tracker_excused' (tarih kümesi; loadExcused/setExcused; saf isExcused/withExcused/
                             pruneExcused) → streak/completionRate/kazaCandidates `excused:` ile o günü atlar; işaretlenince o günün
                             kazaya eklenmiş namazları çıkarılır (sayaç −, onaylı). Gün adına/“Bugün” başlığına uzun basınca; oruç kazası
-                            etkilenmez (kaza orucu gerekir)
+                            etkilenmez (kaza orucu gerekir). BUGÜN işaretlenince dönem açılır ('tracker_excused_open' = başlangıç): sonraki
+                            günler kendiliğinden özel gün, en fazla 10 gün (saf excusedThrough/completeExcused/withExcusedPeriod; loadExcused
+                            bugüne kadar tamamlar); bugüne yine uzun bas = bitir; geçmiş gün tek gün. excusedChanges → HomeViewModel yeniden kurar.
+                            'excused_silent_ezan' (varsayılan açık, Ayarlar): özel günlerde (dönemin gelecek günleri dahil) vakit bildirimleri
+                            sessiz kanalda yüksüz (Kıldım/Durdur yok, alarm_plan_meta'ya girmez), hatırlatma ve vakit çıkış kurulmaz.
+                            addToKazaCounters: "Kaza hesapla" (missed_prayers/kaza_estimate.dart KazaEstimate: yıl×365+ay×30, özel gün düşümü
+                            sadece namazdan, Ramazan×30 oruç) sayaçlara ekler
       background_manager    flutter_background_service foreground servisi; sadece ilk bildirim metni ('bg_display'), asıl içerik NotificationUpdater'da
       prayer_refresh_service BuildContext'siz ortak mantık: widget/kalıcı bildirim verisi, 5 günlük alarm planı (buildAlarmPlan),
                             günlük ayet/hadis bildirimi, hicri tarih (de/fr → en). runHeadless(): WorkManager görevi — bugünün
@@ -84,6 +93,8 @@ lib/
                             ('schedule_mode_v2': 1.1.0 her şeyi alarmClock kurdu) bitene kadar runHeadless aynı gün de yeniden kurar;
                             geçişte bekleyen 1000/1900 aynı metinle yeniden yazılır (pendingTexts). Günün ayeti/hadisi ayarı
                             'daily_content_enabled' (varsayılan açık; kapalıyken kurulmaz, bekleyen iptal; _dailyQueue ile sıralı).
+                            İçerik çalacağı günün içeriği (dailyContentDay: saati geçtiyse yarın); bugün çalacaksa ana ekrandakiyle aynı;
+                            başlıklar l10n (dailyAyahTitle / hadithTitle)
                             Dini gün/kandil: buildReligiousDayPlan + syncReligiousDays (_religiousQueue, her rescheduleAlarms
                             turunda; sonucu 'alarms_scheduled_date' koşulunda). Kaynak DiniGunlerService.loadBildirimGunleri
                             (sadece json; 2028 sonrası json uzatılmalı). O gün 10:00, Ramazan başlangıcı bir gün önce, aynı
@@ -103,9 +114,10 @@ lib/
                             dil değişince hepsi yeniden yazılır); hesap hep "HH:mm"den.
                             updateHomeWidget yazımları SerialQueue ile sıralı. Ramazan widget'ı: ramadanData (saf) → 'ramadan_start/_end/
                             _next_start' (+ _text), başlıklar, 'ramadan_day_text' (%d) — 4. sağlayıcı VaktindeWidgetRamadanProvider
-      hadith_service        hadeethenc.com API + yerel json fallback
+      hadith_service        hadeethenc.com API + yerel json fallback; getDailyHadith(locale, {day}) gün tohumlu, yedek de gün boyu sabit
       ayah_service          api.alquran.cloud (meal eşlemesi tek yer: quran_service.dart QuranEdition — tr.diyanet, en.sahih,
-                            de.aburida, fr.hamidullah; ar sadece Arapça)
+                            de.aburida, fr.hamidullah; ar sadece Arapça); getDailyAyah(dil, {day}): ayahNumberFor(gün) = epochDay×3853
+                            mod 6236 + 1 (dilden bağımsız). Önbellek 'daily_ayah_cache' / 'daily_hadith_cache' ("yyyy-MM-dd|dil", yedeğe girmez)
       quran_service         sure çekme (alquran.cloud, quran-uthmani + meal), Besmele 1. ayetten ayrılır (1 ve 9 hariç),
                             önbellek SharedPreferences (en çok 10 sure / 400k karakter, LRU; yer imli sure korunur),
                             'quran_bookmark' {surah, ayah}, 'quran_font_scale' 0.8–1.6
@@ -157,8 +169,9 @@ lib/
     home/widgets/prayer_tracker_row.dart   "Bugün" 5 vakit işareti (resume'da yenilenir) → prayer_tracker/view/prayer_tracker_view.dart
                                            (7 gün ızgara, 30 gün oran, seri, kılınmayanları kazaya ekle; araçlarda da kart)
     settings/view/end_reminder_setting.dart vakit çıkış hatırlatması anahtarı + 15/30/45 dk
-    settings/view/settings_view.dart       Konum & Vakitler: EndReminderSetting altında "Günün ayeti ve hadisi" ve "Dini gün ve kandil"
-                                           anahtarları (HomeViewModel.setDailyContentEnabled / setReligiousDaysEnabled), "Bildirim Kontrolü"
+    settings/view/settings_view.dart       Konum & Vakitler: EndReminderSetting altında "Günün ayeti ve hadisi", "Dini gün ve kandil" ve
+                                           "Özel günde ezanı sessiz bildir" anahtarları (HomeViewModel.setDailyContentEnabled /
+                                           setReligiousDaysEnabled / setExcusedSilentEzan), "Bildirim Kontrolü"
                                            satırı. Destek'te "Gizlilik Politikası" (core/app_links.dart AppLinks.privacyPolicy = Google Sites,
                                            harici tarayıcı; boşsa gizli). Metnin kaynağı docs/gizlilik_politikasi.md.
                                            Play linki tek yer: AppLinks.playStore / playStoreLink(kampanya) (utm_source=app_share)
