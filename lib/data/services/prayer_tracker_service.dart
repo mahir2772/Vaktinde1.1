@@ -188,6 +188,18 @@ class PrayerTrackerService {
     return result;
   }
 
+  /// Kaza sayaçlarına [deltas] kadar ekler, üzerine yazmaz ("Kaza hesapla")
+  Future<void> addToKazaCounters(Map<String, int> deltas) =>
+      runExclusive(() async {
+        final counters = await _storage.loadMissedPrayers();
+        for (final e in deltas.entries) {
+          await _storage.updateMissedPrayer(
+            e.key,
+            (counters[e.key] ?? 0) + e.value,
+          );
+        }
+      });
+
   /// Kılınmayan geçmiş vakitleri kaza sayaçlarına ekler (her vakit bir kez;
   /// özel günler hariç). Eklenen vakit sayısını döner.
   Future<int> addMissedToKaza({bool yesterdayYatsiOngoing = false}) async {

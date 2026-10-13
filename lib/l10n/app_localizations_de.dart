@@ -998,6 +998,58 @@ class AppLocalizationsDe extends AppLocalizations {
   String get missedPrayersTitle => 'Qada-Tracker';
 
   @override
+  String get kazaCalcTitle => 'Qada-Rechner';
+
+  @override
+  String get kazaCalcSubtitle => 'Qada aus der Zeit ohne Gebet schätzen';
+
+  @override
+  String get kazaCalcPeriod => 'Zeit ohne Gebet';
+
+  @override
+  String get kazaCalcYears => 'Jahre';
+
+  @override
+  String get kazaCalcMonths => 'Monate';
+
+  @override
+  String get kazaCalcOptional => 'Optional';
+
+  @override
+  String get kazaCalcExcused => 'Menstruationstage pro Monat (Durchschnitt)';
+
+  @override
+  String get kazaCalcRamadans => 'Nicht gefastete Ramadan-Monate';
+
+  @override
+  String get kazaCalcOptionalInfo =>
+      'Gebete, die während der Menstruation ausfallen, müssen nicht nachgeholt werden; diese Tage werden von den Gebeten abgezogen. Beim Fasten wird nichts abgezogen: Auch während der Menstruation ausgelassenes Ramadan-Fasten muss nachgeholt werden. Jeder Ramadan zählt als 30 Tage.';
+
+  @override
+  String get kazaCalcResult => 'Geschätztes Qada';
+
+  @override
+  String get kazaCalcEachPrayer => 'Jedes Gebet und Witr';
+
+  @override
+  String get kazaCalcNote =>
+      'Dies ist eine Schätzung (ein Jahr zählt 365, ein Monat 30 Tage). Für eine verbindliche Auskunft wenden Sie sich an einen Imam oder Religionsgelehrten.';
+
+  @override
+  String get kazaCalcAdd => 'Zu den Qada-Zählern hinzufügen';
+
+  @override
+  String get kazaCalcConfirmTitle => 'Zu den Qada-Zählern hinzufügen?';
+
+  @override
+  String kazaCalcConfirm(int prayers, int fasts) {
+    return 'Jedes Gebet und Witr: +$prayers\nFasten: +$fasts\n\nDie Werte werden zu den bisherigen Zahlen addiert; nichts wird überschrieben.';
+  }
+
+  @override
+  String get kazaCalcAdded => 'Schätzung zu den Qada-Zählern hinzugefügt.';
+
+  @override
   String get missedPrayersInfo =>
       'Notieren Sie hier verpasste Gebete und ziehen Sie diese nach dem Nachholen ab.\n(Tippen Sie auf die Zahl zur manuellen Eingabe)';
 

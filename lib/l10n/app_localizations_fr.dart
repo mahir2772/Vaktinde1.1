@@ -1014,6 +1014,59 @@ class AppLocalizationsFr extends AppLocalizations {
   String get missedPrayersTitle => 'Suivi des prières manquées';
 
   @override
+  String get kazaCalcTitle => 'Calculateur de qada';
+
+  @override
+  String get kazaCalcSubtitle =>
+      'Estimez votre qada à partir de la période sans prière';
+
+  @override
+  String get kazaCalcPeriod => 'Période sans prière';
+
+  @override
+  String get kazaCalcYears => 'Années';
+
+  @override
+  String get kazaCalcMonths => 'Mois';
+
+  @override
+  String get kazaCalcOptional => 'Facultatif';
+
+  @override
+  String get kazaCalcExcused => 'Jours de menstrues par mois (en moyenne)';
+
+  @override
+  String get kazaCalcRamadans => 'Ramadans non jeûnés';
+
+  @override
+  String get kazaCalcOptionalInfo =>
+      'Les prières manquées pendant les menstrues n\'ont pas à être rattrapées : ces jours sont déduits des prières. Ils ne sont pas déduits du jeûne : les jeûnes du Ramadan manqués pendant les menstrues doivent aussi être rattrapés. Chaque Ramadan compte pour 30 jours.';
+
+  @override
+  String get kazaCalcResult => 'Qada estimé';
+
+  @override
+  String get kazaCalcEachPrayer => 'Chaque prière et witr';
+
+  @override
+  String get kazaCalcNote =>
+      'Il s\'agit d\'une estimation (une année compte 365 jours, un mois 30). Pour un avis sûr, consultez un imam ou un savant.';
+
+  @override
+  String get kazaCalcAdd => 'Ajouter aux compteurs de qada';
+
+  @override
+  String get kazaCalcConfirmTitle => 'Ajouter aux compteurs de qada ?';
+
+  @override
+  String kazaCalcConfirm(int prayers, int fasts) {
+    return 'Chaque prière et witr : +$prayers\nJeûne : +$fasts\n\nCes nombres s\'ajoutent aux compteurs actuels, rien n\'est remplacé.';
+  }
+
+  @override
+  String get kazaCalcAdded => 'Estimation ajoutée aux compteurs de qada.';
+
+  @override
   String get missedPrayersInfo =>
       'Notez ici vos prières manquées et déduisez-les au fur et à mesure.\n(Appuyez sur le nombre pour une saisie manuelle)';
 

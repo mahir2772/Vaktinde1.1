@@ -1718,6 +1718,102 @@ abstract class AppLocalizations {
   /// **'Kaza Takibi'**
   String get missedPrayersTitle;
 
+  /// No description provided for @kazaCalcTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza hesapla'**
+  String get kazaCalcTitle;
+
+  /// No description provided for @kazaCalcSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz kılınmayan süreden tahmini kaza sayısı'**
+  String get kazaCalcSubtitle;
+
+  /// No description provided for @kazaCalcPeriod.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz kılınmayan süre'**
+  String get kazaCalcPeriod;
+
+  /// No description provided for @kazaCalcYears.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yıl'**
+  String get kazaCalcYears;
+
+  /// No description provided for @kazaCalcMonths.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ay'**
+  String get kazaCalcMonths;
+
+  /// No description provided for @kazaCalcOptional.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsteğe bağlı'**
+  String get kazaCalcOptional;
+
+  /// No description provided for @kazaCalcExcused.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayda ortalama özel gün (hayız)'**
+  String get kazaCalcExcused;
+
+  /// No description provided for @kazaCalcRamadans.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutulmayan Ramazan sayısı'**
+  String get kazaCalcRamadans;
+
+  /// No description provided for @kazaCalcOptionalInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hayız günlerinde kılınamayan namazların kazası gerekmez; bu günler namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan Ramazan oruçlarının da kazası gerekir. Her Ramazan 30 gün sayılır.'**
+  String get kazaCalcOptionalInfo;
+
+  /// No description provided for @kazaCalcResult.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tahmini kaza'**
+  String get kazaCalcResult;
+
+  /// No description provided for @kazaCalcEachPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit ve vitir'**
+  String get kazaCalcEachPrayer;
+
+  /// No description provided for @kazaCalcNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tahmini sonuçtur (yıl 365, ay 30 gün sayılır). Kesin bilgi için bir din görevlisine danışın.'**
+  String get kazaCalcNote;
+
+  /// No description provided for @kazaCalcAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza Takibi\'ne ekle'**
+  String get kazaCalcAdd;
+
+  /// No description provided for @kazaCalcConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza Takibi\'ne eklensin mi?'**
+  String get kazaCalcConfirmTitle;
+
+  /// No description provided for @kazaCalcConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit ve vitir: +{prayers}\nOruç: +{fasts}\n\nSayılar mevcut kazaların üzerine eklenir, hiçbiri silinmez.'**
+  String kazaCalcConfirm(int prayers, int fasts);
+
+  /// No description provided for @kazaCalcAdded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tahmini kaza, Kaza Takibi\'ne eklendi.'**
+  String get kazaCalcAdded;
+
   /// No description provided for @missedPrayersInfo.
   ///
   /// In tr, this message translates to:

@@ -560,6 +560,32 @@
         }
     },
     "missedPrayersTitle": "Qada-Tracker",
+    "kazaCalcTitle": "Qada-Rechner",
+    "kazaCalcSubtitle": "Qada aus der Zeit ohne Gebet schätzen",
+    "kazaCalcPeriod": "Zeit ohne Gebet",
+    "kazaCalcYears": "Jahre",
+    "kazaCalcMonths": "Monate",
+    "kazaCalcOptional": "Optional",
+    "kazaCalcExcused": "Menstruationstage pro Monat (Durchschnitt)",
+    "kazaCalcRamadans": "Nicht gefastete Ramadan-Monate",
+    "kazaCalcOptionalInfo": "Gebete, die während der Menstruation ausfallen, müssen nicht nachgeholt werden; diese Tage werden von den Gebeten abgezogen. Beim Fasten wird nichts abgezogen: Auch während der Menstruation ausgelassenes Ramadan-Fasten muss nachgeholt werden. Jeder Ramadan zählt als 30 Tage.",
+    "kazaCalcResult": "Geschätztes Qada",
+    "kazaCalcEachPrayer": "Jedes Gebet und Witr",
+    "kazaCalcNote": "Dies ist eine Schätzung (ein Jahr zählt 365, ein Monat 30 Tage). Für eine verbindliche Auskunft wenden Sie sich an einen Imam oder Religionsgelehrten.",
+    "kazaCalcAdd": "Zu den Qada-Zählern hinzufügen",
+    "kazaCalcConfirmTitle": "Zu den Qada-Zählern hinzufügen?",
+    "kazaCalcConfirm": "Jedes Gebet und Witr: +{prayers}\nFasten: +{fasts}\n\nDie Werte werden zu den bisherigen Zahlen addiert; nichts wird überschrieben.",
+    "@kazaCalcConfirm": {
+        "placeholders": {
+            "prayers": {
+                "type": "int"
+            },
+            "fasts": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCalcAdded": "Schätzung zu den Qada-Zählern hinzugefügt.",
     "missedPrayersInfo": "Notieren Sie hier verpasste Gebete und ziehen Sie diese nach dem Nachholen ab.\n(Tippen Sie auf die Zahl zur manuellen Eingabe)",
     "editMissedTitle": "Qada für {title} bearbeiten",
     "@editMissedTitle": {

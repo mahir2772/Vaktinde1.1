@@ -560,6 +560,32 @@
         }
     },
     "missedPrayersTitle": "Suivi des prières manquées",
+    "kazaCalcTitle": "Calculateur de qada",
+    "kazaCalcSubtitle": "Estimez votre qada à partir de la période sans prière",
+    "kazaCalcPeriod": "Période sans prière",
+    "kazaCalcYears": "Années",
+    "kazaCalcMonths": "Mois",
+    "kazaCalcOptional": "Facultatif",
+    "kazaCalcExcused": "Jours de menstrues par mois (en moyenne)",
+    "kazaCalcRamadans": "Ramadans non jeûnés",
+    "kazaCalcOptionalInfo": "Les prières manquées pendant les menstrues n'ont pas à être rattrapées : ces jours sont déduits des prières. Ils ne sont pas déduits du jeûne : les jeûnes du Ramadan manqués pendant les menstrues doivent aussi être rattrapés. Chaque Ramadan compte pour 30 jours.",
+    "kazaCalcResult": "Qada estimé",
+    "kazaCalcEachPrayer": "Chaque prière et witr",
+    "kazaCalcNote": "Il s'agit d'une estimation (une année compte 365 jours, un mois 30). Pour un avis sûr, consultez un imam ou un savant.",
+    "kazaCalcAdd": "Ajouter aux compteurs de qada",
+    "kazaCalcConfirmTitle": "Ajouter aux compteurs de qada ?",
+    "kazaCalcConfirm": "Chaque prière et witr : +{prayers}\nJeûne : +{fasts}\n\nCes nombres s'ajoutent aux compteurs actuels, rien n'est remplacé.",
+    "@kazaCalcConfirm": {
+        "placeholders": {
+            "prayers": {
+                "type": "int"
+            },
+            "fasts": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCalcAdded": "Estimation ajoutée aux compteurs de qada.",
     "missedPrayersInfo": "Notez ici vos prières manquées et déduisez-les au fur et à mesure.\n(Appuyez sur le nombre pour une saisie manuelle)",
     "editMissedTitle": "Modifier le compteur : {title}",
     "@editMissedTitle": {

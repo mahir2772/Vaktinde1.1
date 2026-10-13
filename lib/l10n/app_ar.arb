@@ -560,6 +560,32 @@
         }
     },
     "missedPrayersTitle": "تتبع الصلوات الفائتة",
+    "kazaCalcTitle": "حاسبة القضاء",
+    "kazaCalcSubtitle": "قدِّر عدد الفوائت من المدة التي لم تُصلِّ فيها",
+    "kazaCalcPeriod": "مدة ترك الصلاة",
+    "kazaCalcYears": "السنوات",
+    "kazaCalcMonths": "الأشهر",
+    "kazaCalcOptional": "اختياري",
+    "kazaCalcExcused": "متوسط أيام الحيض في الشهر",
+    "kazaCalcRamadans": "عدد أشهر رمضان التي لم تُصَم",
+    "kazaCalcOptionalInfo": "لا يجب قضاء الصلوات التي فاتت في أيام الحيض، لذا تُطرح هذه الأيام من الصلوات. ولا تُطرح من الصيام: فما فات من صيام رمضان بسبب الحيض يجب قضاؤه أيضًا. يُحسب كل رمضان ثلاثين يومًا.",
+    "kazaCalcResult": "القضاء التقديري",
+    "kazaCalcEachPrayer": "كل صلاة والوتر",
+    "kazaCalcNote": "هذه نتيجة تقديرية (تُحسب السنة 365 يومًا والشهر 30 يومًا). وللحكم الدقيق استشر إمامًا أو عالمًا موثوقًا.",
+    "kazaCalcAdd": "إضافة إلى عدادات القضاء",
+    "kazaCalcConfirmTitle": "هل تريد الإضافة إلى عدادات القضاء؟",
+    "kazaCalcConfirm": "كل صلاة والوتر: {prayers}\nالصيام: {fasts}\n\nتُضاف هذه الأعداد إلى العدادات الحالية ولا يُستبدل شيء.",
+    "@kazaCalcConfirm": {
+        "placeholders": {
+            "prayers": {
+                "type": "int"
+            },
+            "fasts": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCalcAdded": "أُضيف القضاء التقديري إلى عدادات القضاء.",
     "missedPrayersInfo": "سجل صلواتك الفائتة هنا واطرحها عند قضائها.\n(اضغط على الرقم للإدخال يدوياً)",
     "editMissedTitle": "تعديل قضاء {title}",
     "@editMissedTitle": {

@@ -978,6 +978,58 @@ class AppLocalizationsTr extends AppLocalizations {
   String get missedPrayersTitle => 'Kaza Takibi';
 
   @override
+  String get kazaCalcTitle => 'Kaza hesapla';
+
+  @override
+  String get kazaCalcSubtitle => 'Namaz kılınmayan süreden tahmini kaza sayısı';
+
+  @override
+  String get kazaCalcPeriod => 'Namaz kılınmayan süre';
+
+  @override
+  String get kazaCalcYears => 'Yıl';
+
+  @override
+  String get kazaCalcMonths => 'Ay';
+
+  @override
+  String get kazaCalcOptional => 'İsteğe bağlı';
+
+  @override
+  String get kazaCalcExcused => 'Ayda ortalama özel gün (hayız)';
+
+  @override
+  String get kazaCalcRamadans => 'Tutulmayan Ramazan sayısı';
+
+  @override
+  String get kazaCalcOptionalInfo =>
+      'Hayız günlerinde kılınamayan namazların kazası gerekmez; bu günler namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan Ramazan oruçlarının da kazası gerekir. Her Ramazan 30 gün sayılır.';
+
+  @override
+  String get kazaCalcResult => 'Tahmini kaza';
+
+  @override
+  String get kazaCalcEachPrayer => 'Her vakit ve vitir';
+
+  @override
+  String get kazaCalcNote =>
+      'Tahmini sonuçtur (yıl 365, ay 30 gün sayılır). Kesin bilgi için bir din görevlisine danışın.';
+
+  @override
+  String get kazaCalcAdd => 'Kaza Takibi\'ne ekle';
+
+  @override
+  String get kazaCalcConfirmTitle => 'Kaza Takibi\'ne eklensin mi?';
+
+  @override
+  String kazaCalcConfirm(int prayers, int fasts) {
+    return 'Her vakit ve vitir: +$prayers\nOruç: +$fasts\n\nSayılar mevcut kazaların üzerine eklenir, hiçbiri silinmez.';
+  }
+
+  @override
+  String get kazaCalcAdded => 'Tahmini kaza, Kaza Takibi\'ne eklendi.';
+
+  @override
   String get missedPrayersInfo =>
       'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)';
 

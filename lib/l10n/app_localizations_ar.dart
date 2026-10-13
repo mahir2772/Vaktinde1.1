@@ -1015,6 +1015,59 @@ class AppLocalizationsAr extends AppLocalizations {
   String get missedPrayersTitle => 'تتبع الصلوات الفائتة';
 
   @override
+  String get kazaCalcTitle => 'حاسبة القضاء';
+
+  @override
+  String get kazaCalcSubtitle =>
+      'قدِّر عدد الفوائت من المدة التي لم تُصلِّ فيها';
+
+  @override
+  String get kazaCalcPeriod => 'مدة ترك الصلاة';
+
+  @override
+  String get kazaCalcYears => 'السنوات';
+
+  @override
+  String get kazaCalcMonths => 'الأشهر';
+
+  @override
+  String get kazaCalcOptional => 'اختياري';
+
+  @override
+  String get kazaCalcExcused => 'متوسط أيام الحيض في الشهر';
+
+  @override
+  String get kazaCalcRamadans => 'عدد أشهر رمضان التي لم تُصَم';
+
+  @override
+  String get kazaCalcOptionalInfo =>
+      'لا يجب قضاء الصلوات التي فاتت في أيام الحيض، لذا تُطرح هذه الأيام من الصلوات. ولا تُطرح من الصيام: فما فات من صيام رمضان بسبب الحيض يجب قضاؤه أيضًا. يُحسب كل رمضان ثلاثين يومًا.';
+
+  @override
+  String get kazaCalcResult => 'القضاء التقديري';
+
+  @override
+  String get kazaCalcEachPrayer => 'كل صلاة والوتر';
+
+  @override
+  String get kazaCalcNote =>
+      'هذه نتيجة تقديرية (تُحسب السنة 365 يومًا والشهر 30 يومًا). وللحكم الدقيق استشر إمامًا أو عالمًا موثوقًا.';
+
+  @override
+  String get kazaCalcAdd => 'إضافة إلى عدادات القضاء';
+
+  @override
+  String get kazaCalcConfirmTitle => 'هل تريد الإضافة إلى عدادات القضاء؟';
+
+  @override
+  String kazaCalcConfirm(int prayers, int fasts) {
+    return 'كل صلاة والوتر: $prayers\nالصيام: $fasts\n\nتُضاف هذه الأعداد إلى العدادات الحالية ولا يُستبدل شيء.';
+  }
+
+  @override
+  String get kazaCalcAdded => 'أُضيف القضاء التقديري إلى عدادات القضاء.';
+
+  @override
   String get missedPrayersInfo =>
       'سجل صلواتك الفائتة هنا واطرحها عند قضائها.\n(اضغط على الرقم للإدخال يدوياً)';
 

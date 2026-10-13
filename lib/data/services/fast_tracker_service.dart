@@ -63,6 +63,14 @@ class FastTrackerService {
         return true;
       });
 
+  /// Kaza orucu sayacına [count] gün ekler ("Kaza hesapla")
+  Future<void> addKazaDays(int count) => _queue.run(
+    () async => _storage.updateMissedPrayer(
+      FastTracker.kazaKey,
+      await loadKazaCount() + count,
+    ),
+  );
+
   /// [range] Ramazan'ının tutulmayan geçmiş günlerini kaza orucu sayacına
   /// ekler (her gün bir kez). Eklenen gün sayısını döner.
   Future<int> addMissedToKaza(RamadanRange range, {DateTime? now}) =>

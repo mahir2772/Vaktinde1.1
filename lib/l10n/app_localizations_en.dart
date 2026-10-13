@@ -999,6 +999,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missedPrayersTitle => 'Missed Prayers Tracker';
 
   @override
+  String get kazaCalcTitle => 'Qada calculator';
+
+  @override
+  String get kazaCalcSubtitle =>
+      'Estimate your qada from the time you didn\'t pray';
+
+  @override
+  String get kazaCalcPeriod => 'Time without praying';
+
+  @override
+  String get kazaCalcYears => 'Years';
+
+  @override
+  String get kazaCalcMonths => 'Months';
+
+  @override
+  String get kazaCalcOptional => 'Optional';
+
+  @override
+  String get kazaCalcExcused => 'Average menstruation days per month';
+
+  @override
+  String get kazaCalcRamadans => 'Ramadans not fasted';
+
+  @override
+  String get kazaCalcOptionalInfo =>
+      'Prayers missed during menstruation don\'t need to be made up, so these days are subtracted from the prayers. They are not subtracted from fasting: Ramadan fasts missed during menstruation must be made up too. Each Ramadan counts as 30 days.';
+
+  @override
+  String get kazaCalcResult => 'Estimated qada';
+
+  @override
+  String get kazaCalcEachPrayer => 'Each prayer and witr';
+
+  @override
+  String get kazaCalcNote =>
+      'This is an estimate (a year counts as 365 days, a month as 30). For a definitive answer, consult an imam or religious scholar.';
+
+  @override
+  String get kazaCalcAdd => 'Add to qada counters';
+
+  @override
+  String get kazaCalcConfirmTitle => 'Add to qada counters?';
+
+  @override
+  String kazaCalcConfirm(int prayers, int fasts) {
+    return 'Each prayer and witr: +$prayers\nFasting: +$fasts\n\nThese are added to your current counts; nothing is overwritten.';
+  }
+
+  @override
+  String get kazaCalcAdded => 'Estimate added to your qada counters.';
+
+  @override
   String get missedPrayersInfo =>
       'Note your missed prayers here and subtract them as you make them up.\n(Tap a number to enter it manually)';
 

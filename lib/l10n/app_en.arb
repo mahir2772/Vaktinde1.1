@@ -560,6 +560,32 @@
         }
     },
     "missedPrayersTitle": "Missed Prayers Tracker",
+    "kazaCalcTitle": "Qada calculator",
+    "kazaCalcSubtitle": "Estimate your qada from the time you didn't pray",
+    "kazaCalcPeriod": "Time without praying",
+    "kazaCalcYears": "Years",
+    "kazaCalcMonths": "Months",
+    "kazaCalcOptional": "Optional",
+    "kazaCalcExcused": "Average menstruation days per month",
+    "kazaCalcRamadans": "Ramadans not fasted",
+    "kazaCalcOptionalInfo": "Prayers missed during menstruation don't need to be made up, so these days are subtracted from the prayers. They are not subtracted from fasting: Ramadan fasts missed during menstruation must be made up too. Each Ramadan counts as 30 days.",
+    "kazaCalcResult": "Estimated qada",
+    "kazaCalcEachPrayer": "Each prayer and witr",
+    "kazaCalcNote": "This is an estimate (a year counts as 365 days, a month as 30). For a definitive answer, consult an imam or religious scholar.",
+    "kazaCalcAdd": "Add to qada counters",
+    "kazaCalcConfirmTitle": "Add to qada counters?",
+    "kazaCalcConfirm": "Each prayer and witr: +{prayers}\nFasting: +{fasts}\n\nThese are added to your current counts; nothing is overwritten.",
+    "@kazaCalcConfirm": {
+        "placeholders": {
+            "prayers": {
+                "type": "int"
+            },
+            "fasts": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCalcAdded": "Estimate added to your qada counters.",
     "missedPrayersInfo": "Note your missed prayers here and subtract them as you make them up.\n(Tap a number to enter it manually)",
     "editMissedTitle": "Edit Missed {title}",
     "@editMissedTitle": {

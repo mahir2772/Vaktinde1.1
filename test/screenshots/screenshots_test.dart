@@ -736,6 +736,44 @@ Future<void> _openRoute(
   await _settle(tester, steps: 6);
 }
 
+/// Kaza Takibi > "Kaza hesapla": değerler girilmiş sayfanın başı ve sonu
+/// (ekleme düğmesi)
+Future<void> _kazaCalcShots(
+  WidgetTester tester,
+  String lang,
+  String name,
+) async {
+  _currentScreen = name;
+  final loc = lookupAppLocalizations(Locale(lang));
+  _navigator(
+    tester,
+  ).push(MaterialPageRoute<void>(builder: (_) => const MissedPrayersView()));
+  await _settle(tester, steps: 10);
+  await tester.ensureVisible(find.text(loc.kazaCalcTitle));
+  await tester.tap(find.text(loc.kazaCalcTitle));
+  await _settle(tester, steps: 6);
+  Finder inSheet(Finder f) =>
+      find.descendant(of: find.byType(BottomSheet), matching: f);
+  // 2 yıl 3 ay, ayda 6 özel gün, 1 Ramazan
+  final plus = inSheet(find.byIcon(Icons.add));
+  for (final i in [0, 0, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3]) {
+    await tester.ensureVisible(plus.at(i));
+    await tester.pump();
+    await tester.tap(plus.at(i));
+    await tester.pump();
+  }
+  await tester.ensureVisible(inSheet(find.text(loc.kazaCalcTitle)));
+  await _settle(tester, steps: 4);
+  await _shot(tester, name);
+  await tester.ensureVisible(inSheet(find.text(loc.kazaCalcAdd)));
+  await _settle(tester, steps: 4);
+  await _shot(tester, '${name}_end');
+  _navigator(tester).pop();
+  await _settle(tester, steps: 6);
+  _navigator(tester).pop();
+  await _settle(tester, steps: 6);
+}
+
 Future<void> _tapTab(WidgetTester tester, MainTab tab) async {
   _currentScreen = 'tab ${tab.name}';
   await tester.tap(find.byType(NavigationDestination).at(tab.index));
@@ -875,6 +913,7 @@ void main() {
         const MissedPrayersView(),
         tallHeight: 1250,
       );
+      await _kazaCalcShots(tester, 'tr', 'tr_46_kaza_calc');
       await _openRoute(
         tester,
         'tr_47_prayer_tracker',
@@ -1139,6 +1178,7 @@ void main() {
             const MissedPrayersView(),
             tallHeight: 2600,
           );
+          await _kazaCalcShots(tester, lang, '${p}_46_kaza_calc');
           await _openRoute(
             tester,
             '${p}_60_duas',
@@ -1397,6 +1437,7 @@ void main() {
         await _shot(tester, 'tr_edge_49_missed_dialog');
         await closeSheet();
         await closeSheet();
+        await _kazaCalcShots(tester, 'tr', 'tr_edge_46_kaza_calc');
         await _finish(tester);
       } finally {
         _checkBars = false;
@@ -1452,6 +1493,7 @@ void main() {
             '${lang}_33_zikir_settings',
             const ZikirSettingsView(),
           );
+          await _kazaCalcShots(tester, lang, '${lang}_46_kaza_calc');
           await _finish(tester);
         });
       },

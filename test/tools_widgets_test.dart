@@ -491,6 +491,135 @@ void main() {
       expect(tester.takeException(), isNull);
       await _dispose(tester);
     });
+
+    testWidgets('Kaza hesapla: tahmin onaylanınca sayaçlara eklenir', (
+      tester,
+    ) async {
+      await _pumpScreen(tester, const MissedPrayersView(), textScale: 1);
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await tester.tap(find.text(loc.kazaCalcTitle));
+      await _settle(tester);
+      final sheet = find.byType(BottomSheet);
+      Finder inSheet(Finder f) => find.descendant(of: sheet, matching: f);
+      Future<void> tap(Finder f) async {
+        await tester.ensureVisible(f);
+        await tester.pump();
+        await tester.tap(f);
+        await _settle(tester);
+      }
+
+      final add = inSheet(find.text(loc.kazaCalcAdd));
+      bool addEnabled() => tester
+          .widget<ButtonStyleButton>(
+            find.ancestor(
+              of: add,
+              matching: find.bySubtype<ButtonStyleButton>(),
+            ),
+          )
+          .enabled;
+      // Süre 0: ekleme kapalı (ekran okuyucuda da)
+      expect(addEnabled(), isFalse);
+      expect(
+        tester.getSemantics(add),
+        containsSemantics(
+          label: loc.kazaCalcAdd,
+          isButton: true,
+          isEnabled: false,
+        ),
+      );
+
+      // Yıl elle (sayıya dokununca) 2; ay +1, özel gün +2, Ramazan +1
+      await tap(inSheet(find.text('0')).first);
+      await tester.enterText(find.byType(TextField), '2');
+      await tester.tap(find.text(loc.save));
+      await _settle(tester);
+      final plus = inSheet(find.byIcon(Icons.add));
+      await tap(plus.at(1));
+      await tap(plus.at(2));
+      await tap(plus.at(2));
+      await tap(plus.at(3));
+      expect(
+        tester.getSemantics(inSheet(find.byType(CounterStepper)).first),
+        containsSemantics(
+          label: loc.kazaCalcYears,
+          value: '2',
+          hasIncreaseAction: true,
+          hasTapAction: true,
+        ),
+      );
+      // 2 × 365 + 30 − 25 ay × 2 gün = 710; oruç 30
+      expect(inSheet(find.text('710')), findsOneWidget);
+      expect(inSheet(find.text('30')), findsOneWidget);
+      expect(addEnabled(), isTrue);
+
+      // İptal: sayfa açık kalır, sayaçlar değişmez
+      await tap(add);
+      expect(find.text(loc.kazaCalcConfirm(710, 30)), findsOneWidget);
+      await tester.tap(find.text(loc.cancel));
+      await _settle(tester);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt('kaza_Sabah'), 12);
+      expect(sheet, findsOneWidget);
+
+      // Onay: mevcut sayıların üzerine eklenir, sayfa kapanır, bilgi verilir
+      await tap(add);
+      await tester.tap(find.text(loc.trackerKazaAdd));
+      await _settle(tester);
+      expect(sheet, findsNothing);
+      expect(prefs.getInt('kaza_Sabah'), 722);
+      expect(prefs.getInt('kaza_Öğle'), 2210);
+      for (final key in ['İkindi', 'Akşam', 'Yatsı', 'Vitir']) {
+        expect(prefs.getInt('kaza_$key'), 710);
+      }
+      expect(prefs.getInt('kaza_Oruç'), 32);
+      expect(find.text(loc.kazaCalcAdded), findsOneWidget);
+      expect(find.text('722'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('32'), 200);
+      expect(find.text('32'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await _dispose(tester);
+    });
+
+    for (final lang in _langs) {
+      for (final dark in [false, true]) {
+        testWidgets(
+          'Kaza hesapla $lang ${dark ? 'koyu' : 'açık'}: 320dp, %130 yazı, '
+          'taşma yok',
+          (tester) async {
+            await _pumpScreen(
+              tester,
+              const MissedPrayersView(),
+              lang: lang,
+              dark: dark,
+            );
+            final loc = lookupAppLocalizations(Locale(lang));
+            await tester.tap(find.text(loc.kazaCalcTitle));
+            await _settle(tester);
+            final sheet = find.byType(BottomSheet);
+            // Her girdi bir artırılır: sonuçlar dolu, düğme açık
+            final plus = find.descendant(
+              of: sheet,
+              matching: find.byIcon(Icons.add),
+            );
+            for (final i in [0, 1, 2, 3]) {
+              await tester.ensureVisible(plus.at(i));
+              await tester.pump();
+              await tester.tap(plus.at(i));
+              await tester.pump();
+            }
+            final add = find.descendant(
+              of: sheet,
+              matching: find.text(loc.kazaCalcAdd),
+            );
+            await tester.ensureVisible(add);
+            await _settle(tester);
+            expect(add.hitTestable(), findsOneWidget);
+            expect(tester.takeException(), isNull);
+            await _dispose(tester);
+          },
+        );
+      }
+    }
   });
 
   group('Dini günler', () {

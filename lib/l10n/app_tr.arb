@@ -581,6 +581,32 @@
         }
     },
     "missedPrayersTitle": "Kaza Takibi",
+    "kazaCalcTitle": "Kaza hesapla",
+    "kazaCalcSubtitle": "Namaz kılınmayan süreden tahmini kaza sayısı",
+    "kazaCalcPeriod": "Namaz kılınmayan süre",
+    "kazaCalcYears": "Yıl",
+    "kazaCalcMonths": "Ay",
+    "kazaCalcOptional": "İsteğe bağlı",
+    "kazaCalcExcused": "Ayda ortalama özel gün (hayız)",
+    "kazaCalcRamadans": "Tutulmayan Ramazan sayısı",
+    "kazaCalcOptionalInfo": "Hayız günlerinde kılınamayan namazların kazası gerekmez; bu günler namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan Ramazan oruçlarının da kazası gerekir. Her Ramazan 30 gün sayılır.",
+    "kazaCalcResult": "Tahmini kaza",
+    "kazaCalcEachPrayer": "Her vakit ve vitir",
+    "kazaCalcNote": "Tahmini sonuçtur (yıl 365, ay 30 gün sayılır). Kesin bilgi için bir din görevlisine danışın.",
+    "kazaCalcAdd": "Kaza Takibi'ne ekle",
+    "kazaCalcConfirmTitle": "Kaza Takibi'ne eklensin mi?",
+    "kazaCalcConfirm": "Her vakit ve vitir: +{prayers}\nOruç: +{fasts}\n\nSayılar mevcut kazaların üzerine eklenir, hiçbiri silinmez.",
+    "@kazaCalcConfirm": {
+        "placeholders": {
+            "prayers": {
+                "type": "int"
+            },
+            "fasts": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCalcAdded": "Tahmini kaza, Kaza Takibi'ne eklendi.",
     "missedPrayersInfo": "Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)",
     "editMissedTitle": "{title} Kazasını Düzenle",
     "@editMissedTitle": {
