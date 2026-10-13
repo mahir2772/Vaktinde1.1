@@ -122,6 +122,12 @@ lib/
                             dil değişince hepsi yeniden yazılır); hesap hep "HH:mm"den.
                             updateHomeWidget yazımları SerialQueue ile sıralı. Ramazan widget'ı: ramadanData (saf) → 'ramadan_start/_end/
                             _next_start' (+ _text), başlıklar, 'ramadan_day_text' (%d) — 4. sağlayıcı VaktindeWidgetRamadanProvider
+      tracker_widget_service  Namaz takibi widget'ı (VaktindeWidgetTrackerProvider) verisi: 'tracker_date', 'tracker_mask' (sadece
+                            kendi gününde geçerli), 'tracker_excused_days' (açık dönemin sonraki günleri dahil), başlık/etiket/durum
+                            metinleri. Hücre dokunuşu → HomeWidgetBackgroundIntent → trackerWidgetCallback (arka plan isolate;
+                            registerInteractivityCallback): "Kıldım" kurallarıyla (sıralı, kazaya eklenmiş/özel gün/vakti girmemiş
+                            işaretlenmez, geri alınca vakit çıkış hatırlatması eşitlenir). PrayerTrackerService.changes, "Kıldım"
+                            ve updateHomeWidget (WorkManager dahil) widget'ı yeniler
       hadith_service        hadeethenc.com API + yerel json fallback; getDailyHadith(locale, {day}) gün tohumlu, yedek de gün boyu sabit
       ayah_service          api.alquran.cloud (meal eşlemesi tek yer: quran_service.dart QuranEdition — tr.diyanet, en.sahih,
                             de.aburida, fr.hamidullah; ar sadece Arapça); getDailyAyah(dil, {day}): ayahNumberFor(gün) = epochDay×3853
@@ -241,7 +247,7 @@ lib/
                                            InstallGuard.deviceKeys'e). Dışa: share_plus dosya; içe: 'vaktinde/device' `pickBackupFile`
                                            (MainActivity, ACTION_OPEN_DOCUMENT, ≤1 MB) → doğrula → onay → yaz → PrayerTrackerService.
                                            replaceRecords + HomeViewModel.reloadFromStorage (vakit, widget, bildirim, alarmlar)
-    settings/view/add_widget_sheet.dart    "Ana Ekrana Widget Ekle" (4 widget; HomeWidget.requestPinWidget, sağlayıcı adı manifestle aynı;
+    settings/view/add_widget_sheet.dart    "Ana Ekrana Widget Ekle" (6 widget; HomeWidget.requestPinWidget, sağlayıcı adı manifestle aynı;
                                            satır sadece başlatıcı destekliyorsa)
     imsakiye/imsakiye_logic.dart           saf hesaplar: RamadanCalendar (Diyanet tarihleri religious_days.json'dan, yoksa hijri paketi),
                                            Türkçe tarih ayrıştırma, ay günleri, Ramazan sayacı; ramadan_calendar_loader.dart tek sefer yükler
@@ -276,8 +282,13 @@ android/app/src/main/
                           displayTime (metin vakitle tutmuyorsa "HH:mm"), styledTime (AM/PM 0.8)
     VaktindeWidgetRamadanProvider.kt  Ramazan widget'ı (2x2): Ramazan'da iftar/sahur Chronometer + "N. gün", dışında
                           "Ramazan'a N gün"; gün sayısını tarihten kendisi hesaplar; yenileme imsak/akşam/gece yarısı
+    VaktindeWidgetRingProvider.kt  Vakit halkası (2x2): ProgressBar + widget_ring (saat 12'den saat yönünde, önceki vakitten
+                          sıradakine geçen süre, 60 adım; imsaktan önce dünün yatsısından), ortada ad + saat + Chronometer.
+                          Android 12+ halka kısa kenara sığar. WidgetRefresher dakika denetimi halka adımını da karşılaştırır
+    VaktindeWidgetTrackerProvider.kt  Namaz takibi (4x1): 5 hücre (kılındı / kılınmadı / vakti girmedi / özel gün), "Bugün n/5";
+                          manifest'te home_widget arka plan alıcısı + JobIntentService (exported=false); gece yarısı sıfırlanır
     VaktindeApplication.kt + WidgetRefresher.kt  kendini onaran sayaç (alarm geç/hiç gelmeyen üreticiler): onCreate'te tek dinamik
-                          alıcı (TIME_TICK, SCREEN_ON, USER_PRESENT; 33+ NOT_EXPORTED) + açılışta bir denetim. Her yüzey (4 widget
+                          alıcı (TIME_TICK, SCREEN_ON, USER_PRESENT; 33+ NOT_EXPORTED) + açılışta bir denetim. Her yüzey (6 widget
                           türü + 888, sağlayıcı başına beklenen durum) çizdiği hedef + günü 'vaktinde_widget_state'e yazar (markWidgetsDrawn/markNotificationDrawn);
                           hesaplanandan farklıysa sadece o yüzey süreç içinde yeniden çizilir (888 sadece açıksa). Hiçbir yol
                           fırlatmaz. Widget yenilemede setAlarmClock KULLANILMAZ (durum çubuğu alarm simgesi).

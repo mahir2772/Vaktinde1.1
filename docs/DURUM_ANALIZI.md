@@ -6,7 +6,8 @@ Kod (önerilen sıra):
    (başladı/bitti, en fazla 10 gün) + özel günde sessiz ezan (ayar, varsayılan açık); "Kaza hesapla" sihirbazı.
 4. Uygulama açılış reklamı — kullanıcı AdMob'da "Uygulama açılışı" birimi açarsa (dönüşte, günde 1–2).
 5. ✅ İnternetsiz il/ilçe + Avrupa/KKTC şehirleri (13 Ekim 2026). "Memleket vakitleri" (başka saat diliminde gösterim) yapılmadı.
-6. Yeni widget'lar: sıradaki vakit halkası, etkileşimli "Bugün" takip widget'ı (M–L).
+6. ✅ Yeni widget'lar: vakit halkası + uygulama açılmadan işaretlenen namaz takibi (13 Ekim 2026; cihazda denenecek,
+   Robolectric testleri scratchpad h_widgets2'de).
 7. ✅ Namaz Hocası (13 Ekim 2026).
 8. Ön plan servisini isteğe bağlı yapma (M).
 Kullanıcı işleri ✅ (12 Ekim 2026): Google Sites gizlilik metni güncellendi, fitre.json mahir2772.github.io'da, AdMob
