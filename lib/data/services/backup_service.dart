@@ -131,11 +131,13 @@ abstract final class BackupService {
     'end_reminder_minutes': const _Field(_Kind.integer, _isPositive),
     StorageService.dailyContentEnabledKey: const _Field(_Kind.boolean),
     StorageService.religiousDaysEnabledKey: const _Field(_Kind.boolean),
+    StorageService.excusedSilentEzanKey: const _Field(_Kind.boolean),
     // Namaz takibi, kaza sayaçları, Ramazan orucu
     'prayer_log': const _Field(_Kind.text, _isMaskMap),
     'prayer_log_since': const _Field(_Kind.text),
     'prayer_kaza_added': const _Field(_Kind.text, _isMaskMap),
     'tracker_excused': const _Field(_Kind.textList),
+    'tracker_excused_open': const _Field(_Kind.text),
     for (final key in _kazaKeys)
       'kaza_$key': const _Field(_Kind.integer, _isNonNegative),
     'fast_log': const _Field(_Kind.textList),

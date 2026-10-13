@@ -686,7 +686,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get trackerExcusedInfo =>
-      'Les prières manquées pendant les menstrues ou les lochies (nifas) n\'ont pas à être rattrapées. Les jours marqués comme jours d\'excuse n\'interrompent pas la série et ne comptent ni dans le taux ni dans les prières ajoutées au qada. Les jeûnes du Ramadan manqués ces jours-là doivent en revanche être rattrapés. Pour marquer un jour passé ou retirer la marque, appuyez longuement sur le nom du jour.';
+      'Les prières manquées pendant les menstrues ou les lochies (nifas) n\'ont pas à être rattrapées. Les jours marqués comme jours d\'excuse n\'interrompent pas la série et ne comptent ni dans le taux ni dans les prières ajoutées au qada. Les jeûnes du Ramadan manqués ces jours-là doivent en revanche être rattrapés. Marquer aujourd\'hui commence une période d\'excuse : les jours suivants sont marqués automatiquement (10 jours au maximum) ; retirez la marque d\'aujourd\'hui quand elle se termine. Pour marquer un jour passé ou retirer la marque, appuyez longuement sur le nom du jour.';
 
   @override
   String get trackerExcusedToday => 'Marquer aujourd\'hui comme jour d\'excuse';
@@ -702,6 +702,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notifStopAction => 'Arrêter';
+
+  @override
+  String get trackerExcusedPeriodStarted =>
+      'Période d\'excuse commencée : les jours suivants sont marqués automatiquement (10 jours au maximum). Quand elle se termine, appuyez de nouveau longuement sur « Aujourd\'hui ».';
+
+  @override
+  String get trackerExcusedPeriodEnded => 'Période d\'excuse terminée.';
+
+  @override
+  String get excusedSilentEzanTitle => 'Adhan silencieux les jours d\'excuse';
+
+  @override
+  String get excusedSilentEzanSub =>
+      'Les jours d\'excuse, les notifications des heures de prière arrivent sans son et les rappels ne sont pas programmés.';
 
   @override
   String get trackerExcusedUnmarked => 'Marque de jour d\'excuse retirée.';

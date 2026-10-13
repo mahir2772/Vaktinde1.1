@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/data/services/prayer_tracker_service.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/home/widgets/kerahat_card.dart';
@@ -367,6 +368,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(loc.trackerExcusedInfo), findsOneWidget);
       expect(switchValue(), isFalse);
+      // Küçük ekranda açıklamanın altında kalır: kaydırılır
+      await tester.ensureVisible(find.text(loc.trackerExcusedToday));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(loc.trackerExcusedToday));
       await tester.pumpAndSettle();
       expect(switchValue(), isTrue);
@@ -382,17 +386,21 @@ void main() {
       await tester.tap(find.byTooltip(loc.trackerExcusedTitle));
       await tester.pumpAndSettle();
       expect(switchValue(), isTrue);
+      // Bugün işaretlenince özel gün dönemi başlamıştı; kapatınca biter
+      expect(prefs.getString('tracker_excused_open'), dk(0));
+      await tester.ensureVisible(find.byType(Switch));
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(Switch));
       await tester.pumpAndSettle();
       expect(switchValue(), isFalse);
       expect(prefs.getStringList('tracker_excused'), isEmpty);
+      expect(prefs.getString('tracker_excused_open'), isNull);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     });
 
-    testWidgets('ana ekran "Bugün": basılı tutunca özel gün, işaretler kapalı', (
-      tester,
-    ) async {
+    testWidgets('ana ekran "Bugün": basılı tutunca özel gün dönemi başlar, '
+        'işaretler kapalı; yine basılı tutunca biter', (tester) async {
       SharedPreferences.setMockInitialValues({'prayer_log': '{"${dk(0)}":1}'});
       final times = PrayerTimesModel(
         imsak: '00:00',
@@ -412,10 +420,14 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       expect(find.text('1/5'), findsOneWidget);
 
+      final notified = PrayerTrackerService.excusedChanges.value;
       await tester.longPress(find.text(loc.trackerToday));
       await tester.pumpAndSettle();
-      expect(find.text(loc.trackerExcusedMarked), findsOneWidget);
+      expect(find.text(loc.trackerExcusedPeriodStarted), findsOneWidget);
       expect(prefs.getStringList('tracker_excused'), [dk(0)]);
+      expect(prefs.getString('tracker_excused_open'), dk(0));
+      // HomeViewModel alarmları yeniden kurar (özel günde ezan sessiz)
+      expect(PrayerTrackerService.excusedChanges.value, notified + 1);
       expect(find.text('1/5'), findsNothing);
       expect(find.byIcon(kExcusedIcon), findsNWidgets(6)); // başlık + 5 vakit
       expect(find.byIcon(Icons.check), findsNothing);
@@ -428,10 +440,50 @@ void main() {
       expect(find.text(loc.trackerExcusedCellSnack), findsOneWidget);
       expect(prefs.getString('prayer_log'), '{"${dk(0)}":1}');
 
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
       await tester.longPress(find.text(loc.trackerToday));
       await tester.pumpAndSettle();
+      expect(find.text(loc.trackerExcusedPeriodEnded), findsOneWidget);
       expect(find.text('1/5'), findsOneWidget);
       expect(prefs.getStringList('tracker_excused'), isEmpty);
+      expect(prefs.getString('tracker_excused_open'), isNull);
+      expect(PrayerTrackerService.excusedChanges.value, notified + 2);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('takip ekranı: açık dönemin günleri kendiliğinden özel gün; '
+        'geçmiş günün işareti kalkınca dönem sürer, bugünün kalkınca biter', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'tracker_excused': [dk(2)],
+        'tracker_excused_open': dk(2),
+      });
+      await pumpApp(tester, 'tr', _trackerView());
+      final prefs = await SharedPreferences.getInstance();
+      // 2 gün önce, dün ve bugün: 3 satır x 5 hücre + başlık + açıklama
+      expect(find.byIcon(kExcusedIcon), findsNWidgets(17));
+      expect(prefs.getStringList('tracker_excused'), [dk(2), dk(1), dk(0)]);
+
+      await tester.longPress(find.text(loc.trackerYesterday));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.trackerExcusedUnmarked), findsOneWidget);
+      expect(prefs.getStringList('tracker_excused'), [dk(2), dk(0)]);
+      expect(prefs.getString('tracker_excused_open'), dk(2));
+      // Yeniden okununca dün geri eklenmez
+      await tester.pump(const Duration(seconds: 31));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(kExcusedIcon), findsNWidgets(12));
+      expect(prefs.getStringList('tracker_excused'), [dk(2), dk(0)]);
+
+      await tester.longPress(find.text(loc.trackerToday));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.trackerExcusedPeriodEnded), findsOneWidget);
+      expect(prefs.getStringList('tracker_excused'), [dk(2)]);
+      expect(prefs.getString('tracker_excused_open'), isNull);
+      expect(find.byIcon(kExcusedIcon), findsNWidgets(7));
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     });

@@ -284,11 +284,19 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     return true;
   }
 
-  // Gün adına basılı tutma: özel gün işareti açılır/kapanır
+  // Gün adına basılı tutma: özel gün işareti açılır/kapanır; bugünse özel gün
+  // dönemi başlar/biter (PrayerTrackerService.setExcused)
   Future<void> _toggleExcused(DateTime date, AppLocalizations loc) async {
     final excused = !PrayerTracker.isExcused(_excused, date);
+    final today = PrayerTracker.daysBetween(DateTime.now(), date) == 0;
     if (await _setExcused(date, excused, loc) && mounted) {
-      _snack(excused ? loc.trackerExcusedMarked : loc.trackerExcusedUnmarked);
+      _snack(
+        today
+            ? (excused
+                  ? loc.trackerExcusedPeriodStarted
+                  : loc.trackerExcusedPeriodEnded)
+            : (excused ? loc.trackerExcusedMarked : loc.trackerExcusedUnmarked),
+      );
     }
   }
 

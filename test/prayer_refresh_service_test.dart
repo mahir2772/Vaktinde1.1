@@ -1,4 +1,5 @@
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
@@ -34,6 +35,7 @@ void main() {
     RamadanCalendar? ramadan,
     bool exact = true,
     AppLocalizations? l10n,
+    Set<String> silentDays = const {},
   }) => PrayerRefreshService.buildAlarmPlan(
     days: List.filled(dayCount, day),
     now: now,
@@ -45,6 +47,7 @@ void main() {
     silentModeSettings: all(silent),
     ramadan: ramadan,
     exact: exact,
+    silentDays: silentDays,
   );
 
   test('Hicri tarih tüm uygulama dillerinde hata vermez', () {
@@ -606,6 +609,121 @@ void main() {
       expect(imsak.body, loc.ramadanImsakBodyAt('05:00'));
       final aksam = alarms.firstWhere((a) => a.id == id(d0, 4));
       expect(aksam.body, loc.ramadanIftarBody(loc.aksam));
+    });
+  });
+
+  group('Özel günde ezan sessiz (silentDays)', () {
+    final now = DateTime(2026, 3, 18, 0, 1);
+    final d1 = PrayerTracker.addDays(now, 1);
+    final quietDays = {PrayerTracker.dateKey(d1)};
+    // Ramazan metni (sahur/iftar) sessizde de aynı
+    final calendar = RamadanCalendar.fromReligiousDays([
+      {'name': 'Ramazan Başlangıcı', 'date': '19 Şubat 2026'},
+      {'name': 'Ramazan Bayramı 1. Gün', 'date': '20 Mart 2026'},
+    ]);
+    bool onDay(PlannedAlarm a, DateTime date) =>
+        PrayerTracker.daysBetween(date, a.time) == 0;
+
+    test('o günün ezanı sessiz kanalda ("Kıldım", "Durdur", yük yok), '
+        'başlık/metin aynı; önceden uyar yok; diğer günler değişmez', () {
+      final normal = plan(dayCount: 3, now: now, ramadan: calendar);
+      final quiet = plan(
+        dayCount: 3,
+        now: now,
+        ramadan: calendar,
+        silentDays: quietDays,
+      );
+      (int, String?, String?, String?, String, String) shape(PlannedAlarm a) =>
+          (a.id, a.sound, a.payload, a.stopLabel, a.channelName, a.body);
+      expect(
+        quiet.where((a) => !onDay(a, d1)).map(shape),
+        normal.where((a) => !onDay(a, d1)).map(shape),
+      );
+
+      final ezans = quiet.where((a) => onDay(a, d1)).toList();
+      expect(ezans.every((a) => a.kind == NotificationKind.prayer), isTrue);
+      expect(ezans.length, 6); // Güneş dahil; hatırlatma yok
+      final normalEzans = normal.where(
+        (a) => onDay(a, d1) && a.kind == NotificationKind.prayer,
+      );
+      expect(ezans.map((a) => (a.id, a.title, a.body)), [
+        for (final a in normalEzans) (a.id, a.title, a.body),
+      ]);
+      expect(ezans.first.title, loc.ramadanImsakTitle);
+      for (final a in ezans) {
+        expect(a.sound, isNull);
+        expect(a.channelName, loc.channelSilentPrayers);
+        expect(a.payload, isNull);
+        expect(a.actionLabel, isNull);
+        expect(a.stopLabel, isNull);
+        expect(a.alarmStream, isFalse);
+      }
+    });
+
+    test('alarm akışı açıkken de sessiz; geç ezan olarak korunmaz', () {
+      final quiet = PrayerRefreshService.buildAlarmPlan(
+        days: [day, day],
+        now: now,
+        loc: loc,
+        onTimeAlarms: all(true),
+        reminderAlarms: const {},
+        selectedSounds: const {},
+        selectedReminderSounds: const {},
+        silentModeSettings: const {},
+        alarmStream: true,
+        silentDays: quietDays,
+      );
+      expect(
+        quiet.where((a) => onDay(a, d1)).every((a) => !a.alarmStream),
+        isTrue,
+      );
+      expect(
+        quiet.where((a) => !onDay(a, d1)).every((a) => a.alarmStream),
+        isTrue,
+      );
+
+      // Öğleden 5 dk sonra: bugün özel günse geç ezan korunmaz
+      final noon = DateTime(2026, 3, 18, 13, 5);
+      Map<int, PlannedAlarm> due(Set<String> silent) =>
+          PrayerRefreshService.recentlyDueEzans(
+            previous: day,
+            today: day,
+            now: noon,
+            loc: loc,
+            onTimeAlarms: all(true),
+            selectedSounds: const {},
+            silentModeSettings: const {},
+            silentDays: silent,
+          );
+      expect(due(const {}).keys, [id(noon, 2)]);
+      expect(due({PrayerTracker.dateKey(noon)}), isEmpty);
+    });
+
+    test('vakit çıkmadan hatırlatma o günün namazları için kurulmaz '
+        '(dünkü yatsı namazın gününe göre)', () {
+      List<PlannedAlarm> endPlan(Set<String> silent) =>
+          PrayerRefreshService.buildEndReminderPlan(
+            previous: day,
+            days: List.filled(3, day),
+            now: now,
+            loc: loc,
+            minutes: 30,
+            prayerLog: const {},
+            silentDays: silent,
+          );
+      final normal = endPlan(const {});
+      final quiet = endPlan(quietDays);
+      final skipped = normal.where(
+        (a) => PrayerTracker.isExcused(
+          quietDays,
+          PrayerTracker.parsePayload(a.payload)!.date,
+        ),
+      );
+      expect(skipped.length, 5);
+      expect(quiet.map((a) => a.id), [
+        for (final a in normal)
+          if (!skipped.contains(a)) a.id,
+      ]);
     });
   });
 }

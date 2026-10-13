@@ -671,7 +671,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get trackerExcusedInfo =>
-      'Gebete, die während der Menstruation oder der Wochenbettblutung ausfallen, müssen nicht nachgeholt werden. Als entschuldigt markierte Tage unterbrechen die Serie nicht und zählen weder zur Quote noch zu den Qada-Gebeten. An diesen Tagen ausgelassenes Ramadan-Fasten muss jedoch nachgeholt werden. Um einen vergangenen Tag zu markieren oder die Markierung zu entfernen, halten Sie den Namen des Tages gedrückt.';
+      'Gebete, die während der Menstruation oder der Wochenbettblutung ausfallen, müssen nicht nachgeholt werden. Als entschuldigt markierte Tage unterbrechen die Serie nicht und zählen weder zur Quote noch zu den Qada-Gebeten. An diesen Tagen ausgelassenes Ramadan-Fasten muss jedoch nachgeholt werden. Wenn Sie heute markieren, beginnt eine entschuldigte Zeit: Die folgenden Tage werden automatisch markiert (höchstens 10 Tage); entfernen Sie die Markierung von heute, wenn sie endet. Um einen vergangenen Tag zu markieren oder die Markierung zu entfernen, halten Sie den Namen des Tages gedrückt.';
 
   @override
   String get trackerExcusedToday => 'Heute als entschuldigt markieren';
@@ -687,6 +687,20 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notifStopAction => 'Stoppen';
+
+  @override
+  String get trackerExcusedPeriodStarted =>
+      'Entschuldigte Zeit begonnen; die folgenden Tage werden automatisch markiert (höchstens 10 Tage). Wenn sie endet, halten Sie „Heute“ erneut gedrückt.';
+
+  @override
+  String get trackerExcusedPeriodEnded => 'Entschuldigte Zeit beendet.';
+
+  @override
+  String get excusedSilentEzanTitle => 'Adhan an entschuldigten Tagen stumm';
+
+  @override
+  String get excusedSilentEzanSub =>
+      'An entschuldigten Tagen kommen Gebetszeit-Benachrichtigungen ohne Ton; Erinnerungen entfallen.';
 
   @override
   String get trackerExcusedUnmarked => 'Markierung „entschuldigt“ entfernt.';

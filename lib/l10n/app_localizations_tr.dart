@@ -662,7 +662,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get trackerExcusedInfo =>
-      'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.';
+      'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Bugünü işaretleyince özel gün başlar ve sonraki günler kendiliğinden işaretlenir (en fazla 10 gün); bittiğinde bugünün işaretini kaldırın. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.';
 
   @override
   String get trackerExcusedToday => 'Bugünü özel gün olarak işaretle';
@@ -678,6 +678,20 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get notifStopAction => 'Durdur';
+
+  @override
+  String get trackerExcusedPeriodStarted =>
+      'Özel gün başladı; sonraki günler kendiliğinden işaretlenir (en fazla 10 gün). Bitince Bugün\'e yine basılı tutun.';
+
+  @override
+  String get trackerExcusedPeriodEnded => 'Özel gün bitti.';
+
+  @override
+  String get excusedSilentEzanTitle => 'Özel Günde Ezanı Sessiz Bildir';
+
+  @override
+  String get excusedSilentEzanSub =>
+      'Özel günlerde vakit bildirimi sessiz gelir; hatırlatmalar kurulmaz.';
 
   @override
   String get trackerExcusedUnmarked => 'Özel gün işareti kaldırıldı.';

@@ -17,8 +17,9 @@ import '../view_model/home_view_model.dart';
 
 /// Ana ekranda "Bugün" satırı: 5 farz vakit için "kıldım" işaretleri.
 /// Vakti girmemiş namaz işaretlenemez. Başlığa dokununca takip ekranı açılır;
-/// basılı tutunca bugün özel gün olur/olmaktan çıkar (takip ekranındaki gün
-/// adıyla aynı). Özel günde işaretler soluk ve kapalıdır.
+/// basılı tutunca özel gün dönemi başlar (sonraki günler kendiliğinden, en fazla
+/// 10 gün) ya da biter (takip ekranındaki gün adıyla aynı). Özel günde
+/// işaretler soluk ve kapalıdır.
 class PrayerTrackerRow extends StatefulWidget {
   final PrayerTimesModel prayerTimes;
 
@@ -108,7 +109,11 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     }
     _load();
     if (mounted) {
-      _snack(excused ? loc.trackerExcusedMarked : loc.trackerExcusedUnmarked);
+      _snack(
+        excused
+            ? loc.trackerExcusedPeriodStarted
+            : loc.trackerExcusedPeriodEnded,
+      );
     }
   }
 

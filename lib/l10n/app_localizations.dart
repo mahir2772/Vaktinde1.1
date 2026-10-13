@@ -1223,7 +1223,7 @@ abstract class AppLocalizations {
   /// No description provided for @trackerExcusedInfo.
   ///
   /// In tr, this message translates to:
-  /// **'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.'**
+  /// **'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Bugünü işaretleyince özel gün başlar ve sonraki günler kendiliğinden işaretlenir (en fazla 10 gün); bittiğinde bugünün işaretini kaldırın. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.'**
   String get trackerExcusedInfo;
 
   /// No description provided for @trackerExcusedToday.
@@ -1255,6 +1255,30 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Durdur'**
   String get notifStopAction;
+
+  /// No description provided for @trackerExcusedPeriodStarted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün başladı; sonraki günler kendiliğinden işaretlenir (en fazla 10 gün). Bitince Bugün\'e yine basılı tutun.'**
+  String get trackerExcusedPeriodStarted;
+
+  /// No description provided for @trackerExcusedPeriodEnded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün bitti.'**
+  String get trackerExcusedPeriodEnded;
+
+  /// No description provided for @excusedSilentEzanTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Günde Ezanı Sessiz Bildir'**
+  String get excusedSilentEzanTitle;
+
+  /// No description provided for @excusedSilentEzanSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel günlerde vakit bildirimi sessiz gelir; hatırlatmalar kurulmaz.'**
+  String get excusedSilentEzanSub;
 
   /// No description provided for @trackerExcusedUnmarked.
   ///

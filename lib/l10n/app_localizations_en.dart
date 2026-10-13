@@ -676,7 +676,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackerExcusedInfo =>
-      'Prayers missed during menstruation or postpartum bleeding don\'t need to be made up. Days marked as excused don\'t break your streak and are left out of the rate and of the prayers added to qada. Ramadan fasts missed on these days must still be made up. To mark a past day or remove the mark, press and hold the day\'s name.';
+      'Prayers missed during menstruation or postpartum bleeding don\'t need to be made up. Days marked as excused don\'t break your streak and are left out of the rate and of the prayers added to qada. Ramadan fasts missed on these days must still be made up. Marking today starts an excused period: the following days are marked automatically (up to 10 days); remove today\'s mark when it ends. To mark a past day or remove the mark, press and hold the day\'s name.';
 
   @override
   String get trackerExcusedToday => 'Mark today as excused';
@@ -692,6 +692,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifStopAction => 'Stop';
+
+  @override
+  String get trackerExcusedPeriodStarted =>
+      'Excused period started; the following days are marked automatically (up to 10 days). When it ends, press and hold Today again.';
+
+  @override
+  String get trackerExcusedPeriodEnded => 'Excused period ended.';
+
+  @override
+  String get excusedSilentEzanTitle => 'Silent Adhan on Excused Days';
+
+  @override
+  String get excusedSilentEzanSub =>
+      'On excused days, prayer time notifications arrive silently and reminders are skipped.';
 
   @override
   String get trackerExcusedUnmarked => 'Excused mark removed.';

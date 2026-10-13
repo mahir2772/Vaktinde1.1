@@ -216,6 +216,22 @@ class StorageService {
   Future<void> saveTrackerExcused(Set<String> days) =>
       _saveDaySet('tracker_excused', days);
 
+  /// Açık özel gün döneminin başlangıç günü (yyyy-MM-dd; PrayerTracker.
+  /// excusedPeriodDays); dönem yoksa null
+  Future<String?> loadExcusedOpen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('tracker_excused_open');
+  }
+
+  Future<void> saveExcusedOpen(String? start) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (start == null) {
+      await prefs.remove('tracker_excused_open');
+    } else {
+      await prefs.setString('tracker_excused_open', start);
+    }
+  }
+
   // --- Ramazan orucu takibi: tutulan / kaza orucuna eklenen günler (yyyy-MM-dd) ---
 
   Future<Set<String>> loadFastLog() => _loadDaySet('fast_log');
@@ -303,6 +319,20 @@ class StorageService {
   Future<void> saveReligiousDaysEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(religiousDaysEnabledKey, enabled);
+  }
+
+  /// "Özel günde ezanı sessiz bildir" (varsayılan açık): özel günde vakit
+  /// bildirimi sessiz, hatırlatmalar kurulmaz
+  static const String excusedSilentEzanKey = 'excused_silent_ezan';
+
+  Future<bool> loadExcusedSilentEzan() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(excusedSilentEzanKey) ?? true;
+  }
+
+  Future<void> saveExcusedSilentEzan(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(excusedSilentEzanKey, enabled);
   }
 
   // --- Günün ayeti / hadisi önbelleği (sadece önbellek; yedeğe girmez) ---

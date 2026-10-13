@@ -23,6 +23,7 @@ import '../../../data/services/error_reporter.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
+import '../../../data/services/prayer_tracker_service.dart';
 import '../alarm_health.dart';
 import '../../common/app_analytics.dart';
 
@@ -68,6 +69,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool dailyContentEnabled = true;
   // "Dini gün ve kandil bildirimleri" (varsayılan açık)
   bool religiousDaysEnabled = true;
+  // "Özel günde ezanı sessiz bildir" (varsayılan açık)
+  bool excusedSilentEzan = true;
 
   /// Ezan uyarısının sağlığı (bildirim ve tam zamanlı alarm izni); izin
   /// değişince ya da bildirimler açılıp kapanınca alarmlar yeniden kurulur
@@ -100,8 +103,13 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   HomeViewModel() {
     WidgetsBinding.instance.addObserver(this);
+    PrayerTrackerService.excusedChanges.addListener(_onExcusedChanged);
     _armMidnightTimer();
   }
+
+  // Özel gün işaretlendi / kaldırıldı (takip satırı ya da ekranı): özel günde
+  // ezan sessiz, hatırlatma yok → alarmlar yeniden kurulur
+  void _onExcusedChanged() => _rescheduleAlarms();
 
   Timer? _midnightTimer;
 
@@ -526,6 +534,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     endReminderMinutes = endReminder.minutes;
     dailyContentEnabled = await _storageService.loadDailyContentEnabled();
     religiousDaysEnabled = await _storageService.loadReligiousDaysEnabled();
+    excusedSilentEzan = await _storageService.loadExcusedSilentEzan();
     notifyListeners();
   }
 
@@ -623,6 +632,20 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     final loc = _currentLoc;
     if (loc == null) return;
     await _refreshService.syncReligiousDays(loc);
+  }
+
+  /// "Özel günde ezanı sessiz bildir": ezanlar, hatırlatmalar ve vakit çıkış
+  /// hatırlatmaları yeni ayarla yeniden kurulur
+  Future<void> setExcusedSilentEzan(bool value) async {
+    if (excusedSilentEzan == value) return;
+    excusedSilentEzan = value;
+    notifyListeners();
+    try {
+      await _storageService.saveExcusedSilentEzan(value);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'özel gün ezan ayarı kaydedilemedi');
+    }
+    await rescheduleAlarms();
   }
 
   /// Vakit çıkış hatırlatması ayarı; sadece bu hatırlatmalar (ID 100-124) yeniden kurulur
@@ -845,6 +868,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    PrayerTrackerService.excusedChanges.removeListener(_onExcusedChanged);
     _midnightTimer?.cancel();
     _audioPlayer?.dispose();
     alarmHealth.dispose();

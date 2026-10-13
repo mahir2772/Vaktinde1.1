@@ -81,23 +81,56 @@ class PrayerTrackerService {
     return raw == null ? null : PrayerTracker.parseDateKey(raw);
   }
 
-  /// Özel gün (hayız/nifas) olarak işaretlenen günler
-  Future<Set<String>> loadExcused() => _storage.loadTrackerExcused();
+  /// Özel gün işareti alarm planını etkileyecek biçimde değişti (dün ve
+  /// sonrası; özel günde ezan sessiz): HomeViewModel alarmları yeniden kurar
+  static final ValueNotifier<int> excusedChanges = ValueNotifier<int>(0);
+
+  /// Özel gün (hayız/nifas) olarak işaretlenen günler. Açık dönem bugüne kadar
+  /// tamamlanır ve kaydedilir (seri, kaza adayları ve yedek aynı günleri görür).
+  Future<Set<String>> loadExcused() async =>
+      (await runExclusive(() => _completedExcused(DateTime.now()))).excused;
+
+  // Kilitsiz (runExclusive içinden): açık dönem bugüne kadar kümeye eklenir,
+  // süresi dolduysa kapanır; değiştiyse kaydedilir (önce küme, sonra dönem)
+  Future<({Set<String> excused, String? open})> _completedExcused(
+    DateTime now,
+  ) async {
+    final days = await _storage.loadTrackerExcused();
+    final open = await _storage.loadExcusedOpen();
+    final result = PrayerTracker.completeExcused(days, open, now);
+    if (!setEquals(days, result.excused)) {
+      await _storage.saveTrackerExcused(result.excused);
+    }
+    if (open != result.open) await _storage.saveExcusedOpen(result.open);
+    return result;
+  }
 
   /// [date] gününü özel gün yapar ya da işareti kaldırır; değiştiyse true.
+  /// Bugün işaretlenince açık dönem başlar, bugünün işareti kalkınca biter
+  /// ([PrayerTracker.withExcusedPeriod]); geçmiş gün sadece kendisini etkiler.
   /// O günde kılındı işaretleri kayıtta kalır (işaret kalkınca yine sayılır).
   /// Özel gün yapılan günün kazaya eklenmiş vakitleri kazadan çıkar: kayıt
   /// silinir, kaza sayaçlarından düşülür (sıfırın altına inmez; sıra kayıt →
   /// sayaç, yarıda kalırsa sayaç en kötü ihtimalle fazla kalır, iki kez düşülmez).
   /// İşaret kalkınca o günün kılınmayan vakitleri yeniden kaza adayı olur.
   Future<bool> setExcused(DateTime date, bool excused) async {
+    final now = DateTime.now();
     final result = await runExclusive(() async {
-      final now = DateTime.now();
-      final days = await _storage.loadTrackerExcused();
-      if (PrayerTracker.isExcused(days, date) == excused) return false;
-      await _storage.saveTrackerExcused(
-        PrayerTracker.withExcused(days, date, excused, today: now),
+      final current = await _completedExcused(now);
+      if (PrayerTracker.isExcused(current.excused, date) == excused) {
+        return false;
+      }
+      final next = PrayerTracker.withExcusedPeriod(
+        current.excused,
+        current.open,
+        date,
+        excused,
+        today: now,
       );
+      await _storage.saveTrackerExcused(next.excused);
+      if (next.open != current.open) {
+        await _storage.saveExcusedOpen(next.open);
+      }
       if (!excused) return true;
       final added = await _storage.loadKazaAdded();
       final mask = PrayerTracker.maskOf(added, date);
@@ -119,6 +152,10 @@ class PrayerTrackerService {
       return true;
     });
     changes.value++;
+    // Dün ve sonrası alarm planında (dünün geç kalan yatsısı dahil)
+    if (result && PrayerTracker.daysBetween(date, now) <= 1) {
+      excusedChanges.value++;
+    }
     return result;
   }
 
@@ -215,7 +252,7 @@ class PrayerTrackerService {
         already,
         now,
         since: await loadSince(),
-        excused: await _storage.loadTrackerExcused(),
+        excused: (await _completedExcused(now)).excused,
         yesterdayYatsiOngoing: yesterdayYatsiOngoing,
       );
       final count = PrayerTracker.totalCount(candidates);

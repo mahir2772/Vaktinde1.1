@@ -14,6 +14,7 @@ import '../../common/theme_provider.dart';
 import '../../home/view_model/home_view_model.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../notification_health/view/notification_health_view.dart';
+import '../../prayer_tracker/view/prayer_tracker_view.dart' show kExcusedIcon;
 import 'add_widget_sheet.dart';
 import 'backup_setting.dart';
 import 'end_reminder_setting.dart';
@@ -122,6 +123,22 @@ class SettingsView extends StatelessWidget {
                       onChanged: viewModel.setReligiousDaysEnabled,
                     ),
                     onTap: () => viewModel.setReligiousDaysEnabled(!enabled),
+                  );
+                },
+              ),
+              Consumer<HomeViewModel>(
+                builder: (context, viewModel, child) {
+                  final enabled = viewModel.excusedSilentEzan;
+                  return AppListTile(
+                    leadingIcon: kExcusedIcon,
+                    title: loc.excusedSilentEzanTitle,
+                    subtitle: loc.excusedSilentEzanSub,
+                    showChevron: false,
+                    trailing: Switch(
+                      value: enabled,
+                      onChanged: viewModel.setExcusedSilentEzan,
+                    ),
+                    onTap: () => viewModel.setExcusedSilentEzan(!enabled),
                   );
                 },
               ),

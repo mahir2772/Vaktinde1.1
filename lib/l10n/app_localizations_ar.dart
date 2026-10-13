@@ -683,7 +683,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get trackerExcusedInfo =>
-      'لا يجب قضاء الصلوات التي فاتت في أيام الحيض والنفاس. الأيام المعلَّمة كأيام عذر لا تقطع الأيام المتتالية، ولا تدخل في النسبة ولا في الصلوات المضافة إلى القضاء. أما ما فات في هذه الأيام من صيام رمضان فيجب قضاؤه. لتعليم يوم سابق أو إزالة علامته: ضغطة مطوّلة على اسم اليوم.';
+      'لا يجب قضاء الصلوات التي فاتت في أيام الحيض والنفاس. الأيام المعلَّمة كأيام عذر لا تقطع الأيام المتتالية، ولا تدخل في النسبة ولا في الصلوات المضافة إلى القضاء. أما ما فات في هذه الأيام من صيام رمضان فيجب قضاؤه. بتعليم اليوم تبدأ فترة العذر وتُعلَّم الأيام التالية تلقائيًا (10 أيام على الأكثر)؛ وعند انتهائها أزل علامة اليوم. لتعليم يوم سابق أو إزالة علامته: ضغطة مطوّلة على اسم اليوم.';
 
   @override
   String get trackerExcusedToday => 'تعليم اليوم كيوم عذر';
@@ -699,6 +699,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifStopAction => 'إيقاف';
+
+  @override
+  String get trackerExcusedPeriodStarted =>
+      'بدأت فترة العذر؛ تُعلَّم الأيام التالية تلقائيًا (10 أيام على الأكثر). عند انتهائها اضغط مطوّلًا على «اليوم» مرة أخرى.';
+
+  @override
+  String get trackerExcusedPeriodEnded => 'انتهت فترة العذر.';
+
+  @override
+  String get excusedSilentEzanTitle => 'أذان صامت في أيام العذر';
+
+  @override
+  String get excusedSilentEzanSub =>
+      'في أيام العذر يصل إشعار وقت الصلاة بلا صوت، ولا تُضبط التذكيرات.';
 
   @override
   String get trackerExcusedUnmarked => 'أُزيلت علامة يوم العذر.';

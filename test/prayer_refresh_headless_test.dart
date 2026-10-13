@@ -4,6 +4,7 @@ import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/data/services/storage_service.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart';
@@ -235,6 +236,66 @@ void main() {
       PrayerTracker.parsePayload(first.arguments['payload']),
       isNotNull,
     );
+  });
+
+  test('Özel gün (arka planda da): açık dönemin günlerinde ezan sessiz, '
+      'hatırlatma yok; dönem sonrası ve ayar kapalıyken normal', () async {
+    // Dönemin 9. günü bugün: yarın son gün, öbür gün (11. gün) normal
+    final start = PrayerTracker.addDays(clockNow, -8);
+    int ogleId(int day, {bool reminder = false}) =>
+        PrayerRefreshService.alarmId(
+          PrayerTracker.addDays(clockNow, day),
+          2,
+          reminder: reminder,
+        );
+    int endId(int day) => PrayerTracker.endReminderId(
+      PrayerTracker.addDays(clockNow, day),
+      'Öğle',
+    );
+    for (final enabled in [true, false]) {
+      SharedPreferences.setMockInitialValues({
+        'saved_lat': 41.0,
+        'saved_lng': 29.0,
+        'saved_city': 'İstanbul',
+        'language_code': 'tr',
+        'onTime_Öğle': true,
+        'reminder_Öğle': true,
+        'sound_Öğle': 'ezan2',
+        'end_reminder_enabled': true,
+        'tracker_excused': [PrayerTracker.dateKey(start)],
+        'tracker_excused_open': PrayerTracker.dateKey(start),
+        if (!enabled) StorageService.excusedSilentEzanKey: false,
+        PrayerRefreshService.scheduleModeMigratedKey: true, // kip geçişi bitmiş
+      });
+      pending = [1000, 1900];
+      notifCalls.clear();
+      expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
+      final scheduled = {
+        for (final c in notifCalls.where((c) => c.method == 'zonedSchedule'))
+          c.arguments['id'] as int: c,
+      };
+      Map<Object?, Object?> specifics(int id) =>
+          scheduled[id]!.arguments['platformSpecifics'];
+
+      // Yarın (dönemin son günü)
+      expect(
+        specifics(ogleId(1))['channelId'],
+        enabled ? 'channel_silent_prayer' : 'channel_ezan2',
+      );
+      expect(specifics(ogleId(1))['actions'], enabled ? isNull : isNotNull);
+      expect(scheduled.containsKey(ogleId(1, reminder: true)), !enabled);
+      expect(scheduled.containsKey(endId(1)), !enabled);
+      // Öbür gün dönem kapanmış: normal
+      expect(specifics(ogleId(2))['channelId'], 'channel_ezan2');
+      expect(specifics(ogleId(2))['actions'], isNotNull);
+      expect(scheduled.containsKey(ogleId(2, reminder: true)), isTrue);
+      expect(scheduled.containsKey(endId(2)), isTrue);
+      // Arka plan görevi özel gün kaydını değiştirmez (tamamlamak uygulamanın işi)
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getStringList('tracker_excused'), [
+        PrayerTracker.dateKey(start),
+      ]);
+    }
   });
 
   test('Hiç alarm kurulamazsa gün kaydedilmez, aynı gün yeniden denenir', () async {

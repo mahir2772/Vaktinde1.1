@@ -207,6 +207,85 @@ void main() {
       expect(PrayerTracker.pruneExcused({dk(d(-401))}, today), isEmpty);
     });
 
+    test('özel gün dönemi: bugün işaretlenince başlar, sonraki günler '
+        'kendiliğinden; en fazla 10 gün, 11. gün özel gün değil', () {
+      final p = PrayerTracker.withExcusedPeriod(
+        {},
+        null,
+        d(0),
+        true,
+        today: today,
+      );
+      expect(p.excused, {dk(d(0))});
+      expect(p.open, dk(d(0)));
+      // 3 gün sonra: aradaki günler eklenir, dönem sürer
+      var c = PrayerTracker.completeExcused(p.excused, p.open, d(3));
+      expect(c.excused, {for (var i = 0; i <= 3; i++) dk(d(i))});
+      expect(c.open, dk(d(0)));
+      // Alarm planı için gelecek günler: dönemin son günü (başlangıç + 9) dahil
+      final period = {for (var i = 0; i < 10; i++) dk(d(i))};
+      expect(PrayerTracker.excusedThrough(c.excused, c.open, d(20)), period);
+      expect(PrayerTracker.excusedThrough(c.excused, c.open, d(5)), {
+        for (var i = 0; i <= 5; i++) dk(d(i)),
+      });
+      // Son gün hâlâ açık; ertesi gün kendiliğinden kapanır, o gün özel değil
+      c = PrayerTracker.completeExcused(c.excused, c.open, d(9));
+      expect(c.excused, period);
+      expect(c.open, dk(d(0)));
+      c = PrayerTracker.completeExcused(c.excused, c.open, d(10));
+      expect(c.excused, period);
+      expect(c.open, isNull);
+      expect(PrayerTracker.isExcused(c.excused, d(10)), isFalse);
+      // Uygulama hiç açılmadan dönem bitmiş olsa da 10 gün eklenir
+      c = PrayerTracker.completeExcused({dk(d(0))}, dk(d(0)), d(15));
+      expect(c.excused, period);
+      expect(c.open, isNull);
+    });
+
+    test('özel gün dönemi: bugünün işareti kalkınca biter (önceki günler '
+        'kalır); geçmiş gün dönemi başlatmaz, bitirmez', () {
+      final started = PrayerTracker.completeExcused(
+        {dk(d(-3))},
+        dk(d(-3)),
+        today,
+      );
+      expect(started.excused, {for (var i = -3; i <= 0; i++) dk(d(i))});
+      // Geçmiş günün işareti kalkar: dönem sürer, o gün yeniden eklenmez
+      var p = PrayerTracker.withExcusedPeriod(
+        started.excused,
+        started.open,
+        d(-2),
+        false,
+        today: today,
+      );
+      expect(p.open, dk(d(-3)));
+      expect(PrayerTracker.completeExcused(p.excused, p.open, d(1)).excused, {
+        dk(d(-3)),
+        dk(d(-1)),
+        dk(d(0)),
+        dk(d(1)),
+      });
+      // Bugünün işareti kalkınca dönem biter, gelecek günler eklenmez
+      p = PrayerTracker.withExcusedPeriod(
+        started.excused,
+        started.open,
+        d(0),
+        false,
+        today: today,
+      );
+      expect(p.open, isNull);
+      expect(p.excused, {dk(d(-3)), dk(d(-2)), dk(d(-1))});
+      expect(PrayerTracker.excusedThrough(p.excused, p.open, d(5)), p.excused);
+      // Geçmiş günü işaretlemek tek gün
+      p = PrayerTracker.withExcusedPeriod({}, null, d(-1), true, today: today);
+      expect(p.open, isNull);
+      expect(PrayerTracker.excusedThrough(p.excused, p.open, d(5)), {
+        dk(d(-1)),
+      });
+      // Bozuk dönem kaydı silinir
+      expect(PrayerTracker.completeExcused({}, 'bozuk', today).open, isNull);
+    });
+
     test('özel gün seriyi bozmaz, seriye de sayılmaz', () {
       // Dün tam, 2 gün önce boş (özel), 3-4 gün önce tam, 5 gün önce boş
       final log = {dk(d(-1)): all, dk(d(-3)): all, dk(d(-4)): all};
@@ -571,6 +650,66 @@ void main() {
       expect(prefs.getStringList('tracker_excused'), isEmpty);
       expect(await service.addMissedToKaza(), 5);
       expect((await StorageService().loadMissedPrayers())['Sabah'], 3);
+    });
+
+    test('özel gün dönemi: bugün başlatır (kalıcı), yüklemede tamamlanır, '
+        '10 günde kapanır; alarm planındaki günlerde haber verilir', () async {
+      DateTime day(int offset) => PrayerTracker.addDays(now(), offset);
+      List<String> range(int from, int to) => [
+        for (var i = from; i <= to; i++) dk(day(i)),
+      ];
+      final service = PrayerTrackerService();
+      int notified() => PrayerTrackerService.excusedChanges.value;
+      final base = notified();
+
+      SharedPreferences.setMockInitialValues({});
+      expect(await service.setExcused(day(0), true), isTrue);
+      var prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('tracker_excused_open'), dk(day(0)));
+      expect(prefs.getStringList('tracker_excused'), [dk(day(0))]);
+      expect(notified(), base + 1);
+
+      // 3 gün önce başlamış dönem: aradaki günler kaydedilir (seri, kaza, yedek)
+      SharedPreferences.setMockInitialValues({
+        'tracker_excused': [dk(day(-3))],
+        'tracker_excused_open': dk(day(-3)),
+        'prayer_log_since': dk(day(-5)),
+      });
+      prefs = await SharedPreferences.getInstance();
+      expect(await service.loadExcused(), range(-3, 0).toSet());
+      expect(prefs.getStringList('tracker_excused'), range(-3, 0));
+      expect(await service.addMissedToKaza(), 10); // sadece 5 ve 4 gün önce
+
+      // Dünün işareti kalkar: dönem sürer, dün yeniden eklenmez
+      expect(await service.setExcused(day(-1), false), isTrue);
+      expect(notified(), base + 2);
+      expect(prefs.getString('tracker_excused_open'), dk(day(-3)));
+      expect(await service.loadExcused(), {
+        dk(day(-3)),
+        dk(day(-2)),
+        dk(day(0)),
+      });
+
+      // Bugünün işareti kalkınca dönem biter; önceki günler kalır
+      expect(await service.setExcused(day(0), false), isTrue);
+      expect(notified(), base + 3);
+      expect(prefs.getString('tracker_excused_open'), isNull);
+      expect(await service.loadExcused(), {dk(day(-3)), dk(day(-2))});
+
+      // 12 gün önce başlamış dönem: 10 gün eklenir, kendiliğinden kapanır
+      SharedPreferences.setMockInitialValues({
+        'tracker_excused': [dk(day(-12))],
+        'tracker_excused_open': dk(day(-12)),
+      });
+      prefs = await SharedPreferences.getInstance();
+      expect(await service.loadExcused(), range(-12, -3).toSet());
+      expect(prefs.getString('tracker_excused_open'), isNull);
+      // Geçmiş gün tek gün; plan dışındaki gün (2 gün önce) haber vermez
+      expect(await service.setExcused(day(-2), true), isTrue);
+      expect(prefs.getString('tracker_excused_open'), isNull);
+      expect(notified(), base + 3);
+      expect(await service.setExcused(day(-1), true), isTrue);
+      expect(notified(), base + 4);
     });
 
     test('özel gün yapılan günün kazaya eklenmiş vakitleri sayaçtan düşülür', () async {

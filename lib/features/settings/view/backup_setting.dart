@@ -63,6 +63,8 @@ class _BackupSectionState extends State<BackupSection> {
     setState(() => _running = _BackupAction.backup);
     try {
       final now = DateTime.now();
+      // Açık özel gün dönemi bugüne kadar kaydedilir: yedekte aynı günler olsun
+      await PrayerTrackerService().loadExcused();
       final text = await BackupService.export(
         await SharedPreferences.getInstance(),
         now: now,

@@ -1,10 +1,12 @@
-// Ayarlar: "Günün ayeti ve hadisi bildirimi" anahtarı, gizlilik politikası
+// Ayarlar: "Günün ayeti ve hadisi bildirimi" ve "Özel günde ezanı sessiz
+// bildir" anahtarları, gizlilik politikası
 // satırı (adres boşken gizli; doluyken dış tarayıcıda açılır), "Ana ekrana
 // widget ekle" (başlatıcı destekliyorsa) ve "Uygulamayı paylaş" (kaynaklı link)
 import 'dart:io';
 
 import 'package:ezan_saati/core/app_links.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/data/services/storage_service.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
@@ -20,6 +22,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeHomeViewModel extends HomeViewModel {
   final List<bool> dailyToggles = [];
+  int reschedules = 0;
+
+  @override
+  Future<void> rescheduleAlarms() async {
+    reschedules++;
+  }
 
   @override
   Future<void> initializeApp(AppLocalizations loc) async {}
@@ -172,6 +180,38 @@ void main() {
     await tester.pump();
     expect(vm.dailyToggles, [false, true]);
     expect(toggle().value, isTrue);
+    expect(tester.takeException(), isNull);
+    await finish(tester);
+  });
+
+  testWidgets('Özel günde ezanı sessiz bildir: varsayılan açık; değişince '
+      'kaydedilir ve alarmlar yeniden kurulur', (tester) async {
+    final vm = await pumpSettings(tester);
+    await scrollTo(tester, loc.excusedSilentEzanTitle);
+    expect(find.text(loc.excusedSilentEzanSub), findsOneWidget);
+    Switch toggle() => tester.widget<Switch>(
+      find.descendant(
+        of: find.ancestor(
+          of: find.text(loc.excusedSilentEzanTitle),
+          matching: find.byType(AppListTile),
+        ),
+        matching: find.byType(Switch),
+      ),
+    );
+    final prefs = await SharedPreferences.getInstance();
+    expect(toggle().value, isTrue);
+
+    await tester.tap(find.byWidget(toggle()));
+    await tester.pump();
+    expect(toggle().value, isFalse);
+    expect(prefs.getBool(StorageService.excusedSilentEzanKey), isFalse);
+    expect(vm.reschedules, 1);
+
+    await tester.tap(find.text(loc.excusedSilentEzanTitle));
+    await tester.pump();
+    expect(toggle().value, isTrue);
+    expect(prefs.getBool(StorageService.excusedSilentEzanKey), isTrue);
+    expect(vm.reschedules, 2);
     expect(tester.takeException(), isNull);
     await finish(tester);
   });

@@ -360,6 +360,8 @@ class PrayerRefreshService {
   /// [exact] false (tam zamanlı izin yok, alarm bir saate kadar gecikebilir): geç
   /// okunduğunda yanıltmasın diye "X dakika kaldı" yerine vaktin saati yazılır
   /// (hatırlatma ve Ramazan'da sahur bitişi).
+  /// [silentDays] ("özel günde ezanı sessiz bildir" açıkken özel günler): o
+  /// günlerin vakit bildirimi sessiz ("Kıldım"/"Durdur" yok), hatırlatması kurulmaz.
   static List<PlannedAlarm> buildAlarmPlan({
     required List<PrayerTimesModel> days,
     required DateTime now,
@@ -372,6 +374,7 @@ class PrayerRefreshService {
     RamadanCalendar? ramadan,
     bool alarmStream = false,
     bool exact = true,
+    Set<String> silentDays = const {},
   }) {
     final vakitDisplayNames = vakitNames(loc);
     final plan = <PlannedAlarm>[];
@@ -393,14 +396,17 @@ class PrayerRefreshService {
         if (days.length == 1 && vakitDate.isBefore(now)) {
           vakitDate = vakitDate.add(const Duration(days: 1));
         }
+        final silentDay = PrayerTracker.isExcused(silentDays, vakitDate);
 
         if (onTimeAlarms[vakitLogicKey] == true && !vakitDate.isBefore(now)) {
-          bool isSilent = silentModeSettings[vakitLogicKey] ?? false;
+          bool isSilent =
+              silentDay || (silentModeSettings[vakitLogicKey] ?? false);
           String? soundToSend = isSilent
               ? null
               : (selectedSounds[vakitLogicKey] ?? "ezan1");
-          // Farz vakitlerde "Kıldım" butonu (Güneş hariç)
-          final tracked = PrayerTracker.prayerKeys.contains(vakitLogicKey);
+          // Farz vakitlerde "Kıldım" butonu (Güneş ve özel gün hariç)
+          final tracked =
+              !silentDay && PrayerTracker.prayerKeys.contains(vakitLogicKey);
           String title = loc.notifTitleTime;
           String body = loc.notifBodyTime(vakitDisplayName);
           // Ramazan günü (vaktin kendi gününe göre): imsak = sahur bitti, akşam = iftar
@@ -442,7 +448,7 @@ class PrayerRefreshService {
             ),
           );
         }
-        if (reminderAlarms[vakitLogicKey] == true) {
+        if (reminderAlarms[vakitLogicKey] == true && !silentDay) {
           int dakikaOnce =
               (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş") ? 30 : 15;
           DateTime hatirlatmaZamani = vakitDate.subtract(
@@ -477,8 +483,8 @@ class PrayerRefreshService {
   /// Vakti son [lateWindow] içinde girmiş, açık farz ezanları (dün ve bugün): ID →
   /// bugünkü ayarlarla kurulacak hali. Gecikmeli kurulmuş ezan bu sürede henüz
   /// çalmamış olabilir; aynı yükle bekliyor ve kaydı ([alarmFingerprint]) aynıysa
-  /// yeniden kurulumda iptal edilmez. Güneş ve hatırlatmalar korunmaz (yükleri yok;
-  /// geç gelen hatırlatma da yanıltır).
+  /// yeniden kurulumda iptal edilmez. Güneş, hatırlatmalar ve özel günün sessiz
+  /// ezanı ([silentDays]) korunmaz (yükleri yok; geç gelen hatırlatma da yanıltır).
   static Map<int, PlannedAlarm> recentlyDueEzans({
     required PrayerTimesModel previous,
     required PrayerTimesModel today,
@@ -489,6 +495,7 @@ class PrayerRefreshService {
     required Map<String, bool> silentModeSettings,
     RamadanCalendar? ramadan,
     bool alarmStream = false,
+    Set<String> silentDays = const {},
   }) {
     final from = now.subtract(lateWindow);
     // Dünün başından itibaren iki günün tüm ezanları (geçmiş olsalar da)
@@ -503,6 +510,7 @@ class PrayerRefreshService {
       silentModeSettings: silentModeSettings,
       ramadan: ramadan,
       alarmStream: alarmStream,
+      silentDays: silentDays,
     );
     return {
       for (final a in ezans)
@@ -558,7 +566,8 @@ class PrayerRefreshService {
   /// "Vakit çıkmadan hatırlat" planı (ID 100-124). [days][0] bugün, [previous] dünün
   /// vakitleri (dünkü yatsının süresi için). Hatırlatma günü d: dünkü yatsı (d'nin
   /// imsakında biter), sabah (güneşte), öğle (ikindide), ikindi (akşamda), akşam (yatsıda).
-  /// Geçmiş, [minutes] >= vakit süresi veya kılındı işaretli vakitler atlanır.
+  /// Geçmiş, [minutes] >= vakit süresi, kılındı işaretli ve namazın günü
+  /// [silentDays] (özel günde ezan sessiz) içinde olan vakitler atlanır.
   /// [exact] false: "çıkmasına X dakika kaldı" yerine çıkış saati ([buildAlarmPlan]).
   static List<PlannedAlarm> buildEndReminderPlan({
     required PrayerTimesModel previous,
@@ -568,6 +577,7 @@ class PrayerRefreshService {
     required int minutes,
     required Map<String, int> prayerLog,
     bool exact = true,
+    Set<String> silentDays = const {},
   }) {
     final names = {
       "İmsak": loc.sabah,
@@ -606,6 +616,7 @@ class PrayerRefreshService {
         final remindAt = end.subtract(Duration(minutes: minutes));
         if (!remindAt.isAfter(now)) continue;
         if (PrayerTracker.isPrayed(prayerLog, prayerDate, key)) continue;
+        if (PrayerTracker.isExcused(silentDays, prayerDate)) continue;
         plan.add(
           PlannedAlarm(
             id: PrayerTracker.endReminderId(date, key),
@@ -764,6 +775,7 @@ class PrayerRefreshService {
           minutes: settings.minutes,
           prayerLog: await _storageService.loadPrayerLog(),
           exact: exact,
+          silentDays: await _silentDays(now),
         );
       }
     } catch (e, st) {
@@ -900,6 +912,22 @@ class PrayerRefreshService {
     return ok;
   }
 
+  // "Özel günde ezanı sessiz bildir" açıksa özel günler: kayıtlı küme + açık
+  // dönemin plan sonuna kadarki günleri (dönem sınırına kadar). Sadece okur
+  // (tamamlayıp kaydetmek takip servisinin işi). Okunamazsa boş: ezan eskisi gibi
+  Future<Set<String>> _silentDays(DateTime now) async {
+    try {
+      if (!await _storageService.loadExcusedSilentEzan()) return const {};
+      return PrayerTracker.excusedThrough(
+        await _storageService.loadTrackerExcused(),
+        await _storageService.loadExcusedOpen(),
+        PrayerTracker.addDays(now, alarmDays),
+      );
+    } catch (e) {
+      return const {};
+    }
+  }
+
   // Kurulumdan önce izinler okunur (kip bunlara göre: bildirimler kapalıyken ezan
   // alarmClock kurulmaz). Tam zamanlı izin okunamazsa son bilinen; false değilse
   // tam zamanlı kabul edilir (metinler göreli kalır)
@@ -924,6 +952,8 @@ class PrayerRefreshService {
   /// alarmda boşluk olmaz. Tam zamanlı alarm izni yoksa gecikmeli kiple kurulur; vakti
   /// geçip henüz çalmamış (gecikmiş) ezan korunur ([recentlyDueEzans]).
   /// Kurulamayan alarm diğerlerini durdurmaz; tur sonunda Crashlytics'e bildirilir.
+  /// "Özel günde ezanı sessiz bildir" açıksa özel günlerin ezanı sessiz, hatırlatması
+  /// yok (açık dönemin gelecek günleri dahil; uygulama da arka plan görevi de).
   /// Vakit çıkış hatırlatmaları ve dini gün bildirimleri ([syncReligiousDays]) de
   /// eşitlenir. Kip geçişi ([scheduleModeMigratedKey]) bitmediyse bekleyen günlük
   /// içerik de yeni kiple yeniden yazılır.
@@ -941,6 +971,7 @@ class PrayerRefreshService {
     final exact = await _exactMode();
     final planDays = await _planDays(todayTimes, now);
     final ramadan = await _ramadanCalendar();
+    final silentDays = await _silentDays(now);
     final plan = buildAlarmPlan(
       days: planDays.days,
       now: now,
@@ -953,6 +984,7 @@ class PrayerRefreshService {
       ramadan: ramadan,
       alarmStream: alarmStream,
       exact: exact,
+      silentDays: silentDays,
     );
 
     // Geç ezan sadece kurulduğu saat ve ayarlar bugün de aynıysa korunur (ince ayar,
@@ -971,6 +1003,7 @@ class PrayerRefreshService {
         silentModeSettings: silentModeSettings,
         ramadan: ramadan,
         alarmStream: alarmStream,
+        silentDays: silentDays,
       ).entries)
         if (savedMeta[id] == alarmFingerprint(alarm)) id: alarm.payload!,
     };

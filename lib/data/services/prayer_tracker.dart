@@ -3,6 +3,8 @@
 /// Özel günler (hayız/nifas; "yyyy-MM-dd" kümesi): o günlerin namazı kaza
 /// edilmez → seri bu günleri atlar (bozmaz, saymaz), oran ve kaza adaylarına
 /// katılmaz. O günlerde işaretlenmiş vakitler kayıtta kalır, sayılmaz.
+/// Bugün işaretlenince açık dönem başlar: sonraki günler kendiliğinden özel gün
+/// olur, en fazla [excusedPeriodDays] gün ([withExcusedPeriod]).
 class PrayerTracker {
   PrayerTracker._();
 
@@ -155,6 +157,70 @@ class PrayerTracker {
         if (parseDateKey(d) != null && d.compareTo(cutoff) >= 0) d,
     };
   }
+
+  // --- Açık özel gün dönemi: bugün işaretlenince başlar (başlangıç günü kaydı) ---
+
+  /// Açık dönem en fazla bu kadar gün sürer (başlangıç dahil); ertesi gün
+  /// kendiliğinden kapanır, o gün özel gün değildir
+  static const int excusedPeriodDays = 10;
+
+  /// Açık dönemi ([open]: başlangıç günü) [until] gününe kadar, en çok dönemin
+  /// son gününe kadar kümeye ekler. Dönemde sonradan işareti kaldırılan geçmiş
+  /// gün yeniden eklenmez: ekleme dönemdeki en son özel günün ertesinden başlar.
+  static Set<String> excusedThrough(
+    Set<String> excused,
+    String? open,
+    DateTime until,
+  ) {
+    final start = open == null ? null : parseDateKey(open);
+    if (start == null) return excused;
+    final last = addDays(start, excusedPeriodDays - 1);
+    var from = start;
+    for (var d = last; daysBetween(start, d) >= 0; d = addDays(d, -1)) {
+      if (isExcused(excused, d)) {
+        from = addDays(d, 1);
+        break;
+      }
+    }
+    final result = {...excused};
+    for (
+      var d = from;
+      daysBetween(d, until) >= 0 && daysBetween(d, last) >= 0;
+      d = addDays(d, 1)
+    ) {
+      result.add(dateKey(d));
+    }
+    return result;
+  }
+
+  /// Açık dönem bugüne kadar kümeye eklenir; süresi dolan (ya da geçersiz)
+  /// dönem kapanır (open: null)
+  static ({Set<String> excused, String? open}) completeExcused(
+    Set<String> excused,
+    String? open,
+    DateTime today,
+  ) {
+    final start = open == null ? null : parseDateKey(open);
+    if (start == null) return (excused: excused, open: null);
+    return (
+      excused: pruneExcused(excusedThrough(excused, open, today), today),
+      open: daysBetween(start, today) < excusedPeriodDays ? open : null,
+    );
+  }
+
+  /// [date] gününü özel gün yapar/kaldırır. Bugün işaretlenince açık dönem
+  /// başlar, bugünün işareti kalkınca biter (önceki günler kalır). Geçmiş gün
+  /// sadece kendisini etkiler: dönem başlatmaz, süren dönemi bitirmez.
+  static ({Set<String> excused, String? open}) withExcusedPeriod(
+    Set<String> excused,
+    String? open,
+    DateTime date,
+    bool value, {
+    required DateTime today,
+  }) => (
+    excused: withExcused(excused, date, value, today: today),
+    open: daysBetween(today, date) == 0 ? (value ? dateKey(date) : null) : open,
+  );
 
   /// Beş vaktin tamamının kılındığı ardışık günler. Bugün sadece tamamsa sayılır;
   /// [yesterdayYatsiOngoing] (imsak girmedi) ise dünün yatsısı da henüz eksik sayılmaz.
