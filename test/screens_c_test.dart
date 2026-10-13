@@ -4,6 +4,7 @@
 import 'dart:io';
 
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/data/services/location_catalog.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
@@ -31,6 +32,8 @@ const double _istanbulLng = 28.9784;
 
 class _FakeHomeViewModel extends HomeViewModel {
   String? changedCity;
+  double? changedLat;
+  double? changedLng;
   bool refreshedLocation = false;
 
   @override
@@ -64,6 +67,8 @@ class _FakeHomeViewModel extends HomeViewModel {
     double? lng,
   }) async {
     changedCity = newDistrict == null ? newCity : '$newDistrict, $newCity';
+    changedLat = lat;
+    changedLng = lng;
   }
 }
 
@@ -309,7 +314,11 @@ Finder _listScrollable() => find
     .first;
 
 void main() {
-  setUpAll(_loadFonts);
+  setUpAll(() async {
+    await _loadFonts();
+    // Önbelleklenen Future sahte zaman bölgesinde oluşmasın
+    await LocationCatalog.load();
+  });
 
   setUp(() {
     _locationServiceEnabled = true;
@@ -624,27 +633,124 @@ void main() {
   });
 
   group('Konum arama', () {
-    testWidgets('Sonuç seçilir; hata ekranında tekrar dene', (tester) async {
+    // Uzun listede satır görünür yapılıp dokunulur
+    Future<void> tapRow(WidgetTester tester, String text) async {
+      await tester.scrollUntilVisible(
+        find.text(text),
+        300,
+        scrollable: _listScrollable(),
+      );
+      await tester.ensureVisible(find.text(text));
+      await _settle(tester, steps: 2);
+      await tester.tap(find.text(text));
+      await _settle(tester, steps: 3);
+    }
+
+    Future<_FakeHomeViewModel> pumpDialog(
+      WidgetTester tester, {
+      String lang = 'tr',
+      double textScale = 1,
+    }) => _pumpScreen(
+      tester,
+      const Scaffold(body: LocationSearchDialog()),
+      lang: lang,
+      textScale: textScale,
+    );
+
+    testWidgets('Türkiye → il → ilçe internetsiz seçilir', (tester) async {
+      final homeVm = await pumpDialog(tester);
+      final loc = _loc('tr');
+      final back = find.byType(BackButtonIcon);
+      expect(find.text(loc.countryTurkey), findsOneWidget);
+      expect(find.text(loc.countryGermany), findsOneWidget);
+
+      await tester.tap(find.text(loc.countryTurkey));
+      await _settle(tester, steps: 3);
+      await tapRow(tester, 'Erzincan');
+      // İl merkezi ilk satır; "Merkez" ilçe ayrıca listelenmez
+      expect(find.text(loc.provinceCenter), findsOneWidget);
+      expect(find.text('Merkez'), findsNothing);
+      expect(find.text('Kemaliye'), findsOneWidget);
+
+      // Sistem geri tuşu ve geri düğmesi bir üst seviyeye çıkar
+      await tester.binding.handlePopRoute();
+      await _settle(tester, steps: 3);
+      expect(find.text(loc.provinceCenter), findsNothing);
+      expect(find.text('Erzincan'), findsOneWidget);
+      await tester.tap(back);
+      await _settle(tester, steps: 3);
+      expect(back, findsNothing);
+      expect(find.text(loc.locationEuropeKktc), findsOneWidget);
+
+      await tester.tap(find.text(loc.countryTurkey));
+      await _settle(tester, steps: 3);
+      await tapRow(tester, 'Erzincan');
+      await tester.tap(find.text('Kemaliye'));
+      await _settle(tester, steps: 4);
+      expect(homeVm.changedCity, 'Kemaliye, Erzincan');
+      expect(homeVm.changedLat, closeTo(39.26, 0.1));
+      expect(homeVm.changedLng, closeTo(38.50, 0.1));
+      // Türkiye saati: saat dilimi uyarısı yok (testler TZ=Europe/Istanbul)
+      expect(
+        find.text(loc.locationSelected('Kemaliye, Erzincan')),
+        findsOneWidget,
+      );
+      expect(find.textContaining(loc.timesFollowPhoneClock), findsNothing);
+      await _finish(tester);
+
+      // İl merkezi: sadece il kaydedilir
+      final vm = await pumpDialog(tester);
+      await tester.tap(find.text(loc.countryTurkey));
+      await _settle(tester, steps: 3);
+      await tapRow(tester, 'Ankara');
+      await tester.tap(find.text(loc.provinceCenter));
+      await _settle(tester, steps: 4);
+      expect(vm.changedCity, 'Ankara');
+      expect(vm.changedLat, closeTo(39.92, 0.1));
+      expect(tester.takeException(), isNull);
+      await _finish(tester);
+    });
+
+    testWidgets('Avrupa şehri: ülke adıyla, saat dilimi uyarısı', (
+      tester,
+    ) async {
+      final homeVm = await pumpDialog(tester);
+      final loc = _loc('tr');
+      await tester.tap(find.text(loc.countryGermany));
+      await _settle(tester, steps: 3);
+      await tapRow(tester, 'Köln');
+      expect(homeVm.changedCity, 'Köln');
+      expect(homeVm.changedLat, closeTo(50.94, 0.1));
+      expect(homeVm.changedLng, closeTo(6.96, 0.1));
+      expect(
+        find.text(
+          '${loc.locationSelected('Köln, Almanya')}\n'
+          '${loc.timesFollowPhoneClock}',
+        ),
+        findsOneWidget,
+      );
+      await _finish(tester);
+    });
+
+    testWidgets('Arama önce gömülü listede; sonda çevrimiçi arama', (
+      tester,
+    ) async {
       final geocoding = _FakeGeocoding();
       GeocodingPlatform.instance = geocoding;
-      final homeVm = await _pumpScreen(
-        tester,
-        const Scaffold(body: LocationSearchDialog()),
-        textScale: 1,
-      );
+      var homeVm = await pumpDialog(tester);
       final loc = _loc('tr');
-      expect(find.text(loc.searchInitial), findsOneWidget);
 
-      await tester.enterText(find.byType(TextField), 'Kadıköy');
-      await tester.pump(const Duration(milliseconds: 900));
+      await tester.enterText(find.byType(TextField), 'KADIKOY');
       await _settle(tester, steps: 3);
-      expect(find.text('Kadıköy, İstanbul'), findsOneWidget);
+      expect(find.text('Kadıköy'), findsOneWidget);
+      expect(find.text('İstanbul, Türkiye'), findsOneWidget);
+      expect(find.text(loc.searchOnline), findsOneWidget);
       expect(
         tester
             .getSize(
               find
                   .ancestor(
-                    of: find.text('Kadıköy, İstanbul'),
+                    of: find.text('Kadıköy'),
                     matching: find.byType(InkWell),
                   )
                   .first,
@@ -652,19 +758,37 @@ void main() {
             .height,
         greaterThanOrEqualTo(48),
       );
+      await tester.tap(find.text('Kadıköy'));
+      await _settle(tester, steps: 4);
+      expect(homeVm.changedCity, 'Kadıköy, İstanbul');
+      expect(homeVm.changedLat, closeTo(40.99, 0.1));
+      await _finish(tester);
+
+      // Listede olan yer de istenirse çevrimiçi aranır
+      homeVm = await pumpDialog(tester);
+      await tester.enterText(find.byType(TextField), 'Kadıköy');
+      await _settle(tester, steps: 3);
+      await tester.tap(find.text(loc.searchOnline));
+      await _settle(tester, steps: 3);
+      expect(find.text('Kadıköy, İstanbul'), findsOneWidget);
+      await _finish(tester);
+
+      // Listede olmayan yer: eskisi gibi kendiliğinden çevrimiçi arama
+      homeVm = await pumpDialog(tester);
+      expect(find.text(loc.locationEuropeKktc), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'Caferağa');
+      await tester.pump(const Duration(milliseconds: 900));
+      await _settle(tester, steps: 3);
+      expect(find.text('Kadıköy, İstanbul'), findsOneWidget);
       await tester.tap(find.text('Kadıköy, İstanbul'));
       await _settle(tester, steps: 4);
       expect(homeVm.changedCity, 'Kadıköy, İstanbul');
       await _finish(tester);
 
       geocoding.fail = true;
-      await _pumpScreen(
-        tester,
-        const Scaffold(body: LocationSearchDialog()),
-        lang: 'de',
-      );
+      await pumpDialog(tester, lang: 'de', textScale: 1.3);
       final de = _loc('de');
-      await tester.enterText(find.byType(TextField), 'Berlin');
+      await tester.enterText(find.byType(TextField), 'Caferağa');
       await tester.testTextInput.receiveAction(TextInputAction.search);
       await _settle(tester, steps: 3);
       expect(find.text(de.searchError), findsOneWidget);
@@ -675,6 +799,45 @@ void main() {
       expect(tester.takeException(), isNull);
       await _finish(tester);
     });
+
+    // 320dp, %130 yazı: tüm seviyeler taşmadan çizilir
+    for (final lang in ['tr', 'de', 'ar']) {
+      testWidgets('$lang: seviyeler 320dp %130 hatasız', (tester) async {
+        final loc = _loc(lang);
+        final back = find.byType(BackButtonIcon);
+        for (final dark in [false, true]) {
+          await _pumpScreen(
+            tester,
+            const Scaffold(body: LocationSearchDialog()),
+            lang: lang,
+            dark: dark,
+          );
+          expect(tester.takeException(), isNull, reason: 'kök');
+          await tester.tap(find.text(loc.countryTurkey));
+          await _settle(tester, steps: 3);
+          await tester.tap(find.text('Adana'));
+          await _settle(tester, steps: 3);
+          expect(find.text(loc.provinceCenter), findsOneWidget);
+          expect(tester.takeException(), isNull, reason: 'ilçeler');
+          await tester.tap(back);
+          await _settle(tester, steps: 2);
+          await tester.tap(back);
+          await _settle(tester, steps: 2);
+          await tapRow(tester, loc.countryUnitedKingdom);
+          expect(find.text('Aberdeen'), findsOneWidget);
+          expect(tester.takeException(), isNull, reason: 'şehirler');
+          await tester.enterText(find.byType(TextField), 'Gazimağusa');
+          await _settle(tester, steps: 3);
+          expect(
+            find.text(loc.countryNorthernCyprus),
+            findsOneWidget,
+            reason: 'arama sonucunda ülke',
+          );
+          expect(tester.takeException(), isNull, reason: 'arama');
+          await _finish(tester);
+        }
+      });
+    }
   });
 
   group('İlk açılış', () {

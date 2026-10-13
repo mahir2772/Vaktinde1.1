@@ -18,6 +18,7 @@ import 'dart:ui' as ui;
 import 'package:ezan_saati/data/models/hadith_model.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
+import 'package:ezan_saati/data/services/location_catalog.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
@@ -850,6 +851,7 @@ void main() {
     await DuaLibrary.load();
     await PrayerGuide.load();
     await rootBundle.loadString(QuranService.surahsAsset);
+    await LocationCatalog.load();
   });
 
   setUp(() {
@@ -1254,6 +1256,36 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
       await _settle(tester, steps: 2);
       await _shot(tester, 'tr_21_qibla_calibration');
+      await _finish(tester);
+    });
+  });
+
+  // Konum sayfası: internetsiz liste (kök, il, ilçe, ülke) ve arama
+  testWidgets('tr: konum seçimi', skip: skip, variant: _android, (
+    tester,
+  ) async {
+    await _run(tester, () async {
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await _pumpApp(tester, lang: 'tr', homeVm: _homeVm('tr'));
+      await tester.tap(find.byTooltip(loc.changeLocation));
+      await _settle(tester, steps: 6);
+      await _shot(tester, 'tr_17_location_root');
+      await tester.tap(find.text(loc.countryTurkey));
+      await _settle(tester, steps: 4);
+      await _shot(tester, 'tr_17_location_provinces');
+      await tester.tap(find.text('Ankara'));
+      await _settle(tester, steps: 4);
+      await _shot(tester, 'tr_17_location_districts');
+      await tester.tap(find.byType(BackButtonIcon));
+      await _settle(tester, steps: 2);
+      await tester.tap(find.byType(BackButtonIcon));
+      await _settle(tester, steps: 2);
+      await tester.tap(find.text(loc.countryGermany));
+      await _settle(tester, steps: 4);
+      await _shot(tester, 'tr_17_location_country');
+      await tester.enterText(find.byType(TextField), 'yenişehir');
+      await _settle(tester, steps: 4);
+      await _shot(tester, 'tr_17_location_search');
       await _finish(tester);
     });
   });

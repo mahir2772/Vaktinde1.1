@@ -91,6 +91,55 @@ class AppLocalizationsTr extends AppLocalizations {
   String get refreshLocation => 'Konumu yenile';
 
   @override
+  String get countryTurkey => 'Türkiye';
+
+  @override
+  String get locationEuropeKktc => 'Avrupa / KKTC';
+
+  @override
+  String get countryGermany => 'Almanya';
+
+  @override
+  String get countryNetherlands => 'Hollanda';
+
+  @override
+  String get countryBelgium => 'Belçika';
+
+  @override
+  String get countryFrance => 'Fransa';
+
+  @override
+  String get countryAustria => 'Avusturya';
+
+  @override
+  String get countrySwitzerland => 'İsviçre';
+
+  @override
+  String get countryUnitedKingdom => 'Birleşik Krallık';
+
+  @override
+  String get countryDenmark => 'Danimarka';
+
+  @override
+  String get countrySweden => 'İsveç';
+
+  @override
+  String get countryNorway => 'Norveç';
+
+  @override
+  String get countryNorthernCyprus => 'KKTC';
+
+  @override
+  String get provinceCenter => 'İl merkezi';
+
+  @override
+  String get searchOnline => 'İnternette ara';
+
+  @override
+  String get timesFollowPhoneClock =>
+      'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.';
+
+  @override
   String get navTools => 'Araçlar';
 
   @override

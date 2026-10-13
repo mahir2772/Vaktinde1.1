@@ -87,6 +87,55 @@ class AppLocalizationsAr extends AppLocalizations {
   String get refreshLocation => 'تحديث الموقع';
 
   @override
+  String get countryTurkey => 'تركيا';
+
+  @override
+  String get locationEuropeKktc => 'أوروبا / شمال قبرص';
+
+  @override
+  String get countryGermany => 'ألمانيا';
+
+  @override
+  String get countryNetherlands => 'هولندا';
+
+  @override
+  String get countryBelgium => 'بلجيكا';
+
+  @override
+  String get countryFrance => 'فرنسا';
+
+  @override
+  String get countryAustria => 'النمسا';
+
+  @override
+  String get countrySwitzerland => 'سويسرا';
+
+  @override
+  String get countryUnitedKingdom => 'المملكة المتحدة';
+
+  @override
+  String get countryDenmark => 'الدنمارك';
+
+  @override
+  String get countrySweden => 'السويد';
+
+  @override
+  String get countryNorway => 'النرويج';
+
+  @override
+  String get countryNorthernCyprus => 'شمال قبرص';
+
+  @override
+  String get provinceCenter => 'مركز الولاية';
+
+  @override
+  String get searchOnline => 'البحث عبر الإنترنت';
+
+  @override
+  String get timesFollowPhoneClock =>
+      'هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.';
+
+  @override
   String get navTools => 'الأدوات';
 
   @override

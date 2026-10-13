@@ -1,0 +1,24 @@
+Offline location list (assets/data/locations.json)
+
+Provincial capitals of Türkiye, cities of Europe and Northern Cyprus, and most
+district centres of Türkiye: GeoNames (https://www.geonames.org), licensed
+under the Creative Commons Attribution 4.0 License
+(https://creativecommons.org/licenses/by/4.0/), obtained through the
+geonamescache 3.0.2 and all-the-cities 3.1.0 packages.
+
+Districts (ilçe) of Türkiye and the remaining district centres: Countries
+States Cities Database (https://github.com/dr5hn/countries-states-cities-database),
+licensed under the Open Database License (ODbL) v1.0
+(https://opendatacommons.org/licenses/odbl/1-0/). Some of its records carry
+names or points from GeoNames (CC BY 4.0), © OpenStreetMap contributors
+(ODbL 1.0) and Wikidata (CC0).
+
+Changes: places selected (all districts of Türkiye; European cities with about
+50,000 or more inhabitants and capitals of countries and their first-level
+regions; six towns of Northern Cyprus), central districts ("Merkez") merged
+into the provincial capital, local or Turkish names shown, other names kept
+for search only, coordinates rounded to four decimals.
+
+The location list is a derivative database made available under the Open
+Database License v1.0; the complete database is the file
+assets/data/locations.json shipped with this app.

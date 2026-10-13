@@ -91,6 +91,55 @@ class AppLocalizationsDe extends AppLocalizations {
   String get refreshLocation => 'Standort aktualisieren';
 
   @override
+  String get countryTurkey => 'Türkei';
+
+  @override
+  String get locationEuropeKktc => 'Europa / Nordzypern';
+
+  @override
+  String get countryGermany => 'Deutschland';
+
+  @override
+  String get countryNetherlands => 'Niederlande';
+
+  @override
+  String get countryBelgium => 'Belgien';
+
+  @override
+  String get countryFrance => 'Frankreich';
+
+  @override
+  String get countryAustria => 'Österreich';
+
+  @override
+  String get countrySwitzerland => 'Schweiz';
+
+  @override
+  String get countryUnitedKingdom => 'Vereinigtes Königreich';
+
+  @override
+  String get countryDenmark => 'Dänemark';
+
+  @override
+  String get countrySweden => 'Schweden';
+
+  @override
+  String get countryNorway => 'Norwegen';
+
+  @override
+  String get countryNorthernCyprus => 'Nordzypern';
+
+  @override
+  String get provinceCenter => 'Provinzhauptstadt';
+
+  @override
+  String get searchOnline => 'Online suchen';
+
+  @override
+  String get timesFollowPhoneClock =>
+      'Dieser Ort liegt in einer anderen Zeitzone: Die Zeiten werden nach der Uhrzeit Ihres Telefons angezeigt.';
+
+  @override
   String get navTools => 'Werkzeuge';
 
   @override

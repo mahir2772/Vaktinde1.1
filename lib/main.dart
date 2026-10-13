@@ -96,6 +96,14 @@ void main() async {
     yield LicenseEntryWithLineBreaks(['Poppins'], poppins);
     final amiri = await rootBundle.loadString('assets/fonts/amiri/OFL.txt');
     yield LicenseEntryWithLineBreaks(['Amiri'], amiri);
+    // Gömülü konum listesi: GeoNames (CC BY 4.0) + dr5hn (ODbL 1.0) atfı
+    final places = await rootBundle.loadString(
+      'assets/data/locations_LICENSE.txt',
+    );
+    yield LicenseEntryWithLineBreaks([
+      'GeoNames',
+      'Countries States Cities Database',
+    ], places);
   });
 
   runApp(

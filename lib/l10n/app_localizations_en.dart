@@ -89,6 +89,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refreshLocation => 'Refresh location';
 
   @override
+  String get countryTurkey => 'Türkiye';
+
+  @override
+  String get locationEuropeKktc => 'Europe / Northern Cyprus';
+
+  @override
+  String get countryGermany => 'Germany';
+
+  @override
+  String get countryNetherlands => 'Netherlands';
+
+  @override
+  String get countryBelgium => 'Belgium';
+
+  @override
+  String get countryFrance => 'France';
+
+  @override
+  String get countryAustria => 'Austria';
+
+  @override
+  String get countrySwitzerland => 'Switzerland';
+
+  @override
+  String get countryUnitedKingdom => 'United Kingdom';
+
+  @override
+  String get countryDenmark => 'Denmark';
+
+  @override
+  String get countrySweden => 'Sweden';
+
+  @override
+  String get countryNorway => 'Norway';
+
+  @override
+  String get countryNorthernCyprus => 'Northern Cyprus';
+
+  @override
+  String get provinceCenter => 'Provincial capital';
+
+  @override
+  String get searchOnline => 'Search online';
+
+  @override
+  String get timesFollowPhoneClock =>
+      'This place is in a different time zone: times are shown in your phone\'s time.';
+
+  @override
   String get navTools => 'Tools';
 
   @override

@@ -248,6 +248,102 @@ abstract class AppLocalizations {
   /// **'Konumu yenile'**
   String get refreshLocation;
 
+  /// No description provided for @countryTurkey.
+  ///
+  /// In tr, this message translates to:
+  /// **'Türkiye'**
+  String get countryTurkey;
+
+  /// No description provided for @locationEuropeKktc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Avrupa / KKTC'**
+  String get locationEuropeKktc;
+
+  /// No description provided for @countryGermany.
+  ///
+  /// In tr, this message translates to:
+  /// **'Almanya'**
+  String get countryGermany;
+
+  /// No description provided for @countryNetherlands.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hollanda'**
+  String get countryNetherlands;
+
+  /// No description provided for @countryBelgium.
+  ///
+  /// In tr, this message translates to:
+  /// **'Belçika'**
+  String get countryBelgium;
+
+  /// No description provided for @countryFrance.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fransa'**
+  String get countryFrance;
+
+  /// No description provided for @countryAustria.
+  ///
+  /// In tr, this message translates to:
+  /// **'Avusturya'**
+  String get countryAustria;
+
+  /// No description provided for @countrySwitzerland.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsviçre'**
+  String get countrySwitzerland;
+
+  /// No description provided for @countryUnitedKingdom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Birleşik Krallık'**
+  String get countryUnitedKingdom;
+
+  /// No description provided for @countryDenmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Danimarka'**
+  String get countryDenmark;
+
+  /// No description provided for @countrySweden.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsveç'**
+  String get countrySweden;
+
+  /// No description provided for @countryNorway.
+  ///
+  /// In tr, this message translates to:
+  /// **'Norveç'**
+  String get countryNorway;
+
+  /// No description provided for @countryNorthernCyprus.
+  ///
+  /// In tr, this message translates to:
+  /// **'KKTC'**
+  String get countryNorthernCyprus;
+
+  /// No description provided for @provinceCenter.
+  ///
+  /// In tr, this message translates to:
+  /// **'İl merkezi'**
+  String get provinceCenter;
+
+  /// No description provided for @searchOnline.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternette ara'**
+  String get searchOnline;
+
+  /// No description provided for @timesFollowPhoneClock.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.'**
+  String get timesFollowPhoneClock;
+
   /// No description provided for @navTools.
   ///
   /// In tr, this message translates to:
