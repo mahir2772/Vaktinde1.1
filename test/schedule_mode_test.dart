@@ -1,11 +1,12 @@
-import 'package:ezan_saati/data/models/hadith_model.dart';
+import 'dart:convert';
+
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/ayah_service.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
-import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -459,14 +460,21 @@ void main() {
   });
 
   group('Günün ayeti ve hadisi ayarı', () {
-    final ayah = AyahModel(
-      number: 1,
-      surahName: 'Fatiha',
-      numberInSurah: 1,
-      arabicText: 'x',
-      translatedText: 'y',
-    );
-    final hadith = HadithModel(content: 'hadis', source: 'kaynak');
+    // Yarın 08:00: iki bildirim de o gün çalar; o günün ayeti önceden alınmış
+    // (önbellekte), hadis: ağ yok → yerel yedek
+    final now = DateTime.now();
+    final at = DateTime(now.year, now.month, now.day + 1, 8);
+    final ayahJson = jsonEncode({
+      'data': [
+        {
+          'number': 1,
+          'surah': {'name': 'Fatiha'},
+          'numberInSurah': 1,
+          'text': 'x',
+        },
+        {'text': 'y'},
+      ],
+    });
 
     for (final enabled in [true, false]) {
       test(
@@ -475,11 +483,15 @@ void main() {
           SharedPreferences.setMockInitialValues({
             if (!enabled) 'daily_content_enabled': false,
           });
+          await AyahService(
+            fetch: (_) async => ayahJson,
+          ).getDailyAyah('tr', day: at);
           final notifications = NotificationService();
           await notifications.init();
           await PrayerRefreshService(
             notifications,
-          ).scheduleDailyContent(localeName: 'tr', ayah: ayah, hadith: hadith);
+            clock: () => at,
+          ).scheduleDailyContent(localeName: 'tr');
           if (enabled) {
             expect(scheduledIds(), PrayerRefreshService.dailyContentIds);
             expect(pending.values.map((p) => p.mode).toSet(), {

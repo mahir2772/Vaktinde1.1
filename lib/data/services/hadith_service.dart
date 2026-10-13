@@ -3,12 +3,28 @@ import 'dart:ui';
 import 'dart:math';
 import 'http_client.dart';
 import '../models/hadith_model.dart';
+import 'prayer_tracker.dart';
 import 'storage_service.dart';
 
 class HadithService {
   final StorageService _storageService = StorageService();
+  final Future<String?> Function(Uri url) _fetch;
+
+  /// [fetch]: test için (varsayılan: httpGet 10 sn)
+  HadithService({Future<String?> Function(Uri url)? fetch})
+    : _fetch = fetch ?? _httpFetch;
+
+  static Future<String?> _httpFetch(Uri url) async {
+    final response = await httpGet(url);
+    // Gövde UTF-8 çözülür (başlıkta karakter kümesi yoksa http latin1 sanar)
+    return response.statusCode == 200 ? utf8.decode(response.bodyBytes) : null;
+  }
 
   static const String _baseUrl = "https://hadeethenc.com/api/v1";
+
+  /// Gün + dil başına seçilen hadis ({content, source}; yerel yedek dahil);
+  /// sadece önbellek, yedeğe girmez
+  static const String cacheKey = 'daily_hadith_cache';
 
   final Map<String, String> _languageCodes = {
     "tr": "tr",
@@ -27,42 +43,46 @@ class HadithService {
     "de": "2",
   };
 
-  Future<HadithModel?> getDailyHadith(Locale locale) async {
+  /// [day] (varsayılan bugün) gününün hadisi: seçim güne bağlı; gün + dil
+  /// başına bir kez ağdan alınır, sonra önbellekten. Alınamazsa yerel yedek.
+  Future<HadithModel?> getDailyHadith(Locale locale, {DateTime? day}) async {
+    final now = DateTime.now();
+    final date = day ?? now;
+    String langCode = _languageCodes[locale.languageCode] ?? "tr";
     try {
-      String langCode = _languageCodes[locale.languageCode] ?? "tr";
-
-      // 1. Önce hafızaya bak (Bugün için bu dilde kaydedilmiş mi?)
-      HadithModel? cachedHadith = await _storageService.loadDailyHadith(
+      // 1. Önce hafızaya bak (Bu gün için bu dilde kaydedilmiş mi?)
+      final cached = await _storageService.loadDailyCache(
+        cacheKey,
+        date,
         langCode,
       );
-      if (cachedHadith != null) return cachedHadith;
+      if (cached is Map<String, dynamic>) {
+        final cachedHadith = HadithModel.fromJson(cached);
+        if (cachedHadith.content != null) return cachedHadith;
+      }
 
-      // 2. Rastgelelik için bugünün tarihine göre bir tohum (seed) oluştur
-      DateTime now = DateTime.now();
-      int seed = now.year * 10000 + now.month * 100 + now.day;
+      // 2. Rastgelelik için günün tarihine göre bir tohum (seed) oluştur
+      int seed = date.year * 10000 + date.month * 100 + date.day;
       Random random = Random(seed);
 
       // Sayfa sınırını aşmamak için 1 ile 3 arası rastgele bir sayfa seçiyoruz
       int randomPage = random.nextInt(3) + 1;
 
-      var listResponse = await httpGet(
-        Uri.parse(
-          "$_baseUrl/hadeeths/list/?language=$langCode&category_id=${_categoryIds[langCode] ?? '2'}&per_page=20&page=$randomPage",
-        ),
-      );
+      // HTTP hatasında liste boş sayılır
+      Future<List> list(int perPage, int page) async {
+        final body = await _fetch(
+          Uri.parse(
+            "$_baseUrl/hadeeths/list/?language=$langCode&category_id=${_categoryIds[langCode] ?? '2'}&per_page=$perPage&page=$page",
+          ),
+        );
+        return body == null ? [] : json.decode(body)['data'] ?? [];
+      }
 
-      var data = json.decode(listResponse.body);
-      List hadiths = data['data'] ?? [];
+      List hadiths = await list(20, randomPage);
 
       // PLAN B: Eğer o sayfada hadis yoksa veya API boş döndüyse, hemen %100 GARANTİLİ olan 1. sayfaya dön!
       if (hadiths.isEmpty) {
-        listResponse = await httpGet(
-          Uri.parse(
-            "$_baseUrl/hadeeths/list/?language=$langCode&category_id=${_categoryIds[langCode] ?? '2'}&per_page=50&page=1",
-          ),
-        );
-        data = json.decode(listResponse.body);
-        hadiths = data['data'] ?? [];
+        hadiths = await list(50, 1);
       }
 
       // Hala elimizde hadis varsa, o listenin içinden rastgele birini seç
@@ -70,26 +90,46 @@ class HadithService {
         int randomIndex = random.nextInt(hadiths.length);
         String hadithId = hadiths[randomIndex]['id'].toString();
 
-        final detailResponse = await httpGet(
+        final detailBody = await _fetch(
           Uri.parse("$_baseUrl/hadeeths/one/?language=$langCode&id=$hadithId"),
         );
 
-        if (detailResponse.statusCode == 200) {
-          var detailData = json.decode(detailResponse.body);
-          final hadith = HadithModel.fromJson(detailData);
+        if (detailBody != null) {
+          final hadith = HadithModel.fromJson(json.decode(detailBody));
 
-          // API'den başarıyla çektik, bunu hemen bugünün tarihiyle hafızaya kaydet
-          await _storageService.saveDailyHadith(hadith, langCode);
-          return hadith;
+          // Metni olan hadis bu günün hadisi olarak hafızaya kaydedilir
+          if (hadith.content != null) {
+            await _storageService.saveDailyCache(
+              cacheKey,
+              date,
+              langCode,
+              hadith.toJson(),
+            );
+            return hadith;
+          }
         }
       }
-
-      // Yukarıdaki işlemlerin hiçbirinden sağ çıkamazsak mecburen yedeği göster
-      return _getFallbackHadith(locale);
     } catch (e) {
       print("❌ Hadis Servis Hatası: $e");
-      return _getFallbackHadith(locale);
     }
+
+    // Yukarıdaki işlemlerin hiçbirinden sağ çıkamazsak mecburen yedeği göster.
+    // Bugün gösterilen yedek gün boyu kalır (hafızaya yazılır); ileri bir günün
+    // (yarının bildirimi) yedeği yazılmaz, o gün ağdan yeniden denenir
+    final fallback = _getFallbackHadith(locale);
+    if (PrayerTracker.dateKey(date) == PrayerTracker.dateKey(now)) {
+      try {
+        await _storageService.saveDailyCache(
+          cacheKey,
+          date,
+          langCode,
+          fallback.toJson(),
+        );
+      } catch (e) {
+        // Yazılamazsa da gösterilir
+      }
+    }
+    return fallback;
   }
 
   HadithModel _getFallbackHadith(Locale locale) {

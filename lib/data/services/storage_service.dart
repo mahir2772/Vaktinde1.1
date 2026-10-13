@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prayer_times_model.dart';
-import '../models/hadith_model.dart';
 import 'prayer_tracker.dart';
 
 class StorageService {
@@ -306,32 +305,39 @@ class StorageService {
     await prefs.setBool(religiousDaysEnabledKey, enabled);
   }
 
-  Future<void> saveDailyHadith(HadithModel hadith, String languageCode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('daily_hadith_content', hadith.content ?? "");
-    await prefs.setString('daily_hadith_source', hadith.source ?? "");
+  // --- Günün ayeti / hadisi önbelleği (sadece önbellek; yedeğe girmez) ---
+  // [key] altında "yyyy-MM-dd|dil" → içerik. Bildirim yarının içeriğini de
+  // alır: gün başına ayrı kayıt; yazarken önceki günden eskiler silinir.
 
-    String today = DateTime.now().toIso8601String().split('T')[0];
-    await prefs.setString('daily_hadith_date', today);
-    await prefs.setString('daily_hadith_lang', languageCode);
+  Future<Object?> loadDailyCache(String key, DateTime day, String lang) async {
+    final prefs = await SharedPreferences.getInstance();
+    return _dailyCache(prefs.getString(key))[_dailyCacheEntry(day, lang)];
   }
 
-  Future<HadithModel?> loadDailyHadith(String languageCode) async {
+  Future<void> saveDailyCache(
+    String key,
+    DateTime day,
+    String lang,
+    Object value,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
+    final oldest = PrayerTracker.dateKey(PrayerTracker.addDays(day, -1));
+    final entries = _dailyCache(prefs.getString(key))
+      ..removeWhere((entry, _) => entry.compareTo(oldest) < 0)
+      ..[_dailyCacheEntry(day, lang)] = value;
+    await prefs.setString(key, jsonEncode(entries));
+  }
 
-    String? savedDate = prefs.getString('daily_hadith_date');
-    String? savedLang = prefs.getString('daily_hadith_lang');
-    String today = DateTime.now().toIso8601String().split('T')[0];
+  static String _dailyCacheEntry(DateTime day, String lang) =>
+      '${PrayerTracker.dateKey(day)}|$lang';
 
-    if (savedDate != today || savedLang != languageCode) return null;
-
-    String? content = prefs.getString('daily_hadith_content');
-    String? source = prefs.getString('daily_hadith_source');
-
-    if (content != null && content.isNotEmpty) {
-      return HadithModel(content: content, source: source);
+  static Map<String, dynamic> _dailyCache(String? raw) {
+    if (raw == null) return {};
+    try {
+      final data = jsonDecode(raw);
+      return data is Map<String, dynamic> ? data : {};
+    } catch (e) {
+      return {};
     }
-
-    return null;
   }
 }

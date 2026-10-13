@@ -3,8 +3,10 @@
 // kayıtların değiştirilmesi
 import 'dart:convert';
 
+import 'package:ezan_saati/data/services/ayah_service.dart';
 import 'package:ezan_saati/data/services/backup_service.dart';
 import 'package:ezan_saati/data/services/fitre_service.dart';
+import 'package:ezan_saati/data/services/hadith_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker_service.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
@@ -69,6 +71,8 @@ final Map<String, Object> _notBackedUp = {
   'daily_hadith_source': 'kaynak',
   'daily_hadith_date': '2026-10-11',
   'daily_hadith_lang': 'tr',
+  AyahService.cacheKey: '{"2026-10-11|tr":"{}"}',
+  HadithService.cacheKey: '{"2026-10-11|tr":{"content":"hadis"}}',
   FitreService.cacheKey: '{"x":1}',
   QuranService.cacheIndexKey: ['quran_surah_1'],
   '${QuranService.cachePrefix}1': 'metin',

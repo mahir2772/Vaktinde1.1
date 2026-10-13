@@ -468,16 +468,17 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     await getPrayerTimes(loc: loc, isManualRefresh: true);
   }
 
-  // Ayet/hadisin alındığı gün: eski gün içeriği bildirime kurulmaz (WorkManager tamamlar)
+  // Ayet/hadisin günü: bugünün içeriği alınmadan bildirim kurulmaz (WorkManager
+  // tamamlar); bildirim çalacağı günün içeriğini kendisi alır (bugünse aynısı)
   DateTime? _ayahDate;
   DateTime? _hadithDate;
 
   Future<void> _scheduleDailyContent() async {
     if (_currentLoc == null) return;
     final now = DateTime.now();
-    final ayah = DateUtils.isSameDay(_ayahDate, now) ? dailyAyah : null;
-    final hadith = DateUtils.isSameDay(_hadithDate, now) ? dailyHadith : null;
-    if (ayah == null && hadith == null) return;
+    final ayah = DateUtils.isSameDay(_ayahDate, now);
+    final hadith = DateUtils.isSameDay(_hadithDate, now);
+    if (!ayah && !hadith) return;
     try {
       await _refreshService.scheduleDailyContent(
         localeName: _currentLoc!.localeName,
@@ -488,20 +489,25 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> getDailyHadith(Locale locale) async {
-    final hadith = await _hadithService.getDailyHadith(locale);
+    final today = DateTime.now();
+    final hadith = await _hadithService.getDailyHadith(locale, day: today);
     if (hadith != null) {
       dailyHadith = hadith;
-      _hadithDate = DateTime.now();
+      _hadithDate = today;
       notifyListeners();
       await _scheduleDailyContent();
     }
   }
 
   Future<void> getDailyAyah(Locale locale) async {
-    final ayah = await _ayahService.getRandomAyah(locale.languageCode);
+    final today = DateTime.now();
+    final ayah = await _ayahService.getDailyAyah(
+      locale.languageCode,
+      day: today,
+    );
     if (ayah != null) {
       dailyAyah = ayah;
-      _ayahDate = DateTime.now();
+      _ayahDate = today;
       notifyListeners();
       await _scheduleDailyContent();
     }

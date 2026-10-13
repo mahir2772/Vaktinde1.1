@@ -8,9 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/core/ui/app_format.dart';
 import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
-import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-import '../models/hadith_model.dart';
 import '../models/prayer_times_model.dart';
 import 'ayah_service.dart';
 import 'dini_gunler_service.dart';
@@ -98,6 +96,17 @@ class PrayerRefreshService {
     ayahNotificationId,
     hadithNotificationId,
   ];
+
+  static int _dailyContentHour(int id) => id == ayahNotificationId ? 10 : 19;
+
+  /// Günlük içerik bildiriminin çalacağı gün (NotificationService gibi: saati
+  /// geçtiyse yarın). İçerik bu günün içeriğidir: bugün çalacaksa ana
+  /// ekrandakiyle aynı, yarın çalacaksa yarının.
+  static DateTime dailyContentDay(int id, DateTime now) {
+    final today = PrayerTracker.day(now);
+    final time = DateTime(now.year, now.month, now.day, _dailyContentHour(id));
+    return time.isBefore(now) ? PrayerTracker.addDays(today, 1) : today;
+  }
 
   /// Dini gün ve kandil bildirimleri: o gün 10:00, [religiousDayDays] gün
   /// ilerisine kadar. ID bildirim gününe bağlı (400 günlük döngü: pencerede
@@ -1132,48 +1141,70 @@ class PrayerRefreshService {
       id: id,
       title: title,
       body: body,
-      hour: ayah ? 10 : 19,
+      hour: _dailyContentHour(id),
       minute: 0,
       channelId: ayah ? 'daily_ayah_channel' : 'daily_hadith_channel',
       channelName: ayah ? 'Günlük Ayet' : 'Günlük Hadis',
     );
   }
 
-  /// Günlük ayet (10:00, ID 1000) ve hadis (19:00, ID 1900) bildirimi; ayar
-  /// ("Günün ayeti ve hadisi") kapalıysa kurulmaz.
+  /// Günlük ayet (10:00, ID 1000) ve hadis (19:00, ID 1900) bildirimi ([ayah] /
+  /// [hadith]: kurulacaklar); ayar ("Günün ayeti ve hadisi") kapalıysa kurulmaz.
+  /// İçerik çalacağı günün içeriğidir ([dailyContentDay]; servisler gün + dil
+  /// başına önbellekler): bugün çalacaksa ana ekrandakiyle aynı. Alınamayan kurulmaz.
   /// Biri kurulamazsa diğeri yine kurulur; hata Crashlytics'e bildirilir.
   Future<void> scheduleDailyContent({
     required String localeName,
-    AyahModel? ayah,
-    HadithModel? hadith,
-  }) => _dailyQueue.run(() async {
+    bool ayah = true,
+    bool hadith = true,
+  }) async {
     if (!await _dailyContentEnabled()) return;
-    if (ayah != null) {
-      String title = localeName.startsWith('tr')
-          ? "Günün Ayeti"
-          : "Ayah of the Day";
-      String content = "${ayah.arabicText}\n\n${ayah.translatedText}";
-      try {
-        await _scheduleDaily(ayahNotificationId, title, content);
-      } catch (e, st) {
-        await reportNonFatal(e, st, reason: 'günün ayeti bildirimi kurulamadı');
+    // İçerik sıradan önce alınır (ağ beklenirken iptal bekletilmez)
+    final langCode = localeName.substring(0, 2);
+    final ayahDay = dailyContentDay(ayahNotificationId, _clock());
+    final hadithDay = dailyContentDay(hadithNotificationId, _clock());
+    final dayAyah = ayah
+        ? await AyahService().getDailyAyah(langCode, day: ayahDay)
+        : null;
+    final dayHadith = hadith
+        ? await HadithService().getDailyHadith(Locale(langCode), day: hadithDay)
+        : null;
+    // Beklerken saati geçtiyse içerik başka güne kurulmaz (sonraki tur kurar)
+    bool stillFor(int id, DateTime day) => dailyContentDay(id, _clock()) == day;
+    await _dailyQueue.run(() async {
+      if (!await _dailyContentEnabled()) return;
+      if (dayAyah != null && stillFor(ayahNotificationId, ayahDay)) {
+        String title = localeName.startsWith('tr')
+            ? "Günün Ayeti"
+            : "Ayah of the Day";
+        String content = "${dayAyah.arabicText}\n\n${dayAyah.translatedText}";
+        try {
+          await _scheduleDaily(ayahNotificationId, title, content);
+        } catch (e, st) {
+          await reportNonFatal(
+            e,
+            st,
+            reason: 'günün ayeti bildirimi kurulamadı',
+          );
+        }
       }
-    }
-    if (hadith != null && hadith.content != null) {
-      String title = localeName.startsWith('tr')
-          ? "Günün Hadisi"
-          : "Hadith of the Day";
-      try {
-        await _scheduleDaily(hadithNotificationId, title, hadith.content!);
-      } catch (e, st) {
-        await reportNonFatal(
-          e,
-          st,
-          reason: 'günün hadisi bildirimi kurulamadı',
-        );
+      final hadithText = dayHadith?.content;
+      if (hadithText != null && stillFor(hadithNotificationId, hadithDay)) {
+        String title = localeName.startsWith('tr')
+            ? "Günün Hadisi"
+            : "Hadith of the Day";
+        try {
+          await _scheduleDaily(hadithNotificationId, title, hadithText);
+        } catch (e, st) {
+          await reportNonFatal(
+            e,
+            st,
+            reason: 'günün hadisi bildirimi kurulamadı',
+          );
+        }
       }
-    }
-  });
+    });
+  }
 
   /// "Günün ayeti ve hadisi" kapatılınca kurulu bildirimler hemen iptal edilir
   Future<void> cancelDailyContent() => _dailyQueue.run(() async {
@@ -1226,19 +1257,10 @@ class PrayerRefreshService {
         }
         return;
       }
-      final langCode = loc.localeName.substring(0, 2);
-      AyahModel? ayah;
-      HadithModel? hadith;
-      if (!pending.contains(ayahNotificationId)) {
-        ayah = await AyahService().getRandomAyah(langCode);
-      }
-      if (!pending.contains(hadithNotificationId)) {
-        hadith = await HadithService().getDailyHadith(Locale(langCode));
-      }
       await scheduleDailyContent(
         localeName: loc.localeName,
-        ayah: ayah,
-        hadith: hadith,
+        ayah: !pending.contains(ayahNotificationId),
+        hadith: !pending.contains(hadithNotificationId),
       );
     } catch (e) {}
   }
