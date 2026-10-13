@@ -31,16 +31,16 @@ class Dua {
 
   factory Dua.fromJson(Map<String, dynamic> json, {int? count}) => Dua(
     id: json['id'] as String,
-    title: _texts(json['title']),
+    title: localizedTexts(json['title']),
     arabic: (json['arabic'] as String? ?? '').trim(),
-    translit: _texts(json['translit']),
-    meaning: _texts(json['meaning']),
-    note: _texts(json['note']),
-    source: _texts(json['source']),
+    translit: localizedTexts(json['translit']),
+    meaning: localizedTexts(json['meaning']),
+    note: localizedTexts(json['note']),
+    source: localizedTexts(json['source']),
     count: count ?? (json['count'] as int? ?? 0),
   );
 
-  String titleFor(String lang) => _pick(title, lang) ?? id;
+  String titleFor(String lang) => pickText(title, lang) ?? id;
 
   String? translitFor(String lang) => switch (lang) {
     'ar' => null,
@@ -50,11 +50,11 @@ class Dua {
 
   /// Arapçada yok (metin zaten Arapça); diğer diller kendi çevirisi
   String? meaningFor(String lang) =>
-      lang == 'ar' ? null : _nonEmpty(meaning[lang]) ?? _pick(meaning, 'en');
+      lang == 'ar' ? null : _nonEmpty(meaning[lang]) ?? pickText(meaning, 'en');
 
-  String? noteFor(String lang) => _pick(note, lang);
+  String? noteFor(String lang) => pickText(note, lang);
 
-  String? sourceFor(String lang) => _pick(source, lang);
+  String? sourceFor(String lang) => pickText(source, lang);
 
   /// Kopyalanan / metin olarak paylaşılan hali
   String plainText(String lang) {
@@ -80,7 +80,7 @@ class DuaCategory {
     required this.duas,
   });
 
-  String titleFor(String lang) => _pick(title, lang) ?? id;
+  String titleFor(String lang) => pickText(title, lang) ?? id;
 }
 
 class DuaLibrary {
@@ -93,12 +93,17 @@ class DuaLibrary {
 
   const DuaLibrary({required this.categories, required this.tesbihat});
 
+  /// Kimliğiyle dua (Namaz Hocası bağlantıları); yoksa null
+  Dua? byId(String id) => [
+    for (final c in categories) ...c.duas,
+  ].where((d) => d.id == id).firstOrNull;
+
   factory DuaLibrary.fromJson(Map<String, dynamic> json) {
     final categories = [
       for (final c in json['categories'] as List)
         DuaCategory(
           id: c['id'] as String,
-          title: _texts(c['title']),
+          title: localizedTexts(c['title']),
           duas: [
             for (final d in c['duas'] as List)
               Dua.fromJson(d as Map<String, dynamic>),
@@ -151,7 +156,8 @@ class DuaLibrary {
   }
 }
 
-Map<String, String> _texts(Object? json) => json is Map
+/// Dil kodu → metin (Namaz Hocası da kullanır)
+Map<String, String> localizedTexts(Object? json) => json is Map
     ? {
         for (final MapEntry(:key, :value) in json.entries)
           if (value is String) '$key': value.trim(),
@@ -162,5 +168,5 @@ String? _nonEmpty(String? value) =>
     (value == null || value.isEmpty) ? null : value;
 
 /// Dildeki metin; yoksa İngilizce, o da yoksa Türkçe
-String? _pick(Map<String, String> texts, String lang) =>
+String? pickText(Map<String, String> texts, String lang) =>
     _nonEmpty(texts[lang]) ?? _nonEmpty(texts['en']) ?? _nonEmpty(texts['tr']);

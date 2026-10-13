@@ -1867,6 +1867,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get duasTitle => 'Bittgebete';
 
   @override
+  String get prayerGuideTitle => 'Gebetsanleitung';
+
+  @override
+  String get toolPrayerGuideDesc =>
+      'Gebetswaschung und Gebetsablauf, Schritt für Schritt';
+
+  @override
+  String get prayerGuideTabWudu => 'Wudu';
+
+  @override
+  String get prayerGuideTabFards => 'Pflichten';
+
+  @override
+  String get prayerGuideTabRakats => 'Rak\'as';
+
+  @override
+  String get prayerGuideTabSteps => 'Ablauf';
+
+  @override
+  String prayerGuideTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count-mal',
+      one: 'einmal',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get toolDuasDesc => 'Tasbih, Morgen-, Abend- und Alltagsbittgebete';
 
   @override

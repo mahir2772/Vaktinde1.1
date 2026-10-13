@@ -1865,6 +1865,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get duasTitle => 'Duas';
 
   @override
+  String get prayerGuideTitle => 'Prayer Guide';
+
+  @override
+  String get toolPrayerGuideDesc => 'Wudu and how to pray, step by step';
+
+  @override
+  String get prayerGuideTabWudu => 'Wudu';
+
+  @override
+  String get prayerGuideTabFards => 'Obligations';
+
+  @override
+  String get prayerGuideTabRakats => 'Rak\'ahs';
+
+  @override
+  String get prayerGuideTabSteps => 'How to Pray';
+
+  @override
+  String prayerGuideTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count times',
+      one: 'once',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get toolDuasDesc => 'Tasbih, morning-evening and daily duas';
 
   @override

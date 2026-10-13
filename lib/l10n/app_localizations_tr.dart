@@ -1840,6 +1840,29 @@ class AppLocalizationsTr extends AppLocalizations {
   String get duasTitle => 'Dualar';
 
   @override
+  String get prayerGuideTitle => 'Namaz Hocası';
+
+  @override
+  String get toolPrayerGuideDesc => 'Abdest ve namazın kılınışı, adım adım';
+
+  @override
+  String get prayerGuideTabWudu => 'Abdest';
+
+  @override
+  String get prayerGuideTabFards => 'Farzlar';
+
+  @override
+  String get prayerGuideTabRakats => 'Rekâtlar';
+
+  @override
+  String get prayerGuideTabSteps => 'Kılınış';
+
+  @override
+  String prayerGuideTimes(int count) {
+    return '$count kez';
+  }
+
+  @override
   String get toolDuasDesc => 'Tesbihat, sabah-akşam ve günlük dualar';
 
   @override

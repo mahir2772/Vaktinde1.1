@@ -960,6 +960,20 @@
     "nearbyMosquesError": "Harita açılamadı.",
     "toolEsmaDesc": "Allah'ın 99 ismi ve anlamları",
     "duasTitle": "Dualar",
+    "prayerGuideTitle": "Namaz Hocası",
+    "toolPrayerGuideDesc": "Abdest ve namazın kılınışı, adım adım",
+    "prayerGuideTabWudu": "Abdest",
+    "prayerGuideTabFards": "Farzlar",
+    "prayerGuideTabRakats": "Rekâtlar",
+    "prayerGuideTabSteps": "Kılınış",
+    "prayerGuideTimes": "{count} kez",
+    "@prayerGuideTimes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "toolDuasDesc": "Tesbihat, sabah-akşam ve günlük dualar",
     "duaTransliteration": "Okunuşu",
     "duaMeaning": "Anlamı",

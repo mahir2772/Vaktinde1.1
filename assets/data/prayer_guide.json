@@ -1,0 +1,1329 @@
+{
+  "dhikr": {
+    "tekbir": {
+      "arabic": "اللَّهُ أَكْبَرُ",
+      "translit": {
+        "tr": "Allâhu ekber",
+        "latin": "Allahu akbar"
+      },
+      "meaning": {
+        "tr": "Allah en büyüktür.",
+        "en": "Allah is the Greatest.",
+        "de": "Allah ist der Größte.",
+        "fr": "Allah est le plus grand."
+      }
+    },
+    "euzu": {
+      "arabic": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+      "translit": {
+        "tr": "Eûzü billâhi mine'ş-şeytâni'r-racîm",
+        "latin": "A'udhu billahi mina'sh-shaytani'r-rajim"
+      },
+      "meaning": {
+        "tr": "Kovulmuş şeytandan Allah'a sığınırım.",
+        "en": "I seek refuge in Allah from the accursed Satan.",
+        "de": "Ich suche Zuflucht bei Allah vor dem verfluchten Satan.",
+        "fr": "Je cherche refuge auprès d'Allah contre Satan le maudit."
+      }
+    },
+    "besmele": {
+      "arabic": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
+      "translit": {
+        "tr": "Bismillâhirrahmânirrahîm",
+        "latin": "Bismillahi'r-rahmani'r-rahim"
+      },
+      "meaning": {
+        "tr": "Rahmân ve Rahîm olan Allah'ın adıyla.",
+        "en": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "de": "Im Namen Allahs, des Allerbarmers, des Barmherzigen.",
+        "fr": "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux."
+      }
+    },
+    "ruku": {
+      "arabic": "سُبْحَانَ رَبِّيَ الْعَظِيمِ",
+      "translit": {
+        "tr": "Sübhâne rabbiye'l-azîm",
+        "latin": "Subhana rabbiya'l-'azim"
+      },
+      "meaning": {
+        "tr": "Yüce Rabbimi tenzih ederim.",
+        "en": "Glory be to my Lord, the Magnificent.",
+        "de": "Gepriesen sei mein Herr, der Gewaltige.",
+        "fr": "Gloire à mon Seigneur, l'Immense."
+      }
+    },
+    "semi": {
+      "arabic": "سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ",
+      "translit": {
+        "tr": "Semiallâhü li men hamideh",
+        "latin": "Sami'a'llahu li man hamidah"
+      },
+      "meaning": {
+        "tr": "Allah, kendisine hamdedeni işitir.",
+        "en": "Allah hears the one who praises Him.",
+        "de": "Allah hört den, der Ihn lobt.",
+        "fr": "Allah entend celui qui Le loue."
+      }
+    },
+    "tahmid": {
+      "arabic": "رَبَّنَا لَكَ الْحَمْدُ",
+      "translit": {
+        "tr": "Rabbenâ leke'l-hamd",
+        "latin": "Rabbana laka'l-hamd"
+      },
+      "meaning": {
+        "tr": "Rabbimiz! Hamd sanadır.",
+        "en": "Our Lord, to You belongs all praise.",
+        "de": "Unser Herr, Dir gebührt alles Lob.",
+        "fr": "Notre Seigneur, à Toi la louange."
+      }
+    },
+    "sajda": {
+      "arabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+      "translit": {
+        "tr": "Sübhâne rabbiye'l-a'lâ",
+        "latin": "Subhana rabbiya'l-a'la"
+      },
+      "meaning": {
+        "tr": "En yüce olan Rabbimi tenzih ederim.",
+        "en": "Glory be to my Lord, the Most High.",
+        "de": "Gepriesen sei mein Herr, der Höchste.",
+        "fr": "Gloire à mon Seigneur, le Très-Haut."
+      }
+    },
+    "salam": {
+      "arabic": "السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ",
+      "translit": {
+        "tr": "Esselâmü aleyküm ve rahmetullâh",
+        "latin": "As-salamu 'alaykum wa rahmatullah"
+      },
+      "meaning": {
+        "tr": "Selâm ve Allah'ın rahmeti üzerinize olsun.",
+        "en": "Peace and the mercy of Allah be upon you.",
+        "de": "Friede und die Barmherzigkeit Allahs seien mit euch.",
+        "fr": "Que la paix et la miséricorde d'Allah soient sur vous."
+      }
+    }
+  },
+  "wudu": [
+    {
+      "title": {
+        "tr": "Abdestin farzları",
+        "en": "Obligatory acts (fard) of wudu",
+        "de": "Pflichtteile (Fard) der Gebetswaschung",
+        "fr": "Les obligations (fard) des ablutions",
+        "ar": "فرائض الوضوء"
+      },
+      "items": [
+        {
+          "text": {
+            "tr": "Yüzü yıkamak",
+            "en": "Washing the face",
+            "de": "Das Gesicht waschen",
+            "fr": "Laver le visage",
+            "ar": "غسل الوجه"
+          }
+        },
+        {
+          "text": {
+            "tr": "Kolları dirseklerle birlikte yıkamak",
+            "en": "Washing the arms up to and including the elbows",
+            "de": "Die Arme einschließlich der Ellbogen waschen",
+            "fr": "Laver les bras, coudes compris",
+            "ar": "غسل اليدين مع المرفقين"
+          }
+        },
+        {
+          "text": {
+            "tr": "Başın dörtte birini meshetmek",
+            "en": "Wiping (masah) a quarter of the head with wet hands",
+            "de": "Ein Viertel des Kopfes mit nassen Händen bestreichen",
+            "fr": "Passer les mains mouillées sur le quart de la tête",
+            "ar": "مسح ربع الرأس"
+          }
+        },
+        {
+          "text": {
+            "tr": "Ayakları topuklarla birlikte yıkamak",
+            "en": "Washing the feet up to and including the ankles",
+            "de": "Die Füße einschließlich der Knöchel waschen",
+            "fr": "Laver les pieds, chevilles comprises",
+            "ar": "غسل الرجلين مع الكعبين"
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "tr": "Abdestin alınışı (sünnete uygun sıra)",
+        "en": "Performing wudu step by step (Sunnah order)",
+        "de": "Ablauf der Gebetswaschung (nach der Sunna)",
+        "fr": "Les ablutions pas à pas (selon la Sunna)",
+        "ar": "صفة الوضوء (على ترتيب السنة)"
+      },
+      "items": [
+        {
+          "text": {
+            "tr": "Abdest almaya niyet edilir ve Besmele çekilir.",
+            "en": "Make the intention for wudu and say the Basmala.",
+            "de": "Die Absicht zur Gebetswaschung fassen und die Basmala sprechen.",
+            "fr": "Formuler l'intention de faire les ablutions et prononcer la basmala.",
+            "ar": "النية ثم البسملة."
+          },
+          "recite": [
+            {
+              "dhikr": "besmele"
+            }
+          ]
+        },
+        {
+          "text": {
+            "tr": "Eller bileklere kadar üç kez yıkanır.",
+            "en": "Wash the hands up to the wrists three times.",
+            "de": "Die Hände bis zu den Handgelenken dreimal waschen.",
+            "fr": "Se laver les mains jusqu'aux poignets trois fois.",
+            "ar": "غسل الكفين إلى الرسغين ثلاث مرات."
+          }
+        },
+        {
+          "text": {
+            "tr": "Ağza üç kez su verilir.",
+            "en": "Rinse the mouth three times.",
+            "de": "Den Mund dreimal ausspülen.",
+            "fr": "Se rincer la bouche trois fois.",
+            "ar": "المضمضة ثلاث مرات."
+          }
+        },
+        {
+          "text": {
+            "tr": "Buruna üç kez su verilir.",
+            "en": "Rinse the nose three times.",
+            "de": "Die Nase dreimal ausspülen.",
+            "fr": "Se rincer le nez trois fois.",
+            "ar": "الاستنشاق ثلاث مرات."
+          }
+        },
+        {
+          "text": {
+            "tr": "Yüz üç kez yıkanır.",
+            "en": "Wash the face three times.",
+            "de": "Das Gesicht dreimal waschen.",
+            "fr": "Se laver le visage trois fois.",
+            "ar": "غسل الوجه ثلاث مرات."
+          }
+        },
+        {
+          "text": {
+            "tr": "Önce sağ, sonra sol kol dirseklerle birlikte üçer kez yıkanır.",
+            "en": "Wash the right arm, then the left, including the elbows, three times each.",
+            "de": "Erst den rechten, dann den linken Arm einschließlich des Ellbogens je dreimal waschen.",
+            "fr": "Laver le bras droit puis le gauche, coudes compris, trois fois chacun.",
+            "ar": "غسل اليد اليمنى ثم اليسرى مع المرفقين، ثلاث مرات لكل منهما."
+          }
+        },
+        {
+          "text": {
+            "tr": "Baş meshedilir.",
+            "en": "Wipe the head with wet hands.",
+            "de": "Den Kopf mit nassen Händen bestreichen.",
+            "fr": "Passer les mains mouillées sur la tête.",
+            "ar": "مسح الرأس."
+          }
+        },
+        {
+          "text": {
+            "tr": "Kulaklar ve boyun meshedilir.",
+            "en": "Wipe the ears and the neck.",
+            "de": "Ohren und Nacken bestreichen.",
+            "fr": "Passer les mains mouillées sur les oreilles et la nuque.",
+            "ar": "مسح الأذنين والرقبة."
+          }
+        },
+        {
+          "text": {
+            "tr": "Önce sağ, sonra sol ayak topuklarla birlikte üçer kez yıkanır.",
+            "en": "Wash the right foot, then the left, including the ankles, three times each.",
+            "de": "Erst den rechten, dann den linken Fuß einschließlich der Knöchel je dreimal waschen.",
+            "fr": "Laver le pied droit puis le gauche, chevilles comprises, trois fois chacun.",
+            "ar": "غسل الرجل اليمنى ثم اليسرى مع الكعبين، ثلاث مرات لكل منهما."
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "tr": "Abdesti bozan başlıca durumlar",
+        "en": "Main things that break wudu",
+        "de": "Was die Gebetswaschung hauptsächlich ungültig macht",
+        "fr": "Principales choses qui annulent les ablutions",
+        "ar": "أهم نواقض الوضوء"
+      },
+      "items": [
+        {
+          "text": {
+            "tr": "Tuvalet ihtiyacı (idrar, dışkı)",
+            "en": "Relieving oneself (urine, stool)",
+            "de": "Verrichten der Notdurft (Urin, Stuhl)",
+            "fr": "La miction ou la défécation",
+            "ar": "قضاء الحاجة (البول أو الغائط)"
+          }
+        },
+        {
+          "text": {
+            "tr": "Yel çıkması",
+            "en": "Passing wind",
+            "de": "Abgang von Darmwinden",
+            "fr": "L'émission de gaz",
+            "ar": "خروج الريح"
+          }
+        },
+        {
+          "text": {
+            "tr": "Vücuttan kan veya irin çıkıp akması",
+            "en": "Blood or pus leaving the body and flowing",
+            "de": "Austreten und Fließen von Blut oder Eiter aus dem Körper",
+            "fr": "L'écoulement de sang ou de pus hors du corps",
+            "ar": "خروج الدم أو القيح من البدن وسيلانه"
+          }
+        },
+        {
+          "text": {
+            "tr": "Ağız dolusu kusmak",
+            "en": "Vomiting a mouthful",
+            "de": "Erbrechen in Mundfülle",
+            "fr": "Le vomissement à pleine bouche",
+            "ar": "القيء ملء الفم"
+          }
+        },
+        {
+          "text": {
+            "tr": "Uyumak",
+            "en": "Sleeping",
+            "de": "Schlaf",
+            "fr": "Le sommeil",
+            "ar": "النوم"
+          }
+        },
+        {
+          "text": {
+            "tr": "Bayılmak",
+            "en": "Fainting",
+            "de": "Ohnmacht",
+            "fr": "L'évanouissement",
+            "ar": "الإغماء"
+          }
+        },
+        {
+          "text": {
+            "tr": "Namazda yüksek sesle gülmek",
+            "en": "Laughing out loud in prayer",
+            "de": "Lautes Lachen im Gebet",
+            "fr": "Le rire aux éclats pendant la prière",
+            "ar": "القهقهة في الصلاة"
+          }
+        }
+      ]
+    }
+  ],
+  "fards": [
+    {
+      "title": {
+        "tr": "Namazın dışındaki farzlar (şartları)",
+        "en": "Obligations outside the prayer (conditions)",
+        "de": "Pflichten außerhalb des Gebets (Bedingungen)",
+        "fr": "Obligations extérieures à la prière (conditions)",
+        "ar": "الفرائض خارج الصلاة (شروط الصلاة)"
+      },
+      "items": [
+        {
+          "title": {
+            "tr": "Hadesten taharet",
+            "en": "Purity from hadath",
+            "de": "Reinheit von Hadath",
+            "fr": "Purification du hadath",
+            "ar": "الطهارة من الحدث"
+          },
+          "text": {
+            "tr": "Abdest almak; gusül gerekiyorsa gusletmek",
+            "en": "Having wudu, and performing ghusl when it is required",
+            "de": "Die Gebetswaschung vollziehen und, wenn nötig, die Ganzkörperwaschung (Ghusl)",
+            "fr": "Être en état d'ablution et faire le ghusl s'il est requis",
+            "ar": "الوضوء، والغسل إذا وجب"
+          }
+        },
+        {
+          "title": {
+            "tr": "Necasetten taharet",
+            "en": "Purity from najasah",
+            "de": "Reinheit von Nadschasa",
+            "fr": "Purification des souillures",
+            "ar": "الطهارة من النجاسة"
+          },
+          "text": {
+            "tr": "Beden, elbise ve namaz kılınacak yerin necasetten temiz olması",
+            "en": "The body, clothes and place of prayer being clean of impurity",
+            "de": "Körper, Kleidung und Gebetsplatz sind frei von Unreinheit",
+            "fr": "Le corps, les vêtements et le lieu de prière sont exempts de souillure",
+            "ar": "طهارة البدن والثوب ومكان الصلاة من النجاسة"
+          }
+        },
+        {
+          "title": {
+            "tr": "Setr-i avret",
+            "en": "Covering the 'awrah",
+            "de": "Bedecken der Aura",
+            "fr": "Couvrir la 'awra",
+            "ar": "ستر العورة"
+          },
+          "text": {
+            "tr": "Örtülmesi gereken yerleri örtmek",
+            "en": "Covering the parts of the body that must be covered",
+            "de": "Die Körperteile bedecken, die bedeckt sein müssen",
+            "fr": "Couvrir les parties du corps qui doivent l'être",
+            "ar": "ستر ما يجب ستره من البدن"
+          }
+        },
+        {
+          "title": {
+            "tr": "İstikbâl-i kıble",
+            "en": "Facing the qibla",
+            "de": "Ausrichtung zur Qibla",
+            "fr": "S'orienter vers la qibla",
+            "ar": "استقبال القبلة"
+          },
+          "text": {
+            "tr": "Kıbleye yönelmek",
+            "en": "Turning towards the Kaaba",
+            "de": "Sich der Kaaba zuwenden",
+            "fr": "Se tourner vers la Kaaba",
+            "ar": "التوجه نحو الكعبة"
+          }
+        },
+        {
+          "title": {
+            "tr": "Vakit",
+            "en": "Time",
+            "de": "Gebetszeit",
+            "fr": "L'heure",
+            "ar": "الوقت"
+          },
+          "text": {
+            "tr": "Namazı vaktinde kılmak",
+            "en": "Performing the prayer within its time",
+            "de": "Das Gebet innerhalb seiner Zeit verrichten",
+            "fr": "Accomplir la prière dans son temps",
+            "ar": "أداء الصلاة في وقتها"
+          }
+        },
+        {
+          "title": {
+            "tr": "Niyet",
+            "en": "Intention (niyyah)",
+            "de": "Absicht (Niyya)",
+            "fr": "L'intention (niyya)",
+            "ar": "النية"
+          },
+          "text": {
+            "tr": "Kılınacak namaza kalben niyet etmek",
+            "en": "Intending in your heart the prayer you are about to perform",
+            "de": "Im Herzen die Absicht für das jeweilige Gebet fassen",
+            "fr": "Avoir dans le cœur l'intention de la prière que l'on accomplit",
+            "ar": "أن ينوي بقلبه الصلاة التي يصليها"
+          }
+        }
+      ]
+    },
+    {
+      "title": {
+        "tr": "Namazın içindeki farzlar (rükünleri)",
+        "en": "Obligations within the prayer (pillars)",
+        "de": "Pflichten innerhalb des Gebets (Grundpfeiler)",
+        "fr": "Obligations à l'intérieur de la prière (piliers)",
+        "ar": "الفرائض داخل الصلاة (أركان الصلاة)"
+      },
+      "items": [
+        {
+          "title": {
+            "tr": "İftitah tekbiri",
+            "en": "Opening takbir",
+            "de": "Eröffnungs-Takbir",
+            "fr": "Takbir d'ouverture",
+            "ar": "تكبيرة الإحرام"
+          },
+          "text": {
+            "tr": "Namaza «Allâhu ekber» diyerek başlamak",
+            "en": "Beginning the prayer by saying “Allahu akbar”",
+            "de": "Das Gebet mit „Allahu akbar“ beginnen",
+            "fr": "Commencer la prière en disant « Allahu akbar »",
+            "ar": "افتتاح الصلاة بالتكبير"
+          }
+        },
+        {
+          "title": {
+            "tr": "Kıyam",
+            "en": "Standing (qiyam)",
+            "de": "Stehen (Qiyam)",
+            "fr": "Station debout",
+            "ar": "القيام"
+          },
+          "text": {
+            "tr": "Ayakta durmak",
+            "en": "Standing upright in prayer",
+            "de": "Aufrecht im Gebet stehen",
+            "fr": "Se tenir debout pendant la prière",
+            "ar": "الوقوف في الصلاة"
+          }
+        },
+        {
+          "title": {
+            "tr": "Kıraat",
+            "en": "Recitation (qira'ah)",
+            "de": "Rezitation (Qira'a)",
+            "fr": "Récitation",
+            "ar": "القراءة"
+          },
+          "text": {
+            "tr": "Ayakta Kur'an'dan okumak",
+            "en": "Reciting from the Qur'an while standing",
+            "de": "Im Stehen aus dem Koran rezitieren",
+            "fr": "Réciter du Coran en position debout",
+            "ar": "قراءة شيء من القرآن في القيام"
+          }
+        },
+        {
+          "title": {
+            "tr": "Rükû",
+            "en": "Bowing (ruku')",
+            "de": "Verbeugung (Ruku')",
+            "fr": "Inclinaison",
+            "ar": "الركوع"
+          },
+          "text": {
+            "tr": "Eğilmek",
+            "en": "Bending forward",
+            "de": "Sich nach vorn beugen",
+            "fr": "S'incliner vers l'avant",
+            "ar": "الانحناء بالظهر"
+          }
+        },
+        {
+          "title": {
+            "tr": "Secde",
+            "en": "Prostration (sujud)",
+            "de": "Niederwerfung (Sudschud)",
+            "fr": "Prosternation",
+            "ar": "السجود"
+          },
+          "text": {
+            "tr": "Alnı yere koyarak secde etmek",
+            "en": "Prostrating with the forehead on the ground",
+            "de": "Sich niederwerfen, die Stirn auf dem Boden",
+            "fr": "Se prosterner, le front au sol",
+            "ar": "وضع الجبهة على الأرض"
+          }
+        },
+        {
+          "title": {
+            "tr": "Ka'de-i âhîre",
+            "en": "Final sitting (qa'dah)",
+            "de": "Letztes Sitzen (Qa'da)",
+            "fr": "Dernière assise",
+            "ar": "القعدة الأخيرة"
+          },
+          "text": {
+            "tr": "Namazın sonunda oturmak",
+            "en": "Sitting at the end of the prayer",
+            "de": "Am Ende des Gebets sitzen",
+            "fr": "S'asseoir à la fin de la prière",
+            "ar": "الجلوس في آخر الصلاة"
+          }
+        }
+      ]
+    }
+  ],
+  "rakats": {
+    "title": {
+      "tr": "Vakitlere göre rekât sayıları",
+      "en": "Number of rak'ahs by prayer",
+      "de": "Anzahl der Rak'as je Gebet",
+      "fr": "Nombre de rak'as par prière",
+      "ar": "عدد الركعات في كل صلاة"
+    },
+    "kinds": {
+      "sunnah": {
+        "tr": "Sünnet",
+        "en": "Sunnah",
+        "de": "Sunna",
+        "fr": "Sunna",
+        "ar": "سنة"
+      },
+      "sunnah_ghayr": {
+        "tr": "Sünnet (gayr-i müekkede)",
+        "en": "Sunnah (non-emphasized)",
+        "de": "Sunna (nicht bekräftigt)",
+        "fr": "Sunna (non confirmée)",
+        "ar": "سنة غير مؤكدة"
+      },
+      "first_sunnah": {
+        "tr": "İlk sünnet",
+        "en": "First sunnah",
+        "de": "Erste Sunna",
+        "fr": "Première sunna",
+        "ar": "سنة قبلية"
+      },
+      "first_sunnah_ghayr": {
+        "tr": "İlk sünnet (gayr-i müekkede)",
+        "en": "First sunnah (non-emphasized)",
+        "de": "Erste Sunna (nicht bekräftigt)",
+        "fr": "Première sunna (non confirmée)",
+        "ar": "سنة قبلية غير مؤكدة"
+      },
+      "last_sunnah": {
+        "tr": "Son sünnet",
+        "en": "Last sunnah",
+        "de": "Letzte Sunna",
+        "fr": "Dernière sunna",
+        "ar": "سنة بعدية"
+      },
+      "fard": {
+        "tr": "Farz",
+        "en": "Fard",
+        "de": "Fard",
+        "fr": "Fard",
+        "ar": "فرض"
+      },
+      "witr": {
+        "tr": "Vitir (vacip)",
+        "en": "Witr (wajib)",
+        "de": "Witr (wadschib)",
+        "fr": "Witr (wajib)",
+        "ar": "الوتر (واجب)"
+      }
+    },
+    "prayers": [
+      {
+        "id": "fajr",
+        "title": {
+          "tr": "Sabah",
+          "en": "Fajr",
+          "de": "Fajr",
+          "fr": "Fajr",
+          "ar": "الفجر"
+        },
+        "parts": [
+          {
+            "kind": "sunnah",
+            "count": 2
+          },
+          {
+            "kind": "fard",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "id": "dhuhr",
+        "title": {
+          "tr": "Öğle",
+          "en": "Dhuhr",
+          "de": "Dhuhr",
+          "fr": "Dhuhr",
+          "ar": "الظهر"
+        },
+        "parts": [
+          {
+            "kind": "first_sunnah",
+            "count": 4
+          },
+          {
+            "kind": "fard",
+            "count": 4
+          },
+          {
+            "kind": "last_sunnah",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "id": "asr",
+        "title": {
+          "tr": "İkindi",
+          "en": "Asr",
+          "de": "Asr",
+          "fr": "Asr",
+          "ar": "العصر"
+        },
+        "parts": [
+          {
+            "kind": "sunnah_ghayr",
+            "count": 4
+          },
+          {
+            "kind": "fard",
+            "count": 4
+          }
+        ]
+      },
+      {
+        "id": "maghrib",
+        "title": {
+          "tr": "Akşam",
+          "en": "Maghrib",
+          "de": "Maghrib",
+          "fr": "Maghrib",
+          "ar": "المغرب"
+        },
+        "parts": [
+          {
+            "kind": "fard",
+            "count": 3
+          },
+          {
+            "kind": "sunnah",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "id": "isha",
+        "title": {
+          "tr": "Yatsı",
+          "en": "Isha",
+          "de": "Ischa",
+          "fr": "Isha",
+          "ar": "العشاء"
+        },
+        "parts": [
+          {
+            "kind": "first_sunnah_ghayr",
+            "count": 4
+          },
+          {
+            "kind": "fard",
+            "count": 4
+          },
+          {
+            "kind": "last_sunnah",
+            "count": 2
+          },
+          {
+            "kind": "witr",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "id": "jumuah",
+        "title": {
+          "tr": "Cuma",
+          "en": "Jumu'ah (Friday)",
+          "de": "Freitagsgebet",
+          "fr": "Prière du vendredi",
+          "ar": "الجمعة"
+        },
+        "parts": [
+          {
+            "kind": "first_sunnah",
+            "count": 4
+          },
+          {
+            "kind": "fard",
+            "count": 2
+          },
+          {
+            "kind": "last_sunnah",
+            "count": 4
+          }
+        ]
+      }
+    ]
+  },
+  "steps": {
+    "niyet": {
+      "title": {
+        "tr": "Niyet",
+        "en": "Intention",
+        "de": "Absicht (Niyya)",
+        "fr": "Intention (niyya)",
+        "ar": "النية"
+      },
+      "text": {
+        "tr": "Kıbleye yönelinir ve kılınacak namaza kalben niyet edilir.",
+        "en": "Face the qibla and make the intention in your heart for the prayer you are about to perform.",
+        "de": "Sich zur Qibla wenden und im Herzen die Absicht für das jeweilige Gebet fassen.",
+        "fr": "Se tourner vers la qibla et formuler dans son cœur l'intention de la prière à accomplir.",
+        "ar": "يستقبل القبلة وينوي بقلبه الصلاة التي يصليها."
+      }
+    },
+    "tekbir": {
+      "title": {
+        "tr": "İftitah tekbiri",
+        "en": "Opening takbir",
+        "de": "Eröffnungs-Takbir",
+        "fr": "Takbir d'ouverture",
+        "ar": "تكبيرة الإحرام"
+      },
+      "text": {
+        "tr": "«Allâhu ekber» denilerek namaza başlanır. Erkekler ellerini kulak hizasına kaldırır, göbek altında bağlar; kadınlar omuz hizasına kaldırır, göğüs üzerinde bağlar.",
+        "en": "Begin the prayer by saying “Allahu akbar”. Men raise their hands to ear level and fold them below the navel; women raise them to shoulder level and fold them on the chest.",
+        "de": "Das Gebet mit „Allahu akbar“ beginnen. Männer heben die Hände bis auf Ohrhöhe und legen sie unterhalb des Nabels übereinander; Frauen heben sie bis auf Schulterhöhe und legen sie auf die Brust.",
+        "fr": "Commencer la prière en disant « Allahu akbar ». Les hommes lèvent les mains à hauteur des oreilles puis les placent sous le nombril ; les femmes les lèvent à hauteur des épaules puis les placent sur la poitrine.",
+        "ar": "يفتتح الصلاة بالتكبير. يرفع الرجل يديه حذاء أذنيه ويضعهما تحت السرة، وترفع المرأة يديها حذاء منكبيها وتضعهما على صدرها."
+      },
+      "recite": [
+        {
+          "dhikr": "tekbir"
+        }
+      ]
+    },
+    "kiyam": {
+      "title": {
+        "tr": "Kıyam (1. rekât)",
+        "en": "Standing (1st rak'ah)",
+        "de": "Stehen (1. Rak'a)",
+        "fr": "Station debout (1re rak'a)",
+        "ar": "القيام (الركعة الأولى)"
+      },
+      "text": {
+        "tr": "Eller bağlı olarak ayakta durulur ve sırasıyla okunur:",
+        "en": "Standing with your hands folded, recite in this order:",
+        "de": "Mit übereinandergelegten Händen stehen und der Reihe nach rezitieren:",
+        "fr": "Debout, les mains posées l'une sur l'autre, réciter dans l'ordre :",
+        "ar": "يقف واضعًا يديه ويقرأ بالترتيب:"
+      },
+      "recite": [
+        {
+          "dua": "subhaneke"
+        },
+        {
+          "dhikr": "euzu"
+        },
+        {
+          "dhikr": "besmele"
+        },
+        {
+          "surah": 1,
+          "title": {
+            "tr": "Fâtiha Sûresi",
+            "en": "Surah Al-Fatihah",
+            "de": "Sure al-Fatiha",
+            "fr": "Sourate Al-Fatiha",
+            "ar": "سورة الفاتحة"
+          }
+        },
+        {
+          "title": {
+            "tr": "Zamm-ı sûre",
+            "en": "Additional surah",
+            "de": "Zusätzliche Sure",
+            "fr": "Sourate supplémentaire",
+            "ar": "ضمّ السورة"
+          },
+          "text": {
+            "tr": "Fâtiha'dan sonra bir sûre ya da en az üç kısa ayet okunur.",
+            "en": "After al-Fatihah, recite a surah or at least three short verses.",
+            "de": "Nach al-Fatiha eine Sure oder mindestens drei kurze Verse rezitieren.",
+            "fr": "Après Al-Fatiha, réciter une sourate ou au moins trois versets courts.",
+            "ar": "يقرأ بعد الفاتحة سورة أو ثلاث آيات قصار على الأقل."
+          }
+        },
+        {
+          "dua": "ihlas_felak_nas",
+          "text": {
+            "tr": "Kısa sûrelere örnek",
+            "en": "Examples of short surahs",
+            "de": "Beispiele für kurze Suren",
+            "fr": "Exemples de sourates courtes",
+            "ar": "أمثلة على السور القصيرة"
+          }
+        }
+      ]
+    },
+    "ruku": {
+      "title": {
+        "tr": "Rükû",
+        "en": "Bowing (ruku')",
+        "de": "Verbeugung (Ruku')",
+        "fr": "Inclinaison",
+        "ar": "الركوع"
+      },
+      "text": {
+        "tr": "«Allâhu ekber» diyerek rükûya eğilinir ve tesbih okunur:",
+        "en": "Say “Allahu akbar”, bow and recite:",
+        "de": "Mit „Allahu akbar“ in die Verbeugung gehen und sprechen:",
+        "fr": "S'incliner en disant « Allahu akbar » et réciter :",
+        "ar": "يركع مكبّرًا ويسبّح:"
+      },
+      "recite": [
+        {
+          "dhikr": "ruku",
+          "times": 3
+        }
+      ]
+    },
+    "kavma": {
+      "title": {
+        "tr": "Rükûdan doğrulma (kavme)",
+        "en": "Rising from bowing",
+        "de": "Aufrichten aus der Verbeugung",
+        "fr": "Redressement",
+        "ar": "الرفع من الركوع"
+      },
+      "text": {
+        "tr": "Doğrulurken «Semiallâhü li men hamideh», tam doğrulunca «Rabbenâ leke'l-hamd» denir.",
+        "en": "While rising, say “Sami'a'llahu li man hamidah”; once fully upright, say “Rabbana laka'l-hamd”.",
+        "de": "Beim Aufrichten „Sami'a'llahu li man hamidah“ sagen, aufrecht stehend „Rabbana laka'l-hamd“.",
+        "fr": "En se redressant, dire « Sami'a'llahu li man hamidah », puis, une fois debout, « Rabbana laka'l-hamd ».",
+        "ar": "يقول الذكر الأول وهو يرفع رأسه، فإذا استوى قائمًا قال الثاني:"
+      },
+      "recite": [
+        {
+          "dhikr": "semi"
+        },
+        {
+          "dhikr": "tahmid"
+        }
+      ]
+    },
+    "sajda": {
+      "title": {
+        "tr": "Secde",
+        "en": "Prostration (sujud)",
+        "de": "Niederwerfung (Sudschud)",
+        "fr": "Prosternation",
+        "ar": "السجود"
+      },
+      "text": {
+        "tr": "«Allâhu ekber» diyerek secdeye varılır ve tesbih okunur:",
+        "en": "Say “Allahu akbar”, go down into prostration and recite:",
+        "de": "Mit „Allahu akbar“ in die Niederwerfung gehen und sprechen:",
+        "fr": "Se prosterner en disant « Allahu akbar » et réciter :",
+        "ar": "يسجد مكبّرًا ويسبّح:"
+      },
+      "recite": [
+        {
+          "dhikr": "sajda",
+          "times": 3
+        }
+      ]
+    },
+    "jalsa": {
+      "title": {
+        "tr": "İki secde arası (celse)",
+        "en": "Sitting between the prostrations",
+        "de": "Sitzen zwischen den Niederwerfungen",
+        "fr": "Assise entre les deux prosternations",
+        "ar": "الجلسة بين السجدتين"
+      },
+      "text": {
+        "tr": "«Allâhu ekber» diyerek secdeden doğrulup kısa bir süre oturulur.",
+        "en": "Say “Allahu akbar”, rise from prostration and sit briefly.",
+        "de": "Mit „Allahu akbar“ aus der Niederwerfung aufrichten und kurz sitzen.",
+        "fr": "Se relever de la prosternation en disant « Allahu akbar » et s'asseoir un court instant.",
+        "ar": "يرفع رأسه من السجود مكبّرًا ويجلس جلسة خفيفة."
+      }
+    },
+    "sajda2": {
+      "title": {
+        "tr": "İkinci secde",
+        "en": "Second prostration",
+        "de": "Zweite Niederwerfung",
+        "fr": "Seconde prosternation",
+        "ar": "السجدة الثانية"
+      },
+      "text": {
+        "tr": "«Allâhu ekber» diyerek tekrar secdeye varılır ve tesbih okunur:",
+        "en": "Say “Allahu akbar”, prostrate again and recite:",
+        "de": "Mit „Allahu akbar“ erneut in die Niederwerfung gehen und sprechen:",
+        "fr": "Se prosterner de nouveau en disant « Allahu akbar » et réciter :",
+        "ar": "يسجد ثانية مكبّرًا ويسبّح:"
+      },
+      "recite": [
+        {
+          "dhikr": "sajda",
+          "times": 3
+        }
+      ]
+    },
+    "rakat2": {
+      "title": {
+        "tr": "2. rekât",
+        "en": "2nd rak'ah",
+        "de": "2. Rak'a",
+        "fr": "2e rak'a",
+        "ar": "الركعة الثانية"
+      },
+      "text": {
+        "tr": "«Allâhu ekber» diyerek ayağa kalkılır. Besmele, Fâtiha ve zamm-ı sûre okunur; rükû ve iki secde birinci rekâttaki gibi yapılır.",
+        "en": "Say “Allahu akbar” and stand up. Recite the Basmala, al-Fatihah and an additional surah; bow and make two prostrations as in the first rak'ah.",
+        "de": "Mit „Allahu akbar“ aufstehen. Basmala, al-Fatiha und eine zusätzliche Sure rezitieren; Verbeugung und zwei Niederwerfungen wie in der ersten Rak'a.",
+        "fr": "Se lever en disant « Allahu akbar ». Réciter la basmala, Al-Fatiha et une sourate supplémentaire ; faire l'inclinaison et les deux prosternations comme dans la première rak'a.",
+        "ar": "يقوم مكبّرًا، ويقرأ البسملة والفاتحة وسورة، ثم يركع ويسجد سجدتين كما في الركعة الأولى."
+      },
+      "recite": [
+        {
+          "dhikr": "besmele"
+        },
+        {
+          "surah": 1,
+          "title": {
+            "tr": "Fâtiha Sûresi",
+            "en": "Surah Al-Fatihah",
+            "de": "Sure al-Fatiha",
+            "fr": "Sourate Al-Fatiha",
+            "ar": "سورة الفاتحة"
+          }
+        }
+      ]
+    },
+    "first_sitting": {
+      "title": {
+        "tr": "İlk oturuş (ka'de-i ûlâ)",
+        "en": "First sitting",
+        "de": "Erstes Sitzen",
+        "fr": "Première assise",
+        "ar": "القعدة الأولى"
+      },
+      "text": {
+        "tr": "İkinci rekâtın secdelerinden sonra oturulur. Sadece Ettehiyyâtü okunur ve «Allâhu ekber» diyerek 3. rekâta kalkılır.",
+        "en": "After the prostrations of the second rak'ah, sit and recite only at-Tahiyyat, then say “Allahu akbar” and stand up for the third rak'ah.",
+        "de": "Nach den Niederwerfungen der zweiten Rak'a sitzen. Nur at-Tahiyyat sprechen und mit „Allahu akbar“ zur dritten Rak'a aufstehen.",
+        "fr": "Après les prosternations de la deuxième rak'a, s'asseoir. Réciter seulement at-Tahiyyat, puis se lever pour la troisième rak'a en disant « Allahu akbar ».",
+        "ar": "يجلس بعد سجدتي الركعة الثانية ويقرأ التشهد فقط، ثم يقوم مكبّرًا إلى الركعة الثالثة."
+      },
+      "recite": [
+        {
+          "dua": "ettehiyyatu"
+        }
+      ]
+    },
+    "rakat3_fard": {
+      "title": {
+        "tr": "3. rekât",
+        "en": "3rd rak'ah",
+        "de": "3. Rak'a",
+        "fr": "3e rak'a",
+        "ar": "الركعة الثالثة"
+      },
+      "text": {
+        "tr": "Besmele ve Fâtiha okunur; farzlarda zamm-ı sûre okunmaz. Rükû ve iki secde yapılır.",
+        "en": "Recite the Basmala and al-Fatihah; in fard prayers no additional surah is recited. Bow and make two prostrations.",
+        "de": "Basmala und al-Fatiha rezitieren; bei Pflichtgebeten keine zusätzliche Sure. Verbeugung und zwei Niederwerfungen.",
+        "fr": "Réciter la basmala et Al-Fatiha ; dans les prières obligatoires, pas de sourate supplémentaire. Faire l'inclinaison et les deux prosternations.",
+        "ar": "يقرأ البسملة والفاتحة، ولا يضمّ سورة في الفرض، ثم يركع ويسجد سجدتين."
+      },
+      "recite": [
+        {
+          "dhikr": "besmele"
+        },
+        {
+          "surah": 1,
+          "title": {
+            "tr": "Fâtiha Sûresi",
+            "en": "Surah Al-Fatihah",
+            "de": "Sure al-Fatiha",
+            "fr": "Sourate Al-Fatiha",
+            "ar": "سورة الفاتحة"
+          }
+        }
+      ]
+    },
+    "rakat4_fard": {
+      "title": {
+        "tr": "4. rekât",
+        "en": "4th rak'ah",
+        "de": "4. Rak'a",
+        "fr": "4e rak'a",
+        "ar": "الركعة الرابعة"
+      },
+      "text": {
+        "tr": "«Allâhu ekber» diyerek ayağa kalkılır. Yine yalnız Besmele ve Fâtiha okunur; rükû ve iki secde yapılır.",
+        "en": "Say “Allahu akbar” and stand up. Again recite only the Basmala and al-Fatihah; bow and make two prostrations.",
+        "de": "Mit „Allahu akbar“ aufstehen. Wieder nur Basmala und al-Fatiha rezitieren; Verbeugung und zwei Niederwerfungen.",
+        "fr": "Se lever en disant « Allahu akbar ». Réciter de nouveau seulement la basmala et Al-Fatiha ; faire l'inclinaison et les deux prosternations.",
+        "ar": "يقوم مكبّرًا ويقرأ البسملة والفاتحة فقط، ثم يركع ويسجد سجدتين."
+      },
+      "recite": [
+        {
+          "dhikr": "besmele"
+        },
+        {
+          "surah": 1,
+          "title": {
+            "tr": "Fâtiha Sûresi",
+            "en": "Surah Al-Fatihah",
+            "de": "Sure al-Fatiha",
+            "fr": "Sourate Al-Fatiha",
+            "ar": "سورة الفاتحة"
+          }
+        }
+      ]
+    },
+    "rakat3_witr": {
+      "title": {
+        "tr": "3. rekât",
+        "en": "3rd rak'ah",
+        "de": "3. Rak'a",
+        "fr": "3e rak'a",
+        "ar": "الركعة الثالثة"
+      },
+      "text": {
+        "tr": "Besmele, Fâtiha ve zamm-ı sûre okunur.",
+        "en": "Recite the Basmala, al-Fatihah and an additional surah.",
+        "de": "Basmala, al-Fatiha und eine zusätzliche Sure rezitieren.",
+        "fr": "Réciter la basmala, Al-Fatiha et une sourate supplémentaire.",
+        "ar": "يقرأ البسملة والفاتحة وسورة."
+      },
+      "recite": [
+        {
+          "dhikr": "besmele"
+        },
+        {
+          "surah": 1,
+          "title": {
+            "tr": "Fâtiha Sûresi",
+            "en": "Surah Al-Fatihah",
+            "de": "Sure al-Fatiha",
+            "fr": "Sourate Al-Fatiha",
+            "ar": "سورة الفاتحة"
+          }
+        }
+      ]
+    },
+    "qunut": {
+      "title": {
+        "tr": "Kunut",
+        "en": "Qunut",
+        "de": "Qunut",
+        "fr": "Qounout",
+        "ar": "القنوت"
+      },
+      "text": {
+        "tr": "Kıraatten sonra «Allâhu ekber» diyerek eller kaldırılır, tekrar bağlanır ve Kunut duaları okunur. Ardından «Allâhu ekber» diyerek rükûya varılır; rükû ve iki secde yapılır.",
+        "en": "After the recitation, say “Allahu akbar” raising your hands, fold them again and recite the Qunut duas. Then say “Allahu akbar”, bow and make two prostrations.",
+        "de": "Nach der Rezitation mit „Allahu akbar“ die Hände heben, wieder übereinanderlegen und die Qunut-Bittgebete sprechen. Dann mit „Allahu akbar“ in die Verbeugung gehen; Verbeugung und zwei Niederwerfungen.",
+        "fr": "Après la récitation, dire « Allahu akbar » en levant les mains, les replacer, puis réciter les invocations du qounout. Ensuite, s'incliner en disant « Allahu akbar » et faire les deux prosternations.",
+        "ar": "بعد القراءة يكبّر رافعًا يديه، ثم يضعهما ويقرأ دعاءي القنوت، ثم يركع مكبّرًا ويسجد سجدتين."
+      },
+      "recite": [
+        {
+          "dhikr": "tekbir"
+        },
+        {
+          "dua": "kunut_1"
+        },
+        {
+          "dua": "kunut_2"
+        }
+      ]
+    },
+    "last_sitting": {
+      "title": {
+        "tr": "Son oturuş (ka'de-i âhîre)",
+        "en": "Final sitting",
+        "de": "Letztes Sitzen",
+        "fr": "Dernière assise",
+        "ar": "القعدة الأخيرة"
+      },
+      "text": {
+        "tr": "Son rekâtın secdelerinden sonra oturulur ve sırasıyla okunur:",
+        "en": "After the prostrations of the last rak'ah, sit and recite in this order:",
+        "de": "Nach den Niederwerfungen der letzten Rak'a sitzen und der Reihe nach sprechen:",
+        "fr": "Après les prosternations de la dernière rak'a, s'asseoir et réciter dans l'ordre :",
+        "ar": "يجلس بعد سجدتي الركعة الأخيرة ويقرأ بالترتيب:"
+      },
+      "recite": [
+        {
+          "dua": "ettehiyyatu"
+        },
+        {
+          "dua": "salli"
+        },
+        {
+          "dua": "barik"
+        },
+        {
+          "dua": "rabbena_atina"
+        },
+        {
+          "dua": "rabbenagfirli"
+        }
+      ]
+    },
+    "salam": {
+      "title": {
+        "tr": "Selâm",
+        "en": "Salam",
+        "de": "Friedensgruß (Salam)",
+        "fr": "Salutation finale (salam)",
+        "ar": "التسليم"
+      },
+      "text": {
+        "tr": "Baş önce sağa, sonra sola çevrilerek her iki tarafa selâm verilir.",
+        "en": "Turn your head first to the right, then to the left, giving the salam to each side.",
+        "de": "Den Kopf erst nach rechts, dann nach links wenden und zu beiden Seiten den Friedensgruß sprechen.",
+        "fr": "Tourner la tête d'abord à droite, puis à gauche, en adressant le salam de chaque côté.",
+        "ar": "يسلّم عن يمينه ثم عن يساره."
+      },
+      "recite": [
+        {
+          "dhikr": "salam"
+        }
+      ]
+    }
+  },
+  "methods": [
+    {
+      "id": "two",
+      "title": {
+        "tr": "2 rekâtlı",
+        "en": "2 rak'ahs",
+        "de": "2 Rak'as",
+        "fr": "2 rak'as",
+        "ar": "ركعتان"
+      },
+      "example": {
+        "tr": "Ör. sabah namazının farzı",
+        "en": "E.g. the fard of Fajr",
+        "de": "Z. B. das Fard des Fajr-Gebets",
+        "fr": "P. ex. le fard de Fajr",
+        "ar": "مثل فرض الفجر"
+      },
+      "steps": [
+        "niyet",
+        "tekbir",
+        "kiyam",
+        "ruku",
+        "kavma",
+        "sajda",
+        "jalsa",
+        "sajda2",
+        "rakat2",
+        "last_sitting",
+        "salam"
+      ]
+    },
+    {
+      "id": "three",
+      "title": {
+        "tr": "3 rekâtlı",
+        "en": "3 rak'ahs",
+        "de": "3 Rak'as",
+        "fr": "3 rak'as",
+        "ar": "ثلاث ركعات"
+      },
+      "example": {
+        "tr": "Akşam namazının farzı",
+        "en": "The fard of Maghrib",
+        "de": "Das Fard des Maghrib-Gebets",
+        "fr": "Le fard de Maghrib",
+        "ar": "فرض المغرب"
+      },
+      "steps": [
+        "niyet",
+        "tekbir",
+        "kiyam",
+        "ruku",
+        "kavma",
+        "sajda",
+        "jalsa",
+        "sajda2",
+        "rakat2",
+        "first_sitting",
+        "rakat3_fard",
+        "last_sitting",
+        "salam"
+      ]
+    },
+    {
+      "id": "four",
+      "title": {
+        "tr": "4 rekâtlı",
+        "en": "4 rak'ahs",
+        "de": "4 Rak'as",
+        "fr": "4 rak'as",
+        "ar": "أربع ركعات"
+      },
+      "example": {
+        "tr": "Ör. öğle namazının farzı",
+        "en": "E.g. the fard of Dhuhr",
+        "de": "Z. B. das Fard des Dhuhr-Gebets",
+        "fr": "P. ex. le fard de Dhuhr",
+        "ar": "مثل فرض الظهر"
+      },
+      "steps": [
+        "niyet",
+        "tekbir",
+        "kiyam",
+        "ruku",
+        "kavma",
+        "sajda",
+        "jalsa",
+        "sajda2",
+        "rakat2",
+        "first_sitting",
+        "rakat3_fard",
+        "rakat4_fard",
+        "last_sitting",
+        "salam"
+      ],
+      "notes": [
+        {
+          "tr": "Müekkede sünnetlerde (ör. öğlenin ilk sünneti) 3. ve 4. rekâtlarda da Fâtiha'dan sonra zamm-ı sûre okunur.",
+          "en": "In emphasized sunnah prayers (e.g. the first sunnah of Dhuhr), an additional surah is also recited after al-Fatihah in the 3rd and 4th rak'ahs.",
+          "de": "In den bekräftigten Sunna-Gebeten (z. B. der ersten Sunna des Dhuhr-Gebets) wird auch in der 3. und 4. Rak'a nach al-Fatiha eine zusätzliche Sure rezitiert.",
+          "fr": "Dans les sunnas confirmées (p. ex. la première sunna de Dhuhr), on récite aussi une sourate supplémentaire après Al-Fatiha dans les 3e et 4e rak'as.",
+          "ar": "في السنن المؤكدة (كسنة الظهر القبلية) تُقرأ سورة بعد الفاتحة في الركعتين الثالثة والرابعة أيضًا."
+        },
+        {
+          "tr": "Gayr-i müekkede sünnetlerde (ikindinin ve yatsının ilk sünneti) ilk oturuşta Ettehiyyâtü'den sonra Allâhümme salli ve Allâhümme bârik de okunur; 3. rekâta Sübhâneke ile başlanır.",
+          "en": "In non-emphasized sunnah prayers (the sunnah of Asr and the first sunnah of Isha), Allahumma salli and Allahumma barik are also recited after at-Tahiyyat in the first sitting, and the 3rd rak'ah begins with Subhanaka.",
+          "de": "In den nicht bekräftigten Sunna-Gebeten (Sunna des Asr- und erste Sunna des Ischa-Gebets) werden im ersten Sitzen nach at-Tahiyyat auch Allahumma salli und Allahumma barik gesprochen; die 3. Rak'a beginnt mit Subhanaka.",
+          "fr": "Dans les sunnas non confirmées (la sunna d'Asr et la première sunna d'Isha), on récite aussi Allahumma salli et Allahumma barik après at-Tahiyyat lors de la première assise, et la 3e rak'a commence par Subhanaka.",
+          "ar": "في السنن غير المؤكدة (سنة العصر وسنة العشاء القبلية) تُقرأ الصلاة الإبراهيمية بعد التشهد في القعدة الأولى أيضًا، وتُفتتح الركعة الثالثة بدعاء الاستفتاح."
+        }
+      ]
+    },
+    {
+      "id": "witr",
+      "title": {
+        "tr": "Vitir",
+        "en": "Witr",
+        "de": "Witr",
+        "fr": "Witr",
+        "ar": "الوتر"
+      },
+      "example": {
+        "tr": "3 rekât, vacip",
+        "en": "3 rak'ahs, wajib",
+        "de": "3 Rak'as, wadschib",
+        "fr": "3 rak'as, wajib",
+        "ar": "ثلاث ركعات (واجب)"
+      },
+      "steps": [
+        "niyet",
+        "tekbir",
+        "kiyam",
+        "ruku",
+        "kavma",
+        "sajda",
+        "jalsa",
+        "sajda2",
+        "rakat2",
+        "first_sitting",
+        "rakat3_witr",
+        "qunut",
+        "last_sitting",
+        "salam"
+      ]
+    }
+  ],
+  "note": {
+    "tr": "Diyanet İlmihali (Hanefî mezhebi) esas alınmıştır. Ayrıntılar ve özel durumlar için bir din görevlisine danışın.",
+    "en": "Based on the Ilmihal of Diyanet, Turkey's Presidency of Religious Affairs (Hanafi school). For details and special cases, please ask an imam.",
+    "de": "Grundlage ist das Ilmihal der Diyanet, der türkischen Religionsbehörde (hanafitische Rechtsschule). Für Einzelheiten und Sonderfälle fragen Sie bitte einen Imam.",
+    "fr": "Basé sur l'Ilmihal de la Diyanet, l'autorité religieuse turque (école hanafite). Pour les détails et les cas particuliers, adressez-vous à un imam.",
+    "ar": "المرجع: علم الحال الصادر عن رئاسة الشؤون الدينية التركية (المذهب الحنفي). وللتفاصيل والحالات الخاصة يُرجى سؤال إمام أو أحد أهل العلم."
+  }
+}

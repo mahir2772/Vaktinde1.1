@@ -11,6 +11,7 @@ import '../../fitre/view/fitre_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../imsakiye/view/imsakiye_view.dart';
 import '../../missed_prayers/view/missed_prayers_view.dart';
+import '../../prayer_guide/view/prayer_guide_view.dart';
 import '../../prayer_tracker/view/prayer_tracker_view.dart';
 import '../../religious_days/view/religious_days_view.dart';
 import '../../settings/view/settings_view.dart';
@@ -24,8 +25,9 @@ class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
 
   // Araç açılışında geçiş reklamı (sıklık sınırını AdHelper uygular).
-  // Ayarlar (sorun giderme, izinler, destek), Dualar (ibadet; Kur'an, Kıble,
-  // Zikir gibi) ve uygulamadan çıkan Yakındaki Camiler reklamsız açılır.
+  // Ayarlar (sorun giderme, izinler, destek), Dualar ve Namaz Hocası (ibadet;
+  // Kur'an, Kıble, Zikir gibi) ve uygulamadan çıkan Yakındaki Camiler
+  // reklamsız açılır.
   static void _open(BuildContext context, Widget page, {bool showAd = true}) {
     if (showAd) AdHelper.instance.showInterstitialAd();
     Navigator.push(context, MaterialPageRoute(builder: (_) => page));
@@ -63,6 +65,13 @@ class ToolsView extends StatelessWidget {
             loc.duasTitle,
             loc.toolDuasDesc,
             () => const DuasView(),
+            showAd: false,
+          ),
+          _ToolItem(
+            Icons.school_outlined,
+            loc.prayerGuideTitle,
+            loc.toolPrayerGuideDesc,
+            () => const PrayerGuideView(),
             showAd: false,
           ),
           _ToolItem.external(

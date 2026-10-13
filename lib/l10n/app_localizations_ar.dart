@@ -1882,6 +1882,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get duasTitle => 'الأدعية';
 
   @override
+  String get prayerGuideTitle => 'تعليم الصلاة';
+
+  @override
+  String get toolPrayerGuideDesc => 'الوضوء وكيفية الصلاة خطوة بخطوة';
+
+  @override
+  String get prayerGuideTabWudu => 'الوضوء';
+
+  @override
+  String get prayerGuideTabFards => 'الفرائض';
+
+  @override
+  String get prayerGuideTabRakats => 'الركعات';
+
+  @override
+  String get prayerGuideTabSteps => 'كيفية الصلاة';
+
+  @override
+  String prayerGuideTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مرة',
+      few: '$count مرات',
+      two: 'مرتين',
+      one: 'مرة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get toolDuasDesc => 'التسبيح وأذكار الصباح والمساء والأدعية اليومية';
 
   @override

@@ -38,6 +38,8 @@ import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart'
     show MainTab;
 import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
+import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
+import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
@@ -736,6 +738,51 @@ Future<void> _openRoute(
   await _settle(tester, steps: 6);
 }
 
+/// Namaz Hocası: dört sekme ve kılınışta vitir ([tallHeight] verilirse her
+/// birinin uzun görünümü de)
+Future<void> _prayerGuideShots(
+  WidgetTester tester,
+  String lang,
+  String name, {
+  double? tallHeight,
+}) async {
+  final loc = lookupAppLocalizations(Locale(lang));
+  final guide = (await tester.runAsync(PrayerGuide.load))!;
+  _currentScreen = '${name}_wudu';
+  _navigator(
+    tester,
+  ).push(MaterialPageRoute<void>(builder: (_) => const PrayerGuideView()));
+  await _settle(tester, steps: 10);
+
+  Future<void> shot(String part) async {
+    await _shot(tester, '${name}_$part');
+    if (tallHeight == null) return;
+    await _setViewport(tester, height: tallHeight);
+    await _settle(tester, steps: 4);
+    await _shot(tester, '${name}_${part}_full');
+    await _setViewport(tester);
+    await _settle(tester, steps: 2);
+  }
+
+  for (final (part, tab) in [
+    ('wudu', loc.prayerGuideTabWudu),
+    ('fards', loc.prayerGuideTabFards),
+    ('rakats', loc.prayerGuideTabRakats),
+    ('steps', loc.prayerGuideTabSteps),
+  ]) {
+    _currentScreen = '${name}_$part';
+    await tester.tap(find.text(tab));
+    await _settle(tester, steps: 6);
+    await shot(part);
+  }
+  _currentScreen = '${name}_witr';
+  await tester.tap(find.text(guide.methods.last.titleFor(lang)));
+  await _settle(tester, steps: 4);
+  await shot('witr');
+  _navigator(tester).pop();
+  await _settle(tester, steps: 6);
+}
+
 /// Kaza Takibi > "Kaza hesapla": değerler girilmiş sayfanın başı ve sonu
 /// (ekleme düğmesi)
 Future<void> _kazaCalcShots(
@@ -799,8 +846,9 @@ void main() {
     for (final lang in ['tr', 'ar']) {
       await rootBundle.loadString('assets/data/greetings_$lang.json');
     }
-    // %200 çeşitleri Dualar ve Kur'an listesini her dilde açar
+    // %200 çeşitleri Dualar, Namaz Hocası ve Kur'an listesini her dilde açar
     await DuaLibrary.load();
+    await PrayerGuide.load();
     await rootBundle.loadString(QuranService.surahsAsset);
   });
 
@@ -1185,6 +1233,7 @@ void main() {
             const DuasView(),
             tallHeight: 3000,
           );
+          await _prayerGuideShots(tester, lang, '${p}_66_prayer_guide');
           await _openRoute(tester, '${p}_65_quran', const QuranView());
           await _finish(tester);
         } finally {
@@ -1603,6 +1652,25 @@ void main() {
           tester,
           '${lang}_63_tesbihat',
           TesbihatView(steps: library.tesbihat),
+        );
+        await _finish(tester);
+      });
+    });
+  }
+
+  // Namaz Hocası: abdest, farzlar, rekâtlar, kılınış (2 rekâtlı ve vitir)
+  for (final lang in ['tr', 'ar']) {
+    testWidgets('$lang: namaz hocası', skip: skip, variant: _android, (
+      tester,
+    ) async {
+      await _run(tester, () async {
+        _currentScreen = '${lang}_66_prayer_guide';
+        await _pumpApp(tester, lang: lang, homeVm: _homeVm(lang));
+        await _prayerGuideShots(
+          tester,
+          lang,
+          '${lang}_66_prayer_guide',
+          tallHeight: 5000,
         );
         await _finish(tester);
       });

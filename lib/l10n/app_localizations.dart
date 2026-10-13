@@ -3314,6 +3314,48 @@ abstract class AppLocalizations {
   /// **'Dualar'**
   String get duasTitle;
 
+  /// No description provided for @prayerGuideTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Hocası'**
+  String get prayerGuideTitle;
+
+  /// No description provided for @toolPrayerGuideDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Abdest ve namazın kılınışı, adım adım'**
+  String get toolPrayerGuideDesc;
+
+  /// No description provided for @prayerGuideTabWudu.
+  ///
+  /// In tr, this message translates to:
+  /// **'Abdest'**
+  String get prayerGuideTabWudu;
+
+  /// No description provided for @prayerGuideTabFards.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farzlar'**
+  String get prayerGuideTabFards;
+
+  /// No description provided for @prayerGuideTabRakats.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rekâtlar'**
+  String get prayerGuideTabRakats;
+
+  /// No description provided for @prayerGuideTabSteps.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılınış'**
+  String get prayerGuideTabSteps;
+
+  /// No description provided for @prayerGuideTimes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} kez'**
+  String prayerGuideTimes(int count);
+
   /// No description provided for @toolDuasDesc.
   ///
   /// In tr, this message translates to:
