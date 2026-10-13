@@ -691,6 +691,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackerExcusedMarked => 'Marked as excused.';
 
   @override
+  String get notifStopAction => 'Stop';
+
+  @override
   String get trackerExcusedUnmarked => 'Excused mark removed.';
 
   @override

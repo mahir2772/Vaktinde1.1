@@ -389,6 +389,7 @@
     "trackerExcusedMark": "Mark as excused",
     "trackerExcusedUnmark": "Remove excused mark",
     "trackerExcusedMarked": "Marked as excused.",
+    "notifStopAction": "Stop",
     "trackerExcusedUnmarked": "Excused mark removed.",
     "trackerExcusedCellSnack": "This day is marked as excused, so its prayers aren't counted. To remove the mark, press and hold the day's name.",
     "trackerExcusedKazaConfirm": "{count, plural, =1{1 prayer of this day that was added to qada will be subtracted from your qada counters.} other{{count} prayers of this day that were added to qada will be subtracted from your qada counters.}}",

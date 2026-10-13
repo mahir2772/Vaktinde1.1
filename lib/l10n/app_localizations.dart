@@ -1250,6 +1250,12 @@ abstract class AppLocalizations {
   /// **'Özel gün olarak işaretlendi.'**
   String get trackerExcusedMarked;
 
+  /// No description provided for @notifStopAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durdur'**
+  String get notifStopAction;
+
   /// No description provided for @trackerExcusedUnmarked.
   ///
   /// In tr, this message translates to:

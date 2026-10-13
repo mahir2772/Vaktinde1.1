@@ -686,6 +686,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get trackerExcusedMarked => 'Als entschuldigt markiert.';
 
   @override
+  String get notifStopAction => 'Stoppen';
+
+  @override
   String get trackerExcusedUnmarked => 'Markierung „entschuldigt“ entfernt.';
 
   @override

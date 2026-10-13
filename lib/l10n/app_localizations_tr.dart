@@ -677,6 +677,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get trackerExcusedMarked => 'Özel gün olarak işaretlendi.';
 
   @override
+  String get notifStopAction => 'Durdur';
+
+  @override
   String get trackerExcusedUnmarked => 'Özel gün işareti kaldırıldı.';
 
   @override

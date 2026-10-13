@@ -698,6 +698,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get trackerExcusedMarked => 'عُلِّم كيوم عذر.';
 
   @override
+  String get notifStopAction => 'إيقاف';
+
+  @override
   String get trackerExcusedUnmarked => 'أُزيلت علامة يوم العذر.';
 
   @override

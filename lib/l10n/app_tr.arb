@@ -410,6 +410,7 @@
     "trackerExcusedMark": "Özel gün olarak işaretle",
     "trackerExcusedUnmark": "Özel gün işaretini kaldır",
     "trackerExcusedMarked": "Özel gün olarak işaretlendi.",
+    "notifStopAction": "Durdur",
     "trackerExcusedUnmarked": "Özel gün işareti kaldırıldı.",
     "trackerExcusedCellSnack": "Bu gün özel gün olarak işaretli; vakitleri sayılmaz. İşareti kaldırmak için gün adına basılı tutun.",
     "trackerExcusedKazaConfirm": "{count, plural, other{Bu günün kazaya eklenmiş {count} vakti kaza sayaçlarından düşülecek.}}",

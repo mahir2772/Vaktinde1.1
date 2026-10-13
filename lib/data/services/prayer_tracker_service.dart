@@ -3,19 +3,22 @@
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'notification_service.dart';
 import 'prayer_tracker.dart';
 import 'serial_queue.dart';
 import 'storage_service.dart';
 
-/// Bildirimdeki "Kıldım" aksiyonu: uygulamayı açmadan ayrı bir isolate'te çalışır
-/// (flutter_local_notifications ActionBroadcastReceiver). Bildirim eklentisinin her
-/// initialize çağrısı bu fonksiyonu verir (NotificationService.init, background_manager).
+/// Bildirimdeki "Kıldım" ve "Durdur" aksiyonları: uygulamayı açmadan ayrı bir
+/// isolate'te çalışır (flutter_local_notifications ActionBroadcastReceiver). Bildirim
+/// eklentisinin her initialize çağrısı bu fonksiyonu verir (NotificationService.init,
+/// background_manager). Her işleyici sadece kendi aksiyonunu işler.
 @pragma('vm:entry-point')
 void onNotificationActionBackground(NotificationResponse response) {
   try {
     DartPluginRegistrant.ensureInitialized();
   } catch (e) {}
   PrayerTrackerService.handleNotificationAction(response);
+  NotificationService.showSilentCopy(response);
 }
 
 /// Namaz takibi kayıtları + kılınan vaktin "vakit çıkıyor" hatırlatmasını iptal.

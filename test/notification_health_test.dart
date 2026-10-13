@@ -414,7 +414,7 @@ void main() {
     }
 
     test('test ezanı: ID 1999, 1 dk sonra, ilk açık vaktin sesi ve kanalı, '
-        'alarmClock; "Kıldım" yok', () async {
+        'alarmClock; "Kıldım" yok, sesliyse "Durdur" var', () async {
       SharedPreferences.setMockInitialValues({});
       final before = DateTime.now();
       var call = await scheduleTest(
@@ -429,7 +429,13 @@ void main() {
       expect(specifics(call)['channelName'], tr.channelSoundPrefix('ezan3'));
       expect(specifics(call)['sound'], 'ezan3');
       expect(specifics(call)['scheduleMode'], 'alarmClock');
-      expect(specifics(call)['actions'], isNull);
+      final actions = specifics(call)['actions'] as List;
+      expect(actions.length, 1);
+      expect(
+        (actions.single as Map)['id'],
+        startsWith(NotificationService.stopActionId),
+      );
+      expect((actions.single as Map)['title'], tr.notifStopAction);
       final naive = DateTime.parse(call.arguments['scheduledDateTime']);
       final at = tz.TZDateTime(
         tz.getLocation(call.arguments['timeZoneName']),
@@ -449,6 +455,7 @@ void main() {
       );
       expect(specifics(call)['channelId'], 'channel_silent_prayer');
       expect(specifics(call)['playSound'], isFalse);
+      expect(specifics(call)['actions'], isNull); // ses yok: "Durdur" yok
       // Hiç açık vakit yok: ezan1
       call = await scheduleTest();
       expect(specifics(call)['channelId'], 'channel_ezan1');

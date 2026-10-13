@@ -162,6 +162,10 @@ void main() {
     expect(action['id'], PrayerTracker.actionId);
     expect(action['title'], de.trackerPrayedAction);
     expect(action['showsUserInterface'], isFalse);
+    // Sesli ezanda ikinci buton "Durdur"
+    final stop = ogle.arguments['platformSpecifics']['actions'][1];
+    expect(stop['id'], startsWith(NotificationService.stopActionId));
+    expect(stop['title'], de.notifStopAction);
     // Bildirim aksiyonu için arka plan işleyicisi kaydedilir
     final init = notifCalls.firstWhere((c) => c.method == 'initialize');
     expect(init.arguments['dispatcher_handle'], isNotNull);

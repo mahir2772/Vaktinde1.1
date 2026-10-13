@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:ui' show Locale;
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -5,6 +7,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:io';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'prayer_tracker.dart';
 import 'prayer_tracker_service.dart';
 
@@ -285,6 +288,71 @@ class NotificationService {
         cancelNotification: true,
       );
 
+  /// Sesli ezandaki "Durdur" eyleminin kimlik öneki (ardından başlık ve metin)
+  static const String stopActionId = 'stop_ezan';
+
+  /// "Durdur": sistem bildirimi dokunur dokunmaz kapatır, ses anında kesilir
+  /// (arka plan isolate'inin açılmasını beklemez; uygulama kapalıyken de).
+  /// Eklentinin eylem yanıtında sadece ID, eylem kimliği ve yük var, kapanan
+  /// bildirim de artık okunamaz: sessiz kopyanın ([showSilentCopy]) başlık ve
+  /// metni eylem kimliğinde taşınır. Eylemler ezan kaydına
+  /// (alarmFingerprint) girmez.
+  static AndroidNotificationAction stopAction(
+    String label,
+    String title,
+    String body,
+  ) => AndroidNotificationAction(
+    '$stopActionId|${jsonEncode([title, body])}',
+    label,
+    showsUserInterface: false,
+    cancelNotification: true,
+  );
+
+  /// "Durdur"dan sonra (arka plan isolate'i): ezan aynı ID, başlık, metin ve
+  /// yükle sessiz kanalda yeniden gösterilir (silent: uyarı, titreşim, açılır
+  /// bildirim yok); yük "Kıldım" verisiyse buton da gelir. "Durdur" değilse ya
+  /// da gösterilemezse false: ses zaten kesildi, bildirim kapalı kalır.
+  static Future<bool> showSilentCopy(NotificationResponse response) async {
+    final id = response.id;
+    final actionId = response.actionId;
+    if (id == null ||
+        actionId == null ||
+        !actionId.startsWith('$stopActionId|')) {
+      return false;
+    }
+    try {
+      final texts = jsonDecode(actionId.substring(stopActionId.length + 1));
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.reload(); // dil uygulama isolate'inde değişmiş olabilir
+      final loc = lookupAppLocalizations(
+        Locale(prefs.getString('language_code') ?? 'tr'),
+      );
+      final tracked = PrayerTracker.parsePayload(response.payload) != null;
+      await FlutterLocalNotificationsPlugin().show(
+        id,
+        texts[0] as String,
+        texts[1] as String,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            prayerChannel(null).id,
+            loc.channelSilentPrayers,
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: false,
+            ticker: loc.tickerEzan,
+            icon: '@mipmap/launcher_icon',
+            silent: true,
+            actions: tracked ? [prayedAction(loc.trackerPrayedAction)] : null,
+          ),
+        ),
+        payload: response.payload,
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> requestPermissions() async {
     if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
@@ -308,6 +376,7 @@ class NotificationService {
     required NotificationKind kind, // ezan ya da hatırlatma
     String? payload,
     String? actionLabel, // verilirse "Kıldım" butonu eklenir
+    String? stopLabel, // verilirse (sesli ezan) "Durdur" butonu eklenir
     bool alarmStream = false, // "sessiz modda da çal": alarm ses akışı (ezan)
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
@@ -317,6 +386,10 @@ class NotificationService {
     RawResourceAndroidNotificationSound? soundSource = soundName != null
         ? RawResourceAndroidNotificationSound(soundName)
         : null;
+    final actions = [
+      if (actionLabel != null) prayedAction(actionLabel),
+      if (stopLabel != null) stopAction(stopLabel, title, body),
+    ];
 
     await _zonedSchedule(
       id,
@@ -335,7 +408,7 @@ class NotificationService {
           sound: soundSource,
           enableVibration: true,
           audioAttributesUsage: channel.usage,
-          actions: actionLabel != null ? [prayedAction(actionLabel)] : null,
+          actions: actions.isEmpty ? null : actions,
         ),
         iOS: DarwinNotificationDetails(
           presentSound: playSound,

@@ -33,6 +33,7 @@ class PlannedAlarm {
   final String channelName;
   final String? payload; // "Kıldım" aksiyonu için tarih + vakit
   final String? actionLabel; // null: aksiyon butonu yok
+  final String? stopLabel; // "Durdur" (sadece sesli ezan); null: yok
   final bool alarmStream; // "sessiz modda da çal" (sadece sesli ezan)
 
   const PlannedAlarm({
@@ -45,6 +46,7 @@ class PlannedAlarm {
     required this.channelName,
     this.payload,
     this.actionLabel,
+    this.stopLabel,
     this.alarmStream = false,
   });
 }
@@ -434,6 +436,8 @@ class PrayerRefreshService {
                   ? PrayerTracker.payload(vakitDate, vakitLogicKey)
                   : null,
               actionLabel: tracked ? loc.trackerPrayedAction : null,
+              // Sesli ezanda (Güneş dahil) "Durdur"; yazılı bildirimde yok
+              stopLabel: soundToSend != null ? loc.notifStopAction : null,
               alarmStream: onAlarmStream,
             ),
           );
@@ -994,6 +998,7 @@ class PrayerRefreshService {
           kind: alarm.kind,
           payload: alarm.payload,
           actionLabel: alarm.actionLabel,
+          stopLabel: alarm.stopLabel,
           alarmStream: alarm.alarmStream,
         );
         succeeded++;
@@ -1040,7 +1045,8 @@ class PrayerRefreshService {
 
   /// Bildirim Kontrolü "test ezanı" ([testEzanId]), [delay] sonra: ilk açık vaktin
   /// ezanıyla aynı ses, kanal ve "sessiz modda da çal" ayarı (hiç açık vakit yoksa
-  /// ezan1), aynı kip (izin varsa alarmClock). "Kıldım" butonu ve yükü yok.
+  /// ezan1), aynı kip (izin varsa alarmClock). "Kıldım" butonu ve yükü yok;
+  /// sesliyse "Durdur" var.
   Future<void> scheduleTestEzan({
     required AppLocalizations loc,
     required Map<String, bool> onTimeAlarms,
@@ -1072,6 +1078,7 @@ class PrayerRefreshService {
       ),
       localizedTicker: loc.tickerEzan,
       kind: NotificationKind.prayer,
+      stopLabel: sound != null ? loc.notifStopAction : null,
       alarmStream: onAlarmStream,
     );
   }

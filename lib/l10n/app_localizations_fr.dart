@@ -701,6 +701,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get trackerExcusedMarked => 'Marqué comme jour d\'excuse.';
 
   @override
+  String get notifStopAction => 'Arrêter';
+
+  @override
   String get trackerExcusedUnmarked => 'Marque de jour d\'excuse retirée.';
 
   @override
