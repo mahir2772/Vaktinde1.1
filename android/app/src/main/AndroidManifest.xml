@@ -143,6 +143,44 @@
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_ramadan" />
         </receiver>
 
+        <!-- Vakit halkası: önceki vakitten bu yana geçen süre + sıradaki vakte sayaç -->
+        <receiver android:name=".VaktindeWidgetRingProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_ring_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_ring" />
+        </receiver>
+
+        <!-- Namaz takibi (bugün): vakte dokunuş uygulama açılmadan işaretler (aşağıdaki home_widget
+             alıcısı + servisi → Dart TrackerWidgetService) -->
+        <receiver android:name=".VaktindeWidgetTrackerProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_tracker_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_tracker" />
+        </receiver>
+
+        <!-- home_widget etkileşimi (eklenti tanımlamıyor): widget'taki açık PendingIntent
+             (HomeWidgetBackgroundIntent) → alıcı → JobIntentService Flutter motorunda Dart geri
+             çağrısını çalıştırır. Dışa kapalı: başka uygulama işaret değiştiremez -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            android:exported="false" />
+        <service
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
         <receiver android:name=".NotificationUpdater" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

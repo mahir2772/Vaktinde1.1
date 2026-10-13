@@ -282,7 +282,10 @@ void main() {
       expect(find.text(item.title(loc)), findsOneWidget);
       expect(find.text(item.description(loc)), findsOneWidget);
     }
+    // Liste ekrandan uzun olabilir: sona kaydırınca son satır çubuğun üstünde
     final last = HomeScreenWidget.values.last.description(loc);
+    await tester.drag(find.text(loc.addWidgetHint), const Offset(0, -600));
+    await settle(tester);
     expect(tester.getRect(find.text(last)).bottom, lessThanOrEqualTo(891 - 48));
 
     await tester.tap(find.text(loc.widgetLargeName));
@@ -323,7 +326,7 @@ void main() {
         if (receiver.contains('android.appwidget.provider'))
           RegExp(r'android:name="([\w.]+)"').firstMatch(receiver)![1]!,
     }.map((n) => n.startsWith('.') ? 'com.mmdigital.vaktinde$n' : n).toSet();
-    expect(providers, hasLength(4));
+    expect(providers, hasLength(6));
     expect(
       HomeScreenWidget.values.map((w) => w.qualifiedAndroidName).toSet(),
       providers,

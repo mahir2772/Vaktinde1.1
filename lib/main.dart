@@ -20,6 +20,7 @@ import 'data/services/notification_service.dart';
 import 'data/services/background_manager.dart';
 import 'data/services/error_reporter.dart';
 import 'data/services/prayer_refresh_service.dart';
+import 'data/services/tracker_widget_service.dart';
 import 'features/onboarding/view/onboarding_language_view.dart';
 import 'features/onboarding/install_guard.dart';
 import 'features/common/theme_provider.dart';
@@ -89,6 +90,9 @@ void main() async {
   }
 
   await _registerBackgroundRefresh();
+
+  // Takip widget'ına dokunuş uygulama açılmadan işlenir (ayrı isolate)
+  if (Platform.isAndroid) unawaited(TrackerWidgetService.registerCallback());
 
   // Poppins ve Amiri pubspec'te gömülü (internetsiz ilk açılış)
   LicenseRegistry.addLicense(() async* {

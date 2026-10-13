@@ -8,6 +8,10 @@
     <string name="vaktinde_widget_small2_description">Lieu, date hégirienne et temps restant avant la prochaine prière</string>
     <string name="vaktinde_widget_ramadan_label">Compte à rebours du Ramadan</string>
     <string name="vaktinde_widget_ramadan_description">Temps restant avant l\'iftar et la fin du suhoor ; hors Ramadan, jours restants avant son début</string>
+    <string name="vaktinde_widget_ring_label">Anneau de prière</string>
+    <string name="vaktinde_widget_ring_description">Temps restant avant la prochaine prière ; l\'anneau montre le temps écoulé depuis la précédente</string>
+    <string name="vaktinde_widget_tracker_label">Suivi des prières</string>
+    <string name="vaktinde_widget_tracker_description">Les cinq prières du jour ; touchez une prière pour la marquer comme accomplie</string>
 
     <string name="vaktinde_widget_location">Lieu</string>
     <string name="vaktinde_widget_hijri_sample">25 Dhu Al-Hijjah</string>
@@ -22,4 +26,6 @@
     <string name="vaktinde_widget_ramadan_day_sample">Ramadan · jour 12</string>
     <string name="vaktinde_widget_ramadan_title_sample">Temps avant l\'iftar</string>
     <string name="vaktinde_widget_ramadan_time_sample">Maghrib 19:05</string>
+    <string name="vaktinde_widget_today">Aujourd\'hui</string>
+    <string name="vaktinde_widget_sabah">Fajr</string>
 </resources>

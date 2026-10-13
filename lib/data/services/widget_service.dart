@@ -193,6 +193,16 @@ class WidgetService {
         androidName: 'VaktindeWidgetRamadanProvider',
       );
 
+      // 2x2 VAKİT HALKASI ve 4x1 NAMAZ TAKİBİ (hücrelerin vakti girdi mi)
+      await HomeWidget.updateWidget(
+        name: 'VaktindeWidgetRingProvider',
+        androidName: 'VaktindeWidgetRingProvider',
+      );
+      await HomeWidget.updateWidget(
+        name: 'VaktindeWidgetTrackerProvider',
+        androidName: 'VaktindeWidgetTrackerProvider',
+      );
+
       await HomeWidget.updateWidget(
         name: 'NotificationUpdater',
         androidName: 'NotificationUpdater',

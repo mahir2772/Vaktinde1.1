@@ -106,6 +106,9 @@ void main() {
     expect(saved['ogle_time'], matches(RegExp(r'^\d\d:\d\d$')));
     expect(saved['hijri_date_text'], isNotEmpty); // de: hijri paketinde yok
     expect(saved['target_time_ms'], greaterThan(0));
+    // Takip widget'ı da kayıtlı dilde (uygulama günlerce açılmasa da)
+    expect(saved['tracker_title'], de.trackerToday);
+    expect(saved['tracker_date'], clockNow.toIso8601String().split('T')[0]);
     expect(
       widgetCalls
           .where((c) => c.method == 'updateWidget')
@@ -116,6 +119,8 @@ void main() {
         'VaktindeWidgetLargeProvider',
         'VaktindeWidgetSmall2Provider',
         'VaktindeWidgetRamadanProvider',
+        'VaktindeWidgetRingProvider',
+        'VaktindeWidgetTrackerProvider',
         'NotificationUpdater',
       },
     );

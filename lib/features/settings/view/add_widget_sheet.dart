@@ -16,6 +16,11 @@ enum HomeScreenWidget {
     'com.mmdigital.vaktinde.VaktindeWidgetSmallProvider',
     Icons.timer_outlined,
   ),
+  ring('com.mmdigital.vaktinde.VaktindeWidgetRingProvider', Icons.donut_large),
+  tracker(
+    'com.mmdigital.vaktinde.VaktindeWidgetTrackerProvider',
+    Icons.task_alt,
+  ),
   ramadan(
     'com.mmdigital.vaktinde.VaktindeWidgetRamadanProvider',
     Icons.nightlight_outlined,
@@ -31,6 +36,8 @@ enum HomeScreenWidget {
     HomeScreenWidget.large => loc.widgetLargeName,
     HomeScreenWidget.wide => loc.widgetWideName,
     HomeScreenWidget.small => loc.widgetSmallName,
+    HomeScreenWidget.ring => loc.widgetRingName,
+    HomeScreenWidget.tracker => loc.widgetTrackerName,
     HomeScreenWidget.ramadan => loc.widgetRamadanName,
   };
 
@@ -38,6 +45,8 @@ enum HomeScreenWidget {
     HomeScreenWidget.large => loc.widgetLargeDesc,
     HomeScreenWidget.wide => loc.widgetWideDesc,
     HomeScreenWidget.small => loc.widgetSmallDesc,
+    HomeScreenWidget.ring => loc.widgetRingDesc,
+    HomeScreenWidget.tracker => loc.widgetTrackerDesc,
     HomeScreenWidget.ramadan => loc.widgetRamadanDesc,
   };
 }

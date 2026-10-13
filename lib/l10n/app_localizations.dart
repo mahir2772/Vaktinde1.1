@@ -1520,6 +1520,30 @@ abstract class AppLocalizations {
   /// **'Birini seçin; ana ekranınız eklemeden önce onay isteyecek.'**
   String get addWidgetHint;
 
+  /// No description provided for @widgetRingName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Halkası'**
+  String get widgetRingName;
+
+  /// No description provided for @widgetRingDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kare: sıradaki vakte kalan süre; halka önceki vakitten bu yana geçeni gösterir'**
+  String get widgetRingDesc;
+
+  /// No description provided for @widgetTrackerName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Takibi'**
+  String get widgetTrackerName;
+
+  /// No description provided for @widgetTrackerDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatay şerit: bugünün beş vakti; vakte dokunup kılındı işaretleyin'**
+  String get widgetTrackerDesc;
+
   /// No description provided for @widgetLargeName.
   ///
   /// In tr, this message translates to:

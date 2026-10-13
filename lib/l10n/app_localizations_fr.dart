@@ -882,6 +882,20 @@ class AppLocalizationsFr extends AppLocalizations {
       'Choisissez-en un ; votre écran d\'accueil vous demandera de confirmer.';
 
   @override
+  String get widgetRingName => 'Anneau de prière';
+
+  @override
+  String get widgetRingDesc =>
+      'Carré : temps restant avant la prochaine prière ; l\'anneau montre le temps écoulé depuis la précédente';
+
+  @override
+  String get widgetTrackerName => 'Suivi des prières';
+
+  @override
+  String get widgetTrackerDesc =>
+      'Bandeau horizontal : les cinq prières du jour ; touchez-en une pour la marquer comme accomplie';
+
+  @override
   String get widgetLargeName => 'Horaires du jour';
 
   @override

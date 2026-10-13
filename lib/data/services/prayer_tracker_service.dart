@@ -7,6 +7,7 @@ import 'notification_service.dart';
 import 'prayer_tracker.dart';
 import 'serial_queue.dart';
 import 'storage_service.dart';
+import 'tracker_widget_service.dart';
 
 /// Bildirimdeki "Kıldım" ve "Durdur" aksiyonları: uygulamayı açmadan ayrı bir
 /// isolate'te çalışır (flutter_local_notifications ActionBroadcastReceiver). Bildirim
@@ -17,7 +18,10 @@ void onNotificationActionBackground(NotificationResponse response) {
   try {
     DartPluginRegistrant.ensureInitialized();
   } catch (e) {}
-  PrayerTrackerService.handleNotificationAction(response);
+  // İşaretlendiyse takip widget'ı da (uygulama kapalıyken) yenilenir
+  PrayerTrackerService.handleNotificationAction(response).then((marked) {
+    if (marked) TrackerWidgetService.update();
+  });
   NotificationService.showSilentCopy(response);
 }
 

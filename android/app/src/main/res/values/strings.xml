@@ -9,6 +9,10 @@
     <string name="vaktinde_widget_small2_description">Konum, hicri tarih ve sıradaki vakte kalan süre</string>
     <string name="vaktinde_widget_ramadan_label">Ramazan Sayacı</string>
     <string name="vaktinde_widget_ramadan_description">İftara ve sahura kalan süre; Ramazan dışında Ramazan\'a kalan gün</string>
+    <string name="vaktinde_widget_ring_label">Vakit Halkası</string>
+    <string name="vaktinde_widget_ring_description">Sıradaki vakte kalan süre; halka önceki vakitten bu yana geçen süreyi gösterir</string>
+    <string name="vaktinde_widget_tracker_label">Namaz Takibi</string>
+    <string name="vaktinde_widget_tracker_description">Bugünün beş vakti; vakte dokunarak kılındı olarak işaretleyin</string>
 
     <!-- Önizleme ve ilk çizim yer tutucuları; gerçek metinleri uygulama yazar -->
     <string name="vaktinde_widget_location">Konum</string>
@@ -24,4 +28,6 @@
     <string name="vaktinde_widget_ramadan_day_sample">Ramazan · 12. gün</string>
     <string name="vaktinde_widget_ramadan_title_sample">İftara Kalan</string>
     <string name="vaktinde_widget_ramadan_time_sample">Akşam 19:05</string>
+    <string name="vaktinde_widget_today">Bugün</string>
+    <string name="vaktinde_widget_sabah">Sabah</string>
 </resources>

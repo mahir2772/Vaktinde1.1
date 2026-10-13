@@ -20,6 +20,7 @@ import 'prayer_tracker.dart';
 import 'prayer_tracker_service.dart';
 import 'serial_queue.dart';
 import 'storage_service.dart';
+import 'tracker_widget_service.dart';
 import 'widget_service.dart';
 
 /// Kurulacak tek bir ezan / hatırlatma bildirimi
@@ -325,6 +326,9 @@ class PrayerRefreshService {
         );
       } catch (e) {}
 
+      // Takip widget'ı: dil (adlar) ve kayıt (başka isolate'in işareti dahil);
+      // aşağıda diğer widget'larla birlikte yenilenir
+      await TrackerWidgetService.write(loc: loc);
       await WidgetService.widgetiGuncelle(
         baslik: dinamikBaslik,
         hedefZamanMs: sonrakiVakitTarihi!.millisecondsSinceEpoch,

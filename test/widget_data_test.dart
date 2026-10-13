@@ -131,6 +131,8 @@ void main() {
           'VaktindeWidgetLargeProvider',
           'VaktindeWidgetSmall2Provider',
           'VaktindeWidgetRamadanProvider',
+          'VaktindeWidgetRingProvider',
+          'VaktindeWidgetTrackerProvider',
           'NotificationUpdater',
         },
       );
@@ -378,7 +380,7 @@ void main() {
           )
           .map((c) => c.method == 'updateWidget' ? 'U' : c.arguments['data'])
           .join();
-      expect(trace, 'A, FatihUUUUUB, FatihUUUUU');
+      expect(trace, 'A, FatihUUUUUUUB, FatihUUUUUUU');
       expect(saved()['location_text'], 'B, Fatih');
     },
   );

@@ -865,6 +865,20 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wählen Sie ein Widget aus – Ihr Startbildschirm fragt dann nach einer Bestätigung.';
 
   @override
+  String get widgetRingName => 'Gebetsring';
+
+  @override
+  String get widgetRingDesc =>
+      'Quadrat: verbleibende Zeit bis zum nächsten Gebet; der Ring zeigt die seit dem vorherigen vergangene Zeit';
+
+  @override
+  String get widgetTrackerName => 'Gebetstracker';
+
+  @override
+  String get widgetTrackerDesc =>
+      'Breiter Streifen: die fünf Gebete von heute; zum Markieren als verrichtet antippen';
+
+  @override
   String get widgetLargeName => 'Heutige Gebetszeiten';
 
   @override

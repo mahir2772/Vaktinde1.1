@@ -8,6 +8,10 @@
     <string name="vaktinde_widget_small2_description">الموقع والتاريخ الهجري والوقت المتبقي حتى الصلاة القادمة</string>
     <string name="vaktinde_widget_ramadan_label">العد التنازلي لرمضان</string>
     <string name="vaktinde_widget_ramadan_description">الوقت المتبقي للإفطار ولانتهاء السحور، وخارج رمضان الأيام المتبقية حتى بدايته</string>
+    <string name="vaktinde_widget_ring_label">حلقة الصلاة</string>
+    <string name="vaktinde_widget_ring_description">الوقت المتبقي حتى الصلاة القادمة، وتُظهر الحلقة الوقت المنقضي منذ الصلاة السابقة</string>
+    <string name="vaktinde_widget_tracker_label">متابعة الصلوات</string>
+    <string name="vaktinde_widget_tracker_description">صلوات اليوم الخمس؛ المس صلاةً لتعليمها كمؤداة</string>
 
     <string name="vaktinde_widget_location">الموقع</string>
     <string name="vaktinde_widget_hijri_sample">٢٥ ذو الحجة</string>
@@ -22,4 +26,6 @@
     <string name="vaktinde_widget_ramadan_day_sample">رمضان · اليوم 12</string>
     <string name="vaktinde_widget_ramadan_title_sample">الوقت المتبقي للإفطار</string>
     <string name="vaktinde_widget_ramadan_time_sample">المغرب 19:05</string>
+    <string name="vaktinde_widget_today">اليوم</string>
+    <string name="vaktinde_widget_sabah">الفجر</string>
 </resources>

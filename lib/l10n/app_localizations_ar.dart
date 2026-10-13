@@ -887,6 +887,20 @@ class AppLocalizationsAr extends AppLocalizations {
       'اختر واحدة، وستطلب منك الشاشة الرئيسية تأكيد الإضافة.';
 
   @override
+  String get widgetRingName => 'حلقة الصلاة';
+
+  @override
+  String get widgetRingDesc =>
+      'مربع: الوقت المتبقي حتى الصلاة القادمة، وتُظهر الحلقة الوقت المنقضي منذ السابقة';
+
+  @override
+  String get widgetTrackerName => 'متابعة الصلوات';
+
+  @override
+  String get widgetTrackerDesc =>
+      'شريط عريض: صلوات اليوم الخمس؛ المس صلاةً لتعليمها كمؤداة';
+
+  @override
   String get widgetLargeName => 'مواقيت اليوم';
 
   @override

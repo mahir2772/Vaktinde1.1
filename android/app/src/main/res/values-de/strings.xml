@@ -8,6 +8,10 @@
     <string name="vaktinde_widget_small2_description">Standort, islamisches Datum und verbleibende Zeit bis zum nächsten Gebet</string>
     <string name="vaktinde_widget_ramadan_label">Ramadan-Countdown</string>
     <string name="vaktinde_widget_ramadan_description">Zeit bis zum Iftar und bis zum Ende des Suhur; außerhalb des Ramadan die Tage bis zu seinem Beginn</string>
+    <string name="vaktinde_widget_ring_label">Gebetsring</string>
+    <string name="vaktinde_widget_ring_description">Verbleibende Zeit bis zum nächsten Gebet; der Ring zeigt die seit dem vorherigen Gebet vergangene Zeit</string>
+    <string name="vaktinde_widget_tracker_label">Gebetstracker</string>
+    <string name="vaktinde_widget_tracker_description">Die fünf Gebete von heute; tippen Sie auf ein Gebet, um es als verrichtet zu markieren</string>
 
     <string name="vaktinde_widget_location">Standort</string>
     <string name="vaktinde_widget_hijri_sample">25 Dhu Al-Hijjah</string>
@@ -22,4 +26,6 @@
     <string name="vaktinde_widget_ramadan_day_sample">Ramadan · Tag 12</string>
     <string name="vaktinde_widget_ramadan_title_sample">Zeit bis Iftar</string>
     <string name="vaktinde_widget_ramadan_time_sample">Maghrib 19:05</string>
+    <string name="vaktinde_widget_today">Heute</string>
+    <string name="vaktinde_widget_sabah">Fajr</string>
 </resources>

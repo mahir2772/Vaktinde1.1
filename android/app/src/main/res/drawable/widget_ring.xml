@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vakit halkası (vaktinde_widget_ring, ProgressBar): soluk tam halka üstünde ilerlemeye göre
+     altın yay (ProgressBar seviyesi → yay açısı). 270° döndürülür: yay saat 12'den saat yönünde
+     başlar. Kalınlık ve yarıçap genişliğe oranlı: halka her boyutta kare kutusuna sığar.
+     Altın #FFCA28 widget zemininde (#00504A) 6:1 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape
+            android:innerRadiusRatio="2.4"
+            android:shape="ring"
+            android:thicknessRatio="14"
+            android:useLevel="false">
+            <solid android:color="#33FFFFFF" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <rotate
+            android:fromDegrees="270"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:toDegrees="270">
+            <shape
+                android:innerRadiusRatio="2.4"
+                android:shape="ring"
+                android:thicknessRatio="14"
+                android:useLevel="true">
+                <solid android:color="#FFCA28" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

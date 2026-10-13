@@ -24,6 +24,7 @@ import '../../../data/services/notification_service.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../../../data/services/prayer_tracker_service.dart';
+import '../../../data/services/tracker_widget_service.dart';
 import '../alarm_health.dart';
 import '../../common/app_analytics.dart';
 
@@ -104,12 +105,16 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   HomeViewModel() {
     WidgetsBinding.instance.addObserver(this);
     PrayerTrackerService.excusedChanges.addListener(_onExcusedChanged);
+    PrayerTrackerService.changes.addListener(_onTrackerChanged);
     _armMidnightTimer();
   }
 
   // Özel gün işaretlendi / kaldırıldı (takip satırı ya da ekranı): özel günde
   // ezan sessiz, hatırlatma yok → alarmlar yeniden kurulur
   void _onExcusedChanged() => _rescheduleAlarms();
+
+  // Takip kaydı değişti (işaret, özel gün, kaza, yedekten dönüş): takip widget'ı
+  void _onTrackerChanged() => TrackerWidgetService.update(loc: _currentLoc);
 
   Timer? _midnightTimer;
 
@@ -869,6 +874,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     PrayerTrackerService.excusedChanges.removeListener(_onExcusedChanged);
+    PrayerTrackerService.changes.removeListener(_onTrackerChanged);
     _midnightTimer?.cancel();
     _audioPlayer?.dispose();
     alarmHealth.dispose();

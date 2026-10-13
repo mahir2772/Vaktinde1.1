@@ -17,7 +17,7 @@ import java.util.Calendar
 /**
  * Vakti geçmiş sayaçların kendini onarması. Vakit anındaki yenileme alarmı bazı üreticilerin
  * güç yöneticilerinde (Honor vb.) geç gelir ya da hiç gelmez; RemoteViews Chronometer sıfırda
- * duramadığı için sayaç eksiye düşer ("İkindiye −17:08"). Her yüzey (4 widget türü + kalıcı
+ * duramadığı için sayaç eksiye düşer ("İkindiye −17:08"). Her yüzey (6 widget türü + kalıcı
  * bildirim) çizdiği hedefi ve günü kaydeder; süreç başlayınca, ekran / kilit açılınca ve ekran
  * açıkken dakikada bir (TIME_TICK) hesaplanan hedefle karşılaştırılır, farklıysa sadece o yüzey
  * yeniden çizilir. Yenileme alarmları, updatePeriodMillis ve saat değişimi yayınları aynen kalır.
@@ -35,6 +35,8 @@ object WidgetRefresher {
         VaktindeWidgetSmall2Provider::class.java to { VaktindeWidgetSmall2Provider() },
         VaktindeWidgetLargeProvider::class.java to { VaktindeWidgetLargeProvider() },
         VaktindeWidgetRamadanProvider::class.java to { VaktindeWidgetRamadanProvider() },
+        VaktindeWidgetRingProvider::class.java to { VaktindeWidgetRingProvider() },
+        VaktindeWidgetTrackerProvider::class.java to { VaktindeWidgetTrackerProvider() },
     )
 
     /** Çizilen durum: hedef vakit (ms, veri yoksa 0) + gün (gece yarısı gün seti / hicri tarih de yenilenir) */
@@ -46,15 +48,20 @@ object WidgetRefresher {
     }
 
     /**
-     * Sağlayıcının şu an çizmesi gereken durum. Ramazan widget'ının hedefi kendi değişim anı
-     * (imsak, akşam ya da gece yarısı); bunlar sıradaki vaktin de değiştiği anlar olduğundan
-     * Watcher'ın [current] karşılaştırması onu da kapsar.
+     * Sağlayıcının şu an çizmesi gereken durum. Ramazan ve takip widget'larının hedefi kendi
+     * değişim anı (imsak, akşam, farz vakti ya da gece yarısı); bunlar sıradaki vaktin ya da günün
+     * de değiştiği anlar olduğundan Watcher'ın [current] karşılaştırması onları da kapsar. Halkanın
+     * hedefi sonraki adımı (vakitler arasında da değişir): Watcher onu ayrıca karşılaştırır.
      */
     private fun expected(providerClass: Class<*>, data: SharedPreferences, now: Calendar, current: Drawn): Drawn =
-        if (providerClass == VaktindeWidgetRamadanProvider::class.java) {
-            Drawn(VaktindeWidgetRamadanProvider.state(data, now).switchAt, current.day)
-        } else {
-            current
+        when (providerClass) {
+            VaktindeWidgetRamadanProvider::class.java ->
+                Drawn(VaktindeWidgetRamadanProvider.state(data, now).switchAt, current.day)
+            VaktindeWidgetRingProvider::class.java ->
+                Drawn(VaktindeWidgetRingProvider.state(data, now).redrawAt, current.day)
+            VaktindeWidgetTrackerProvider::class.java ->
+                Drawn(VaktindeWidgetTrackerProvider.state(data, now).switchAt, current.day)
+            else -> current
         }
 
     /**
@@ -186,11 +193,12 @@ object WidgetRefresher {
     }
 
     /**
-     * TIME_TICK ekran açıkken dakikada bir gelir: hedef ve gün son temiz denetimdekiyle aynıysa
-     * sistem çağrısı yapılmadan çıkılır (sadece vakit metinleri ayrıştırılıp karşılaştırılır).
+     * TIME_TICK ekran açıkken dakikada bir gelir: hedef, gün ve halkanın adımı son temiz
+     * denetimdekiyle aynıysa sistem çağrısı yapılmadan çıkılır (sadece vakit metinleri
+     * ayrıştırılıp karşılaştırılır).
      */
     private class Watcher(private val app: Context) : BroadcastReceiver() {
-        private var lastClean: Drawn? = null
+        private var lastClean: Pair<Drawn, Long>? = null
 
         override fun onReceive(context: Context, intent: Intent) = check()
 
@@ -199,8 +207,9 @@ object WidgetRefresher {
                 val data = app.getSharedPreferences(PrayerWidgetData.PREFS, Context.MODE_PRIVATE)
                 val now = Calendar.getInstance()
                 val current = current(data, now)
-                if (current == lastClean) return
-                if (redrawStale(app, data, current, now)) lastClean = current
+                val key = current to VaktindeWidgetRingProvider.state(data, now).redrawAt
+                if (key == lastClean) return
+                if (redrawStale(app, data, current, now)) lastClean = key
             } catch (t: Throwable) {
                 t.printStackTrace()
             }

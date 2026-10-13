@@ -850,6 +850,20 @@ class AppLocalizationsTr extends AppLocalizations {
       'Birini seçin; ana ekranınız eklemeden önce onay isteyecek.';
 
   @override
+  String get widgetRingName => 'Vakit Halkası';
+
+  @override
+  String get widgetRingDesc =>
+      'Kare: sıradaki vakte kalan süre; halka önceki vakitten bu yana geçeni gösterir';
+
+  @override
+  String get widgetTrackerName => 'Namaz Takibi';
+
+  @override
+  String get widgetTrackerDesc =>
+      'Yatay şerit: bugünün beş vakti; vakte dokunup kılındı işaretleyin';
+
+  @override
   String get widgetLargeName => 'Günün Vakitleri';
 
   @override

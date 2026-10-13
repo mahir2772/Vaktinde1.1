@@ -869,6 +869,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pick one; your home screen will ask you to confirm.';
 
   @override
+  String get widgetRingName => 'Prayer Ring';
+
+  @override
+  String get widgetRingDesc =>
+      'Square: time left until the next prayer; the ring shows the time passed since the previous one';
+
+  @override
+  String get widgetTrackerName => 'Prayer Tracker';
+
+  @override
+  String get widgetTrackerDesc =>
+      'Wide strip: today\'s five prayers; tap one to mark it as prayed';
+
+  @override
   String get widgetLargeName => 'Today\'s Prayer Times';
 
   @override
