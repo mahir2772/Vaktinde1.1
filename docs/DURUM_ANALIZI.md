@@ -5,9 +5,9 @@ Kod (önerilen sıra):
 0–3 ✅ (13 Ekim 2026, cihazda denenecek): günün ayeti/hadisi gün boyu sabit; ezanda "Durdur"; özel gün dönemi
    (başladı/bitti, en fazla 10 gün) + özel günde sessiz ezan (ayar, varsayılan açık); "Kaza hesapla" sihirbazı.
 4. Uygulama açılış reklamı — kullanıcı AdMob'da "Uygulama açılışı" birimi açarsa (dönüşte, günde 1–2).
-5. İnternetsiz il/ilçe + Avrupa şehirleri, "memleket vakitleri" (M).
+5. ✅ İnternetsiz il/ilçe + Avrupa/KKTC şehirleri (13 Ekim 2026). "Memleket vakitleri" (başka saat diliminde gösterim) yapılmadı.
 6. Yeni widget'lar: sıradaki vakit halkası, etkileşimli "Bugün" takip widget'ı (M–L).
-7. Namaz hocası (abdest/namaz adım adım) (L).
+7. ✅ Namaz Hocası (13 Ekim 2026).
 8. Ön plan servisini isteğe bağlı yapma (M).
 Kullanıcı işleri ✅ (12 Ekim 2026): Google Sites gizlilik metni güncellendi, fitre.json mahir2772.github.io'da, AdMob
 GDPR mesajı yayında ("Vaktinde GDPR"; Reddet düğmesi tüm ülkelerde; eski taslak hiç yayınlanmamıştı) + hassas/kısıtlı

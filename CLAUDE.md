@@ -31,9 +31,9 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
   açılışta (AB'de önce ret), form sonrası ve "Reklam gizlilik ayarları" sonrası yeniden uygular.
 
 `MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): 5 sekme `MainTab` (`main_tabs.dart`; sekme içinden geçiş `MainTabRequests.show`, çerçeve yoksa false) — HomeView,
-QuranView(asTab: true; kendi banner/geri düğmesi yok), QiblaView, ZikirView, ToolsView ("Araçlar"; Kur'an satırı yok). Turda Kur'an adımı var. Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok. Geçiş reklamı sadece kullanıcının açtığı ekrana geçişte: Araçlar'daki araçlar, ana ekranda "Bugün için" Cuma mesajları/dini günler ve "Bugün" takip satırı. Kur'an, Kıble, Zikir, Dualar/Tesbihat, Ayarlar, Bildirim Kontrolü, Yakındaki Camiler reklamsız. Sıklık `AdHelper.canShowInterstitial`: 4 dk soğuma + günde en çok 8 (zekat dahil ortak; 'interstitial_log' ile süreç kapansa da korunur). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
+QuranView(asTab: true; kendi banner/geri düğmesi yok), QiblaView, ZikirView, ToolsView ("Araçlar"; Kur'an satırı yok). Turda Kur'an adımı var. Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok. Geçiş reklamı sadece kullanıcının açtığı ekrana geçişte: Araçlar'daki araçlar, ana ekranda "Bugün için" Cuma mesajları/dini günler ve "Bugün" takip satırı. Kur'an, Kıble, Zikir, Dualar/Tesbihat, Namaz Hocası, Ayarlar, Bildirim Kontrolü, Yakındaki Camiler reklamsız. Sıklık `AdHelper.canShowInterstitial`: 4 dk soğuma + günde en çok 8 (zekat dahil ortak; 'interstitial_log' ile süreç kapansa da korunur). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
 Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. Akış bitince (tur yolunda da) `StreakReviewPrompt.start()`: `PrayerTrackerService.changes` ile seri 7+'ya çıkınca bir kez `InAppReview.requestReview` ('review_requested'; isAvailable, ön plan, izin/rıza/tur penceresi yokken). SettingsView araçlar ekranındaki karttan açılır ("Bize Puan Ver" = openStoreListing).
-`ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar; üst çubukta Ayarlar dişlisi, liste ekrana sığmıyor) → Imsakiye, PrayerTracker, MissedPrayers, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
+`ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar; üst çubukta Ayarlar dişlisi, liste ekrana sığmıyor) → Imsakiye, PrayerTracker, MissedPrayers, Dualar, Namaz Hocası, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
 
 ## Klasörler
 ```
@@ -46,6 +46,14 @@ lib/
                             getPrayerTimes(city): yedek Aladhan API (timingsByCity, 10 sn timeout)
       storage_service       SharedPreferences sarmalayıcı (konum adı + koordinat 'saved_lat/lng', günlük cache 'cached_prayer_times'+'cached_prayer_date', ayarlar, kaza, hadis)
       location_service      geolocator + geocoding → {city: administrativeArea, district: subAdministrativeArea|locality}; getCoordinatesFromAddress(il, ilçe)
+      location_catalog      internetsiz şehir listesi: assets/data/locations.json (~90 KB) — Türkiye 81 il + 922 ilçe ("Merkez" ilçeler
+                            = il satırı "İl merkezi"), Avrupa 10 ülke ~726 şehir (≥50 bin + başkent/bölge merkezi), KKTC 6; koordinatlar
+                            GeoNames (CC BY 4.0) + dr5hn CSC (ODbL) → atıf assets/data/locations_LICENSE.txt (main.dart LicenseRegistry).
+                            Arama: QuranService normalizasyonu (aksan/büyük-küçük; å ø æ œ), büyük şehirlerde çok dilli takma ad
+                            (Münih, Londra, كولونيا). Ülke → IANA dilimi: telefonun farkından farklıysa saat dilimi uyarısı.
+                            location_search_dialog: açılışta liste (Türkiye → il → ilçe, Avrupa/KKTC → ülke → şehir; geri tuşu bir üst
+                            seviye), arama önce gömülü liste, sonra "İnternette ara" (bulunamazsa çevrimiçi kendiliğinden);
+                            kayıt changeCityAndDistrict + koordinat ("İlçe, İl" / il adı / şehir adı)
       notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (namaz ID 0-71 = vaktin tarihine bağlı
                             PrayerRefreshService.alarmId: epochDay%6 × 12 + vakit×2 (+1 hatırlatma), vakit çıkış 100-124, günlük içerik 1000/1900, test ezanı 1999, dini gün 2000-2399, kalıcı 888).
                             Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım", "Durdur")
@@ -216,6 +224,10 @@ lib/
                                            'quran_translation_scale'; Ayete git; önceki/sonraki sure. Önbellek sürüm 2 (page/juz/hizb/
                                            sajda); sürüm 1 açılınca 5 sn'de yenilenir, olmazsa ≤10 ayetlik gruplar. widgets/: mushaf_page,
                                            translation_page, quran_page_frame, ayah_sheet, view_settings_sheet… Sonda Tanzil + mütercim notu
+    prayer_guide/                          Namaz Hocası (Araçlar > Namaz, Dualar altı, reklamsız): assets/data/prayer_guide.json
+                                           (5 dil, Diyanet ilmihali/Hanefî) + prayer_guide_data.dart; sekmeler Abdest | Farzlar | Rekâtlar |
+                                           Kılınış (2/3/4 rekât, Vitir; adım kartları). Dualar DuaLibrary.byId → DuaDetailView; Fâtiha →
+                                           SurahReaderView(trackLastRead: false: kaldığın yer ezilmez). Arapça sadece 8 kısa zikir (testli)
     duas/                                  Dualar (Araçlar > Namaz): assets/data/duas.json (4 kategori, 21 dua: Arapça + tr okunuş + 5 dil
                                            anlam, kaynak) + dua_data.dart; tesbihat_view.dart: namaz sonrası adım adım sayaç
                                            (Âyetü'l-Kürsî, 33×3, tevhid). Arapça standart imla, harekeli; yeni dua eklerken harf harf kontrol
