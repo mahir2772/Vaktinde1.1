@@ -1,4 +1,29 @@
-# Vaktinde — Durum (Play'de 1.2.0+17; 1.3.0 bu dalda hazırlanıyor, Ekim 2026)
+# Vaktinde — Durum (Play'de 1.2.0+17; 1.3.0 bu dalda hazır, yayın bekliyor — 13 Ekim 2026)
+
+## SON DURUM — kaldığımız yer (13 Ekim 2026)
+- Kod işleri bitti; dal `claude/vaktinde-app-analysis-bocjca` = 1.3.0 adayı (pubspec hâlâ 1.2.0+17). Tüm testler geçiyor
+  (769 + 28 ekran görüntüsü), analyze temiz. Kullanıcı telefonda denedi: 0–3 ve önceki işler sorunsuz; şehir listesi,
+  Namaz Hocası ve yeni widget'lar henüz cihazda denenmedi.
+- YAYIN: kullanıcı zamanını kendisi söyleyecek, adım adım yapılacak. Yayın günü sırası:
+  1. pubspec `1.3.0+18`; 2. 5 dilde kısa sürüm notları (500 karakter sınırı); 3. CollectAPI anahtarını yenile (eskisi git
+  geçmişinde açık; önce değil, yayındaki 1.2.0'ın canlı kuru durur) → `flutter build appbundle --release
+  --dart-define=COLLECT_API_KEY=<yeni>`; 4. dahili test, cihazda: R8 + kaynak küçültme (release), iki yeni widget
+  (takipte uygulama kapalıyken dokunma, halka vakitte sıfırlanma, gece yarısı), ezan "Durdur" (kilit ekranı, sessiz kopya +
+  Kıldım), özel gün dönemi + sessiz ezan, şehir listesi (il/ilçe, Avrupa, saat dilimi uyarısı), Namaz Hocası, Kur'an
+  kipleri/kart, yedekle/geri yükle, AB rıza formu, kaza hesapla; 5. üretim.
+- 1.3.0 içeriği (1.2.0'dan beri): eksi sayaç kalıcı çözümü (setTimeoutAfter + 15 dk onarım işi), widget 12 saat/kontrast,
+  Ramazan widget'ı, vakit halkası + namaz takibi widget'ları, yedekle/geri yükle, AB Consent Mode v2, erişilebilirlik
+  (%200, TalkBack), Kur'an (alt menü sekmesi, sayfa/ayet/meal, cüzler, kaldığın yer), Dualar + tesbihat, Namaz Hocası,
+  fitre/fidye + oruç takibi, özel gün dönemi + sessiz ezan, kaza hesapla, "Bugün için" merkezi, zikirmatik halka/tur/ses
+  tuşları, kıble titreşimi, ezan "Durdur", günün ayeti/hadisi gün boyu sabit, internetsiz şehir listesi, paylaşım
+  kartları/tebrikler, reklam sıklığı (4 dk, günde 8; ibadet ekranları reklamsız).
+- Gizlilik politikası 12 Ekim'de güncellendi (yedek, Kur'an/alquran.cloud, fitre GitHub Pages, AB rıza); 1.3.0'daki yeni
+  işler yeni veri akışı eklemiyor. Şehir verisi ODbL/CC BY atfı uygulamanın lisans sayfasında.
+- Bekleyen (kullanıcı kararıyla): açılış reklamı (AdMob birimi gerekir), ön plan servisini isteğe bağlı yapma, "memleket
+  vakitleri". Kotlin/Robolectric düzeneği scratchpad'de (oturum kapanınca kaybolur; gerekirse yeniden kurulur).
+- Sosyal medya: hesaplar ve içerik paketi hazır (docs/BUYUME_PLANI.md, docs/marketing/), takvim 1 Aralık'ta başlıyor.
+  Aralık başı: mağaza görselleri + Play Promosyon içeriği (Üç Aylar 10.12, Ramazan 8.2.2027). Avrupa özel mağaza girişi %50
+  → birkaç hafta sonra karşılaştır, %100. 2027 fitre tutarı açıklanınca docs/site/fitre.json'a girdi.
 
 ## 1.3.0 öncesi sıradakiler (kullanıcı onayıyla; 1.3.0 bunlar bitince yayınlanır)
 Kod (önerilen sıra):
