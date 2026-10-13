@@ -1174,9 +1174,7 @@ class PrayerRefreshService {
     await _dailyQueue.run(() async {
       if (!await _dailyContentEnabled()) return;
       if (dayAyah != null && stillFor(ayahNotificationId, ayahDay)) {
-        String title = localeName.startsWith('tr')
-            ? "Günün Ayeti"
-            : "Ayah of the Day";
+        final title = _localizations(langCode).dailyAyahTitle;
         String content = "${dayAyah.arabicText}\n\n${dayAyah.translatedText}";
         try {
           await _scheduleDaily(ayahNotificationId, title, content);
@@ -1190,9 +1188,7 @@ class PrayerRefreshService {
       }
       final hadithText = dayHadith?.content;
       if (hadithText != null && stillFor(hadithNotificationId, hadithDay)) {
-        String title = localeName.startsWith('tr')
-            ? "Günün Hadisi"
-            : "Hadith of the Day";
+        final title = _localizations(langCode).hadithTitle;
         try {
           await _scheduleDaily(hadithNotificationId, title, hadithText);
         } catch (e, st) {
