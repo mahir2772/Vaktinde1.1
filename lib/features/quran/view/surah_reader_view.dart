@@ -43,12 +43,17 @@ class SurahReaderView extends StatefulWidget {
   /// Önceki / sonraki sure için liste (verilmezse gömülü listeden okunur)
   final List<Surah>? surahs;
 
+  /// false: okunan yer "kaldığın yer" olarak saklanmaz (Namaz Hocası'ndan
+  /// açılan Fâtiha kullanıcının kaldığı yeri ezmesin)
+  final bool trackLastRead;
+
   const SurahReaderView({
     super.key,
     required this.surah,
     this.initialAyah,
     this.service,
     this.surahs,
+    this.trackLastRead = true,
   });
 
   @override
@@ -233,7 +238,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
   }
 
   void _saveLastRead(int ayah) {
-    if (ayah == _savedAyah) return;
+    if (!widget.trackLastRead || ayah == _savedAyah) return;
     _savedAyah = ayah;
     _service.saveLastRead(
       QuranBookmark(surah: widget.surah.number, ayah: ayah),
@@ -360,8 +365,12 @@ class _SurahReaderViewState extends State<SurahReaderView>
   void _openSurah(Surah surah) {
     _updateVisibleAyah();
     final route = MaterialPageRoute<void>(
-      builder: (_) =>
-          SurahReaderView(surah: surah, service: _service, surahs: _surahs),
+      builder: (_) => SurahReaderView(
+        surah: surah,
+        service: _service,
+        surahs: _surahs,
+        trackLastRead: widget.trackLastRead,
+      ),
     );
     // Listeye dönüş, değiştirilen okuyucunun kapanmasını bekler (son okunan
     // yer orada yenilenir)

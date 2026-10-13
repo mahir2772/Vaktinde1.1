@@ -1974,6 +1974,31 @@ void main() {
       await dispose(tester);
     });
 
+    testWidgets('trackLastRead: false iken okunan yer saklanmaz, sonraki '
+        'sureye geçişte de', (tester) async {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(QuranService.lastReadKey);
+      await pumpPhone(
+        tester,
+        SurahReaderView(
+          surah: _surah(112),
+          service: _service(),
+          trackLastRead: false,
+        ),
+      );
+      await scrollThrough(tester);
+      await tester.tap(find.text('Felak'));
+      await settle(tester);
+      final reader = tester.widget<SurahReaderView>(
+        find.byType(SurahReaderView),
+      );
+      expect(reader.surah.number, 113);
+      expect(reader.trackLastRead, isFalse);
+      expect(prefs.getString(QuranService.lastReadKey), isNull);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
     testWidgets('önceki / sonraki sure: başta önceki, sonda sonraki; listeye '
         'dönünce son okunan görünür', (tester) async {
       final prefs = await SharedPreferences.getInstance();

@@ -482,6 +482,8 @@ void main() {
       );
       expect(reader.surah.number, 1);
       expect(reader.surahs, hasLength(QuranService.surahCount));
+      // Kur'an'da kaldığın yer ezilmez
+      expect(reader.trackLastRead, isFalse);
       expect(tester.takeException(), isNull);
       await _dispose(tester);
     });

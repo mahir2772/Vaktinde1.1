@@ -56,8 +56,12 @@ class _PrayerGuideViewState extends State<PrayerGuideView> {
     Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: (_) =>
-            SurahReaderView(surah: surah, service: service, surahs: surahs),
+        builder: (_) => SurahReaderView(
+          surah: surah,
+          service: service,
+          surahs: surahs,
+          trackLastRead: false,
+        ),
       ),
     );
   }
