@@ -33,9 +33,12 @@
     assets/sounds aynı 11 dosya (~12,4 MB). Önizleme (home_view_model AssetSource('sounds/..')) res/raw'dan çalınırsa
     (ör. 'vaktinde/device' kanalı MediaPlayer.create(R.raw.x)) assets/sounds'tan sadece click.mp3 kalır → ~33 MB.
   · Ön plan servisini (kalıcı bildirim) isteğe bağlı yapma işi öne alınmalı (kaldırma sebebi adayı).
-  · Play önerileri (1.2.0): "uçtan uca ekran tüm kullanıcılara gösterilmeyebilir", "desteği sonlandırılmış uçtan uca
-    API'leri" (büyük ihtimalle Flutter motoru/eklentiler; ayrıntı Play'de "genişlet"ten okunacak), "R8 optimizasyonu"
-    (1.2.0'da minify açık; ayrıntısı okunacak).
+  · Play önerileri (1.2.0): "uçtan uca ekran tüm kullanıcılara gösterilmeyebilir" (enableEdgeToEdge zaten çağrılıyor;
+    1.3.0 sonrası kalıyor mu bakılacak); "desteği sonlandırılmış API'ler" (setStatusBarColor/NavigationBarColor/Divider,
+    LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES — Flutter motoru + androidx içinden, Android 15'te etkisiz; dokunulmuyor);
+    R8: "optimize edilmiş kaynak küçültme etkin değil" → android/gradle.properties `android.r8.optimizedResourceShrinking=true`
+    (AGP 8.11.1 destekliyor; release cihaz testi şart), "AGP 9.0" → Flutter uyumu belirsiz, şimdilik hayır.
+  · Mağaza girişi (28 gün, 10 Eki'ye kadar): 99 ziyaretçi, 39 yükleme tıklaması, dönüşüm %39 (iyi).
   · ASO: mağaza görselleri (başlıklı, telefon çerçeveli), "imsakiye/ramazan" anahtar kelimeli özel giriş (Ocak),
     Ocak–Mart kısa açıklama Ramazan odaklı, Promosyon içeriği başvurusu 2–3 hafta önce, yorumlara cevap.
 - Sosyal medya: hesaplar ve içerik paketi hazır (docs/BUYUME_PLANI.md, docs/marketing/), takvim 1 Aralık'ta başlıyor.
