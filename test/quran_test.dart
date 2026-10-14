@@ -1459,6 +1459,12 @@ void main() {
             ),
             findsOneWidget,
           );
+          // İlk açılış ipucu taşmasız görünür; metnin üstünde yüzdüğü için
+          // kapatılır (dar ekranda kaydırma noktasını örter)
+          expect(find.text(loc.tipQuranReader), findsOneWidget);
+          await tester.tap(find.text(loc.tipGotIt));
+          await settle(tester);
+          expect(find.text(loc.tipQuranReader), findsNothing);
           expect(tester.takeException(), isNull);
           await scrollThrough(tester);
           expect(find.text(loc.quranTextSource), findsOneWidget);
