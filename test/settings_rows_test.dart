@@ -1,5 +1,5 @@
-// Ayarlar: "Günün ayeti ve hadisi bildirimi" ve "Özel günde ezanı sessiz
-// bildir" anahtarları, gizlilik politikası
+// Ayarlar: "Günün ayeti ve hadisi bildirimi", "Kalıcı bildirim" ve "Özel
+// günde ezanı sessiz bildir" anahtarları, gizlilik politikası
 // satırı (adres boşken gizli; doluyken dış tarayıcıda açılır), "Ana ekrana
 // widget ekle" (başlatıcı destekliyorsa) ve "Uygulamayı paylaş" (kaynaklı link)
 import 'dart:io';
@@ -22,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeHomeViewModel extends HomeViewModel {
   final List<bool> dailyToggles = [];
+  final List<bool> persistentToggles = [];
   int reschedules = 0;
 
   @override
@@ -48,6 +49,13 @@ class _FakeHomeViewModel extends HomeViewModel {
   Future<void> setDailyContentEnabled(bool value) async {
     dailyToggles.add(value);
     dailyContentEnabled = value;
+    notifyListeners();
+  }
+
+  @override
+  Future<void> setPersistentNotificationEnabled(bool value) async {
+    persistentToggles.add(value);
+    persistentNotificationEnabled = value;
     notifyListeners();
   }
 }
@@ -180,6 +188,36 @@ void main() {
     await tester.pump();
     expect(vm.dailyToggles, [false, true]);
     expect(toggle().value, isTrue);
+    expect(tester.takeException(), isNull);
+    await finish(tester);
+  });
+
+  testWidgets('Kalıcı bildirim: anahtar ayarı gösterir ve değiştirir', (
+    tester,
+  ) async {
+    final vm = await pumpSettings(tester);
+    await scrollTo(tester, loc.persistentNotifTitle);
+    expect(find.text(loc.persistentNotifSub), findsOneWidget);
+    Switch toggle() => tester.widget<Switch>(
+      find.descendant(
+        of: find.ancestor(
+          of: find.text(loc.persistentNotifTitle),
+          matching: find.byType(AppListTile),
+        ),
+        matching: find.byType(Switch),
+      ),
+    );
+    expect(toggle().value, isFalse);
+
+    await tester.tap(find.byWidget(toggle()));
+    await tester.pump();
+    expect(vm.persistentToggles, [true]);
+    expect(toggle().value, isTrue);
+
+    await tester.tap(find.text(loc.persistentNotifTitle));
+    await tester.pump();
+    expect(vm.persistentToggles, [true, false]);
+    expect(toggle().value, isFalse);
     expect(tester.takeException(), isNull);
     await finish(tester);
   });

@@ -1616,6 +1616,18 @@ abstract class AppLocalizations {
   /// **'Günün Ayeti ve Hadisi Bildirimleri'**
   String get dailyContentNotifTitle;
 
+  /// No description provided for @persistentNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kalıcı Bildirim'**
+  String get persistentNotifTitle;
+
+  /// No description provided for @persistentNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim çubuğunda sıradaki vakte kalan süreyi gösterir.'**
+  String get persistentNotifSub;
+
   /// No description provided for @dailyContentNotifSub.
   ///
   /// In tr, this message translates to:

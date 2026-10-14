@@ -1,5 +1,6 @@
 package com.mmdigital.vaktinde
 
+import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -25,6 +26,12 @@ class NotificationUpdater : BroadcastReceiver() {
         try {
             // Dart'ın sisteme kaydettiği verileri okuyoruz
             val widgetData = context.getSharedPreferences(PrayerWidgetData.PREFS, Context.MODE_PRIVATE)
+
+            // Kalıcı bildirim kapalı (Ayarlar): çizilmez; kalmış bildirim ve yenileme alarmı kaldırılır
+            if (!PrayerWidgetData.persistentNotificationEnabled(widgetData)) {
+                remove(context)
+                return
+            }
 
             // Saat değişimi: uygulama henüz vakit yazmadıysa boş bildirim çıkarılmaz
             if (PrayerWidgetData.isTimeChange(intent.action) && !PrayerWidgetData.hasTimes(widgetData)) return
@@ -91,14 +98,28 @@ class NotificationUpdater : BroadcastReceiver() {
         }
     }
 
+    private fun updateIntent(context: Context): Intent =
+        Intent(context, NotificationUpdater::class.java).apply { action = AppWidgetManager.ACTION_APPWIDGET_UPDATE }
+
     // Widget alarmlarıyla aynı kurulum (PrayerWidgetData.setRefreshAlarm); sabit requestCode ile tek alarm
     private fun scheduleNextUpdate(context: Context, targetTime: Long) {
         try {
-            val intent = Intent(context, NotificationUpdater::class.java).apply {
-                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-            }
-            val pendingIntent = PendingIntent.getBroadcast(context, 888, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent = PendingIntent.getBroadcast(context, 888, updateIntent(context), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             PrayerWidgetData.setRefreshAlarm(context, targetTime, pendingIntent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    // Ön plan servisinin bildirimi iptal edilemez; o, servis durunca (stopForeground) kalkar
+    private fun remove(context: Context) {
+        try {
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(888)
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, 888, updateIntent(context), PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+            ) ?: return
+            (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(pendingIntent)
+            pendingIntent.cancel()
         } catch (e: Exception) {
             e.printStackTrace()
         }

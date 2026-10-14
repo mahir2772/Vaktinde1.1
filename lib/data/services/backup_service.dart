@@ -132,6 +132,7 @@ abstract final class BackupService {
     StorageService.dailyContentEnabledKey: const _Field(_Kind.boolean),
     StorageService.religiousDaysEnabledKey: const _Field(_Kind.boolean),
     StorageService.excusedSilentEzanKey: const _Field(_Kind.boolean),
+    StorageService.persistentNotificationKey: const _Field(_Kind.boolean),
     // Namaz takibi, kaza sayaçları, Ramazan orucu
     'prayer_log': const _Field(_Kind.text, _isMaskMap),
     'prayer_log_since': const _Field(_Kind.text),
@@ -292,7 +293,8 @@ abstract final class BackupService {
 
   /// Yedeği yazar: beyaz listedeki her anahtar yedektekiyle değiştirilir,
   /// yedekte olmayan silinir (varsayılana döner). Yedekte hiç konum yoksa
-  /// telefondaki konum, dil yoksa seçili dil korunur. Konum değiştiyse
+  /// telefondaki konum, dil yoksa seçili dil, kalıcı bildirim ayarı yoksa
+  /// (ayardan önceki sürümün yedeği) telefondaki ayar korunur. Konum değiştiyse
   /// bugünün vakit önbelleği silinir (eski yerin vakitleri yeni adla görünmesin).
   /// Beyaz liste dışındaki kayıtlara dokunulmaz.
   static Future<void> restore(
@@ -308,7 +310,10 @@ abstract final class BackupService {
     for (final key in prefs.getKeys().toList()) {
       if (!isBackedUp(key) || values.containsKey(key)) continue;
       if (!replaceLocation && locationKeys.contains(key)) continue;
-      if (key == _languageKey) continue;
+      if (key == _languageKey ||
+          key == StorageService.persistentNotificationKey) {
+        continue;
+      }
       await prefs.remove(key);
     }
     if (replaceLocation) {

@@ -38,6 +38,8 @@ object PrayerWidgetData {
     private const val TOMORROW_PREFIX = "tomorrow_"
     private const val HIJRI_KEY = "hijri_date_text"
     private const val TOMORROW_HIJRI_KEY = "tomorrow_hijri_date_text"
+    // Dart'ın kalıcı bildirim ayarı (BackgroundManager.widgetFlagKey)
+    private const val PERSISTENT_NOTIFICATION_KEY = "persistent_notification"
     private val DATE_PATTERN = Regex("\\d{4}-\\d{2}-\\d{2}")
     private const val DAY_MS = 24 * 60 * 60 * 1000L
 
@@ -67,6 +69,17 @@ object PrayerWidgetData {
         action == Intent.ACTION_TIME_CHANGED || action == Intent.ACTION_TIMEZONE_CHANGED
 
     fun hasTimes(data: SharedPreferences): Boolean = !data.getString(TIME_KEYS[0], "").isNullOrEmpty()
+
+    /**
+     * Kalıcı bildirim (888) açık mı. Dart her açılışta ve ayar değişince yazar; yeni kurulumda
+     * vakitlerden önce (false). Yoksa ayardan önceki sürümün verisidir (güncelleme sonrası uygulama
+     * henüz açılmadı): açık, güncelleyen kullanıcının bildirimi kaybolmaz.
+     */
+    fun persistentNotificationEnabled(data: SharedPreferences): Boolean = try {
+        data.getBoolean(PERSISTENT_NOTIFICATION_KEY, true)
+    } catch (e: ClassCastException) {
+        true
+    }
 
     fun today(data: SharedPreferences, now: Calendar): Day {
         val todaySet = TIME_KEYS.map { data.getString(it, "") ?: "" }

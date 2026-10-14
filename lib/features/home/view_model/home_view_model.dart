@@ -19,6 +19,7 @@ import '../../../data/models/prayer_times_model.dart';
 import '../../../data/models/hadith_model.dart';
 import '../../../main.dart';
 import '../../../data/services/ayah_service.dart';
+import '../../../data/services/background_manager.dart';
 import '../../../data/services/error_reporter.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../data/services/prayer_refresh_service.dart';
@@ -72,6 +73,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool religiousDaysEnabled = true;
   // "Özel günde ezanı sessiz bildir" (varsayılan açık)
   bool excusedSilentEzan = true;
+  // "Kalıcı bildirim" (yeni kurulumda kapalı, eski kullanıcıda açık)
+  bool persistentNotificationEnabled = false;
 
   /// Ezan uyarısının sağlığı (bildirim ve tam zamanlı alarm izni); izin
   /// değişince ya da bildirimler açılıp kapanınca alarmlar yeniden kurulur
@@ -540,7 +543,29 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     dailyContentEnabled = await _storageService.loadDailyContentEnabled();
     religiousDaysEnabled = await _storageService.loadReligiousDaysEnabled();
     excusedSilentEzan = await _storageService.loadExcusedSilentEzan();
+    persistentNotificationEnabled = await _storageService
+        .loadPersistentNotification();
     notifyListeners();
+  }
+
+  /// "Kalıcı bildirim": açılınca ön plan servisi başlar ve 888 çizilir;
+  /// kapatılınca servis durur, telefon açılışında başlamaz, bildirim kalkar
+  Future<void> setPersistentNotificationEnabled(bool value) async {
+    if (persistentNotificationEnabled == value) return;
+    persistentNotificationEnabled = value;
+    notifyListeners();
+    await _applyPersistentNotification();
+  }
+
+  Future<void> _applyPersistentNotification() async {
+    try {
+      await _storageService.savePersistentNotification(
+        persistentNotificationEnabled,
+      );
+      await BackgroundManager.apply(persistentNotificationEnabled);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'kalıcı bildirim ayarı uygulanamadı');
+    }
   }
 
   /// "Günün ayeti ve hadisi" bildirimi: kapatılınca kurulu olanlar hemen iptal
@@ -584,7 +609,12 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> reloadFromStorage() async {
     _audioPlayer?.stop();
     currentlyPlayingSound = null;
+    final persistentBefore = persistentNotificationEnabled;
     await _loadSavedSettings();
+    // Yedekteki kalıcı bildirim ayarı farklıysa servis başlar ya da durur
+    if (persistentNotificationEnabled != persistentBefore) {
+      await _applyPersistentNotification();
+    }
     final savedCity = await _storageService.loadLocation();
     final savedDistrict = await _storageService.loadDistrict();
     final times = await _calculateFromSavedCoordinates();

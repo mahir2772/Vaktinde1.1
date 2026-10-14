@@ -943,6 +943,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailyContentNotifTitle => 'إشعارات آية اليوم وحديث اليوم';
 
   @override
+  String get persistentNotifTitle => 'إشعار دائم';
+
+  @override
+  String get persistentNotifSub =>
+      'يعرض في شريط الإشعارات الوقت المتبقي حتى الصلاة القادمة.';
+
+  @override
   String get dailyContentNotifSub => 'يرسل آية كل صباح وحديثًا كل مساء.';
 
   @override

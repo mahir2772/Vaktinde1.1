@@ -112,6 +112,23 @@ class SettingsView extends StatelessWidget {
               ),
               Consumer<HomeViewModel>(
                 builder: (context, viewModel, child) {
+                  final enabled = viewModel.persistentNotificationEnabled;
+                  return AppListTile(
+                    leadingIcon: Icons.timer_outlined,
+                    title: loc.persistentNotifTitle,
+                    subtitle: loc.persistentNotifSub,
+                    showChevron: false,
+                    trailing: Switch(
+                      value: enabled,
+                      onChanged: viewModel.setPersistentNotificationEnabled,
+                    ),
+                    onTap: () =>
+                        viewModel.setPersistentNotificationEnabled(!enabled),
+                  );
+                },
+              ),
+              Consumer<HomeViewModel>(
+                builder: (context, viewModel, child) {
                   final enabled = viewModel.religiousDaysEnabled;
                   return AppListTile(
                     leadingIcon: Icons.event_note_outlined,

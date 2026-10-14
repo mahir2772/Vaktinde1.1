@@ -925,6 +925,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyContentNotifTitle => 'Daily Ayah & Hadith Notifications';
 
   @override
+  String get persistentNotifTitle => 'Persistent Notification';
+
+  @override
+  String get persistentNotifSub =>
+      'Shows the time left until the next prayer in the notification bar.';
+
+  @override
   String get dailyContentNotifSub =>
       'Sends an ayah every morning and a hadith every evening.';
 

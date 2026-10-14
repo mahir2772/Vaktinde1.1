@@ -335,6 +335,47 @@ class StorageService {
     await prefs.setBool(excusedSilentEzanKey, enabled);
   }
 
+  /// "Kalıcı bildirim" (888, sıradaki vakte kalan süre) ve onu taşıyan ön
+  /// plan servisi. Yeni kurulumda kapalı; ayardan önceki sürümü kullanmış
+  /// kullanıcıda açık (davranışı değişmez)
+  static const String persistentNotificationKey =
+      'persistent_notification_enabled';
+
+  // Ayardan önceki sürümlerin de yazdığı kullanım izleri (dil, konum). Cihaza
+  // özgü değil: InstallGuard silmez, yedekten dönen eski kullanıcı da açık başlar
+  static const List<String> _usedBeforeKeys = [
+    'is_language_selected',
+    'language_code',
+    'saved_city',
+    'saved_lat',
+    'cached_prayer_times',
+  ];
+
+  /// Kayıt yoksa: uygulama daha önce kullanılmışsa açık
+  static bool persistentNotificationOf(SharedPreferences prefs) =>
+      prefs.getBool(persistentNotificationKey) ??
+      _usedBeforeKeys.any(prefs.containsKey);
+
+  /// Açılışta, dil ve konum yazılmadan önce (BackgroundManager): kayıt yoksa
+  /// karar yazılır, sonradan değişmez (yeni kullanıcı dil seçince açılmaz)
+  static Future<bool> ensurePersistentNotification(
+    SharedPreferences prefs,
+  ) async {
+    final enabled = persistentNotificationOf(prefs);
+    if (!prefs.containsKey(persistentNotificationKey)) {
+      await prefs.setBool(persistentNotificationKey, enabled);
+    }
+    return enabled;
+  }
+
+  Future<bool> loadPersistentNotification() async =>
+      persistentNotificationOf(await SharedPreferences.getInstance());
+
+  Future<void> savePersistentNotification(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(persistentNotificationKey, enabled);
+  }
+
   // --- Günün ayeti / hadisi önbelleği (sadece önbellek; yedeğe girmez) ---
   // [key] altında "yyyy-MM-dd|dil" → içerik. Bildirim yarının içeriğini de
   // alır: gün başına ayrı kayıt; yazarken önceki günden eskiler silinir.

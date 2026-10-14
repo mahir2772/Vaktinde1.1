@@ -923,6 +923,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Benachrichtigungen für Vers und Hadith des Tages';
 
   @override
+  String get persistentNotifTitle => 'Dauerhafte Benachrichtigung';
+
+  @override
+  String get persistentNotifSub =>
+      'Zeigt in der Benachrichtigungsleiste die verbleibende Zeit bis zum nächsten Gebet.';
+
+  @override
   String get dailyContentNotifSub =>
       'Sendet jeden Morgen einen Vers und jeden Abend einen Hadith.';
 

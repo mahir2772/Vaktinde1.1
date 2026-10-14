@@ -38,6 +38,7 @@ const Map<String, Object> _userData = {
   'tracker_excused': ['2026-10-01', '2026-10-02'],
   'tracker_excused_open': '2026-10-02',
   'excused_silent_ezan': false,
+  'persistent_notification_enabled': false,
   'kaza_Sabah': 12,
   'kaza_Oruç': 3,
   'fast_log': ['2026-03-01', '2026-03-02'],
@@ -390,7 +391,8 @@ void main() {
     });
 
     test('yedekte konum yoksa telefondaki konum ve vakit önbelleği, dil '
-        'yoksa seçili dil korunur', () async {
+        'yoksa seçili dil, kalıcı bildirim ayarı yoksa (eski sürümün yedeği) '
+        'telefondaki ayar korunur', () async {
       final prefs = await prefsWith({
         'saved_city': 'İzmir',
         'saved_district': 'Konak',
@@ -400,6 +402,7 @@ void main() {
         'cached_prayer_date': '2026-10-11',
         'language_code': 'fr',
         'kaza_Sabah': 40,
+        'persistent_notification_enabled': false,
       });
       await BackupService.restore(prefs, backupOf({'kaza_Sabah': 3}));
       expect(prefs.getString('saved_city'), 'İzmir');
@@ -408,6 +411,7 @@ void main() {
       expect(prefs.getDouble('saved_lng'), 27.1);
       expect(prefs.getString('cached_prayer_times'), '{"imsak":"05:10"}');
       expect(prefs.getString('language_code'), 'fr');
+      expect(prefs.getBool('persistent_notification_enabled'), isFalse);
       expect(prefs.getInt('kaza_Sabah'), 3);
     });
 

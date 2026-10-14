@@ -526,6 +526,8 @@
     },
     "endReminderTitle": "Vakit Çıkmadan Hatırlat",
     "dailyContentNotifTitle": "Günün Ayeti ve Hadisi Bildirimleri",
+    "persistentNotifTitle": "Kalıcı Bildirim",
+    "persistentNotifSub": "Bildirim çubuğunda sıradaki vakte kalan süreyi gösterir.",
     "dailyContentNotifSub": "Her gün sabah bir ayet, akşam bir hadis gönderir.",
     "religiousDaysNotifTitle": "Dini Gün ve Kandil Bildirimleri",
     "religiousDaysNotifSub": "Kandil, bayram ve diğer dini günlerde sabah bildirim gönderir.",

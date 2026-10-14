@@ -906,6 +906,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dailyContentNotifTitle => 'Günün Ayeti ve Hadisi Bildirimleri';
 
   @override
+  String get persistentNotifTitle => 'Kalıcı Bildirim';
+
+  @override
+  String get persistentNotifSub =>
+      'Bildirim çubuğunda sıradaki vakte kalan süreyi gösterir.';
+
+  @override
   String get dailyContentNotifSub =>
       'Her gün sabah bir ayet, akşam bir hadis gönderir.';
 

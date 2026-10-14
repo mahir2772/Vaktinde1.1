@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'prayer_tracker_service.dart';
+import 'storage_service.dart';
 
 class NextVakitInfo {
   final String internalName;
@@ -65,6 +66,20 @@ void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
 
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // Kalıcı bildirim kapalıyken başlatıldıysa (eski açılış ayarı, yedekten
+  // dönen eklenti kaydı, bekçi alarmı) hemen durur; açılışta bir daha başlamaz
+  if (!StorageService.persistentNotificationOf(prefs)) {
+    if (service is AndroidServiceInstance) {
+      await service.setAutoStartOnBootMode(false);
+    }
+    await service.stopSelf();
+    return;
+  }
+  // Ayar kapatılınca (BackgroundManager.apply): eklentinin "elle durduruldu"
+  // kaydıyla durur, bekçi alarmı yeniden başlatmaz
+  service.on(BackgroundManager.stopEvent).listen((_) => service.stopSelf());
+
   final FlutterLocalNotificationsPlugin notifications =
       FlutterLocalNotificationsPlugin();
 
@@ -80,7 +95,6 @@ void onStart(ServiceInstance service) async {
   );
 
   Map<String, String> display = {};
-  SharedPreferences prefs = await SharedPreferences.getInstance();
   String? savedDisplay = prefs.getString('bg_display');
 
   if (savedDisplay != null) {
@@ -137,7 +151,26 @@ void onStart(ServiceInstance service) async {
 }
 
 class BackgroundManager {
+  /// Native taraf (NotificationUpdater, WidgetRefresher) ayarı HomeWidget
+  /// verisinden okur; yoksa açık sayar (ayardan önceki sürümün verisi)
+  static const String widgetFlagKey = 'persistent_notification';
+
+  /// Servis isolate'ine "dur" isteği (onStart dinler)
+  static const String stopEvent = 'stopService';
+
+  /// main(): kalıcı bildirim ayarı (yoksa karar burada yazılır) uygulanır
   static Future<void> initializeService() async {
+    final prefs = await SharedPreferences.getInstance();
+    await apply(await StorageService.ensurePersistentNotification(prefs));
+  }
+
+  /// Kalıcı bildirim açıkken ön plan servisi başlar (telefon açılışında da)
+  /// ve 888 çizilir; kapalıyken servis durur, açılışta başlamaz, 888 ve
+  /// yenileme alarmı kaldırılır. Widget'lar, ezan alarmları, WorkManager
+  /// etkilenmez.
+  static Future<void> apply(bool enabled) async {
+    // Önce bayrak: başlayan servis 888'i çizebilsin, durunca geri gelmesin
+    await HomeWidget.saveWidgetData<bool>(widgetFlagKey, enabled);
     final service = FlutterBackgroundService();
 
     const channel = AndroidNotificationChannel(
@@ -147,17 +180,23 @@ class BackgroundManager {
       showBadge: false,
     );
 
-    final notifications = FlutterLocalNotificationsPlugin();
-    await notifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(channel);
+    // Ön plan bildirimi kanalsız başlatılamaz (yeni kurulumda ilk açılış)
+    if (enabled) {
+      final notifications = FlutterLocalNotificationsPlugin();
+      await notifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.createNotificationChannel(channel);
+    }
 
+    // Eklenti telefon açılışında başlatma ayarını (auto_start_on_boot) kendi
+    // kaydına sadece configure'da yazar: kapatırken de çağrılır
     await service.configure(
       androidConfiguration: AndroidConfiguration(
         onStart: onStart,
         autoStart: false,
+        autoStartOnBoot: enabled,
         isForegroundMode: true,
         notificationChannelId: channel.id,
         initialNotificationTitle: '', //'Vaktinde',
@@ -171,6 +210,15 @@ class BackgroundManager {
       ),
     );
 
-    await service.startService();
+    if (enabled) {
+      await service.startService();
+      return;
+    }
+    service.invoke(stopEvent);
+    // Servis dışında çizilmiş 888 (NotificationUpdater bayrağa bakıp kaldırır)
+    await HomeWidget.updateWidget(
+      name: 'NotificationUpdater',
+      androidName: 'NotificationUpdater',
+    );
   }
 }

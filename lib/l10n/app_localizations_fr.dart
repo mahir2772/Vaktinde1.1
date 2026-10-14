@@ -940,6 +940,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Notifications du verset et du hadith du jour';
 
   @override
+  String get persistentNotifTitle => 'Notification permanente';
+
+  @override
+  String get persistentNotifSub =>
+      'Affiche dans la barre de notifications le temps restant avant la prochaine prière.';
+
+  @override
   String get dailyContentNotifSub =>
       'Envoie un verset chaque matin et un hadith chaque soir.';
 
