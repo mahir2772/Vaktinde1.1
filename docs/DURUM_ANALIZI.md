@@ -25,6 +25,10 @@
   · Kilitlenmeler sadece 1.0.0'da (ForegroundServiceDidNotStartInTime + flutter_background_service; sonraki sürümlerde
     düzeltildi) — eski sürümde kalan birkaç cihaz. GEKS/AEKS %28,7 (iyi). Kaldırmalar Ekim'de günde 2–5: yeni gelenlerin
     çoğu siliyor → tahmin: her zaman açık kalıcı bildirim, izin pencereleri, reklam, boyut.
+  · Crashlytics (7 gün): kıble _deg NaN (sadece 1.1.0; 1.2.0'da qibla_view `!raw.isFinite` koruması var), arka plan
+    resmi yüklenemedi (1.1.0–1.1.2; 1.2.0'da validBackground + errorBuilder), libflutter.so bulunamadı (1.2.0, 1 kişi:
+    Play dışı/eksik parçalı kurulum, koddan çözülmez), flutter_background_service BootReceiver açılışta ön plan servisi
+    zamanında başlamadı (1.2.0, 1 kişi) → ön plan servisini isteğe bağlı yapma işiyle çözülür.
   · BOYUT 45,8 MB (benzer ortanca 36): ezan/bildirim sesleri iki kez paketleniyor — android/app/src/main/res/raw ve
     assets/sounds aynı 11 dosya (~12,4 MB). Önizleme (home_view_model AssetSource('sounds/..')) res/raw'dan çalınırsa
     (ör. 'vaktinde/device' kanalı MediaPlayer.create(R.raw.x)) assets/sounds'tan sadece click.mp3 kalır → ~33 MB.
