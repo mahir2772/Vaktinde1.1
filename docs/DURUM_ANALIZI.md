@@ -21,6 +21,11 @@
   işler yeni veri akışı eklemiyor. Şehir verisi ODbL/CC BY atfı uygulamanın lisans sayfasında.
 - Bekleyen (kullanıcı kararıyla): açılış reklamı (AdMob birimi gerekir), ön plan servisini isteğe bağlı yapma, "memleket
   vakitleri". Kotlin/Robolectric düzeneği scratchpad'de (oturum kapanınca kaybolur; gerekirse yeniden kurulur).
+- 14 Ekim 2026 eklenenler (1.3.0'a girer, cihazda denenecek): ses kopyaları kaldırıldı (~12,7 MB; önizleme res/raw'dan),
+  Poppins ExtraBold/Black kaldırıldı; kalıcı bildirim isteğe bağlı (yeni kurulumda kapalı); ilk 24 saat geçiş reklamı yok;
+  "Reklamlar Hakkında" (ilk fırsatta reklam yerine bir kez + Ayarlar); ilk açılış hunisi olayları; Consent Mode manifest
+  varsayılanı kapalı; tur 8 adım, ilk ziyaret ipuçları, Yenilikler, Uygulamayı Tanı. R8 optimizedResourceShrinking EKLENMEDİ
+  (AGP 8.11'de belirsiz + Firebase'in adla okuduğu kaynakları silme riski). Gizlilik metni güncellendi → Google Sites'a da.
 - Play Console bulguları (14 Ekim 2026) → sıradaki işler (kullanıcı onayıyla):
   · Kilitlenmeler sadece 1.0.0'da (ForegroundServiceDidNotStartInTime + flutter_background_service; sonraki sürümlerde
     düzeltildi) — eski sürümde kalan birkaç cihaz. GEKS/AEKS %28,7 (iyi). Kaldırmalar Ekim'de günde 2–5: yeni gelenlerin
