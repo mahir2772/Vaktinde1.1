@@ -89,7 +89,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get showcaseTracker =>
-      'Kıldığın vakitleri buradan işaretle. Özel gününde “Bugün”e basılı tut.';
+      'Kıldığınız vakitleri buradan işaretleyebilirsiniz. Özel gününüzde “Bugün”e basılı tutun.';
 
   @override
   String get showcaseTools =>
@@ -100,23 +100,23 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tipTracker =>
-      'Özel gününde gün adına basılı tut ya da kartın köşesindeki çiçek simgesine dokun; bu günler serini bozmaz. Kılamadığın vakitleri en alttaki “Kılınmayanları kazaya ekle” ile kaza sayacına aktarabilirsin.';
+      'Özel gününüzde gün adına basılı tutun ya da kartın köşesindeki çiçek simgesine dokunun; bu günler serinizi bozmaz. Kılamadığınız vakitleri en alttaki “Kılınmayanları kazaya ekle” ile kaza sayacına aktarabilirsiniz.';
 
   @override
   String get tipZikir =>
-      'Zikri değiştirmek için üstteki kartı sağa ya da sola kaydır. Ayarlar\'dan “Ses tuşlarıyla say”ı açarsan ekrana bakmadan sayabilirsin.';
+      'Zikri değiştirmek için üstteki kartı sağa ya da sola kaydırın. Ayarlar\'dan “Ses tuşlarıyla say”ı açarsanız ekrana bakmadan sayabilirsiniz.';
 
   @override
   String get tipQuranReader =>
-      'Üstteki Görünüm düğmesinden Sayfa, Ayet ayet ya da Meal okumayı seç. Sayfada bir ayete dokununca meal, yer imi ve paylaşma seçenekleri açılır.';
+      'Üstteki Görünüm düğmesinden Sayfa, Ayet ayet ya da Meal okumayı seçin. Sayfada bir ayete dokununca meal, yer imi ve paylaşma seçenekleri açılır.';
 
   @override
   String get tipAlarmsSilent =>
-      'Telefon sessizdeyken de duymak için “Sessiz modda da çal”ı aç.';
+      'Telefon sessizdeyken de duymak için “Sessiz modda da çal”ı açın.';
 
   @override
   String get tipWidget =>
-      'Vakitleri uygulamayı açmadan görmek için ana ekranına bir Vaktinde widget\'ı ekle.';
+      'Vakitleri uygulamayı açmadan görmek için ana ekranınıza bir Vaktinde widget\'ı ekleyin.';
 
   @override
   String get tipWidgetAction => 'Widget ekle';
@@ -129,14 +129,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get whatsNewQuranDesc =>
-      'Mushaf gibi sayfa sayfa oku, kaldığın yerden devam et.';
+      'Mushaf gibi sayfa sayfa okuyun, kaldığınız yerden devam edin.';
 
   @override
   String get whatsNewWidgetsTitle => 'Yeni widget\'lar';
 
   @override
   String get whatsNewWidgetsDesc =>
-      'Vakit halkası ve namaz takibi: kıldığın vakti uygulamayı açmadan işaretle.';
+      'Vakit halkası ve namaz takibi: kıldığınız vakti uygulamayı açmadan işaretleyin.';
 
   @override
   String get whatsNewStopTitle => 'Ezanı tek dokunuşla durdur';
@@ -150,7 +150,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get whatsNewExcusedDesc =>
-      'Özel gününde serin bozulmaz, ezan sessiz bildirilir.';
+      'Özel gününüzde seriniz bozulmaz, ezan sessiz bildirilir.';
 
   @override
   String get appGuideTitle => 'Uygulamayı Tanı';
@@ -162,7 +162,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appGuideReplayTour => 'Tanıtım turunu tekrar izle';
 
   @override
-  String get appGuideReplayTourSub => 'Ana ekrandaki kısa turu yeniden başlat';
+  String get appGuideReplayTourSub =>
+      'Ana ekrandaki kısa turu yeniden başlatın';
 
   @override
   String get guideGroupTimes => 'Vakitler & Alarmlar';
@@ -178,7 +179,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get guideLocation =>
-      'Ana ekranda şehir adına dokun; il, ilçe ve şehir listesi internetsiz de çalışır.';
+      'Ana ekranda şehir adına dokunun; il, ilçe ve şehir listesi internetsiz de çalışır.';
 
   @override
   String get guideAlarms =>
@@ -186,26 +187,26 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get guideTracker =>
-      'Kıldığın vakitleri işaretle; bildirimdeki “Kıldım” da işaretler. Özel gününde gün adına basılı tut.';
+      'Kıldığınız vakitleri işaretleyin; bildirimdeki “Kıldım” da işaretler. Özel gününüzde gün adına basılı tutun.';
 
   @override
   String get guideKaza =>
-      'Kaza sayaçlarını tut; “Kaza hesapla” ile kılınmayan süreden tahmini sayıyı bul.';
+      'Kaza sayaçlarınızı tutun; “Kaza hesapla” ile kılınmayan süreden tahmini sayıyı bulun.';
 
   @override
-  String get guideQibla => 'Telefonu düz tut; kıbleye dönünce titrer.';
+  String get guideQibla => 'Telefonu düz tutun; kıbleye dönünce titrer.';
 
   @override
   String get guideZikir =>
-      'Saymak için ekrana dokun, zikri değiştirmek için kartı kaydır. Ses tuşlarıyla sayma zikir ayarlarında.';
+      'Saymak için ekrana dokunun, zikri değiştirmek için kartı kaydırın. Ses tuşlarıyla sayma zikir ayarlarında.';
 
   @override
   String get guideQuran =>
-      'Görünüm\'den Sayfa, Ayet ayet ya da Meal seç; ayete dokununca meal, yer imi ve paylaşma açılır. Kaldığın yer kendiliğinden saklanır.';
+      'Görünüm\'den Sayfa, Ayet ayet ya da Meal seçin; ayete dokununca meal, yer imi ve paylaşma açılır. Kaldığınız yer kendiliğinden saklanır.';
 
   @override
   String get guideWidgets =>
-      'Vakitler, geri sayım, vakit halkası, Ramazan ve namaz takibi (vakte dokunarak işaretle). Ana ekranda boş bir yere basılı tutup Widget\'lar\'dan da ekleyebilirsin.';
+      'Vakitler, geri sayım, vakit halkası, Ramazan ve namaz takibi (vakte dokunarak işaretleyin). Ana ekranda boş bir yere basılı tutup Widget\'lar\'dan da ekleyebilirsiniz.';
 
   @override
   String get refreshLocation => 'Konumu yenile';
