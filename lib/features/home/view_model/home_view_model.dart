@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:geolocator/geolocator.dart';
@@ -40,7 +40,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   );
   AyahModel? dailyAyah;
 
-  AudioPlayer? _audioPlayer;
+  // Ses önizlemesi: res/raw'daki bildirim sesi ('vaktinde/device' playSound/stopSound;
+  // assets'te kopyası yok). Her çalma bir tur; eski turun gecikmiş yanıtı yenisine dokunmaz.
+  static const MethodChannel _device = MethodChannel('vaktinde/device');
+  int _previewRun = 0;
 
   PrayerTimesModel? prayerTimes;
   HadithModel? dailyHadith;
@@ -607,8 +610,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   /// (ezan, hatırlatma, vakit çıkışı, dini günler, günün ayeti/hadisi) yeni
   /// ayarlarla yeniden kurulur. Koordinatsız konum internetle çözümlenir.
   Future<void> reloadFromStorage() async {
-    _audioPlayer?.stop();
-    currentlyPlayingSound = null;
+    _stopSound();
     final persistentBefore = persistentNotificationEnabled;
     await _loadSavedSettings();
     // Yedekteki kalıcı bildirim ayarı farklıysa servis başlar ya da durur
@@ -755,8 +757,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     else
       reminderAlarms[vakit] = value;
     if (value == false) {
-      _audioPlayer?.stop();
-      currentlyPlayingSound = null;
+      _stopSound();
     }
     notifyListeners();
     _saveCurrentSettings();
@@ -773,8 +774,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   void toggleSilentMode(String vakit, bool value) {
     silentModeSettings[vakit] = value;
     if (value) {
-      _audioPlayer?.stop();
-      currentlyPlayingSound = null;
+      _stopSound();
     }
     notifyListeners();
     _saveCurrentSettings();
@@ -782,8 +782,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void changeSound(String vakit, String newSoundId) {
-    _audioPlayer?.stop();
-    currentlyPlayingSound = null;
+    _stopSound();
     selectedSounds[vakit] = newSoundId;
     notifyListeners();
     _saveCurrentSettings();
@@ -791,41 +790,41 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void changeReminderSound(String vakit, String newSoundId) {
-    _audioPlayer?.stop();
-    currentlyPlayingSound = null;
+    _stopSound();
     selectedReminderSounds[vakit] = newSoundId;
     notifyListeners();
     _saveCurrentSettings();
     _rescheduleAlarms();
   }
 
+  /// Sesi önizler; çalan sese yeniden dokunmak durdurur, başka ses öncekini keser.
+  /// Kanal yanıtı ses susunca gelir (bitti, durduruldu ya da açılamadı).
   Future<void> playPreview(String soundId) async {
+    if (currentlyPlayingSound == soundId) return stopPreview();
+    final run = ++_previewRun;
+    currentlyPlayingSound = soundId;
+    notifyListeners();
     try {
-      _audioPlayer ??= AudioPlayer();
-      await _audioPlayer!.stop();
-      if (currentlyPlayingSound == soundId) {
-        currentlyPlayingSound = null;
-        notifyListeners();
-        return;
-      }
-      await _audioPlayer!.play(AssetSource('sounds/$soundId.mp3'));
-      currentlyPlayingSound = soundId;
-      notifyListeners();
-      _audioPlayer!.onPlayerComplete.listen((event) {
-        currentlyPlayingSound = null;
-        notifyListeners();
-      });
+      await _device.invokeMethod('playSound', soundId);
     } catch (e) {}
+    if (run == _previewRun && currentlyPlayingSound == soundId) {
+      currentlyPlayingSound = null;
+      notifyListeners();
+    }
   }
 
   /// Çalan önizlemeyi durdurur (alarm alt sayfası kapanınca)
   Future<void> stopPreview() async {
     if (currentlyPlayingSound == null) return;
-    currentlyPlayingSound = null;
+    _stopSound();
     notifyListeners();
-    try {
-      await _audioPlayer?.stop();
-    } catch (e) {}
+  }
+
+  /// Çalan önizlemeyi susturur; ekranı çağıran yeniler
+  void _stopSound() {
+    if (currentlyPlayingSound == null) return;
+    currentlyPlayingSound = null;
+    _device.invokeMethod('stopSound').catchError((Object e) => null);
   }
 
   // Alarm kurma işleri üst üste binmez: çalışırken gelen istekler bitince tek seferde,
@@ -906,7 +905,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     PrayerTrackerService.excusedChanges.removeListener(_onExcusedChanged);
     PrayerTrackerService.changes.removeListener(_onTrackerChanged);
     _midnightTimer?.cancel();
-    _audioPlayer?.dispose();
+    _stopSound();
     alarmHealth.dispose();
     super.dispose();
   }

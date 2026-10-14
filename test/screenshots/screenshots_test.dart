@@ -298,11 +298,9 @@ Future<void> _loadFont(String family, List<String> paths) async {
 }
 
 Future<void> _loadFonts() async {
-  // Uygulama teması: pubspec'teki "Poppins" ailesi (400-900) ve Amiri
+  // Uygulama teması: pubspec'teki "Poppins" ailesi (400-700) ve Amiri
   await _loadFont('Poppins', [
     for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold'])
-      'assets/google_fonts/Poppins-$w.ttf',
-    for (final w in ['ExtraBold', 'Black'])
       'assets/google_fonts/Poppins-$w.ttf',
   ]);
   await _loadFont('Amiri', ['assets/fonts/amiri/Amiri-Regular.ttf']);
@@ -318,8 +316,6 @@ Future<void> _loadFonts() async {
     '500': 'Medium',
     '600': 'SemiBold',
     '700': 'Bold',
-    '800': 'ExtraBold',
-    '900': 'Black',
   };
   for (final e in poppins.entries) {
     await _loadFont('Poppins_${e.key}', [

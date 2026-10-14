@@ -116,7 +116,7 @@ Future<void> _loadFont(String family, List<String> paths) async {
 /// Gerçek yazı tipleri: taşma denetimi cihazdaki genişliklerle yapılır
 Future<void> _loadFonts() async {
   await _loadFont('Poppins', [
-    for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold'])
+    for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold'])
       'assets/google_fonts/Poppins-$w.ttf',
   ]);
   await _loadFont('Amiri', ['assets/fonts/amiri/Amiri-Regular.ttf']);

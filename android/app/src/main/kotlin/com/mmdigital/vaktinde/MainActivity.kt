@@ -68,11 +68,12 @@ class MainActivity : FlutterFragmentActivity() {
         EventChannel(messenger, "vaktinde/volume_keys").setStreamHandler(volumeKeys)
     }
 
-    // Activity kapanınca (onDestroy → motor ayrılır) sensör dinleyicisi bırakılır
+    // Activity kapanınca (onDestroy → motor ayrılır) sensör dinleyicisi bırakılır, ses önizlemesi susar
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         magnetic?.stop()
         magnetic = null
         volumeKeys.detach()
+        SoundPreview.stop()
         super.cleanUpFlutterEngine(flutterEngine)
     }
 

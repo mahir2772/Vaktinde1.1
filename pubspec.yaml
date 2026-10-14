@@ -66,7 +66,8 @@ flutter:
   
 
   assets:
-    - assets/sounds/
+    # Ezan/bildirim sesleri sadece android/app/src/main/res/raw'da (kanallar + önizleme)
+    - assets/sounds/click.mp3
     - assets/icon/
     - assets/data/
     - assets/images/backgrounds/
@@ -85,10 +86,6 @@ flutter:
           weight: 600
         - asset: assets/google_fonts/Poppins-Bold.ttf
           weight: 700
-        - asset: assets/google_fonts/Poppins-ExtraBold.ttf
-          weight: 800
-        - asset: assets/google_fonts/Poppins-Black.ttf
-          weight: 900
     - family: Amiri
       fonts:
         - asset: assets/fonts/amiri/Amiri-Regular.ttf

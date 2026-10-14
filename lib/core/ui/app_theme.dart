@@ -6,7 +6,7 @@ import 'prayer_colors.dart';
 
 /// Uygulamanın tek teması: `AppTheme.light()` / `AppTheme.dark()`.
 ///
-/// Yazı tipi pubspec'te kayıtlı Poppins (400-900, italik yok); en küçük boyut 13sp.
+/// Yazı tipi pubspec'te kayıtlı Poppins (400-700, italik yok); en küçük boyut 13sp.
 /// Arapça metin (ayet, dua) için `AppTheme.arabicFamily` (Amiri) kullanılır.
 /// TabBar teması AppBar.bottom içindir (açık temada beyaz yazı).
 abstract final class AppTheme {

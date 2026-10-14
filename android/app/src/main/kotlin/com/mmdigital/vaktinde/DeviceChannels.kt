@@ -10,6 +10,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.AudioManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
@@ -56,6 +57,15 @@ object DeviceMethods {
             "tcfConsent" -> {
                 val context = appContext ?: return result.error("no_context", null, null)
                 result.success(tcfConsent(context))
+            }
+            // Alarm ayarlarında ses önizlemesi (sonuç ses susunca gelir)
+            "playSound" -> {
+                val context = appContext ?: return result.success(null)
+                SoundPreview.play(context, call.arguments as? String, result)
+            }
+            "stopSound" -> {
+                SoundPreview.stop()
+                result.success(null)
             }
             else -> result.notImplemented()
         }
@@ -178,6 +188,58 @@ object DeviceMethods {
         val field = GeomagneticField(lat.toFloat(), lng.toFloat(), 0f, timeMs)
         // fieldStrength nanotesla
         return mapOf("declination" to field.declination.toDouble(), "strength" to field.fieldStrength / 1000.0)
+    }
+}
+
+/**
+ * Alarm ayarlarındaki ses önizlemesi ("vaktinde/device" playSound(ad), stopSound): bildirim
+ * kanallarının çaldığı res/raw dosyası (ezan1-8, bildirim1-3; assets'te kopyası yok, adla
+ * çağrıldığı için res/raw/keep.xml'de korunur). Medya ses düzeyinde, aynı anda tek ses: yeni
+ * çalma öncekini durdurur; çalarken diğer uygulamalar susar (geçici ses odağı), odağı başka
+ * uygulama alırsa önizleme durur. playSound'un sonucu ses bitince, durdurulunca ya da yerini
+ * yeni sese bırakınca gelir (Dart "çalıyor" simgesini buna göre kapatır); ses yoksa ya da
+ * açılamazsa hemen. Hiçbir yol fırlatmaz; ana iş parçacığında çağrılır.
+ */
+object SoundPreview {
+    private var player: MediaPlayer? = null
+    private var pending: MethodChannel.Result? = null
+    private var audio: AudioManager? = null
+
+    private val focusListener = AudioManager.OnAudioFocusChangeListener { change ->
+        if (change == AudioManager.AUDIOFOCUS_LOSS || change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) stop()
+    }
+
+    @Suppress("DEPRECATION") // AudioFocusRequest API 26+; eski yöntem her sürümde çalışır
+    fun play(context: Context, name: String?, result: MethodChannel.Result) {
+        stop()
+        val id = if (name.isNullOrEmpty()) 0 else context.resources.getIdentifier(name, "raw", context.packageName)
+        // create: hazırlanmış oynatıcı; ses yoksa ya da açılamazsa null
+        val created = if (id == 0) null else runCatching { MediaPlayer.create(context, id) }.getOrNull()
+        if (created == null) {
+            result.success(null)
+            return
+        }
+        player = created
+        pending = result
+        // Hata da tamamlanma olarak gelir (OnErrorListener yok)
+        created.setOnCompletionListener { if (it === player) stop() }
+        audio = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+        runCatching {
+            audio?.requestAudioFocus(focusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+        }
+        if (runCatching { created.start() }.isFailure) stop()
+    }
+
+    /** Çalan önizleme susar, bekleyen playSound yanıtlanır; çalan yoksa bir şey yapmaz */
+    @Suppress("DEPRECATION")
+    fun stop() {
+        val current = player ?: return
+        player = null
+        runCatching { current.release() }
+        runCatching { audio?.abandonAudioFocus(focusListener) }
+        audio = null
+        pending?.success(null)
+        pending = null
     }
 }
 
