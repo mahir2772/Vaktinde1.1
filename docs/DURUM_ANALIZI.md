@@ -21,6 +21,19 @@
   işler yeni veri akışı eklemiyor. Şehir verisi ODbL/CC BY atfı uygulamanın lisans sayfasında.
 - Bekleyen (kullanıcı kararıyla): açılış reklamı (AdMob birimi gerekir), ön plan servisini isteğe bağlı yapma, "memleket
   vakitleri". Kotlin/Robolectric düzeneği scratchpad'de (oturum kapanınca kaybolur; gerekirse yeniden kurulur).
+- Play Console bulguları (14 Ekim 2026) → sıradaki işler (kullanıcı onayıyla):
+  · Kilitlenmeler sadece 1.0.0'da (ForegroundServiceDidNotStartInTime + flutter_background_service; sonraki sürümlerde
+    düzeltildi) — eski sürümde kalan birkaç cihaz. GEKS/AEKS %28,7 (iyi). Kaldırmalar Ekim'de günde 2–5: yeni gelenlerin
+    çoğu siliyor → tahmin: her zaman açık kalıcı bildirim, izin pencereleri, reklam, boyut.
+  · BOYUT 45,8 MB (benzer ortanca 36): ezan/bildirim sesleri iki kez paketleniyor — android/app/src/main/res/raw ve
+    assets/sounds aynı 11 dosya (~12,4 MB). Önizleme (home_view_model AssetSource('sounds/..')) res/raw'dan çalınırsa
+    (ör. 'vaktinde/device' kanalı MediaPlayer.create(R.raw.x)) assets/sounds'tan sadece click.mp3 kalır → ~33 MB.
+  · Ön plan servisini (kalıcı bildirim) isteğe bağlı yapma işi öne alınmalı (kaldırma sebebi adayı).
+  · Play önerileri (1.2.0): "uçtan uca ekran tüm kullanıcılara gösterilmeyebilir", "desteği sonlandırılmış uçtan uca
+    API'leri" (büyük ihtimalle Flutter motoru/eklentiler; ayrıntı Play'de "genişlet"ten okunacak), "R8 optimizasyonu"
+    (1.2.0'da minify açık; ayrıntısı okunacak).
+  · ASO: mağaza görselleri (başlıklı, telefon çerçeveli), "imsakiye/ramazan" anahtar kelimeli özel giriş (Ocak),
+    Ocak–Mart kısa açıklama Ramazan odaklı, Promosyon içeriği başvurusu 2–3 hafta önce, yorumlara cevap.
 - Sosyal medya: hesaplar ve içerik paketi hazır (docs/BUYUME_PLANI.md, docs/marketing/), takvim 1 Aralık'ta başlıyor.
   Aralık başı: mağaza görselleri + Play Promosyon içeriği (Üç Aylar 10.12, Ramazan 8.2.2027). Avrupa özel mağaza girişi %50
   → birkaç hafta sonra karşılaştır, %100. 2027 fitre tutarı açıklanınca docs/site/fitre.json'a girdi.
