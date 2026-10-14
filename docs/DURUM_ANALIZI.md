@@ -1,16 +1,19 @@
-# Vaktinde — Durum (Play'de 1.2.0+17; 1.3.0 bu dalda hazır, yayın bekliyor — 13 Ekim 2026)
+# Vaktinde — Durum (Play'de 1.2.0+17; 1.3.0 bu dalda hazır, yayın bekliyor — 14 Ekim 2026)
 
-## SON DURUM — kaldığımız yer (13 Ekim 2026)
+## SON DURUM — kaldığımız yer (14 Ekim 2026)
 - Kod işleri bitti; dal `claude/vaktinde-app-analysis-bocjca` = 1.3.0 adayı (pubspec hâlâ 1.2.0+17). Tüm testler geçiyor
-  (769 + 28 ekran görüntüsü), analyze temiz. Kullanıcı telefonda denedi: 0–3 ve önceki işler sorunsuz; şehir listesi,
-  Namaz Hocası ve yeni widget'lar henüz cihazda denenmedi.
+  (819 + 31 ekran görüntüsü), analyze temiz. Kullanıcı telefonda denedi: 0–3 ve önceki işler sorunsuz; 14 Ekim'de son
+  hâli debug'da açtı, genel görünüm sorunsuz. Şehir listesi, Namaz Hocası ve yeni widget'lar henüz ayrıntılı denenmedi.
 - YAYIN: kullanıcı zamanını kendisi söyleyecek, adım adım yapılacak. Yayın günü sırası:
   1. pubspec `1.3.0+18`; 2. 5 dilde kısa sürüm notları (500 karakter sınırı); 3. CollectAPI anahtarını yenile (eskisi git
   geçmişinde açık; önce değil, yayındaki 1.2.0'ın canlı kuru durur) → `flutter build appbundle --release
   --dart-define=COLLECT_API_KEY=<yeni>`; 4. dahili test, cihazda: R8 + kaynak küçültme (release), iki yeni widget
   (takipte uygulama kapalıyken dokunma, halka vakitte sıfırlanma, gece yarısı), ezan "Durdur" (kilit ekranı, sessiz kopya +
   Kıldım), özel gün dönemi + sessiz ezan, şehir listesi (il/ilçe, Avrupa, saat dilimi uyarısı), Namaz Hocası, Kur'an
-  kipleri/kart, yedekle/geri yükle, AB rıza formu, kaza hesapla; 5. üretim.
+  kipleri/kart, yedekle/geri yükle, AB rıza formu, kaza hesapla, kalıcı bildirim aç/kapat (yeni kurulumda kapalı, telefon
+  yeniden başlayınca), ilk reklam fırsatında "Reklamlar hakkında", 1.2.0 üstüne kurulumda Yenilikler, ipuçları, Uygulamayı
+  Tanı + turu tekrar izle, Play'deki indirme boyutu; 5. docs/gizlilik_politikasi.md → Google Sites'a yapıştır (kalıcı
+  bildirim isteğe bağlı, ilk açılış izin sonucu olayları); 6. üretim.
 - 1.3.0 içeriği (1.2.0'dan beri): eksi sayaç kalıcı çözümü (setTimeoutAfter + 15 dk onarım işi), widget 12 saat/kontrast,
   Ramazan widget'ı, vakit halkası + namaz takibi widget'ları, yedekle/geri yükle, AB Consent Mode v2, erişilebilirlik
   (%200, TalkBack), Kur'an (alt menü sekmesi, sayfa/ayet/meal, cüzler, kaldığın yer), Dualar + tesbihat, Namaz Hocası,
@@ -19,8 +22,7 @@
   kartları/tebrikler, reklam sıklığı (4 dk, günde 8; ibadet ekranları reklamsız).
 - Gizlilik politikası 12 Ekim'de güncellendi (yedek, Kur'an/alquran.cloud, fitre GitHub Pages, AB rıza); 1.3.0'daki yeni
   işler yeni veri akışı eklemiyor. Şehir verisi ODbL/CC BY atfı uygulamanın lisans sayfasında.
-- Bekleyen (kullanıcı kararıyla): açılış reklamı (AdMob birimi gerekir), ön plan servisini isteğe bağlı yapma, "memleket
-  vakitleri". Kotlin/Robolectric düzeneği scratchpad'de (oturum kapanınca kaybolur; gerekirse yeniden kurulur).
+- Bekleyen (kullanıcı kararıyla): açılış reklamı (AdMob birimi gerekir), "memleket vakitleri". Kotlin/Robolectric düzeneği scratchpad'de (oturum kapanınca kaybolur; gerekirse yeniden kurulur).
 - 14 Ekim 2026 eklenenler (1.3.0'a girer, cihazda denenecek): ses kopyaları kaldırıldı (~12,7 MB; önizleme res/raw'dan),
   Poppins ExtraBold/Black kaldırıldı; kalıcı bildirim isteğe bağlı (yeni kurulumda kapalı); ilk 24 saat geçiş reklamı yok;
   "Reklamlar Hakkında" (ilk fırsatta reklam yerine bir kez + Ayarlar); ilk açılış hunisi olayları; Consent Mode manifest
