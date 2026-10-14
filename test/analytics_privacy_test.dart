@@ -1,5 +1,6 @@
 // Analitik olaylarında konum (il/ilçe, koordinat) ve ibadet bilgisi (vakit)
-// gönderilmez; Firebase Analytics'e tek kapı AppAnalytics'tir.
+// gönderilmez; Firebase Analytics'e tek kapı AppAnalytics'tir. İlk açılış
+// hunisi olayları (dil, tur, izin sonucu): test/app_startup_test.dart.
 import 'dart:io';
 
 import 'package:ezan_saati/features/common/app_analytics.dart';
@@ -29,12 +30,18 @@ void main() {
         'vakit': 'Öğle',
         'lat': 39.92,
         'tip': 'tam_vakit',
+        'sonuc': 'verildi',
       },
     );
     await AppAnalytics.logEvent(name: 'bos', parameters: {'sehir': 'Ankara'});
     expect(events.map((e) => e.$1), ['deneme', 'bos']);
-    expect(events[0].$2, {'tip': 'tam_vakit'});
+    expect(events[0].$2, {'tip': 'tam_vakit', 'sonuc': 'verildi'});
     expect(events[1].$2, isNull);
+  });
+
+  test('izinli parametreler: alarm türü ve izin sonucu', () {
+    // Yeni parametre bilinçli eklenir: konum, vakit ya da kişisel veri olamaz
+    expect(AppAnalytics.allowedParameters, {'tip', 'sonuc'});
   });
 
   test('gönderim hatası uygulamayı etkilemez', () async {

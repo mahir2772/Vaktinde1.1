@@ -12,6 +12,7 @@ import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
+import 'package:ezan_saati/features/common/app_analytics.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
@@ -91,6 +92,9 @@ class _MainWrapperState extends State<MainWrapper> {
       if (!mounted) return;
       if (isFirstTime && _startTour()) {
         await prefs.setBool(tourSeenKey, false);
+        // İlk açılış hunisi: tur kurulum başına bir kez başlar; 'tur_bitti'
+        // gelmeyen tur yarıda kalmıştır
+        AppAnalytics.logEvent(name: 'tur_basladi');
         return;
       }
       await primePermissionsIfNeeded(context);
@@ -160,6 +164,7 @@ class _MainWrapperState extends State<MainWrapper> {
         zikirmatikKey,
       ].where(view.isTargetRendered).toList();
       if (keys.isEmpty) return false;
+      view.addOnFinishCallback(_logTourFinished);
       view.startShowCase(keys);
       return true;
     } catch (e) {
@@ -167,6 +172,9 @@ class _MainWrapperState extends State<MainWrapper> {
       return false;
     }
   }
+
+  // Tur sonuna kadar gidildi (eksik hedefle erken biten tur dahil)
+  static void _logTourFinished() => AppAnalytics.logEvent(name: 'tur_bitti');
 
   @override
   void didChangeDependencies() {

@@ -67,7 +67,10 @@ void main() {
     }
   }
 
-  setUp(() => InstallGuard.isSupported = () => true);
+  setUp(() {
+    InstallGuard.isSupported = () => true;
+    InstallGuard.firstInstallTime = null;
+  });
   tearDown(() => InstallGuard.isSupported = () => Platform.isAndroid);
 
   test('aynı kurulum: hiçbir bayrağa dokunulmaz', () async {
@@ -142,6 +145,11 @@ void main() {
     final (result, prefs) = await check({}, info());
     expect(result, InstallCheck.firstRun);
     expect(prefs.getInt(InstallGuard.markerKey), install);
+    // Yeni kullanıcı reklam kısıtı için paylaşılır (tekrar okunmaz)
+    expect(
+      InstallGuard.firstInstallTime,
+      DateTime.fromMillisecondsSinceEpoch(install),
+    );
     expect(
       await InstallGuard.run(packageInfo: () async => info()),
       InstallCheck.sameInstall,
@@ -165,6 +173,8 @@ void main() {
       for (final MapEntry(:key, :value) in stored.entries) {
         expect(prefs.get(key), value, reason: key);
       }
+      // Kurulum zamanı bilinmiyor: yeni kullanıcı reklam kısıtı yok
+      expect(InstallGuard.firstInstallTime, isNull);
     }
     // Android dışı
     InstallGuard.isSupported = () => false;

@@ -48,6 +48,10 @@ class InstallGuard {
     'last_headless_run', // PrayerRefreshService: arka plan görevinin son koşusu
   ];
 
+  /// Bu cihazdaki ilk kurulum zamanı ([run] okur; okunamadıysa null).
+  /// Yeni kullanıcıya ilk 24 saat geçiş reklamı yok (AdHelper.installTime).
+  static DateTime? firstInstallTime;
+
   /// Testte platform kontrolünü aşmak için
   @visibleForTesting
   static bool Function() isSupported = () => Platform.isAndroid;
@@ -82,6 +86,7 @@ class InstallGuard {
       final info = await packageInfo();
       final installTime = info.installTime?.millisecondsSinceEpoch;
       if (installTime == null || installTime <= 0) return InstallCheck.skipped;
+      firstInstallTime = info.installTime;
       final prefs = await SharedPreferences.getInstance();
       final result = decide(
         marker: prefs.getInt(markerKey),

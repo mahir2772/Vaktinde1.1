@@ -4,6 +4,7 @@ import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
+import 'package:ezan_saati/features/common/app_analytics.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
@@ -26,7 +27,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-// Uygulama düzeyi: açılış sırası (tur / izin / pil), reklam rızası (UMP),
+// Uygulama düzeyi: açılış sırası (tur / izin / pil) ve ilk açılış hunisi
+// olayları, reklam rızası (UMP),
 // Ayarlar'daki reklam gizlilik satırı, fotoğraf üstünde bölüm başlığı,
 // alt menü (5 sekme, Kur'an sekmesi, tanıtım turu) ve etiketleri.
 
@@ -367,6 +369,50 @@ void main() {
         await tester.pump(const Duration(milliseconds: 100));
       }
       expect(vm.refreshedLocation, isFalse); // şehir: Ankara (elle)
+      await finish(tester);
+    });
+
+    testWidgets('ilk açılış hunisi: dil → tur başladı/bitti → izin sonucu; her '
+        'olay bir kez, konum/vakit yok', (tester) async {
+      final events = <(String, Map<String, Object>?)>[];
+      final originalSink = AppAnalytics.sink;
+      AppAnalytics.sink = (name, parameters) async =>
+          events.add((name, parameters));
+      addTearDown(() => AppAnalytics.sink = originalSink);
+      Future<void> settle() async {
+        for (var i = 0; i < 10; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      await pumpApp(tester, const OnboardingLanguageView());
+      await tester.tap(find.text('Türkçe'));
+      await settle();
+      expect(events.map((e) => e.$1), ['dil_secildi', 'tur_basladi']);
+
+      final view = ShowcaseView.get();
+      for (var i = 0; i < 10 && view.isShowcaseRunning; i++) {
+        view.next();
+        await settle();
+      }
+      // Tur bitince izin akışı (bildirim sonucu sadece Android'de)
+      await tester.tap(find.text(loc.continueAction));
+      await settle();
+      expect(events.map((e) => e.$1), [
+        'dil_secildi',
+        'tur_basladi',
+        'tur_bitti',
+        'konum_izni',
+      ]);
+      expect(events.last.$2, {'sonuc': 'reddedildi'});
+      for (final (_, parameters) in events.take(3)) {
+        expect(parameters, isNull);
+      }
+
+      // İzin akışı tamamlandı: sonuç yeniden gönderilmez
+      await primePermissionsIfNeeded(tester.element(find.byType(MainWrapper)));
+      await settle();
+      expect(events, hasLength(4));
       await finish(tester);
     });
   });

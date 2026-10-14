@@ -408,6 +408,48 @@ void main() {
       expect(ads.canShowInterstitial(DateTime(2026, 1, 2, 0, 10)), isTrue);
     });
 
+    test('yeni kullanıcıya ilk kurulumdan 24 saat geçiş reklamı yok; kurulum '
+        'zamanı bilinmiyorsa kısıt yok, sonra soğuma ve günlük sınır', () {
+      final ads = AdHelper.instance..debugReset();
+      addTearDown(ads.debugReset);
+      final installed = DateTime(2026, 1, 1, 12);
+      expect(ads.canShowInterstitial(installed), isTrue); // bilinmiyor
+      ads.installTime = installed;
+      expect(ads.canShowInterstitial(installed), isFalse);
+      expect(
+        ads.canShowInterstitial(
+          installed.add(const Duration(hours: 23, minutes: 59)),
+        ),
+        isFalse,
+      );
+      final after = installed.add(AdHelper.newUserGrace);
+      expect(ads.canShowInterstitial(after), isTrue);
+      // Mevcut kullanıcı (kurulum 24 saatten eski) etkilenmez
+      expect(
+        ads.canShowInterstitial(installed.add(const Duration(days: 30))),
+        isTrue,
+      );
+      // Saat kurulumdan önceye alındıysa beklenmez
+      expect(
+        ads.canShowInterstitial(installed.subtract(const Duration(hours: 1))),
+        isTrue,
+      );
+
+      ads.markInterstitialShown(after);
+      expect(
+        ads.canShowInterstitial(after.add(const Duration(minutes: 1))),
+        isFalse,
+      );
+      expect(ads.canShowInterstitial(after.add(AdHelper.cooldown)), isTrue);
+      for (var i = 1; i < AdHelper.dailyCap; i++) {
+        ads.markInterstitialShown(after.add(Duration(minutes: 5 * i)));
+      }
+      expect(
+        ads.canShowInterstitial(after.add(const Duration(hours: 6))),
+        isFalse,
+      );
+    });
+
     test(
       'süreç yeniden başlayınca son gösterim ve günün sayısı korunur',
       () async {

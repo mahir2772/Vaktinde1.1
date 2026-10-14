@@ -80,6 +80,10 @@ void main() async {
     onTimeout: () => InstallCheck.skipped,
   );
 
+  // Yeni kullanıcıya ilk 24 saat geçiş reklamı yok (kurulum zamanı
+  // okunamadıysa kısıt yok)
+  AdHelper.instance.installTime = InstallGuard.firstInstallTime;
+
   // Reklamlar AdMob rızası (UMP) alındıktan sonra başlar; açılışı bekletmez
   AdHelper.instance.loadInterstitialAd();
 

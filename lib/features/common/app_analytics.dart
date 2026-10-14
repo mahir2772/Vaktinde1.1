@@ -109,8 +109,9 @@ class AnalyticsConsent {
 class AppAnalytics {
   AppAnalytics._();
 
-  /// Kişisel veri içermeyen, gönderilebilir parametreler
-  static const Set<String> allowedParameters = {'tip'};
+  /// Kişisel veri içermeyen, gönderilebilir parametreler: 'tip' (alarm türü),
+  /// 'sonuc' (ilk açılış izin sonucu: verildi / reddedildi)
+  static const Set<String> allowedParameters = {'tip', 'sonuc'};
 
   /// Testte olayları yakalamak için
   @visibleForTesting

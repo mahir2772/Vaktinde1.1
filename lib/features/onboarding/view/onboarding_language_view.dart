@@ -9,6 +9,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../common/app_analytics.dart';
 import '../../common/language_provider.dart';
 import '../../home/view_model/home_view_model.dart';
 import '../../main_wrapper/main_wrapper.dart';
@@ -21,6 +22,9 @@ class OnboardingLanguageView extends StatelessWidget {
 
   void _select(BuildContext context, String code) {
     context.read<LanguageProvider>().setLanguage(Locale(code));
+    // İlk açılış hunisi (bu ekran kurulum başına bir kez); dil kodu huni için
+    // gerekmez, cihaz dilini Firebase zaten toplar
+    AppAnalytics.logEvent(name: 'dil_secildi');
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
         builder: (context) => ShowCaseWidget(
@@ -217,16 +221,17 @@ Future<void> _runPermissionPriming(
   }
 
   // 1. Bildirim izni
+  bool? notificationsGranted;
   try {
     final notificationsPlugin = FlutterLocalNotificationsPlugin();
     if (Platform.isAndroid) {
-      await notificationsPlugin
+      notificationsGranted = await notificationsPlugin
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
           >()
           ?.requestNotificationsPermission();
     } else if (Platform.isIOS) {
-      await notificationsPlugin
+      notificationsGranted = await notificationsPlugin
           .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin
           >()
@@ -234,6 +239,9 @@ Future<void> _runPermissionPriming(
     }
   } catch (e) {
     debugPrint("Bildirim izni hatası: $e");
+  }
+  if (notificationsGranted != null) {
+    _logPermissionResult('bildirim_izni', notificationsGranted);
   }
 
   // 2. Konum izni; verilirse varsayılan konum yerine gerçek konum alınır
@@ -243,9 +251,11 @@ Future<void> _runPermissionPriming(
         permission == LocationPermission.deniedForever) {
       permission = await Geolocator.requestPermission();
     }
-    if ((permission == LocationPermission.whileInUse ||
-            permission == LocationPermission.always) &&
-        context.mounted) {
+    final granted =
+        permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always;
+    _logPermissionResult('konum_izni', granted);
+    if (granted && context.mounted) {
       final viewModel = context.read<HomeViewModel>();
       final isDefault =
           viewModel.city == null ||
@@ -257,4 +267,13 @@ Future<void> _runPermissionPriming(
   } catch (e) {
     debugPrint("Konum izni hatası: $e");
   }
+}
+
+/// İlk açılış hunisi: izin sonucu (izin akışı kurulum başına bir kez
+/// tamamlanır). Konum ya da vakit gönderilmez, sadece verildi / reddedildi.
+void _logPermissionResult(String event, bool granted) {
+  AppAnalytics.logEvent(
+    name: event,
+    parameters: {'sonuc': granted ? 'verildi' : 'reddedildi'},
+  );
 }

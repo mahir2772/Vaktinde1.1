@@ -32,7 +32,8 @@ class AdIds {
 /// ekrana geçişte istenir (kendiliğinden, açılışta ya da çıkışta değil):
 /// Araçlar'daki araçlar (Dualar, Ayarlar, Yakındaki Camiler hariç), ana
 /// ekranda "Bugün için" Cuma mesajları / dini günler ve Namaz Takibi. Kur'an,
-/// Kıble, Zikir, Dualar/Tesbihat ve Ayarlar hiç reklam göstermez.
+/// Kıble, Zikir, Dualar/Tesbihat ve Ayarlar hiç reklam göstermez. Yeni
+/// kullanıcıya ilk kurulumdan sonraki 24 saat geçiş reklamı yok.
 class AdHelper {
   // Singleton yapısı: Uygulama boyunca sadece 1 tane AdHelper yaşar
   static final AdHelper instance = AdHelper._internal();
@@ -44,9 +45,17 @@ class AdHelper {
   /// Günde en çok bu kadar geçiş reklamı
   static const int dailyCap = 8;
 
+  /// Yeni kullanıcıya bu cihazdaki ilk kurulumdan sonra bu süre geçiş reklamı
+  /// yok (banner'lar değişmez)
+  static const Duration newUserGrace = Duration(hours: 24);
+
   /// Son gösterim + günün sayısı (süreç kapansa da sıklık korunur):
   /// "<epoch ms>|<yyyy-MM-dd>|<sayı>"
   static const String logKey = 'interstitial_log';
+
+  /// Bu cihazdaki ilk kurulum zamanı (InstallGuard açılışta PackageInfo'dan
+  /// okur; main.dart verir). Bilinmiyorsa yeni kullanıcı kısıtı uygulanmaz.
+  DateTime? installTime;
 
   InterstitialAd? _interstitialAd;
   bool _loading = false;
@@ -111,11 +120,18 @@ class AdHelper {
       '${t.year}-${t.month.toString().padLeft(2, '0')}-'
       '${t.day.toString().padLeft(2, '0')}';
 
-  /// Şu an geçiş reklamı gösterilebilir mi: son reklamdan [cooldown] geçti ve
-  /// bugün [dailyCap]'e ulaşılmadı. Uygulamadaki tüm geçiş reklamları (genel +
-  /// zekat) bu ortak sınıra uyar. Saat geri alındıysa soğuma beklenmez.
+  /// Şu an geçiş reklamı gösterilebilir mi: kurulumdan [newUserGrace] geçti,
+  /// son reklamdan [cooldown] geçti ve bugün [dailyCap]'e ulaşılmadı.
+  /// Uygulamadaki tüm geçiş reklamları (genel + zekat) bu ortak sınıra uyar.
+  /// Saat geri alındıysa (kurulumdan / son reklamdan önceye) beklenmez.
   bool canShowInterstitial([DateTime? now]) {
     final t = now ?? DateTime.now();
+    final installed = installTime;
+    if (installed != null &&
+        !t.isBefore(installed) &&
+        t.difference(installed) < newUserGrace) {
+      return false;
+    }
     final last = _lastAdShowTime;
     if (last != null && !t.isBefore(last) && t.difference(last) < cooldown) {
       return false;
@@ -173,6 +189,7 @@ class AdHelper {
   /// Testler: sıklık durumu sıfırlanır
   @visibleForTesting
   void debugReset() {
+    installTime = null;
     _lastAdShowTime = null;
     _countDay = null;
     _countToday = 0;
