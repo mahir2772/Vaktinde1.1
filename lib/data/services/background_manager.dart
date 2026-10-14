@@ -7,6 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'prayer_tracker_service.dart';
+import 'serial_queue.dart';
 import 'storage_service.dart';
 
 class NextVakitInfo {
@@ -77,8 +78,14 @@ void onStart(ServiceInstance service) async {
     return;
   }
   // Ayar kapatılınca (BackgroundManager.apply): eklentinin "elle durduruldu"
-  // kaydıyla durur, bekçi alarmı yeniden başlatmaz
-  service.on(BackgroundManager.stopEvent).listen((_) => service.stopSelf());
+  // kaydıyla durur, bekçi alarmı yeniden başlatmaz. İstek gelene kadar ayar
+  // yeniden açıldıysa (hızlı kapat-aç) durmaz
+  service.on(BackgroundManager.stopEvent).listen((_) async {
+    await prefs.reload();
+    if (!StorageService.persistentNotificationOf(prefs)) {
+      await service.stopSelf();
+    }
+  });
 
   final FlutterLocalNotificationsPlugin notifications =
       FlutterLocalNotificationsPlugin();
@@ -168,7 +175,13 @@ class BackgroundManager {
   /// ve 888 çizilir; kapalıyken servis durur, açılışta başlamaz, 888 ve
   /// yenileme alarmı kaldırılır. Widget'lar, ezan alarmları, WorkManager
   /// etkilenmez.
-  static Future<void> apply(bool enabled) async {
+  static Future<void> apply(bool enabled) =>
+      _applyQueue.run(() => _apply(enabled));
+
+  // Üst üste gelen aç/kapat sırayla uygulanır
+  static final SerialQueue _applyQueue = SerialQueue();
+
+  static Future<void> _apply(bool enabled) async {
     // Önce bayrak: başlayan servis 888'i çizebilsin, durunca geri gelmesin
     await HomeWidget.saveWidgetData<bool>(widgetFlagKey, enabled);
     final service = FlutterBackgroundService();

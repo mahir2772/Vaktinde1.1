@@ -208,7 +208,14 @@ void main() {
       onStart(on);
       await pumpEventQueue();
       expect(on.stops, 0);
+      // Hızlı kapat-aç: istek gelene kadar ayar yeniden açıldıysa durmaz
       on.send(BackgroundManager.stopEvent);
+      await pumpEventQueue();
+      expect(on.stops, 0);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(key, false);
+      on.send(BackgroundManager.stopEvent);
+      await pumpEventQueue();
       expect(on.stops, 1);
     });
   });
