@@ -69,6 +69,7 @@ class _MainWrapperState extends State<MainWrapper> {
     );
     _usagePrompt = UsageReviewPrompt(canPrompt: _canPromptReview);
     AdHelper.instance.loadInterstitialAd();
+    AdHelper.instance.startupWindowOpen = () => !_canPromptReview();
     HomeView.alarmsTabRequests.addListener(_showHomeTab);
     MainTabRequests.attach(_showTab);
 
@@ -109,7 +110,8 @@ class _MainWrapperState extends State<MainWrapper> {
     }
   }
 
-  // İzin, rıza formu ya da tanıtım turu açıkken değerlendirme istenmez
+  // İzin, rıza formu ya da tanıtım turu açıkken değerlendirme istenmez (ilk
+  // reklam fırsatındaki "Reklamlar hakkında" açıklaması da gösterilmez)
   bool _canPromptReview() =>
       !permissionPrimingActive &&
       !AdConsent.isGatheringConsent &&

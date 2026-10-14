@@ -9,6 +9,7 @@ import 'package:ezan_saati/core/app_links.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../common/ad_consent.dart';
+import '../../common/ad_helper.dart';
 import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 import '../../home/view_model/home_view_model.dart';
@@ -202,6 +203,11 @@ class SettingsView extends StatelessWidget {
                     title: loc.privacyPolicy,
                     onTap: _openPrivacyPolicy,
                   ),
+                AppListTile(
+                  leadingIcon: Icons.campaign_outlined,
+                  title: loc.aboutAds,
+                  onTap: () => AdHelper.instance.showAdInfo(context),
+                ),
                 if (privacyRequired)
                   AppListTile(
                     leadingIcon: Icons.privacy_tip_outlined,

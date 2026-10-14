@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ad_consent.dart';
+import 'widgets/ad_info_sheet.dart';
 
 /// Reklam birimleri: debug/profile'da Google test ID'leri, release'de gerçek ID'ler.
 /// (Geliştirirken kendi reklamına tıklayıp AdMob'dan ban yememek için otomatik seçilir.)
@@ -33,7 +35,9 @@ class AdIds {
 /// Araçlar'daki araçlar (Dualar, Ayarlar, Yakındaki Camiler hariç), ana
 /// ekranda "Bugün için" Cuma mesajları / dini günler ve Namaz Takibi. Kur'an,
 /// Kıble, Zikir, Dualar/Tesbihat ve Ayarlar hiç reklam göstermez. Yeni
-/// kullanıcıya ilk kurulumdan sonraki 24 saat geçiş reklamı yok.
+/// kullanıcıya ilk kurulumdan sonraki 24 saat geçiş reklamı yok. İlk reklam
+/// fırsatında reklam yerine bir kez "Reklamlar hakkında" açıklaması
+/// ([showInfoInstead]).
 class AdHelper {
   // Singleton yapısı: Uygulama boyunca sadece 1 tane AdHelper yaşar
   static final AdHelper instance = AdHelper._internal();
@@ -56,6 +60,15 @@ class AdHelper {
   /// Bu cihazdaki ilk kurulum zamanı (InstallGuard açılışta PackageInfo'dan
   /// okur; main.dart verir). Bilinmiyorsa yeni kullanıcı kısıtı uygulanmaz.
   DateTime? installTime;
+
+  /// "Reklamlar hakkında" açıklaması gösterildi (cihaza özgü ya da kullanıcı
+  /// tercihi değil: InstallGuard'a ve yedeğe girmez)
+  static const String infoSeenKey = 'ad_info_seen';
+  bool _infoSeen = false;
+
+  /// Açılış penceresi (tanıtım turu, izin akışı, rıza formu) açık mı;
+  /// MainWrapper verir. Açıkken ilk fırsatta ne açıklama ne reklam.
+  bool Function() startupWindowOpen = () => false;
 
   InterstitialAd? _interstitialAd;
   bool _loading = false;
@@ -161,13 +174,14 @@ class AdHelper {
     }
   }
 
-  /// Önceki süreçteki son gösterim ve günün sayısı (bellekteki daha yeniyse o);
-  /// ilk yüklemede bir kez
+  /// Önceki süreçteki son gösterim, günün sayısı (bellekteki daha yeniyse o)
+  /// ve açıklamanın görülüp görülmediği; ilk yüklemede bir kez
   Future<void> restoreLog() async {
     if (_restored) return;
     _restored = true;
     try {
       final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool(infoSeenKey) ?? false) _infoSeen = true;
       final parts = prefs.getString(logKey)?.split('|');
       if (parts == null || parts.length != 3) return;
       final ms = int.tryParse(parts[0]);
@@ -186,6 +200,36 @@ class AdHelper {
     }
   }
 
+  /// Hazır bir reklamın ilk gösterilebileceği fırsat (genel ya da zekat; sıklık
+  /// sınırı çağıranda denetlenir): reklam yerine bir kez açıklama. Fırsat
+  /// reklam molası sayılır (soğuma başlar), böylece açıklama hiçbir reklamla
+  /// aynı dokunuşa bağlanmaz. Açılış penceresi açıksa hiçbir şey gösterilmez,
+  /// sonraki fırsata kalır. Açıklama çağrı yerinin açtığı ekranın üstünde, bir
+  /// sonraki karede açılır. true: fırsat açıklamanın, reklam gösterilmez.
+  bool showInfoInstead(BuildContext context, [DateTime? now]) {
+    if (_infoSeen) return false;
+    if (startupWindowOpen()) return true;
+    markInterstitialShown(now);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) showAdInfo(context);
+    });
+    return true;
+  }
+
+  /// Açıklamayı gösterir (Ayarlar > Destek de; reklamsız); bir daha
+  /// kendiliğinden çıkmaz
+  Future<void> showAdInfo(BuildContext context) async {
+    _infoSeen = true;
+    final sheet = showAdInfoSheet(context);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(infoSeenKey, true);
+    } catch (e) {
+      debugPrint('Reklam açıklaması kaydedilemedi: $e');
+    }
+    return sheet;
+  }
+
   /// Testler: sıklık durumu sıfırlanır
   @visibleForTesting
   void debugReset() {
@@ -194,15 +238,23 @@ class AdHelper {
     _countDay = null;
     _countToday = 0;
     _restored = false;
+    _infoSeen = false;
+    _interstitialAd = null;
+    startupWindowOpen = () => false;
   }
+
+  /// Testler: yüklenmiş sayılan geçiş reklamı (platform kanalı yok)
+  @visibleForTesting
+  set debugLoadedAd(InterstitialAd? ad) => _interstitialAd = ad;
 
   /// Gösterme istekleri (test için; soğuma ve hazır olmama dahil)
   @visibleForTesting
   int debugShowRequests = 0;
 
   /// Kullanıcının açtığı ekrana geçişte çağrılır; sıklık sınırındaysa ya da
-  /// reklam hazır değilse hiçbir şey göstermez (hazır değilse yükler)
-  void showInterstitialAd() {
+  /// reklam hazır değilse hiçbir şey göstermez (hazır değilse yükler). İlk
+  /// fırsatta reklam yerine açıklama ([showInfoInstead]).
+  void showInterstitialAd(BuildContext context) {
     debugShowRequests++;
     final now = DateTime.now();
 
@@ -212,6 +264,7 @@ class AdHelper {
     }
 
     if (_interstitialAd != null) {
+      if (showInfoInstead(context, now)) return;
       _interstitialAd!.show();
       markInterstitialShown(now);
     } else {

@@ -29,7 +29,7 @@ class ToolsView extends StatelessWidget {
   // Kur'an, Kıble, Zikir gibi) ve uygulamadan çıkan Yakındaki Camiler
   // reklamsız açılır.
   static void _open(BuildContext context, Widget page, {bool showAd = true}) {
-    if (showAd) AdHelper.instance.showInterstitialAd();
+    if (showAd) AdHelper.instance.showInterstitialAd(context);
     Navigator.push(context, MaterialPageRoute(builder: (_) => page));
   }
 

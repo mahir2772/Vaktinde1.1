@@ -170,7 +170,7 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
 
   // Ana ekrandan araca geçiş: geçiş reklamı (sıklık sınırı AdHelper'da)
   void _openTracker() {
-    AdHelper.instance.showInterstitialAd();
+    AdHelper.instance.showInterstitialAd(context);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const PrayerTrackerView()),

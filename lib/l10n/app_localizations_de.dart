@@ -674,6 +674,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get menuTitle => 'Einstellungen';
 
   @override
+  String get aboutAds => 'Über Werbung';
+
+  @override
+  String get adInfoTitle => 'Warum zeigt Vaktinde Werbung?';
+
+  @override
+  String get adInfoBody =>
+      'Damit wir Vaktinde kostenlos und ohne Registrierung anbieten können, zeigen wir in der App eine begrenzte Anzahl von Anzeigen. Die Werbeeinnahmen helfen uns, die Kosten für die Entwicklung und Wartung der App zu decken.\n\nBeim Öffnen von Koran, Qibla, Dhikr-Zähler, Bittgebeten und Gebetsanleitung werden keine Vollbildanzeigen eingeblendet; auch auf den anderen Bildschirmen setzen wir Werbung nur sparsam ein.\n\nVielen Dank für Ihr Verständnis.';
+
+  @override
+  String get adInfoGotIt => 'Verstanden';
+
+  @override
   String get sectionLocation => 'STANDORT & ZEITEN';
 
   @override

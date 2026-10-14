@@ -665,6 +665,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get menuTitle => 'Ayarlar';
 
   @override
+  String get aboutAds => 'Reklamlar Hakkında';
+
+  @override
+  String get adInfoTitle => 'Vaktinde neden reklam gösteriyor?';
+
+  @override
+  String get adInfoBody =>
+      'Vaktinde\'yi ücretsiz ve üyelik gerektirmeden sunabilmek için uygulamada sınırlı sayıda reklam gösteriyoruz. Reklam gelirleri, uygulamanın geliştirilmesi ve bakımı için gereken masrafları karşılamamıza yardımcı oluyor.\n\nKur\'an, Kıble, Zikirmatik, Dualar ve Namaz Hocası açılırken tam ekran reklam gösterilmez; diğer ekranlarda da reklamları seyrek tutuyoruz.\n\nAnlayışınız için teşekkür ederiz.';
+
+  @override
+  String get adInfoGotIt => 'Anladım';
+
+  @override
   String get sectionLocation => 'KONUM & VAKİTLER';
 
   @override

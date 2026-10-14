@@ -686,6 +686,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get menuTitle => 'الإعدادات';
 
   @override
+  String get aboutAds => 'حول الإعلانات';
+
+  @override
+  String get adInfoTitle => 'لماذا يعرض Vaktinde إعلانات؟';
+
+  @override
+  String get adInfoBody =>
+      'لكي نتمكن من تقديم Vaktinde مجانًا ودون الحاجة إلى التسجيل، نعرض عددًا محدودًا من الإعلانات في التطبيق. وتساعدنا عائدات الإعلانات على تغطية تكاليف تطوير التطبيق وصيانته.\n\nلا تُعرض إعلانات بملء الشاشة عند فتح القرآن والقبلة والمسبحة الإلكترونية والأدعية وتعليم الصلاة، ونحرص أيضًا على أن تكون الإعلانات قليلة في الشاشات الأخرى.\n\nشكرًا لتفهمكم.';
+
+  @override
+  String get adInfoGotIt => 'فهمت';
+
+  @override
   String get sectionLocation => 'الموقع والأوقات';
 
   @override

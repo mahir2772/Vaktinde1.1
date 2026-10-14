@@ -59,6 +59,10 @@ enum _AgriType { soil, soilless }
 class ZakatView extends StatefulWidget {
   const ZakatView({super.key});
 
+  /// Testler: yüklenmiş sayılan zekat reklamı (platform kanalı yok)
+  @visibleForTesting
+  static InterstitialAd? debugLoadedAd;
+
   @override
   State<ZakatView> createState() => _ZakatViewState();
 }
@@ -139,6 +143,10 @@ class _ZakatViewState extends State<ZakatView> {
 
   void _loadInterstitialAd() {
     if (!AdConsent.canRequestAds.value) return;
+    if (ZakatView.debugLoadedAd != null) {
+      _interstitialAd = ZakatView.debugLoadedAd;
+      return;
+    }
     InterstitialAd.load(
       adUnitId: AdIds.zakatInterstitial,
       request: const AdRequest(),
@@ -164,13 +172,15 @@ class _ZakatViewState extends State<ZakatView> {
 
   // Sonuç reklamı beklemez; reklam (varsa) ziyaret başına en çok bir kez ve
   // genel geçiş reklamıyla ortak sıklık sınırına uyarak gösterilir (Araçlar'dan
-  // açılışta reklam çıktıysa hemen ardından ikinci reklam çıkmaz)
+  // açılışta reklam çıktıysa hemen ardından ikinci reklam çıkmaz). İlk fırsatta
+  // reklam yerine "Reklamlar hakkında" (bu ziyarette reklam yok).
   void _maybeShowAd() {
     if (!AdConsent.canRequestAds.value) return;
     final ad = _interstitialAd;
     if (ad == null || _adShown) return;
     if (!AdHelper.instance.canShowInterstitial()) return;
     _adShown = true;
+    if (AdHelper.instance.showInfoInstead(context)) return;
     _interstitialAd = null;
     AdHelper.instance.markInterstitialShown();
     ad.show();

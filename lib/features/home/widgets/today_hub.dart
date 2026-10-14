@@ -172,7 +172,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
   /// [showAd]: geçiş reklamı (Cuma mesajları, dini günler); Kur'an ve
   /// tesbihat reklamsız
   Future<void> _push(Widget page, {bool showAd = false}) async {
-    if (showAd) AdHelper.instance.showInterstitialAd();
+    if (showAd) AdHelper.instance.showInterstitialAd(context);
     await Navigator.push(
       context,
       MaterialPageRoute<void>(builder: (_) => page),

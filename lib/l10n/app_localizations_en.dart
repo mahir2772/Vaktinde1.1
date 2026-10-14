@@ -679,6 +679,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuTitle => 'Settings';
 
   @override
+  String get aboutAds => 'About Ads';
+
+  @override
+  String get adInfoTitle => 'Why does Vaktinde show ads?';
+
+  @override
+  String get adInfoBody =>
+      'To offer Vaktinde free of charge and with no sign-up required, we show a limited number of ads in the app. Ad revenue helps us cover the costs of developing and maintaining the app.\n\nNo full-screen ads are shown when you open the Quran, Qibla, Dhikr Counter, Duas or Prayer Guide, and we keep ads infrequent on other screens as well.\n\nThank you for your understanding.';
+
+  @override
+  String get adInfoGotIt => 'Got it';
+
+  @override
   String get sectionLocation => 'LOCATION & TIMES';
 
   @override

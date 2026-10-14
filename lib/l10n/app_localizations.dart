@@ -1232,6 +1232,30 @@ abstract class AppLocalizations {
   /// **'Ayarlar'**
   String get menuTitle;
 
+  /// No description provided for @aboutAds.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklamlar Hakkında'**
+  String get aboutAds;
+
+  /// No description provided for @adInfoTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde neden reklam gösteriyor?'**
+  String get adInfoTitle;
+
+  /// No description provided for @adInfoBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde\'yi ücretsiz ve üyelik gerektirmeden sunabilmek için uygulamada sınırlı sayıda reklam gösteriyoruz. Reklam gelirleri, uygulamanın geliştirilmesi ve bakımı için gereken masrafları karşılamamıza yardımcı oluyor.\n\nKur\'an, Kıble, Zikirmatik, Dualar ve Namaz Hocası açılırken tam ekran reklam gösterilmez; diğer ekranlarda da reklamları seyrek tutuyoruz.\n\nAnlayışınız için teşekkür ederiz.'**
+  String get adInfoBody;
+
+  /// No description provided for @adInfoGotIt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anladım'**
+  String get adInfoGotIt;
+
   /// No description provided for @sectionLocation.
   ///
   /// In tr, this message translates to:
