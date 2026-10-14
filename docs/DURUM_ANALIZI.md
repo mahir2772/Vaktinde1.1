@@ -39,6 +39,9 @@
     R8: "optimize edilmiş kaynak küçültme etkin değil" → android/gradle.properties `android.r8.optimizedResourceShrinking=true`
     (AGP 8.11.1 destekliyor; release cihaz testi şart), "AGP 9.0" → Flutter uyumu belirsiz, şimdilik hayır.
   · Mağaza girişi (28 gün, 10 Eki'ye kadar): 99 ziyaretçi, 39 yükleme tıklaması, dönüşüm %39 (iyi).
+  · Edinme kaynağı (28 gün): 50 yükleme = doğrudan/dış bağlantı 26 (9 Eki sıçraması; sosyal medya), Play keşfet 15
+    (+%200; 90 günde +31), ilişkilendirilmemiş 9. 90 günlük mağaza dönüşümü %28,5. Yer: Kullanıcı sayısını artırın →
+    Edinme kartı; "Daha ayrıntılı bilgi" → UTM kırılımı (bio etiketleri 12 Eki'den itibaren).
   · ASO: mağaza görselleri (başlıklı, telefon çerçeveli), "imsakiye/ramazan" anahtar kelimeli özel giriş (Ocak),
     Ocak–Mart kısa açıklama Ramazan odaklı, Promosyon içeriği başvurusu 2–3 hafta önce, yorumlara cevap.
 - Sosyal medya: hesaplar ve içerik paketi hazır (docs/BUYUME_PLANI.md, docs/marketing/), takvim 1 Aralık'ta başlıyor.
