@@ -89,6 +89,128 @@ class AppLocalizationsFr extends AppLocalizations {
   String get showcaseZikir => 'Comptez vos dhikrs ici.';
 
   @override
+  String get showcaseTracker =>
+      'Cochez ici les prières accomplies. Pendant vos jours d\'excuse, appuyez longuement sur « Aujourd\'hui ».';
+
+  @override
+  String get showcaseTools =>
+      'Calendrier des prières, guide de la prière, calculateur de qada et bien plus.';
+
+  @override
+  String get tipGotIt => 'Compris';
+
+  @override
+  String get tipTracker =>
+      'Pendant vos jours d\'excuse, appuyez longuement sur le nom du jour ou touchez l\'icône de fleur dans le coin de la carte ; ces jours n\'interrompent pas votre série. Tout en bas, « Ajouter les prières non faites au qada » les reporte dans vos compteurs de qada.';
+
+  @override
+  String get tipZikir =>
+      'Faites glisser la carte du haut vers la gauche ou la droite pour changer de dhikr. Activez « Compter avec les touches de volume » dans les Paramètres pour compter sans regarder l\'écran.';
+
+  @override
+  String get tipQuranReader =>
+      'Avec le bouton « Affichage » en haut, choisissez Page, Verset par verset ou Traduction. Sur une page, touchez un verset pour sa traduction, un signet ou le partage.';
+
+  @override
+  String get tipAlarmsSilent =>
+      'Pour l\'entendre même téléphone en silencieux, activez « Jouer aussi en mode silencieux ».';
+
+  @override
+  String get tipWidget =>
+      'Ajoutez un widget Vaktinde à l\'écran d\'accueil pour voir les horaires sans ouvrir l\'application.';
+
+  @override
+  String get tipWidgetAction => 'Ajouter un widget';
+
+  @override
+  String get whatsNewTitle => 'Nouveautés';
+
+  @override
+  String get whatsNewQuranTitle => 'Le Coran dans le menu du bas';
+
+  @override
+  String get whatsNewQuranDesc =>
+      'Lisez page par page comme dans un mushaf imprimé et reprenez là où vous vous étiez arrêté.';
+
+  @override
+  String get whatsNewWidgetsTitle => 'Nouveaux widgets';
+
+  @override
+  String get whatsNewWidgetsDesc =>
+      'Anneau de prière et suivi des prières : cochez une prière sans ouvrir l\'application.';
+
+  @override
+  String get whatsNewStopTitle => 'Arrêtez l\'adhan d\'une touche';
+
+  @override
+  String get whatsNewStopDesc =>
+      'Pendant l\'adhan, « Arrêter » dans la notification coupe le son aussitôt.';
+
+  @override
+  String get whatsNewExcusedTitle => 'Mode jours d\'excuse';
+
+  @override
+  String get whatsNewExcusedDesc =>
+      'Pendant vos jours d\'excuse, votre série est préservée et l\'adhan arrive en silence.';
+
+  @override
+  String get appGuideTitle => 'Découvrir l\'application';
+
+  @override
+  String get appGuideSub => 'Toutes les fonctions et comment les utiliser';
+
+  @override
+  String get appGuideReplayTour => 'Revoir la visite guidée';
+
+  @override
+  String get appGuideReplayTourSub =>
+      'Relancer la courte visite de l\'écran d\'accueil';
+
+  @override
+  String get guideGroupTimes => 'Horaires & alarmes';
+
+  @override
+  String get guideGroupPrayer => 'Prière';
+
+  @override
+  String get guideGroupQuran => 'Coran & invocations';
+
+  @override
+  String get guideGroupWidgets => 'Widgets';
+
+  @override
+  String get guideLocation =>
+      'Touchez le nom de la ville sur l\'écran d\'accueil ; la liste des villes fonctionne aussi hors ligne.';
+
+  @override
+  String get guideAlarms =>
+      'Adhan, notification silencieuse et rappel anticipé pour chaque prière. Toucher un horaire sur l\'écran d\'accueil ouvre aussi ces réglages.';
+
+  @override
+  String get guideTracker =>
+      'Cochez vos prières ; « J\'ai prié » dans la notification le fait aussi. Pendant vos jours d\'excuse, appuyez longuement sur le nom du jour.';
+
+  @override
+  String get guideKaza =>
+      'Tenez vos compteurs de qada ; le « Calculateur de qada » les estime à partir de la période manquée.';
+
+  @override
+  String get guideQibla =>
+      'Tenez le téléphone à plat ; il vibre quand vous êtes face à la Qibla.';
+
+  @override
+  String get guideZikir =>
+      'Touchez l\'écran pour compter et faites glisser la carte pour changer de dhikr. Le comptage avec les touches de volume se trouve dans les paramètres du dhikr.';
+
+  @override
+  String get guideQuran =>
+      'Choisissez Page, Verset par verset ou Traduction dans « Affichage » ; touchez un verset pour sa traduction, un signet ou le partage. Votre position est enregistrée automatiquement.';
+
+  @override
+  String get guideWidgets =>
+      'Horaires, compte à rebours, anneau de prière, Ramadan et suivi des prières (touchez une prière pour la cocher). Vous pouvez aussi les ajouter par un appui long sur un espace libre de l\'écran d\'accueil, puis « Widgets ».';
+
+  @override
   String get refreshLocation => 'Actualiser la position';
 
   @override

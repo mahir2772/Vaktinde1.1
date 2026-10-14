@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:ezan_saati/core/ui/feature_tip.dart';
 import 'package:ezan_saati/data/models/hadith_model.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
@@ -23,6 +24,8 @@ import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
+import 'package:ezan_saati/features/app_guide/view/app_guide_view.dart';
+import 'package:ezan_saati/features/app_guide/whats_new.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/share_card.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
@@ -36,11 +39,12 @@ import 'package:ezan_saati/features/home/widgets/prayer_times_grid.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart'
-    show MainTab;
+    show MainTab, MainWrapper;
 import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
 import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
+import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
@@ -187,6 +191,9 @@ FakeHomeViewModel _homeVm(String lang, {PrayerTimesModel? times}) {
   return vm;
 }
 
+/// İlk ziyaret ipuçları (FeatureTip kimlikleri)
+const _tipIds = ['home_widget', 'alarms', 'tracker', 'zikir', 'quran_reader'];
+
 Map<String, Object> _prefs({
   required String lang,
   bool languageSelected = true,
@@ -228,6 +235,9 @@ Map<String, Object> _prefs({
     'is_first_launch_showcase_v3': false,
     // İzin açıklama penceresi ekran görüntülerini kapatmasın
     'permissions_primed': true,
+    // Yenilikler ve ilk ziyaret ipuçları da (kendi çeşitlerinde açık)
+    WhatsNew.seenKey: WhatsNew.version,
+    for (final id in _tipIds) FeatureTip.seenKey(id): true,
     'saved_city': 'İstanbul',
     'saved_district': 'Kadıköy',
     'saved_lat': _istanbulLat,
@@ -1649,6 +1659,97 @@ void main() {
       });
     },
   );
+
+  // Özellik keşfi: güncelleyen kullanıcıya Yenilikler, ilk ziyaret ipuçları
+  // (ana ekran widget, Alarmlar, Zikirmatik, Namaz Takibi), Uygulamayı Tanı;
+  // 320dp %130 yazıda Yenilikler ve Uygulamayı Tanı
+  for (final lang in ['tr', 'de', 'ar']) {
+    testWidgets(
+      '$lang: Yenilikler, ipuçları, Uygulamayı Tanı',
+      skip: skip,
+      variant: _android,
+      (tester) async {
+        await _run(tester, () async {
+          final loc = lookupAppLocalizations(Locale(lang));
+          Future<void> dismissTip() async {
+            await tester.tap(find.text(loc.tipGotIt).last);
+            await _settle(tester, steps: 4);
+          }
+
+          _currentScreen = '${lang}_80_whats_new';
+          await _pumpApp(
+            tester,
+            lang: lang,
+            homeVm: _homeVm(lang),
+            extraPrefs: {
+              WhatsNew.seenKey: '1.2.0',
+              UsageReviewPrompt.countKey: 3,
+              for (final id in _tipIds) FeatureTip.seenKey(id): false,
+            },
+          );
+          await _shot(tester, '${lang}_80_whats_new');
+          await tester.tap(find.text(loc.tipGotIt));
+          await _settle(tester);
+
+          // Widget ipucu "Bugün için" üstünde: uzun görünüm
+          _currentScreen = '${lang}_81_tip_home_widget';
+          await _setViewport(tester, height: 1500);
+          await _settle(tester, steps: 4);
+          await _shot(tester, '${lang}_81_tip_home_widget');
+          await dismissTip();
+          await _setViewport(tester);
+          await _settle(tester, steps: 2);
+
+          _currentScreen = '${lang}_82_tip_alarms';
+          await tester.tap(find.text(loc.tabAlarms));
+          await _settle(tester);
+          await _shot(tester, '${lang}_82_tip_alarms');
+          await dismissTip();
+          await tester.tap(find.text(loc.tabTimes));
+          await _settle(tester);
+
+          await _tapTab(tester, MainTab.zikir);
+          await _shot(tester, '${lang}_83_tip_zikir');
+          await dismissTip();
+          await _tapTab(tester, MainTab.home);
+
+          await _openRoute(
+            tester,
+            '${lang}_84_tip_tracker',
+            const PrayerTrackerView(),
+            tallHeight: 1600,
+          );
+          await _openRoute(
+            tester,
+            '${lang}_85_app_guide',
+            const AppGuideView(),
+            tallHeight: 2700,
+          );
+
+          // Küçük telefon + %130 yazı
+          tester.platformDispatcher.textScaleFactorTestValue = 1.3;
+          try {
+            await _setViewport(tester, width: 320, height: 640);
+            await _settle(tester, steps: 4);
+            _currentScreen = '${lang}_86_whats_new_320_text130';
+            showWhatsNewSheet(tester.element(find.byType(MainWrapper)));
+            await _settle(tester);
+            await _shot(tester, '${lang}_86_whats_new_320_text130');
+            _navigator(tester).pop();
+            await _settle(tester, steps: 6);
+            await _openRoute(
+              tester,
+              '${lang}_87_app_guide_320_text130',
+              const AppGuideView(),
+            );
+          } finally {
+            tester.platformDispatcher.clearTextScaleFactorTestValue();
+          }
+          await _finish(tester);
+        });
+      },
+    );
+  }
 
   // Dualar: liste, dua sayfası (Arapça + okunuş + anlam), tesbihat
   for (final lang in ['tr', 'ar']) {

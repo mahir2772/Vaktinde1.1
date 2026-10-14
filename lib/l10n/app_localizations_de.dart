@@ -88,6 +88,128 @@ class AppLocalizationsDe extends AppLocalizations {
   String get showcaseZikir => 'Hier zählen Sie Ihren Dhikr.';
 
   @override
+  String get showcaseTracker =>
+      'Hier haken Sie Ihre verrichteten Gebete ab. An entschuldigten Tagen halten Sie „Heute“ gedrückt.';
+
+  @override
+  String get showcaseTools =>
+      'Gebetskalender, Gebetsanleitung, Qada-Rechner und vieles mehr.';
+
+  @override
+  String get tipGotIt => 'Verstanden';
+
+  @override
+  String get tipTracker =>
+      'An entschuldigten Tagen halten Sie den Tagesnamen gedrückt oder tippen auf das Blumensymbol in der Ecke der Karte; diese Tage unterbrechen Ihre Serie nicht. Mit „Versäumte Gebete zu Qada hinzufügen“ ganz unten übernehmen Sie versäumte Gebete in die Qada-Zähler.';
+
+  @override
+  String get tipZikir =>
+      'Wischen Sie die Karte oben nach links oder rechts, um den Dhikr zu wechseln. Schalten Sie in den Einstellungen „Mit den Lautstärketasten zählen“ ein, um zu zählen, ohne auf den Bildschirm zu schauen.';
+
+  @override
+  String get tipQuranReader =>
+      'Über „Ansicht“ oben wählen Sie Seite, Vers für Vers oder Übersetzung. Tippen Sie auf einer Seite auf einen Vers, um Übersetzung, Lesezeichen und Teilen zu öffnen.';
+
+  @override
+  String get tipAlarmsSilent =>
+      'Damit Sie ihn auch bei lautlosem Telefon hören, schalten Sie „Auch im Lautlos-Modus abspielen“ ein.';
+
+  @override
+  String get tipWidget =>
+      'Fügen Sie ein Vaktinde-Widget zum Startbildschirm hinzu, um die Gebetszeiten zu sehen, ohne die App zu öffnen.';
+
+  @override
+  String get tipWidgetAction => 'Widget hinzufügen';
+
+  @override
+  String get whatsNewTitle => 'Neuigkeiten';
+
+  @override
+  String get whatsNewQuranTitle => 'Koran im unteren Menü';
+
+  @override
+  String get whatsNewQuranDesc =>
+      'Lesen Sie Seite für Seite wie im gedruckten Mushaf und machen Sie dort weiter, wo Sie aufgehört haben.';
+
+  @override
+  String get whatsNewWidgetsTitle => 'Neue Widgets';
+
+  @override
+  String get whatsNewWidgetsDesc =>
+      'Gebetsring und Gebetstracker: Gebete abhaken, ohne die App zu öffnen.';
+
+  @override
+  String get whatsNewStopTitle => 'Adhan mit einem Tipp stoppen';
+
+  @override
+  String get whatsNewStopDesc =>
+      'Während der Adhan läuft, beendet „Stoppen“ in der Benachrichtigung den Ton sofort.';
+
+  @override
+  String get whatsNewExcusedTitle => 'Modus für entschuldigte Tage';
+
+  @override
+  String get whatsNewExcusedDesc =>
+      'An entschuldigten Tagen bleibt Ihre Serie erhalten und der Adhan kommt lautlos.';
+
+  @override
+  String get appGuideTitle => 'App kennenlernen';
+
+  @override
+  String get appGuideSub => 'Alle Funktionen und ihre Bedienung';
+
+  @override
+  String get appGuideReplayTour => 'Einführung erneut ansehen';
+
+  @override
+  String get appGuideReplayTourSub =>
+      'Die kurze Tour über den Startbildschirm neu starten';
+
+  @override
+  String get guideGroupTimes => 'Gebetszeiten & Alarme';
+
+  @override
+  String get guideGroupPrayer => 'Gebet';
+
+  @override
+  String get guideGroupQuran => 'Koran & Bittgebete';
+
+  @override
+  String get guideGroupWidgets => 'Widgets';
+
+  @override
+  String get guideLocation =>
+      'Tippen Sie auf dem Startbildschirm auf den Ortsnamen; die Ortsliste funktioniert auch offline.';
+
+  @override
+  String get guideAlarms =>
+      'Adhan, stille Benachrichtigung und Vorab-Erinnerung für jedes Gebet. Ein Tipp auf eine Gebetszeit auf dem Startbildschirm öffnet dies ebenfalls.';
+
+  @override
+  String get guideTracker =>
+      'Haken Sie Ihre Gebete ab; „Gebetet“ in der Benachrichtigung tut das auch. An entschuldigten Tagen halten Sie den Tagesnamen gedrückt.';
+
+  @override
+  String get guideKaza =>
+      'Führen Sie Ihre Qada-Zähler; der „Qada-Rechner“ schätzt sie aus der versäumten Zeit.';
+
+  @override
+  String get guideQibla =>
+      'Halten Sie das Telefon flach; es vibriert, wenn Sie zur Qibla ausgerichtet sind.';
+
+  @override
+  String get guideZikir =>
+      'Tippen Sie zum Zählen auf den Bildschirm und wischen Sie die Karte, um den Dhikr zu wechseln. Das Zählen mit den Lautstärketasten finden Sie in den Dhikr-Einstellungen.';
+
+  @override
+  String get guideQuran =>
+      'Wählen Sie unter „Ansicht“ Seite, Vers für Vers oder Übersetzung; ein Tipp auf einen Vers öffnet Übersetzung, Lesezeichen und Teilen. Ihre Stelle wird automatisch gespeichert.';
+
+  @override
+  String get guideWidgets =>
+      'Gebetszeiten, Countdown, Gebetsring, Ramadan und Gebetstracker (Gebet antippen zum Abhaken). Sie können sie auch hinzufügen, indem Sie eine freie Stelle auf dem Startbildschirm gedrückt halten und „Widgets“ wählen.';
+
+  @override
   String get refreshLocation => 'Standort aktualisieren';
 
   @override

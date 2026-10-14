@@ -2,6 +2,7 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
+import 'package:ezan_saati/features/app_guide/whats_new.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/app_analytics.dart';
@@ -453,7 +454,11 @@ void main() {
     await pumpApp(
       tester,
       mainWrapper(),
-      prefs: {tourSeenKey: false, permissionsPrimedKey: true},
+      prefs: {
+        tourSeenKey: false,
+        permissionsPrimedKey: true,
+        WhatsNew.seenKey: WhatsNew.version,
+      },
     );
     int selected() =>
         tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex;
@@ -550,7 +555,11 @@ void main() {
       await pumpApp(
         tester,
         mainWrapper(),
-        prefs: {tourSeenKey: false, permissionsPrimedKey: true},
+        prefs: {
+          tourSeenKey: false,
+          permissionsPrimedKey: true,
+          WhatsNew.seenKey: WhatsNew.version,
+        },
       );
       final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
       expect(bar.destinations, hasLength(MainTab.values.length));
@@ -627,23 +636,51 @@ void main() {
       await finish(tester);
     });
 
-    testWidgets("tanıtım turu alt menüde Kur'an, Kıble, Zikir sırasıyla", (
+    testWidgets("tanıtım turu: dil, \"Bugün\" takibi, alarmlar; alt menüde "
+        "Kur'an, Kıble, Zikir, Araçlar sırasıyla (en çok 8 adım)", (
       tester,
     ) async {
+      final loc = lookupAppLocalizations(const Locale('tr'));
       await pumpApp(tester, mainWrapper());
       final view = ShowcaseView.get();
       expect(view.isShowcaseRunning, isTrue);
       final seen = <GlobalKey>[];
       for (var i = 0; i < 10 && view.isShowcaseRunning; i++) {
-        seen.add(view.getActiveShowcaseKey!);
+        final key = view.getActiveShowcaseKey!;
+        seen.add(key);
+        final text = {
+          homeTrackerKey: loc.showcaseTracker,
+          toolsKey: loc.showcaseTools,
+        }[key];
+        if (text != null) {
+          // Hedefe kaydırma ve baloncuk animasyonu
+          for (var j = 0; j < 10; j++) {
+            await tester.pump(const Duration(milliseconds: 100));
+          }
+          expect(find.text(text), findsOneWidget);
+        }
         view.next();
         for (var j = 0; j < 5; j++) {
           await tester.pump(const Duration(milliseconds: 100));
         }
       }
       expect(seen.first, homeLangKey);
-      expect(seen, containsAllInOrder([quranKey, qiblaKey, zikirmatikKey]));
-      expect(seen.last, zikirmatikKey);
+      // Günün ayeti yüklenmediyse o adım atlanır, tur bitmez
+      expect(seen, isNot(contains(homeStoryKey)));
+      expect(
+        seen,
+        containsAllInOrder([
+          homeLangKey,
+          homeTrackerKey,
+          homeAlarmsKey,
+          quranKey,
+          qiblaKey,
+          zikirmatikKey,
+          toolsKey,
+        ]),
+      );
+      expect(seen.last, toolsKey);
+      expect(seen.length, lessThanOrEqualTo(8));
       await finish(tester);
     });
   });

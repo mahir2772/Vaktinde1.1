@@ -159,19 +159,39 @@ class _ZikirViewState extends State<ZikirView> with WidgetsBindingObserver {
                   ),
                 ),
                 Expanded(
-                  child: viewModel.viewMode == 0
-                      ? _ModernCounter(
-                          viewModel: viewModel,
-                          progress: progress,
-                          dhikrName: name,
-                          onEdit: editCount,
-                        )
-                      : _ClassicTasbihView(
-                          viewModel: viewModel,
-                          progress: progress,
-                          dhikrName: name,
-                          onEdit: editCount,
+                  // İlk ziyarette ipucu sayacın üstünde yüzer (küçük ekranda
+                  // sayaç sıkışmaz)
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: viewModel.viewMode == 0
+                            ? _ModernCounter(
+                                viewModel: viewModel,
+                                progress: progress,
+                                dhikrName: name,
+                                onEdit: editCount,
+                              )
+                            : _ClassicTasbihView(
+                                viewModel: viewModel,
+                                progress: progress,
+                                dhikrName: name,
+                                onEdit: editCount,
+                              ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: FeatureTip(
+                          id: 'zikir',
+                          icon: Icons.swipe_outlined,
+                          message: loc.tipZikir,
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          floating: true,
                         ),
+                      ),
+                    ],
+                  ),
                 ),
                 _ActionRow(onEdit: editCount),
               ],

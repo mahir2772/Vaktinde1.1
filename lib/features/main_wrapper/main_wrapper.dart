@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:ezan_saati/core/ui/feature_tip.dart';
 
 import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
@@ -16,6 +17,7 @@ import 'package:ezan_saati/features/common/app_analytics.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
+import 'package:ezan_saati/features/app_guide/whats_new.dart';
 
 import 'app_showcase.dart';
 import 'main_tabs.dart';
@@ -25,11 +27,14 @@ export 'main_tabs.dart';
 export 'app_showcase.dart'
     show
         homeLangKey,
+        homeTrackerKey,
         homeStoryKey,
         homeAlarmsKey,
         quranKey,
         qiblaKey,
-        zikirmatikKey;
+        zikirmatikKey,
+        toolsKey,
+        TourRequests;
 
 /// Tanıtım turu görüldü mü (false = görüldü; tur başlarken yazılır)
 const String tourSeenKey = 'is_first_launch_showcase_v3';
@@ -54,6 +59,9 @@ class _MainWrapperState extends State<MainWrapper> {
   // Tur birden fazla kez başlamasın
   bool _isTutorialChecked = false;
 
+  // Açılış akışı (tur/izinler/Yenilikler) bitti: ipuçları ondan sonra
+  bool _startupDone = false;
+
   // Değerlendirme isteği (açılış akışından sonra; ömür boyu tek istek ortak):
   // 7 günlük tam seride ya da uygulama 5 farklı günde açılınca
   late final StreakReviewPrompt _reviewPrompt;
@@ -72,6 +80,8 @@ class _MainWrapperState extends State<MainWrapper> {
     AdHelper.instance.startupWindowOpen = () => !_canPromptReview();
     HomeView.alarmsTabRequests.addListener(_showHomeTab);
     MainTabRequests.attach(_showTab);
+    TourRequests.replays.addListener(_replayTour);
+    FeatureTip.attachGate(_canShowTip);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -84,7 +94,8 @@ class _MainWrapperState extends State<MainWrapper> {
 
   /// Açılış sırası: ilk kez → tanıtım turu (izinler turun sonunda); sonraki
   /// açılışlarda tur yoksa → izin akışı hiç tamamlanmadıysa izinler (ör. tur
-  /// yarıda kaldı), ardından pil optimizasyonu (en fazla bir kez). Pencereler
+  /// yarıda kaldı), ardından pil optimizasyonu (en fazla bir kez), sonra bu
+  /// sürüme güncelleyene Yenilikler (bir kez; yeni kurulumda yok). Pencereler
   /// üst üste binmez.
   Future<void> _runStartupFlow() async {
     try {
@@ -96,19 +107,26 @@ class _MainWrapperState extends State<MainWrapper> {
         // İlk açılış hunisi: tur kurulum başına bir kez başlar; 'tur_bitti'
         // gelmeyen tur yarıda kalmıştır
         AppAnalytics.logEvent(name: 'tur_basladi');
+        if (mounted) await WhatsNew.showIfNeeded(context, updated: false);
         return;
       }
       await primePermissionsIfNeeded(context);
       if (!mounted) return;
       await context.read<HomeViewModel>().requestBatteryOptimizationOnce();
+      if (!mounted) return;
+      await WhatsNew.showIfNeeded(context, updated: !isFirstTime);
     } finally {
-      // Değerlendirme isteği açılış pencereleriyle çakışmaz
+      // Değerlendirme isteği ve ipuçları açılış pencereleriyle çakışmaz
       if (mounted) {
+        _startupDone = true;
         _reviewPrompt.start();
         _usagePrompt.start();
       }
     }
   }
+
+  // İpucu: açılış akışı bittiyse ve değerlendirmeyle aynı pencereler kapalıysa
+  bool _canShowTip() => _startupDone && _canPromptReview();
 
   // İzin, rıza formu ya da tanıtım turu açıkken değerlendirme istenmez (ilk
   // reklam fırsatındaki "Reklamlar hakkında" açıklaması da gösterilmez)
@@ -129,6 +147,8 @@ class _MainWrapperState extends State<MainWrapper> {
   void dispose() {
     HomeView.alarmsTabRequests.removeListener(_showHomeTab);
     MainTabRequests.detach(_showTab);
+    TourRequests.replays.removeListener(_replayTour);
+    FeatureTip.detachGate(_canShowTip);
     _reviewPrompt.dispose();
     _usagePrompt.dispose();
     super.dispose();
@@ -152,6 +172,16 @@ class _MainWrapperState extends State<MainWrapper> {
     setState(() => _currentIndex = MainTab.home.index);
   }
 
+  /// Uygulamayı Tanı'dan: ana sekmenin "Vakitler" görünümüne dönülür, üstteki
+  /// sayfalar kapandıktan sonra tur yeniden başlar (izinler yeniden sorulmaz:
+  /// main.dart)
+  Future<void> _replayTour() async {
+    if (!_showTab(MainTab.home)) return;
+    HomeView.openTimesTab();
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    if (mounted && !_isTourRunning()) _startTour();
+  }
+
   /// Turu ekranda olan hedeflerle başlatır (5.x'te eksik hedef turu erken
   /// bitirir; günün ayeti/hadisi yüklenmediyse o adım atlanır)
   bool _startTour() {
@@ -159,11 +189,13 @@ class _MainWrapperState extends State<MainWrapper> {
       final view = ShowcaseView.get();
       final keys = [
         homeLangKey,
+        homeTrackerKey,
         homeStoryKey,
         homeAlarmsKey,
         quranKey,
         qiblaKey,
         zikirmatikKey,
+        toolsKey,
       ].where(view.isTargetRendered).toList();
       if (keys.isEmpty) return false;
       view.addOnFinishCallback(_logTourFinished);
@@ -267,10 +299,14 @@ class _MainWrapperState extends State<MainWrapper> {
                   label: loc.navZikir,
                 ),
               ),
-              NavigationDestination(
-                icon: const Icon(Icons.grid_view_outlined),
-                selectedIcon: const Icon(Icons.grid_view_rounded),
-                label: loc.navTools,
+              AppShowcase(
+                showcaseKey: toolsKey,
+                description: loc.showcaseTools,
+                child: NavigationDestination(
+                  icon: const Icon(Icons.grid_view_outlined),
+                  selectedIcon: const Icon(Icons.grid_view_rounded),
+                  label: loc.navTools,
+                ),
               ),
             ],
           ),

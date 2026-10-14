@@ -469,7 +469,24 @@ class _SurahReaderViewState extends State<SurahReaderView>
     } else if (!ready) {
       body = const LoadingState();
     } else {
-      body = _buildContent(text);
+      // İlk açılışta Görünüm ipucu altta, metnin üstünde yüzer (okuma yeri
+      // kaymaz)
+      body = Stack(
+        children: [
+          Positioned.fill(child: _buildContent(text)),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: FeatureTip(
+              id: 'quran_reader',
+              message: loc.tipQuranReader,
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              floating: true,
+            ),
+          ),
+        ],
+      );
     }
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {

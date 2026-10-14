@@ -88,6 +88,126 @@ class AppLocalizationsTr extends AppLocalizations {
   String get showcaseZikir => 'Zikirlerinizi buradan takip edebilirsiniz.';
 
   @override
+  String get showcaseTracker =>
+      'Kıldığın vakitleri buradan işaretle. Özel gününde “Bugün”e basılı tut.';
+
+  @override
+  String get showcaseTools =>
+      'İmsakiye, Namaz Hocası, kaza hesaplama ve daha fazlası burada.';
+
+  @override
+  String get tipGotIt => 'Anladım';
+
+  @override
+  String get tipTracker =>
+      'Özel gününde gün adına basılı tut ya da kartın köşesindeki çiçek simgesine dokun; bu günler serini bozmaz. Kılamadığın vakitleri en alttaki “Kılınmayanları kazaya ekle” ile kaza sayacına aktarabilirsin.';
+
+  @override
+  String get tipZikir =>
+      'Zikri değiştirmek için üstteki kartı sağa ya da sola kaydır. Ayarlar\'dan “Ses tuşlarıyla say”ı açarsan ekrana bakmadan sayabilirsin.';
+
+  @override
+  String get tipQuranReader =>
+      'Üstteki Görünüm düğmesinden Sayfa, Ayet ayet ya da Meal okumayı seç. Sayfada bir ayete dokununca meal, yer imi ve paylaşma seçenekleri açılır.';
+
+  @override
+  String get tipAlarmsSilent =>
+      'Telefon sessizdeyken de duymak için “Sessiz modda da çal”ı aç.';
+
+  @override
+  String get tipWidget =>
+      'Vakitleri uygulamayı açmadan görmek için ana ekranına bir Vaktinde widget\'ı ekle.';
+
+  @override
+  String get tipWidgetAction => 'Widget ekle';
+
+  @override
+  String get whatsNewTitle => 'Yenilikler';
+
+  @override
+  String get whatsNewQuranTitle => 'Kur\'an alt menüde';
+
+  @override
+  String get whatsNewQuranDesc =>
+      'Mushaf gibi sayfa sayfa oku, kaldığın yerden devam et.';
+
+  @override
+  String get whatsNewWidgetsTitle => 'Yeni widget\'lar';
+
+  @override
+  String get whatsNewWidgetsDesc =>
+      'Vakit halkası ve namaz takibi: kıldığın vakti uygulamayı açmadan işaretle.';
+
+  @override
+  String get whatsNewStopTitle => 'Ezanı tek dokunuşla durdur';
+
+  @override
+  String get whatsNewStopDesc =>
+      'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.';
+
+  @override
+  String get whatsNewExcusedTitle => 'Özel gün modu';
+
+  @override
+  String get whatsNewExcusedDesc =>
+      'Özel gününde serin bozulmaz, ezan sessiz bildirilir.';
+
+  @override
+  String get appGuideTitle => 'Uygulamayı Tanı';
+
+  @override
+  String get appGuideSub => 'Tüm özellikler ve nasıl kullanılacakları';
+
+  @override
+  String get appGuideReplayTour => 'Tanıtım turunu tekrar izle';
+
+  @override
+  String get appGuideReplayTourSub => 'Ana ekrandaki kısa turu yeniden başlat';
+
+  @override
+  String get guideGroupTimes => 'Vakitler & Alarmlar';
+
+  @override
+  String get guideGroupPrayer => 'Namaz';
+
+  @override
+  String get guideGroupQuran => 'Kur\'an & Dualar';
+
+  @override
+  String get guideGroupWidgets => 'Widget\'lar';
+
+  @override
+  String get guideLocation =>
+      'Ana ekranda şehir adına dokun; il, ilçe ve şehir listesi internetsiz de çalışır.';
+
+  @override
+  String get guideAlarms =>
+      'Her vakit için ezan, sessiz bildirim ve önceden hatırlatma. Ana ekranda bir vakte dokunmak da burayı açar.';
+
+  @override
+  String get guideTracker =>
+      'Kıldığın vakitleri işaretle; bildirimdeki “Kıldım” da işaretler. Özel gününde gün adına basılı tut.';
+
+  @override
+  String get guideKaza =>
+      'Kaza sayaçlarını tut; “Kaza hesapla” ile kılınmayan süreden tahmini sayıyı bul.';
+
+  @override
+  String get guideQibla => 'Telefonu düz tut; kıbleye dönünce titrer.';
+
+  @override
+  String get guideZikir =>
+      'Saymak için ekrana dokun, zikri değiştirmek için kartı kaydır. Ses tuşlarıyla sayma zikir ayarlarında.';
+
+  @override
+  String get guideQuran =>
+      'Görünüm\'den Sayfa, Ayet ayet ya da Meal seç; ayete dokununca meal, yer imi ve paylaşma açılır. Kaldığın yer kendiliğinden saklanır.';
+
+  @override
+  String get guideWidgets =>
+      'Vakitler, geri sayım, vakit halkası, Ramazan ve namaz takibi (vakte dokunarak işaretle). Ana ekranda boş bir yere basılı tutup Widget\'lar\'dan da ekleyebilirsin.';
+
+  @override
   String get refreshLocation => 'Konumu yenile';
 
   @override

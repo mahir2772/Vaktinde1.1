@@ -3,14 +3,26 @@ import 'package:showcaseview/showcaseview.dart';
 
 import '../../core/ui/app_tokens.dart';
 
-// İlk açılış tanıtım turu (6 adım) hedefleri: ana sayfada dil, günün ayeti,
-// alarmlar; alt menüde Kur'an, Kıble, Zikir
+// İlk açılış tanıtım turu (8 adım) hedefleri: ana sayfada dil, "Bugün" takibi,
+// günün ayeti, alarmlar; alt menüde Kur'an, Kıble, Zikir, Araçlar
 final GlobalKey homeLangKey = GlobalKey();
+final GlobalKey homeTrackerKey = GlobalKey();
 final GlobalKey homeStoryKey = GlobalKey();
 final GlobalKey homeAlarmsKey = GlobalKey();
 final GlobalKey quranKey = GlobalKey();
 final GlobalKey qiblaKey = GlobalKey();
 final GlobalKey zikirmatikKey = GlobalKey();
+final GlobalKey toolsKey = GlobalKey();
+
+/// Turu yeniden izleme istekleri (Uygulamayı Tanı): MainWrapper ana sekmeye
+/// döner ve turu başlatır
+class TourRequests {
+  TourRequests._();
+
+  static final ValueNotifier<int> replays = ValueNotifier(0);
+
+  static void replay() => replays.value++;
+}
 
 /// Tanıtım turu baloncuğu (marka renginde, okunur yazı)
 class AppShowcase extends StatelessWidget {

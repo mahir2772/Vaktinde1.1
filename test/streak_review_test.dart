@@ -8,6 +8,7 @@ import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/backup_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/prayer_tracker_service.dart';
+import 'package:ezan_saati/features/app_guide/whats_new.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
@@ -623,6 +624,7 @@ void main() {
         ...streakPrefs(6),
         tourSeenKey: false,
         permissionsPrimedKey: true,
+        WhatsNew.seenKey: WhatsNew.version,
       });
       await PrayerTrackerService().setPrayed(today, 'Yatsı', true);
       await _pumpFor(tester, const Duration(seconds: 2));
@@ -664,6 +666,7 @@ void main() {
         ...fourUsageDays(),
         tourSeenKey: false,
         permissionsPrimedKey: true,
+        WhatsNew.seenKey: WhatsNew.version,
       });
       expect(reviewRequests, 0); // önce vakitler görünsün
       await _pumpFor(tester, const Duration(seconds: 3));
@@ -687,6 +690,25 @@ void main() {
       expect(find.text(loc.permissionPrimingTitle), findsOneWidget);
       await _pumpFor(tester, const Duration(seconds: 4));
       expect(reviewRequests, 0);
+      await finish(tester);
+    });
+
+    testWidgets('5. kullanım günü: Yenilikler açıkken istenmez, kapanınca '
+        'istenir', (tester) async {
+      await pumpMain(tester, {
+        ...fourUsageDays(),
+        tourSeenKey: false,
+        permissionsPrimedKey: true,
+      });
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      expect(find.text(loc.whatsNewTitle), findsOneWidget);
+      await _pumpFor(tester, const Duration(seconds: 4));
+      expect(reviewRequests, 0);
+
+      await tester.tap(find.text(loc.tipGotIt));
+      await _pumpFor(tester, const Duration(seconds: 4));
+      expect(find.text(loc.whatsNewTitle), findsNothing);
+      expect(reviewRequests, 1);
       await finish(tester);
     });
   });

@@ -418,6 +418,12 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
                 const SizedBox(height: AppSpacing.md),
                 _buildGrid(times, loc),
                 const SizedBox(height: AppSpacing.md),
+                // İlk ziyarette: özel gün (ızgaranın üstü) ve kazaya ekleme (altta)
+                FeatureTip(
+                  id: 'tracker',
+                  message: loc.tipTracker,
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                ),
                 _buildKazaSection(times, loc),
               ],
             ),

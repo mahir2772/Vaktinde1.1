@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ezan_saati/core/app_links.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../app_guide/view/app_guide_view.dart';
 import '../../common/ad_consent.dart';
 import '../../common/ad_helper.dart';
 import '../../common/language_provider.dart';
@@ -182,6 +183,18 @@ class SettingsView extends StatelessWidget {
             builder: (context, privacyRequired, _) => AppListSection(
               title: loc.sectionSupport,
               children: [
+                // Özellikler, nasıl kullanılır ve tanıtım turunu yeniden izle
+                AppListTile(
+                  leadingIcon: Icons.lightbulb_outline,
+                  title: loc.appGuideTitle,
+                  subtitle: loc.appGuideSub,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => const AppGuideView(),
+                    ),
+                  ),
+                ),
                 AppListTile(
                   leadingIcon: Icons.share_outlined,
                   title: loc.shareApp,

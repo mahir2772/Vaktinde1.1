@@ -9,6 +9,7 @@ export 'app_theme.dart';
 export 'app_tokens.dart';
 export 'confirm_dialog.dart';
 export 'counter_stepper.dart';
+export 'feature_tip.dart';
 export 'info_banner.dart';
 export 'prayer_colors.dart';
 export 'prayer_time_row.dart';

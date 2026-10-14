@@ -3,15 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../core/ui/app_theme.dart';
 import '../../../core/ui/app_tokens.dart';
+import '../../../core/ui/feature_tip.dart';
 import '../../../core/ui/prayer_colors.dart';
 import '../../../core/ui/state_views.dart';
 import '../../common/theme_provider.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../main_wrapper/app_showcase.dart';
+import '../../prayer_tracker/streak_review.dart';
+import '../../settings/view/add_widget_sheet.dart';
 import '../../settings/view/settings_view.dart';
 import '../prayer_schedule.dart';
 import '../view_model/home_view_model.dart';
@@ -42,6 +46,11 @@ class HomeView extends StatefulWidget {
 
   static void openAlarmsTab() => alarmsTabRequests.value++;
 
+  /// "Vakitler" sekmesine dönüş (tanıtım turu yeniden izlenirken)
+  static final ValueNotifier<int> timesTabRequests = ValueNotifier(0);
+
+  static void openTimesTab() => timesTabRequests.value++;
+
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -57,6 +66,7 @@ class _HomeViewState extends State<HomeView>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     HomeView.alarmsTabRequests.addListener(_showAlarmsTab);
+    HomeView.timesTabRequests.addListener(_showTimesTab);
     // Vakit girince arka plan rengi ve vurgu değişir
     _ticker = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted) return;
@@ -68,12 +78,23 @@ class _HomeViewState extends State<HomeView>
   @override
   void dispose() {
     HomeView.alarmsTabRequests.removeListener(_showAlarmsTab);
+    HomeView.timesTabRequests.removeListener(_showTimesTab);
     _ticker?.cancel();
     _tabController.dispose();
     super.dispose();
   }
 
   void _showAlarmsTab() => _tabController.animateTo(1);
+
+  void _showTimesTab() => _tabController.index = 0;
+
+  // Widget ipucu: uygulama en az 3 farklı günde açıldıysa ve başlatıcı
+  // uygulamadan widget eklemeyi destekliyorsa
+  static Future<bool> _widgetTipDue() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (prefs.getInt(UsageReviewPrompt.countKey) ?? 0) >= 3 &&
+        await canPinHomeWidget();
+  }
 
   String? _computeNextKey(HomeViewModel vm) {
     final times = vm.prayerTimes;
@@ -283,7 +304,12 @@ class _HomeViewState extends State<HomeView>
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          PrayerTrackerRow(prayerTimes: times),
+          AppShowcase(
+            showcaseKey: homeTrackerKey,
+            description: loc.showcaseTracker,
+            autoScroll: true,
+            child: PrayerTrackerRow(prayerTimes: times),
+          ),
           if (hasDaily) ...[
             const SizedBox(height: AppSpacing.md),
             AppShowcase(
@@ -296,6 +322,15 @@ class _HomeViewState extends State<HomeView>
               ),
             ),
           ],
+          FeatureTip(
+            id: 'home_widget',
+            icon: Icons.widgets_outlined,
+            message: loc.tipWidget,
+            actionLabel: loc.tipWidgetAction,
+            onAction: () => showAddWidgetSheet(context),
+            when: _widgetTipDue,
+            padding: const EdgeInsets.only(top: AppSpacing.lg),
+          ),
           TodayHub(clock: widget.clock),
         ],
       ),

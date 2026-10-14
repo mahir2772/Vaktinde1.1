@@ -6,7 +6,8 @@ import '../prayer_schedule.dart';
 import '../view_model/home_view_model.dart';
 import 'alarm_health_banner.dart';
 
-/// "Alarmlar" sekmesi: en üstte izin uyarısı (varsa) ve "sessiz modda da çal" (8.0+);
+/// "Alarmlar" sekmesi: en üstte izin uyarısı (varsa), "sessiz modda da çal"
+/// (8.0+) ve ilk ziyarette "Durdur" ipucu;
 /// sonra her vakit için açılır kart (tam vakitte ezan, sessiz bildirim, ses
 /// seçimi, önceden uyarı). Sıradaki vakit vurgulanır. Aynı denetimler ana
 /// ekranda vakit hücresine dokununca alt sayfada açılır ([showPrayerAlarmSheet]).
@@ -25,6 +26,7 @@ class AlarmSettingsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final times = viewModel.prayerTimes!;
+    final loc = AppLocalizations.of(context)!;
     return ListView.separated(
       padding: padding,
       itemCount: homePrayerKeys.length + 1,
@@ -37,6 +39,14 @@ class AlarmSettingsList extends StatelessWidget {
               AlarmHealthBanner(viewModel: viewModel),
               if (viewModel.alarmStreamSupported)
                 _AlarmStreamTile(viewModel: viewModel),
+              FeatureTip(
+                id: 'alarms',
+                icon: Icons.notifications_paused_outlined,
+                message: viewModel.alarmStreamSupported
+                    ? '${loc.whatsNewStopDesc} ${loc.tipAlarmsSilent}'
+                    : loc.whatsNewStopDesc,
+                padding: const EdgeInsets.only(top: AppSpacing.sm),
+              ),
             ],
           );
         }

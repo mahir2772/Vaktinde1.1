@@ -142,6 +142,9 @@ void main() {
 
       await tester.drag(find.byType(ListView), const Offset(0, -2000));
       await tester.pumpAndSettle();
+      // İlk ziyaret ipucu kaydırınca kurulup belirir: düğme aşağı kayar
+      await tester.ensureVisible(find.text(loc.trackerKazaButton));
+      await tester.pumpAndSettle();
       await tester.tap(find.text(loc.trackerKazaButton));
       await tester.pumpAndSettle();
       // 2 gün önce sadece sabah kılındı → 4 vakit
@@ -298,6 +301,9 @@ void main() {
       // Kazaya ekleme: özel günün 4 vakti sayılmaz, sadece 3 gün önce
       await tester.pump(const Duration(seconds: 5));
       await tester.drag(find.byType(ListView), const Offset(0, -2000));
+      await tester.pumpAndSettle();
+      // İlk ziyaret ipucu kaydırınca kurulup belirir: düğme aşağı kayar
+      await tester.ensureVisible(find.text(loc.trackerKazaButton));
       await tester.pumpAndSettle();
       await tester.tap(find.text(loc.trackerKazaButton));
       await tester.pumpAndSettle();

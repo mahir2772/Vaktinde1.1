@@ -86,6 +86,128 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showcaseZikir => 'Keep track of your dhikr here.';
 
   @override
+  String get showcaseTracker =>
+      'Mark the prayers you have prayed here. On excused days, press and hold “Today”.';
+
+  @override
+  String get showcaseTools =>
+      'Prayer timetable, Prayer Guide, qada calculator and more.';
+
+  @override
+  String get tipGotIt => 'Got it';
+
+  @override
+  String get tipTracker =>
+      'On excused days, press and hold the day\'s name or tap the flower icon in the card\'s corner; those days won\'t break your streak. Use “Add missed prayers to qada” at the bottom to move missed prayers to your qada counters.';
+
+  @override
+  String get tipZikir =>
+      'Swipe the card above left or right to change the dhikr. Turn on “Count with volume keys” in Settings to count without looking at the screen.';
+
+  @override
+  String get tipQuranReader =>
+      'Use the View button at the top to choose Page, Verse by verse or Translation. On a page, tap a verse for its translation, a bookmark or sharing.';
+
+  @override
+  String get tipAlarmsSilent =>
+      'To hear it even when your phone is on silent, turn on “Play in silent mode too”.';
+
+  @override
+  String get tipWidget =>
+      'Add a Vaktinde widget to your home screen to see prayer times without opening the app.';
+
+  @override
+  String get tipWidgetAction => 'Add widget';
+
+  @override
+  String get whatsNewTitle => 'What\'s new';
+
+  @override
+  String get whatsNewQuranTitle => 'Quran in the bottom menu';
+
+  @override
+  String get whatsNewQuranDesc =>
+      'Read page by page like a printed mushaf and pick up where you left off.';
+
+  @override
+  String get whatsNewWidgetsTitle => 'New widgets';
+
+  @override
+  String get whatsNewWidgetsDesc =>
+      'Prayer ring and prayer tracker: mark a prayer without opening the app.';
+
+  @override
+  String get whatsNewStopTitle => 'Stop the adhan with one tap';
+
+  @override
+  String get whatsNewStopDesc =>
+      'While the adhan plays, “Stop” in the notification silences it at once.';
+
+  @override
+  String get whatsNewExcusedTitle => 'Excused days mode';
+
+  @override
+  String get whatsNewExcusedDesc =>
+      'On excused days your streak stays intact and the adhan arrives silently.';
+
+  @override
+  String get appGuideTitle => 'Get to know the app';
+
+  @override
+  String get appGuideSub => 'All features and how to use them';
+
+  @override
+  String get appGuideReplayTour => 'Replay the welcome tour';
+
+  @override
+  String get appGuideReplayTourSub =>
+      'Restart the short tour of the home screen';
+
+  @override
+  String get guideGroupTimes => 'Prayer times & alarms';
+
+  @override
+  String get guideGroupPrayer => 'Prayer';
+
+  @override
+  String get guideGroupQuran => 'Quran & duas';
+
+  @override
+  String get guideGroupWidgets => 'Widgets';
+
+  @override
+  String get guideLocation =>
+      'Tap the city name on the home screen; the list of cities works offline too.';
+
+  @override
+  String get guideAlarms =>
+      'Adhan, silent notification and early reminder for each prayer. Tapping a prayer time on the home screen opens this too.';
+
+  @override
+  String get guideTracker =>
+      'Mark your prayers; “Prayed” in the notification does it too. On excused days, press and hold the day\'s name.';
+
+  @override
+  String get guideKaza =>
+      'Keep your qada counters; the “Qada calculator” estimates them from the time you missed.';
+
+  @override
+  String get guideQibla =>
+      'Hold your phone flat; it vibrates when you face the Qibla.';
+
+  @override
+  String get guideZikir =>
+      'Tap the screen to count and swipe the card to change the dhikr. Counting with volume keys is in the dhikr settings.';
+
+  @override
+  String get guideQuran =>
+      'Choose Page, Verse by verse or Translation under View; tap a verse for its translation, a bookmark or sharing. Your place is saved automatically.';
+
+  @override
+  String get guideWidgets =>
+      'Prayer times, countdown, prayer ring, Ramadan and prayer tracker (tap a prayer to mark it). You can also add them by pressing and holding an empty spot on your home screen and choosing Widgets.';
+
+  @override
   String get refreshLocation => 'Refresh location';
 
   @override

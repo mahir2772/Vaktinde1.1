@@ -1580,6 +1580,32 @@ void main() {
       await dispose(tester);
     });
 
+    testWidgets('okuyucu ipucu: ilk açılışta Görünüm ve ayete dokunma bir '
+        'kez; metnin üstünde yüzer, okuma yeri kaymaz', (tester) async {
+      FeatureTip.debugReset();
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      Future<void> open() => pumpPhone(
+        tester,
+        SurahReaderView(surah: _surah(67), service: _service()),
+      );
+
+      await open();
+      expect(find.text(loc.tipQuranReader), findsOneWidget);
+      final page = tester.getTopLeft(find.byType(MushafPage).first);
+      await tester.tap(find.text(loc.tipGotIt));
+      await settle(tester);
+      expect(find.text(loc.tipQuranReader), findsNothing);
+      expect(tester.getTopLeft(find.byType(MushafPage).first), page);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool(FeatureTip.seenKey('quran_reader')), isTrue);
+      await dispose(tester);
+
+      await open();
+      expect(find.text(loc.tipQuranReader), findsNothing);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
     testWidgets('sayfa görünümü: mushaf sayfaları (API sayfa bilgisi), '
         '"Sayfa · Cüz" başlıkları, ayet sonunda işaret', (tester) async {
       await pumpPhone(

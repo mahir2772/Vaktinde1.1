@@ -84,6 +84,127 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showcaseZikir => 'تابع أذكارك من هنا.';
 
   @override
+  String get showcaseTracker =>
+      'علِّم هنا الصلوات التي أدّيتها. وفي أيام العذر اضغط مطوّلًا على «اليوم».';
+
+  @override
+  String get showcaseTools =>
+      'جدول المواقيت وتعليم الصلاة وحاسبة القضاء والمزيد هنا.';
+
+  @override
+  String get tipGotIt => 'فهمت';
+
+  @override
+  String get tipTracker =>
+      'في أيام العذر اضغط مطوّلًا على اسم اليوم أو المس رمز الزهرة في زاوية البطاقة، فلا تنقطع سلسلتك. ومن «إضافة الصلوات غير المؤدّاة إلى القضاء» في الأسفل تنقل ما فاتك إلى عدّادات القضاء.';
+
+  @override
+  String get tipZikir =>
+      'اسحب البطاقة في الأعلى يمينًا أو يسارًا لتغيير الذكر. وفعّل «العدّ بأزرار الصوت» من الإعدادات لتعدّ دون النظر إلى الشاشة.';
+
+  @override
+  String get tipQuranReader =>
+      'اختر من زر «طريقة العرض» في الأعلى: صفحات المصحف أو آية آية. والمس أي آية في الصفحة لحفظ علامة أو نسخها أو مشاركتها.';
+
+  @override
+  String get tipAlarmsSilent =>
+      'ولتسمعه والهاتف صامت فعّل «التشغيل في الوضع الصامت أيضاً».';
+
+  @override
+  String get tipWidget =>
+      'أضف أداة Vaktinde إلى الشاشة الرئيسية لترى المواقيت دون فتح التطبيق.';
+
+  @override
+  String get tipWidgetAction => 'إضافة أداة';
+
+  @override
+  String get whatsNewTitle => 'ما الجديد';
+
+  @override
+  String get whatsNewQuranTitle => 'القرآن في القائمة السفلية';
+
+  @override
+  String get whatsNewQuranDesc =>
+      'اقرأ صفحةً صفحة كما في المصحف، وتابع من حيث توقفت.';
+
+  @override
+  String get whatsNewWidgetsTitle => 'أدوات جديدة';
+
+  @override
+  String get whatsNewWidgetsDesc =>
+      'حلقة الصلاة ومتابعة الصلوات: علِّم صلاتك دون فتح التطبيق.';
+
+  @override
+  String get whatsNewStopTitle => 'أوقف الأذان بلمسة واحدة';
+
+  @override
+  String get whatsNewStopDesc =>
+      'أثناء الأذان يوقف زر «إيقاف» في الإشعار الصوت فورًا.';
+
+  @override
+  String get whatsNewExcusedTitle => 'وضع أيام العذر';
+
+  @override
+  String get whatsNewExcusedDesc =>
+      'في أيام العذر لا تنقطع سلسلتك ويصلك الأذان بإشعار صامت.';
+
+  @override
+  String get appGuideTitle => 'تعرّف على التطبيق';
+
+  @override
+  String get appGuideSub => 'كل الميزات وطريقة استخدامها';
+
+  @override
+  String get appGuideReplayTour => 'إعادة الجولة التعريفية';
+
+  @override
+  String get appGuideReplayTourSub =>
+      'أعد تشغيل الجولة القصيرة في الشاشة الرئيسية';
+
+  @override
+  String get guideGroupTimes => 'المواقيت والمنبهات';
+
+  @override
+  String get guideGroupPrayer => 'الصلاة';
+
+  @override
+  String get guideGroupQuran => 'القرآن والأدعية';
+
+  @override
+  String get guideGroupWidgets => 'أدوات الشاشة الرئيسية';
+
+  @override
+  String get guideLocation =>
+      'المس اسم المدينة في الشاشة الرئيسية؛ قائمة المدن تعمل دون إنترنت أيضًا.';
+
+  @override
+  String get guideAlarms =>
+      'الأذان أو إشعار صامت وتذكير مسبق لكل صلاة. ولمس وقت الصلاة في الشاشة الرئيسية يفتح هذه الإعدادات أيضًا.';
+
+  @override
+  String get guideTracker =>
+      'علِّم صلواتك، وزر «صلّيت» في الإشعار يفعل ذلك أيضًا. وفي أيام العذر اضغط مطوّلًا على اسم اليوم.';
+
+  @override
+  String get guideKaza =>
+      'احفظ عدّادات القضاء، و«حاسبة القضاء» تقدّرها من المدة التي فاتتك.';
+
+  @override
+  String get guideQibla => 'أمسك الهاتف مستويًا، وسيهتز عندما تتجه إلى القبلة.';
+
+  @override
+  String get guideZikir =>
+      'المس الشاشة للعدّ واسحب البطاقة لتغيير الذكر. والعدّ بأزرار الصوت تجده في إعدادات الذكر.';
+
+  @override
+  String get guideQuran =>
+      'اختر من «طريقة العرض» صفحات المصحف أو آية آية، والمس أي آية لحفظ علامة أو مشاركتها. ويُحفظ موضع قراءتك تلقائيًا.';
+
+  @override
+  String get guideWidgets =>
+      'المواقيت والعدّ التنازلي وحلقة الصلاة ورمضان ومتابعة الصلوات (المس الصلاة لتعليمها). ويمكنك إضافتها أيضًا بالضغط مطوّلًا على مكان فارغ في الشاشة الرئيسية ثم اختيار «الأدوات».';
+
+  @override
   String get refreshLocation => 'تحديث الموقع';
 
   @override

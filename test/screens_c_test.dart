@@ -500,6 +500,8 @@ void main() {
           'selected_dhikr': 'Sübhanallah',
           'dhikr_count_Sübhanallah': 27,
           'dhikr_target_Sübhanallah': 33,
+          // İlk ziyaret ipucu dar ekranda sayacın üstünde yüzer (ayrı testte)
+          FeatureTip.seenKey('zikir'): true,
         },
       );
       final loc = _loc('tr');
@@ -546,7 +548,12 @@ void main() {
     });
 
     testWidgets('Uzun basınca sayaç düzenleme açılır', (tester) async {
-      await _pumpScreen(tester, const ZikirView(), textScale: 1);
+      await _pumpScreen(
+        tester,
+        const ZikirView(),
+        textScale: 1,
+        prefs: {FeatureTip.seenKey('zikir'): true},
+      );
       final loc = _loc('tr');
       await tester.longPress(find.byKey(ZikirView.counterKey));
       await _settle(tester, steps: 4);

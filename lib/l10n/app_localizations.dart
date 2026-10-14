@@ -242,6 +242,210 @@ abstract class AppLocalizations {
   /// **'Zikirlerinizi buradan takip edebilirsiniz.'**
   String get showcaseZikir;
 
+  /// No description provided for @showcaseTracker.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldığın vakitleri buradan işaretle. Özel gününde “Bugün”e basılı tut.'**
+  String get showcaseTracker;
+
+  /// No description provided for @showcaseTools.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsakiye, Namaz Hocası, kaza hesaplama ve daha fazlası burada.'**
+  String get showcaseTools;
+
+  /// No description provided for @tipGotIt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anladım'**
+  String get tipGotIt;
+
+  /// No description provided for @tipTracker.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gününde gün adına basılı tut ya da kartın köşesindeki çiçek simgesine dokun; bu günler serini bozmaz. Kılamadığın vakitleri en alttaki “Kılınmayanları kazaya ekle” ile kaza sayacına aktarabilirsin.'**
+  String get tipTracker;
+
+  /// No description provided for @tipZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikri değiştirmek için üstteki kartı sağa ya da sola kaydır. Ayarlar\'dan “Ses tuşlarıyla say”ı açarsan ekrana bakmadan sayabilirsin.'**
+  String get tipZikir;
+
+  /// No description provided for @tipQuranReader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üstteki Görünüm düğmesinden Sayfa, Ayet ayet ya da Meal okumayı seç. Sayfada bir ayete dokununca meal, yer imi ve paylaşma seçenekleri açılır.'**
+  String get tipQuranReader;
+
+  /// No description provided for @tipAlarmsSilent.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon sessizdeyken de duymak için “Sessiz modda da çal”ı aç.'**
+  String get tipAlarmsSilent;
+
+  /// No description provided for @tipWidget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitleri uygulamayı açmadan görmek için ana ekranına bir Vaktinde widget\'ı ekle.'**
+  String get tipWidget;
+
+  /// No description provided for @tipWidgetAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Widget ekle'**
+  String get tipWidgetAction;
+
+  /// No description provided for @whatsNewTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yenilikler'**
+  String get whatsNewTitle;
+
+  /// No description provided for @whatsNewQuranTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an alt menüde'**
+  String get whatsNewQuranTitle;
+
+  /// No description provided for @whatsNewQuranDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mushaf gibi sayfa sayfa oku, kaldığın yerden devam et.'**
+  String get whatsNewQuranDesc;
+
+  /// No description provided for @whatsNewWidgetsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni widget\'lar'**
+  String get whatsNewWidgetsTitle;
+
+  /// No description provided for @whatsNewWidgetsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit halkası ve namaz takibi: kıldığın vakti uygulamayı açmadan işaretle.'**
+  String get whatsNewWidgetsDesc;
+
+  /// No description provided for @whatsNewStopTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezanı tek dokunuşla durdur'**
+  String get whatsNewStopTitle;
+
+  /// No description provided for @whatsNewStopDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.'**
+  String get whatsNewStopDesc;
+
+  /// No description provided for @whatsNewExcusedTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün modu'**
+  String get whatsNewExcusedTitle;
+
+  /// No description provided for @whatsNewExcusedDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gününde serin bozulmaz, ezan sessiz bildirilir.'**
+  String get whatsNewExcusedDesc;
+
+  /// No description provided for @appGuideTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulamayı Tanı'**
+  String get appGuideTitle;
+
+  /// No description provided for @appGuideSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm özellikler ve nasıl kullanılacakları'**
+  String get appGuideSub;
+
+  /// No description provided for @appGuideReplayTour.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tanıtım turunu tekrar izle'**
+  String get appGuideReplayTour;
+
+  /// No description provided for @appGuideReplayTourSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana ekrandaki kısa turu yeniden başlat'**
+  String get appGuideReplayTourSub;
+
+  /// No description provided for @guideGroupTimes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler & Alarmlar'**
+  String get guideGroupTimes;
+
+  /// No description provided for @guideGroupPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz'**
+  String get guideGroupPrayer;
+
+  /// No description provided for @guideGroupQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an & Dualar'**
+  String get guideGroupQuran;
+
+  /// No description provided for @guideGroupWidgets.
+  ///
+  /// In tr, this message translates to:
+  /// **'Widget\'lar'**
+  String get guideGroupWidgets;
+
+  /// No description provided for @guideLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana ekranda şehir adına dokun; il, ilçe ve şehir listesi internetsiz de çalışır.'**
+  String get guideLocation;
+
+  /// No description provided for @guideAlarms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit için ezan, sessiz bildirim ve önceden hatırlatma. Ana ekranda bir vakte dokunmak da burayı açar.'**
+  String get guideAlarms;
+
+  /// No description provided for @guideTracker.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldığın vakitleri işaretle; bildirimdeki “Kıldım” da işaretler. Özel gününde gün adına basılı tut.'**
+  String get guideTracker;
+
+  /// No description provided for @guideKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza sayaçlarını tut; “Kaza hesapla” ile kılınmayan süreden tahmini sayıyı bul.'**
+  String get guideKaza;
+
+  /// No description provided for @guideQibla.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonu düz tut; kıbleye dönünce titrer.'**
+  String get guideQibla;
+
+  /// No description provided for @guideZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Saymak için ekrana dokun, zikri değiştirmek için kartı kaydır. Ses tuşlarıyla sayma zikir ayarlarında.'**
+  String get guideZikir;
+
+  /// No description provided for @guideQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görünüm\'den Sayfa, Ayet ayet ya da Meal seç; ayete dokununca meal, yer imi ve paylaşma açılır. Kaldığın yer kendiliğinden saklanır.'**
+  String get guideQuran;
+
+  /// No description provided for @guideWidgets.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler, geri sayım, vakit halkası, Ramazan ve namaz takibi (vakte dokunarak işaretle). Ana ekranda boş bir yere basılı tutup Widget\'lar\'dan da ekleyebilirsin.'**
+  String get guideWidgets;
+
   /// No description provided for @refreshLocation.
   ///
   /// In tr, this message translates to:

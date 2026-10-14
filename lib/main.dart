@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -193,10 +194,18 @@ class _MyAppState extends State<MyApp> {
   }
 
   // Tanıtım turu bitince: kısa açıklama penceresi, sonra bildirim ve konum izni
-  // (yeni kullanıcı akışıyla aynı; MaterialApp altındaki bağlam navigator anahtarından)
+  // (yeni kullanıcı akışıyla aynı; MaterialApp altındaki bağlam navigator anahtarından).
+  // Tur Uygulamayı Tanı'dan yeniden izlendiyse tamamlanmış izin akışı tekrarlanmaz.
   Future<void> _requestPermissionsAfterTutorial() async {
     final context = _navigatorKey.currentContext;
     if (context == null) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool(permissionsPrimedKey) ?? false) return;
+    } catch (e) {
+      debugPrint("İzin kaydı okunamadı: $e");
+    }
+    if (!context.mounted) return;
     await requestPermissionsWithPriming(context);
   }
 
