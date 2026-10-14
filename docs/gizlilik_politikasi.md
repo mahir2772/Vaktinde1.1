@@ -24,7 +24,7 @@ Günün ayeti ve Kur'an okuyucudaki ayet ve mealler (alquran.cloud), günün had
 
 4. Analiz ve hata raporları (Google Firebase)
 Uygulamayı geliştirmek için Google Firebase hizmetleri kullanılır:
-• Firebase Analytics: hangi özelliklerin kullanıldığına dair sınırlı olaylar, uygulama örnek kimliği, cihaz modeli, işletim sistemi, uygulama sürümü, dil ve IP adresinden çıkarılan yaklaşık ülke/bölge. Konumunuz ve namaz vakitleriniz gönderilmez.
+• Firebase Analytics: hangi özelliklerin kullanıldığına dair sınırlı olaylar (ör. ilk açılışta bildirim/konum izninin verilip verilmediği), uygulama örnek kimliği, cihaz modeli, işletim sistemi, uygulama sürümü, dil ve IP adresinden çıkarılan yaklaşık ülke/bölge. Konumunuz ve namaz vakitleriniz gönderilmez.
 • Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'de Firebase Analytics, reklam izni penceresinde (Google UMP) verdiğiniz tercihe uyar: "cihazda bilgi depolama ve/veya bilgiye erişme" amacını onaylamazsanız Analytics cihazınızda analiz ve reklam tanımlayıcısı saklamaz; kişiselleştirilmiş reklam amaçlarını onaylamazsanız Analytics verileri reklam amacıyla kullanılmaz. Tercihinizi Ayarlar > Destek > "Reklam gizlilik ayarları" bölümünden değiştirebilirsiniz.
 • Firebase Crashlytics: Uygulama çöktüğünde ya da bir hata oluştuğunda hata kaydı, cihaz modeli, işletim sistemi, uygulama sürümü ve kurulum kimliği.
 Bu veriler sizi doğrudan tanımlamaz, Google tarafından işlenir ve sınırlı süre saklanır (Crashlytics kayıtları 90 gün, Analytics verileri en fazla 14 ay).
@@ -41,7 +41,7 @@ Google'ın verileri nasıl kullandığı: https://policies.google.com/technologi
 • Konum (isteğe bağlı): vakit ve kıble hesabı
 • Bildirimler: ezan ve hatırlatma bildirimleri
 • Alarmlar ve hatırlatıcılar: ezanın tam vaktinde çalması
-• Telefon açılınca başlatma ve ön plan hizmeti: alarmların yeniden kurulması ve vakte kalan süreyi gösteren kalıcı bildirim
+• Telefon açılınca başlatma ve ön plan hizmeti: alarmların yeniden kurulması ve (Ayarlar'dan açarsanız) vakte kalan süreyi gösteren kalıcı bildirim
 • İnternet: içerikler, reklamlar ve hata raporları
 
 7. Paylaşım ve yurt dışına aktarım

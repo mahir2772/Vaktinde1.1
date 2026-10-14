@@ -234,7 +234,8 @@ class AdConsent {
 
   /// Consent Mode v2 varsayılanı (UMP sonucu beklenmeden): önceki oturumdan
   /// rıza gerektiği biliniyorsa (UMP durumu ya da TCF'de GDPR geçerli) tüm
-  /// Analytics izinleri kapanır. Bilinmiyorsa dokunulmaz (SDK son kararı saklar).
+  /// Analytics izinleri kapanır. Bilinmiyorsa dokunulmaz (SDK son kararı saklar;
+  /// hiç karar yoksa manifest varsayılanı: kapalı).
   static Future<void> _applyAnalyticsDefault() async {
     final requirement = await _consentRequirement();
     final tcf = await _readTcf();
