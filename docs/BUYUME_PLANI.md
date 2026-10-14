@@ -14,6 +14,18 @@ adres istediği için açılmadı → bio'da bağlantı yok, videoda "Play Store
 facebook.com/vaktindeapp (sadece iş hesabı yönetiyor; ana kişisel hesap çıkarıldı; Instagram'a bağlı, işletme
 portföyü "Vaktinde • Ezan Vakti ve Kıble"), YouTube @vaktindeapp. Bio bağlantıları UTM'li:
 `…&referrer=utm_source%3D<instagram|facebook|youtube>%26utm_medium%3D<bio|profil|kanal>` → Play Console'da kaynak ayrı görünür.
+**Play bağlantıları (yer başına tek bağlantı; karıştırma):**
+
+| Yer | Bağlantı |
+|---|---|
+| Instagram profil (bio) | `https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde&referrer=utm_source%3Dinstagram%26utm_medium%3Dbio` |
+| Instagram hikâye bağlantı çıkartması | `https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde&referrer=utm_source%3Dinstagram%26utm_medium%3Dstory` |
+| Facebook sayfa bilgisi | `https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde&referrer=utm_source%3Dfacebook%26utm_medium%3Dprofil` |
+| Facebook gönderi açıklaması | `https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde&referrer=utm_source%3Dfacebook%26utm_medium%3Dsocial` |
+| YouTube kanal açıklaması/bağlantısı | `https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde&referrer=utm_source%3Dyoutube%26utm_medium%3Dkanal` |
+| YouTube Shorts açıklaması | `https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde&referrer=utm_source%3Dyoutube%26utm_medium%3Dshorts` |
+| TikTok profil (bağlantı açılırsa) | `https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde&referrer=utm_source%3Dtiktok%26utm_medium%3Dbio` |
+
 Paylaşım: Facebook + Instagram tek seferde Meta Business Suite'ten; TikTok ve YouTube Shorts kendi telefon
 uygulamalarından (üçüncü taraf araç yok; kullanıcı tercihi).
 **İlke:** İnsanlar uygulama reklamını değil, işine yarayan/duygusal içeriği izler. Hesap "içerik hesabı", uygulama araç.
