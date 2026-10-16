@@ -34,6 +34,7 @@ import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
+import 'package:ezan_saati/features/settings/view/notification_settings_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/settings/view/time_adjust_view.dart';
 import 'package:ezan_saati/features/zakat/view/zakat_view.dart';
@@ -488,9 +489,11 @@ void main() {
         expect(find.text(tr.whatsNewTitle), findsNothing);
       }
 
-      await openRow(tr.whatsNewQuranTitle);
-      expect(selected(tester), MainTab.quran.index);
-      expect(find.byType(QuranView), findsOneWidget);
+      for (final title in [tr.hatimTitle, tr.whatsNewQuranTitle]) {
+        await openRow(title);
+        expect(selected(tester), MainTab.quran.index, reason: title);
+        expect(find.byType(QuranView), findsOneWidget, reason: title);
+      }
 
       // Araçlar sekmesinden: ana sekme + "Alarmlar"
       await tester.tap(find.text(tr.navTools));
@@ -499,23 +502,21 @@ void main() {
       expect(selected(tester), MainTab.home.index);
       expect(find.text(tr.ezanAlarmStreamTitle).hitTestable(), findsOneWidget);
 
-      // Takip ekranı ilgili sekmesinde açılır (Kaza hesapla: "Kaza" sekmesi)
-      for (final (title, type, content) in [
-        (tr.prayerGuideTitle, PrayerGuideView, null),
-        (tr.whatsNewExcusedTitle, PrayerTrackerView, tr.trackerLast7Days),
-        (tr.kazaCalcTitle, PrayerTrackerView, tr.missedPrayersInfo),
-      ]) {
-        await openRow(title);
-        expect(find.byType(type), findsOneWidget, reason: title);
-        if (content != null) {
-          expect(find.text(content), findsOneWidget, reason: title);
-        }
-        navigator(tester).pop();
-        await settle(tester);
-      }
+      // Cuma bildirimi: Bildirim Ayarları
+      await openRow(tr.fridayNotifTitle);
+      expect(find.byType(NotificationSettingsView), findsOneWidget);
+      expect(find.text(tr.fridayNotifSub), findsOneWidget);
+      navigator(tester).pop();
+      await settle(tester);
 
       await openRow(tr.whatsNewWidgetsTitle);
       expect(find.text(tr.addWidgetHint), findsOneWidget);
+      navigator(tester).pop();
+      await settle(tester);
+
+      // Yazı boyutu: Görünüm Ayarları alt sayfası
+      await openRow(tr.textSizeTitle);
+      expect(find.text(tr.textSizeExtraLarge), findsOneWidget);
       navigator(tester).pop();
       await settle(tester);
 
@@ -559,6 +560,7 @@ void main() {
       for (final (title, type) in [
         (tr.timeAdjustTitle, TimeAdjustView),
         (tr.healthTitle, NotificationHealthView),
+        (tr.notificationSettingsTitle, NotificationSettingsView),
         (tr.trackerTitle, PrayerTrackerView),
         (tr.missedPrayersTitle, PrayerTrackerView),
         (tr.prayerGuideTitle, PrayerGuideView),
@@ -586,6 +588,7 @@ void main() {
         (tr.qiblaTitle, MainTab.qibla),
         (tr.zikirmatikTitle, MainTab.zikir),
         (tr.quranTitle, MainTab.quran),
+        (tr.hatimTitle, MainTab.quran),
       ]) {
         tabs.clear();
         await tapRow(title);
@@ -600,6 +603,11 @@ void main() {
 
       await tapRow(tr.changeLocation);
       expect(find.byType(LocationSearchDialog), findsOneWidget);
+      navigator(tester).pop();
+      await settle(tester);
+
+      await tapRow(tr.textSizeTitle);
+      expect(find.text(tr.textSizeExtraLarge), findsOneWidget);
       navigator(tester).pop();
       await settle(tester);
 

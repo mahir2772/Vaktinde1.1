@@ -144,13 +144,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'While the adhan plays, “Stop” in the notification silences it at once.';
 
   @override
-  String get whatsNewExcusedTitle => 'Excused days mode';
-
-  @override
-  String get whatsNewExcusedDesc =>
-      'On excused days your streak stays intact and the adhan arrives silently.';
-
-  @override
   String get appGuideTitle => 'Get to know the app';
 
   @override
@@ -1549,6 +1542,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get textSizeExtraLarge => 'Extra large';
+
+  @override
+  String get whatsNewTextSizeDesc => 'Make text larger right inside the app.';
 
   @override
   String get sectionNotifications => 'NOTIFICATIONS';

@@ -16,6 +16,8 @@ import '../qibla/view/qibla_view.dart';
 import '../quran/view/quran_view.dart';
 import '../religious_days/view/religious_days_view.dart';
 import '../settings/view/add_widget_sheet.dart';
+import '../settings/view/notification_settings_view.dart';
+import '../settings/view/settings_view.dart';
 import '../settings/view/time_adjust_view.dart';
 import '../tools/nearby_mosques.dart';
 import '../zakat/view/zakat_view.dart';
@@ -42,6 +44,8 @@ enum AppFeature {
   fitre,
   nearbyMosques,
   widgets,
+  textSize,
+  notificationSettings,
 }
 
 /// Özelliğin ekranını/sekmesini açar (reklamsız). Alt menü sekmesine geçerken
@@ -113,5 +117,9 @@ Future<void> openAppFeature(BuildContext context, AppFeature feature) async {
             SnackBar(content: Text(AppLocalizations.of(context)!.guideWidgets)),
           );
       }
+    case AppFeature.textSize:
+      await showAppearanceSettings(context);
+    case AppFeature.notificationSettings:
+      push(const NotificationSettingsView());
   }
 }

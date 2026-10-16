@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-import '../prayer_tracker/view/prayer_tracker_view.dart' show kExcusedIcon;
 import 'app_feature.dart';
 
 typedef WhatsNewItem = ({
@@ -26,16 +25,28 @@ class WhatsNew {
 
   static List<WhatsNewItem> items(AppLocalizations loc) => [
     (
+      icon: Icons.flag_outlined,
+      title: loc.hatimTitle,
+      subtitle: loc.hatimIntro,
+      feature: AppFeature.quran,
+    ),
+    (
       icon: Icons.auto_stories_outlined,
       title: loc.whatsNewQuranTitle,
       subtitle: loc.whatsNewQuranDesc,
       feature: AppFeature.quran,
     ),
     (
-      icon: Icons.school_outlined,
-      title: loc.prayerGuideTitle,
-      subtitle: loc.toolPrayerGuideDesc,
-      feature: AppFeature.prayerGuide,
+      icon: Icons.format_size,
+      title: loc.textSizeTitle,
+      subtitle: loc.whatsNewTextSizeDesc,
+      feature: AppFeature.textSize,
+    ),
+    (
+      icon: Icons.forum_outlined,
+      title: loc.fridayNotifTitle,
+      subtitle: loc.fridayNotifSub,
+      feature: AppFeature.notificationSettings,
     ),
     (
       icon: Icons.widgets_outlined,
@@ -48,18 +59,6 @@ class WhatsNew {
       title: loc.whatsNewStopTitle,
       subtitle: loc.whatsNewStopDesc,
       feature: AppFeature.alarms,
-    ),
-    (
-      icon: kExcusedIcon,
-      title: loc.whatsNewExcusedTitle,
-      subtitle: loc.whatsNewExcusedDesc,
-      feature: AppFeature.tracker,
-    ),
-    (
-      icon: Icons.history_edu,
-      title: loc.kazaCalcTitle,
-      subtitle: loc.kazaCalcSubtitle,
-      feature: AppFeature.kaza,
     ),
   ];
 

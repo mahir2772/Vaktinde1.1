@@ -142,13 +142,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'أثناء الأذان يوقف زر «إيقاف» في الإشعار الصوت فورًا.';
 
   @override
-  String get whatsNewExcusedTitle => 'وضع أيام العذر';
-
-  @override
-  String get whatsNewExcusedDesc =>
-      'في أيام العذر لا تنقطع سلسلتك ويصلك الأذان بإشعار صامت.';
-
-  @override
   String get appGuideTitle => 'تعرّف على التطبيق';
 
   @override
@@ -1568,6 +1561,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get textSizeExtraLarge => 'كبير جدًا';
+
+  @override
+  String get whatsNewTextSizeDesc => 'يمكنكم تكبير النص من داخل التطبيق.';
 
   @override
   String get sectionNotifications => 'الإشعارات';

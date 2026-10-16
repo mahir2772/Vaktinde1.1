@@ -46,6 +46,12 @@ class AppGuideView extends StatelessWidget {
             AppFeature.timeAdjust,
           ),
           (
+            Icons.notifications_outlined,
+            loc.notificationSettingsTitle,
+            loc.notificationSettingsSub,
+            AppFeature.notificationSettings,
+          ),
+          (
             Icons.notifications_active_outlined,
             loc.healthTitle,
             loc.healthSub,
@@ -97,6 +103,7 @@ class AppGuideView extends StatelessWidget {
             loc.guideQuran,
             AppFeature.quran,
           ),
+          (Icons.flag_outlined, loc.hatimTitle, loc.hatimIntro, AppFeature.quran),
           (
             Icons.menu_book_outlined,
             loc.duasTitle,
@@ -181,6 +188,12 @@ class AppGuideView extends StatelessWidget {
                 title: loc.appGuideReplayTour,
                 subtitle: loc.appGuideReplayTourSub,
                 onTap: () => _replayTour(context),
+              ),
+              AppListTile(
+                leadingIcon: Icons.format_size,
+                title: loc.textSizeTitle,
+                subtitle: loc.whatsNewTextSizeDesc,
+                onTap: () => openAppFeature(context, AppFeature.textSize),
               ),
             ],
           ),

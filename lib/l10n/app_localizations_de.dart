@@ -146,13 +146,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Während der Adhan läuft, beendet „Stoppen“ in der Benachrichtigung den Ton sofort.';
 
   @override
-  String get whatsNewExcusedTitle => 'Modus für entschuldigte Tage';
-
-  @override
-  String get whatsNewExcusedDesc =>
-      'An entschuldigten Tagen bleibt Ihre Serie erhalten und der Adhan kommt lautlos.';
-
-  @override
   String get appGuideTitle => 'App kennenlernen';
 
   @override
@@ -1547,6 +1540,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get textSizeExtraLarge => 'Sehr groß';
+
+  @override
+  String get whatsNewTextSizeDesc =>
+      'Vergrößern Sie die Schrift direkt in der App.';
 
   @override
   String get sectionNotifications => 'BENACHRICHTIGUNGEN';

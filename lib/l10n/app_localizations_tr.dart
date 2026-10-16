@@ -146,13 +146,6 @@ class AppLocalizationsTr extends AppLocalizations {
       'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.';
 
   @override
-  String get whatsNewExcusedTitle => 'Özel gün modu';
-
-  @override
-  String get whatsNewExcusedDesc =>
-      'Özel gününüzde seriniz bozulmaz, ezan sessiz bildirilir.';
-
-  @override
   String get appGuideTitle => 'Uygulamayı Tanı';
 
   @override
@@ -1522,6 +1515,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get textSizeExtraLarge => 'Çok büyük';
+
+  @override
+  String get whatsNewTextSizeDesc =>
+      'Yazıları uygulamanın içinden büyütebilirsiniz.';
 
   @override
   String get sectionNotifications => 'BİLDİRİMLER';

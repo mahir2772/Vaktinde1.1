@@ -338,18 +338,6 @@ abstract class AppLocalizations {
   /// **'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.'**
   String get whatsNewStopDesc;
 
-  /// No description provided for @whatsNewExcusedTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Özel gün modu'**
-  String get whatsNewExcusedTitle;
-
-  /// No description provided for @whatsNewExcusedDesc.
-  ///
-  /// In tr, this message translates to:
-  /// **'Özel gününüzde seriniz bozulmaz, ezan sessiz bildirilir.'**
-  String get whatsNewExcusedDesc;
-
   /// No description provided for @appGuideTitle.
   ///
   /// In tr, this message translates to:
@@ -2665,6 +2653,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Çok büyük'**
   String get textSizeExtraLarge;
+
+  /// No description provided for @whatsNewTextSizeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazıları uygulamanın içinden büyütebilirsiniz.'**
+  String get whatsNewTextSizeDesc;
 
   /// No description provided for @sectionNotifications.
   ///

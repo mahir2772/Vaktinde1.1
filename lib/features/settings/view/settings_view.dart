@@ -60,7 +60,7 @@ class SettingsView extends StatelessWidget {
                   leadingIcon: Icons.palette_outlined,
                   title: loc.appearanceSettings,
                   subtitle: loc.appearanceSub,
-                  onTap: () => _showAppearanceSettings(context),
+                  onTap: () => showAppearanceSettings(context),
                 ),
                 // Başlatıcı uygulamadan eklemeyi destekliyorsa (Android 8+)
                 if (canPinWidget)
@@ -230,16 +230,18 @@ class SettingsView extends StatelessWidget {
       builder: (context) => const LocationSearchDialog(),
     );
   }
+}
 
-  void _showAppearanceSettings(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
-      builder: (context) => const _AppearanceSheet(),
-    );
-  }
+/// Görünüm Ayarları alt sayfası (Ayarlar; Uygulamayı Tanı ve Yenilikler'deki
+/// yazı boyutu satırı)
+Future<void> showAppearanceSettings(BuildContext context) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    showDragHandle: true,
+    builder: (context) => const _AppearanceSheet(),
+  );
 }
 
 /// Tema (sistem/açık/koyu), yazı boyutu ve arka plan görseli seçimi

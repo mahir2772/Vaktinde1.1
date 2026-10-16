@@ -147,13 +147,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pendant l\'adhan, « Arrêter » dans la notification coupe le son aussitôt.';
 
   @override
-  String get whatsNewExcusedTitle => 'Mode jours d\'excuse';
-
-  @override
-  String get whatsNewExcusedDesc =>
-      'Pendant vos jours d\'excuse, votre série est préservée et l\'adhan arrive en silence.';
-
-  @override
   String get appGuideTitle => 'Découvrir l\'application';
 
   @override
@@ -1567,6 +1560,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get textSizeExtraLarge => 'Très grande';
+
+  @override
+  String get whatsNewTextSizeDesc =>
+      'Agrandissez le texte directement dans l\'application.';
 
   @override
   String get sectionNotifications => 'NOTIFICATIONS';
