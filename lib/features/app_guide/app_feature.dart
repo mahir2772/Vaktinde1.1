@@ -9,7 +9,6 @@ import '../home/view/home_view.dart';
 import '../imsakiye/view/imsakiye_view.dart';
 import '../location_search_dialog/location_search_dialog.dart';
 import '../main_wrapper/main_tabs.dart';
-import '../missed_prayers/view/missed_prayers_view.dart';
 import '../notification_health/view/notification_health_view.dart';
 import '../prayer_guide/view/prayer_guide_view.dart';
 import '../prayer_tracker/view/prayer_tracker_view.dart';
@@ -78,7 +77,7 @@ Future<void> openAppFeature(BuildContext context, AppFeature feature) async {
     case AppFeature.tracker:
       push(const PrayerTrackerView());
     case AppFeature.kaza:
-      push(const MissedPrayersView());
+      push(const PrayerTrackerView(initialTab: TrackerTab.kaza));
     case AppFeature.prayerGuide:
       push(const PrayerGuideView());
     case AppFeature.qibla:

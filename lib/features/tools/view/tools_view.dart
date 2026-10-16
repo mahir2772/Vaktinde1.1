@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
@@ -10,7 +12,6 @@ import '../../esmaul_husna/view/esmaul_husna_view.dart';
 import '../../fitre/view/fitre_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../imsakiye/view/imsakiye_view.dart';
-import '../../missed_prayers/view/missed_prayers_view.dart';
 import '../../prayer_guide/view/prayer_guide_view.dart';
 import '../../prayer_tracker/view/prayer_tracker_view.dart';
 import '../../religious_days/view/religious_days_view.dart';
@@ -18,11 +19,14 @@ import '../../settings/view/settings_view.dart';
 import '../../zakat/view/zakat_view.dart';
 import '../nearby_mosques.dart';
 
-/// Araçlar sekmesi: Ayarlar ile aynı dikey liste stili (ikon kutusu + başlık +
-/// kısa açıklama, ≥56dp satırlar), Namaz / Bilgi / Hesap grupları ve en altta
-/// Ayarlar satırı. Tek kaydırılabilir liste; büyük yazıda satırlar uzar.
+/// Araçlar sekmesi: Namaz / Bilgi / Hesap gruplarında büyük kutucuklar
+/// (ToolTile; açıklama ekran okuyucuda ipucu) ve en altta Ayarlar satırı.
+/// Sütun sayısı ekran genişliği ve yazı boyutuyla azalır (en çok 3); büyük
+/// yazıda kutucuklar uzar, tek kaydırılabilir liste.
 class ToolsView extends StatelessWidget {
   const ToolsView({super.key});
+
+  static const int _maxColumns = 3;
 
   // Araç açılışında geçiş reklamı (sıklık sınırını AdHelper uygular).
   // Ayarlar (sorun giderme, izinler, destek), Dualar ve Namaz Hocası (ibadet;
@@ -48,17 +52,12 @@ class ToolsView extends StatelessWidget {
             loc.toolImsakiyeDesc,
             () => const ImsakiyeView(),
           ),
+          // Kaza sayaçları da burada ("Kaza" sekmesi)
           _ToolItem(
             Icons.task_alt,
             loc.trackerTitle,
             loc.toolTrackerDesc,
             () => const PrayerTrackerView(),
-          ),
-          _ToolItem(
-            Icons.history_edu,
-            loc.missedPrayersTitle,
-            loc.toolKazaDesc,
-            () => const MissedPrayersView(),
           ),
           _ToolItem(
             Icons.auto_stories_outlined,
@@ -137,39 +136,103 @@ class ToolsView extends StatelessWidget {
           onPressed: () => _open(context, const SettingsView(), showAd: false),
         ),
       ],
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: AppSpacing.xl),
-        children: [
-          for (final (title, items) in groups) ...[
-            _GroupHeader(title: title, onImage: hasImage),
-            AppListSection(
-              children: [
-                for (final item in items)
-                  AppListTile(
-                    leadingIcon: item.icon,
-                    title: item.title,
-                    subtitle: item.subtitle,
-                    onTap:
-                        item.onTap ??
-                        () => _open(context, item.page!(), showAd: item.showAd),
-                  ),
-              ],
-            ),
-          ],
-          const SizedBox(height: AppSpacing.xl),
-          AppListSection(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // Her başlığın en uzun kelimesi bölünmeden sığsın (dil, yazı boyutu)
+          var tileWidth = 0.0;
+          for (final (_, items) in groups) {
+            for (final item in items) {
+              tileWidth = max(
+                tileWidth,
+                ToolTile.minWidth(context, item.title),
+              );
+            }
+          }
+          final width = constraints.maxWidth - 2 * AppSpacing.lg;
+          final columns =
+              ((width + AppSpacing.md) / (tileWidth + AppSpacing.md))
+                  .floor()
+                  .clamp(1, _maxColumns);
+          return ListView(
+            padding: const EdgeInsets.only(bottom: AppSpacing.xl),
             children: [
-              AppListTile(
-                leadingIcon: Icons.settings_outlined,
-                title: loc.menuTitle,
-                subtitle: loc.toolSettingsDesc,
-                onTap: () =>
-                    _open(context, const SettingsView(), showAd: false),
+              for (final (title, items) in groups) ...[
+                _GroupHeader(title: title, onImage: hasImage),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
+                  child: _ToolGrid(
+                    columns: columns,
+                    children: [
+                      for (final item in items)
+                        ToolTile(
+                          icon: item.icon,
+                          title: item.title,
+                          hint: item.description,
+                          onTap:
+                              item.onTap ??
+                              () => _open(
+                                context,
+                                item.page!(),
+                                showAd: item.showAd,
+                              ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: AppSpacing.xl),
+              AppListSection(
+                children: [
+                  AppListTile(
+                    leadingIcon: Icons.settings_outlined,
+                    title: loc.menuTitle,
+                    subtitle: loc.toolSettingsDesc,
+                    onTap: () =>
+                        _open(context, const SettingsView(), showAd: false),
+                  ),
+                ],
               ),
             ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Kutucukları [columns] sütunlu satırlara dizer: satırdaki kutucuklar eşit
+/// genişlik ve yükseklikte (en uzun başlık belirler), eksik satır boş kalır
+class _ToolGrid extends StatelessWidget {
+  final int columns;
+  final List<Widget> children;
+
+  const _ToolGrid({required this.columns, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var start = 0; start < children.length; start += columns) ...[
+          if (start > 0) const SizedBox(height: AppSpacing.md),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = start; i < start + columns; i++) ...[
+                  if (i > start) const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: i < children.length
+                        ? children[i]
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -177,7 +240,9 @@ class ToolsView extends StatelessWidget {
 class _ToolItem {
   final IconData icon;
   final String title;
-  final String subtitle;
+
+  /// Aracın kısa açıklaması (ekran okuyucu ipucu)
+  final String description;
   final Widget Function()? page;
 
   /// Sayfa yerine uygulama dışına çıkan araç (harita): geçiş reklamı yok
@@ -189,7 +254,7 @@ class _ToolItem {
   const _ToolItem(
     this.icon,
     this.title,
-    this.subtitle,
+    this.description,
     Widget Function() this.page, {
     this.showAd = true,
   }) : onTap = null;
@@ -197,7 +262,7 @@ class _ToolItem {
   const _ToolItem.external(
     this.icon,
     this.title,
-    this.subtitle,
+    this.description,
     VoidCallback this.onTap,
   ) : page = null,
       showAd = false;

@@ -1350,6 +1350,31 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolFitreDesc => 'حساب زكاة الفطر والفدية';
 
   @override
+  String get trackerTabTrack => 'المتابعة';
+
+  @override
+  String get trackerTabKaza => 'القضاء';
+
+  @override
+  String get trackerBadgesTitle => 'الأهداف';
+
+  @override
+  String trackerBadgeEarned(String date) {
+    return 'تحقّق في $date';
+  }
+
+  @override
+  String trackerBadgeSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تهانينا! بلغتَ هدف $count يومًا متتاليًا.',
+      few: 'تهانينا! بلغتَ هدف $count أيام متتالية.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get fitreInfo =>
       'المبلغ للشخص الواحد هو الحد الأدنى لزكاة الفطر الذي حددته رئاسة الشؤون الدينية التركية (ديانت)، ويجوز إخراجها نقدًا أو طعامًا. أما الفدية فيدفعها من لا يستطيع الصيام بسبب الكِبَر أو مرض لا يُرجى شفاؤه: مقدار زكاة الفطر عن كل يوم. إذا كنت تقيم خارج تركيا، يمكنك إدخال المبلغ المعتمد في بلدك.';
 
@@ -2115,10 +2140,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get toolImsakiyeDesc => 'مواقيت الشهر ورمضان';
 
   @override
-  String get toolTrackerDesc => 'سجّل الصلوات التي أدّيتها';
-
-  @override
-  String get toolKazaDesc => 'عدّاد قضاء الصلوات والصيام';
+  String get toolTrackerDesc => 'الصلوات المؤدّاة وعدّادات القضاء';
 
   @override
   String get toolReligiousDaysDesc => 'الليالي المباركة والأعياد';

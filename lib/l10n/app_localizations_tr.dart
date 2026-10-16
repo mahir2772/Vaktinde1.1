@@ -1312,6 +1312,30 @@ class AppLocalizationsTr extends AppLocalizations {
   String get toolFitreDesc => 'Fitre ve fidye tutarı hesabı';
 
   @override
+  String get trackerTabTrack => 'Takip';
+
+  @override
+  String get trackerTabKaza => 'Kaza';
+
+  @override
+  String get trackerBadgesTitle => 'Hedefler';
+
+  @override
+  String trackerBadgeEarned(String date) {
+    return 'Kazanıldı · $date';
+  }
+
+  @override
+  String trackerBadgeSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tebrikler! $count günlük seri hedefinize ulaştınız.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get fitreInfo =>
       'Kişi başı tutar, Diyanet\'in belirlediği en az fitre (fıtır sadakası) miktarıdır; fitre para ya da gıda olarak verilebilir. Fidye, yaşlılık ya da iyileşme umudu olmayan bir hastalık nedeniyle oruç tutamayanların her gün için verdiği bir fitre tutarıdır. Türkiye dışındaysanız bulunduğunuz yerdeki tutarı yazabilirsiniz.';
 
@@ -2074,10 +2098,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get toolImsakiyeDesc => 'Aylık ve Ramazan vakitleri';
 
   @override
-  String get toolTrackerDesc => 'Kıldığınız vakitleri işaretleyin';
-
-  @override
-  String get toolKazaDesc => 'Kaza namazı ve oruç sayacı';
+  String get toolTrackerDesc => 'Kıldığınız vakitler ve kaza sayacı';
 
   @override
   String get toolReligiousDaysDesc => 'Kandiller ve bayramlar';

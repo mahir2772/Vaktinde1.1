@@ -1,6 +1,7 @@
 // ignore_for_file: empty_catches
 
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import '../../../data/services/prayer_tracker.dart';
 import '../../../data/services/prayer_tracker_service.dart';
 import '../../home/view_model/home_view_model.dart';
 import '../../imsakiye/imsakiye_logic.dart';
+import '../../missed_prayers/view/missed_prayers_tab.dart';
 import '../widgets/ramadan_fast_card.dart';
 
 /// Takip edilen vakitlerin ekran adları ("İmsak" anahtarı = sabah namazı)
@@ -26,16 +28,42 @@ Map<String, String> trackerPrayerNames(AppLocalizations loc) => {
 /// Özel gün (hayız/nifas) işareti: hücrelerde, açıklamada ve başlık düğmesinde
 const IconData kExcusedIcon = Icons.spa_outlined;
 
-/// Namaz takibi: son 7 gün, 30 günlük oran, seri ve kılınmayanları kazaya ekleme;
-/// Ramazan'da (ve sonraki 30 gün) üstte Ramazan orucu kartı. Özel gün: gün adına
-/// basılı tutunca (ya da başlıktaki düğmeyle bugün) işaretlenir; o günün hücreleri
-/// soluk ve kapalıdır, seri/oran/kaza hesabına girmez (PrayerTracker).
+/// Yeni kazanılan seri hedefinin tebriği ([PrayerTrackerService.badgeEarned]).
+/// Sadece görünen sayfadaki takip yüzeyi gösterir: takip ekranı açıkken
+/// altındaki ana ekran satırı göstermez (tek tebrik).
+void showBadgeEarned(BuildContext context, int days) {
+  if (!(ModalRoute.isCurrentOf(context) ?? true)) return;
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.trackerBadgeSnack(days)),
+      ),
+    );
+}
+
+/// Namaz takibi ekranının sekmeleri
+enum TrackerTab { track, kaza }
+
+/// Namaz takibi: "Takip" sekmesinde son 7 gün, 30 günlük oran, seri, seri
+/// hedefleri (7 / 40 gün) ve kılınmayanları kazaya ekleme; Ramazan'da (ve sonraki
+/// 30 gün) üstte Ramazan orucu kartı. "Kaza" sekmesi kaza sayaçları
+/// (MissedPrayersTab). Özel gün: gün adına basılı tutunca (ya da başlıktaki
+/// düğmeyle bugün) işaretlenir; o günün hücreleri soluk ve kapalıdır,
+/// seri/oran/kaza hesabına girmez (PrayerTracker).
 class PrayerTrackerView extends StatefulWidget {
+  final TrackerTab initialTab;
+
   /// Test: oruç kartının günü ve Ramazan takvimi (varsayılan: şimdi, Diyanet)
   final DateTime Function()? fastClock;
   final RamadanCalendar? ramadanCalendar;
 
-  const PrayerTrackerView({super.key, this.fastClock, this.ramadanCalendar});
+  const PrayerTrackerView({
+    super.key,
+    this.initialTab = TrackerTab.track,
+    this.fastClock,
+    this.ramadanCalendar,
+  });
 
   @override
   State<PrayerTrackerView> createState() => _PrayerTrackerViewState();
@@ -55,9 +83,12 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   Set<String> get _excused => _excusedDays.value;
   set _excused(Set<String> value) => _excusedDays.value = value;
   DateTime? _since;
+  // Kazanılan seri hedefleri (gün → kazanıldığı gün)
+  Map<int, String> _badges = const {};
   bool _isLoading = true;
   bool _busy = false;
   Timer? _timer;
+  late final StreamSubscription<int> _badgeEarned;
   // Kaydedilmemiş dokunuş varken okunan eski kayıt ekrana yazılmaz
   int _saving = 0;
   int _generation = 0;
@@ -67,6 +98,9 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     PrayerTrackerService.changes.addListener(_load);
+    _badgeEarned = PrayerTrackerService.badgeEarned.listen((days) {
+      if (mounted) showBadgeEarned(context, days);
+    });
     _load();
     // Bildirimden (başka isolate) işaretlenen vakit ve gün değişimi yansısın
     _timer = Timer.periodic(const Duration(seconds: 30), (_) {
@@ -78,6 +112,7 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     PrayerTrackerService.changes.removeListener(_load);
+    _badgeEarned.cancel();
     _timer?.cancel();
     _excusedDays.dispose();
     super.dispose();
@@ -89,19 +124,25 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   }
 
   Future<void> _load() async {
-    if (_saving > 0) return;
+    if (_saving > 0 || !mounted) return;
     final generation = _generation;
+    // Gösterilen seriyle aynı hesap (imsak girmeden dünün yatsısı)
+    final ongoing = _yesterdayYatsiOngoing(
+      context.read<HomeViewModel>().prayerTimes,
+    );
     try {
       final log = await _service.loadLog();
       final added = await _service.loadKazaAdded();
       final excused = await _service.loadExcused();
       final since = await _service.loadSince();
+      final badges = await _service.earnBadges(yesterdayYatsiOngoing: ongoing);
       if (!mounted || _saving > 0 || generation != _generation) return;
       setState(() {
         _log = log;
         _kazaAdded = added;
         _excused = excused;
         _since = since;
+        _badges = badges;
         _isLoading = false;
       });
     } catch (e) {
@@ -401,55 +442,79 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final times = context.watch<HomeViewModel>().prayerTimes;
+    final streak = PrayerTracker.streak(
+      _log,
+      DateTime.now(),
+      excused: _excused,
+      yesterdayYatsiOngoing: _yesterdayYatsiOngoing(times),
+    );
 
-    return AppScaffold(
-      title: loc.trackerTitle,
-      body: _isLoading
-          ? const LoadingState()
-          : ListView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              children: [
-                RamadanFastCard(
-                  clock: widget.fastClock,
-                  calendar: widget.ramadanCalendar,
-                  excused: _excused,
-                ),
-                _buildStats(times, loc),
-                const SizedBox(height: AppSpacing.md),
-                _buildGrid(times, loc),
-                const SizedBox(height: AppSpacing.md),
-                // İlk ziyarette: özel gün (ızgaranın üstü) ve kazaya ekleme (altta)
-                FeatureTip(
-                  id: 'tracker',
-                  message: loc.tipTracker,
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                ),
-                _buildKazaSection(times, loc),
-              ],
-            ),
+    // Sekme geçişi reklamsız; sekmeler yeniden kurulunca kaydırma yeri korunur
+    return DefaultTabController(
+      length: TrackerTab.values.length,
+      initialIndex: widget.initialTab.index,
+      child: AppScaffold(
+        title: loc.trackerTitle,
+        bottom: TabBar(
+          tabs: [
+            Tab(text: loc.trackerTabTrack),
+            Tab(text: loc.trackerTabKaza),
+          ],
+        ),
+        body: TabBarView(
+          children: [
+            _isLoading
+                ? const LoadingState()
+                : ListView(
+                    key: const PageStorageKey('tracker'),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    children: [
+                      RamadanFastCard(
+                        clock: widget.fastClock,
+                        calendar: widget.ramadanCalendar,
+                        excused: _excused,
+                      ),
+                      _buildStats(times, streak, loc),
+                      const SizedBox(height: AppSpacing.md),
+                      _buildGrid(times, loc),
+                      const SizedBox(height: AppSpacing.md),
+                      // Izgara küçük ekranda da kaydırmadan görünsün: altında
+                      _buildBadges(streak, loc),
+                      const SizedBox(height: AppSpacing.md),
+                      // İlk ziyarette: özel gün (ızgaranın üstü) ve kazaya
+                      // ekleme (altta)
+                      FeatureTip(
+                        id: 'tracker',
+                        message: loc.tipTracker,
+                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      ),
+                      _buildKazaSection(times, loc),
+                    ],
+                  ),
+            const MissedPrayersTab(),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildStats(PrayerTimesModel? times, AppLocalizations loc) {
+  Widget _buildStats(
+    PrayerTimesModel? times,
+    int streak,
+    AppLocalizations loc,
+  ) {
     final now = DateTime.now();
     int todayDue = 0;
     for (final key in PrayerTracker.prayerKeys) {
       if (_isDue(now, key, times)) todayDue++;
     }
-    final ongoing = _yesterdayYatsiOngoing(times);
     final rate = PrayerTracker.completionRate(
       _log,
       now,
       todayDue: todayDue,
       since: _since,
       excused: _excused,
-      yesterdayYatsiOngoing: ongoing,
-    );
-    final streak = PrayerTracker.streak(
-      _log,
-      now,
-      excused: _excused,
-      yesterdayYatsiOngoing: ongoing,
+      yesterdayYatsiOngoing: _yesterdayYatsiOngoing(times),
     );
     final rateText = rate == null
         ? "–"
@@ -477,6 +542,93 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
         ],
       ),
     );
+  }
+
+  /// Seri hedefleri: kazanılan tarihiyle kalır (seri bozulsa da), kazanılmayanda
+  /// seri ilerlemesi (aynı renk ailesinde iz ve dolgu; sayı yanında yazıyla)
+  Widget _buildBadges(int streak, AppLocalizations loc) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final muted = theme.textTheme.bodySmall!.copyWith(
+      color: scheme.onSurfaceVariant,
+    );
+
+    Widget goal(int days) {
+      final earned = PrayerTracker.parseDateKey(_badges[days] ?? '');
+      final progress = math.min(streak, days);
+      return MergeSemantics(
+        child: Row(
+          children: [
+            Icon(
+              earned != null ? Icons.emoji_events : Icons.emoji_events_outlined,
+              color: earned != null
+                  ? PrayerColors.of(context).success
+                  : scheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          loc.trackerStreakDays(days),
+                          style: theme.textTheme.titleSmall,
+                        ),
+                      ),
+                      if (earned == null) Text('$progress/$days', style: muted),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  if (earned != null)
+                    Text(
+                      loc.trackerBadgeEarned(_dateText(earned, loc)),
+                      style: muted,
+                    )
+                  else
+                    ExcludeSemantics(
+                      child: LinearProgressIndicator(
+                        value: progress / days,
+                        minHeight: AppSpacing.sm,
+                        borderRadius: BorderRadius.circular(AppRadius.sm / 2),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(
+              loc.trackerBadgesTitle,
+              style: theme.textTheme.titleMedium,
+            ),
+          ),
+          for (final days in PrayerTracker.badgeGoals) ...[
+            const SizedBox(height: AppSpacing.md),
+            goal(days),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static String _dateText(DateTime date, AppLocalizations loc) {
+    try {
+      return DateFormat('d MMMM y', loc.localeName).format(date);
+    } catch (e) {
+      return PrayerTracker.dateKey(date);
+    }
   }
 
   Widget _buildGrid(PrayerTimesModel? times, AppLocalizations loc) {

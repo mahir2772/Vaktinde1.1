@@ -1333,6 +1333,30 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolFitreDesc => 'Fitra und Fidya berechnen';
 
   @override
+  String get trackerTabTrack => 'Gebete';
+
+  @override
+  String get trackerTabKaza => 'Qada';
+
+  @override
+  String get trackerBadgesTitle => 'Ziele';
+
+  @override
+  String trackerBadgeEarned(String date) {
+    return 'Erreicht · $date';
+  }
+
+  @override
+  String trackerBadgeSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Glückwunsch! Sie haben Ihr Serienziel von $count Tagen erreicht.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get fitreInfo =>
       'Der Betrag pro Person ist die von Diyanet, der türkischen Religionsbehörde, festgelegte Mindest-Fitra (Sadaqat al-Fitr); die Fitra kann als Geld oder in Form von Lebensmitteln gegeben werden. Fidya zahlen Menschen, die wegen hohen Alters oder einer Krankheit ohne Aussicht auf Heilung nicht fasten können: eine Fitra für jeden Tag. Wenn Sie außerhalb der Türkei leben, können Sie den dort geltenden Betrag eingeben.';
 
@@ -2101,10 +2125,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toolImsakiyeDesc => 'Monats- und Ramadan-Zeiten';
 
   @override
-  String get toolTrackerDesc => 'Verrichtete Gebete abhaken';
-
-  @override
-  String get toolKazaDesc => 'Zähler für versäumte Gebete und Fasten';
+  String get toolTrackerDesc => 'Verrichtete Gebete und Qada-Zähler';
 
   @override
   String get toolReligiousDaysDesc => 'Gesegnete Nächte und Feste';

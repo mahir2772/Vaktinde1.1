@@ -232,6 +232,37 @@ class StorageService {
     }
   }
 
+  /// Kazanılan seri hedefleri (PrayerTracker.badgeGoals): gün → kazanıldığı gün
+  /// (yyyy-MM-dd). Bildirim/widget isolate'i de yazar; geçersiz kayıt atlanır.
+  Future<Map<int, String>> loadTrackerBadges() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final raw = prefs.getString('tracker_badges');
+    if (raw == null) return {};
+    try {
+      final result = <int, String>{};
+      Map<String, dynamic>.from(jsonDecode(raw)).forEach((k, v) {
+        final goal = int.tryParse(k);
+        if (goal != null &&
+            v is String &&
+            PrayerTracker.parseDateKey(v) != null) {
+          result[goal] = v;
+        }
+      });
+      return result;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  Future<void> saveTrackerBadges(Map<int, String> badges) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      'tracker_badges',
+      jsonEncode({for (final e in badges.entries) '${e.key}': e.value}),
+    );
+  }
+
   // --- Ramazan orucu takibi: tutulan / kaza orucuna eklenen günler (yyyy-MM-dd) ---
 
   Future<Set<String>> loadFastLog() => _loadDaySet('fast_log');

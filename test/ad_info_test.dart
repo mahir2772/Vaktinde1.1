@@ -12,7 +12,7 @@ import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/common/widgets/ad_info_sheet.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
-import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
+import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/zakat/view/zakat_view.dart';
@@ -113,18 +113,18 @@ void main() {
 
   tearDown(AdHelper.instance.debugReset);
 
-  // Araçlar'dan geçiş reklamlı bir araç (Kaza Takibi) açılır
+  // Araçlar'dan geçiş reklamlı bir araç (Namaz Takibi) açılır
   Future<void> openTool(WidgetTester tester) async {
-    final row = find.text(_loc.missedPrayersTitle);
+    final row = find.text(_loc.trackerTitle);
     await tester.scrollUntilVisible(row, 200);
     await tester.pump();
     await tester.tap(row);
     await _settle(tester);
-    expect(find.byType(MissedPrayersView), findsOneWidget);
+    expect(find.byType(PrayerTrackerView), findsOneWidget);
   }
 
   Future<void> closeTool(WidgetTester tester) async {
-    Navigator.of(tester.element(find.byType(MissedPrayersView))).pop();
+    Navigator.of(tester.element(find.byType(PrayerTrackerView))).pop();
     await _settle(tester);
   }
 
@@ -149,7 +149,7 @@ void main() {
       await tester.tap(find.text(_loc.adInfoGotIt));
       await _settle(tester);
       expect(find.text(_loc.adInfoTitle), findsNothing);
-      expect(find.byType(MissedPrayersView), findsOneWidget);
+      expect(find.byType(PrayerTrackerView), findsOneWidget);
       expect(ad.shows, 0);
       await closeTool(tester);
 

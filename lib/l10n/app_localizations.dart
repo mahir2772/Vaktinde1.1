@@ -2312,6 +2312,36 @@ abstract class AppLocalizations {
   /// **'Fitre ve fidye tutarı hesabı'**
   String get toolFitreDesc;
 
+  /// No description provided for @trackerTabTrack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Takip'**
+  String get trackerTabTrack;
+
+  /// No description provided for @trackerTabKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza'**
+  String get trackerTabKaza;
+
+  /// No description provided for @trackerBadgesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefler'**
+  String get trackerBadgesTitle;
+
+  /// No description provided for @trackerBadgeEarned.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazanıldı · {date}'**
+  String trackerBadgeEarned(String date);
+
+  /// No description provided for @trackerBadgeSnack.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{Tebrikler! {count} günlük seri hedefinize ulaştınız.}}'**
+  String trackerBadgeSnack(int count);
+
   /// No description provided for @fitreInfo.
   ///
   /// In tr, this message translates to:
@@ -3725,14 +3755,8 @@ abstract class AppLocalizations {
   /// No description provided for @toolTrackerDesc.
   ///
   /// In tr, this message translates to:
-  /// **'Kıldığınız vakitleri işaretleyin'**
+  /// **'Kıldığınız vakitler ve kaza sayacı'**
   String get toolTrackerDesc;
-
-  /// No description provided for @toolKazaDesc.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kaza namazı ve oruç sayacı'**
-  String get toolKazaDesc;
 
   /// No description provided for @toolReligiousDaysDesc.
   ///

@@ -35,6 +35,8 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
   Map<String, int> _log = const {};
   Set<String> _excused = const {};
   Timer? _timer;
+  // Seri hedefi tebriği (takip ekranı açıkken o gösterir)
+  late final StreamSubscription<int> _badgeEarned;
   // Kaydedilmemiş dokunuş varken okunan eski kayıt ekrana yazılmaz
   int _saving = 0;
   int _generation = 0;
@@ -44,6 +46,9 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     PrayerTrackerService.changes.addListener(_load);
+    _badgeEarned = PrayerTrackerService.badgeEarned.listen((days) {
+      if (mounted) showBadgeEarned(context, days);
+    });
     _load();
     // Vakit girince işaret açılır; bildirimden (başka isolate) işaretlenen vakit,
     // gün değişimi de kayıttan yeniden okunarak yansır
@@ -56,6 +61,7 @@ class _PrayerTrackerRowState extends State<PrayerTrackerRow>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     PrayerTrackerService.changes.removeListener(_load);
+    _badgeEarned.cancel();
     _timer?.cancel();
     super.dispose();
   }

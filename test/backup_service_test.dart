@@ -38,6 +38,7 @@ const Map<String, Object> _userData = {
   'prayer_kaza_added': '{"2026-10-08":2}',
   'tracker_excused': ['2026-10-01', '2026-10-02'],
   'tracker_excused_open': '2026-10-02',
+  'tracker_badges': '{"7":"2026-09-20"}',
   'excused_silent_ezan': false,
   'persistent_notification_enabled': false,
   'kaza_Sabah': 12,

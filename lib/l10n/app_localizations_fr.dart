@@ -1350,6 +1350,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get toolFitreDesc => 'Calcul de la fitra et de la fidya';
 
   @override
+  String get trackerTabTrack => 'Suivi';
+
+  @override
+  String get trackerTabKaza => 'Qada';
+
+  @override
+  String get trackerBadgesTitle => 'Objectifs';
+
+  @override
+  String trackerBadgeEarned(String date) {
+    return 'Atteint · $date';
+  }
+
+  @override
+  String trackerBadgeSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Félicitations ! Vous avez atteint votre objectif de série de $count jours.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get fitreInfo =>
       'Le montant par personne est la fitra (sadaqat al-fitr) minimale fixée par la Diyanet, l\'autorité religieuse turque ; la fitra peut être donnée en argent ou en nourriture. La fidya est due par les personnes qui ne peuvent pas jeûner en raison de leur grand âge ou d\'une maladie sans espoir de guérison : une fitra pour chaque jour. Si vous vivez hors de Turquie, vous pouvez saisir le montant fixé là où vous vivez.';
 
@@ -2122,10 +2147,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get toolImsakiyeDesc => 'Horaires du mois et du Ramadan';
 
   @override
-  String get toolTrackerDesc => 'Cochez les prières accomplies';
-
-  @override
-  String get toolKazaDesc => 'Compteur des prières et jeûnes manqués';
+  String get toolTrackerDesc => 'Prières accomplies et compteurs de qada';
 
   @override
   String get toolReligiousDaysDesc => 'Nuits bénies et fêtes';

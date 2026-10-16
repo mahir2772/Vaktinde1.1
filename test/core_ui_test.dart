@@ -79,7 +79,7 @@ void main() {
                 child: ToolTile(
                   icon: Icons.calendar_month,
                   title: 'İmsakiye ve uzun bir başlık',
-                  subtitle: 'Aylık ve Ramazan',
+                  hint: 'Aylık ve Ramazan',
                   onTap: () {},
                 ),
               ),

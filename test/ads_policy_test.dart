@@ -191,10 +191,10 @@ void main() {
     Navigator.of(tester.element(find.byType(PrayerGuideView))).pop();
     await settle();
 
-    await tester.scrollUntilVisible(find.text(loc.missedPrayersTitle), -200);
+    await tester.scrollUntilVisible(find.text(loc.trackerTitle), -200);
     // Kaydırma sonrası yerleşim: satır AppBar altında kalmasın
     await tester.pump();
-    await tester.tap(find.text(loc.missedPrayersTitle));
+    await tester.tap(find.text(loc.trackerTitle));
     await tester.pump();
     expect(ads.debugShowRequests, before + 1);
     expect(tester.takeException(), isNull);

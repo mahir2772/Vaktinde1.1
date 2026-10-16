@@ -9,12 +9,16 @@ import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/share_card.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/duas/dua_data.dart';
+import 'package:ezan_saati/features/duas/view/duas_view.dart';
 import 'package:ezan_saati/features/esmaul_husna/view/esmaul_husna_view.dart';
+import 'package:ezan_saati/features/fitre/view/fitre_view.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
-import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
+import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
+import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
@@ -158,7 +162,7 @@ void main() {
     'Esmaül Hüsna': () => const EsmaulHusnaView(),
     'Cuma mesajları': () => const FridayMessagesView(),
     'Dini günler': () => const ReligiousDaysView(),
-    'Kaza': () => const MissedPrayersView(),
+    'Kaza': () => const PrayerTrackerView(initialTab: TrackerTab.kaza),
     'Namaz takibi': () => const PrayerTrackerView(),
   };
 
@@ -180,25 +184,141 @@ void main() {
   }
 
   group('Araçlar', () {
-    testWidgets('9 araç + Ayarlar satırı tek listede', (tester) async {
-      await _pumpScreen(tester, const ToolsView(), textScale: 1);
-      final loc = lookupAppLocalizations(const Locale('tr'));
-      for (final title in [
-        loc.imsakiyeTitle,
-        loc.trackerTitle,
-        loc.missedPrayersTitle,
-        loc.nearbyMosquesTitle,
-        loc.religiousDaysTitle,
-        loc.esmaulHusnaTitle,
-        loc.fridayMessagesTitle,
-        loc.zakatTitle,
-        loc.fitreTitle,
-        loc.menuTitle,
-      ]) {
-        await tester.scrollUntilVisible(find.text(title), 200);
-        expect(find.text(title), findsOneWidget);
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    // Araç → açıklaması (ekran okuyucu ipucu), açılışta geçiş reklamı ve açılan
+    // sayfa. Dualar, Namaz Hocası ve uygulamadan çıkan Yakındaki Camiler
+    // reklamsız; Kaza Takibi Namaz Takibi'nin sekmesi.
+    final tools = <String, (String, bool, Type?)>{
+      loc.imsakiyeTitle: (loc.toolImsakiyeDesc, true, ImsakiyeView),
+      loc.trackerTitle: (loc.toolTrackerDesc, true, PrayerTrackerView),
+      loc.duasTitle: (loc.toolDuasDesc, false, DuasView),
+      loc.prayerGuideTitle: (loc.toolPrayerGuideDesc, false, PrayerGuideView),
+      loc.nearbyMosquesTitle: (loc.toolNearbyMosquesDesc, false, null),
+      loc.religiousDaysTitle: (
+        loc.toolReligiousDaysDesc,
+        true,
+        ReligiousDaysView,
+      ),
+      loc.esmaulHusnaTitle: (loc.toolEsmaDesc, true, EsmaulHusnaView),
+      loc.fridayMessagesTitle: (loc.toolFridayDesc, true, FridayMessagesView),
+      loc.zakatTitle: (loc.toolZakatDesc, true, ZakatView),
+      loc.fitreTitle: (loc.toolFitreDesc, true, FitreView),
+    };
+    Finder tile(String title) => find.widgetWithText(ToolTile, title);
+
+    testWidgets('10 araç kutucuğu (kaza ayrı değil) + Ayarlar satırı; '
+        'kutucuk düğme, başlık etiket, açıklama ipucu', (tester) async {
+      await _pumpScreen(tester, const ToolsView(), width: 411, textScale: 1);
+      final semantics = tester.ensureSemantics();
+      for (final MapEntry(key: title, value: (hint, _, _)) in tools.entries) {
+        await tester.scrollUntilVisible(tile(title), 200);
+        expect(tile(title), findsOneWidget);
+        expect(
+          tester.getSize(tile(title)).height,
+          greaterThanOrEqualTo(AppSizes.minTouch),
+        );
+        expect(
+          tester.getSemantics(tile(title)),
+          containsSemantics(
+            label: title,
+            hint: hint,
+            isButton: true,
+            hasTapAction: true,
+          ),
+          reason: title,
+        );
       }
-      expect(find.byType(AppListTile), findsWidgets);
+      await tester.scrollUntilVisible(find.text(loc.menuTitle), 200);
+      expect(find.widgetWithText(AppListTile, loc.menuTitle), findsOneWidget);
+      expect(find.text(loc.missedPrayersTitle), findsNothing);
+      semantics.dispose();
+      await _dispose(tester);
+    });
+
+    // Genişlik / yazı boyutu / dil → sütun sayısı (en uzun başlık kelimesi
+    // bölünmeden sığar: Almanca "Gebetsanleitung" 411dp'de de iki sütun)
+    for (final (lang, width, scale, columns) in [
+      ('tr', 411.0, 1.0, 3),
+      ('tr', 360.0, 1.0, 3),
+      ('tr', 320.0, 1.3, 2),
+      ('tr', 411.0, 2.0, 2),
+      ('tr', 320.0, 2.0, 1),
+      ('ar', 411.0, 1.0, 3),
+      ('de', 411.0, 1.0, 2),
+      ('de', 320.0, 2.0, 1),
+    ]) {
+      testWidgets('$lang ${width.toInt()}dp %${(scale * 100).toInt()} yazı: '
+          '$columns sütun; satırdaki kutucuklar eşit, taşma yok', (
+        tester,
+      ) async {
+        // Uzun ekran: bütün kutucuklar kurulsun
+        await _pumpScreen(
+          tester,
+          const ToolsView(),
+          lang: lang,
+          width: width,
+          height: 3200,
+          textScale: scale,
+        );
+        expect(tester.takeException(), isNull);
+        final rects = [
+          for (final element in find.byType(ToolTile).evaluate())
+            tester.getRect(find.byWidget(element.widget)),
+        ];
+        expect(rects, hasLength(tools.length));
+        // Namaz grubunun (6 araç) ilk satırı
+        expect(
+          rects.where((r) => (r.top - rects.first.top).abs() < 0.5),
+          hasLength(columns),
+        );
+        for (final rect in rects) {
+          final row = rects.where((r) => (r.top - rect.top).abs() < 0.5);
+          for (final other in row) {
+            expect(other.height, moreOrLessEquals(rect.height));
+            expect(other.width, moreOrLessEquals(rect.width));
+          }
+          expect(rect.left, greaterThanOrEqualTo(AppSpacing.lg - 0.5));
+          expect(rect.right, lessThanOrEqualTo(width - AppSpacing.lg + 0.5));
+        }
+        await _dispose(tester);
+      });
+    }
+
+    testWidgets('her araç kutucuğu aracını açar; geçiş reklamı eskisi gibi '
+        'sadece reklamlı araçlarda', (tester) async {
+      await tester.runAsync(DuaLibrary.load);
+      await tester.runAsync(PrayerGuide.load);
+      const urlLauncher = MethodChannel('plugins.flutter.io/url_launcher');
+      final launches = <MethodCall>[];
+      messenger.setMockMethodCallHandler(urlLauncher, (call) async {
+        launches.add(call);
+        return true;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(urlLauncher, null));
+      await _pumpScreen(tester, const ToolsView(), width: 411, textScale: 1);
+      final ads = AdHelper.instance;
+      for (final MapEntry(key: title, value: (_, showsAd, page))
+          in tools.entries) {
+        final before = ads.debugShowRequests;
+        await tester.scrollUntilVisible(tile(title), 200);
+        await tester.pump();
+        await tester.tap(tile(title));
+        await _settle(tester);
+        expect(
+          ads.debugShowRequests,
+          before + (showsAd ? 1 : 0),
+          reason: title,
+        );
+        if (page == null) {
+          // Yakındaki Camiler: harita uygulaması açılır
+          expect(launches, isNotEmpty);
+          continue;
+        }
+        expect(find.byType(page), findsOneWidget, reason: title);
+        Navigator.of(tester.element(find.byType(page))).pop();
+        await _settle(tester);
+      }
+      expect(tester.takeException(), isNull);
       await _dispose(tester);
     });
 
@@ -497,7 +617,11 @@ void main() {
     testWidgets('artır/azalt kaydedilir; büyük değişiklik onay ister', (
       tester,
     ) async {
-      await _pumpScreen(tester, const MissedPrayersView(), textScale: 1);
+      await _pumpScreen(
+        tester,
+        const PrayerTrackerView(initialTab: TrackerTab.kaza),
+        textScale: 1,
+      );
       final loc = lookupAppLocalizations(const Locale('tr'));
       expect(find.text('12'), findsOneWidget);
       expect(find.byType(CounterStepper), findsAtLeastNWidgets(5));
@@ -537,7 +661,11 @@ void main() {
     testWidgets('Kaza hesapla: tahmin onaylanınca sayaçlara eklenir', (
       tester,
     ) async {
-      await _pumpScreen(tester, const MissedPrayersView(), textScale: 1);
+      await _pumpScreen(
+        tester,
+        const PrayerTrackerView(initialTab: TrackerTab.kaza),
+        textScale: 1,
+      );
       final loc = lookupAppLocalizations(const Locale('tr'));
       await tester.tap(find.text(loc.kazaCalcTitle));
       await _settle(tester);
@@ -616,7 +744,17 @@ void main() {
       expect(prefs.getInt('kaza_Oruç'), 32);
       expect(find.text(loc.kazaCalcAdded), findsOneWidget);
       expect(find.text('722'), findsOneWidget);
-      await tester.scrollUntilVisible(find.text('32'), 200);
+      // "Kaza" sekmesinin listesi (sekmeler yatay kaydırılır)
+      await tester.scrollUntilVisible(
+        find.text('32'),
+        200,
+        scrollable: find
+            .descendant(
+              of: find.byType(ListView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
       expect(find.text('32'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await _dispose(tester);
@@ -630,7 +768,7 @@ void main() {
           (tester) async {
             await _pumpScreen(
               tester,
-              const MissedPrayersView(),
+              const PrayerTrackerView(initialTab: TrackerTab.kaza),
               lang: lang,
               dark: dark,
             );
@@ -668,12 +806,8 @@ void main() {
     testWidgets('sıradaki gün "x gün kaldı" ile vurgulanır', (tester) async {
       await _pumpScreen(tester, const ReligiousDaysView(), textScale: 1);
       final loc = lookupAppLocalizations(const Locale('tr'));
-      final labels = [
-        for (var d = 0; d <= 366; d++) loc.daysLeft(d),
-      ];
-      final found = labels.where(
-        (l) => find.text(l).evaluate().isNotEmpty,
-      );
+      final labels = [for (var d = 0; d <= 366; d++) loc.daysLeft(d)];
+      final found = labels.where((l) => find.text(l).evaluate().isNotEmpty);
       // Yılın kalan günü yoksa (Aralık sonu) sonraki yıla geçilince çıkar
       if (found.isEmpty) {
         await tester.tap(find.byTooltip(loc.nextYear));

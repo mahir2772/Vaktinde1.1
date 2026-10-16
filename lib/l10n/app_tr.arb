@@ -704,6 +704,25 @@
     "zakatTitle": "Zekat Hesapla",
     "fitreTitle": "Fitre ve Fidye",
     "toolFitreDesc": "Fitre ve fidye tutarı hesabı",
+    "trackerTabTrack": "Takip",
+    "trackerTabKaza": "Kaza",
+    "trackerBadgesTitle": "Hedefler",
+    "trackerBadgeEarned": "Kazanıldı · {date}",
+    "@trackerBadgeEarned": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "trackerBadgeSnack": "{count, plural, other{Tebrikler! {count} günlük seri hedefinize ulaştınız.}}",
+    "@trackerBadgeSnack": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "fitreInfo": "Kişi başı tutar, Diyanet'in belirlediği en az fitre (fıtır sadakası) miktarıdır; fitre para ya da gıda olarak verilebilir. Fidye, yaşlılık ya da iyileşme umudu olmayan bir hastalık nedeniyle oruç tutamayanların her gün için verdiği bir fitre tutarıdır. Türkiye dışındaysanız bulunduğunuz yerdeki tutarı yazabilirsiniz.",
     "fitreAmountLabel": "Kişi başı tutar",
     "fitreSource": "Kaynak: {source}, {year}",
@@ -1033,8 +1052,7 @@
     "toolsGroupInfo": "Bilgi",
     "toolsGroupCalc": "Hesaplama",
     "toolImsakiyeDesc": "Aylık ve Ramazan vakitleri",
-    "toolTrackerDesc": "Kıldığınız vakitleri işaretleyin",
-    "toolKazaDesc": "Kaza namazı ve oruç sayacı",
+    "toolTrackerDesc": "Kıldığınız vakitler ve kaza sayacı",
     "toolReligiousDaysDesc": "Kandiller ve bayramlar",
     "nearbyMosquesTitle": "Yakındaki Camiler",
     "toolNearbyMosquesDesc": "Size en yakın camileri haritada bulun",

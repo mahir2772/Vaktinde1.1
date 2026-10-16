@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/prayer_tracker_service.dart';
+import 'package:ezan_saati/data/services/storage_service.dart';
 import 'package:ezan_saati/data/services/tracker_widget_service.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -266,6 +269,19 @@ void main() {
         expect(saved()['tracker_excused_days'], dk(today()));
       },
     );
+
+    test('7. tam günü tamamlayan dokunuş seri hedefini kazandırır (uygulama '
+        'açılmadan)', () async {
+      SharedPreferences.setMockInitialValues({
+        'prayer_log': jsonEncode({
+          for (var i = 1; i <= 6; i++)
+            dk(PrayerTracker.addDays(today(), -i)): PrayerTracker.fullMask,
+          dk(today()): PrayerTracker.fullMask & ~bit('Yatsı'),
+        }),
+      });
+      expect(await TrackerWidgetService.handleTap(tap(today(), 4)), isTrue);
+      expect(await StorageService().loadTrackerBadges(), {7: dk(today())});
+    });
 
     test('kayıtlı dil ve başka isolate\'in işareti okunur', () async {
       SharedPreferences.setMockInitialValues({

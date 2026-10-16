@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/prayer_tracker_service.dart';
 import 'package:ezan_saati/data/services/storage_service.dart';
@@ -66,6 +69,24 @@ void main() {
       expect(PrayerTracker.streak(log, today), 4);
       log[dk(d(-2))] = all & ~bit('Akşam');
       expect(PrayerTracker.streak(log, today), 2);
+    });
+
+    test('seri hedefleri: 7 ve 40 gün; ulaşılınca bugünün tarihiyle eklenir, '
+        'kazanılan tarihiyle kalır', () {
+      expect(PrayerTracker.badgeGoals, [7, 40]);
+      expect(PrayerTracker.withBadges({}, 6, today), isEmpty);
+      final seven = PrayerTracker.withBadges({}, 7, today);
+      expect(seven, {7: dk(today)});
+      // Seri bozuldu, sonra 40'a ulaştı: 7 ilk tarihini korur
+      expect(PrayerTracker.withBadges(seven, 0, d(5)), seven);
+      expect(PrayerTracker.withBadges(seven, 40, d(50)), {
+        7: dk(today),
+        40: dk(d(50)),
+      });
+      expect(PrayerTracker.withBadges({}, 45, today), {
+        7: dk(today),
+        40: dk(today),
+      });
     });
 
     test('İmsak girmeden dünün yatsısı seriyi bozmaz, orana eksik yazılmaz', () {
@@ -749,6 +770,112 @@ void main() {
       expect(await service.loadKazaCount('Öğle'), 0);
       expect(await service.loadKazaAdded(), isEmpty);
       expect(await service.addMissedToKaza(), 0);
+    });
+
+    group('seri hedefleri', () {
+      DateTime day(int offset) => PrayerTracker.addDays(now(), offset);
+      // [from] gün önceden geriye [days] tam gün (+ [extra] günler)
+      String log(int days, {int from = 1, Map<int, int> extra = const {}}) =>
+          jsonEncode({
+            for (var i = from; i < from + days; i++) dk(day(-i)): all,
+            for (final e in extra.entries) dk(day(e.key)): e.value,
+          });
+      Future<Map<int, String>> saved() => StorageService().loadTrackerBadges();
+      late List<int> announced;
+      late StreamSubscription<int> sub;
+
+      setUp(() {
+        announced = [];
+        sub = PrayerTrackerService.badgeEarned.listen(announced.add);
+      });
+
+      tearDown(() => sub.cancel());
+
+      test('7. tam gün işaretlenince bugünün tarihiyle kazanılır, bir kez '
+          'duyurulur; seri bozulsa da kalır', () async {
+        // Önceki 6 gün tam, bugün 4 vakit
+        SharedPreferences.setMockInitialValues({
+          'prayer_log': log(6, extra: {0: all & ~bit('Yatsı')}),
+        });
+        final service = PrayerTrackerService();
+        await service.setPrayed(now(), 'Akşam', true);
+        expect(await saved(), isEmpty);
+
+        await service.setPrayed(now(), 'Yatsı', true);
+        await pumpEventQueue();
+        expect(await saved(), {7: dk(now())});
+        expect(announced, [7]);
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getString('tracker_badges'), '{"7":"${dk(now())}"}');
+
+        // Geri alınınca seri 6: hedef kalır; yeniden işaretlemek duyurmaz
+        await service.setPrayed(now(), 'Yatsı', false);
+        await service.setPrayed(now(), 'Yatsı', true);
+        await pumpEventQueue();
+        expect(await saved(), {7: dk(now())});
+        expect(announced, [7]);
+      });
+
+      test('bildirimdeki "Kıldım" (arka plan isolate\'i) de kazandırır', () async {
+        // Dün yatsı eksik, önceki 6 gün tam
+        SharedPreferences.setMockInitialValues({
+          'prayer_log': log(6, from: 2, extra: {-1: all & ~bit('Yatsı')}),
+        });
+        expect(
+          await PrayerTrackerService.handleNotificationAction(
+            NotificationResponse(
+              notificationResponseType:
+                  NotificationResponseType.selectedNotificationAction,
+              actionId: PrayerTracker.actionId,
+              payload: PrayerTracker.payload(day(-1), 'Yatsı'),
+            ),
+          ),
+          isTrue,
+        );
+        expect(await saved(), {7: dk(now())});
+      });
+
+      test('kazadan çıkarılan vakit ve özel gün de seriyi tamamlar', () async {
+        // 3 gün önce öğle kazaya eklenmiş; diğer 6 gün tam
+        SharedPreferences.setMockInitialValues({
+          'prayer_log': log(7, extra: {-3: all & ~bit('Öğle')}),
+          'prayer_kaza_added': '{"${dk(day(-3))}":${bit('Öğle')}}',
+          'kaza_Öğle': 1,
+        });
+        final service = PrayerTrackerService();
+        expect(await service.removeFromKaza(day(-3), 'Öğle'), isTrue);
+        expect(await saved(), {7: dk(now())});
+
+        // 4 gün önce boş: özel gün olunca araya giren gün atlanır
+        SharedPreferences.setMockInitialValues({
+          'prayer_log': log(8, extra: {-4: 0}),
+        });
+        expect(await service.setExcused(day(-4), true), isTrue);
+        await pumpEventQueue();
+        expect(await saved(), {7: dk(now())});
+        expect(announced, [7, 7]);
+      });
+
+      test('ekran kendi vakitleriyle tamamlar: imsak girmeden dünün yatsısı '
+          'seriyi bozmaz; 40 gün birlikte, en büyüğü duyurulur', () async {
+        SharedPreferences.setMockInitialValues({
+          'prayer_log': log(7, from: 2, extra: {-1: all & ~bit('Yatsı')}),
+        });
+        final service = PrayerTrackerService();
+        expect(await service.earnBadges(), isEmpty);
+        expect(await service.earnBadges(yesterdayYatsiOngoing: true), {
+          7: dk(now()),
+        });
+
+        // Bozuk kayıt yok sayılır
+        SharedPreferences.setMockInitialValues({
+          'prayer_log': log(40),
+          'tracker_badges': '{bozuk',
+        });
+        expect(await service.earnBadges(), {7: dk(now()), 40: dk(now())});
+        await pumpEventQueue();
+        expect(announced, [7, 40]);
+      });
     });
 
     test('vakit çıkış hatırlatması ayarı: varsayılan kapalı/30, geçersiz dakika 30', () async {

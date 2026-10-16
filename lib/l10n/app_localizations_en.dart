@@ -1335,6 +1335,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolFitreDesc => 'Fitra and fidya amounts';
 
   @override
+  String get trackerTabTrack => 'Tracking';
+
+  @override
+  String get trackerTabKaza => 'Qada';
+
+  @override
+  String get trackerBadgesTitle => 'Goals';
+
+  @override
+  String trackerBadgeEarned(String date) {
+    return 'Earned · $date';
+  }
+
+  @override
+  String trackerBadgeSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Congratulations! You reached your $count-day streak goal.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get fitreInfo =>
       'The amount per person is the minimum fitra (sadaqat al-fitr) set by Diyanet, Turkey\'s religious authority; fitra can be given in cash or as food. Fidya is paid by those who cannot fast because of old age or an illness with no hope of recovery: one fitra for each day. If you live outside Turkey, you can enter the amount set where you live.';
 
@@ -2099,10 +2123,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get toolImsakiyeDesc => 'Monthly and Ramadan times';
 
   @override
-  String get toolTrackerDesc => 'Mark the prayers you performed';
-
-  @override
-  String get toolKazaDesc => 'Counter for missed prayers and fasts';
+  String get toolTrackerDesc => 'Your prayers and qada counters';
 
   @override
   String get toolReligiousDaysDesc => 'Holy nights and Eids';

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/prayer_tracker_service.dart';
+import 'package:ezan_saati/data/services/storage_service.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/home/widgets/kerahat_card.dart';
@@ -140,9 +142,12 @@ void main() {
       // 3 gün önce: 5 kaza hücresi + açıklama
       expect(find.byIcon(Icons.history), findsNWidgets(6));
 
-      await tester.drag(find.byType(ListView), const Offset(0, -2000));
-      await tester.pumpAndSettle();
-      // İlk ziyaret ipucu kaydırınca kurulup belirir: düğme aşağı kayar
+      // İlk ziyaret ipucu kaydırınca kurulup belirir: liste uzar, düğme aşağı
+      // kayar (sona yeniden kaydırılır)
+      for (var i = 0; i < 2; i++) {
+        await tester.drag(find.byType(ListView), const Offset(0, -2000));
+        await tester.pumpAndSettle();
+      }
       await tester.ensureVisible(find.text(loc.trackerKazaButton));
       await tester.pumpAndSettle();
       await tester.tap(find.text(loc.trackerKazaButton));
@@ -300,9 +305,12 @@ void main() {
 
       // Kazaya ekleme: özel günün 4 vakti sayılmaz, sadece 3 gün önce
       await tester.pump(const Duration(seconds: 5));
-      await tester.drag(find.byType(ListView), const Offset(0, -2000));
-      await tester.pumpAndSettle();
-      // İlk ziyaret ipucu kaydırınca kurulup belirir: düğme aşağı kayar
+      // İlk ziyaret ipucu kaydırınca kurulup belirir: liste uzar, düğme aşağı
+      // kayar (sona yeniden kaydırılır)
+      for (var i = 0; i < 2; i++) {
+        await tester.drag(find.byType(ListView), const Offset(0, -2000));
+        await tester.pumpAndSettle();
+      }
       await tester.ensureVisible(find.text(loc.trackerKazaButton));
       await tester.pumpAndSettle();
       await tester.tap(find.text(loc.trackerKazaButton));
@@ -549,5 +557,248 @@ void main() {
         await tester.pumpWidget(const SizedBox());
       });
     }
+  });
+
+  group('Takip | Kaza sekmeleri ve seri hedefleri', () {
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    const full = PrayerTracker.fullMask;
+    final yatsi = PrayerTracker.bit('Yatsı');
+    String date(int daysAgo) => DateFormat(
+      'd MMMM y',
+      'tr',
+    ).format(PrayerTracker.addDays(DateTime.now(), -daysAgo));
+    // [days] gün tam kılınmış (dünden geriye); bugün yatsı hariç kılınmış
+    String log(int days) => jsonEncode({
+      for (var i = 1; i <= days; i++) dk(i): full,
+      dk(0): full & ~yatsi,
+    });
+    // Bugünün vakitleri girmiş: bugün işaretlenebilir
+    Future<void> pumpWithTimes(WidgetTester tester, Widget home) async {
+      tester.view.physicalSize = const Size(320 * 3, 568 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+      messenger.setMockMessageHandler(
+        'plugins.flutter.io/google_mobile_ads',
+        (message) async =>
+            const StandardMethodCodec().encodeSuccessEnvelope(null),
+      );
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (_) => HomeViewModel()
+            ..prayerTimes = PrayerTimesModel(
+              imsak: '00:00',
+              gunes: '00:00',
+              ogle: '00:00',
+              ikindi: '00:00',
+              aksam: '00:00',
+              yatsi: '00:00',
+            ),
+          child: MaterialApp(
+            locale: const Locale('tr'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: home,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    // Hedefler kartı ızgaranın altında: liste kaydırılır
+    Future<void> reveal(WidgetTester tester, Finder finder) async {
+      await tester.scrollUntilVisible(
+        finder,
+        200,
+        scrollable: find
+            .descendant(
+              of: find.byType(ListView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> waitSnackBar(WidgetTester tester) async {
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('Kaza sekmesiyle açılır; sekme geçişi reklamsız, her sekme '
+        'kendi içeriğini gösterir', (tester) async {
+      SharedPreferences.setMockInitialValues({'kaza_Sabah': 12});
+      await pumpApp(
+        tester,
+        'tr',
+        PrayerTrackerView(
+          initialTab: TrackerTab.kaza,
+          fastClock: () => DateTime(2026, 10, 10),
+          ramadanCalendar: RamadanCalendar.hijriOnly,
+        ),
+      );
+      expect(find.text(loc.trackerTitle), findsOneWidget);
+      expect(find.text(loc.missedPrayersInfo), findsOneWidget);
+      expect(find.text('12'), findsOneWidget);
+      expect(find.text(loc.trackerLast7Days), findsNothing);
+      // İki sekmede de üst çubuk eylemi yoktu
+      expect(tester.widget<AppBar>(find.byType(AppBar)).actions, isEmpty);
+
+      final ads = AdHelper.instance.debugShowRequests;
+      await tester.tap(find.text(loc.trackerTabTrack));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.trackerLast7Days), findsOneWidget);
+      expect(find.text(loc.missedPrayersInfo), findsNothing);
+      // Kaydırarak geri: sayaçlar yeniden okunur
+      await tester.fling(find.byType(TabBarView), const Offset(-300, 0), 1000);
+      await tester.pumpAndSettle();
+      expect(find.text(loc.missedPrayersInfo), findsOneWidget);
+      expect(find.text('12'), findsOneWidget);
+      expect(AdHelper.instance.debugShowRequests, ads);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('Hedefler: kazanılan tarihiyle; kazanılmayanda seri '
+        'ilerlemesi (çubuk + sayı, ekran okuyucuda tek satır)', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'prayer_log': jsonEncode({for (var i = 1; i <= 3; i++) dk(i): full}),
+        'tracker_badges': '{"7":"${dk(30)}"}',
+      });
+      await pumpApp(tester, 'tr', _trackerView());
+      await reveal(tester, find.text(loc.trackerBadgesTitle));
+      expect(find.text(loc.trackerStreakDays(7)), findsOneWidget);
+      expect(find.text(loc.trackerBadgeEarned(date(30))), findsOneWidget);
+      expect(find.byIcon(Icons.emoji_events), findsOneWidget);
+      expect(find.byIcon(Icons.emoji_events_outlined), findsOneWidget);
+      expect(find.text('3/40'), findsOneWidget);
+      expect(
+        tester
+            .widget<LinearProgressIndicator>(
+              find.byType(LinearProgressIndicator),
+            )
+            .value,
+        3 / 40,
+      );
+      expect(
+        tester.getSemantics(find.text('3/40')),
+        containsSemantics(label: '${loc.trackerStreakDays(40)}\n3/40'),
+      );
+      expect(
+        tester.getSemantics(find.text(loc.trackerBadgesTitle)),
+        containsSemantics(isHeader: true),
+      );
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('takip ekranında 7. gün tamamlanınca tek tebrik ve kart '
+        'güncellenir; geri alıp yeniden işaretlemek tekrar etmez', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'prayer_log': log(6)});
+      await pumpWithTimes(tester, _trackerView());
+      final prefs = await SharedPreferences.getInstance();
+      Finder cell(String state) => find.bySemanticsLabel(
+        loc.a11yTrackerCell(loc.trackerToday, loc.yatsi, state),
+      );
+
+      await tester.tap(cell(loc.a11yNotPrayed));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.trackerBadgeSnack(7)), findsOneWidget);
+      expect(prefs.getString('tracker_badges'), '{"7":"${dk(0)}"}');
+      await reveal(tester, find.text(loc.trackerBadgeEarned(date(0))));
+      expect(find.text(loc.trackerBadgeEarned(date(0))), findsOneWidget);
+      await waitSnackBar(tester);
+      expect(find.text(loc.trackerBadgeSnack(7)), findsNothing);
+
+      await tester.drag(find.byType(ListView), const Offset(0, 2000));
+      await tester.pumpAndSettle();
+      for (final state in [loc.trackerLegendPrayed, loc.a11yNotPrayed]) {
+        await tester.tap(cell(state));
+        await tester.pumpAndSettle();
+      }
+      expect(find.text(loc.trackerBadgeSnack(7)), findsNothing);
+      expect(prefs.getString('tracker_badges'), '{"7":"${dk(0)}"}');
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('ana ekran "Bugün" satırı: 7. gün tamamlanınca tebrik; üstte '
+        'başka sayfa açıkken satır tebrik etmez (görünen sayfa eder)', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'prayer_log': log(6)});
+      final times = PrayerTimesModel(
+        imsak: '00:00',
+        gunes: '00:00',
+        ogle: '00:00',
+        ikindi: '00:00',
+        aksam: '00:00',
+        yatsi: '00:00',
+      );
+      await pumpApp(
+        tester,
+        'tr',
+        Scaffold(
+          body: ListView(children: [PrayerTrackerRow(prayerTimes: times)]),
+        ),
+      );
+      await tester.tap(find.text(loc.yatsi));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.trackerBadgeSnack(7)), findsOneWidget);
+      expect(await StorageService().loadTrackerBadges(), {7: dk(0)});
+      await waitSnackBar(tester);
+
+      // 40. gün, üstte başka sayfa varken kazanılır: kayıtta, tebrik yok
+      SharedPreferences.setMockInitialValues({'prayer_log': log(39)});
+      Navigator.of(tester.element(find.byType(PrayerTrackerRow))).push(
+        MaterialPageRoute<void>(builder: (_) => const Scaffold()),
+      );
+      await tester.pumpAndSettle();
+      await PrayerTrackerService().setPrayed(
+        PrayerTracker.day(DateTime.now()),
+        'Yatsı',
+        true,
+      );
+      await tester.pumpAndSettle();
+      expect(await StorageService().loadTrackerBadges(), {
+        7: dk(0),
+        40: dk(0),
+      });
+      expect(
+        find.text(loc.trackerBadgeSnack(40), skipOffstage: false),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('eski sürümden gelen seri açılışta bir kez tebrik edilir; '
+        'başka isolate\'te kazanılan kartta görünür, tebrik edilmez', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'prayer_log': jsonEncode({for (var i = 1; i <= 7; i++) dk(i): full}),
+      });
+      await pumpApp(tester, 'tr', _trackerView());
+      expect(find.text(loc.trackerBadgeSnack(7)), findsOneWidget);
+      await waitSnackBar(tester);
+      // Düzenli yeniden okuma tekrar tebrik etmez
+      await tester.pump(const Duration(seconds: 31));
+      await tester.pumpAndSettle();
+      expect(find.text(loc.trackerBadgeSnack(7)), findsNothing);
+
+      // Bildirim isolate'i 40 günü kayda yazdı
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        'tracker_badges',
+        '{"7":"${dk(0)}","40":"${dk(1)}"}',
+      );
+      await tester.pump(const Duration(seconds: 31));
+      await tester.pumpAndSettle();
+      await reveal(tester, find.text(loc.trackerBadgeEarned(date(1))));
+      expect(find.text(loc.trackerBadgeEarned(date(1))), findsOneWidget);
+      expect(find.text(loc.trackerBadgeSnack(40)), findsNothing);
+      await tester.pumpWidget(const SizedBox());
+    });
   });
 }

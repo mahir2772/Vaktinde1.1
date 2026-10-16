@@ -141,6 +141,7 @@ abstract final class BackupService {
     'prayer_kaza_added': const _Field(_Kind.text, _isMaskMap),
     'tracker_excused': const _Field(_Kind.textList),
     'tracker_excused_open': const _Field(_Kind.text),
+    'tracker_badges': const _Field(_Kind.text),
     for (final key in _kazaKeys)
       'kaza_$key': const _Field(_Kind.integer, _isNonNegative),
     'fast_log': const _Field(_Kind.textList),

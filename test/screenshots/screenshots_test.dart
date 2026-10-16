@@ -41,7 +41,6 @@ import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart'
     show MainTab, MainWrapper;
-import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
 import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
@@ -248,6 +247,8 @@ Map<String, Object> _prefs({
     'time_offsets': '{"Yatsı":2}',
     'prayer_log': jsonEncode(log),
     'prayer_log_since': dk(20),
+    // Hedefler kartı: 7 gün kazanılmış, 40 gün ilerleme çubuğuyla
+    'tracker_badges': jsonEncode({'7': dk(12)}),
     'kaza_Sabah': 12,
     'kaza_Öğle': 8,
     'kaza_İkindi': 5,
@@ -854,9 +855,11 @@ Future<void> _kazaCalcShots(
 ) async {
   _currentScreen = name;
   final loc = lookupAppLocalizations(Locale(lang));
-  _navigator(
-    tester,
-  ).push(MaterialPageRoute<void>(builder: (_) => const MissedPrayersView()));
+  _navigator(tester).push(
+    MaterialPageRoute<void>(
+      builder: (_) => const PrayerTrackerView(initialTab: TrackerTab.kaza),
+    ),
+  );
   await _settle(tester, steps: 10);
   await tester.ensureVisible(find.text(loc.kazaCalcTitle));
   await tester.tap(find.text(loc.kazaCalcTitle));
@@ -1022,7 +1025,7 @@ void main() {
       await _openRoute(
         tester,
         'tr_46_missed_prayers',
-        const MissedPrayersView(),
+        const PrayerTrackerView(initialTab: TrackerTab.kaza),
         tallHeight: 1250,
       );
       await _kazaCalcShots(tester, 'tr', 'tr_46_kaza_calc');
@@ -1263,6 +1266,15 @@ void main() {
           await _setViewport(tester, height: 2600);
           await _settle(tester, steps: 4);
           await _shot(tester, '${p}_40_tools_full');
+          // Küçük telefon: tek sütun; Namaz Takibi'nin hedefler kartı
+          await _setViewport(tester, width: 320, height: 3600);
+          await _settle(tester, steps: 4);
+          await _shot(tester, '${p}_49_tools_320_full');
+          await _openRoute(
+            tester,
+            '${p}_47_tracker_320_full',
+            const PrayerTrackerView(),
+          );
           await _setViewport(tester);
           await _settle(tester, steps: 2);
 
@@ -1288,7 +1300,7 @@ void main() {
           await _openRoute(
             tester,
             '${p}_46_missed_prayers',
-            const MissedPrayersView(),
+            const PrayerTrackerView(initialTab: TrackerTab.kaza),
             tallHeight: 2600,
           );
           await _kazaCalcShots(tester, lang, '${p}_46_kaza_calc');
@@ -1410,7 +1422,7 @@ void main() {
       await _openRoute(
         tester,
         'tr_dark_46_missed_prayers',
-        const MissedPrayersView(),
+        const PrayerTrackerView(initialTab: TrackerTab.kaza),
       );
       await _finish(tester);
     });
@@ -1449,6 +1461,17 @@ void main() {
         tallHeight: 2300,
       );
       await _openRoute(tester, 'tr_bg_41_imsakiye', const ImsakiyeView());
+      await _openRoute(
+        tester,
+        'tr_bg_47_prayer_tracker',
+        const PrayerTrackerView(),
+        tallHeight: 1500,
+      );
+      await _openRoute(
+        tester,
+        'tr_bg_46_missed_prayers',
+        const PrayerTrackerView(initialTab: TrackerTab.kaza),
+      );
       await _finish(tester);
     });
   });
@@ -1579,7 +1602,10 @@ void main() {
         // Kaza: sayıya dokununca açılan elle giriş penceresi
         _currentScreen = 'tr_edge_46_missed_prayers';
         _navigator(tester).push(
-          MaterialPageRoute<void>(builder: (_) => const MissedPrayersView()),
+          MaterialPageRoute<void>(
+            builder: (_) =>
+                const PrayerTrackerView(initialTab: TrackerTab.kaza),
+          ),
         );
         await _settle(tester, steps: 10);
         await _shot(tester, 'tr_edge_46_missed_prayers');
@@ -1674,6 +1700,19 @@ void main() {
           await _setViewport(tester, width: 320, height: 1100);
           await _settle(tester, steps: 4);
           await _shot(tester, '${lang}_27_qibla_320_text130_full');
+          // Araçlar ızgarası (2 sütun) ve Namaz Takibi'nin iki sekmesi
+          await _setViewport(tester, width: 320, height: 1500);
+          await _settle(tester, steps: 4);
+          await _tapTab(tester, MainTab.tools);
+          await _shot(tester, '${lang}_49_tools_320_text130_full');
+          await _setViewport(tester, width: 320, height: 1900);
+          for (final tab in TrackerTab.values) {
+            await _openRoute(
+              tester,
+              '${lang}_47_tracker_${tab.name}_320_text130_full',
+              PrayerTrackerView(initialTab: tab),
+            );
+          }
           await _finish(tester);
         }
       } finally {

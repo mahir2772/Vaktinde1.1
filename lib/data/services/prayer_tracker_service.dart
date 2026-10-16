@@ -1,5 +1,7 @@
 // ignore_for_file: empty_catches
 
+import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -25,8 +27,8 @@ void onNotificationActionBackground(NotificationResponse response) {
   NotificationService.showSilentCopy(response);
 }
 
-/// Namaz takibi kayıtları + kılınan vaktin "vakit çıkıyor" hatırlatmasını iptal.
-/// Uygulama ve bildirim aksiyonu isolate'i ortak kullanır.
+/// Namaz takibi kayıtları, seri hedefleri + kılınan vaktin "vakit çıkıyor"
+/// hatırlatmasını iptal. Uygulama ve bildirim aksiyonu isolate'i ortak kullanır.
 class PrayerTrackerService {
   final StorageService _storage = StorageService();
 
@@ -89,6 +91,70 @@ class PrayerTrackerService {
   /// sonrası; özel günde ezan sessiz): HomeViewModel alarmları yeniden kurar
   static final ValueNotifier<int> excusedChanges = ValueNotifier<int>(0);
 
+  static final StreamController<int> _badgeEarned =
+      StreamController<int>.broadcast();
+
+  /// Bu isolate'te yeni kazanılan seri hedefi (gün; aynı anda birkaçı
+  /// kazanılırsa en büyüğü): uygulamada tebriki görünen takip yüzeyi gösterir.
+  /// Arka plan isolate'inde (bildirim, widget) kazanılan sadece kayda yazılır.
+  static Stream<int> get badgeEarned => _badgeEarned.stream;
+
+  static void _announce(List<int> earned) {
+    if (earned.isNotEmpty) _badgeEarned.add(earned.reduce(math.max));
+  }
+
+  /// Kazanılan seri hedefleri (gün → kazanıldığı gün). Önce güncel serinin
+  /// ulaştığı hedefler kaydedilir: takip ekranı gösterdiği seriyle
+  /// ([yesterdayYatsiOngoing] dahil) tutarlı kalır; eski sürümden ya da
+  /// yedekten gelen seri de kazanılır.
+  Future<Map<int, String>> earnBadges({
+    bool yesterdayYatsiOngoing = false,
+  }) async {
+    final result = await runExclusive(
+      () => _earnBadges(
+        DateTime.now(),
+        yesterdayYatsiOngoing: yesterdayYatsiOngoing,
+      ),
+    );
+    _announce(result.earned);
+    return result.badges;
+  }
+
+  // Kilitsiz (runExclusive içinden): serinin ulaştığı hedefler bugünün
+  // tarihiyle kaydedilir. Seriyi uzatabilen her yazım (kılındı, kazadan
+  // çıkarma, özel gün) çağırır: işaret nereden gelirse gelsin (ana ekran,
+  // bildirim isolate'i, widget) hedef kaçmaz. Vakitler burada bilinmez: imsak
+  // girmeden dünün eksik yatsısı seriyi bitirir (seri eksik sayılabilir, fazla
+  // sayılmaz; takip ekranı [earnBadges] ile tamamlar). Özel günler sadece
+  // okunur (kaydı uygulama yazar). Hata işaretlemeyi bozmaz.
+  Future<({Map<int, String> badges, List<int> earned})> _earnBadges(
+    DateTime now, {
+    bool yesterdayYatsiOngoing = false,
+  }) async {
+    try {
+      final badges = await _storage.loadTrackerBadges();
+      final streak = PrayerTracker.streak(
+        await _storage.loadPrayerLog(),
+        now,
+        excused: PrayerTracker.completeExcused(
+          await _storage.loadTrackerExcused(),
+          await _storage.loadExcusedOpen(),
+          now,
+        ).excused,
+        yesterdayYatsiOngoing: yesterdayYatsiOngoing,
+      );
+      final next = PrayerTracker.withBadges(badges, streak, now);
+      final earned = [
+        for (final goal in next.keys)
+          if (!badges.containsKey(goal)) goal,
+      ];
+      if (earned.isNotEmpty) await _storage.saveTrackerBadges(next);
+      return (badges: next, earned: earned);
+    } catch (e) {
+      return (badges: const <int, String>{}, earned: const <int>[]);
+    }
+  }
+
   /// Özel gün (hayız/nifas) olarak işaretlenen günler. Açık dönem bugüne kadar
   /// tamamlanır ve kaydedilir (seri, kaza adayları ve yedek aynı günleri görür).
   Future<Set<String>> loadExcused() async =>
@@ -119,6 +185,7 @@ class PrayerTrackerService {
   /// İşaret kalkınca o günün kılınmayan vakitleri yeniden kaza adayı olur.
   Future<bool> setExcused(DateTime date, bool excused) async {
     final now = DateTime.now();
+    var earned = const <int>[];
     final result = await runExclusive(() async {
       final current = await _completedExcused(now);
       if (PrayerTracker.isExcused(current.excused, date) == excused) {
@@ -135,6 +202,8 @@ class PrayerTrackerService {
       if (next.open != current.open) {
         await _storage.saveExcusedOpen(next.open);
       }
+      // Atlanan gün seriyi birleştirebilir (ya da kaldırılan işaret tam günü sayar)
+      earned = (await _earnBadges(now)).earned;
       if (!excused) return true;
       final added = await _storage.loadKazaAdded();
       final mask = PrayerTracker.maskOf(added, date);
@@ -156,6 +225,7 @@ class PrayerTrackerService {
       return true;
     });
     changes.value++;
+    _announce(earned);
     // Dün ve sonrası alarm planında (dünün geç kalan yatsısı dahil)
     if (result && PrayerTracker.daysBetween(date, now) <= 1) {
       excusedChanges.value++;
@@ -164,9 +234,11 @@ class PrayerTrackerService {
   }
 
   /// [date] günündeki [key] vaktini işaretler/kaldırır. Kılındıysa o vaktin bekleyen
-  /// "vakit çıkıyor" hatırlatması iptal edilir. Kazaya eklenmiş vakit işaretlenmez
-  /// (sayaç zaten artırıldı; [removeFromKaza]); değişiklik yapıldıysa true.
+  /// "vakit çıkıyor" hatırlatması iptal edilir ve serinin ulaştığı hedefler
+  /// kazanılır. Kazaya eklenmiş vakit işaretlenmez (sayaç zaten artırıldı;
+  /// [removeFromKaza]); değişiklik yapıldıysa true.
   Future<bool> setPrayed(DateTime date, String key, bool prayed) async {
+    var earned = const <int>[];
     final result = await runExclusive(() async {
       final now = DateTime.now();
       if (prayed &&
@@ -192,10 +264,12 @@ class PrayerTrackerService {
             await FlutterLocalNotificationsPlugin().cancel(id);
           } catch (e) {}
         }
+        earned = (await _earnBadges(now)).earned;
       }
       return true;
     });
     changes.value++;
+    _announce(earned);
     return result;
   }
 
@@ -207,6 +281,7 @@ class PrayerTrackerService {
   /// altına inmez). Sıra: kılındı → kayıt silinir → sayaç; yarıda kalırsa sayaç en
   /// kötü ihtimalle fazla kalır, iki kez düşülmez. Kazaya eklenmemişse false.
   Future<bool> removeFromKaza(DateTime date, String key) async {
+    var earned = const <int>[];
     final result = await runExclusive(() async {
       final added = await _storage.loadKazaAdded();
       if (!PrayerTracker.isPrayed(added, date, key)) return false;
@@ -226,9 +301,11 @@ class PrayerTrackerService {
       final kazaKey = PrayerTracker.kazaKeys[key]!;
       final count = (await _storage.loadMissedPrayers())[kazaKey] ?? 0;
       if (count > 0) await _storage.updateMissedPrayer(kazaKey, count - 1);
+      earned = (await _earnBadges(now)).earned;
       return true;
     });
     changes.value++;
+    _announce(earned);
     return result;
   }
 

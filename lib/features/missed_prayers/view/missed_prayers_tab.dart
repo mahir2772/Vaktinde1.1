@@ -8,17 +8,18 @@ import '../../../data/services/prayer_tracker_service.dart';
 import '../../../data/services/storage_service.dart';
 import '../kaza_estimate.dart';
 
-/// Kaza takibi: vakit başına − sayı + (48dp) sayaçlar; sayıya dokununca elle
-/// giriş. Büyük ya da sıfırlayan değişiklikler onay ister. "Kaza hesapla"
-/// kılınmayan süreden tahmini sayıları hesaplar ve sayaçlara ekler.
-class MissedPrayersView extends StatefulWidget {
-  const MissedPrayersView({super.key});
+/// Kaza takibi (Namaz Takibi'nin "Kaza" sekmesi): vakit başına − sayı + (48dp)
+/// sayaçlar; sayıya dokununca elle giriş. Büyük ya da sıfırlayan değişiklikler
+/// onay ister. "Kaza hesapla" kılınmayan süreden tahmini sayıları hesaplar ve
+/// sayaçlara ekler. Sekmeye her gelişte sayaçlar yeniden okunur.
+class MissedPrayersTab extends StatefulWidget {
+  const MissedPrayersTab({super.key});
 
   @override
-  State<MissedPrayersView> createState() => _MissedPrayersViewState();
+  State<MissedPrayersTab> createState() => _MissedPrayersTabState();
 }
 
-class _MissedPrayersViewState extends State<MissedPrayersView> {
+class _MissedPrayersTabState extends State<MissedPrayersTab> {
   final StorageService _storageService = StorageService();
 
   static const List<(String, IconData)> _prayers = [
@@ -157,45 +158,42 @@ class _MissedPrayersViewState extends State<MissedPrayersView> {
       );
     }
 
-    return AppScaffold(
-      title: loc.missedPrayersTitle,
-      body: _isLoading
-          ? const LoadingState()
-          : ListView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              children: [
-                InfoBanner(message: loc.missedPrayersInfo),
-                const SizedBox(height: AppSpacing.lg),
-                AppCard(
-                  padding: EdgeInsets.zero,
-                  child: AppListTile(
-                    leadingIcon: Icons.calculate_outlined,
-                    title: loc.kazaCalcTitle,
-                    subtitle: loc.kazaCalcSubtitle,
-                    onTap: () => _openCalculator(loc),
+    if (_isLoading) return const LoadingState();
+    return ListView(
+      key: const PageStorageKey('kaza'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      children: [
+        InfoBanner(message: loc.missedPrayersInfo),
+        const SizedBox(height: AppSpacing.lg),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: AppListTile(
+            leadingIcon: Icons.calculate_outlined,
+            title: loc.kazaCalcTitle,
+            subtitle: loc.kazaCalcSubtitle,
+            onTap: () => _openCalculator(loc),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              for (var i = 0; i < _prayers.length; i++) ...[
+                if (i > 0)
+                  const Divider(
+                    height: 1,
+                    indent: AppSpacing.lg,
+                    endIndent: AppSpacing.lg,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                AppCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      for (var i = 0; i < _prayers.length; i++) ...[
-                        if (i > 0)
-                          const Divider(
-                            height: 1,
-                            indent: AppSpacing.lg,
-                            endIndent: AppSpacing.lg,
-                          ),
-                        row(_prayers[i]),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                AppCard(padding: EdgeInsets.zero, child: row(_fast)),
+                row(_prayers[i]),
               ],
-            ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        AppCard(padding: EdgeInsets.zero, child: row(_fast)),
+      ],
     );
   }
 }

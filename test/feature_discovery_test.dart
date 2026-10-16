@@ -26,7 +26,6 @@ import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/imsakiye/view/imsakiye_view.dart';
 import 'package:ezan_saati/features/location_search_dialog/location_search_dialog.dart';
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
-import 'package:ezan_saati/features/missed_prayers/view/missed_prayers_view.dart';
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
@@ -359,7 +358,17 @@ void main() {
       tester,
     ) async {
       await pumpApp(tester, const PrayerTrackerView());
-      await reveal(tester, find.text(tr.tipTracker));
+      // "Takip" sekmesinin listesi (sekmeler yatay kaydırılır)
+      await reveal(
+        tester,
+        find.text(tr.tipTracker),
+        scrollable: find
+            .descendant(
+              of: find.byType(ListView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
       expect(find.text(tr.tipTracker), findsOneWidget);
       await tester.tap(find.text(tr.tipGotIt));
       await tester.pump();
@@ -490,13 +499,17 @@ void main() {
       expect(selected(tester), MainTab.home.index);
       expect(find.text(tr.ezanAlarmStreamTitle).hitTestable(), findsOneWidget);
 
-      for (final (title, type) in [
-        (tr.prayerGuideTitle, PrayerGuideView),
-        (tr.whatsNewExcusedTitle, PrayerTrackerView),
-        (tr.kazaCalcTitle, MissedPrayersView),
+      // Takip ekranı ilgili sekmesinde açılır (Kaza hesapla: "Kaza" sekmesi)
+      for (final (title, type, content) in [
+        (tr.prayerGuideTitle, PrayerGuideView, null),
+        (tr.whatsNewExcusedTitle, PrayerTrackerView, tr.trackerLast7Days),
+        (tr.kazaCalcTitle, PrayerTrackerView, tr.missedPrayersInfo),
       ]) {
         await openRow(title);
         expect(find.byType(type), findsOneWidget, reason: title);
+        if (content != null) {
+          expect(find.text(content), findsOneWidget, reason: title);
+        }
         navigator(tester).pop();
         await settle(tester);
       }
@@ -547,7 +560,7 @@ void main() {
         (tr.timeAdjustTitle, TimeAdjustView),
         (tr.healthTitle, NotificationHealthView),
         (tr.trackerTitle, PrayerTrackerView),
-        (tr.missedPrayersTitle, MissedPrayersView),
+        (tr.missedPrayersTitle, PrayerTrackerView),
         (tr.prayerGuideTitle, PrayerGuideView),
         (tr.duasTitle, DuasView),
         (tr.imsakiyeTitle, ImsakiyeView),
@@ -559,6 +572,12 @@ void main() {
       ]) {
         await tapRow(title);
         expect(find.byType(type), findsOneWidget, reason: title);
+        // Kaza Takibi satırı takip ekranını "Kaza" sekmesinde açar
+        if (title == tr.missedPrayersTitle) {
+          expect(find.text(tr.missedPrayersInfo), findsOneWidget);
+        } else if (title == tr.trackerTitle) {
+          expect(find.text(tr.trackerLast7Days), findsOneWidget);
+        }
         navigator(tester).pop();
         await settle(tester);
       }

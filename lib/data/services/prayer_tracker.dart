@@ -256,6 +256,22 @@ class PrayerTracker {
     }
   }
 
+  /// Seri hedefleri (gün; [streak] ile): ulaşılınca kazanılır, seri bozulsa da
+  /// kalır
+  static const List<int> badgeGoals = [7, 40];
+
+  /// [streak] ile ulaşılan, henüz kazanılmamış hedefler [today] tarihiyle
+  /// eklenir (hedef → kazanıldığı gün "yyyy-MM-dd")
+  static Map<int, String> withBadges(
+    Map<int, String> badges,
+    int streak,
+    DateTime today,
+  ) => {
+    ...badges,
+    for (final goal in badgeGoals)
+      if (streak >= goal && !badges.containsKey(goal)) goal: dateKey(today),
+  };
+
   /// Son [statsDays] günde (bugün dahil, takibe başlanan [since] gününden itibaren)
   /// kılınan / vakti girmiş farz oranı (0-1). [todayDue]: bugün vakti girmiş farz sayısı.
   /// [yesterdayYatsiOngoing]: dünün yatsısı kılınmadıysa henüz paydaya girmez.
