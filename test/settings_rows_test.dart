@@ -250,11 +250,12 @@ void main() {
       loc.endReminderTitle,
       loc.dailyContentNotifTitle,
       loc.religiousDaysNotifTitle,
+      loc.fridayNotifTitle,
       loc.excusedSilentEzanTitle,
       loc.persistentNotifTitle,
     ]);
     expect(tops, [...tops]..sort());
-    expect(find.byType(Switch), findsNWidgets(5));
+    expect(find.byType(Switch), findsNWidgets(6));
     expect(find.byType(AdBannerWidget), findsNothing);
 
     // Dini gün ve kandil: varsayılan açık, satıra dokununca kapanır

@@ -1552,7 +1552,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notificationSettingsSub =>
-      'التذكيرات وآية اليوم والليالي المباركة والإشعار الدائم';
+      'التذكيرات وآية اليوم والليالي المباركة والجمعة والإشعار الدائم';
 
   @override
   String get ezanAlarmsTitle => 'منبّهات الأذان';

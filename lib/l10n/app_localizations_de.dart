@@ -1532,7 +1532,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notificationSettingsSub =>
-      'Erinnerungen, Vers des Tages, gesegnete Nächte, dauerhafte Benachrichtigung';
+      'Erinnerungen, Vers des Tages, gesegnete Nächte, Freitag, dauerhafte Benachrichtigung';
 
   @override
   String get ezanAlarmsTitle => 'Adhan-Alarme';

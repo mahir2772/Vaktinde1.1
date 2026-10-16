@@ -1551,7 +1551,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notificationSettingsSub =>
-      'Rappels, verset du jour, nuits bénies, notification permanente';
+      'Rappels, verset du jour, nuits bénies, vendredi, notification permanente';
 
   @override
   String get ezanAlarmsTitle => 'Alarmes d\'adhan';

@@ -1507,7 +1507,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get notificationSettingsSub =>
-      'Hatırlatmalar, günün ayeti, kandil, kalıcı bildirim';
+      'Hatırlatmalar, günün ayeti, kandil, Cuma, kalıcı bildirim';
 
   @override
   String get ezanAlarmsTitle => 'Ezan Alarmları';

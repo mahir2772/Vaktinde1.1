@@ -2651,7 +2651,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationSettingsSub.
   ///
   /// In tr, this message translates to:
-  /// **'Hatırlatmalar, günün ayeti, kandil, kalıcı bildirim'**
+  /// **'Hatırlatmalar, günün ayeti, kandil, Cuma, kalıcı bildirim'**
   String get notificationSettingsSub;
 
   /// No description provided for @ezanAlarmsTitle.

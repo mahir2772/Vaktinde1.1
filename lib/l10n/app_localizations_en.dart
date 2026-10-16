@@ -1534,7 +1534,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationSettingsSub =>
-      'Reminders, daily ayah, holy nights, persistent notification';
+      'Reminders, daily ayah, holy nights, Friday, persistent notification';
 
   @override
   String get ezanAlarmsTitle => 'Adhan Alarms';

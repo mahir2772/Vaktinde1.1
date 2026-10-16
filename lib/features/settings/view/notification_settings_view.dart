@@ -7,10 +7,11 @@ import '../../home/view/home_view.dart';
 import '../../home/view_model/home_view_model.dart';
 import '../../prayer_tracker/view/prayer_tracker_view.dart' show kExcusedIcon;
 import 'end_reminder_setting.dart';
+import 'friday_notification_setting.dart';
 
 /// Bildirim Ayarları (Ayarlar > Bildirimler): ezan alarmları (ana ekranın
 /// "Alarmlar" sekmesi), vakit çıkmadan hatırlatma, günün ayeti ve hadisi, dini
-/// gün ve kandil, özel gün, kalıcı bildirim
+/// gün ve kandil, Cuma, özel gün, kalıcı bildirim
 class NotificationSettingsView extends StatelessWidget {
   const NotificationSettingsView({super.key});
 
@@ -73,6 +74,7 @@ class NotificationSettingsView extends StatelessWidget {
                   );
                 },
               ),
+              const FridayNotificationSetting(),
               Consumer<HomeViewModel>(
                 builder: (context, viewModel, child) {
                   final enabled = viewModel.excusedSilentEzan;
