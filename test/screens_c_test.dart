@@ -12,6 +12,8 @@ import 'package:ezan_saati/features/location_search_dialog/location_search_dialo
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/qibla/qibla_math.dart';
 import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
+import 'package:ezan_saati/features/settings/view/notification_settings_view.dart';
+import 'package:ezan_saati/features/settings/view/privacy_ads_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/settings/view/time_adjust_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/dhikr_list_view.dart';
@@ -367,6 +369,8 @@ void main() {
     'istatistik': const DhikrStatsView(),
     'zikir ayarları': const ZikirSettingsView(),
     'ayarlar': const SettingsView(),
+    'bildirim ayarları': const NotificationSettingsView(),
+    'gizlilik ve reklamlar': const PrivacyAdsView(),
     'ince ayar': const TimeAdjustView(),
     'konum arama': const Scaffold(body: LocationSearchDialog()),
     'dil seçimi': const OnboardingLanguageView(),

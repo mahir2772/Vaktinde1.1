@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/common/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
 import 'quran_service.dart';
 import 'storage_service.dart';
@@ -157,6 +158,7 @@ abstract final class BackupService {
     // Görünüm ve dil
     'theme_mode': const _Field(_Kind.integer, _isThemeMode),
     'background_image': const _Field(_Kind.text),
+    ThemeProvider.textScaleKey: const _Field(_Kind.decimal, _isTextScale),
     _languageKey: const _Field(_Kind.text, _isLanguage),
     // Kur'an: kaldığın yer ve yazı boyutu (sure önbelleği değil)
     QuranService.bookmarkKey: const _Field(_Kind.text),
@@ -366,6 +368,8 @@ bool _isPositive(Object v) => v is int && v > 0;
 
 bool _isThemeMode(Object v) =>
     v is int && v >= 0 && v < ThemeMode.values.length;
+
+bool _isTextScale(Object v) => ThemeProvider.textScales.contains(v);
 
 bool _isLanguage(Object v) =>
     v is String &&

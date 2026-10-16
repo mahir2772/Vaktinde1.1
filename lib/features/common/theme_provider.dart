@@ -4,6 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   String? _backgroundImage;
+  double _textScale = 1.0;
+
+  /// Uygulama içi yazı boyutu (Görünüm Ayarları): Normal, Büyük, Çok büyük.
+  /// MaterialApp.builder sistem yazı ölçeğiyle çarpar, toplam en çok
+  /// [maxTextScale] (uygulama %200'e kadar denendi)
+  static const String textScaleKey = 'app_text_scale';
+  static const List<double> textScales = [1.0, 1.15, 1.3];
+  static const double maxTextScale = 2.0;
 
   /// Seçilebilen arka plan görselleri (assets/images/backgrounds/); Ayarlar
   /// bunları listeler, kayıtlı seçim de bunlara göre doğrulanır
@@ -38,6 +46,7 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
   String? get backgroundImage => _backgroundImage;
+  double get textScale => _textScale;
 
   bool isDarkMode(BuildContext context) {
     if (_themeMode == ThemeMode.system) {
@@ -69,8 +78,15 @@ class ThemeProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> setTextScale(double scale) async {
+    _textScale = scale;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(textScaleKey, scale);
+  }
+
   /// Yedekten geri yüklemeden sonra kayıttan yeniden okunur (kayıt yoksa
-  /// sistem teması, arka plansız)
+  /// sistem teması, arka plansız, normal yazı)
   Future<void> reload() async {
     _themeMode = ThemeMode.system;
     await _loadThemeSettings();
@@ -89,6 +105,10 @@ class ThemeProvider extends ChangeNotifier {
     final saved = prefs.getString('background_image');
     final valid = validBackground(saved);
     _backgroundImage = valid;
+
+    // Seçeneklerden biri değilse (bozuk kayıt) normal yazı
+    final scale = prefs.getDouble(textScaleKey);
+    _textScale = textScales.contains(scale) ? scale! : 1.0;
 
     notifyListeners();
 

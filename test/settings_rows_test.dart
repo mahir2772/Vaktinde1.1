@@ -1,17 +1,26 @@
-// Ayarlar: "Günün ayeti ve hadisi bildirimi", "Kalıcı bildirim" ve "Özel
-// günde ezanı sessiz bildir" anahtarları, gizlilik politikası
-// satırı (adres boşken gizli; doluyken dış tarayıcıda açılır), "Ana ekrana
-// widget ekle" (başlatıcı destekliyorsa) ve "Uygulamayı paylaş" (kaynaklı link)
+// Ayarlar: kısa üst liste (anahtar yok); Bildirim Ayarları sayfası ("Ezan
+// Alarmları" ana ekranın Alarmlar sekmesini açar; "Günün ayeti ve hadisi
+// bildirimi", "Dini gün ve kandil", "Kalıcı bildirim" ve "Özel günde ezanı
+// sessiz bildir" anahtarları); Gizlilik ve Reklamlar sayfası (gizlilik
+// politikası satırı adres boşken gizli, doluyken dış tarayıcıda açılır; reklam
+// gizlilik satırı UMP zorunlu kılınca, Ayarlar'daki alt yazı da bunu söyler);
+// "Ana ekrana widget ekle" (başlatıcı destekliyorsa), "Uygulamayı paylaş"
+// (kaynaklı link); 320dp'de %130 ve %200 yazıda taşma yok
 import 'dart:io';
 
 import 'package:ezan_saati/core/app_links.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/services/storage_service.dart';
+import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/language_provider.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
+import 'package:ezan_saati/features/home/view/home_view.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/notification_health/view/notification_health_view.dart';
 import 'package:ezan_saati/features/settings/view/add_widget_sheet.dart';
+import 'package:ezan_saati/features/settings/view/notification_settings_view.dart';
+import 'package:ezan_saati/features/settings/view/privacy_ads_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -91,6 +100,7 @@ void main() {
     messenger.setMockMethodCallHandler(homeWidget, null);
     messenger.setMockMethodCallHandler(share, null);
     SettingsView.privacyPolicyUrl = AppLinks.privacyPolicy;
+    AdConsent.privacyOptionsRequired.value = false;
   });
 
   // Başlatıcının widget ekleme desteği (Android 8+ ve başlatıcıya bağlı)
@@ -108,14 +118,23 @@ void main() {
     });
   }
 
-  Future<_FakeHomeViewModel> pumpSettings(WidgetTester tester) async {
+  Future<_FakeHomeViewModel> pumpSettings(
+    WidgetTester tester, {
+    Widget home = const SettingsView(),
+    String lang = 'tr',
+    double width = 411,
+    double height = 891,
+    double textScale = 1,
+  }) async {
     SharedPreferences.setMockInitialValues({
-      'language_code': 'tr',
+      'language_code': lang,
       'is_language_selected': true,
     });
-    tester.view.physicalSize = const Size(411 * 3, 891 * 3);
+    tester.view.physicalSize = Size(width * 3, height * 3);
     tester.view.devicePixelRatio = 3;
+    tester.platformDispatcher.textScaleFactorTestValue = textScale;
     addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     final vm = _FakeHomeViewModel();
     await tester.pumpWidget(
       MultiProvider(
@@ -126,11 +145,11 @@ void main() {
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ],
         child: MaterialApp(
-          locale: const Locale('tr'),
+          locale: Locale(lang),
           theme: AppTheme.light(),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: const SettingsView(),
+          home: home,
         ),
       ),
     );
@@ -161,10 +180,124 @@ void main() {
     }
   }
 
+  // Satırın açtığı sayfaya geçer (Bildirim Ayarları, Gizlilik ve Reklamlar)
+  Future<void> open(WidgetTester tester, String title) async {
+    await scrollTo(tester, title);
+    await tester.tap(find.text(title));
+    await settle(tester);
+  }
+
+  // Ekrandaki sıra (üstten alta)
+  List<double> topsOf(WidgetTester tester, List<String> texts) => [
+    for (final text in texts) tester.getTopLeft(find.text(text)).dy,
+  ];
+
+  testWidgets('Ayarlar: kısa liste, anahtar yok; bildirim anahtarları ve '
+      'gizlilik/reklam satırları alt sayfalarda', (tester) async {
+    mockPinSupport(true);
+    // Uzun ekran: listenin tamamı çizilir
+    await pumpSettings(tester, height: 2400);
+    final tops = topsOf(tester, [
+      loc.sectionAppearance,
+      loc.changeLanguage,
+      loc.appearanceSettings,
+      loc.addWidgetTitle,
+      loc.sectionLocation,
+      loc.changeLocation,
+      loc.timeAdjustTitle,
+      loc.sectionNotifications,
+      loc.notificationSettingsTitle,
+      loc.healthTitle,
+      loc.sectionBackup,
+      loc.sectionSupport,
+      loc.appGuideTitle,
+      loc.shareApp,
+      loc.rateApp,
+      loc.contactUs,
+      loc.privacyAdsTitle,
+    ]);
+    expect(tops, [...tops]..sort());
+    expect(find.text(loc.appearanceSub), findsOneWidget);
+    expect(find.text(loc.notificationSettingsSub), findsOneWidget);
+    expect(find.text(loc.privacyAdsSub), findsOneWidget);
+    expect(find.byType(Switch), findsNothing);
+    for (final moved in [
+      loc.endReminderTitle,
+      loc.dailyContentNotifTitle,
+      loc.religiousDaysNotifTitle,
+      loc.excusedSilentEzanTitle,
+      loc.persistentNotifTitle,
+      loc.privacyPolicy,
+      loc.aboutAds,
+      loc.adPrivacySettings,
+    ]) {
+      expect(find.text(moved), findsNothing, reason: moved);
+    }
+    expect(tester.takeException(), isNull);
+    await finish(tester);
+  });
+
+  testWidgets('Bildirim Ayarları: Ezan Alarmları başta, anahtarlar sırayla, '
+      'reklamsız; Ezan Alarmları ana ekranın Alarmlar sekmesini açar', (
+    tester,
+  ) async {
+    await pumpSettings(tester, height: 1600);
+    await open(tester, loc.notificationSettingsTitle);
+    expect(find.byType(NotificationSettingsView), findsOneWidget);
+    expect(find.text(loc.ezanAlarmsSub), findsOneWidget);
+    final tops = topsOf(tester, [
+      loc.ezanAlarmsTitle,
+      loc.endReminderTitle,
+      loc.dailyContentNotifTitle,
+      loc.religiousDaysNotifTitle,
+      loc.excusedSilentEzanTitle,
+      loc.persistentNotifTitle,
+    ]);
+    expect(tops, [...tops]..sort());
+    expect(find.byType(Switch), findsNWidgets(5));
+    expect(find.byType(AdBannerWidget), findsNothing);
+
+    // Dini gün ve kandil: varsayılan açık, satıra dokununca kapanır
+    await tester.tap(find.text(loc.religiousDaysNotifTitle));
+    await tester.pump();
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getBool(StorageService.religiousDaysEnabledKey), isFalse);
+
+    // Sayfalar kapanır (ilk sayfaya dönülür), HomeView Alarmlar'a geçer
+    final requests = HomeView.alarmsTabRequests.value;
+    await tester.tap(find.text(loc.ezanAlarmsTitle));
+    await settle(tester);
+    expect(HomeView.alarmsTabRequests.value, requests + 1);
+    expect(find.byType(NotificationSettingsView), findsNothing);
+    expect(find.byType(SettingsView), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await finish(tester);
+  });
+
+  testWidgets('Bildirim Ayarları: %200 yazıda liste sonu gezinme çubuğunun '
+      'üstünde (uçtan uca, banner yok)', (tester) async {
+    // Uçtan uca: 48 dp gezinme çubuğu
+    tester.view.padding = const FakeViewPadding(bottom: 48 * 3);
+    await pumpSettings(
+      tester,
+      home: const NotificationSettingsView(),
+      textScale: 2,
+    );
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -5000));
+    await settle(tester);
+    expect(
+      tester.getRect(find.text(loc.persistentNotifSub)).bottom,
+      lessThanOrEqualTo(891 - 48),
+    );
+    expect(tester.takeException(), isNull);
+    await finish(tester);
+  });
+
   testWidgets('Günün ayeti ve hadisi: anahtar ayarı gösterir ve değiştirir', (
     tester,
   ) async {
     final vm = await pumpSettings(tester);
+    await open(tester, loc.notificationSettingsTitle);
     await scrollTo(tester, loc.dailyContentNotifTitle);
     expect(find.text(loc.dailyContentNotifSub), findsOneWidget);
     Switch toggle() => tester.widget<Switch>(
@@ -196,6 +329,7 @@ void main() {
     tester,
   ) async {
     final vm = await pumpSettings(tester);
+    await open(tester, loc.notificationSettingsTitle);
     await scrollTo(tester, loc.persistentNotifTitle);
     expect(find.text(loc.persistentNotifSub), findsOneWidget);
     Switch toggle() => tester.widget<Switch>(
@@ -225,6 +359,7 @@ void main() {
   testWidgets('Özel günde ezanı sessiz bildir: varsayılan açık; değişince '
       'kaydedilir ve alarmlar yeniden kurulur', (tester) async {
     final vm = await pumpSettings(tester);
+    await open(tester, loc.notificationSettingsTitle);
     await scrollTo(tester, loc.excusedSilentEzanTitle);
     expect(find.text(loc.excusedSilentEzanSub), findsOneWidget);
     Switch toggle() => tester.widget<Switch>(
@@ -275,8 +410,9 @@ void main() {
     expect(SettingsView.privacyPolicyUrl, AppLinks.privacyPolicy);
     SettingsView.privacyPolicyUrl = '';
     await pumpSettings(tester);
-    await scrollTo(tester, loc.contactUs);
-    expect(find.text(loc.rateApp), findsOneWidget);
+    await open(tester, loc.privacyAdsTitle);
+    expect(find.byType(PrivacyAdsView), findsOneWidget);
+    expect(find.text(loc.aboutAds), findsOneWidget);
     expect(find.text(loc.privacyPolicy), findsNothing);
     expect(find.byIcon(Icons.policy_outlined), findsNothing);
     await finish(tester);
@@ -287,7 +423,7 @@ void main() {
     const url = 'https://example.com/gizlilik';
     SettingsView.privacyPolicyUrl = url;
     await pumpSettings(tester);
-    await scrollTo(tester, loc.privacyPolicy);
+    await open(tester, loc.privacyAdsTitle);
     await tester.tap(find.text(loc.privacyPolicy));
     await tester.pump();
     expect(launches, hasLength(1));
@@ -302,6 +438,89 @@ void main() {
     const url = AppLinks.privacyPolicy;
     expect(url.isEmpty || Uri.parse(url).scheme == 'https', isTrue);
   });
+
+  for (final required in [false, true]) {
+    testWidgets('Gizlilik ve Reklamlar: UMP gerekli=$required → Ayarlar alt '
+        'yazısı ve reklam gizlilik satırı; sayfa reklamsız', (tester) async {
+      AdConsent.privacyOptionsRequired.value = required;
+      await pumpSettings(tester);
+      await scrollTo(tester, loc.privacyAdsTitle);
+      expect(
+        find.text(loc.privacyAdsConsentSub),
+        required ? findsOneWidget : findsNothing,
+      );
+      expect(
+        find.text(loc.privacyAdsSub),
+        required ? findsNothing : findsOneWidget,
+      );
+      await tester.tap(find.text(loc.privacyAdsTitle));
+      await settle(tester);
+      final rows = [
+        loc.privacyPolicy,
+        loc.aboutAds,
+        if (required) loc.adPrivacySettings,
+      ];
+      final tops = topsOf(tester, rows);
+      expect(tops, [...tops]..sort());
+      expect(
+        find.text(loc.adPrivacySettings),
+        required ? findsOneWidget : findsNothing,
+      );
+      expect(find.byType(AdBannerWidget), findsNothing);
+
+      // Rıza durumu sonradan değişirse satır da değişir
+      AdConsent.privacyOptionsRequired.value = !required;
+      await tester.pump();
+      expect(
+        find.text(loc.adPrivacySettings),
+        required ? findsNothing : findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await finish(tester);
+    });
+  }
+
+  // Yaşlı kullanıcı: küçük telefon + büyük sistem yazısı. Sayfalar uzun ekranda
+  // tamamen çizilir (her satırın yerleşimi denetlenir); Görünüm penceresi gerçek
+  // boyda
+  for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
+    testWidgets('$lang 320dp: Ayarlar, alt sayfalar ve Görünüm penceresi %130 '
+        've %200 yazıda taşmaz', (tester) async {
+      mockPinSupport(true);
+      AdConsent.privacyOptionsRequired.value = true;
+      final l = lookupAppLocalizations(Locale(lang));
+      for (final scale in [1.3, 2.0]) {
+        for (final page in const [
+          SettingsView(),
+          NotificationSettingsView(),
+          PrivacyAdsView(),
+        ]) {
+          await pumpSettings(
+            tester,
+            home: page,
+            lang: lang,
+            width: 320,
+            height: 4000,
+            textScale: scale,
+          );
+          expect(tester.takeException(), isNull, reason: '$page %$scale');
+          await finish(tester);
+        }
+        await pumpSettings(
+          tester,
+          lang: lang,
+          width: 320,
+          height: 640,
+          textScale: scale,
+        );
+        await tester.tap(find.text(l.appearanceSettings));
+        await settle(tester);
+        expect(find.text(l.textSizeTitle), findsOneWidget);
+        expect(tester.takeException(), isNull, reason: 'görünüm %$scale');
+        await finish(tester);
+      }
+    });
+  }
 
   testWidgets('Ana ekrana widget ekle: destekleniyorsa satır görünür; seçilen '
       'widget başlatıcıdan istenir, sayfa gezinme çubuğunun üstünde', (

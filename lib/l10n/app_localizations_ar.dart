@@ -1530,7 +1530,44 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appearanceSettings => 'إعدادات المظهر';
 
   @override
-  String get appearanceSub => 'السمة والخلفية';
+  String get appearanceSub => 'السمة والخلفية وحجم الخط';
+
+  @override
+  String get textSizeTitle => 'حجم الخط';
+
+  @override
+  String get textSizeNormal => 'عادي';
+
+  @override
+  String get textSizeLarge => 'كبير';
+
+  @override
+  String get textSizeExtraLarge => 'كبير جدًا';
+
+  @override
+  String get sectionNotifications => 'الإشعارات';
+
+  @override
+  String get notificationSettingsTitle => 'إعدادات الإشعارات';
+
+  @override
+  String get notificationSettingsSub =>
+      'التذكيرات وآية اليوم والليالي المباركة والإشعار الدائم';
+
+  @override
+  String get ezanAlarmsTitle => 'منبّهات الأذان';
+
+  @override
+  String get ezanAlarmsSub => 'صوت الأذان والتذكير المسبق لكل صلاة';
+
+  @override
+  String get privacyAdsTitle => 'الخصوصية والإعلانات';
+
+  @override
+  String get privacyAdsSub => 'سياسة الخصوصية ومعلومات حول الإعلانات';
+
+  @override
+  String get privacyAdsConsentSub => 'إعدادات خصوصية الإعلانات وسياسة الخصوصية';
 
   @override
   String get themeMode => 'وضع السمة';

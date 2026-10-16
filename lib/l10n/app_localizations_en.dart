@@ -1512,7 +1512,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appearanceSettings => 'Appearance Settings';
 
   @override
-  String get appearanceSub => 'Theme and Background';
+  String get appearanceSub => 'Theme, background and text size';
+
+  @override
+  String get textSizeTitle => 'Text Size';
+
+  @override
+  String get textSizeNormal => 'Normal';
+
+  @override
+  String get textSizeLarge => 'Large';
+
+  @override
+  String get textSizeExtraLarge => 'Extra large';
+
+  @override
+  String get sectionNotifications => 'NOTIFICATIONS';
+
+  @override
+  String get notificationSettingsTitle => 'Notification Settings';
+
+  @override
+  String get notificationSettingsSub =>
+      'Reminders, daily ayah, holy nights, persistent notification';
+
+  @override
+  String get ezanAlarmsTitle => 'Adhan Alarms';
+
+  @override
+  String get ezanAlarmsSub => 'Adhan sound and early reminder for each prayer';
+
+  @override
+  String get privacyAdsTitle => 'Privacy & Ads';
+
+  @override
+  String get privacyAdsSub => 'Privacy policy and information about ads';
+
+  @override
+  String get privacyAdsConsentSub => 'Ad privacy settings and privacy policy';
 
   @override
   String get themeMode => 'Theme Mode';

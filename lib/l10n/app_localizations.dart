@@ -2609,8 +2609,80 @@ abstract class AppLocalizations {
   /// No description provided for @appearanceSub.
   ///
   /// In tr, this message translates to:
-  /// **'Tema ve arka plan'**
+  /// **'Tema, arka plan ve yazı boyutu'**
   String get appearanceSub;
+
+  /// No description provided for @textSizeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazı Boyutu'**
+  String get textSizeTitle;
+
+  /// No description provided for @textSizeNormal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Normal'**
+  String get textSizeNormal;
+
+  /// No description provided for @textSizeLarge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Büyük'**
+  String get textSizeLarge;
+
+  /// No description provided for @textSizeExtraLarge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çok büyük'**
+  String get textSizeExtraLarge;
+
+  /// No description provided for @sectionNotifications.
+  ///
+  /// In tr, this message translates to:
+  /// **'BİLDİRİMLER'**
+  String get sectionNotifications;
+
+  /// No description provided for @notificationSettingsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Ayarları'**
+  String get notificationSettingsTitle;
+
+  /// No description provided for @notificationSettingsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatırlatmalar, günün ayeti, kandil, kalıcı bildirim'**
+  String get notificationSettingsSub;
+
+  /// No description provided for @ezanAlarmsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan Alarmları'**
+  String get ezanAlarmsTitle;
+
+  /// No description provided for @ezanAlarmsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit için ezan sesi ve önceden hatırlatma'**
+  String get ezanAlarmsSub;
+
+  /// No description provided for @privacyAdsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik ve Reklamlar'**
+  String get privacyAdsTitle;
+
+  /// No description provided for @privacyAdsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik politikası ve reklamlar hakkında bilgi'**
+  String get privacyAdsSub;
+
+  /// No description provided for @privacyAdsConsentSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklam gizlilik ayarları ve gizlilik politikası'**
+  String get privacyAdsConsentSub;
 
   /// No description provided for @themeMode.
   ///

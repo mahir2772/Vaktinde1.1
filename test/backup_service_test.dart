@@ -59,6 +59,7 @@ const Map<String, Object> _userData = {
   'zikir_volume_keys': true,
   'theme_mode': 2,
   'background_image': 'bg_mosque2.webp',
+  'app_text_scale': 1.15,
   'language_code': 'de',
   'quran_bookmark': '{"surah":36,"ayah":12}',
   'quran_font_scale': 1.2,
@@ -301,6 +302,7 @@ void main() {
         'fast_log': ['2026-03-01', 5],
         'tracker_excused': '2026-10-01',
         'theme_mode': 3,
+        'app_text_scale': 1.7,
         'language_code': 'xx',
         'sound_Öğle': '../../ses',
         'reminderSound_Öğle': '',
@@ -329,6 +331,7 @@ void main() {
           _backupJson({
             'time_offsets': '{"Öğle":30,"İmsak":-30}',
             'theme_mode': 0,
+            'app_text_scale': 1,
             'saved_lat': -90.0,
             'saved_lng': 180,
             'language_code': 'ar',

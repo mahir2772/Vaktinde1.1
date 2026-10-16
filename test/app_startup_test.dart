@@ -16,6 +16,7 @@ import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dar
 import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
+import 'package:ezan_saati/features/settings/view/notification_settings_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
@@ -30,7 +31,8 @@ import 'package:showcaseview/showcaseview.dart';
 
 // Uygulama düzeyi: açılış sırası (tur / izin / pil) ve ilk açılış hunisi
 // olayları, reklam rızası (UMP),
-// Ayarlar'daki reklam gizlilik satırı, fotoğraf üstünde bölüm başlığı,
+// Ayarlar > Gizlilik ve Reklamlar'daki reklam gizlilik satırı, Ayarlar >
+// Bildirim Ayarları'ndan Alarmlar sekmesi, fotoğraf üstünde bölüm başlığı,
 // alt menü (5 sekme, Kur'an sekmesi, tanıtım turu) ve etiketleri.
 
 class _FakeHomeViewModel extends HomeViewModel {
@@ -418,18 +420,27 @@ void main() {
     });
   });
 
-  group('Ayarlar: reklam gizlilik satırı', () {
+  group('Ayarlar > Gizlilik ve Reklamlar: reklam gizlilik satırı', () {
     for (final required in [true, false]) {
       testWidgets('UMP gerekli=$required', (tester) async {
         AdConsent.privacyOptionsRequired.value = required;
         await pumpApp(tester, const SettingsView());
         final loc = lookupAppLocalizations(const Locale('tr'));
         await tester.scrollUntilVisible(
-          find.text(required ? loc.adPrivacySettings : loc.contactUs),
+          find.text(loc.privacyAdsTitle),
           200,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pump(const Duration(milliseconds: 300));
+        // Satırın alt yazısı ayarın orada olduğunu söyler
+        expect(
+          find.text(required ? loc.privacyAdsConsentSub : loc.privacyAdsSub),
+          findsOneWidget,
+        );
+        await tester.tap(find.text(loc.privacyAdsTitle));
+        for (var i = 0; i < 6; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
         expect(
           find.text(loc.adPrivacySettings),
           required ? findsOneWidget : findsNothing,
@@ -473,6 +484,57 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(selected(), MainTab.home.index);
+    expect(find.text(loc.ezanAlarmStreamTitle).hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await finish(tester);
+  });
+
+  testWidgets('Ayarlar > Bildirim Ayarları > Ezan Alarmları: sayfalar kapanır, '
+      'ana sayfanın Alarmlar sekmesi açılır', (tester) async {
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    await pumpApp(
+      tester,
+      mainWrapper(),
+      prefs: {
+        tourSeenKey: false,
+        permissionsPrimedKey: true,
+        WhatsNew.seenKey: WhatsNew.version,
+      },
+    );
+    Future<void> settle() async {
+      for (var i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    await tester.tap(find.text(loc.navTools));
+    await settle();
+    tester
+        .state<NavigatorState>(find.byType(Navigator).first)
+        .push(MaterialPageRoute<void>(builder: (_) => const SettingsView()));
+    await settle();
+    await tester.scrollUntilVisible(
+      find.text(loc.notificationSettingsTitle),
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byType(SettingsView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pump();
+    await tester.tap(find.text(loc.notificationSettingsTitle));
+    await settle();
+    await tester.tap(find.text(loc.ezanAlarmsTitle));
+    await settle();
+
+    expect(find.byType(NotificationSettingsView), findsNothing);
+    expect(find.byType(SettingsView), findsNothing);
+    expect(
+      tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
+      MainTab.home.index,
+    );
     expect(find.text(loc.ezanAlarmStreamTitle).hitTestable(), findsOneWidget);
     expect(tester.takeException(), isNull);
     await finish(tester);

@@ -238,6 +238,21 @@ class _MyAppState extends State<MyApp> {
       theme: AppTheme.light(hasBackgroundImage: hasBackground),
       darkTheme: AppTheme.dark(hasBackgroundImage: hasBackground),
       builder: (context, child) {
+        // Uygulama içi yazı boyutu: Normal'de sistem ölçeği aynen kalır (Android
+        // 14 doğrusal olmayan ölçek); diğerlerinde sistem × seçim, toplam en çok
+        // %200. Paylaşılan resimler kendi ölçeğini sıfırlar.
+        final system = MediaQuery.textScalerOf(context).scale(1);
+        if (themeProvider.textScale != 1.0 &&
+            system < ThemeProvider.maxTextScale) {
+          child = MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.linear(
+                system * themeProvider.textScale,
+              ).clamp(maxScaleFactor: ThemeProvider.maxTextScale),
+            ),
+            child: child!,
+          );
+        }
         return Stack(
           children: [
             if (themeProvider.backgroundImage != null)

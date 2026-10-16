@@ -10,20 +10,20 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../app_guide/view/app_guide_view.dart';
 import '../../common/ad_consent.dart';
-import '../../common/ad_helper.dart';
 import '../../common/language_provider.dart';
 import '../../common/theme_provider.dart';
 import '../../home/view_model/home_view_model.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../notification_health/view/notification_health_view.dart';
-import '../../prayer_tracker/view/prayer_tracker_view.dart' show kExcusedIcon;
 import 'add_widget_sheet.dart';
 import 'backup_setting.dart';
-import 'end_reminder_setting.dart';
 import 'language_sheet.dart';
+import 'notification_settings_view.dart';
+import 'privacy_ads_view.dart';
 import 'time_adjust_view.dart';
 
-/// Ayarlar: dil ve görünüm, konum ve vakitler, yedekleme, destek, sürüm
+/// Ayarlar: dil ve görünüm, konum ve vakitler, bildirimler, yedekleme, destek
+/// (gizlilik ve reklamlar ayrı sayfada), sürüm
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
@@ -31,8 +31,8 @@ class SettingsView extends StatelessWidget {
       "https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde";
   static const String _supportMail = 'mmdigitall.dev@gmail.com';
 
-  /// Gizlilik politikası adresi ([AppLinks.privacyPolicy]); boşken satır gizli.
-  /// Testte doldurulabilir.
+  /// Gizlilik politikası adresi ([AppLinks.privacyPolicy]); Gizlilik ve
+  /// Reklamlar sayfasına verilir, boşken satır gizli. Testte doldurulabilir.
   @visibleForTesting
   static String privacyPolicyUrl = AppLinks.privacyPolicy;
 
@@ -95,71 +95,22 @@ class SettingsView extends StatelessWidget {
                   ),
                 ),
               ),
-              const EndReminderSetting(),
-              Consumer<HomeViewModel>(
-                builder: (context, viewModel, child) {
-                  final enabled = viewModel.dailyContentEnabled;
-                  return AppListTile(
-                    leadingIcon: Icons.menu_book_outlined,
-                    title: loc.dailyContentNotifTitle,
-                    subtitle: loc.dailyContentNotifSub,
-                    showChevron: false,
-                    trailing: Switch(
-                      value: enabled,
-                      onChanged: viewModel.setDailyContentEnabled,
-                    ),
-                    onTap: () => viewModel.setDailyContentEnabled(!enabled),
-                  );
-                },
-              ),
-              Consumer<HomeViewModel>(
-                builder: (context, viewModel, child) {
-                  final enabled = viewModel.persistentNotificationEnabled;
-                  return AppListTile(
-                    leadingIcon: Icons.timer_outlined,
-                    title: loc.persistentNotifTitle,
-                    subtitle: loc.persistentNotifSub,
-                    showChevron: false,
-                    trailing: Switch(
-                      value: enabled,
-                      onChanged: viewModel.setPersistentNotificationEnabled,
-                    ),
-                    onTap: () =>
-                        viewModel.setPersistentNotificationEnabled(!enabled),
-                  );
-                },
-              ),
-              Consumer<HomeViewModel>(
-                builder: (context, viewModel, child) {
-                  final enabled = viewModel.religiousDaysEnabled;
-                  return AppListTile(
-                    leadingIcon: Icons.event_note_outlined,
-                    title: loc.religiousDaysNotifTitle,
-                    subtitle: loc.religiousDaysNotifSub,
-                    showChevron: false,
-                    trailing: Switch(
-                      value: enabled,
-                      onChanged: viewModel.setReligiousDaysEnabled,
-                    ),
-                    onTap: () => viewModel.setReligiousDaysEnabled(!enabled),
-                  );
-                },
-              ),
-              Consumer<HomeViewModel>(
-                builder: (context, viewModel, child) {
-                  final enabled = viewModel.excusedSilentEzan;
-                  return AppListTile(
-                    leadingIcon: kExcusedIcon,
-                    title: loc.excusedSilentEzanTitle,
-                    subtitle: loc.excusedSilentEzanSub,
-                    showChevron: false,
-                    trailing: Switch(
-                      value: enabled,
-                      onChanged: viewModel.setExcusedSilentEzan,
-                    ),
-                    onTap: () => viewModel.setExcusedSilentEzan(!enabled),
-                  );
-                },
+            ],
+          ),
+          AppListSection(
+            title: loc.sectionNotifications,
+            children: [
+              // Ezan alarmları, hatırlatmalar, günün ayeti, kandil, kalıcı bildirim
+              AppListTile(
+                leadingIcon: Icons.notifications_outlined,
+                title: loc.notificationSettingsTitle,
+                subtitle: loc.notificationSettingsSub,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const NotificationSettingsView(),
+                  ),
+                ),
               ),
               // Bildirim izni, alarm izni, ses, pil, üretici ayarları ve test ezanı
               AppListTile(
@@ -177,7 +128,8 @@ class SettingsView extends StatelessWidget {
           ),
           // Namaz takibi, kaza, zikir ve ayarlar tek dosyaya / dosyadan
           const BackupSection(),
-          // AB/EEA'da reklam rızası buradan sonradan değiştirilebilir (UMP zorunlu kılarsa)
+          // AB/EEA'da reklam rızası Gizlilik ve Reklamlar sayfasından sonradan
+          // değiştirilebilir (UMP zorunlu kılarsa satırın alt yazısı bunu söyler)
           ValueListenableBuilder<bool>(
             valueListenable: AdConsent.privacyOptionsRequired,
             builder: (context, privacyRequired, _) => AppListSection(
@@ -210,24 +162,21 @@ class SettingsView extends StatelessWidget {
                   title: loc.contactUs,
                   onTap: () => _sendSupportMail(loc),
                 ),
-                if (privacyPolicyUrl.isNotEmpty)
-                  AppListTile(
-                    leadingIcon: Icons.policy_outlined,
-                    title: loc.privacyPolicy,
-                    onTap: _openPrivacyPolicy,
-                  ),
+                // Gizlilik politikası, reklamlar hakkında, reklam gizlilik ayarları
                 AppListTile(
-                  leadingIcon: Icons.campaign_outlined,
-                  title: loc.aboutAds,
-                  onTap: () => AdHelper.instance.showAdInfo(context),
-                ),
-                if (privacyRequired)
-                  AppListTile(
-                    leadingIcon: Icons.privacy_tip_outlined,
-                    title: loc.adPrivacySettings,
-                    subtitle: loc.adPrivacySettingsSub,
-                    onTap: AdConsent.showPrivacyOptions,
+                  leadingIcon: Icons.shield_outlined,
+                  title: loc.privacyAdsTitle,
+                  subtitle: privacyRequired
+                      ? loc.privacyAdsConsentSub
+                      : loc.privacyAdsSub,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) =>
+                          PrivacyAdsView(privacyPolicyUrl: privacyPolicyUrl),
+                    ),
                   ),
+                ),
               ],
             ),
           ),
@@ -257,20 +206,6 @@ class SettingsView extends StatelessWidget {
       )) {
         debugPrint("Link açılamadı");
       }
-    }
-  }
-
-  // Tarayıcıda (uygulama içi görünüm değil)
-  static Future<void> _openPrivacyPolicy() async {
-    try {
-      if (!await launchUrl(
-        Uri.parse(privacyPolicyUrl),
-        mode: LaunchMode.externalApplication,
-      )) {
-        debugPrint("Gizlilik politikası açılamadı");
-      }
-    } catch (e) {
-      debugPrint("Gizlilik politikası açılamadı: $e");
     }
   }
 
@@ -307,7 +242,7 @@ class SettingsView extends StatelessWidget {
   }
 }
 
-/// Tema (sistem/açık/koyu) ve arka plan görseli seçimi
+/// Tema (sistem/açık/koyu), yazı boyutu ve arka plan görseli seçimi
 class _AppearanceSheet extends StatelessWidget {
   const _AppearanceSheet();
 
@@ -320,8 +255,12 @@ class _AppearanceSheet extends StatelessWidget {
     final theme = Theme.of(context);
     final themeProvider = context.watch<ThemeProvider>();
 
-    Widget modeRow(ThemeMode mode, IconData icon, String label) {
-      final selected = themeProvider.themeMode == mode;
+    Widget optionRow(
+      IconData icon,
+      String label, {
+      required bool selected,
+      required VoidCallback onTap,
+    }) {
       return Semantics(
         selected: selected,
         inMutuallyExclusiveGroup: true,
@@ -337,10 +276,25 @@ class _AppearanceSheet extends StatelessWidget {
                 ? theme.colorScheme.primary
                 : theme.colorScheme.onSurfaceVariant,
           ),
-          onTap: () => themeProvider.setThemeMode(mode),
+          onTap: onTap,
         ),
       );
     }
+
+    Widget modeRow(ThemeMode mode, IconData icon, String label) => optionRow(
+      icon,
+      label,
+      selected: themeProvider.themeMode == mode,
+      onTap: () => themeProvider.setThemeMode(mode),
+    );
+
+    // Seçilince hemen uygulanır (bu pencere de büyür)
+    Widget scaleRow(double scale, IconData icon, String label) => optionRow(
+      icon,
+      label,
+      selected: themeProvider.textScale == scale,
+      onTap: () => themeProvider.setTextScale(scale),
+    );
 
     return SingleChildScrollView(
       // + gezinme çubuğu (uçtan uca): görseller altında kalmasın
@@ -362,6 +316,10 @@ class _AppearanceSheet extends StatelessWidget {
           modeRow(ThemeMode.system, Icons.brightness_auto, loc.themeSystem),
           modeRow(ThemeMode.light, Icons.light_mode_outlined, loc.themeLight),
           modeRow(ThemeMode.dark, Icons.dark_mode_outlined, loc.themeDark),
+          SectionHeader(loc.textSizeTitle),
+          scaleRow(1.0, Icons.text_fields, loc.textSizeNormal),
+          scaleRow(1.15, Icons.format_size, loc.textSizeLarge),
+          scaleRow(1.3, Icons.text_increase, loc.textSizeExtraLarge),
           SectionHeader(loc.bgImage),
           SizedBox(
             height: 112,
@@ -452,10 +410,15 @@ class _BackgroundOption extends StatelessWidget {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpacing.xs),
-                        child: Text(
-                          label,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.labelMedium,
+                        // Büyük yazıda kelime bölünmesin: tek satıra sığacak
+                        // kadar küçülür
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            label,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.labelMedium,
+                          ),
                         ),
                       ),
                     ),

@@ -1529,7 +1529,47 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appearanceSettings => 'Paramètres d\'apparence';
 
   @override
-  String get appearanceSub => 'Thème et arrière-plan';
+  String get appearanceSub => 'Thème, arrière-plan et taille du texte';
+
+  @override
+  String get textSizeTitle => 'Taille du texte';
+
+  @override
+  String get textSizeNormal => 'Normale';
+
+  @override
+  String get textSizeLarge => 'Grande';
+
+  @override
+  String get textSizeExtraLarge => 'Très grande';
+
+  @override
+  String get sectionNotifications => 'NOTIFICATIONS';
+
+  @override
+  String get notificationSettingsTitle => 'Paramètres des notifications';
+
+  @override
+  String get notificationSettingsSub =>
+      'Rappels, verset du jour, nuits bénies, notification permanente';
+
+  @override
+  String get ezanAlarmsTitle => 'Alarmes d\'adhan';
+
+  @override
+  String get ezanAlarmsSub =>
+      'Son de l\'adhan et rappel anticipé pour chaque prière';
+
+  @override
+  String get privacyAdsTitle => 'Confidentialité et publicités';
+
+  @override
+  String get privacyAdsSub =>
+      'Politique de confidentialité et informations sur les publicités';
+
+  @override
+  String get privacyAdsConsentSub =>
+      'Confidentialité des annonces et politique de confidentialité';
 
   @override
   String get themeMode => 'Thème';

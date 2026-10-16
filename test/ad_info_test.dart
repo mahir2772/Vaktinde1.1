@@ -2,8 +2,9 @@
 // açıklama (fırsat reklam molası sayılır: açıklama reklamla aynı dokunuşa
 // bağlanmaz), sonraki fırsatta (soğumadan sonra) reklam; zekat reklamı da aynı
 // kurala uyar; açılış penceresi açıkken ne açıklama ne reklam; Ayarlar >
-// Destek satırı reklamsız açar; metinlerde reklama tıklama/izleme/destek
-// çağrısı yok; 320dp + büyük yazıda taşma yok, RTL, alt boşluk.
+// Destek > Gizlilik ve Reklamlar satırı reklamsız açar; metinlerde reklama
+// tıklama/izleme/destek çağrısı yok; 320dp + büyük yazıda taşma yok, RTL, alt
+// boşluk.
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
@@ -252,19 +253,22 @@ void main() {
     });
   });
 
-  testWidgets('Ayarlar > Destek: "Reklamlar Hakkında" açıklamayı reklamsız '
-      'açar ve görüldü sayar', (tester) async {
+  testWidgets('Ayarlar > Destek > Gizlilik ve Reklamlar: "Reklamlar Hakkında" '
+      'açıklamayı reklamsız açar ve görüldü sayar', (tester) async {
     final ads = AdHelper.instance..debugLoadedAd = ad;
     final requests = ads.debugShowRequests;
     await _pumpApp(tester, const SettingsView());
-    final row = find.text(_loc.aboutAds);
+    final page = find.text(_loc.privacyAdsTitle);
     await tester.scrollUntilVisible(
-      row,
+      page,
       200,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pump();
-    await tester.tap(row);
+    await tester.tap(page);
+    await _settle(tester);
+    expect(ads.debugShowRequests, requests);
+    await tester.tap(find.text(_loc.aboutAds));
     await _settle(tester);
     expect(find.text(_loc.adInfoTitle), findsOneWidget);
     expect(ad.shows, 0);
@@ -302,6 +306,9 @@ void main() {
         loc.adInfoTitle,
         loc.adInfoBody,
         loc.adInfoGotIt,
+        loc.privacyAdsTitle,
+        loc.privacyAdsSub,
+        loc.privacyAdsConsentSub,
       ];
       for (final text in texts) {
         expect(text.trim(), isNotEmpty, reason: lang);

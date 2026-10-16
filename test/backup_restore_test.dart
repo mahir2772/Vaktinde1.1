@@ -381,6 +381,7 @@ void main() {
     SharedPreferences.setMockInitialValues({
       ..._deviceData,
       'background_image': 'bg_kaaba1.webp',
+      'app_text_scale': 1.3,
       'dhikr_daily_stats': '{"2026-10-01":5}',
       'zikir_vibration': false,
     });
@@ -389,6 +390,7 @@ void main() {
     final zikir = ZikirViewModel();
     await pumpEventQueue();
     expect(theme.backgroundImage, 'bg_kaaba1.webp');
+    expect(theme.textScale, 1.3);
     expect(zikir.dailyStats, isNotEmpty);
 
     await restoreBackup(
@@ -408,6 +410,7 @@ void main() {
     expect(language.isLanguageSelected, isTrue);
     expect(theme.themeMode, ThemeMode.system);
     expect(theme.backgroundImage, isNull);
+    expect(theme.textScale, 1.0);
     expect(zikir.selectedDhikr, 'Elhamdülillah');
     expect(zikir.count, 10);
     expect(zikir.dailyStats, isEmpty);

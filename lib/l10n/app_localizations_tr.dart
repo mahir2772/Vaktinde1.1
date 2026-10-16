@@ -1485,7 +1485,45 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appearanceSettings => 'Görünüm Ayarları';
 
   @override
-  String get appearanceSub => 'Tema ve arka plan';
+  String get appearanceSub => 'Tema, arka plan ve yazı boyutu';
+
+  @override
+  String get textSizeTitle => 'Yazı Boyutu';
+
+  @override
+  String get textSizeNormal => 'Normal';
+
+  @override
+  String get textSizeLarge => 'Büyük';
+
+  @override
+  String get textSizeExtraLarge => 'Çok büyük';
+
+  @override
+  String get sectionNotifications => 'BİLDİRİMLER';
+
+  @override
+  String get notificationSettingsTitle => 'Bildirim Ayarları';
+
+  @override
+  String get notificationSettingsSub =>
+      'Hatırlatmalar, günün ayeti, kandil, kalıcı bildirim';
+
+  @override
+  String get ezanAlarmsTitle => 'Ezan Alarmları';
+
+  @override
+  String get ezanAlarmsSub => 'Her vakit için ezan sesi ve önceden hatırlatma';
+
+  @override
+  String get privacyAdsTitle => 'Gizlilik ve Reklamlar';
+
+  @override
+  String get privacyAdsSub => 'Gizlilik politikası ve reklamlar hakkında bilgi';
+
+  @override
+  String get privacyAdsConsentSub =>
+      'Reklam gizlilik ayarları ve gizlilik politikası';
 
   @override
   String get themeMode => 'Tema Modu';
