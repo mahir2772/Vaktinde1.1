@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show ValueNotifier;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/notification_routes.dart';
 import '../../l10n/app_localizations.dart';
 import 'error_reporter.dart';
 import 'hatim.dart';
@@ -35,7 +36,9 @@ class HatimService {
   /// Hatırlatma bildirimi: ID (diğer aralıklarla çakışmaz) ve dokununca
   /// açılacak yer (hatim okuması)
   static const int reminderId = 1100;
-  static const String reminderPayload = 'open|hatim';
+  static final String reminderPayload = NotificationRoutes.route(
+    NotificationRoutes.hatim,
+  );
 
   /// Plan, sayaç ya da hatırlatma değişti
   static final ValueNotifier<int> changes = ValueNotifier<int>(0);

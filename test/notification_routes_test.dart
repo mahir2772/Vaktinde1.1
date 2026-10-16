@@ -3,11 +3,15 @@
 // eylemleri yönlendirme değildir. Uygulamayı açan bildirim süreç başına bir
 // kez okunur, açık uygulamadaki dokunuş initialize işleyicisine gelir.
 // MainWrapper hedefi açılış akışından sonra (tur ve Yenilikler kapanınca)
-// açar: Cuma mesajları, Kur'an okuyucusunda sure; geçiş reklamı yok.
+// açar: Cuma mesajları, Kur'an okuyucusunda sure, hatim okuması; geçiş
+// reklamı yok.
+import 'dart:convert';
+
 import 'package:ezan_saati/core/notification_routes.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
+import 'package:ezan_saati/data/services/hatim_service.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
@@ -410,6 +414,46 @@ void main() {
       await settle(tester);
       expect(NotificationRoutes.pending.value, isNull);
       expect(navigator.canPop(), isFalse);
+      expect(tester.takeException(), isNull);
+      await finish(tester);
+    });
+
+    testWidgets('hatim hatırlatması: Kur\'an sekmesi, okuyucu hatim sayfasında '
+        '(hatim oturumu)', (tester) async {
+      final today = PrayerTracker.day(DateTime.now());
+      await pumpApp(
+        tester,
+        prefs: {
+          ...returning,
+          // Sayfa 22'de kalındı: Bakara 142 (2. cüz başı)
+          HatimService.planKey: jsonEncode({
+            'start': PrayerTracker.dateKey(today),
+            'target': PrayerTracker.dateKey(PrayerTracker.addDays(today, 29)),
+            'position': 22,
+            'log': <String, int>{},
+          }),
+        },
+      );
+
+      // Sayfa tablosu önbelleği gerçek zamanda dolsun (sahte zamanda
+      // bekleyen Future kalmasın)
+      await tester.runAsync(HatimService.loadPages);
+      NotificationRoutes.pending.value = NotificationRoutes.hatim;
+      // Plan, sayfa tablosu ve sure listesi okunur, okuyucu açılır
+      await settle(tester);
+      await settle(tester);
+      final reader = tester.widget<SurahReaderView>(
+        find.byType(SurahReaderView),
+      );
+      expect((reader.surah.number, reader.initialAyah), (2, 142));
+      expect(reader.hatim, isTrue);
+      expect(NotificationRoutes.pending.value, isNull);
+      // Okuyucu Kur'an sekmesinin üstünde (geri = sure listesi)
+      final nav = find.byType(NavigationBar, skipOffstage: false);
+      expect(
+        tester.widget<NavigationBar>(nav).selectedIndex,
+        MainTab.quran.index,
+      );
       expect(tester.takeException(), isNull);
       await finish(tester);
     });

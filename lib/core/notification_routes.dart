@@ -17,6 +17,9 @@ class NotificationRoutes {
   /// Kur'an okuyucusunda sure: 'surah:<numara>'
   static const String surah = 'surah';
 
+  /// Hatim okuması (hatim sayfasında okuyucu)
+  static const String hatim = 'hatim';
+
   /// Yükte ya da eylem kimliğinde taşınan biçim
   static String route(String target) => '$_prefix$target';
 
