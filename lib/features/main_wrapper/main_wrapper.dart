@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:ezan_saati/core/notification_routes.dart';
 import 'package:ezan_saati/core/ui/feature_tip.dart';
 
 import 'package:ezan_saati/features/home/view/home_view.dart';
@@ -15,6 +18,8 @@ import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/app_analytics.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
+import 'package:ezan_saati/features/common/open_surah.dart';
+import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 import 'package:ezan_saati/features/app_guide/whats_new.dart';
@@ -62,6 +67,9 @@ class _MainWrapperState extends State<MainWrapper> {
   // Açılış akışı (tur/izinler/Yenilikler) bitti: ipuçları ondan sonra
   bool _startupDone = false;
 
+  // Bildirimden istenen ekran pencereler kapanana kadar bekler
+  Timer? _routeRetry;
+
   // Değerlendirme isteği (açılış akışından sonra; ömür boyu tek istek ortak):
   // 7 günlük tam seride ya da uygulama 5 farklı günde açılınca
   late final StreakReviewPrompt _reviewPrompt;
@@ -82,6 +90,7 @@ class _MainWrapperState extends State<MainWrapper> {
     MainTabRequests.attach(_showTab);
     TourRequests.replays.addListener(_replayTour);
     FeatureTip.attachGate(_canShowTip);
+    NotificationRoutes.pending.addListener(_openNotificationRoute);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -121,6 +130,7 @@ class _MainWrapperState extends State<MainWrapper> {
         _startupDone = true;
         _reviewPrompt.start();
         _usagePrompt.start();
+        _openNotificationRoute();
       }
     }
   }
@@ -143,12 +153,39 @@ class _MainWrapperState extends State<MainWrapper> {
     }
   }
 
+  /// Bildirimden istenen ekran (NotificationRoutes): açılış akışı bittikten
+  /// sonra, tur/izin/rıza pencereleri kapalıyken (ipuçlarıyla aynı kapı)
+  /// açılır; o zamana kadar saniyede bir yeniden denenir. Geçiş reklamı yok
+  /// (AdMob: bildirimden açılan ekranda geçiş reklamı gösterilmez).
+  void _openNotificationRoute() {
+    _routeRetry?.cancel();
+    final target = NotificationRoutes.pending.value;
+    if (target == null || !mounted) return;
+    if (!_canShowTip()) {
+      _routeRetry = Timer(const Duration(seconds: 1), _openNotificationRoute);
+      return;
+    }
+    NotificationRoutes.pending.value = null;
+    switch (target.split(':')) {
+      case [NotificationRoutes.friday]:
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(builder: (_) => const FridayMessagesView()),
+        );
+      case [NotificationRoutes.surah, final number]:
+        final surah = int.tryParse(number);
+        if (surah != null) openSurahReader(context, surah);
+    }
+  }
+
   @override
   void dispose() {
     HomeView.alarmsTabRequests.removeListener(_showHomeTab);
     MainTabRequests.detach(_showTab);
     TourRequests.replays.removeListener(_replayTour);
     FeatureTip.detachGate(_canShowTip);
+    NotificationRoutes.pending.removeListener(_openNotificationRoute);
+    _routeRetry?.cancel();
     _reviewPrompt.dispose();
     _usagePrompt.dispose();
     super.dispose();

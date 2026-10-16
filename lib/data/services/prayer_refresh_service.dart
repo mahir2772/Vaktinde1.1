@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ezan_saati/core/notification_routes.dart';
 import 'package:ezan_saati/core/ui/app_format.dart';
 import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
@@ -124,6 +125,24 @@ class PrayerRefreshService {
 
   static bool isReligiousDayId(int id) =>
       id >= religiousDayBaseId && id < religiousDayBaseId + religiousDayIdCount;
+
+  /// Cuma bildirimi: her Cuma 09:00, bugünden itibaren [fridayWeeks] hafta.
+  /// ID Cuma'nın haftasına bağlı (4 haftalık döngü: pencerede tekrar etmez,
+  /// bugünün geciken bildirimi 4 hafta sonrasınınkiyle ezilmez) → 2400-2403
+  static const int fridayBaseId = 2400;
+  static const int fridayWeeks = 4;
+  static const int fridayHour = 9;
+
+  static int fridayId(DateTime friday) =>
+      fridayBaseId + (PrayerTracker.epochDay(friday) ~/ 7) % fridayWeeks;
+
+  static bool isFridayId(int id) =>
+      id >= fridayBaseId && id < fridayBaseId + fridayWeeks;
+
+  /// Cuma bildirimindeki "Kehf Suresi" düğmesi: Kur'an okuyucusunda 18. sure
+  static final String fridayKehfRoute = NotificationRoutes.route(
+    '${NotificationRoutes.surah}:18',
+  );
 
   /// Bildirim Kontrolü "test ezanı". Plan temizliği (ezan 0-71, vakit çıkış 100-124,
   /// günlük içerik 1000/1900) bu ID'ye dokunmaz; vakit sayılmaz, yükü yok.
@@ -691,6 +710,42 @@ class PrayerRefreshService {
     return plan;
   }
 
+  /// Cuma bildirimi planı: bugünden itibaren [fridayWeeks] haftanın Cumaları
+  /// 09:00'da (bugün Cuma ise bugün dahil; vakti geçmiş olan yok). Dini gün
+  /// bildirimi olan gün ([religiousDays], gece yarısı) atlanır: günde tek
+  /// bildirim. Gövdeye dokunuş Cuma mesajlarını, "Kehf Suresi" düğmesi
+  /// ([fridayKehfRoute]) Kehf Suresi'ni açar.
+  static List<PlannedAlarm> buildFridayPlan({
+    required DateTime now,
+    required AppLocalizations loc,
+    Set<DateTime> religiousDays = const {},
+  }) {
+    final first = PrayerTracker.addDays(
+      now,
+      (DateTime.friday - now.weekday) % 7,
+    );
+    final plan = <PlannedAlarm>[];
+    for (int week = 0; week < fridayWeeks; week++) {
+      final day = PrayerTracker.addDays(first, week * 7);
+      final time = DateTime(day.year, day.month, day.day, fridayHour);
+      if (!time.isAfter(now) || religiousDays.contains(day)) continue;
+      plan.add(
+        PlannedAlarm(
+          id: fridayId(day),
+          kind: NotificationKind.religiousDay,
+          title: loc.fridayGreeting,
+          body: loc.fridayNotifBody,
+          time: time,
+          sound: null, // kanalın varsayılan sesi
+          channelName: loc.religiousDaysChannel,
+          payload: NotificationRoutes.route(NotificationRoutes.friday),
+          actionLabel: loc.fridayKehfAction,
+        ),
+      );
+    }
+    return plan;
+  }
+
   /// Alarm planı için günlerin vakitleri. Koordinat varsa bugün + 4 gün ve dün yeniden
   /// hesaplanır ([todayTimes] gece yarısından kalma olabilir); yoksa sadece [todayTimes]
   /// (dün/yarın yerine bugünkü vakitler yaklaşık kullanılır).
@@ -831,7 +886,7 @@ class PrayerRefreshService {
     return cleanupOk && recheckOk && (plan.isEmpty || succeeded > 0);
   });
 
-  // Dini gün kurma/iptal işleri sırayla: kapatılınca iptal, süren bir
+  // Dini gün ve Cuma kurma/iptal işleri sırayla: kapatılınca iptal, süren bir
   // kurulumun ardından çalışır (kapalı ayarla kurulu kalmaz)
   static final SerialQueue _religiousQueue = SerialQueue();
 
@@ -882,6 +937,68 @@ class PrayerRefreshService {
           }
         }
         await failures.report('dini gün bildirimi', plan.length);
+        return cleanupOk && (plan.isEmpty || succeeded > 0);
+      });
+
+  /// Cuma bildirimlerini ayara göre eşitler (sadece 2400-2403): plandakiler
+  /// aynı ID'nin üzerine kurulur, plandan çıkan bekleyenler iptal; ayar
+  /// kapalıysa hepsi iptal. Dini gün bildirimleri açıksa onların gününe denk
+  /// gelen Cuma atlanır. Bugünün bildirimi gecikmeli kipte vaktinden sonra da
+  /// bekliyor olabilir: ayar açıkken iptal edilmez. Hata fırlatmaz; plan
+  /// boşsa ya da en az biri kurulduysa (ve iptaller yapılabildiyse) true.
+  Future<bool> syncFridayNotifications(AppLocalizations loc) =>
+      _religiousQueue.run(() async {
+        final now = _clock();
+        final bool enabled;
+        List<PlannedAlarm> plan = const [];
+        try {
+          // Plan çıkarılamazsa (okuma hatası) kurulu bildirimlere dokunulmaz
+          enabled = await _storageService.loadFridayNotifEnabled();
+          if (enabled) {
+            final religious = await _storageService.loadReligiousDaysEnabled()
+                ? buildReligiousDayPlan(
+                    days: await DiniGunlerService.loadBildirimGunleri(),
+                    now: now,
+                    loc: loc,
+                  )
+                : const <PlannedAlarm>[];
+            plan = buildFridayPlan(
+              now: now,
+              loc: loc,
+              religiousDays: {
+                for (final a in religious) PrayerTracker.day(a.time),
+              },
+            );
+          }
+        } catch (e, st) {
+          await reportNonFatal(e, st, reason: 'Cuma bildirimi planı okunamadı');
+          return false;
+        }
+        final today = now.weekday == DateTime.friday ? fridayId(now) : null;
+        final failures = _AlarmFailures();
+        final cleanupOk = await _cancelUnplanned(
+          (id) => isFridayId(id) && !(enabled && id == today),
+          plan.map((a) => a.id).toSet(),
+          failures,
+        );
+        int succeeded = 0;
+        for (final friday in plan) {
+          try {
+            await _notifications.scheduleReligiousDay(
+              id: friday.id,
+              title: friday.title,
+              body: friday.body,
+              scheduledTime: friday.time,
+              localizedChannelName: friday.channelName,
+              payload: friday.payload,
+              action: (route: fridayKehfRoute, label: friday.actionLabel!),
+            );
+            succeeded++;
+          } catch (e, st) {
+            failures.add(e, st);
+          }
+        }
+        await failures.report('Cuma bildirimi', plan.length);
         return cleanupOk && (plan.isEmpty || succeeded > 0);
       });
 
@@ -958,9 +1075,10 @@ class PrayerRefreshService {
   /// Kurulamayan alarm diğerlerini durdurmaz; tur sonunda Crashlytics'e bildirilir.
   /// "Özel günde ezanı sessiz bildir" açıksa özel günlerin ezanı sessiz, hatırlatması
   /// yok (açık dönemin gelecek günleri dahil; uygulama da arka plan görevi de).
-  /// Vakit çıkış hatırlatmaları ve dini gün bildirimleri ([syncReligiousDays]) de
-  /// eşitlenir. Kip geçişi ([scheduleModeMigratedKey]) bitmediyse bekleyen günlük
-  /// içerik de yeni kiple yeniden yazılır.
+  /// Vakit çıkış hatırlatmaları, dini gün ([syncReligiousDays]) ve Cuma
+  /// bildirimleri ([syncFridayNotifications]) de eşitlenir. Kip geçişi
+  /// ([scheduleModeMigratedKey]) bitmediyse bekleyen günlük içerik de yeni
+  /// kiple yeniden yazılır.
   Future<void> rescheduleAlarms({
     required PrayerTimesModel todayTimes,
     required AppLocalizations loc,
@@ -1061,6 +1179,7 @@ class PrayerRefreshService {
       exact: exact,
     );
     final religiousOk = await syncReligiousDays(loc);
+    final fridayOk = await syncFridayNotifications(loc);
 
     // Kip geçişi: plan ve vakit çıkış hatırlatmaları her turda zaten üzerine yazılır
     // (plandan çıkan bekleyenler iptal); kalan günlük içerik de yeni kiple yazılır
@@ -1072,6 +1191,7 @@ class PrayerRefreshService {
     if ((plan.isEmpty || succeeded > 0) &&
         remindersOk &&
         religiousOk &&
+        fridayOk &&
         cleanupOk) {
       await prefs.setString(_alarmsDateKey, _dateKey(now));
       if (migrating && dailyOk) {

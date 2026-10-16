@@ -7,6 +7,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:io';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:ezan_saati/core/notification_routes.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'prayer_tracker.dart';
 import 'prayer_tracker_service.dart';
@@ -26,7 +27,7 @@ enum NotificationKind {
   /// Günün ayeti / hadisi (ID 1000 / 1900)
   dailyContent,
 
-  /// Dini gün ve kandil bildirimi (ID 2000-2399)
+  /// Dini gün ve kandil (ID 2000-2399) ve Cuma bildirimi (2400-2403)
   religiousDay,
 }
 
@@ -59,8 +60,8 @@ class NotificationService {
   /// "sonraki alarm") sadece ezan için: tam zamanlı izin varken (bilinmiyorsa önce
   /// denenir) ve bildirimler açıkken (bilinmiyorsa açık sayılır). Hatırlatmalar
   /// simgesiz tam zamanlı (exactAllowWhileIdle). İzin yoksa hepsi
-  /// inexactAllowWhileIdle: gecikebilir ama yine çalar. Günün ayeti/hadisi ve
-  /// dini gün bildirimi her zaman gecikmeli (dakikası önemli değil).
+  /// inexactAllowWhileIdle: gecikebilir ama yine çalar. Günün ayeti/hadisi,
+  /// dini gün ve Cuma bildirimi her zaman gecikmeli (dakikası önemli değil).
   static AndroidScheduleMode scheduleModeFor(
     NotificationKind kind, {
     required bool? exactAllowed,
@@ -273,11 +274,14 @@ class NotificationService {
       android: androidSettings,
       iOS: iosSettings,
     );
-    // "Kıldım" aksiyonu için arka plan işleyicisi (her initialize'da aynı)
+    // "Kıldım" aksiyonu için arka plan işleyicisi (her initialize'da aynı);
+    // gövdeye ya da uygulamayı açan düğmeye dokunuş: uygulama içi yönlendirme
     await _notificationsPlugin.initialize(
       initSettings,
+      onDidReceiveNotificationResponse: NotificationRoutes.handle,
       onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground,
     );
+    await _readLaunchRoute();
   }
 
   static AndroidNotificationAction prayedAction(String label) =>
@@ -452,13 +456,17 @@ class NotificationService {
     );
   }
 
-  /// Dini gün ve kandil bildirimi (ID 2000-2399): ayrı kanal, gecikmeli kip
+  /// Dini gün ve kandil (ID 2000-2399) ve Cuma bildirimi (2400-2403): ayrı
+  /// kanal, gecikmeli kip. [payload]: gövdeye dokununca açılan ekran,
+  /// [action]: uygulamayı açan düğme (ikisi de NotificationRoutes biçiminde)
   Future<void> scheduleReligiousDay({
     required int id,
     required String title,
     required String body,
     required DateTime scheduledTime,
     required String localizedChannelName,
+    String? payload,
+    ({String route, String label})? action,
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
     await _zonedSchedule(
@@ -474,10 +482,21 @@ class NotificationService {
           priority: Priority.high,
           icon: '@mipmap/launcher_icon',
           styleInformation: BigTextStyleInformation(body),
+          actions: action == null
+              ? null
+              : [
+                  AndroidNotificationAction(
+                    action.route,
+                    action.label,
+                    showsUserInterface: true,
+                    cancelNotification: true,
+                  ),
+                ],
         ),
         iOS: const DarwinNotificationDetails(),
       ),
       kind: NotificationKind.religiousDay,
+      payload: payload,
     );
   }
 
@@ -610,4 +629,25 @@ class NotificationService {
   }
 
   Future<void> cancel(int id) => _notificationsPlugin.cancel(id);
+
+  // Uygulamayı açan bildirim süreç başına bir kez okunur (etkinliğin niyeti
+  // sonra da aynı kalır; hedef iki kez açılmasın)
+  static bool _launchRouteRead = false;
+
+  // Uygulamayı bildirime dokunuş açtıysa hedef (NotificationRoutes) bekleyene
+  // yazılır; açık uygulamadaki dokunuşlar initialize'daki işleyiciye gelir
+  Future<void> _readLaunchRoute() async {
+    if (_launchRouteRead) return;
+    _launchRouteRead = true;
+    try {
+      final details = await _notificationsPlugin
+          .getNotificationAppLaunchDetails();
+      final response = details?.notificationResponse;
+      if (details?.didNotificationLaunchApp == true && response != null) {
+        NotificationRoutes.handle(response);
+      }
+    } catch (e) {
+      // Okunamazsa uygulama ana ekranla açılır
+    }
+  }
 }

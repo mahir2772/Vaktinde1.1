@@ -1076,6 +1076,20 @@ class AppLocalizationsDe extends AppLocalizations {
       'Erinnert morgens an gesegnete Nächte, Feste und andere religiöse Tage.';
 
   @override
+  String get fridayNotifTitle => 'Freitagsbenachrichtigung';
+
+  @override
+  String get fridayNotifSub =>
+      'Erinnert freitagmorgens an die Sure Al-Kahf und an Freitagsgrüße.';
+
+  @override
+  String get fridayNotifBody =>
+      'Vergessen Sie nicht, die Sure Al-Kahf zu lesen und Ihren Liebsten einen Freitagsgruß zu senden.';
+
+  @override
+  String get fridayKehfAction => 'Sure Al-Kahf';
+
+  @override
   String get religiousDaysChannel => 'Religiöse Tage und gesegnete Nächte';
 
   @override

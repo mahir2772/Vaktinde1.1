@@ -489,7 +489,11 @@ void main() {
 
     test('Ayarlar anahtarı (HomeViewModel): kapatınca aralıktaki bekleyenler '
         'hemen iptal, açınca önümüzdeki günler kurulur', () async {
-      SharedPreferences.setMockInitialValues({});
+      // Anahtar Cuma bildirimini de eşitler (dini güne denk gelen Cuma):
+      // friday_notification_test.dart
+      SharedPreferences.setMockInitialValues({
+        StorageService.fridayNotifEnabledKey: false,
+      });
       await NotificationService().init();
       final vm = HomeViewModel();
       addTearDown(vm.dispose);

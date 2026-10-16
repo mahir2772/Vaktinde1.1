@@ -74,6 +74,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool dailyContentEnabled = true;
   // "Dini gün ve kandil bildirimleri" (varsayılan açık)
   bool religiousDaysEnabled = true;
+  // "Cuma bildirimi" (varsayılan açık)
+  bool fridayNotifEnabled = true;
   // "Özel günde ezanı sessiz bildir" (varsayılan açık)
   bool excusedSilentEzan = true;
   // "Kalıcı bildirim" (yeni kurulumda kapalı, eski kullanıcıda açık)
@@ -545,6 +547,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     endReminderMinutes = endReminder.minutes;
     dailyContentEnabled = await _storageService.loadDailyContentEnabled();
     religiousDaysEnabled = await _storageService.loadReligiousDaysEnabled();
+    fridayNotifEnabled = await _storageService.loadFridayNotifEnabled();
     excusedSilentEzan = await _storageService.loadExcusedSilentEzan();
     persistentNotificationEnabled = await _storageService
         .loadPersistentNotification();
@@ -607,8 +610,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   /// Yedekten geri yüklemeden sonra: ayarlar, konum ve vakitler kayıttan
   /// yeniden okunur; ekran, widget'lar, kalıcı bildirim ve bildirimlerin hepsi
-  /// (ezan, hatırlatma, vakit çıkışı, dini günler, günün ayeti/hadisi) yeni
-  /// ayarlarla yeniden kurulur. Koordinatsız konum internetle çözümlenir.
+  /// (ezan, hatırlatma, vakit çıkışı, dini günler, Cuma, günün ayeti/hadisi)
+  /// yeni ayarlarla yeniden kurulur. Koordinatsız konum internetle çözümlenir.
   Future<void> reloadFromStorage() async {
     _stopSound();
     final persistentBefore = persistentNotificationEnabled;
@@ -643,9 +646,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       notifyListeners();
       await _rescheduleAlarms();
     }
-    // Vakit yoksa alarm turu çalışmaz: dini günler ayrıca eşitlenir
+    // Vakit yoksa alarm turu çalışmaz: dini günler ve Cuma ayrıca eşitlenir
     if (prayerTimes == null && _currentLoc != null) {
       await _refreshService.syncReligiousDays(_currentLoc!);
+      await _refreshService.syncFridayNotifications(_currentLoc!);
     }
     if (dailyContentEnabled) {
       // Alınamamış içerik ağdan istenir (beklenmez; gelince kurulur)
@@ -669,6 +673,24 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     final loc = _currentLoc;
     if (loc == null) return;
     await _refreshService.syncReligiousDays(loc);
+    // Dini güne denk gelen Cuma bildirimi o güne göre atlanır ya da kurulur
+    await _refreshService.syncFridayNotifications(loc);
+  }
+
+  /// "Cuma bildirimi": kapatılınca kurulu olanlar hemen iptal edilir (bir daha
+  /// kurulmaz); açılınca önümüzdeki Cumalar kurulur (ID 2400-2403)
+  Future<void> setFridayNotifEnabled(bool value) async {
+    if (fridayNotifEnabled == value) return;
+    fridayNotifEnabled = value;
+    notifyListeners();
+    try {
+      await _storageService.saveFridayNotifEnabled(value);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'Cuma bildirimi ayarı kaydedilemedi');
+    }
+    final loc = _currentLoc;
+    if (loc == null) return;
+    await _refreshService.syncFridayNotifications(loc);
   }
 
   /// "Özel günde ezanı sessiz bildir": ezanlar, hatırlatmalar ve vakit çıkış

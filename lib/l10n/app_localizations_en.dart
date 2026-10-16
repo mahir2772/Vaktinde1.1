@@ -1079,6 +1079,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sends a morning reminder for holy nights, Eids and other religious days.';
 
   @override
+  String get fridayNotifTitle => 'Friday Notification';
+
+  @override
+  String get fridayNotifSub =>
+      'Reminds you on Friday mornings to read Surah Al-Kahf and send Friday messages.';
+
+  @override
+  String get fridayNotifBody =>
+      'Don\'t forget to read Surah Al-Kahf and send a Friday message to your loved ones.';
+
+  @override
+  String get fridayKehfAction => 'Surah Al-Kahf';
+
+  @override
   String get religiousDaysChannel => 'Religious Days & Holy Nights';
 
   @override

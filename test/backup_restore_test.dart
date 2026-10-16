@@ -486,6 +486,7 @@ void main() {
         'saved_lat': 38.42,
         'saved_lng': 27.14,
         'religious_days_enabled': false,
+        'friday_notif_enabled': false,
         'daily_content_enabled': false,
       });
       await NotificationService().init();
@@ -509,6 +510,7 @@ void main() {
             'onTime_Öğle': true,
             'sound_Öğle': 'ezan2',
             'religious_days_enabled': false,
+            'friday_notif_enabled': false,
             'daily_content_enabled': false,
           },
         ),

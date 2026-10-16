@@ -1874,6 +1874,30 @@ abstract class AppLocalizations {
   /// **'Kandil, bayram ve diğer dini günlerde sabah bildirim gönderir.'**
   String get religiousDaysNotifSub;
 
+  /// No description provided for @fridayNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma Bildirimi'**
+  String get fridayNotifTitle;
+
+  /// No description provided for @fridayNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma sabahı Kehf Suresi\'ni ve Cuma mesajlarını hatırlatır.'**
+  String get fridayNotifSub;
+
+  /// No description provided for @fridayNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kehf Suresi\'ni okumayı ve sevdiklerinize Cuma mesajı göndermeyi unutmayın.'**
+  String get fridayNotifBody;
+
+  /// No description provided for @fridayKehfAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kehf Suresi'**
+  String get fridayKehfAction;
+
   /// No description provided for @religiousDaysChannel.
   ///
   /// In tr, this message translates to:

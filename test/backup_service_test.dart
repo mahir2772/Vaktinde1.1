@@ -32,6 +32,7 @@ const Map<String, Object> _userData = {
   'end_reminder_minutes': 45,
   'daily_content_enabled': false,
   'religious_days_enabled': true,
+  'friday_notif_enabled': false,
   'prayer_log': '{"2026-10-09":31,"2026-10-10":5}',
   'prayer_log_since': '2026-09-01',
   'prayer_kaza_added': '{"2026-10-08":2}',

@@ -1095,6 +1095,20 @@ class AppLocalizationsAr extends AppLocalizations {
       'يذكّرك صباحًا بالليالي المباركة والأعياد وسائر المناسبات الدينية.';
 
   @override
+  String get fridayNotifTitle => 'إشعار الجمعة';
+
+  @override
+  String get fridayNotifSub =>
+      'يذكّرك صباح كل جمعة بقراءة سورة الكهف وإرسال رسائل الجمعة.';
+
+  @override
+  String get fridayNotifBody =>
+      'لا تنسَ قراءة سورة الكهف وإرسال رسالة الجمعة إلى أحبّائك.';
+
+  @override
+  String get fridayKehfAction => 'سورة الكهف';
+
+  @override
   String get religiousDaysChannel => 'المناسبات الدينية والليالي المباركة';
 
   @override

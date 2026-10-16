@@ -3,9 +3,9 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
+import '../../common/open_surah.dart';
 import '../../duas/dua_data.dart';
 import '../../duas/view/duas_view.dart';
-import '../../quran/view/surah_reader_view.dart';
 import '../../zikirmatik/view/dhikr_names.dart';
 import '../prayer_guide_data.dart';
 
@@ -38,33 +38,8 @@ class _PrayerGuideViewState extends State<PrayerGuideView> {
     MaterialPageRoute<void>(builder: (_) => DuaDetailView(dua: dua)),
   );
 
-  Future<void> _openSurah(int number) async {
-    final loc = AppLocalizations.of(context)!;
-    final service = widget.quranService ?? QuranService();
-    List<Surah>? surahs;
-    try {
-      surahs = await service.loadSurahs();
-    } catch (_) {}
-    if (!mounted) return;
-    final surah = surahs?.where((s) => s.number == number).firstOrNull;
-    if (surah == null) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(loc.noDataFound)));
-      return;
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute<void>(
-        builder: (_) => SurahReaderView(
-          surah: surah,
-          service: service,
-          surahs: surahs,
-          trackLastRead: false,
-        ),
-      ),
-    );
-  }
+  void _openSurah(int number) =>
+      openSurahReader(context, number, service: widget.quranService);
 
   @override
   Widget build(BuildContext context) {

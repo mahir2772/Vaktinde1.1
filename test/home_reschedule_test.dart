@@ -18,11 +18,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-  // Ezan alarmları ölçülür; dini gün bildirimleri (60 gün ileri) ayrı testte
+  // Ezan alarmları ölçülür; dini gün (60 gün ileri) ve Cuma bildirimleri ayrı
+  // testte
   const prefs = <String, Object>{
     'saved_lat': 41.0,
     'saved_lng': 29.0,
     'religious_days_enabled': false,
+    'friday_notif_enabled': false,
   };
   // Bekleyen alarmlar: ID → (Kıldım yükü "prayed|gün|vakit", kanal)
   late Map<int, ({String payload, String channel})> pending;

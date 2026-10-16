@@ -321,6 +321,19 @@ class StorageService {
     await prefs.setBool(religiousDaysEnabledKey, enabled);
   }
 
+  /// Cuma bildirimi (her Cuma 09:00, ID 2400-2403; varsayılan açık)
+  static const String fridayNotifEnabledKey = 'friday_notif_enabled';
+
+  Future<bool> loadFridayNotifEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(fridayNotifEnabledKey) ?? true;
+  }
+
+  Future<void> saveFridayNotifEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(fridayNotifEnabledKey, enabled);
+  }
+
   /// "Özel günde ezanı sessiz bildir" (varsayılan açık): özel günde vakit
   /// bildirimi sessiz, hatırlatmalar kurulmaz
   static const String excusedSilentEzanKey = 'excused_silent_ezan';

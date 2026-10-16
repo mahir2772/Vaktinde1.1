@@ -1094,6 +1094,20 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vous rappelle le matin même les nuits bénies, les fêtes et les autres jours religieux.';
 
   @override
+  String get fridayNotifTitle => 'Notification du vendredi';
+
+  @override
+  String get fridayNotifSub =>
+      'Vous rappelle le vendredi matin de lire la sourate Al-Kahf et d\'envoyer des messages du vendredi.';
+
+  @override
+  String get fridayNotifBody =>
+      'N\'oubliez pas de lire la sourate Al-Kahf et d\'envoyer un message du vendredi à vos proches.';
+
+  @override
+  String get fridayKehfAction => 'Sourate Al-Kahf';
+
+  @override
   String get religiousDaysChannel => 'Jours religieux et nuits bénies';
 
   @override

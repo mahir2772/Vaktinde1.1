@@ -1058,6 +1058,20 @@ class AppLocalizationsTr extends AppLocalizations {
       'Kandil, bayram ve diğer dini günlerde sabah bildirim gönderir.';
 
   @override
+  String get fridayNotifTitle => 'Cuma Bildirimi';
+
+  @override
+  String get fridayNotifSub =>
+      'Cuma sabahı Kehf Suresi\'ni ve Cuma mesajlarını hatırlatır.';
+
+  @override
+  String get fridayNotifBody =>
+      'Kehf Suresi\'ni okumayı ve sevdiklerinize Cuma mesajı göndermeyi unutmayın.';
+
+  @override
+  String get fridayKehfAction => 'Kehf Suresi';
+
+  @override
   String get religiousDaysChannel => 'Dini Günler ve Kandiller';
 
   @override
