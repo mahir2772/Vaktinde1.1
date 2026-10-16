@@ -650,4 +650,37 @@ class NotificationService {
       // Okunamazsa uygulama ana ekranla açılır
     }
   }
+
+  /// Her gün aynı saatte tekrarlayan hatırlatma (ilk kez [time]'da). Dakikası
+  /// önemli değil: günün ayeti/hadisi gibi her zaman gecikmeli kip (alarm
+  /// simgesi yok, tam zamanlı izin gerekmez).
+  Future<void> scheduleDailyReminder({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime time,
+    required String channelId,
+    required String channelName,
+    required String payload,
+  }) => _notificationsPlugin.zonedSchedule(
+    id,
+    title,
+    body,
+    tz.TZDateTime.from(time, tz.local),
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        channelId,
+        channelName,
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/launcher_icon',
+      ),
+      iOS: const DarwinNotificationDetails(),
+    ),
+    uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+    androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    matchDateTimeComponents: DateTimeComponents.time,
+    payload: payload,
+  );
 }

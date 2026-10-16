@@ -113,6 +113,9 @@ void main() async {
       'GeoNames',
       'Countries States Cities Database',
     ], places);
+    yield LicenseEntryWithLineBreaks([
+      'quran-meta',
+    ], await rootBundle.loadString('assets/data/quran_pages_LICENSE.txt'));
   });
 
   runApp(

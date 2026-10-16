@@ -64,6 +64,12 @@ const Map<String, Object> _userData = {
   'language_code': 'de',
   'quran_bookmark': '{"surah":36,"ayah":12}',
   'quran_font_scale': 1.2,
+  'hatim_plan':
+      '{"start":"2026-10-01","target":"2026-10-31","position":120,'
+      '"log":{"2026-10-10":8}}',
+  'hatim_count': 2,
+  'hatim_reminder_enabled': true,
+  'hatim_reminder_time': 1260,
 };
 
 // Yedeğe girmemesi gerekenler (cihaza özgü, önbellek, rıza, sayaç, tur)
@@ -316,6 +322,9 @@ void main() {
         'prayer_kaza_added': '[1,2]',
         'time_offsets': '{"Öğle":45}',
         'quran_font_scale': 'büyük',
+        'hatim_plan': '{"start":"2026-10-01","position":700}',
+        'hatim_count': -1,
+        'hatim_reminder_time': 1440,
         'end_reminder_minutes': 0,
         'daily_content_enabled': null,
       };

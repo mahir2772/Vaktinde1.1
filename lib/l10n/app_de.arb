@@ -1162,6 +1162,80 @@
     "quranFontSmaller": "Arabische Schrift verkleinern",
     "quranFontLarger": "Arabische Schrift vergrößern",
     "quranTextSource": "Arabischer Text: Tanzil-Projekt (tanzil.net)",
+    "hatimTitle": "Khatm",
+    "hatimIntro": "Lesen Sie den ganzen Koran mit einem Tagesplan.",
+    "hatimStart": "Khatm starten",
+    "hatimPagesPerDay": "{pages, plural, =1{1 Seite pro Tag} other{{pages} Seiten pro Tag}}",
+    "@hatimPagesPerDay": {
+        "placeholders": {
+            "pages": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimDuration": "{months, plural, =1{in 30 Tagen} other{in {months} Monaten}}",
+    "@hatimDuration": {
+        "placeholders": {
+            "months": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimRamadan": "Khatm im Ramadan",
+    "hatimProgress": "Seite {page} von {total} · {percent}",
+    "@hatimProgress": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            },
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimToday": "Heute {read} / {goal} Seiten",
+    "@hatimToday": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "goal": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimContinue": "Weiterlesen",
+    "hatimEnterPage": "Seite eingeben",
+    "hatimPageLabel": "Zuletzt gelesene Seite (1–{total})",
+    "@hatimPageLabel": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimReminder": "Erinnerung",
+    "hatimReminderDaily": "Täglich erinnern",
+    "hatimReminderTime": "Uhrzeit",
+    "hatimChangePlan": "Plan ändern",
+    "hatimDelete": "Khatm löschen",
+    "hatimDeleteConfirm": "Khatm-Plan und Fortschritt löschen? Die Zahl der abgeschlossenen Khatms bleibt erhalten.",
+    "hatimDone": "Khatm abgeschlossen",
+    "hatimNew": "Neuer Khatm",
+    "hatimCount": "Abgeschlossene Khatms: {count}",
+    "@hatimCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimCompleted": "Ihr Khatm ist abgeschlossen. Möge Allah ihn annehmen!",
+    "hatimReminderChannel": "Khatm-Erinnerung",
+    "hatimReminderBody": "Vergessen Sie Ihre heutige Khatm-Lesung nicht.",
     "quranTranslationSource": "Übersetzung: {name}",
     "@quranTranslationSource": {
         "placeholders": {

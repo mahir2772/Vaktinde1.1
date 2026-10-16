@@ -1248,6 +1248,80 @@
     "quranFontSmaller": "Arapça yazıyı küçült",
     "quranFontLarger": "Arapça yazıyı büyüt",
     "quranTextSource": "Arapça metin: Tanzil Projesi (tanzil.net)",
+    "hatimTitle": "Hatim",
+    "hatimIntro": "Günlük bir planla Kur'an-ı Kerim'i baştan sona okuyun.",
+    "hatimStart": "Hatim Başlat",
+    "hatimPagesPerDay": "Günde {pages} sayfa",
+    "@hatimPagesPerDay": {
+        "placeholders": {
+            "pages": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimDuration": "{months, plural, =1{30 günde} other{{months} ayda}}",
+    "@hatimDuration": {
+        "placeholders": {
+            "months": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimRamadan": "Ramazan'da hatim",
+    "hatimProgress": "Sayfa {page} / {total} · {percent}",
+    "@hatimProgress": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            },
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimToday": "Bugün {read} / {goal} sayfa",
+    "@hatimToday": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "goal": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimContinue": "Devam Et",
+    "hatimEnterPage": "Sayfa Gir",
+    "hatimPageLabel": "Son okuduğunuz sayfa (1–{total})",
+    "@hatimPageLabel": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimReminder": "Hatırlatma",
+    "hatimReminderDaily": "Her gün hatırlat",
+    "hatimReminderTime": "Saat",
+    "hatimChangePlan": "Planı Değiştir",
+    "hatimDelete": "Hatmi Sil",
+    "hatimDeleteConfirm": "Hatim planınız ve ilerlemeniz silinsin mi? Tamamlanan hatim sayısı korunur.",
+    "hatimDone": "Hatim tamamlandı",
+    "hatimNew": "Yeni Hatim Başlat",
+    "hatimCount": "Tamamlanan hatim: {count}",
+    "@hatimCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimCompleted": "Hatminiz tamamlandı. Allah kabul etsin!",
+    "hatimReminderChannel": "Hatim hatırlatması",
+    "hatimReminderBody": "Bugünkü hatim okumanızı unutmayın.",
     "quranTranslationSource": "Meal: {name}",
     "@quranTranslationSource": {
         "placeholders": {

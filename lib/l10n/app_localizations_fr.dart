@@ -2413,6 +2413,102 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quranTextSource => 'Texte arabe : projet Tanzil (tanzil.net)';
 
   @override
+  String get hatimTitle => 'Khatm';
+
+  @override
+  String get hatimIntro => 'Lisez tout le Coran avec un programme quotidien.';
+
+  @override
+  String get hatimStart => 'Lancer un khatm';
+
+  @override
+  String hatimPagesPerDay(int pages) {
+    String _temp0 = intl.Intl.pluralLogic(
+      pages,
+      locale: localeName,
+      other: '$pages pages par jour',
+      one: '1 page par jour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hatimDuration(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: 'en $months mois',
+      one: 'en 30 jours',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hatimRamadan => 'Khatm pendant le Ramadan';
+
+  @override
+  String hatimProgress(int page, int total, String percent) {
+    return 'Page $page sur $total · $percent';
+  }
+
+  @override
+  String hatimToday(int read, int goal) {
+    return 'Aujourd\'hui $read / $goal pages';
+  }
+
+  @override
+  String get hatimContinue => 'Continuer';
+
+  @override
+  String get hatimEnterPage => 'Saisir la page';
+
+  @override
+  String hatimPageLabel(int total) {
+    return 'Dernière page lue (1–$total)';
+  }
+
+  @override
+  String get hatimReminder => 'Rappel';
+
+  @override
+  String get hatimReminderDaily => 'Me le rappeler chaque jour';
+
+  @override
+  String get hatimReminderTime => 'Heure';
+
+  @override
+  String get hatimChangePlan => 'Modifier le programme';
+
+  @override
+  String get hatimDelete => 'Supprimer le khatm';
+
+  @override
+  String get hatimDeleteConfirm =>
+      'Supprimer votre programme de khatm et votre progression ? Le nombre de khatms terminés est conservé.';
+
+  @override
+  String get hatimDone => 'Khatm terminé';
+
+  @override
+  String get hatimNew => 'Nouveau khatm';
+
+  @override
+  String hatimCount(int count) {
+    return 'Khatms terminés : $count';
+  }
+
+  @override
+  String get hatimCompleted =>
+      'Votre khatm est terminé. Qu\'Allah l\'accepte !';
+
+  @override
+  String get hatimReminderChannel => 'Rappel de khatm';
+
+  @override
+  String get hatimReminderBody =>
+      'N\'oubliez pas votre lecture du khatm aujourd\'hui.';
+
+  @override
   String quranTranslationSource(String name) {
     return 'Traduction : $name';
   }

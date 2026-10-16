@@ -4184,6 +4184,144 @@ abstract class AppLocalizations {
   /// **'Arapça metin: Tanzil Projesi (tanzil.net)'**
   String get quranTextSource;
 
+  /// No description provided for @hatimTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim'**
+  String get hatimTitle;
+
+  /// No description provided for @hatimIntro.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük bir planla Kur\'an-ı Kerim\'i baştan sona okuyun.'**
+  String get hatimIntro;
+
+  /// No description provided for @hatimStart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim Başlat'**
+  String get hatimStart;
+
+  /// No description provided for @hatimPagesPerDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günde {pages} sayfa'**
+  String hatimPagesPerDay(int pages);
+
+  /// No description provided for @hatimDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'{months, plural, =1{30 günde} other{{months} ayda}}'**
+  String hatimDuration(int months);
+
+  /// No description provided for @hatimRamadan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan\'da hatim'**
+  String get hatimRamadan;
+
+  /// No description provided for @hatimProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa {page} / {total} · {percent}'**
+  String hatimProgress(int page, int total, String percent);
+
+  /// No description provided for @hatimToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün {read} / {goal} sayfa'**
+  String hatimToday(int read, int goal);
+
+  /// No description provided for @hatimContinue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam Et'**
+  String get hatimContinue;
+
+  /// No description provided for @hatimEnterPage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa Gir'**
+  String get hatimEnterPage;
+
+  /// No description provided for @hatimPageLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son okuduğunuz sayfa (1–{total})'**
+  String hatimPageLabel(int total);
+
+  /// No description provided for @hatimReminder.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatırlatma'**
+  String get hatimReminder;
+
+  /// No description provided for @hatimReminderDaily.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her gün hatırlat'**
+  String get hatimReminderDaily;
+
+  /// No description provided for @hatimReminderTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Saat'**
+  String get hatimReminderTime;
+
+  /// No description provided for @hatimChangePlan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Planı Değiştir'**
+  String get hatimChangePlan;
+
+  /// No description provided for @hatimDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatmi Sil'**
+  String get hatimDelete;
+
+  /// No description provided for @hatimDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim planınız ve ilerlemeniz silinsin mi? Tamamlanan hatim sayısı korunur.'**
+  String get hatimDeleteConfirm;
+
+  /// No description provided for @hatimDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim tamamlandı'**
+  String get hatimDone;
+
+  /// No description provided for @hatimNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Hatim Başlat'**
+  String get hatimNew;
+
+  /// No description provided for @hatimCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamamlanan hatim: {count}'**
+  String hatimCount(int count);
+
+  /// No description provided for @hatimCompleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatminiz tamamlandı. Allah kabul etsin!'**
+  String get hatimCompleted;
+
+  /// No description provided for @hatimReminderChannel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim hatırlatması'**
+  String get hatimReminderChannel;
+
+  /// No description provided for @hatimReminderBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünkü hatim okumanızı unutmayın.'**
+  String get hatimReminderBody;
+
   /// No description provided for @quranTranslationSource.
   ///
   /// In tr, this message translates to:

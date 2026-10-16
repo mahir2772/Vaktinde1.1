@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/common/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
+import 'hatim.dart';
+import 'hatim_service.dart';
 import 'quran_service.dart';
 import 'storage_service.dart';
 
@@ -161,9 +163,13 @@ abstract final class BackupService {
     'background_image': const _Field(_Kind.text),
     ThemeProvider.textScaleKey: const _Field(_Kind.decimal, _isTextScale),
     _languageKey: const _Field(_Kind.text, _isLanguage),
-    // Kur'an: kaldığın yer ve yazı boyutu (sure önbelleği değil)
+    // Kur'an: kaldığın yer ve yazı boyutu (sure önbelleği değil), hatim
     QuranService.bookmarkKey: const _Field(_Kind.text),
     QuranService.fontScaleKey: const _Field(_Kind.decimal, _isFinite),
+    HatimService.planKey: const _Field(_Kind.text, _isHatimPlan),
+    HatimService.countKey: const _Field(_Kind.integer, _isNonNegative),
+    HatimService.reminderKey: const _Field(_Kind.boolean),
+    HatimService.reminderTimeKey: const _Field(_Kind.integer, _isMinuteOfDay),
   };
 
   // Zikir adına göre (hazır, Esmaü'l-Hüsna ya da kullanıcının eklediği)
@@ -366,6 +372,10 @@ bool _isFinite(Object v) => v is double && v.isFinite;
 bool _isNonNegative(Object v) => v is int && v >= 0;
 
 bool _isPositive(Object v) => v is int && v > 0;
+
+bool _isMinuteOfDay(Object v) => v is int && v >= 0 && v < 24 * 60;
+
+bool _isHatimPlan(Object v) => v is String && HatimPlan.parse(v) != null;
 
 bool _isThemeMode(Object v) =>
     v is int && v >= 0 && v < ThemeMode.values.length;

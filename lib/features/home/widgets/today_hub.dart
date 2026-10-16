@@ -6,6 +6,8 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../data/services/dini_gunler_service.dart';
+import '../../../data/services/hatim.dart';
+import '../../../data/services/hatim_service.dart';
 import '../../../data/services/json_service.dart';
 import '../../../data/services/prayer_tracker.dart';
 import '../../../data/services/quran_service.dart';
@@ -15,6 +17,7 @@ import '../../duas/view/tesbihat_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../quran/view/quran_view.dart';
 import '../../quran/view/surah_reader_view.dart';
+import '../../quran/widgets/hatim_card.dart';
 import '../../main_wrapper/main_tabs.dart';
 import '../../religious_days/view/religious_days_view.dart';
 
@@ -56,12 +59,13 @@ FeaturedReligiousDay? featuredReligiousDay(
 /// satırlarıyla aynı stil, en çok dört satır):
 /// - Cuma günü "Hayırlı Cumalar · Cuma mesajı gönder" (en üstte)
 /// - Dini gün tebrik penceresindeyse o gün + "Tebrik gönder" (üstte)
-/// - Kur'an: kaldığın yer ('quran_last_read') ya da Kur'an-ı Kerim'i aç
+/// - Kur'an: hatim sürüyorsa "Hatim · Bugün a / b sayfa" (hatim okuması),
+///   değilse kaldığın yer ('quran_last_read') ya da Kur'an-ı Kerim'i aç
 /// - Namaz sonrası tesbihat
 /// - Değilse sıradaki dini gün ve kalan gün (en altta)
 ///
 /// Cuma mesajları ve dini günler geçiş reklamıyla (sıklık sınırı AdHelper'da),
-/// Kur'an ve tesbihat reklamsız açılır. Gün dönümü ve başka ekranda okunan Kur'an 30 sn'de bir
+/// Kur'an, hatim ve tesbihat reklamsız açılır. Gün dönümü ve başka ekranda okunan Kur'an 30 sn'de bir
 /// (ve uygulamaya dönünce) yansır.
 class TodayHub extends StatefulWidget {
   /// Şimdiki zaman (testler için); verilmezse DateTime.now
@@ -84,6 +88,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
   bool _ready = false;
   List<Surah>? _surahs;
   QuranBookmark? _lastRead;
+  HatimPlan? _hatim;
   List<ResmiDiniGun> _resmi = const [];
 
   // Tebrik mesajları (tür adı → mesajlar); yüklenemezse null, düğme çıkmaz
@@ -101,6 +106,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    HatimService.changes.addListener(_refresh);
     _load();
     _timer = Timer.periodic(const Duration(seconds: 30), (_) => _refresh());
   }
@@ -119,6 +125,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    HatimService.changes.removeListener(_refresh);
     _timer?.cancel();
     super.dispose();
   }
@@ -131,6 +138,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
   Future<void> _load() async {
     final surahsFuture = _quran.loadSurahs();
     final lastReadFuture = _quran.loadLastRead();
+    final hatimFuture = HatimService().load();
     final resmiFuture = DiniGunlerService.loadResmiGunler();
     List<Surah>? surahs;
     try {
@@ -139,11 +147,13 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
       // Liste okunamazsa Kur'an satırı ekranı açar (hatayı o gösterir)
     }
     final lastRead = await lastReadFuture;
+    final hatim = (await hatimFuture).plan;
     final resmi = await resmiFuture;
     if (!mounted) return;
     setState(() {
       _surahs = surahs;
       _lastRead = lastRead;
+      _hatim = hatim;
       _resmi = resmi;
       _ready = true;
     });
@@ -158,14 +168,20 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
     } catch (_) {}
   }
 
-  /// Kaldığın yer başka ekranda değişmiş ya da gün dönmüş olabilir
+  /// Kaldığın yer ya da hatim başka ekranda değişmiş ya da gün dönmüş olabilir
   Future<void> _refresh() async {
     if (!mounted || !_ready) return;
     final lastRead = await _quran.loadLastRead();
+    final hatim = (await HatimService().load()).plan;
     if (!mounted) return;
     final dayChanged = _builtDay != PrayerTracker.day(_now());
-    if (dayChanged || lastRead != _lastRead) {
-      setState(() => _lastRead = lastRead);
+    if (dayChanged ||
+        lastRead != _lastRead ||
+        hatim?.encode() != _hatim?.encode()) {
+      setState(() {
+        _lastRead = lastRead;
+        _hatim = hatim;
+      });
     }
   }
 
@@ -257,7 +273,7 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
           onTap: () => _push(const FridayMessagesView(), showAd: true),
         ),
       if (inWindow) _religiousRow(loc, featured),
-      _quranRow(loc, language),
+      _quranRow(loc, language, today),
       AppListTile(
         leadingIcon: Icons.touch_app_outlined,
         title: loc.tesbihatTitle,
@@ -300,7 +316,16 @@ class _TodayHubState extends State<TodayHub> with WidgetsBindingObserver {
     );
   }
 
-  Widget _quranRow(AppLocalizations loc, String language) {
+  Widget _quranRow(AppLocalizations loc, String language, DateTime today) {
+    final hatim = _hatim;
+    if (hatim != null && !hatim.isFinished) {
+      return AppListTile(
+        leadingIcon: Icons.auto_stories_outlined,
+        title: loc.hatimTitle,
+        subtitle: loc.hatimToday(hatim.readOn(today), hatim.dailyGoal(today)),
+        onTap: () => openHatimReading(context, service: _quran),
+      );
+    }
     final surah = _lastReadSurah();
     return AppListTile(
       leadingIcon: Icons.auto_stories_outlined,

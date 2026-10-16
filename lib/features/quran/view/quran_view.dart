@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
+import '../../../data/services/hatim_service.dart';
 import '../../../data/services/quran_service.dart';
+import '../widgets/hatim_card.dart';
 import '../widgets/quran_number_badge.dart';
 import 'surah_reader_view.dart';
 
 /// Kur'an-ı Kerim: iki sekme — Sureler (gömülü liste, internetsiz; ad ya da
-/// numarayla arama) ve Cüzler (30 cüz, başladığı sure:ayet). Üstte "Kaldığın
-/// yerden devam et" (son okunan ayet, okuyucu kendisi saklar) ve ondan
-/// farklıysa "Yer imi". Alt menü sekmesi; sekme geçişinde ve sure açılışında
-/// reklam yok.
+/// numarayla arama) ve Cüzler (30 cüz, başladığı sure:ayet). Üstte hatim
+/// kartı (HatimCard), "Kaldığın yerden devam et" (son okunan ayet, okuyucu
+/// kendisi saklar) ve ondan farklıysa "Yer imi". Alt menü sekmesi; sekme
+/// geçişinde ve sure açılışında reklam yok.
 class QuranView extends StatefulWidget {
   /// Test için (varsayılan: gömülü liste + alquran.cloud)
   final QuranService? service;
@@ -31,17 +33,20 @@ class _QuranViewState extends State<QuranView> {
   final TextEditingController _search = TextEditingController();
   QuranBookmark? _lastRead;
   QuranBookmark? _bookmark;
+  HatimState? _hatim;
 
   @override
   void initState() {
     super.initState();
     _loadPositions();
     QuranService.lastReadChanges.addListener(_loadPositions);
+    HatimService.changes.addListener(_loadPositions);
   }
 
   @override
   void dispose() {
     QuranService.lastReadChanges.removeListener(_loadPositions);
+    HatimService.changes.removeListener(_loadPositions);
     _search.dispose();
     super.dispose();
   }
@@ -49,10 +54,12 @@ class _QuranViewState extends State<QuranView> {
   Future<void> _loadPositions() async {
     final lastRead = await _service.loadLastRead();
     final bookmark = await _service.loadBookmark();
+    final hatim = await HatimService().load();
     if (!mounted) return;
     setState(() {
       _lastRead = lastRead;
       _bookmark = bookmark;
+      _hatim = hatim;
     });
   }
 
@@ -140,8 +147,10 @@ class _QuranViewState extends State<QuranView> {
         ? null
         : _surahOf(surahs, bookmark);
     final results = QuranService.searchSurahs(surahs, _search.text);
+    final hatim = _hatim;
 
     final header = <Widget>[
+      if (hatim != null) HatimCard(state: hatim, service: _service),
       if (lastReadSurah != null)
         _ResumeCard(
           icon: Icons.auto_stories,

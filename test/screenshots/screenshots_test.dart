@@ -19,6 +19,8 @@ import 'package:ezan_saati/core/ui/feature_tip.dart';
 import 'package:ezan_saati/data/models/hadith_model.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
+import 'package:ezan_saati/data/services/hatim.dart';
+import 'package:ezan_saati/data/services/hatim_service.dart';
 import 'package:ezan_saati/data/services/location_catalog.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
 import 'package:ezan_saati/data/services/prayer_time_service.dart';
@@ -49,6 +51,7 @@ import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
+import 'package:ezan_saati/features/quran/widgets/hatim_card.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/settings/view/notification_settings_view.dart';
 import 'package:ezan_saati/features/settings/view/privacy_ads_view.dart';
@@ -69,6 +72,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 final String? _outDir = Platform.environment['SCREENSHOT_DIR'];
 
@@ -266,6 +271,21 @@ Map<String, Object> _prefs({
         .subtract(const Duration(hours: 50))
         .millisecondsSinceEpoch,
     ...extra,
+  };
+}
+
+/// Süren hatim: 120. sayfa, bugün 8 sayfa okunmuş, 38 gün sonra bitecek; bir
+/// hatim daha önce tamamlanmış
+Map<String, Object> _hatimPrefs() {
+  final today = PrayerTracker.day(DateTime.now());
+  return {
+    HatimService.planKey: HatimPlan(
+      start: PrayerTracker.addDays(today, -20),
+      target: PrayerTracker.addDays(today, 38),
+      position: 120,
+      log: {PrayerTracker.dateKey(today): 8},
+    ).encode(),
+    HatimService.countKey: 1,
   };
 }
 
@@ -916,6 +936,9 @@ void main() {
     await PrayerGuide.load();
     await rootBundle.loadString(QuranService.surahsAsset);
     await LocationCatalog.load();
+    // Hatim hatırlatması (uygulamada NotificationService.init kurar)
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Europe/Istanbul'));
   });
 
   setUp(() {
@@ -2051,6 +2074,139 @@ void main() {
       });
     },
   );
+
+  // Hatim: ana ekranda "Bugün için" satırı; Kur'an listesinde kart (sürüyor:
+  // ilerleme ölçeği, bugün, menü, hatırlatma, Planı Değiştir, Sayfa Gir;
+  // bitince kısa bildirim ve kart, Yeni Hatim Başlat seçenekleri); tr koyu,
+  // 320dp %130 ve %200 yazı
+  for (final lang in ['tr', 'ar']) {
+    testWidgets('$lang: hatim', skip: skip, variant: _android, (tester) async {
+      await _run(tester, () async {
+        final loc = lookupAppLocalizations(Locale(lang));
+        final quran = _QuranShots(lang);
+        Future<void> openQuran(String name) async {
+          _currentScreen = name;
+          _navigator(tester).push(
+            MaterialPageRoute<void>(
+              builder: (_) => QuranView(service: quran.service),
+            ),
+          );
+          await _settle(tester, steps: 10);
+          await _shot(tester, name);
+        }
+
+        Future<void> openMenu() async {
+          await tester.tap(
+            find.byTooltip(
+              MaterialLocalizations.of(
+                tester.element(find.byType(HatimCard)),
+              ).showMenuTooltip,
+            ),
+          );
+          await _settle(tester, steps: 6);
+        }
+
+        Future<void> menu(String label) async {
+          await openMenu();
+          await tester.tap(find.text(label));
+          await _settle(tester, steps: 6);
+        }
+
+        _currentScreen = '${lang}_18_home_hatim_full';
+        await _pumpApp(
+          tester,
+          lang: lang,
+          homeVm: _homeVm(lang),
+          extraPrefs: _hatimPrefs(),
+        );
+        await _setViewport(tester, height: 1500);
+        await _settle(tester, steps: 4);
+        await _shot(tester, '${lang}_18_home_hatim_full');
+        await _setViewport(tester);
+        await _settle(tester, steps: 2);
+
+        await openQuran('${lang}_80_hatim_card');
+        _currentScreen = '${lang}_81_hatim_menu';
+        await openMenu();
+        await _shot(tester, '${lang}_81_hatim_menu');
+        await tester.tap(find.text(loc.hatimReminder));
+        await _settle(tester, steps: 6);
+        _currentScreen = '${lang}_82_hatim_reminder';
+        await tester.tap(find.text(loc.hatimReminderDaily));
+        await _settle(tester, steps: 6);
+        await _shot(tester, '${lang}_82_hatim_reminder');
+        _navigator(tester).pop();
+        await _settle(tester, steps: 6);
+
+        _currentScreen = '${lang}_83_hatim_change_plan';
+        await menu(loc.hatimChangePlan);
+        await _shot(tester, '${lang}_83_hatim_change_plan');
+        _navigator(tester).pop();
+        await _settle(tester, steps: 6);
+
+        // Sayfa Gir: son sayfa → hatim tamamlanır
+        _currentScreen = '${lang}_84_hatim_enter_page';
+        await menu(loc.hatimEnterPage);
+        await tester.enterText(
+          find.descendant(
+            of: find.byType(AlertDialog),
+            matching: find.byType(TextField),
+          ),
+          '604',
+        );
+        await _settle(tester, steps: 2);
+        await _shot(tester, '${lang}_84_hatim_enter_page');
+        await tester.tap(find.text(loc.save));
+        await _settle(tester, steps: 6);
+        await _shot(tester, '${lang}_85_hatim_done');
+
+        _currentScreen = '${lang}_86_hatim_start';
+        await tester.tap(find.text(loc.hatimNew));
+        await _settle(tester, steps: 6);
+        await _shot(tester, '${lang}_86_hatim_start');
+        _navigator(tester).pop();
+        await _settle(tester, steps: 6);
+        await _finish(tester);
+
+        if (lang == 'tr') {
+          _currentScreen = 'tr_dark_80_hatim_card';
+          await _pumpApp(
+            tester,
+            lang: lang,
+            homeVm: _homeVm(lang),
+            themeMode: 2,
+            extraPrefs: _hatimPrefs(),
+          );
+          await openQuran('tr_dark_80_hatim_card');
+          await _finish(tester);
+        }
+
+        for (final (scale, width, suffix) in [
+          (1.3, 320.0, '320_text130'),
+          (2.0, 411.0, '200'),
+        ]) {
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          try {
+            _currentScreen = '${lang}_87_hatim_card_$suffix';
+            await _setViewport(tester, width: width, height: 640);
+            await _pumpApp(
+              tester,
+              lang: lang,
+              homeVm: _homeVm(lang),
+              extraPrefs: _hatimPrefs(),
+            );
+            await openQuran('${lang}_87_hatim_card_$suffix');
+            _currentScreen = '${lang}_88_hatim_change_plan_$suffix';
+            await menu(loc.hatimChangePlan);
+            await _shot(tester, '${lang}_88_hatim_change_plan_$suffix');
+            await _finish(tester);
+          } finally {
+            tester.platformDispatcher.clearTextScaleFactorTestValue();
+          }
+        }
+      });
+    });
+  }
 }
 
 /// Kur'an ekran görüntüleri: gömülü sure listesi ve fikstürlerden yanıt veren

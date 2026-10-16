@@ -2347,6 +2347,95 @@ class AppLocalizationsTr extends AppLocalizations {
   String get quranTextSource => 'Arapça metin: Tanzil Projesi (tanzil.net)';
 
   @override
+  String get hatimTitle => 'Hatim';
+
+  @override
+  String get hatimIntro =>
+      'Günlük bir planla Kur\'an-ı Kerim\'i baştan sona okuyun.';
+
+  @override
+  String get hatimStart => 'Hatim Başlat';
+
+  @override
+  String hatimPagesPerDay(int pages) {
+    return 'Günde $pages sayfa';
+  }
+
+  @override
+  String hatimDuration(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: '$months ayda',
+      one: '30 günde',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hatimRamadan => 'Ramazan\'da hatim';
+
+  @override
+  String hatimProgress(int page, int total, String percent) {
+    return 'Sayfa $page / $total · $percent';
+  }
+
+  @override
+  String hatimToday(int read, int goal) {
+    return 'Bugün $read / $goal sayfa';
+  }
+
+  @override
+  String get hatimContinue => 'Devam Et';
+
+  @override
+  String get hatimEnterPage => 'Sayfa Gir';
+
+  @override
+  String hatimPageLabel(int total) {
+    return 'Son okuduğunuz sayfa (1–$total)';
+  }
+
+  @override
+  String get hatimReminder => 'Hatırlatma';
+
+  @override
+  String get hatimReminderDaily => 'Her gün hatırlat';
+
+  @override
+  String get hatimReminderTime => 'Saat';
+
+  @override
+  String get hatimChangePlan => 'Planı Değiştir';
+
+  @override
+  String get hatimDelete => 'Hatmi Sil';
+
+  @override
+  String get hatimDeleteConfirm =>
+      'Hatim planınız ve ilerlemeniz silinsin mi? Tamamlanan hatim sayısı korunur.';
+
+  @override
+  String get hatimDone => 'Hatim tamamlandı';
+
+  @override
+  String get hatimNew => 'Yeni Hatim Başlat';
+
+  @override
+  String hatimCount(int count) {
+    return 'Tamamlanan hatim: $count';
+  }
+
+  @override
+  String get hatimCompleted => 'Hatminiz tamamlandı. Allah kabul etsin!';
+
+  @override
+  String get hatimReminderChannel => 'Hatim hatırlatması';
+
+  @override
+  String get hatimReminderBody => 'Bugünkü hatim okumanızı unutmayın.';
+
+  @override
   String quranTranslationSource(String name) {
     return 'Meal: $name';
   }

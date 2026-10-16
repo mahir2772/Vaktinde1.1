@@ -21,6 +21,7 @@ import '../../../main.dart';
 import '../../../data/services/ayah_service.dart';
 import '../../../data/services/background_manager.dart';
 import '../../../data/services/error_reporter.dart';
+import '../../../data/services/hatim_service.dart';
 import '../../../data/services/notification_service.dart';
 import '../../../data/services/prayer_refresh_service.dart';
 import '../../../data/services/prayer_tracker.dart';
@@ -657,6 +658,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     } else {
       await _refreshService.cancelDailyContent();
     }
+    await HatimService().syncReminder();
   }
 
   /// "Dini gün ve kandil bildirimleri": kapatılınca kurulu olanlar hemen iptal
@@ -900,6 +902,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       );
 
       await _scheduleDailyContent();
+      await HatimService().syncReminder();
     } catch (e, st) {
       await reportNonFatal(e, st, reason: 'alarmlar kurulamadı (uygulama)');
     }

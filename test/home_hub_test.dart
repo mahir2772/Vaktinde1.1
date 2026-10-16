@@ -1,14 +1,17 @@
 // Ana ekran günlük merkez: "Bugün için" kısayolları (Cuma, dini gün tebrik
-// penceresi, Kur'an'da kaldığın yer, tesbihat, sıradaki dini gün; sıra ve
-// gezinme), vakit hücresine dokununca o vaktin alarm alt sayfası, üst çubukta
-// reklamsız Ayarlar dişlisi (dünya simgesi yok); tr/ar %130 ve %200 yazıda
-// 320 dp taşmasız.
+// penceresi, hatim ya da Kur'an'da kaldığın yer, tesbihat, sıradaki dini gün;
+// sıra ve gezinme), vakit hücresine dokununca o vaktin alarm alt sayfası, üst
+// çubukta reklamsız Ayarlar dişlisi (dünya simgesi yok); tr/ar %130 ve %200
+// yazıda 320 dp taşmasız.
 import 'dart:io';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/hadith_model.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
+import 'package:ezan_saati/data/services/hatim.dart';
+import 'package:ezan_saati/data/services/hatim_service.dart';
+import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/app_analytics.dart';
@@ -125,6 +128,7 @@ void main() {
     await DiniGunlerService.loadResmiGunler();
     await DuaLibrary.load();
     await rootBundle.loadString(QuranService.surahsAsset);
+    await HatimService.loadPages();
     for (final lang in ['tr', 'ar']) {
       await rootBundle.loadString('assets/data/greetings_$lang.json');
       await rootBundle.loadString('assets/data/friday_messages_$lang.json');
@@ -398,6 +402,80 @@ void main() {
       await _settle(tester);
       expect(find.text(loc.quranContinue), findsOneWidget);
       expect(find.text(loc.quranAyahRef('Mülk', 3)), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await _dispose(tester);
+    });
+
+    testWidgets('hatim sürüyorsa Kur\'an satırı yerine "Hatim · Bugün a / b '
+        'sayfa": Kur\'an sekmesine geçilir, okuyucu hatim sayfasının başından '
+        'hatim kipinde açılır (reklamsız); %200 yazıda 320 dp taşmaz; bitmiş '
+        'hatimde kaldığın yer', (tester) async {
+      final requests = <MainTab>[];
+      bool handler(MainTab tab) {
+        requests.add(tab);
+        return true;
+      }
+
+      MainTabRequests.attach(handler);
+      addTearDown(() => MainTabRequests.detach(handler));
+
+      final today = PrayerTracker.day(_sunday);
+      final plan = HatimPlan(
+        start: today,
+        target: PrayerTracker.addDays(today, 30),
+        position: 41,
+        log: {PrayerTracker.dateKey(today): 3},
+      );
+      await pumpHub(
+        tester,
+        now: _sunday,
+        prefs: {
+          QuranService.lastReadKey: _lastReadBakara,
+          HatimService.planKey: plan.encode(),
+        },
+      );
+      // Bugünün başında 566 sayfa, 31 gün: günde 19
+      expect(find.text(loc.hatimTitle), findsOneWidget);
+      expect(find.text('Bugün 3 / 19 sayfa'), findsOneWidget);
+      expect(find.text(loc.quranContinue), findsNothing);
+      expect(find.byType(AppListTile), findsNWidgets(3));
+
+      final ads = AdHelper.instance.debugShowRequests;
+      await tester.tap(find.text(loc.hatimTitle));
+      await _settle(tester);
+      expect(requests, [MainTab.quran]);
+      final start = QuranPages.parse(
+        File(QuranPages.asset).readAsStringSync(),
+      )!.startOf(41);
+      final reader = tester.widget<SurahReaderView>(
+        find.byType(SurahReaderView),
+      );
+      expect(
+        [reader.surah.number, reader.initialAyah, reader.hatim],
+        [start.surah, start.ayah, true],
+      );
+      expect(AdHelper.instance.debugShowRequests, ads);
+      _navigator(tester).pop();
+      await _settle(tester);
+
+      // Küçük ekran, en büyük yazı
+      tester.view.physicalSize = const Size(320 * 3, 1600 * 3);
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await _settle(tester);
+      expect(find.text('Bugün 3 / 19 sayfa').hitTestable(), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      // Hatim bitince (başka ekranda) satır hemen kaldığın yere döner
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        HatimService.planKey,
+        plan.withPosition(604, today).encode(),
+      );
+      HatimService.changes.value++;
+      await _settle(tester);
+      expect(find.text(loc.hatimTitle), findsNothing);
+      expect(find.text(loc.quranContinue), findsOneWidget);
       expect(tester.takeException(), isNull);
       await _dispose(tester);
     });

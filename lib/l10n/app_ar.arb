@@ -1162,6 +1162,80 @@
     "quranFontSmaller": "تصغير خط الآيات",
     "quranFontLarger": "تكبير خط الآيات",
     "quranTextSource": "النص القرآني: مشروع تنزيل (tanzil.net)",
+    "hatimTitle": "الختمة",
+    "hatimIntro": "اقرأ القرآن الكريم كاملًا بخطة يومية.",
+    "hatimStart": "بدء ختمة",
+    "hatimPagesPerDay": "{pages, plural, =1{صفحة واحدة يوميًا} =2{صفحتان يوميًا} few{{pages} صفحات يوميًا} other{{pages} صفحة يوميًا}}",
+    "@hatimPagesPerDay": {
+        "placeholders": {
+            "pages": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimDuration": "{months, plural, =1{في 30 يومًا} =2{في شهرين} few{في {months} أشهر} other{في {months} شهرًا}}",
+    "@hatimDuration": {
+        "placeholders": {
+            "months": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimRamadan": "ختمة في رمضان",
+    "hatimProgress": "الصفحة {page} من {total} · {percent}",
+    "@hatimProgress": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            },
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimToday": "صفحات اليوم: {read} / {goal}",
+    "@hatimToday": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "goal": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimContinue": "متابعة القراءة",
+    "hatimEnterPage": "إدخال الصفحة",
+    "hatimPageLabel": "آخر صفحة قرأتها (1–{total})",
+    "@hatimPageLabel": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimReminder": "التذكير",
+    "hatimReminderDaily": "ذكّرني كل يوم",
+    "hatimReminderTime": "الوقت",
+    "hatimChangePlan": "تغيير الخطة",
+    "hatimDelete": "حذف الختمة",
+    "hatimDeleteConfirm": "هل تريد حذف خطة الختمة وتقدّمك فيها؟ يبقى عدد الختمات المكتملة محفوظًا.",
+    "hatimDone": "اكتملت الختمة",
+    "hatimNew": "بدء ختمة جديدة",
+    "hatimCount": "الختمات المكتملة: {count}",
+    "@hatimCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimCompleted": "اكتملت ختمتك، تقبّل الله منك!",
+    "hatimReminderChannel": "تذكير الختمة",
+    "hatimReminderBody": "لا تنسَ وِردك اليومي من الختمة.",
     "quranTranslationSource": "الترجمة: {name}",
     "@quranTranslationSource": {
         "placeholders": {

@@ -3,20 +3,27 @@
 // mushaf bilgisi: sayfa/cüz/hizb/secde), cihazdaki kopya (sınırlı önbellek,
 // eski kopya), yer imi, son okunan, görünüm ve yazı boyutları; okuyucunun üç
 // görünümü (sayfa, ayet ayet, meal), ayet alt sayfası, "Ayete git",
-// önceki/sonraki sure ve tr/ar %130 yazıda tüm görünümler.
+// önceki/sonraki sure ve tr/ar %130 yazıda tüm görünümler; hatim kartı
+// (başlat, ilerleme, menü, bitiş) ve hatim okumasında sırayla ilerleme.
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:ezan_saati/core/app_links.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/data/services/hatim.dart';
+import 'package:ezan_saati/data/services/hatim_service.dart';
+import 'package:ezan_saati/data/services/prayer_tracker.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
+import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
 import 'package:ezan_saati/features/quran/widgets/ayah_sheet.dart';
+import 'package:ezan_saati/features/quran/widgets/go_to_ayah_dialog.dart';
+import 'package:ezan_saati/features/quran/widgets/hatim_card.dart';
 import 'package:ezan_saati/features/quran/widgets/mushaf_page.dart';
 import 'package:ezan_saati/features/quran/widgets/translation_page.dart';
 import 'package:ezan_saati/features/quran/widgets/view_settings_sheet.dart';
@@ -25,9 +32,13 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 final String _surahsJson = File('assets/data/surahs.json').readAsStringSync();
 final List<Surah> _surahs = QuranService.parseSurahs(_surahsJson);
@@ -206,6 +217,24 @@ Future<void> _loadFont(String family, List<String> paths) async {
   }
   await loader.load();
 }
+
+/// Bugün başlamış, 30 gün sonra bitecek hatim; [position] 604 ise bugün bitti
+String _hatimPlan(int position, {Map<String, int> log = const {}}) {
+  final today = PrayerTracker.day(DateTime.now());
+  return HatimPlan(
+    start: today,
+    target: PrayerTracker.addDays(today, 30),
+    position: position,
+    log: log,
+    finished: position == HatimPlan.pageCount ? today : null,
+  ).encode();
+}
+
+String _todayKey() => PrayerTracker.dateKey(DateTime.now());
+
+Future<HatimPlan?> _savedPlan() async => HatimPlan.parse(
+  (await SharedPreferences.getInstance()).getString(HatimService.planKey),
+);
 
 /// Okuyucu / liste kaydırması (TabBarView ve metin alanının yatay
 /// kaydırıcıları değil)
@@ -1250,6 +1279,9 @@ void main() {
       // Araçlar'dan açılan gerçek servis listeyi rootBundle'dan okur: önbellek
       // gerçek zaman bölgesinde dolsun (sahte zamanda bekleyen Future kalmasın)
       await rootBundle.loadString(QuranService.surahsAsset);
+      // Hatim: sayfa tablosu ve Ramazan takvimi uygulama boyu önbelleklenir
+      await HatimService.loadPages();
+      await loadRamadanCalendar();
     });
 
     setUp(() {
@@ -1337,6 +1369,18 @@ void main() {
       await settle(tester);
     }
 
+    /// Hatim kartının menüsünden [label] seçilir
+    Future<void> hatimMenu(WidgetTester tester, String label) async {
+      final tooltip = MaterialLocalizations.of(
+        tester.element(find.byType(HatimCard)),
+      ).showMenuTooltip;
+      await tester.tap(find.byTooltip(tooltip));
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.text(label));
+      await settle(tester);
+    }
+
     /// "Görünüm" alt sayfasından görünüm seçer (sayfa açıkken taşma denetlenir)
     Future<void> chooseMode(
       WidgetTester tester,
@@ -1419,6 +1463,29 @@ void main() {
           expect(find.text(loc.quranBookmark), findsNothing);
           expect(calls, isEmpty); // liste gömülü
           expect(tester.takeException(), isNull);
+
+          // Hatim kartı: hatim yok → açıklama ve "Hatim Başlat"; seçenekler
+          expect(find.text(loc.hatimIntro), findsOneWidget);
+          await tester.tap(find.text(loc.hatimStart));
+          await settle(tester);
+          expect(
+            find.text('${loc.hatimPagesPerDay(20)} · ${loc.hatimDuration(1)}'),
+            findsOneWidget,
+          );
+          expect(tester.takeException(), isNull);
+          await tester.tap(
+            find.text('${loc.hatimPagesPerDay(10)} · ${loc.hatimDuration(2)}'),
+          );
+          await settle(tester);
+          // Sürüyor: ilerleme, bugünün okuması, Devam Et ve menü
+          expect(find.text(loc.hatimToday(0, 10)), findsOneWidget);
+          expect(find.text(loc.hatimContinue), findsOneWidget);
+          expect(find.byType(LinearProgressIndicator), findsOneWidget);
+          await hatimMenu(tester, loc.hatimReminder);
+          expect(find.text(loc.hatimReminderDaily), findsOneWidget);
+          expect(tester.takeException(), isNull);
+          Navigator.of(tester.element(find.text(loc.hatimReminderDaily))).pop();
+          await settle(tester);
 
           // Cüzler
           await tester.tap(find.text(loc.quranTabJuz));
@@ -2417,5 +2484,324 @@ void main() {
         await dispose(tester);
       },
     );
+
+    testWidgets('hatim okuması: Devam Et sayfa başından açar, sırayla okunan '
+        'sayfalar sayılır (sonraki sure dahil); uzak atlama ve geri dönüş '
+        'sayılmaz; reklam yok', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        HatimService.planKey: _hatimPlan(0),
+      });
+      final pages = QuranPages.parse(
+        File(QuranPages.asset).readAsStringSync(),
+      )!;
+      final ads = AdHelper.instance.debugShowRequests;
+      await pumpPhone(tester, QuranView(service: _service()));
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      expect(find.text(loc.hatimProgress(0, 604, '%0')), findsOneWidget);
+      expect(find.text(loc.hatimToday(0, 20)), findsOneWidget);
+
+      await tester.tap(find.text(loc.hatimContinue));
+      await settle(tester);
+      var reader = tester.widget<SurahReaderView>(find.byType(SurahReaderView));
+      expect(
+        [reader.surah.number, reader.initialAyah, reader.hatim],
+        [1, 1, true],
+      );
+      // Açılan sayfa (1) ulaşılan sayfa olur
+      expect((await _savedPlan())!.position, 1);
+
+      // Sonraki sure (Bakara, 2. sayfa) oturumu sürdürür
+      await scrollThrough(tester);
+      await tester.tap(find.text('Bakara'));
+      await settle(tester);
+      reader = tester.widget<SurahReaderView>(find.byType(SurahReaderView));
+      expect([reader.surah.number, reader.hatim], [2, true]);
+      expect((await _savedPlan())!.position, 2);
+
+      // Kaydırdıkça görünen sayfa: konum ve bugünün kaydı onu izler
+      final prefs = await SharedPreferences.getInstance();
+      int visiblePage() {
+        final last = QuranService.parseBookmark(
+          prefs.getString(QuranService.lastReadKey),
+        )!;
+        return pages.pageOf(last.surah, last.ayah);
+      }
+
+      for (var i = 0; i < 6; i++) {
+        await tester.drag(_vertical(), const Offset(0, -300));
+        await settle(tester);
+        final plan = (await _savedPlan())!;
+        expect(plan.position, visiblePage(), reason: 'adım $i');
+        expect(plan.readOn(DateTime.now()), plan.position);
+      }
+      final reached = (await _savedPlan())!.position;
+      expect(reached, greaterThan(2));
+
+      // Geri dönüş sayılmaz
+      await tester.drag(_vertical(), const Offset(0, 900));
+      await settle(tester);
+      expect(visiblePage(), lessThan(reached));
+      expect((await _savedPlan())!.position, reached);
+
+      // Ayete git ile uzak sayfa (Âyetü'l-Kürsî, 42. sayfa) okuma sayılmaz;
+      // oradan kaydırmak da
+      await tester.tap(find.byTooltip(loc.quranGoToAyah));
+      await settle(tester);
+      await tester.enterText(find.byType(TextField), '255');
+      await tester.pump();
+      await tester.tap(find.text(loc.quranGo));
+      await settle(tester);
+      expect(visiblePage(), 42);
+      await tester.drag(_vertical(), const Offset(0, -300));
+      await settle(tester);
+      expect((await _savedPlan())!.position, reached);
+
+      // Listeye dönünce kart güncel; hiçbir adımda reklam yok
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(
+        find.text(
+          loc.hatimProgress(
+            reached,
+            604,
+            '%${reached * 100 ~/ HatimPlan.pageCount}',
+          ),
+        ),
+        findsOneWidget,
+      );
+      expect(AdHelper.instance.debugShowRequests, ads);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('hatim son sayfada tamamlanır: kısa bildirim, sayaç, kartta '
+        '"Hatim tamamlandı"', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        HatimService.planKey: _hatimPlan(603),
+      });
+      await pumpPhone(tester, QuranView(service: _service()));
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      await tester.tap(find.text(loc.hatimContinue));
+      await settle(tester);
+      // 603. sayfa Kâfirûn'la başlar; Nasr ve Tebbet de bu sayfada
+      expect(
+        tester.widget<SurahReaderView>(find.byType(SurahReaderView)).surah.name,
+        'Kâfirûn',
+      );
+      for (final next in ['Nasr', 'Tebbet']) {
+        await scrollThrough(tester);
+        await tester.tap(find.text(next));
+        await settle(tester);
+        expect((await _savedPlan())!.position, 603, reason: next);
+      }
+      await scrollThrough(tester);
+      await tester.tap(find.text('İhlâs'));
+      await settle(tester);
+      final plan = (await _savedPlan())!;
+      expect(plan.isFinished, isTrue);
+      expect(find.text(loc.hatimCompleted), findsOneWidget);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt(HatimService.countKey), 1);
+
+      await tester.tap(find.byType(BackButton));
+      await settle(tester);
+      expect(find.text(loc.hatimDone), findsOneWidget);
+      expect(find.text(loc.hatimCount(1)), findsOneWidget);
+      expect(find.text(loc.hatimContinue), findsNothing);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('hatim kartı: seçenekler, Sayfa Gir, Planı Değiştir (kalan '
+        'sayfalara göre), hatırlatma, Hatmi Sil', (tester) async {
+      final notifications = <MethodCall>[];
+      const channel = MethodChannel(
+        'dexterous.com/flutter/local_notifications',
+      );
+      // Uygulamada NotificationService.init kurar
+      tz.initializeTimeZones();
+      tz.setLocalLocation(tz.getLocation('Europe/Istanbul'));
+      AndroidFlutterLocalNotificationsPlugin.registerWith();
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        notifications.add(call);
+        return call.method == 'pendingNotificationRequests' ? [] : null;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+      final prefs = await SharedPreferences.getInstance();
+      await pumpPhone(tester, QuranView(service: _service()));
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      expect(find.text(loc.hatimTitle), findsOneWidget);
+      expect(find.text(loc.hatimIntro), findsOneWidget);
+
+      await tester.tap(find.text(loc.hatimStart));
+      await settle(tester);
+      expect(
+        [
+          for (final (pages, months) in [(20, 1), (10, 2), (5, 4)])
+            '${loc.hatimPagesPerDay(pages)} · ${loc.hatimDuration(months)}',
+        ],
+        [
+          'Günde 20 sayfa · 30 günde',
+          'Günde 10 sayfa · 2 ayda',
+          'Günde 5 sayfa · 4 ayda',
+        ],
+      );
+      for (final text in [
+        'Günde 20 sayfa · 30 günde',
+        'Günde 10 sayfa · 2 ayda',
+        'Günde 5 sayfa · 4 ayda',
+      ]) {
+        expect(find.text(text), findsOneWidget, reason: text);
+      }
+      // Ramazan seçeneği sadece Ramazan'da / 15 gün kala
+      final ramadan = HatimPlan.ramadanTarget(
+        (await tester.runAsync(loadRamadanCalendar))!,
+        DateTime.now(),
+      );
+      expect(
+        find.text(loc.hatimRamadan),
+        ramadan == null ? findsNothing : findsOneWidget,
+      );
+      await tester.tap(find.text('Günde 20 sayfa · 30 günde'));
+      await settle(tester);
+      final today = PrayerTracker.day(DateTime.now());
+      var plan = (await _savedPlan())!;
+      expect(plan.start, today);
+      expect(plan.target, PrayerTracker.addDays(today, 30));
+      expect(find.text('Sayfa 0 / 604 · %0'), findsOneWidget);
+      expect(find.text('Bugün 0 / 20 sayfa'), findsOneWidget);
+      expect(find.byIcon(Icons.check_circle), findsNothing);
+
+      // Sayfa Gir (basılı mushaf): 1–604
+      await hatimMenu(tester, loc.hatimEnterPage);
+      expect(find.text(loc.hatimPageLabel(604)), findsOneWidget);
+      FilledButton save() => tester.widget<FilledButton>(
+        find.widgetWithText(FilledButton, loc.save),
+      );
+      final pageField = find.descendant(
+        of: find.byType(NumberDialog),
+        matching: find.byType(TextField),
+      );
+      for (final invalid in ['0', '605']) {
+        await tester.enterText(pageField, invalid);
+        await tester.pump();
+        expect(save().onPressed, isNull, reason: invalid);
+      }
+      await tester.enterText(pageField, '120');
+      await tester.pump();
+      await tester.tap(find.text(loc.save));
+      await settle(tester);
+      plan = (await _savedPlan())!;
+      expect(plan.position, 120);
+      expect(plan.readOn(today), 120);
+      expect(find.text('Sayfa 120 / 604 · %19'), findsOneWidget);
+      expect(find.text('Bugün 120 / 20 sayfa'), findsOneWidget);
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+
+      // Hatırlatma (varsayılan kapalı): açılınca 21:00, bildirim kurulur
+      await hatimMenu(tester, loc.hatimReminder);
+      expect(find.text(loc.hatimReminderTime), findsNothing);
+      await tester.tap(find.text(loc.hatimReminderDaily));
+      await settle(tester);
+      expect(prefs.getBool(HatimService.reminderKey), isTrue);
+      expect(find.text('21:00'), findsOneWidget);
+      // Bugünün hedefi tamam: hatırlatma yarından başlar
+      final scheduled = notifications.lastWhere(
+        (c) => c.method == 'zonedSchedule',
+      );
+      expect(scheduled.arguments['id'], HatimService.reminderId);
+      expect(scheduled.arguments['payload'], HatimService.reminderPayload);
+      expect(
+        scheduled.arguments['scheduledDateTime'],
+        startsWith(PrayerTracker.dateKey(PrayerTracker.addDays(today, 1))),
+      );
+      await tester.tap(find.text(loc.hatimReminderTime));
+      await settle(tester);
+      expect(find.byType(TimePickerDialog), findsOneWidget);
+      await tester.tap(
+        find.text(
+          MaterialLocalizations.of(
+            tester.element(find.byType(TimePickerDialog)),
+          ).cancelButtonLabel,
+        ),
+      );
+      await settle(tester);
+      Navigator.of(tester.element(find.text(loc.hatimReminderDaily))).pop();
+      await settle(tester);
+
+      // Planı Değiştir: konum korunur, günlük hedef kalan sayfalara göre
+      await prefs.setString(
+        HatimService.planKey,
+        HatimPlan(
+          start: plan.start,
+          target: plan.target,
+          position: 300,
+          log: {PrayerTracker.dateKey(PrayerTracker.addDays(today, -1)): 30},
+        ).encode(),
+      );
+      HatimService.changes.value++; // kart kayıttan yenilenir
+      await settle(tester);
+      expect(find.text('Sayfa 300 / 604 · %49'), findsOneWidget);
+      await hatimMenu(tester, loc.hatimChangePlan);
+      expect(find.text(loc.hatimChangePlan), findsOneWidget);
+      for (final text in [
+        'Günde 10 sayfa · 30 günde',
+        'Günde 5 sayfa · 2 ayda',
+        'Günde 3 sayfa · 4 ayda',
+      ]) {
+        expect(find.text(text), findsOneWidget, reason: text);
+      }
+      await tester.tap(find.text('Günde 5 sayfa · 2 ayda'));
+      await settle(tester);
+      plan = (await _savedPlan())!;
+      expect(plan.position, 300);
+      expect(plan.target, PrayerTracker.addDays(today, 60));
+      expect(find.text('Bugün 0 / 5 sayfa'), findsOneWidget);
+
+      // Hatmi Sil (onaylı): kart başa döner
+      await hatimMenu(tester, loc.hatimDelete);
+      expect(find.text(loc.hatimDeleteConfirm), findsOneWidget);
+      await tester.tap(find.widgetWithText(FilledButton, loc.hatimDelete));
+      await settle(tester);
+      expect(prefs.containsKey(HatimService.planKey), isFalse);
+      expect(find.text(loc.hatimIntro), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    for (final lang in ['tr', 'ar']) {
+      testWidgets('$lang 320dp %130: tamamlanan hatim (tarih, sayaç) ve '
+          '"Yeni Hatim Başlat" taşmaz', (tester) async {
+        SharedPreferences.setMockInitialValues({
+          HatimService.planKey: _hatimPlan(604, log: {_todayKey(): 2}),
+          HatimService.countKey: 2,
+        });
+        await pump(tester, QuranView(service: _service()), lang: lang);
+        final loc = lookupAppLocalizations(Locale(lang));
+        expect(find.text(loc.hatimDone), findsOneWidget);
+        expect(
+          find.text(DateFormat.yMMMMd(loc.localeName).format(DateTime.now())),
+          findsOneWidget,
+        );
+        expect(find.text(loc.hatimCount(2)), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.tap(find.text(loc.hatimNew));
+        await settle(tester);
+        expect(find.text(loc.hatimStart), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.tap(
+          find.text('${loc.hatimPagesPerDay(5)} · ${loc.hatimDuration(4)}'),
+        );
+        await settle(tester);
+        expect((await _savedPlan())!.position, 0);
+        expect(
+          (await SharedPreferences.getInstance()).getInt(HatimService.countKey),
+          2,
+        );
+        expect(find.text(loc.hatimToday(0, 5)), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await dispose(tester);
+      });
+    }
   });
 }

@@ -2406,6 +2406,104 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranTextSource => 'النص القرآني: مشروع تنزيل (tanzil.net)';
 
   @override
+  String get hatimTitle => 'الختمة';
+
+  @override
+  String get hatimIntro => 'اقرأ القرآن الكريم كاملًا بخطة يومية.';
+
+  @override
+  String get hatimStart => 'بدء ختمة';
+
+  @override
+  String hatimPagesPerDay(int pages) {
+    String _temp0 = intl.Intl.pluralLogic(
+      pages,
+      locale: localeName,
+      other: '$pages صفحة يوميًا',
+      few: '$pages صفحات يوميًا',
+      two: 'صفحتان يوميًا',
+      one: 'صفحة واحدة يوميًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hatimDuration(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: 'في $months شهرًا',
+      few: 'في $months أشهر',
+      two: 'في شهرين',
+      one: 'في 30 يومًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hatimRamadan => 'ختمة في رمضان';
+
+  @override
+  String hatimProgress(int page, int total, String percent) {
+    return 'الصفحة $page من $total · $percent';
+  }
+
+  @override
+  String hatimToday(int read, int goal) {
+    return 'صفحات اليوم: $read / $goal';
+  }
+
+  @override
+  String get hatimContinue => 'متابعة القراءة';
+
+  @override
+  String get hatimEnterPage => 'إدخال الصفحة';
+
+  @override
+  String hatimPageLabel(int total) {
+    return 'آخر صفحة قرأتها (1–$total)';
+  }
+
+  @override
+  String get hatimReminder => 'التذكير';
+
+  @override
+  String get hatimReminderDaily => 'ذكّرني كل يوم';
+
+  @override
+  String get hatimReminderTime => 'الوقت';
+
+  @override
+  String get hatimChangePlan => 'تغيير الخطة';
+
+  @override
+  String get hatimDelete => 'حذف الختمة';
+
+  @override
+  String get hatimDeleteConfirm =>
+      'هل تريد حذف خطة الختمة وتقدّمك فيها؟ يبقى عدد الختمات المكتملة محفوظًا.';
+
+  @override
+  String get hatimDone => 'اكتملت الختمة';
+
+  @override
+  String get hatimNew => 'بدء ختمة جديدة';
+
+  @override
+  String hatimCount(int count) {
+    return 'الختمات المكتملة: $count';
+  }
+
+  @override
+  String get hatimCompleted => 'اكتملت ختمتك، تقبّل الله منك!';
+
+  @override
+  String get hatimReminderChannel => 'تذكير الختمة';
+
+  @override
+  String get hatimReminderBody => 'لا تنسَ وِردك اليومي من الختمة.';
+
+  @override
   String quranTranslationSource(String name) {
     return 'الترجمة: $name';
   }
