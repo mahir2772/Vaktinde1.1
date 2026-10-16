@@ -1758,6 +1758,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get statisticsTitle => 'İstatistikler';
 
   @override
+  String zikirTodayCount(int count) {
+    return 'Bugün: $count';
+  }
+
+  @override
   String get monthly => 'Aylık';
 
   @override

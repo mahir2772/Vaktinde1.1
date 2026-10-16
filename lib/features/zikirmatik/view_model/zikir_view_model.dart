@@ -56,6 +56,9 @@ class ZikirViewModel extends ChangeNotifier {
     roundMode: _isRoundModeEnabled,
   );
   Map<String, int> get dailyStats => _dailyStats;
+
+  /// Bugün çekilen zikir (tüm zikirler)
+  int get todayCount => _dailyStats[_today()] ?? 0;
   List<String> get customDhikrs => _customDhikrs;
 
   // HAZIR ZİKİRLER VE ARAPÇALARI

@@ -844,6 +844,12 @@
     "customDhikrLimit": "يمكنك إضافة ما يصل إلى 20 ذكراً مخصصاً كحد أقصى!",
     "deleteDhikr": "حذف",
     "statisticsTitle": "الإحصائيات",
+    "zikirTodayCount": "اليوم: {count}",
+    "@zikirTodayCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "monthly": "شهرياً",
     "yearly": "سنوياً",
     "totalDhikr": "إجمالي الأذكار",

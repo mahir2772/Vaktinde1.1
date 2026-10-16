@@ -1803,6 +1803,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get statisticsTitle => 'الإحصائيات';
 
   @override
+  String zikirTodayCount(int count) {
+    return 'اليوم: $count';
+  }
+
+  @override
   String get monthly => 'شهرياً';
 
   @override

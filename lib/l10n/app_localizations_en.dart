@@ -1784,6 +1784,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statisticsTitle => 'Statistics';
 
   @override
+  String zikirTodayCount(int count) {
+    return 'Today: $count';
+  }
+
+  @override
   String get monthly => 'Monthly';
 
   @override

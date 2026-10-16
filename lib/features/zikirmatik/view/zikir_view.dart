@@ -193,7 +193,11 @@ class _ZikirViewState extends State<ZikirView> with WidgetsBindingObserver {
                     ],
                   ),
                 ),
-                _ActionRow(onEdit: editCount),
+                _ActionRow(
+                  onEdit: editCount,
+                  todayCount: viewModel.todayCount,
+                  onStats: () => _open(const DhikrStatsView()),
+                ),
               ],
             );
           },
@@ -757,8 +761,14 @@ class _ReachedChip extends StatelessWidget {
 /// okunsun diye opak (tonal) düğme.
 class _ActionRow extends StatelessWidget {
   final VoidCallback onEdit;
+  final int todayCount;
+  final VoidCallback onStats;
 
-  const _ActionRow({required this.onEdit});
+  const _ActionRow({
+    required this.onEdit,
+    required this.todayCount,
+    required this.onStats,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -771,10 +781,24 @@ class _ActionRow extends StatelessWidget {
         AppSpacing.lg,
       ),
       child: Center(
-        child: FilledButton.tonalIcon(
-          onPressed: onEdit,
-          icon: const Icon(Icons.edit_outlined),
-          label: Text(loc.editCounterTitle),
+        // Sığmazsa (dar ekran, büyük yazı) alt alta
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: [
+            FilledButton.tonalIcon(
+              onPressed: onEdit,
+              icon: const Icon(Icons.edit_outlined),
+              label: Text(loc.editCounterTitle),
+            ),
+            // Bugünkü toplam; dokununca istatistikler
+            FilledButton.tonalIcon(
+              onPressed: onStats,
+              icon: const Icon(Icons.bar_chart_rounded),
+              label: Text(loc.zikirTodayCount(todayCount)),
+            ),
+          ],
         ),
       ),
     );

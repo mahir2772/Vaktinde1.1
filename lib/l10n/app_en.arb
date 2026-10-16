@@ -844,6 +844,12 @@
     "customDhikrLimit": "You can add up to 20 custom dhikrs!",
     "deleteDhikr": "Delete",
     "statisticsTitle": "Statistics",
+    "zikirTodayCount": "Today: {count}",
+    "@zikirTodayCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "monthly": "Monthly",
     "yearly": "Yearly",
     "totalDhikr": "Total Dhikr Count",

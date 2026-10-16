@@ -3134,6 +3134,12 @@ abstract class AppLocalizations {
   /// **'İstatistikler'**
   String get statisticsTitle;
 
+  /// No description provided for @zikirTodayCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün: {count}'**
+  String zikirTodayCount(int count);
+
   /// No description provided for @monthly.
   ///
   /// In tr, this message translates to:

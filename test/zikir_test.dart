@@ -1,11 +1,14 @@
 // Zikirmatik: hedef halkası ve tur sayımı (saf hesap + ekran), "Hedefte
 // sıfırdan devam et" ayarı (tur ve sayaç zikir başına kayıtlı), başlık
 // kartında kaydırarak / oklarla önceki-sonraki zikir, üst çubukta onaylı
-// Sıfırla, sayacın çevresine dokunarak sayma ve "Ses tuşlarıyla say"ın Dart
-// tarafı (yerel bayrak sadece sekme görünür + ayar açık + ön plandayken açık).
+// Sıfırla, altta bugünkü toplam, sayacın çevresine dokunarak sayma ve "Ses
+// tuşlarıyla say"ın Dart tarafı (yerel bayrak sadece sekme görünür + ayar
+// açık + ön plandayken açık).
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/features/zikirmatik/view/dhikr_stats_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_settings_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view_model/zikir_view_model.dart';
@@ -599,7 +602,7 @@ void main() {
       await _finish(tester);
     });
 
-    testWidgets('Sıfırla üst çubukta (onaylı); altta sadece Sayacı Düzenle', (
+    testWidgets('Sıfırla üst çubukta (onaylı); altta Sıfırla yok', (
       tester,
     ) async {
       final loc = _loc('tr');
@@ -632,6 +635,26 @@ void main() {
       await tester.tap(find.text(loc.resetCounter).last);
       await _settle(tester);
       expect((_vm(tester).count, _vm(tester).round), (0, 1));
+      await _finish(tester);
+    });
+
+    testWidgets('altta bugünkü toplam: sayınca artar, dokununca istatistikler', (
+      tester,
+    ) async {
+      final loc = _loc('tr');
+      final today = DateTime.now().toIso8601String().substring(0, 10);
+      await _pumpZikir(
+        tester,
+        prefs: {'dhikr_daily_stats': jsonEncode({today: 12})},
+      );
+      expect(find.text(loc.zikirTodayCount(12)), findsOneWidget);
+      await tester.tap(find.byKey(ZikirView.counterKey));
+      await _settle(tester);
+      expect(find.text(loc.zikirTodayCount(13)), findsOneWidget);
+
+      await tester.tap(find.text(loc.zikirTodayCount(13)));
+      await _settle(tester);
+      expect(find.byType(DhikrStatsView), findsOneWidget);
       await _finish(tester);
     });
 
