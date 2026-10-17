@@ -397,6 +397,10 @@ Tüm ID'ler `common/ad_helper.dart` → `AdIds` içinde; `kReleaseMode` ile debu
   build/app/outputs/mapping/release/missing_rules.txt satırları proguard-rules.pro'ya eklenir.
 - Test: `TZ=Europe/Istanbul flutter test test/prayer_time_service_test.dart` (Diyanet referansıyla ±1 dk). Tüm testler: `TZ=Europe/Istanbul flutter test`.
 - Ekran görüntüleri: `SCREENSHOT_DIR=<klasör> TZ=Europe/Istanbul flutter test test/screenshots/` → tüm ana ekranlar PNG (tr açık/koyu/arka plan/%130 yazı, de, ar) + `_errors.txt`. Env yoksa atlanır. "tr uçtan uca: sistem çubukları" çeşidi (üst 24 / alt 48 boşluk, `tr_edge_*`) çubuk altında kalan metin/düğmeyi `_errors.txt`'ye yazar.
+- Pazarlama görselleri: `docs/marketing/make_store_assets.py <ekran_klasörü> <çıkış>` → Play (5 dil, 8 ekran + öne çıkan görsel),
+  Instagram (üçlü ızgara, karusel, hikâye), sessiz dikey/yatay video. Ekranlar `SCREENSHOT_MARKETING=<dil> SCREENSHOT_DPR=3
+  SCREENSHOT_DIR=<klasör> TZ=<dilim> flutter test test/screenshots/ --plain-name "<dil>: pazarlama"` (tr/ar Europe/Istanbul, en
+  London, de Berlin, fr Paris). Widget ve bildirim kartı res/layout + l10n ile çizilir. Çıktılar repoya girmez.
 - Bulut ortamında Flutter SDK hazır gelmiyor (gerekirse scratchpad'e indirilir); Android SDK indirilemiyor (dl.google.com kapalı) → APK derlenemez. api.aladhan.com ve diyanet.gov.tr erişimi kapalı.
 - `flutter pub get` farklı SDK ile SDK-pinli paketleri (characters, meta, intl…) değiştirir; lock'a sadece gerçek bağımlılık değişikliklerini al. `flutter analyze` analysis_options.yaml'a exclude ekler → geri al.
 

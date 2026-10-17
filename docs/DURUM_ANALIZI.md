@@ -10,6 +10,8 @@
   Hatim takibi (Kur'an kartı, günlük hedef, okuyucuda otomatik sayfa, Sayfa Gir, isteğe bağlı hatırlatma, "Bugün için"
   satırı), zikirde "Bugün: N". Yenilikler ve Uygulamayı Tanı güncellendi. code-review bulguları düzeltildi.
   Debug'da zekat canlı kuru gelmez (COLLECT_API_KEY derlemede verilir; normal).
+- 17 Ekim: sade arka planlar (6) eklendi; tanıtım paketi üretildi ve kullanıcıya gönderildi (Play 5 dil 8 ekran + öne çıkan
+  görsel, Instagram 2 üçlü ızgara + karusel + 3 hikâye, 19 sn dikey/yatay video; docs/marketing/make_store_assets.py).
 - YAYIN: kullanıcı zamanını kendisi söyleyecek, adım adım yapılacak. Yayın günü sırası:
   1. ✅ pubspec `1.3.0+18` (17 Ekim); 2. ✅ sürüm notları docs/surum_notlari_1.3.0.txt (5 dil, ≤500; gizlilik metni de
   güncel: Gizlilik ve Reklamlar yolu, hatim/yazı boyutu); 3. CollectAPI anahtarını yenile (eskisi git
