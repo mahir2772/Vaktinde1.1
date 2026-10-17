@@ -135,7 +135,21 @@ class _PrayerTrackerViewState extends State<PrayerTrackerView>
       final added = await _service.loadKazaAdded();
       final excused = await _service.loadExcused();
       final since = await _service.loadSince();
-      final badges = await _service.earnBadges(yesterdayYatsiOngoing: ongoing);
+      var badges = await _service.loadBadges();
+      // Ekranın serisi (imsak girmeden dünün yatsısı) yeni hedefe ulaştıysa
+      // kaydedilir: sadece gerekince (kilit ve yeniden okuma her yenilemede
+      // olmaz)
+      final now = DateTime.now();
+      final streak = PrayerTracker.streak(
+        log,
+        now,
+        excused: excused,
+        yesterdayYatsiOngoing: ongoing,
+      );
+      if (PrayerTracker.withBadges(badges, streak, now).length >
+          badges.length) {
+        badges = await _service.earnBadges(yesterdayYatsiOngoing: ongoing);
+      }
       if (!mounted || _saving > 0 || generation != _generation) return;
       setState(() {
         _log = log;

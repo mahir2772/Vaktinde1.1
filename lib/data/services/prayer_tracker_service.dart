@@ -103,6 +103,9 @@ class PrayerTrackerService {
     if (earned.isNotEmpty) _badgeEarned.add(earned.reduce(math.max));
   }
 
+  /// Kazanılmış seri hedefleri (okuma; kaydetmez)
+  Future<Map<int, String>> loadBadges() => _storage.loadTrackerBadges();
+
   /// Kazanılan seri hedefleri (gün → kazanıldığı gün). Önce güncel serinin
   /// ulaştığı hedefler kaydedilir: takip ekranı gösterdiği seriyle
   /// ([yesterdayYatsiOngoing] dahil) tutarlı kalır; eski sürümden ya da

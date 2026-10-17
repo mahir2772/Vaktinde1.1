@@ -34,7 +34,8 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 `MainWrapper` (alt menü + ana banner + showcase turu; `app_showcase.dart`: tur anahtarları + `AppShowcase`): 5 sekme `MainTab` (`main_tabs.dart`; sekme içinden geçiş `MainTabRequests.show`, çerçeve yoksa false) — HomeView,
 QuranView(asTab: true; kendi banner/geri düğmesi yok), QiblaView, ZikirView, ToolsView ("Araçlar"; Kur'an satırı yok). Turda Kur'an adımı var. Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok. Geçiş reklamı sadece kullanıcının açtığı ekrana geçişte: Araçlar'daki araçlar, ana ekranda "Bugün için" Cuma mesajları/dini günler ve "Bugün" takip satırı. Kur'an, Kıble, Zikir, Dualar/Tesbihat, Namaz Hocası, Ayarlar, Bildirim Kontrolü, Yakındaki Camiler reklamsız. Sıklık `AdHelper.canShowInterstitial`: 4 dk soğuma + günde en çok 8 (zekat dahil ortak; 'interstitial_log' ile süreç kapansa da korunur). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
 Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. Sonra bu sürüme güncelleyene bir kez "Yenilikler" (app_guide/whats_new.dart, 'whats_new_seen' = WhatsNew.version; yeni kurulumda tur görülür, liste görüldü sayılır; yeni sürümde liste + version değişir). Akış bitince (tur yolunda da) `StreakReviewPrompt.start()`: `PrayerTrackerService.changes` ile seri 7+'ya çıkınca bir kez `InAppReview.requestReview` ('review_requested'; isAvailable, ön plan, izin/rıza/tur penceresi yokken). SettingsView araçlar ekranındaki karttan açılır ("Bize Puan Ver" = openStoreListing).
-`ToolsView` (gruplu liste: Namaz / Bilgi / Hesap + en altta Ayarlar; üst çubukta Ayarlar dişlisi, liste ekrana sığmıyor) → Imsakiye, PrayerTracker, MissedPrayers, Dualar, Namaz Hocası, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat.
+`ToolsView` (gruplu kutucuk ızgarası: Namaz / Bilgi / Hesap + en altta Ayarlar satırı; üst çubukta Ayarlar dişlisi; core/ui `ToolTile`: ortalı başlık, açıklama `hint` = ekran okuyucu ipucu; sütun sayısı en uzun başlık kelimesi bölünmeden, en çok 3; `_ToolGrid` satırları eşit yükseklik) → Imsakiye, PrayerTracker (Takip | Kaza; ayrı Kaza aracı yok), Dualar, Namaz Hocası, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, FridayMessages, Zakat, Fitre.
+Bildirimden yönlendirme (`core/notification_routes.dart`): 'open|<hedef>' gövde yükünde ya da showsUserInterface düğmesinin kimliğinde (prayed|/stop_ezan|/"Kıldım" değil); NotificationService.init `onDidReceiveNotificationResponse: NotificationRoutes.handle` + uygulamayı açan bildirim süreç başına bir kez (getNotificationAppLaunchDetails) → `NotificationRoutes.pending`; MainWrapper `_openNotificationRoute` açılış akışından sonra, tur/izin/rıza kapalıyken (1 sn'de yeniden dener) switch ile açar: friday → FridayMessagesView, surah:<n> → `openSurahReader` (common/open_surah.dart, trackLastRead: false; Namaz Hocası da), hatim → `openHatimReading`. Geçiş reklamı yok. Yeni hedef = bir case.
 
 ## Klasörler
 ```
@@ -56,7 +57,7 @@ lib/
                             seviye), arama önce gömülü liste, sonra "İnternette ara" (bulunamazsa çevrimiçi kendiliğinden);
                             kayıt changeCityAndDistrict + koordinat ("İlçe, İl" / il adı / şehir adı)
       notification_service  flutter_local_notifications, tz; ezan/hatırlatma alarmları (namaz ID 0-71 = vaktin tarihine bağlı
-                            PrayerRefreshService.alarmId: epochDay%6 × 12 + vakit×2 (+1 hatırlatma), vakit çıkış 100-124, günlük içerik 1000/1900, test ezanı 1999, dini gün 2000-2399, kalıcı 888).
+                            PrayerRefreshService.alarmId: epochDay%6 × 12 + vakit×2 (+1 hatırlatma), vakit çıkış 100-124, günlük içerik 1000/1900, hatim hatırlatması 1100-1106, test ezanı 1999, dini gün 2000-2399, Cuma 2400-2403, kalıcı 888).
                             Her initialize'a onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground verilir ("Kıldım", "Durdur")
                             "Durdur" (stopAction) sadece sesli ezanda (Güneş, sahur/iftar, alarm kanalı, test ezanı dahil): cancelNotification ile
                             ses anında kesilir; başlık+metin eylem kimliğinde JSON ('stop_ezan|[..]'), arka planda showSilentCopy aynı ID/metin/
@@ -115,6 +116,13 @@ lib/
                             (sadece json; 2028 sonrası json uzatılmalı). O gün 10:00, Ramazan başlangıcı bir gün önce, aynı
                             gün tek bildirim (Üç Aylar + Regaib ortak metin), bayramda arefe + 1. gün; 60 gün ileri; ID
                             religiousDayId = 2000 + epochDay%400; ayar 'religious_days_enabled' (varsayılan açık).
+                            Cuma: buildFridayPlan + syncFridayNotifications (_religiousQueue; rescheduleAlarms/runHeadless turunda,
+                            'alarms_scheduled_date' koşulunda; dini gün anahtarı da eşitler). Her Cuma 09:00, bugünden itibaren 4
+                            hafta, ID 2400-2403 = 2400 + (epochDay ~/ 7) % 4; religious_days_channel, NotificationKind.religiousDay
+                            (hep gecikmeli); başlık fridayGreeting, gövde yükü open|friday, "Kehf Suresi" düğmesi open|surah:18.
+                            Dini gün bildirimi olan Cuma atlanır (o gün bekleyen Cuma da iptal; günde tek bildirim); ayar
+                            'friday_notif_enabled' (varsayılan açık, yedekte; FridayNotificationSetting, Bildirim Ayarları'nda).
+                            localizationsFor(dil): kayıtlı dilin metinleri, desteklenmiyorsa Türkçe (hatim de kullanır)
                             Test ezanı: scheduleTestEzan (ID 1999, ilk açık vaktin sesi/kanalı; temizlik dokunmaz).
                             nextScheduledEzan (bekleyen çift ID 0-71). 'last_headless_run': runHeadless başarı zamanı.
                             Geç ezan: vakti son 90 dk'da (lateWindow) girmiş, açık farz ezanı aynı "Kıldım" yüküyle hâlâ bekliyorsa
@@ -168,8 +176,9 @@ lib/
                                            konum; ızgarada vakte dokun → o vaktin alarm alt sayfası (alarm_settings_list: PrayerAlarmControls,
                                            showPrayerAlarmSheet; kapanınca HomeViewModel.stopPreview). HomeView.clock (test)
     home/widgets/today_hub.dart            "Bugün için": Cuma → Cuma mesajı; dini gün −3..+3 gün → başa + "Tebrik gönder"
-                                           (religious_days_view: greetingGroupsFor/showGreetingsSheet); Kur'an kaldığın yer (Kur'an
-                                           sekmesine geçer, okuyucu üstüne açılır → geri = sure listesi); Tesbihat; yoksa sıradaki dini
+                                           (religious_days_view: greetingGroupsFor/showGreetingsSheet); hatim sürüyorsa "Hatim · Bugün
+                                           a / b sayfa" (openHatimReading), yoksa Kur'an kaldığın yer (Kur'an sekmesine geçer, okuyucu
+                                           üstüne açılır → geri = sure listesi); Tesbihat; yoksa sıradaki dini
                                            gün sonda. 3, en çok 4 satır; dönüşte/resume/30 sn'de yenilenir; Cuma/dini gün geçiş reklamlı
     home/prayer_schedule.dart              saf: upcomingPrayer (yatsıdan sonra yarının imsakı), prayerRowStates (sıradaki/şu an/
                                            geçmiş; güneşten öğleye "şu an" yok), localizedPrayerName — test/prayer_schedule_test.dart
@@ -188,13 +197,27 @@ lib/
     home/widgets/ramadan_card.dart         sadece Ramazan'da sahur/iftar sayacı (hero kapsülü) + resimli paylaşım (ramadanShareContent)
     home/kerahat_logic.dart + widgets/kerahat_card.dart   kerahat (45 dk) sürüyorsa/60 dk içindeyse; onHero: kapsül, değilse InfoBanner
     home/widgets/prayer_tracker_row.dart   "Bugün" 5 vakit işareti (resume'da yenilenir) → prayer_tracker/view/prayer_tracker_view.dart
-                                           (7 gün ızgara, 30 gün oran, seri, kılınmayanları kazaya ekle; araçlarda da kart)
+                                           Takip | Kaza sekmeleri (`TrackerTab`, `initialTab`; geçiş reklamsız). Takip: 7 gün ızgara,
+                                           30 gün oran, seri, Hedefler kartı, kılınmayanları kazaya ekle. Kaza: missed_prayers/view/
+                                           missed_prayers_tab.dart `MissedPrayersTab` (eski MissedPrayersView; AppFeature.kaza → kaza sekmesi)
+                                           Seri hedefleri: `PrayerTracker.badgeGoals` [7, 40], 'tracker_badges' {gün: yyyy-MM-dd} (yedekte);
+                                           `PrayerTrackerService._earnBadges` setPrayed/removeFromKaza/setExcused içinde (bildirim/widget
+                                           isolate'i dahil; vakitsiz → imsak öncesi dünün yatsısı eksik sayılır), takip ekranı `_load`'da
+                                           yeni hedefe ulaşılmışsa `earnBadges(yesterdayYatsiOngoing)`. Tebrik: `badgeEarned` (bu isolate,
+                                           en büyük hedef) → `showBadgeEarned` sadece görünen sayfada (ana ekran satırı / takip ekranı)
     settings/view/end_reminder_setting.dart vakit çıkış hatırlatması anahtarı + 15/30/45 dk
-    settings/view/settings_view.dart       Konum & Vakitler: EndReminderSetting altında "Günün ayeti ve hadisi", "Dini gün ve kandil" ve
-                                           "Özel günde ezanı sessiz bildir" anahtarları (HomeViewModel.setDailyContentEnabled /
-                                           setReligiousDaysEnabled / setExcusedSilentEzan), "Bildirim Kontrolü"
-                                           satırı. Destek'te "Gizlilik Politikası" (core/app_links.dart AppLinks.privacyPolicy = Google Sites,
-                                           harici tarayıcı; boşsa gizli). Metnin kaynağı docs/gizlilik_politikasi.md.
+    settings/view/settings_view.dart       kısa liste, anahtar yok: GÖRÜNÜM & DİL (Dil, Görünüm Ayarları = `showAppearanceSettings`:
+                                           tema + yazı boyutu + arka plan, Widget ekle) · KONUM & VAKİTLER (Konum, İnce ayar) ·
+                                           BİLDİRİMLER ("Bildirim Ayarları", "Bildirim Kontrolü") · YEDEKLEME · DESTEK (Uygulamayı Tanı,
+                                           Paylaş, Puan Ver, İletişim, "Gizlilik ve Reklamlar")
+    settings/view/notification_settings_view.dart  (banner yok) "Ezan Alarmları" (popUntil isFirst + HomeView.openAlarmsTab) +
+                                           EndReminderSetting, günün ayeti/hadisi, dini gün/kandil, Cuma, özel günde sessiz ezan,
+                                           kalıcı bildirim anahtarları (HomeViewModel.set…)
+    settings/view/privacy_ads_view.dart    (banner yok) Gizlilik Politikası (core/app_links.dart AppLinks.privacyPolicy = Google Sites,
+                                           harici tarayıcı; SettingsView.privacyPolicyUrl → parametre, boşsa gizli; metnin kaynağı
+                                           docs/gizlilik_politikasi.md), Reklamlar Hakkında, Reklam gizlilik ayarları
+                                           (AdConsent.privacyOptionsRequired; Ayarlar satırının alt yazısı o zaman bunu söyler).
+                                           Banner'sız liste sayfası alt boşluğa MediaQuery.paddingOf(context).bottom ekler
                                            Play linki tek yer: AppLinks.playStore / playStoreLink(kampanya) (utm_source=app_share)
     notification_health/notification_health.dart  saf: HealthStatus, DeviceStatus, vendorOf (üretici), guideSteps, volumeIssue,
                                            dndStatus, backgroundStatus (son WorkManager koşusu 48 sa'ten eskiyse uyarı)
@@ -210,6 +233,8 @@ lib/
                                            yok); 'vaktinde/magnetic' akışı pusulayla aynı yaşam döngüsünde (sekme görünür + ön plan); altta
                                            her zaman "yaklaşık yön" notu + "Doğru sonuç için" alt sayfası (ipuçları, kıble açısı, sapma)
     zikirmatik/view/dhikr_names.dart       zikir adları/Arapça metinleri (Amiri)
+    zikirmatik/view/zikir_view.dart        altta "Sayacı Düzenle" + "Bugün: N" (todayCount, 'dhikr_daily_stats'; dokununca
+                                           DhikrStatsView aylık/yıllık)
     zikirmatik/{zikir_logic,volume_keys}.dart  hedef halkası (27 / 33), tur ('zikir_round_mode', 'dhikr_round_<id>'), başlıkta
                                            kaydır/oklarla zikir değiştir, Sıfırla üst çubukta (onaylı), boş alana dokun = say. Ses tuşları
                                            ('zikir_volume_keys', varsayılan kapalı): 'vaktinde/device' setVolumeKeyCounting + EventChannel
@@ -237,6 +262,19 @@ lib/
                                            'quran_translation_scale'; Ayete git; önceki/sonraki sure. Önbellek sürüm 2 (page/juz/hizb/
                                            sajda); sürüm 1 açılınca 5 sn'de yenilenir, olmazsa ≤10 ayetlik gruplar. widgets/: mushaf_page,
                                            translation_page, quran_page_frame, ayah_sheet, view_settings_sheet… Sonda Tanzil + mütercim notu
+    quran/widgets/hatim_card.dart          Hatim (Kur'an listesinin başı, reklamsız): yok → açıklama + "Hatim Başlat" (günde 20/10/5
+                                           sayfa = hedef bugün+30/60/120 gün; "Ramazan'da hatim" Ramazan'da / ≤15 gün kala, hedef son gün);
+                                           sürüyor → "Sayfa X / 604 · %Y" ölçeği, "Bugün a / b sayfa", Devam Et, menü Sayfa Gir / Hatırlatma /
+                                           Planı Değiştir / Hatmi Sil; bitti → tarih + sayaç. openHatimReading: Kur'an sekmesi + okuyucu
+                                           sonraki sayfanın başından (hatim: true). Okuyucu: görünen ayetin sayfasından öncekiler bitmiş
+                                           sayılır, Nâs'ın sonunda 604; kaydırarak ilerleme (sıradayken) her adımda, atlamada en çok 2
+                                           sayfa (uzak atlama sıradan çıkarır, geri dönünce girer)
+    data/services/hatim(_service).dart     saf HatimPlan (position = bitirilen son sayfa; günlük hedef = bugünün başında kalan / kalan gün,
+                                           en az 1; 60 gün kayıt) + QuranPages (assets/data/quran_pages.json, quran-meta MIT, alquran.cloud
+                                           page ile aynı; 4 cüz sayfa ortasında). 'hatim_plan', 'hatim_count', 'hatim_reminder_enabled'/
+                                           '_time' (yedekte). Hatırlatma: 7 gün ileriye tek seferlik (ID 1100 + epochDay%7; eklentinin
+                                           tekrarı tarihi yok sayar), hedefi tamam olan bugün yok; sadece hedef/bitiş durumu değişince ve
+                                           alarm turunda / yedekten dönüşte eşitlenir; gecikmeli, kanal hatim_reminder_channel, yük open|hatim
     prayer_guide/                          Namaz Hocası (Araçlar > Namaz, Dualar altı, reklamsız): assets/data/prayer_guide.json
                                            (5 dil, Diyanet ilmihali/Hanefî) + prayer_guide_data.dart; sekmeler Abdest | Farzlar | Rekâtlar |
                                            Kılınış (2/3/4 rekât, Vitir; adım kartları). Dualar DuaLibrary.byId → DuaDetailView; Fâtiha →
@@ -274,10 +312,16 @@ lib/
     core/ui/feature_tip.dart               FeatureTip: ilk ziyaret ipucu (bir kez, 'tip_<id>_seen', aynı anda tek; MainWrapper kapısı:
                                            açılış akışı bitti + tur/izin/rıza kapalı). Yerler: Namaz Takibi, Zikirmatik, Kur'an okuyucu,
                                            Alarmlar, ana ekran widget ipucu (usage_days_count ≥ 3)
-    app_guide/                             Uygulamayı Tanı (Ayarlar > Destek ilk satır): gruplu özellik listesi, satır ilgili ekranı açar,
-                                           "Tanıtım turunu tekrar izle"; whats_new.dart Yenilikler
+    app_guide/                             Uygulamayı Tanı (Ayarlar > Destek ilk satır): "Tanıtım turunu tekrar izle" + Yazı Boyutu,
+                                           gruplu özellik listesi (Bildirim Ayarları, Hatim dahil), satır ilgili ekranı açar (AppFeature);
+                                           whats_new.dart Yenilikler 1.3.0: Hatim, Kur'an, Yazı Boyutu, Cuma Bildirimi, widget'lar,
+                                           Durdur (5-6 satır; yeni sürümde liste + version değişir)
     common/{language,theme}_provider.dart  ThemeProvider: arka plan listesi tek yer (mosqueBackgrounds/kaabaBackgrounds); validBackground:
-                                           eski .jpg → .webp, bilinmeyen (bg_quran) silinir; main.dart arka planı errorBuilder ile düşer
+                                           eski .jpg → .webp, bilinmeyen (bg_quran) silinir; main.dart arka planı errorBuilder ile düşer.
+                                           Yazı boyutu: textScale ('app_text_scale', textScales 1.0/1.15/1.3, yedekte; seçenek dışı → 1.0).
+                                           MaterialApp.builder: 1.0'da MediaQuery'ye dokunulmaz (Android 14 doğrusal olmayan ölçek), değilse
+                                           sistem × seçim doğrusal, en çok maxTextScale 2.0 (sistem ≥2.0 ise dokunulmaz). Paylaşım resimleri
+                                           ölçeği sıfırlar; widget/bildirim yerel. Test: test/text_scale_test.dart
 android/app/src/main/
   AndroidManifest.xml   application android:name=".VaktindeApplication"; AdMob APP ID, izinler, servis/receiver/widget tanımları
                         (showWhenLocked/turnScreenOn YOK: kilit ekranı üstünde açılmaz); widget'lar + NotificationUpdater

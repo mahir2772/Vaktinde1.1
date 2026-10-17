@@ -319,9 +319,13 @@ class _AppearanceSheet extends StatelessWidget {
           modeRow(ThemeMode.light, Icons.light_mode_outlined, loc.themeLight),
           modeRow(ThemeMode.dark, Icons.dark_mode_outlined, loc.themeDark),
           SectionHeader(loc.textSizeTitle),
-          scaleRow(1.0, Icons.text_fields, loc.textSizeNormal),
-          scaleRow(1.15, Icons.format_size, loc.textSizeLarge),
-          scaleRow(1.3, Icons.text_increase, loc.textSizeExtraLarge),
+          // Değerler tek yerden (ThemeProvider.textScales, küçükten büyüğe)
+          for (final (i, (icon, label)) in [
+            (Icons.text_fields, loc.textSizeNormal),
+            (Icons.format_size, loc.textSizeLarge),
+            (Icons.text_increase, loc.textSizeExtraLarge),
+          ].indexed)
+            scaleRow(ThemeProvider.textScales[i], icon, label),
           SectionHeader(loc.bgImage),
           SizedBox(
             height: 112,

@@ -1,9 +1,15 @@
-# Vaktinde — Durum (Play'de 1.2.0+17; 1.3.0 bu dalda hazır, yayın bekliyor — 14 Ekim 2026)
+# Vaktinde — Durum (Play'de 1.2.0+17; 1.3.0 bu dalda hazır, yayın bekliyor — 17 Ekim 2026)
 
-## SON DURUM — kaldığımız yer (14 Ekim 2026)
+## SON DURUM — kaldığımız yer (17 Ekim 2026)
 - Kod işleri bitti; dal `claude/vaktinde-app-analysis-bocjca` = 1.3.0 adayı (pubspec hâlâ 1.2.0+17). Tüm testler geçiyor
-  (819 + 31 ekran görüntüsü), analyze temiz. Kullanıcı telefonda denedi: 0–3 ve önceki işler sorunsuz; 14 Ekim'de son
+  (919 + 34 ekran görüntüsü), analyze temiz. Kullanıcı telefonda denedi: 0–3 ve önceki işler sorunsuz; 14 Ekim'de son
   hâli debug'da açtı, genel görünüm sorunsuz. Şehir listesi, Namaz Hocası ve yeni widget'lar henüz ayrıntılı denenmedi.
+- 16-17 Ekim eklenenler (1.3.0'a girer, cihazda denenecek): Ayarlar sadeleşti (Bildirim Ayarları + Gizlilik ve Reklamlar
+  alt sayfaları), uygulama içi yazı boyutu (Normal/Büyük/Çok büyük), Araçlar kutucuk ızgarası, Namaz Takibi + Kaza tek ekran
+  (sekmeler), 7/40 gün seri hedefleri, Cuma bildirimi (Cuma 09:00, Kehf düğmesi; bildirime dokununca ilgili ekran açılır),
+  Hatim takibi (Kur'an kartı, günlük hedef, okuyucuda otomatik sayfa, Sayfa Gir, isteğe bağlı hatırlatma, "Bugün için"
+  satırı), zikirde "Bugün: N". Yenilikler ve Uygulamayı Tanı güncellendi. code-review bulguları düzeltildi.
+  Debug'da zekat canlı kuru gelmez (COLLECT_API_KEY derlemede verilir; normal).
 - YAYIN: kullanıcı zamanını kendisi söyleyecek, adım adım yapılacak. Yayın günü sırası:
   1. pubspec `1.3.0+18`; 2. 5 dilde kısa sürüm notları (500 karakter sınırı); 3. CollectAPI anahtarını yenile (eskisi git
   geçmişinde açık; önce değil, yayındaki 1.2.0'ın canlı kuru durur) → `flutter build appbundle --release
@@ -12,7 +18,9 @@
   Kıldım), özel gün dönemi + sessiz ezan, şehir listesi (il/ilçe, Avrupa, saat dilimi uyarısı), Namaz Hocası, Kur'an
   kipleri/kart, yedekle/geri yükle, AB rıza formu, kaza hesapla, kalıcı bildirim aç/kapat (yeni kurulumda kapalı, telefon
   yeniden başlayınca), ilk reklam fırsatında "Reklamlar hakkında", 1.2.0 üstüne kurulumda Yenilikler, ipuçları, Uygulamayı
-  Tanı + turu tekrar izle, Play'deki indirme boyutu; 5. docs/gizlilik_politikasi.md → Google Sites'a yapıştır (kalıcı
+  Tanı + turu tekrar izle, Play'deki indirme boyutu, Ayarlar alt sayfaları, yazı boyutu, Araçlar kutucukları, Takip/Kaza
+  sekmeleri ve seri hedefi, Cuma bildirimi (uygulama kapalıyken gövdeye ve "Kehf Suresi"ne dokunma), hatim (Devam Et,
+  kaydırınca sayfa sayımı, Sayfa Gir, hatırlatma: hedef tamamlanan gün çalmamalı); 5. docs/gizlilik_politikasi.md → Google Sites'a yapıştır (kalıcı
   bildirim isteğe bağlı, ilk açılış izin sonucu olayları); 6. üretim.
 - 1.3.0 içeriği (1.2.0'dan beri): eksi sayaç kalıcı çözümü (setTimeoutAfter + 15 dk onarım işi), widget 12 saat/kontrast,
   Ramazan widget'ı, vakit halkası + namaz takibi widget'ları, yedekle/geri yükle, AB Consent Mode v2, erişilebilirlik
