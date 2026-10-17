@@ -1612,6 +1612,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get bgDefault => 'Par défaut';
 
   @override
+  String get bgPlain => 'Uni';
+
+  @override
   String get bgMosque => 'Mosquée';
 
   @override

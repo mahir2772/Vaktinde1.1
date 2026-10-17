@@ -248,6 +248,7 @@ Future<void> showAppearanceSettings(BuildContext context) {
 class _AppearanceSheet extends StatelessWidget {
   const _AppearanceSheet();
 
+  static const List<String> _plains = ThemeProvider.plainBackgrounds;
   static const List<String> _mosques = ThemeProvider.mosqueBackgrounds;
   static const List<String> _kaabas = ThemeProvider.kaabaBackgrounds;
 
@@ -339,6 +340,13 @@ class _AppearanceSheet extends StatelessWidget {
                   selected: themeProvider.backgroundImage == null,
                   onTap: () => themeProvider.setBackgroundImage(null),
                 ),
+                for (var i = 0; i < _plains.length; i++)
+                  _BackgroundOption(
+                    image: _plains[i],
+                    label: '${loc.bgPlain} ${i + 1}',
+                    selected: themeProvider.backgroundImage == _plains[i],
+                    onTap: () => themeProvider.setBackgroundImage(_plains[i]),
+                  ),
                 for (var i = 0; i < _mosques.length; i++)
                   _BackgroundOption(
                     image: _mosques[i],

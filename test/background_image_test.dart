@@ -75,6 +75,7 @@ void main() {
         ThemeProvider.validBackground('bg_mosque3.webp'),
         'bg_mosque3.webp',
       );
+      expect(ThemeProvider.validBackground('bg_plain2.webp'), 'bg_plain2.webp');
       for (final name in [
         'bg_quran.jpg', // 1.0
         'bg_quran.webp', // 1.1.0'da seçilebiliyordu, dosyası hiç olmadı
@@ -94,6 +95,7 @@ void main() {
 
     test('Ayarlar\'daki her seçenek pakette var', () {
       for (final name in [
+        ...ThemeProvider.plainBackgrounds,
         ...ThemeProvider.mosqueBackgrounds,
         ...ThemeProvider.kaabaBackgrounds,
       ]) {
@@ -202,7 +204,9 @@ void main() {
     expect(find.text(loc.bgImage), findsOneWidget);
     expect(
       bundle.failed,
-      contains('assets/images/backgrounds/bg_mosque1.webp'),
+      contains(
+        'assets/images/backgrounds/${ThemeProvider.plainBackgrounds.first}',
+      ),
     );
     expect(tester.takeException(), isNull);
 

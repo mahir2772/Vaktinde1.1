@@ -1451,6 +1451,30 @@ void main() {
     });
   });
 
+  // Sade arka planlar (koyu zümrüt, açık kum): ana ekran ve Araçlar okunur
+  testWidgets('tr sade arka plan', skip: skip, variant: _android, (
+    tester,
+  ) async {
+    await _run(tester, () async {
+      for (final (name, background) in [
+        ('tr_plain_dark', 'bg_plain1.webp'),
+        ('tr_plain_light', 'bg_plain3.webp'),
+      ]) {
+        _currentScreen = '${name}_10_home';
+        await _pumpApp(
+          tester,
+          lang: 'tr',
+          homeVm: _homeVm('tr'),
+          background: background,
+        );
+        await _shot(tester, '${name}_10_home');
+        await _tapTab(tester, MainTab.tools);
+        await _shot(tester, '${name}_40_tools');
+        await _finish(tester);
+      }
+    });
+  });
+
   testWidgets('tr arka plan görseli', skip: skip, variant: _android, (
     tester,
   ) async {

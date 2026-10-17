@@ -14,7 +14,16 @@ class ThemeProvider extends ChangeNotifier {
   static const double maxTextScale = 2.0;
 
   /// Seçilebilen arka plan görselleri (assets/images/backgrounds/); Ayarlar
-  /// bunları listeler, kayıtlı seçim de bunlara göre doğrulanır
+  /// bunları listeler, kayıtlı seçim de bunlara göre doğrulanır. Sade: yumuşak
+  /// renk geçişi + silik 8 köşeli yıldız (fotoğrafı kalabalık bulanlar için)
+  static const List<String> plainBackgrounds = [
+    'bg_plain1.webp',
+    'bg_plain2.webp',
+    'bg_plain3.webp',
+    'bg_plain4.webp',
+    'bg_plain5.webp',
+    'bg_plain6.webp',
+  ];
   static const List<String> mosqueBackgrounds = [
     'bg_mosque1.webp',
     'bg_mosque2.webp',
@@ -39,7 +48,9 @@ class ThemeProvider extends ChangeNotifier {
     final webp = name.endsWith('.jpg')
         ? '${name.substring(0, name.length - 4)}.webp'
         : name;
-    return mosqueBackgrounds.contains(webp) || kaabaBackgrounds.contains(webp)
+    return plainBackgrounds.contains(webp) ||
+            mosqueBackgrounds.contains(webp) ||
+            kaabaBackgrounds.contains(webp)
         ? webp
         : null;
   }

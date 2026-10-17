@@ -762,6 +762,7 @@
     "themeDark": "Dark",
     "bgImage": "Background Image",
     "bgDefault": "Default",
+    "bgPlain": "Plain",
     "bgMosque": "Mosque",
     "bgKaaba": "Kaaba",
     "zakatEligible": "Zakat is Required",

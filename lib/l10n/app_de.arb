@@ -762,6 +762,7 @@
     "themeDark": "Dunkel",
     "bgImage": "Hintergrundbild",
     "bgDefault": "Standard",
+    "bgPlain": "Schlicht",
     "bgMosque": "Moschee",
     "bgKaaba": "Kaaba",
     "zakatEligible": "Zakat ist fällig",

@@ -316,7 +316,8 @@ lib/
                                            gruplu özellik listesi (Bildirim Ayarları, Hatim dahil), satır ilgili ekranı açar (AppFeature);
                                            whats_new.dart Yenilikler 1.3.0: Hatim, Kur'an, Yazı Boyutu, Cuma Bildirimi, widget'lar,
                                            Durdur (5-6 satır; yeni sürümde liste + version değişir)
-    common/{language,theme}_provider.dart  ThemeProvider: arka plan listesi tek yer (mosqueBackgrounds/kaabaBackgrounds); validBackground:
+    common/{language,theme}_provider.dart  ThemeProvider: arka plan listesi tek yer (plainBackgrounds = sade: renk geçişi + silik 8 köşeli
+                                           yıldız, ~8 KB webp, Görünüm'de ilk sırada; mosqueBackgrounds/kaabaBackgrounds); validBackground:
                                            eski .jpg → .webp, bilinmeyen (bg_quran) silinir; main.dart arka planı errorBuilder ile düşer.
                                            Yazı boyutu: textScale ('app_text_scale', textScales 1.0/1.15/1.3, yedekte; seçenek dışı → 1.0).
                                            MaterialApp.builder: 1.0'da MediaQuery'ye dokunulmaz (Android 14 doğrusal olmayan ölçek), değilse

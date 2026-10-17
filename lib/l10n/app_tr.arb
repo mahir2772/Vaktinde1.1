@@ -841,6 +841,7 @@
     "themeDark": "Koyu",
     "bgImage": "Arka Plan Resmi",
     "bgDefault": "Varsayılan",
+    "bgPlain": "Sade",
     "bgMosque": "Cami",
     "bgKaaba": "Kabe",
     "zakatEligible": "Zekat Verilmesi Gerekir",

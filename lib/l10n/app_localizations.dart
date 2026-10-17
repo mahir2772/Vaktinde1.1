@@ -2744,6 +2744,12 @@ abstract class AppLocalizations {
   /// **'Varsayılan'**
   String get bgDefault;
 
+  /// No description provided for @bgPlain.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sade'**
+  String get bgPlain;
+
   /// No description provided for @bgMosque.
   ///
   /// In tr, this message translates to:

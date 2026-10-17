@@ -762,6 +762,7 @@
     "themeDark": "داكن",
     "bgImage": "صورة الخلفية",
     "bgDefault": "الافتراضي",
+    "bgPlain": "بسيط",
     "bgMosque": "مسجد",
     "bgKaaba": "الكعبة",
     "zakatEligible": "تجب الزكاة",

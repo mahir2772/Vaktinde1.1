@@ -1565,6 +1565,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get bgDefault => 'Varsayılan';
 
   @override
+  String get bgPlain => 'Sade';
+
+  @override
   String get bgMosque => 'Cami';
 
   @override

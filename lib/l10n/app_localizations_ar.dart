@@ -1609,6 +1609,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bgDefault => 'الافتراضي';
 
   @override
+  String get bgPlain => 'بسيط';
+
+  @override
   String get bgMosque => 'مسجد';
 
   @override
