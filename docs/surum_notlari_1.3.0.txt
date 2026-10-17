@@ -1,0 +1,50 @@
+<tr-TR>
+• Kur'an-ı Kerim artık alt menüde: mushaf sayfası, ayet ayet ya da meal okuyun
+• Yeni: Hatim takibi; günlük hedef, okudukça sayfa sayılır
+• Namaz Hocası, Dualar ve namaz sonrası Tesbihat
+• Yeni widget'lar: vakit halkası, namaz takibi, Ramazan
+• Ezanı bildirimdeki "Durdur" ile tek dokunuşla susturun
+• Cuma bildirimi, seri hedefleri ve kaza hesaplama
+• Uygulama içinden yazı boyutu; sadeleşen Ayarlar ve Araçlar
+• İnternetsiz şehir listesi, yedekleme ve hata düzeltmeleri
+</tr-TR>
+<en-US>
+• The Quran is now in the bottom bar: read by mushaf page, verse by verse or translation
+• New: Khatm tracking with a daily goal; pages are counted as you read
+• Prayer Guide, Duas and post-prayer Tasbih
+• New widgets: prayer ring, prayer tracker, Ramadan
+• Silence the adhan with one tap on "Stop"
+• Friday reminder, streak goals and missed prayer calculator
+• In-app text size; simpler Settings and Tools
+• Offline city list, backup and bug fixes
+</en-US>
+<de-DE>
+• Der Koran ist jetzt in der unteren Leiste: Mushaf-Seite, Vers für Vers oder Übersetzung
+• Neu: Khatm-Plan mit Tagesziel; Seiten werden beim Lesen gezählt
+• Gebetsanleitung, Bittgebete und Tasbih nach dem Gebet
+• Neue Widgets: Gebetsring, Gebetstracker, Ramadan
+• Adhan mit einem Tipp auf „Stoppen" beenden
+• Freitagserinnerung, Serienziele und Nachholgebet-Rechner
+• Schriftgröße in der App; einfachere Einstellungen und Tools
+• Offline-Städteliste, Sicherung und Fehlerbehebungen
+</de-DE>
+<fr-FR>
+• Le Coran dans la barre du bas : page du mushaf, verset par verset ou traduction
+• Nouveau : suivi du Khatm avec objectif quotidien
+• Guide de la prière, invocations et tasbih après la prière
+• Nouveaux widgets : anneau des prières, suivi, Ramadan
+• Arrêtez l'adhan d'une touche avec « Arrêter »
+• Rappel du vendredi, objectifs de série, prières à rattraper
+• Taille du texte dans l'app ; Réglages et Outils simplifiés
+• Villes hors ligne, sauvegarde et corrections
+</fr-FR>
+<ar>
+• القرآن الكريم الآن في الشريط السفلي: صفحة المصحف أو آية بآية أو الترجمة
+• جديد: متابعة الختمة بهدف يومي، تُحسب الصفحات أثناء القراءة
+• تعليم الصلاة والأدعية والتسبيح بعد الصلاة
+• أدوات جديدة: حلقة الأوقات ومتابعة الصلاة ورمضان
+• أوقفوا الأذان بلمسة واحدة على «إيقاف»
+• تذكير الجمعة وأهداف المواظبة وحساب القضاء
+• حجم الخط من داخل التطبيق، وإعدادات وأدوات أبسط
+• قائمة مدن دون إنترنت والنسخ الاحتياطي وإصلاحات
+</ar>

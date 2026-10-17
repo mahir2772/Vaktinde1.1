@@ -11,7 +11,8 @@
   satırı), zikirde "Bugün: N". Yenilikler ve Uygulamayı Tanı güncellendi. code-review bulguları düzeltildi.
   Debug'da zekat canlı kuru gelmez (COLLECT_API_KEY derlemede verilir; normal).
 - YAYIN: kullanıcı zamanını kendisi söyleyecek, adım adım yapılacak. Yayın günü sırası:
-  1. pubspec `1.3.0+18`; 2. 5 dilde kısa sürüm notları (500 karakter sınırı); 3. CollectAPI anahtarını yenile (eskisi git
+  1. ✅ pubspec `1.3.0+18` (17 Ekim); 2. ✅ sürüm notları docs/surum_notlari_1.3.0.txt (5 dil, ≤500; gizlilik metni de
+  güncel: Gizlilik ve Reklamlar yolu, hatim/yazı boyutu); 3. CollectAPI anahtarını yenile (eskisi git
   geçmişinde açık; önce değil, yayındaki 1.2.0'ın canlı kuru durur) → `flutter build appbundle --release
   --dart-define=COLLECT_API_KEY=<yeni>`; 4. dahili test, cihazda: R8 + kaynak küçültme (release), iki yeni widget
   (takipte uygulama kapalıyken dokunma, halka vakitte sıfırlanma, gece yarısı), ezan "Durdur" (kilit ekranı, sessiz kopya +

@@ -6,8 +6,8 @@ Bu politika, Vaktinde uygulamasının ("Uygulama") hangi verileri hangi amaçla 
 1. Telefonunuzda kalan bilgiler
 Aşağıdaki bilgiler yalnızca telefonunuzda saklanır, bize gönderilmez:
 • Seçtiğiniz konum (il/ilçe adı ve koordinatlar) ve vakit ince ayarları
-• Ezan ve hatırlatma ayarları, ses seçimleri, dil ve tema tercihleri
-• Namaz takibi kayıtları, kaza namazı ve oruç sayıları, zikir sayaçları, zekât hesapları
+• Ezan ve hatırlatma ayarları, ses seçimleri, dil, tema ve yazı boyutu tercihleri
+• Namaz takibi kayıtları ve seri hedefleri, kaza namazı ve oruç sayıları, zikir sayaçları, hatim planı ve okunan sayfalar, zekât hesapları
 Namaz vakitleri ve kıble yönü telefonunuzda, internet bağlantısı olmadan hesaplanır.
 Ayarlar > Yedekleme > "Verileri Yedekle" bu bilgileri (konumunuz dahil) tek bir dosyaya yazar ve dosyayı yalnızca sizin seçtiğiniz uygulamayla (ör. Google Drive, e-posta) paylaşır; dosya bize ya da başka bir yere kendiliğinden gönderilmez. Yedek dosyası konumunuzu ve namaz kayıtlarınızı içerdiğinden onu güvendiğiniz bir yerde saklayın. "Yedeği Geri Yükle" seçtiğiniz dosyayı yalnızca telefonunuzda okur. İzin durumları gibi cihaza özgü bilgiler ve reklam tercihleriniz yedeğe girmez.
 
@@ -25,7 +25,7 @@ Günün ayeti ve Kur'an okuyucudaki ayet ve mealler (alquran.cloud), günün had
 4. Analiz ve hata raporları (Google Firebase)
 Uygulamayı geliştirmek için Google Firebase hizmetleri kullanılır:
 • Firebase Analytics: hangi özelliklerin kullanıldığına dair sınırlı olaylar (ör. ilk açılışta bildirim/konum izninin verilip verilmediği), uygulama örnek kimliği, cihaz modeli, işletim sistemi, uygulama sürümü, dil ve IP adresinden çıkarılan yaklaşık ülke/bölge. Konumunuz ve namaz vakitleriniz gönderilmez.
-• Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'de Firebase Analytics, reklam izni penceresinde (Google UMP) verdiğiniz tercihe uyar: "cihazda bilgi depolama ve/veya bilgiye erişme" amacını onaylamazsanız Analytics cihazınızda analiz ve reklam tanımlayıcısı saklamaz; kişiselleştirilmiş reklam amaçlarını onaylamazsanız Analytics verileri reklam amacıyla kullanılmaz. Tercihinizi Ayarlar > Destek > "Reklam gizlilik ayarları" bölümünden değiştirebilirsiniz.
+• Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'de Firebase Analytics, reklam izni penceresinde (Google UMP) verdiğiniz tercihe uyar: "cihazda bilgi depolama ve/veya bilgiye erişme" amacını onaylamazsanız Analytics cihazınızda analiz ve reklam tanımlayıcısı saklamaz; kişiselleştirilmiş reklam amaçlarını onaylamazsanız Analytics verileri reklam amacıyla kullanılmaz. Tercihinizi Ayarlar > Destek > Gizlilik ve Reklamlar > "Reklam gizlilik ayarları" bölümünden değiştirebilirsiniz.
 • Firebase Crashlytics: Uygulama çöktüğünde ya da bir hata oluştuğunda hata kaydı, cihaz modeli, işletim sistemi, uygulama sürümü ve kurulum kimliği.
 Bu veriler sizi doğrudan tanımlamaz, Google tarafından işlenir ve sınırlı süre saklanır (Crashlytics kayıtları 90 gün, Analytics verileri en fazla 14 ay).
 
@@ -33,7 +33,7 @@ Bu veriler sizi doğrudan tanımlamaz, Google tarafından işlenir ve sınırlı
 Uygulama ücretsiz kalabilmek için Google AdMob reklamları gösterir.
 • AdMob reklam göstermek, ölçmek ve kötüye kullanımı önlemek için reklam kimliği, cihaz bilgileri, IP adresi (ve bundan çıkarılan yaklaşık konum) ile reklam etkileşimlerini toplayabilir ve iş ortaklarıyla paylaşabilir.
 • Uygulama GPS konumunuzu reklam ağına vermez. Reklamlar aile dostu içerikle sınırlandırılmıştır.
-• Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'de kişiselleştirilmiş reklam için onayınız istenir; tercihinizi Ayarlar > Destek > "Reklam gizlilik ayarları" bölümünden değiştirebilirsiniz.
+• Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'de kişiselleştirilmiş reklam için onayınız istenir; tercihinizi Ayarlar > Destek > Gizlilik ve Reklamlar > "Reklam gizlilik ayarları" bölümünden değiştirebilirsiniz.
 • Reklam kimliğinizi telefonunuzun ayarlarından (Google > Reklamlar) sıfırlayabilir veya silebilirsiniz.
 Google'ın verileri nasıl kullandığı: https://policies.google.com/technologies/partner-sites
 
