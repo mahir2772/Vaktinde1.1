@@ -7,8 +7,12 @@
 // sabit yön); ana ekran durumu FakeHomeViewModel ile verilir (ağ/izin yok).
 // Tek ekran: --plain-name "tr koyu tema" gibi test adıyla süzülür.
 //
-// Çıktı: <ekran>.png (411x891 dp, 1.5x) ve `_errors.txt` (ekran başına çerçeve
-// hataları: taşma, yerleşim). Sınırlar: Arapça için DejaVu Sans yedek fontu
+// Çıktı: <ekran>.png (411x891 dp, 1.5x; SCREENSHOT_DPR=3 ile 3x) ve
+// `_errors.txt` (ekran başına çerçeve hataları: taşma, yerleşim).
+// Pazarlama (Play/sosyal medya, docs/marketing/make_store_assets.py):
+// SCREENSHOT_MARKETING=<dil,…|1> ile yalnız "<dil>: pazarlama" çeşitleri çalışır;
+// dil başına şehir ve saat dilimi _marketingCities'te (TZ o dilimle verilir).
+// Sınırlar: Arapça için DejaVu Sans yedek fontu (pazarlamada Noto Naskh Arabic)
 // kullanılır (cihazda sistem fontu); aile adı verilmemiş stiller (ör.
 // DropdownButton.style) test motorunda siyah kutu olarak görünür.
 import 'dart:convert';
@@ -48,6 +52,7 @@ import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
 import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
+import 'package:ezan_saati/features/qibla/qibla_math.dart' show qiblaBearing;
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
@@ -79,7 +84,16 @@ final String? _outDir = Platform.environment['SCREENSHOT_DIR'];
 
 // Tipik telefon: 411x891 dp; PNG'ler küçük kalsın diye 1.5x çizilir
 const double _deviceRatio = 2.625;
-const double _outRatio = 1.5;
+final double _outRatio =
+    double.tryParse(Platform.environment['SCREENSHOT_DPR'] ?? '') ?? 1.5;
+
+/// Pazarlama çeşitlerinin dilleri ('1': hepsi); boşsa pazarlama çalışmaz
+final List<String> _marketingLangs =
+    switch (Platform.environment['SCREENSHOT_MARKETING']) {
+      null || '' => const [],
+      '1' => const ['tr', 'en', 'de', 'fr', 'ar'],
+      final list => list.split(','),
+    };
 
 const double _istanbulLat = 41.0082;
 const double _istanbulLng = 28.9784;
@@ -307,6 +321,76 @@ List<Map<String, Object>> _pendingEzans() => [
 /// Tam zamanlı alarm izni (false: ana ekranda alarm izni uyarısı)
 bool _exactAllowed = true;
 
+/// Sahte GPS konumu (pazarlamada o dilin şehri)
+var _gps = (lat: _istanbulLat, lng: _istanbulLng);
+
+/// Pazarlama: dil başına şehir, ilçe, koordinat (gömülü listeden), saat dilimi
+typedef _City = (String, String?, double, double, String);
+const Map<String, _City> _marketingCities = {
+  'tr': ('İstanbul', 'Kadıköy', 40.9788, 29.0827, 'Europe/Istanbul'),
+  'en': ('London', null, 51.5085, -0.1257, 'Europe/London'),
+  'de': ('Köln', null, 50.9333, 6.95, 'Europe/Berlin'),
+  'fr': ('Paris', null, 48.8534, 2.3488, 'Europe/Paris'),
+  'ar': ('İstanbul', 'Fatih', 41.0175, 28.9405, 'Europe/Istanbul'),
+};
+
+/// Pazarlama ana ekranı: o dilin şehri ve vakitleri; günün ayeti uygulamanın
+/// dua kitaplığındaki Bakara 201 (dile göre meal), hadis uygulamanın yedeği
+FakeHomeViewModel _marketingVm(String lang, _City c, Dua ayah) {
+  const hadith = {
+    'tr': 'Ameller niyetlere göredir.',
+    'en': 'Actions are judged by intentions.',
+    'de': 'Taten werden nach Absichten beurteilt.',
+    'fr': 'Les actes ne valent que par les intentions.',
+    'ar': 'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ',
+  };
+  final (city, district, lat, lng, _) = c;
+  return _homeVm(lang, times: PrayerTimeService().calculate(lat, lng))
+    ..city = city
+    ..district = district
+    ..dailyAyah = AyahModel(
+      number: 208,
+      surahName: 'سُورَةُ البَقَرَةِ',
+      numberInSurah: 201,
+      arabicText: ayah.arabic,
+      translatedText: ayah.meaningFor(lang) ?? ayah.arabic,
+    )
+    ..dailyHadith = HadithModel(
+      content: hadith[lang],
+      source: lang == 'tr' ? 'Buhârî' : 'Bukhari',
+    );
+}
+
+/// Pazarlama örnek durumu: 17 günlük seri (7 gün hedefi kazanılmış), 30 günde
+/// iki eksik vakit, süren hatim, Kur'an'da kaldığın yer
+Map<String, Object> _marketingPrefs(_City c) {
+  final (city, district, lat, lng, _) = c;
+  final today = DateTime.now();
+  String dk(int daysAgo) =>
+      PrayerTracker.dateKey(PrayerTracker.addDays(today, -daysAgo));
+  return {
+    'saved_city': city,
+    'saved_district': district ?? '',
+    'saved_lat': lat,
+    'saved_lng': lng,
+    'time_offsets': '{}',
+    'prayer_log': jsonEncode({
+      dk(0): PrayerTracker.bit('İmsak') | PrayerTracker.bit('Öğle'),
+      for (var i = 1; i < 30; i++)
+        dk(i): switch (i) {
+          18 => PrayerTracker.fullMask & ~PrayerTracker.bit('İkindi'),
+          23 => PrayerTracker.fullMask & ~PrayerTracker.bit('Yatsı'),
+          _ => PrayerTracker.fullMask,
+        },
+    }),
+    'prayer_log_since': dk(29),
+    'tracker_badges': jsonEncode({'7': dk(11)}),
+    QuranService.lastReadKey: '{"surah":67,"ayah":13}',
+    QuranService.bookmarkKey: '{"surah":2,"ayah":255}',
+    ..._hatimPrefs(),
+  };
+}
+
 String? _flutterRoot() {
   final env = Platform.environment['FLUTTER_ROOT'];
   if (env != null && env.isNotEmpty) return env;
@@ -339,10 +423,17 @@ Future<void> _loadFonts() async {
   ]);
   await _loadFont('Amiri', ['assets/fonts/amiri/Amiri-Regular.ttf']);
   // Poppins'te Arapça yok: temadaki "sans-serif" yedeği cihazda sistem fontu,
-  // testte DejaVu Sans
+  // testte DejaVu Sans; pazarlamada cihazdaki gibi Noto Naskh Arabic (SDK'da varsa)
+  final root = _flutterRoot();
+  final naskh =
+      '$root/engine/src/flutter/txt/third_party/fonts/NotoNaskhArabic-Regular.ttf';
   await _loadFont('sans-serif', [
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+    if (_marketingLangs.isNotEmpty && root != null && File(naskh).existsSync())
+      naskh
+    else ...[
+      '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+      '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+    ],
   ]);
   // google_fonts aile adları: Poppins_regular, Poppins_500 ...
   const poppins = {
@@ -356,7 +447,6 @@ Future<void> _loadFonts() async {
       'assets/google_fonts/Poppins-${e.value}.ttf',
     ]);
   }
-  final root = _flutterRoot();
   if (root == null) return;
   final material = '$root/bin/cache/artifacts/material_fonts';
   await _loadFont('MaterialIcons', ['$material/MaterialIcons-Regular.otf']);
@@ -386,8 +476,8 @@ void _mockPlatform() {
         case 'getLastKnownPosition':
         case 'getCurrentPosition':
           return {
-            'latitude': _istanbulLat,
-            'longitude': _istanbulLng,
+            'latitude': _gps.lat,
+            'longitude': _gps.lng,
             'timestamp': DateTime.now().millisecondsSinceEpoch,
             'accuracy': 10.0,
             'altitude': 0.0,
@@ -565,10 +655,14 @@ const double _navBarDp = 48;
 /// Açıkken her görüntüde çubukların altında kalan içerik `_errors.txt`'ye yazılır
 bool _checkBars = false;
 
-void _setSystemBars(WidgetTester tester) {
-  const bars = FakeViewPadding(
-    top: _statusBarDp * _deviceRatio,
-    bottom: _navBarDp * _deviceRatio,
+void _setSystemBars(
+  WidgetTester tester, {
+  double top = _statusBarDp,
+  double bottom = _navBarDp,
+}) {
+  final bars = FakeViewPadding(
+    top: top * _deviceRatio,
+    bottom: bottom * _deviceRatio,
   );
   tester.view.padding = bars;
   tester.view.viewPadding = bars;
@@ -918,10 +1012,12 @@ Future<void> _finish(WidgetTester tester) async {
 }
 
 void main() {
-  final skip = _outDir == null || _outDir!.isEmpty;
+  final noOutput = _outDir == null || _outDir!.isEmpty;
+  // Pazarlama istenince düzeneğin diğer çeşitleri atlanır
+  final skip = noOutput || _marketingLangs.isNotEmpty;
 
   setUpAll(() async {
-    if (skip) return;
+    if (noOutput) return;
     GoogleFonts.config.allowRuntimeFetching = false;
     await _loadFonts();
     // Uygulama boyu önbelleklenen Future ilk testin sahte zaman bölgesinde
@@ -956,7 +1052,7 @@ void main() {
   });
 
   tearDownAll(() {
-    if (skip) return;
+    if (noOutput) return;
     File(
       '$_outDir/_errors.txt',
     ).writeAsStringSync('${_errors.toSet().join('\n')}\n');
@@ -2231,6 +2327,131 @@ void main() {
       });
     });
   }
+
+  // Pazarlama (Play mağazası, sosyal medya): durum çubuğu 28 dp ve hareketle
+  // gezinme 20 dp boş kalır (make_store_assets.py çerçevede çizer); o dilin
+  // şehri, Kâbe yönündeki pusula, seri, hatim, Ramazan imsakiyesi
+  for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
+    testWidgets(
+      '$lang: pazarlama',
+      skip: noOutput || !_marketingLangs.contains(lang),
+      variant: _android,
+      (tester) async {
+        final city = _marketingCities[lang]!;
+        final (_, _, lat, lng, zone) = city;
+        final offset = tz.getLocation(zone).currentTimeZone.offset;
+        if (DateTime.now().timeZoneOffset.inMilliseconds != offset) {
+          fail('$lang: TZ=$zone ile çalıştırın');
+        }
+        _gps = (lat: lat, lng: lng);
+        // Pusula Kâbe yönünde (manyetik yön = kıble − İstanbul sapması 6,3°)
+        _mockCompass(heading: qiblaBearing(lat, lng) - 6.3, accuracy: 5);
+        final loc = lookupAppLocalizations(Locale(lang));
+        final library = (await tester.runAsync(DuaLibrary.load))!;
+        final ayah = library.byId('rabbena_atina')!;
+        final p = 'm_$lang';
+        File(
+          '$_outDir/${p}_clock.txt',
+        ).writeAsStringSync(_hhmm(DateTime.now()));
+
+        Future<void> pump({String? background}) async {
+          _currentScreen = '${p}_pump';
+          await _pumpApp(
+            tester,
+            lang: lang,
+            homeVm: _marketingVm(lang, city, ayah),
+            background: background,
+            extraPrefs: _marketingPrefs(city),
+          );
+        }
+
+        /// [page] açılır, [label]'a dokunulur (sekme, alt sayfa), çekilir
+        Future<void> tapShot(
+          String name,
+          Widget page,
+          String label, {
+          int pops = 1,
+        }) async {
+          _currentScreen = name;
+          _navigator(
+            tester,
+          ).push(MaterialPageRoute<void>(builder: (_) => page));
+          await _settle(tester, steps: 10);
+          await tester.tap(find.text(label).first);
+          await _settle(tester, steps: 6);
+          await _shot(tester, name);
+          for (var i = 0; i < pops; i++) {
+            _navigator(tester).pop();
+            await _settle(tester, steps: 6);
+          }
+        }
+
+        try {
+          await _run(tester, () async {
+            _setSystemBars(tester, top: 28, bottom: 20);
+            await pump();
+            await _shot(tester, '${p}_01_home');
+            await tester.tap(find.text(loc.tabAlarms));
+            await _settle(tester);
+            await tester.tap(find.text(loc.ogle).last);
+            await _settle(tester);
+            await _shot(tester, '${p}_02_alarms');
+            await tester.tap(find.text(loc.tabTimes));
+            await _settle(tester);
+            for (final (tab, name) in [
+              (MainTab.quran, '03_quran_tab'),
+              (MainTab.qibla, '04_qibla'),
+              (MainTab.zikir, '05_zikir'),
+            ]) {
+              await _tapTab(tester, tab);
+              await _shot(tester, '${p}_$name');
+            }
+            await _tapTab(tester, MainTab.home);
+            await _openRoute(
+              tester,
+              '${p}_07_tracker',
+              const PrayerTrackerView(),
+            );
+            await _openRoute(
+              tester,
+              '${p}_08_kaza',
+              const PrayerTrackerView(initialTab: TrackerTab.kaza),
+            );
+            await tapShot(
+              '${p}_09_imsakiye_ramadan',
+              const ImsakiyeView(),
+              loc.imsakiyeRamadan,
+            );
+            await _openRoute(
+              tester,
+              '${p}_10_friday',
+              const FridayMessagesView(),
+            );
+            await tapShot(
+              '${p}_11_prayer_guide',
+              const PrayerGuideView(),
+              loc.prayerGuideTabSteps,
+            );
+            await tapShot(
+              '${p}_14_appearance',
+              const SettingsView(),
+              loc.appearanceSettings,
+              pops: 2,
+            );
+            await _QuranShots(lang).openMulk(tester, '${p}_15_quran_page');
+            await _shot(tester, '${p}_15_quran_page');
+            await _finish(tester);
+
+            await pump(background: 'bg_plain1.webp');
+            await _shot(tester, '${p}_16_home_plain');
+            await _finish(tester);
+          });
+        } finally {
+          _gps = (lat: _istanbulLat, lng: _istanbulLng);
+        }
+      },
+    );
+  }
 }
 
 /// Kur'an ekran görüntüleri: gömülü sure listesi ve fikstürlerden yanıt veren
@@ -2250,7 +2471,17 @@ class _QuranShots {
     loadAsset: () async => File(QuranService.surahsAsset).readAsStringSync(),
     fetch: (url) async {
       final translation = '$url'.contains(',');
-      final data = _mulk['data'] as List;
+      final data = [...(_mulk['data'] as List)];
+      // Pazarlama (en/de/fr): fikstürde yalnız tr meali var; istenen baskı adıyla
+      // döner (sayfa görünümünde meal görünmez)
+      final wanted = '$url'.split(',').last;
+      if (translation && wanted != 'tr.diyanet') {
+        final meal = data[1] as Map<String, dynamic>;
+        data[1] = {
+          ...meal,
+          'edition': {...meal['edition'] as Map, 'identifier': wanted},
+        };
+      }
       return jsonEncode({
         'code': 200,
         'data': translation ? data : [data.first],
