@@ -66,16 +66,21 @@ class QuranPages {
 }
 
 /// Hatim planı: Kur'an'ı [start] gününden [target] gününe (dahil) kadar
-/// baştan sona okuma. [position]: ulaşılan son sayfa (0: başlanmadı,
-/// [pageCount]: hatim [finished] günü bitti); [log]: gün ("yyyy-MM-dd") → o
-/// gün okunan sayfa (son [keepDays] gün). Saf hesaplar (test edilebilir).
+/// baştan sona okuma. [position]: okunup bitirilen son sayfa (0: başlanmadı,
+/// [pageCount]: hatim [finished] günü bitti; okumaya [position] + 1. sayfadan
+/// devam edilir); [log]: gün ("yyyy-MM-dd") → o gün okunan sayfa (son
+/// [keepDays] gün). Saf hesaplar (test edilebilir).
 class HatimPlan {
   static const int pageCount = QuranService.pageCount;
   static const int keepDays = 60;
 
-  /// Okuyucuda bir adımda sayılan en çok ilerleme (sayfa): daha uzak atlama
-  /// ("Ayete git", uzak sure) okuma sayılmaz
+  /// Okuyucuda atlamayla (açılış, "Ayete git", sure geçişi) sayılan en çok
+  /// ilerleme (sayfa): daha uzak atlama okuma sayılmaz
   static const int maxStep = 2;
+
+  /// Hatırlatma bu kadar gün ileriye kurulur (her gün ayrı bildirim; açılışta
+  /// pencere ilerler)
+  static const int reminderDays = 7;
 
   /// Plan seçenekleri: hedef bugünden 30 gün, 2 ay, 4 ay sonra (baştan
   /// başlayınca günlük hedef tam 20 / 10 / 5 sayfa)
@@ -138,13 +143,13 @@ class HatimPlan {
   int dailyGoal(DateTime today) =>
       goalFor(remainingOn(today), PrayerTracker.daysBetween(today, target) + 1);
 
-  /// Okuyucuda görünen sayfa [page] konumdan sonraki en çok [maxStep] sayfa
-  /// içindeyse oraya ilerler (fark bugüne yazılır); geri dönüş, uzak atlama
-  /// ya da bitmiş hatimde null
+  /// Okuyucuda [page] sayfası bitirildi: konum ileri gider (fark bugüne
+  /// yazılır; sıranın denetimi okuyucuda); geri dönüşte ya da bitmiş hatimde
+  /// null
   HatimPlan? advancedTo(int page, DateTime today) =>
-      isFinished || page <= position || page > position + maxStep
+      isFinished || page <= position
       ? null
-      : _moved(page, today);
+      : _moved(math.min(page, pageCount), today);
 
   /// "Sayfa Gir" (basılı mushaftan okuyan): konum [page] olur (1–604); bugünün
   /// kaydı fark kadar değişir, 0'ın altına inmez
@@ -185,18 +190,29 @@ class HatimPlan {
     };
   }
 
-  /// Hatırlatmanın ilk çalacağı an (sonra her gün aynı saatte; [minute]: günün
-  /// dakikası): bugünün hedefi tamamlanmadıysa ve saati geçmediyse bugün, yoksa
-  /// yarın. Bitmiş hatimde null (kurulu hatırlatma iptal edilir).
-  DateTime? reminderStart(int minute, DateTime now) {
-    if (isFinished) return null;
-    DateTime on(DateTime day) =>
-        DateTime(day.year, day.month, day.day, minute ~/ 60, minute % 60);
+  /// Bugünün hedefi tamam (hatırlatma bugün çalmaz)
+  bool goalMetOn(DateTime today) => readOn(today) >= dailyGoal(today);
+
+  /// Hatırlatmaların çalacağı anlar ([minute]: günün dakikası): bugünden
+  /// başlayarak [reminderDays] gün; bugünün hedefi tamamsa ya da saati
+  /// geçtiyse bugün yok. Bitmiş hatimde boş (kurulu olanlar iptal edilir).
+  List<DateTime> reminderTimes(int minute, DateTime now) {
+    if (isFinished) return const [];
     final today = PrayerTracker.day(now);
-    final at = on(today);
-    return readOn(today) >= dailyGoal(today) || !at.isAfter(now)
-        ? on(PrayerTracker.addDays(today, 1))
-        : at;
+    final times = <DateTime>[];
+    for (var i = 0; i < reminderDays; i++) {
+      final day = PrayerTracker.addDays(today, i);
+      final at = DateTime(
+        day.year,
+        day.month,
+        day.day,
+        minute ~/ 60,
+        minute % 60,
+      );
+      if (i == 0 && (!at.isAfter(now) || goalMetOn(today))) continue;
+      times.add(at);
+    }
+    return times;
   }
 
   String encode() => jsonEncode({

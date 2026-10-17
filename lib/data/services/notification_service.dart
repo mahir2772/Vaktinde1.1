@@ -651,10 +651,11 @@ class NotificationService {
     }
   }
 
-  /// Her gün aynı saatte tekrarlayan hatırlatma (ilk kez [time]'da). Dakikası
-  /// önemli değil: günün ayeti/hadisi gibi her zaman gecikmeli kip (alarm
-  /// simgesi yok, tam zamanlı izin gerekmez).
-  Future<void> scheduleDailyReminder({
+  /// [time]'da bir kez çalan hatırlatma (hatim). Dakikası önemli değil: günün
+  /// ayeti/hadisi gibi her zaman gecikmeli kip (alarm simgesi yok, tam zamanlı
+  /// izin gerekmez). Tekrarlayan kurulmaz: eklenti tekrarda tarihi yok sayar,
+  /// hedefi tamamlanan gün atlanamazdı.
+  Future<void> scheduleReminder({
     required int id,
     required String title,
     required String body,
@@ -680,7 +681,6 @@ class NotificationService {
     uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime,
     androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-    matchDateTimeComponents: DateTimeComponents.time,
     payload: payload,
   );
 }

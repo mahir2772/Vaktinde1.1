@@ -427,6 +427,26 @@ void main() {
           : null,
     );
 
+    test(
+      'bugün dini gün bildirimi varsa bugünün bekleyen Cuma bildirimi de '
+      'iptal edilir (dini günler sonradan açıldı: günde tek bildirim)',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final friday = religiousFridayDay!;
+        final at = DateTime(friday.year, friday.month, friday.day, 8);
+        final todayId = PrayerRefreshService.fridayId(at);
+        seed(todayId);
+
+        expect(await (await serviceAt(at)).syncFridayNotifications(tr), isTrue);
+        expect(scheduledIds(), isNot(contains(todayId)));
+        expect(cancelledIds(), contains(todayId));
+        expect(pending.keys, isNot(contains(todayId)));
+      },
+      skip: religiousFridayDay == null
+          ? 'religious_days.json\'da ileri tarihli Cuma yok'
+          : null,
+    );
+
     test('vakti geçmiş bugünün bildirimi (gecikmeli kipte henüz gelmemiş '
         'olabilir) iptal edilmez, yeniden de kurulmaz; ayar kapalıysa hepsi '
         'iptal', () async {

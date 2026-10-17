@@ -647,10 +647,14 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       notifyListeners();
       await _rescheduleAlarms();
     }
-    // Vakit yoksa alarm turu çalışmaz: dini günler ve Cuma ayrıca eşitlenir
-    if (prayerTimes == null && _currentLoc != null) {
-      await _refreshService.syncReligiousDays(_currentLoc!);
-      await _refreshService.syncFridayNotifications(_currentLoc!);
+    // Vakit yoksa alarm turu çalışmaz: dini günler, Cuma ve hatim ayrıca
+    // eşitlenir
+    if (prayerTimes == null) {
+      if (_currentLoc != null) {
+        await _refreshService.syncReligiousDays(_currentLoc!);
+        await _refreshService.syncFridayNotifications(_currentLoc!);
+      }
+      await HatimService().syncReminder();
     }
     if (dailyContentEnabled) {
       // Alınamamış içerik ağdan istenir (beklenmez; gelince kurulur)
@@ -658,7 +662,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     } else {
       await _refreshService.cancelDailyContent();
     }
-    await HatimService().syncReminder();
   }
 
   /// "Dini gün ve kandil bildirimleri": kapatılınca kurulu olanlar hemen iptal

@@ -425,11 +425,11 @@ void main() {
         tester,
         prefs: {
           ...returning,
-          // Sayfa 22'de kalındı: Bakara 142 (2. cüz başı)
+          // 21. sayfa bitti: 22. sayfa Bakara 142'de başlar (2. cüz başı)
           HatimService.planKey: jsonEncode({
             'start': PrayerTracker.dateKey(today),
             'target': PrayerTracker.dateKey(PrayerTracker.addDays(today, 29)),
-            'position': 22,
+            'position': 21,
             'log': <String, int>{},
           }),
         },

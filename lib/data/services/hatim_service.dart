@@ -1,15 +1,14 @@
 import 'dart:math' as math;
-import 'dart:ui' show Locale;
 
 import 'package:flutter/foundation.dart' show ValueNotifier;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/notification_routes.dart';
-import '../../l10n/app_localizations.dart';
 import 'error_reporter.dart';
 import 'hatim.dart';
 import 'notification_service.dart';
+import 'prayer_refresh_service.dart';
 import 'prayer_tracker.dart';
 import 'serial_queue.dart';
 
@@ -33,9 +32,13 @@ class HatimService {
   static const String reminderTimeKey = 'hatim_reminder_time';
   static const int defaultReminderTime = 21 * 60;
 
-  /// Hatırlatma bildirimi: ID (diğer aralıklarla çakışmaz) ve dokununca
-  /// açılacak yer (hatim okuması)
-  static const int reminderId = 1100;
+  /// Hatırlatma bildirimleri: gün başına ID 1100-1106 (tarihe bağlı; diğer
+  /// aralıklarla çakışmaz) ve dokununca açılacak yer (hatim okuması)
+  static const int reminderBaseId = 1100;
+  static int reminderIdFor(DateTime day) =>
+      reminderBaseId + PrayerTracker.epochDay(day) % HatimPlan.reminderDays;
+  static bool isReminderId(int id) =>
+      id >= reminderBaseId && id < reminderBaseId + HatimPlan.reminderDays;
   static final String reminderPayload = NotificationRoutes.route(
     NotificationRoutes.hatim,
   );
@@ -94,8 +97,8 @@ class HatimService {
   Future<bool> setPosition(int page) =>
       _update((plan, today) => plan?.withPosition(page, today));
 
-  /// Okuyucuda görünen sayfa: sırayla ilerlediyse hatim konumu ilerler.
-  /// Hatim bu adımda tamamlandıysa true.
+  /// Okuyucuda [page] sayfası bitirildi (sırayı okuyucu denetler): hatim
+  /// konumu ilerler. Hatim bu adımda tamamlandıysa true.
   Future<bool> advanceTo(int page) =>
       _update((plan, today) => plan?.advancedTo(page, today) ?? plan);
 
@@ -122,7 +125,15 @@ class HatimService {
       await prefs.setInt(countKey, (prefs.getInt(countKey) ?? 0) + 1);
     }
     changes.value++;
-    if (prefs.getBool(reminderKey) ?? false) await _syncReminder();
+    // Hatırlatma sadece bugünün hedefi tamamlanınca ya da hatim bitince /
+    // başlayınca / silinince değişir (her sayfada kurulmaz)
+    final today = PrayerTracker.day(_clock());
+    (bool, bool)? state(HatimPlan? plan) =>
+        plan == null ? null : (plan.isFinished, plan.goalMetOn(today));
+    if ((prefs.getBool(reminderKey) ?? false) &&
+        state(before) != state(after)) {
+      await _syncReminder();
+    }
     return completed;
   });
 
@@ -142,35 +153,40 @@ class HatimService {
     return _syncReminder();
   });
 
-  /// Açıksa ve hatim sürüyorsa her gün seçilen saatte ([HatimPlan.reminderStart]
-  /// gününden başlar), değilse kurulu olan iptal edilir. Metin kayıtlı dilde
-  /// (eski sayı içermez); kurulamazsa Crashlytics'e bildirilir.
+  /// Açıksa ve hatim sürüyorsa seçilen saatte önümüzdeki günler için birer
+  /// bildirim ([HatimPlan.reminderTimes]: hedefi tamam olan bugün yok); plandan
+  /// çıkan bekleyenler iptal edilir. Metin kayıtlı dilde (eski sayı içermez);
+  /// kurulamazsa Crashlytics'e bildirilir.
   Future<void> _syncReminder() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final start = (prefs.getBool(reminderKey) ?? false)
+      final times = (prefs.getBool(reminderKey) ?? false)
           ? HatimPlan.parse(
-              prefs.getString(planKey),
-            )?.reminderStart(_reminderTime(prefs), _clock())
-          : null;
-      if (start == null) {
-        if ((await _notifications.pendingIds()).contains(reminderId)) {
-          await _notifications.cancel(reminderId);
+                  prefs.getString(planKey),
+                )?.reminderTimes(_reminderTime(prefs), _clock()) ??
+                const <DateTime>[]
+          : const <DateTime>[];
+      final planned = {for (final at in times) reminderIdFor(at): at};
+      for (final id in await _notifications.pendingIds()) {
+        if (isReminderId(id) && !planned.containsKey(id)) {
+          await _notifications.cancel(id);
         }
-        return;
       }
-      final loc = lookupAppLocalizations(
-        Locale(prefs.getString('language_code') ?? 'tr'),
+      if (planned.isEmpty) return;
+      final loc = PrayerRefreshService.localizationsFor(
+        prefs.getString('language_code'),
       );
-      await _notifications.scheduleDailyReminder(
-        id: reminderId,
-        title: loc.hatimTitle,
-        body: loc.hatimReminderBody,
-        time: start,
-        channelId: 'hatim_reminder_channel',
-        channelName: loc.hatimReminderChannel,
-        payload: reminderPayload,
-      );
+      for (final MapEntry(key: id, value: at) in planned.entries) {
+        await _notifications.scheduleReminder(
+          id: id,
+          title: loc.hatimTitle,
+          body: loc.hatimReminderBody,
+          time: at,
+          channelId: 'hatim_reminder_channel',
+          channelName: loc.hatimReminderChannel,
+          payload: reminderPayload,
+        );
+      }
     } catch (e, st) {
       await reportNonFatal(e, st, reason: 'hatim hatırlatması kurulamadı');
     }

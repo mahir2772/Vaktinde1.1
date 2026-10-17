@@ -1,8 +1,8 @@
 // Hatim: Medine mushafı sayfa tablosu (assets/data/quran_pages.json; API'nin
 // sayfa bilgisiyle aynı), plan hesapları (günlük hedef, geride/önde, hedef
-// günü geçmiş, sırayla ilerleme, "Sayfa Gir", kayıt budama, bitiş), Ramazan
-// hedefi, hatırlatma kararı ve hatırlatmanın kurulması (ID 1100, 'open|hatim',
-// her gün tekrarlayan gecikmeli kip).
+// günü geçmiş, ilerleme, "Sayfa Gir", kayıt budama, bitiş), Ramazan hedefi,
+// hatırlatma kararı ve hatırlatmaların kurulması (gün başına ID 1100-1106,
+// 'open|hatim', tek seferlik gecikmeli kip; hedefi tamam olan gün yok).
 import 'dart:convert';
 import 'dart:io';
 
@@ -195,13 +195,11 @@ void main() {
       expect(read.remainingOn(tomorrow), 104);
     });
 
-    test('okuyucu: sadece sırayla en çok 2 sayfa ilerler; geri ve uzak '
-        'atlama sayılmaz', () {
+    test('bitirilen sayfa konumu ileri taşır, fark bugüne yazılır; geri '
+        'dönüş sayılmaz (sıra okuyucuda denetlenir)', () {
       final plan = _plan(position: 10, log: {_key(0): 3});
       expect(plan.advancedTo(10, _today), isNull);
       expect(plan.advancedTo(9, _today), isNull);
-      expect(plan.advancedTo(13, _today), isNull);
-      expect(plan.advancedTo(300, _today), isNull);
       final next = plan.advancedTo(11, _today)!;
       expect(next.position, 11);
       expect(next.readOn(_today), 4);
@@ -210,6 +208,7 @@ void main() {
       expect(twice.readOn(_today), 6);
       expect(twice.start, plan.start);
       expect(twice.target, plan.target);
+      expect(plan.advancedTo(700, _today)!.position, HatimPlan.pageCount);
     });
 
     test('son sayfada hatim biter (tarih), sonra ilerlemez', () {
@@ -219,7 +218,7 @@ void main() {
       expect(done.finished, _today);
       expect(done.progress, 1);
       expect(done.advancedTo(604, _today), isNull);
-      expect(done.reminderStart(21 * 60, _today), isNull);
+      expect(done.reminderTimes(21 * 60, _today), isEmpty);
       // %100 bitmeden görünmez
       expect(plan.progress, 0.99);
       expect(_plan(position: 1).progress, 0);
@@ -326,29 +325,25 @@ void main() {
     const nine = 21 * 60;
 
     test(
-      'bugünün hedefi bitmediyse ve saati geçmediyse bugün, yoksa yarın',
+      '7 gün her gün aynı saatte; bugün sadece hedef bitmediyse ve saati '
+      'geçmediyse',
       () {
-        final tomorrowAt9 = DateTime(2026, 10, 17, 21);
+        List<DateTime> days(int from, int minute) => [
+          for (var d = from; d < 23; d++)
+            DateTime(2026, 10, d, minute ~/ 60, minute % 60),
+        ];
         final plan = _plan(position: 10, log: {_key(0): 10});
-        expect(
-          plan.reminderStart(nine, DateTime(2026, 10, 16, 8)),
-          DateTime(2026, 10, 16, 21),
-        );
-        expect(
-          plan.reminderStart(nine, DateTime(2026, 10, 16, 21)),
-          tomorrowAt9,
-        );
-        expect(
-          plan.reminderStart(nine, DateTime(2026, 10, 16, 22)),
-          tomorrowAt9,
-        );
-        // Hedef (20) tamamlandı: bugün çalmaz
+        expect(plan.reminderTimes(nine, DateTime(2026, 10, 16, 8)), days(16, nine));
+        expect(plan.reminderTimes(nine, DateTime(2026, 10, 16, 21)), days(17, nine));
+        expect(plan.reminderTimes(nine, DateTime(2026, 10, 16, 22)), days(17, nine));
+        // Hedef (20) tamamlandı: bugün çalmaz, yarından itibaren çalar
         final met = plan.withPosition(20, _today);
-        expect(met.reminderStart(nine, DateTime(2026, 10, 16, 8)), tomorrowAt9);
+        expect(met.goalMetOn(_today), isTrue);
+        expect(met.reminderTimes(nine, DateTime(2026, 10, 16, 8)), days(17, nine));
         // Saat 06:30
         expect(
-          plan.reminderStart(6 * 60 + 30, DateTime(2026, 10, 16, 5)),
-          DateTime(2026, 10, 16, 6, 30),
+          plan.reminderTimes(6 * 60 + 30, DateTime(2026, 10, 16, 5)),
+          days(16, 6 * 60 + 30),
         );
       },
     );
@@ -360,7 +355,8 @@ void main() {
     const channel = MethodChannel('dexterous.com/flutter/local_notifications');
     late Map<int, Map<Object?, Object?>> pending;
     late List<String> methods;
-    final now = DateTime(2026, 10, 16, 9);
+    // Eklenti geçmiş tarihli tek seferlik bildirimi reddeder: gelecekte bir gün
+    final now = DateTime(2030, 10, 16, 9);
 
     setUp(() {
       tz.initializeTimeZones();
@@ -393,8 +389,8 @@ void main() {
 
     HatimService service() => HatimService(clock: () => now);
 
-    test('kapalıyken kurulmaz; açılınca her gün 21:00, gecikmeli kip, ID '
-        "1100, yük 'open|hatim', kayıtlı dilde metin", () async {
+    test('kapalıyken kurulmaz; açılınca 7 gün 21:00, tek seferlik gecikmeli '
+        "kip, gün başına ID 1100-1106, yük 'open|hatim', kayıtlı dilde metin", () async {
       SharedPreferences.setMockInitialValues({'language_code': 'de'});
       final hatim = service();
       await hatim.begin(PrayerTracker.addDays(now, 30));
@@ -405,46 +401,51 @@ void main() {
       expect(state.reminderTime, 21 * 60);
 
       await hatim.setReminder(enabled: true);
-      final args = pending[HatimService.reminderId]!;
-      expect(args['payload'], 'open|hatim');
-      expect(args['title'], 'Khatm');
-      expect(args['body'], 'Vergessen Sie Ihre heutige Khatm-Lesung nicht.');
-      expect(args['scheduledDateTime'], '2026-10-16T21:00:00');
-      expect(args['matchDateTimeComponents'], DateTimeComponents.time.index);
-      final android = args['platformSpecifics'] as Map;
-      expect(android['scheduleMode'], 'inexactAllowWhileIdle');
-      expect(android['channelId'], 'hatim_reminder_channel');
+      int id(int day) => HatimService.reminderIdFor(DateTime(2030, 10, day));
+      expect(pending.keys.toSet(), {for (var d = 16; d < 23; d++) id(d)});
+      expect(pending.keys.toSet(), {for (var i = 1100; i < 1107; i++) i});
+      for (var d = 16; d < 23; d++) {
+        final args = pending[id(d)]!;
+        expect(args['payload'], 'open|hatim');
+        expect(args['title'], 'Khatm');
+        expect(args['body'], 'Vergessen Sie Ihre heutige Khatm-Lesung nicht.');
+        expect(args['scheduledDateTime'], '2030-10-${d}T21:00:00');
+        // Tekrarlayan değil: eklenti tarihi yok sayardı
+        expect(args['matchDateTimeComponents'], isNull);
+        final android = args['platformSpecifics'] as Map;
+        expect(android['scheduleMode'], 'inexactAllowWhileIdle');
+        expect(android['channelId'], 'hatim_reminder_channel');
+      }
 
-      // Saat değişince yeniden kurulur
+      // Saat değişince yeniden kurulur: bugünün 07:15'i geçti, yarından
       await hatim.setReminder(time: 7 * 60 + 15);
-      expect(
-        pending[HatimService.reminderId]!['scheduledDateTime'],
-        '2026-10-17T07:15:00',
-      );
+      expect(pending.keys, isNot(contains(id(16))));
+      expect(pending[id(17)]!['scheduledDateTime'], '2030-10-17T07:15:00');
+      expect(pending, hasLength(6));
     });
 
-    test('bugünün hedefi tamamlanınca yarından başlar; hatim bitince ya da '
-        'silinince iptal edilir, sayaç artar', () async {
+    test('bugünün hedefi tamamlanınca bugünkü iptal, yarınkiler kalır; '
+        'sayfa ilerledikçe yeniden kurulmaz; hatim bitince ya da silinince '
+        'iptal edilir, sayaç artar', () async {
       SharedPreferences.setMockInitialValues({
         HatimService.reminderKey: true,
         HatimService.countKey: 2,
       });
       final hatim = service();
       final changes = HatimService.changes.value;
+      final today = HatimService.reminderIdFor(now);
+      final tomorrow = HatimService.reminderIdFor(PrayerTracker.addDays(now, 1));
       await hatim.begin(PrayerTracker.addDays(now, 30));
       expect(HatimService.changes.value, greaterThan(changes));
-      expect(
-        pending[HatimService.reminderId]!['scheduledDateTime'],
-        '2026-10-16T21:00:00',
-      );
+      expect(pending[today]!['scheduledDateTime'], '2030-10-16T21:00:00');
+      methods.clear();
       expect(await hatim.advanceTo(1), isFalse);
-      expect(await hatim.advanceTo(5), isFalse); // uzak: sayılmaz
-      expect((await hatim.load()).plan!.position, 1);
+      expect(await hatim.advanceTo(5), isFalse);
+      expect((await hatim.load()).plan!.position, 5);
+      expect(methods, isEmpty); // hedef değişmedi: bildirimlere dokunulmaz
       expect(await hatim.setPosition(20), isFalse);
-      expect(
-        pending[HatimService.reminderId]!['scheduledDateTime'],
-        '2026-10-17T21:00:00',
-      );
+      expect(pending.keys, isNot(contains(today)));
+      expect(pending[tomorrow]!['scheduledDateTime'], '2030-10-17T21:00:00');
 
       expect(await hatim.setPosition(603), isFalse);
       expect(await hatim.advanceTo(604), isTrue);
@@ -457,7 +458,7 @@ void main() {
       expect((await hatim.load()).count, 3);
 
       await hatim.begin(PrayerTracker.addDays(now, 60));
-      expect(pending.keys, [HatimService.reminderId]);
+      expect(pending.keys.toSet(), {for (var i = 1100; i < 1107; i++) i});
       await hatim.delete();
       final deleted = await hatim.load();
       expect(deleted.plan, isNull);

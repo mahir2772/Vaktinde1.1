@@ -407,7 +407,7 @@ void main() {
     });
 
     testWidgets('hatim sürüyorsa Kur\'an satırı yerine "Hatim · Bugün a / b '
-        'sayfa": Kur\'an sekmesine geçilir, okuyucu hatim sayfasının başından '
+        'sayfa": Kur\'an sekmesine geçilir, okuyucu sonraki sayfanın başından '
         'hatim kipinde açılır (reklamsız); %200 yazıda 320 dp taşmaz; bitmiş '
         'hatimde kaldığın yer', (tester) async {
       final requests = <MainTab>[];
@@ -446,7 +446,7 @@ void main() {
       expect(requests, [MainTab.quran]);
       final start = QuranPages.parse(
         File(QuranPages.asset).readAsStringSync(),
-      )!.startOf(41);
+      )!.startOf(42); // 41. sayfa bitti
       final reader = tester.widget<SurahReaderView>(
         find.byType(SurahReaderView),
       );

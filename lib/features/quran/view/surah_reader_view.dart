@@ -32,8 +32,8 @@ import '../widgets/view_settings_sheet.dart';
 /// son okunan olarak saklanır ('quran_last_read'). "Ayete git" ve görünüm /
 /// yazı boyutu değişince okunan yer korunur.
 ///
-/// Hatim okumasında ([hatim]) görünen mushaf sayfası sırayla ilerledikçe
-/// hatim konumu ilerler (HatimService.advanceTo).
+/// Hatim okumasında ([hatim]) görünen mushaf sayfasından öncekiler okunmuş
+/// sayılır, sırayla ilerledikçe hatim konumu ilerler (HatimService.advanceTo).
 ///
 /// [initialAyah] verilirse liste o ayetten başlar (tembel liste: CustomScrollView
 /// merkezi ayetin ögesi, öncekiler yukarı kaydırınca görünür; sayfa içindeki
@@ -109,9 +109,13 @@ class _SurahReaderViewState extends State<SurahReaderView>
   SurahText? _groupsText;
   List<QuranPageGroup> _groups = const [];
 
-  /// Hatim okumasında sayfa tablosu ve son bildirilen sayfa
+  /// Hatim okumasında sayfa tablosu, bitirilen son sayfa (açılışta kayıttan),
+  /// son görünen sayfa ve okuyucu hatim sırasında mı (kaydırarak ilerleme
+  /// sayılır)
   QuranPages? _pages;
+  int _hatimPosition = 0;
   int? _hatimPage;
+  bool _hatimInOrder = false;
 
   QuranViewMode get _viewMode =>
       QuranService.effectiveViewMode(_mode, _language ?? 'tr');
@@ -162,9 +166,11 @@ class _SurahReaderViewState extends State<SurahReaderView>
       } catch (_) {}
     }
     QuranPages? pages;
+    var hatimPosition = 0;
     if (widget.hatim) {
       try {
         pages = await HatimService.loadPages();
+        hatimPosition = (await HatimService().load()).plan?.position ?? 0;
       } catch (_) {}
     }
     if (!mounted) return;
@@ -175,6 +181,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
       _bookmark = bookmark;
       _surahs = surahs;
       _pages = pages;
+      _hatimPosition = hatimPosition;
       _settingsLoaded = true;
     });
   }
@@ -255,7 +262,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
     if (ayah == null) return;
     _currentAyah = ayah;
     _saveLastRead(ayah);
-    _advanceHatim(ayah);
+    _advanceHatim(ayah, scrolled: true);
   }
 
   void _saveLastRead(int ayah) {
@@ -266,21 +273,42 @@ class _SurahReaderViewState extends State<SurahReaderView>
     );
   }
 
-  /// Hatim okumasında görünen ayetin sayfası (tablodan; sayfa görünümünde
-  /// ekrandaki mushaf sayfasıyla aynı) bildirilir: sırayla ilerlediyse hatim
-  /// konumu ilerler, son sayfada hatim tamamlanır
-  void _advanceHatim(int ayah) {
+  /// Hatim okumasında görünen ayetin sayfasından (tablodan; sayfa görünümünde
+  /// ekrandaki mushaf sayfasıyla aynı) önceki sayfalar bitirilmiş sayılır;
+  /// Nâs'ın sonuna inince son sayfa da (hatim tamamlanır). Hatim sırasında
+  /// kaydırarak ilerlemenin her adımı sayılır; atlamada (açılış, "Ayete git",
+  /// sure geçişi) en çok [HatimPlan.maxStep] sayfa ileri. Daha uzağa atlayınca
+  /// sıradan çıkılır, bitirilen sayfaya geri dönünce yeniden girilir.
+  void _advanceHatim(int ayah, {required bool scrolled}) {
     final pages = _pages;
     if (pages == null) return;
-    final page = pages.pageOf(widget.surah.number, ayah);
+    final page = _atMushafEnd()
+        ? HatimPlan.pageCount + 1
+        : pages.pageOf(widget.surah.number, ayah);
     if (page == _hatimPage) return;
     _hatimPage = page;
+    final done = page - 1;
+    if (done <= _hatimPosition) {
+      _hatimInOrder = true;
+      return;
+    }
+    _hatimInOrder =
+        (scrolled && _hatimInOrder) ||
+        done <= _hatimPosition + HatimPlan.maxStep;
+    if (!_hatimInOrder) return;
+    _hatimPosition = done;
     final messenger = ScaffoldMessenger.maybeOf(context);
     final completedText = AppLocalizations.of(context)!.hatimCompleted;
-    HatimService().advanceTo(page).then((completed) {
+    HatimService().advanceTo(done).then((completed) {
       if (completed) _showSnack(messenger, completedText);
     }, onError: (Object _) {});
   }
+
+  // Nâs'ın sonu ekranda (kaydırılacak yer kalmadı)
+  bool _atMushafEnd() =>
+      widget.surah.number == QuranService.surahCount &&
+      _controller.hasClients &&
+      _controller.position.extentAfter < 1;
 
   /// Kaydırma durunca (yerleşim bittikten sonra) görünen ayet saklanır
   void _scheduleVisibleCheck() {
@@ -333,7 +361,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
       }
       _currentAyah = target;
       _saveLastRead(target);
-      _advanceHatim(target);
+      _advanceHatim(target, scrolled: false);
     });
   }
 

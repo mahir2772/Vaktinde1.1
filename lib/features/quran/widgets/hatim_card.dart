@@ -12,8 +12,8 @@ import '../../main_wrapper/main_tabs.dart';
 import '../view/surah_reader_view.dart';
 import 'go_to_ayah_dialog.dart';
 
-/// Hatim okuması: Kur'an sekmesine geçilir (ana çerçevede), okuyucu hatim
-/// konumunun sayfa başından hatim kipinde açılır (geri gelince sure listesi ve
+/// Hatim okuması: Kur'an sekmesine geçilir (ana çerçevede), okuyucu okunacak
+/// sonraki sayfanın başından hatim kipinde açılır (geri gelince sure listesi ve
 /// hatim kartı). Hatim yoksa ya da bittiyse sadece Kur'an sekmesi. Ana ekranın
 /// "Bugün için" satırı ve hatırlatma bildirimi ('open|hatim') kullanır.
 /// [service]: test için.
@@ -35,7 +35,8 @@ Future<void> openHatimReading(
   if (plan == null || plan.isFinished || pages == null || surahs == null) {
     return;
   }
-  final start = pages.startOf(plan.position);
+  // Okunacak ilk sayfa: bitirilen son sayfadan sonraki
+  final start = pages.startOf(plan.position + 1);
   final surah = surahs.where((s) => s.number == start.surah).firstOrNull;
   if (surah == null) return;
   await Navigator.push(

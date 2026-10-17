@@ -944,37 +944,46 @@ class PrayerRefreshService {
   /// aynı ID'nin üzerine kurulur, plandan çıkan bekleyenler iptal; ayar
   /// kapalıysa hepsi iptal. Dini gün bildirimleri açıksa onların gününe denk
   /// gelen Cuma atlanır. Bugünün bildirimi gecikmeli kipte vaktinden sonra da
-  /// bekliyor olabilir: ayar açıkken iptal edilmez. Hata fırlatmaz; plan
-  /// boşsa ya da en az biri kurulduysa (ve iptaller yapılabildiyse) true.
+  /// bekliyor olabilir: ayar açıkken (bugün dini gün bildirimi yoksa) iptal
+  /// edilmez. Hata fırlatmaz; plan boşsa ya da en az biri kurulduysa (ve
+  /// iptaller yapılabildiyse) true.
   Future<bool> syncFridayNotifications(AppLocalizations loc) =>
       _religiousQueue.run(() async {
         final now = _clock();
         final bool enabled;
         List<PlannedAlarm> plan = const [];
+        Set<DateTime> religiousDays = const {};
         try {
           // Plan çıkarılamazsa (okuma hatası) kurulu bildirimlere dokunulmaz
           enabled = await _storageService.loadFridayNotifEnabled();
           if (enabled) {
-            final religious = await _storageService.loadReligiousDaysEnabled()
-                ? buildReligiousDayPlan(
-                    days: await DiniGunlerService.loadBildirimGunleri(),
-                    now: now,
-                    loc: loc,
-                  )
-                : const <PlannedAlarm>[];
+            if (await _storageService.loadReligiousDaysEnabled()) {
+              religiousDays = {
+                for (final a in buildReligiousDayPlan(
+                  days: await DiniGunlerService.loadBildirimGunleri(),
+                  now: now,
+                  loc: loc,
+                ))
+                  PrayerTracker.day(a.time),
+              };
+            }
             plan = buildFridayPlan(
               now: now,
               loc: loc,
-              religiousDays: {
-                for (final a in religious) PrayerTracker.day(a.time),
-              },
+              religiousDays: religiousDays,
             );
           }
         } catch (e, st) {
           await reportNonFatal(e, st, reason: 'Cuma bildirimi planı okunamadı');
           return false;
         }
-        final today = now.weekday == DateTime.friday ? fridayId(now) : null;
+        // Bugün dini gün bildirimi varsa (dini günler sonradan açıldı) bugünün
+        // bekleyen Cuma bildirimi de iptal edilir: günde tek bildirim
+        final today =
+            now.weekday == DateTime.friday &&
+                !religiousDays.contains(PrayerTracker.day(now))
+            ? fridayId(now)
+            : null;
         final failures = _AlarmFailures();
         final cleanupOk = await _cancelUnplanned(
           (id) => isFridayId(id) && !(enabled && id == today),
@@ -1338,7 +1347,7 @@ class PrayerRefreshService {
     await _dailyQueue.run(() async {
       if (!await _dailyContentEnabled()) return;
       if (dayAyah != null && stillFor(ayahNotificationId, ayahDay)) {
-        final title = _localizations(langCode).dailyAyahTitle;
+        final title = localizationsFor(langCode).dailyAyahTitle;
         String content = "${dayAyah.arabicText}\n\n${dayAyah.translatedText}";
         try {
           await _scheduleDaily(ayahNotificationId, title, content);
@@ -1352,7 +1361,7 @@ class PrayerRefreshService {
       }
       final hadithText = dayHadith?.content;
       if (hadithText != null && stillFor(hadithNotificationId, hadithDay)) {
-        final title = _localizations(langCode).hadithTitle;
+        final title = localizationsFor(langCode).hadithTitle;
         try {
           await _scheduleDaily(hadithNotificationId, title, hadithText);
         } catch (e, st) {
@@ -1427,7 +1436,8 @@ class PrayerRefreshService {
 
   static String _dateKey(DateTime d) => d.toIso8601String().split('T')[0];
 
-  static AppLocalizations _localizations(String? languageCode) {
+  /// Kayıtlı dilin metinleri; dil desteklenmiyorsa Türkçe
+  static AppLocalizations localizationsFor(String? languageCode) {
     try {
       return lookupAppLocalizations(Locale(languageCode ?? 'tr'));
     } catch (e) {
@@ -1451,7 +1461,7 @@ class PrayerRefreshService {
       if (times == null) return await _headlessDone(prefs, now);
       await service._storageService.savePrayerTimesData(times);
 
-      final loc = _localizations(prefs.getString('language_code'));
+      final loc = localizationsFor(prefs.getString('language_code'));
       String hijri = "";
       try {
         hijri = hijriDateText(loc.localeName.substring(0, 2));

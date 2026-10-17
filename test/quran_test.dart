@@ -2485,9 +2485,10 @@ void main() {
       },
     );
 
-    testWidgets('hatim okuması: Devam Et sayfa başından açar, sırayla okunan '
-        'sayfalar sayılır (sonraki sure dahil); uzak atlama ve geri dönüş '
-        'sayılmaz; reklam yok', (tester) async {
+    testWidgets('hatim okuması: Devam Et sonraki sayfanın başından açar, '
+        'görünen sayfadan öncekiler okunmuş sayılır (sonraki sure dahil); '
+        'kaydırarak ilerleme takılmaz; uzak atlama ve geri dönüş sayılmaz; '
+        'reklam yok', (tester) async {
       SharedPreferences.setMockInitialValues({
         HatimService.planKey: _hatimPlan(0),
       });
@@ -2507,16 +2508,16 @@ void main() {
         [reader.surah.number, reader.initialAyah, reader.hatim],
         [1, 1, true],
       );
-      // Açılan sayfa (1) ulaşılan sayfa olur
-      expect((await _savedPlan())!.position, 1);
+      // Açılan sayfa (1) henüz okunmadı
+      expect((await _savedPlan())!.position, 0);
 
-      // Sonraki sure (Bakara, 2. sayfa) oturumu sürdürür
+      // Sonraki sure (Bakara, 2. sayfa) oturumu sürdürür: 1. sayfa bitti
       await scrollThrough(tester);
       await tester.tap(find.text('Bakara'));
       await settle(tester);
       reader = tester.widget<SurahReaderView>(find.byType(SurahReaderView));
       expect([reader.surah.number, reader.hatim], [2, true]);
-      expect((await _savedPlan())!.position, 2);
+      expect((await _savedPlan())!.position, 1);
 
       // Kaydırdıkça görünen sayfa: konum ve bugünün kaydı onu izler
       final prefs = await SharedPreferences.getInstance();
@@ -2531,9 +2532,14 @@ void main() {
         await tester.drag(_vertical(), const Offset(0, -300));
         await settle(tester);
         final plan = (await _savedPlan())!;
-        expect(plan.position, visiblePage(), reason: 'adım $i');
+        expect(plan.position, visiblePage() - 1, reason: 'adım $i');
         expect(plan.readOn(DateTime.now()), plan.position);
       }
+      // Tek kaydırmada birkaç sayfa (hızlı kaydırma) da sayılır, ilerleme
+      // takılmaz
+      await tester.drag(_vertical(), const Offset(0, -2400));
+      await settle(tester);
+      expect((await _savedPlan())!.position, visiblePage() - 1);
       final reached = (await _savedPlan())!.position;
       expect(reached, greaterThan(2));
 
@@ -2574,8 +2580,8 @@ void main() {
       await dispose(tester);
     });
 
-    testWidgets('hatim son sayfada tamamlanır: kısa bildirim, sayaç, kartta '
-        '"Hatim tamamlandı"', (tester) async {
+    testWidgets('hatim Nâs\'ın sonunda tamamlanır: kısa bildirim, sayaç, '
+        'kartta "Hatim tamamlandı"', (tester) async {
       SharedPreferences.setMockInitialValues({
         HatimService.planKey: _hatimPlan(603),
       });
@@ -2583,19 +2589,18 @@ void main() {
       final loc = lookupAppLocalizations(const Locale('tr'));
       await tester.tap(find.text(loc.hatimContinue));
       await settle(tester);
-      // 603. sayfa Kâfirûn'la başlar; Nasr ve Tebbet de bu sayfada
+      // 604. sayfa İhlâs'la başlar; Felak ve Nâs da bu sayfada
       expect(
         tester.widget<SurahReaderView>(find.byType(SurahReaderView)).surah.name,
-        'Kâfirûn',
+        'İhlâs',
       );
-      for (final next in ['Nasr', 'Tebbet']) {
+      for (final next in ['Felak', 'Nâs']) {
+        expect((await _savedPlan())!.position, 603, reason: next);
         await scrollThrough(tester);
         await tester.tap(find.text(next));
         await settle(tester);
-        expect((await _savedPlan())!.position, 603, reason: next);
       }
       await scrollThrough(tester);
-      await tester.tap(find.text('İhlâs'));
       await settle(tester);
       final plan = (await _savedPlan())!;
       expect(plan.isFinished, isTrue);
@@ -2705,15 +2710,16 @@ void main() {
       await settle(tester);
       expect(prefs.getBool(HatimService.reminderKey), isTrue);
       expect(find.text('21:00'), findsOneWidget);
-      // Bugünün hedefi tamam: hatırlatma yarından başlar
-      final scheduled = notifications.lastWhere(
-        (c) => c.method == 'zonedSchedule',
-      );
-      expect(scheduled.arguments['id'], HatimService.reminderId);
-      expect(scheduled.arguments['payload'], HatimService.reminderPayload);
+      // Bugünün hedefi tamam: hatırlatmalar yarından başlar
+      final scheduled = notifications
+          .where((c) => c.method == 'zonedSchedule')
+          .toList();
+      final tomorrow = PrayerTracker.addDays(today, 1);
+      expect(scheduled.first.arguments['id'], HatimService.reminderIdFor(tomorrow));
+      expect(scheduled.first.arguments['payload'], HatimService.reminderPayload);
       expect(
-        scheduled.arguments['scheduledDateTime'],
-        startsWith(PrayerTracker.dateKey(PrayerTracker.addDays(today, 1))),
+        scheduled.first.arguments['scheduledDateTime'],
+        startsWith(PrayerTracker.dateKey(tomorrow)),
       );
       await tester.tap(find.text(loc.hatimReminderTime));
       await settle(tester);
