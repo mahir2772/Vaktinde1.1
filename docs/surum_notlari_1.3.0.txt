@@ -23,7 +23,7 @@
 • Neu: Khatm-Plan mit Tagesziel; Seiten werden beim Lesen gezählt
 • Gebetsanleitung, Bittgebete und Tasbih nach dem Gebet
 • Neue Widgets: Gebetsring, Gebetstracker, Ramadan
-• Adhan mit einem Tipp auf „Stoppen" beenden
+• Adhan mit einem Tipp auf „Stoppen“ beenden
 • Freitagserinnerung, Serienziele und Nachholgebet-Rechner
 • Schriftgröße, schlichte Hintergründe; einfachere Einstellungen
 • Offline-Städteliste, Sicherung und Fehlerbehebungen
