@@ -1,65 +1,402 @@
-# Play mağaza girişi (tr-TR) ve sürüm notları
+# Play mağaza girişi (5 dil) ve sürüm notları
 
-Kaynak metin; Play Console > Mağazada varlık > Ana mağaza girişi'ne buradan kopyalanır.
+Kaynak metin; Play Console > Büyüme > Mağazada varlık > Ana mağaza girişi'ne buradan kopyalanır (diğer diller
+çeviriler bölümünden). Sınırlar: ad ≤30, kısa açıklama ≤80, tam açıklama ≤4000 karakter. Play kuralları: adda emoji,
+"en iyi", "ücretsiz", "yeni", sıralama yok; açıklamada kullanıcı yorumu/alıntı ve anahtar kelime yığını yok.
+Özellik adları uygulamanın kendi çevirileriyle (lib/l10n, res/values-*/strings.xml) aynıdır; uygulama değişince güncellenir.
 
-## Uygulama adı (≤30)
+## tr-TR
+
+### Uygulama adı
 ```
 Vaktinde: Ezan Vakti ve Kıble
 ```
 
-## Kısa açıklama (≤80)
+### Kısa açıklama
 ```
-İnternetsiz namaz vakitleri, ezan sesi, kıble pusulası, imsakiye ve zikirmatik
+İnternetsiz ezan vakti, Kur'an ve hatim, kıble, namaz takibi ve zikirmatik
 ```
 
-## Tam açıklama (≤4000)
+### Tam açıklama
 ```
-Vaktinde ile namaz vakitleri her zaman cebinizde: Diyanet yöntemiyle telefonunuzda, internet olmadan hesaplanan ezan vakitleri, kıble pusulası, imsakiye, namaz takibi ve zikirmatik tek uygulamada. Üyelik gerekmez.
+Vaktinde ile namaz vakitleri her zaman cebinizde: Diyanet yöntemiyle telefonunuzda, internet olmadan hesaplanan ezan vakitleri; Kur'an-ı Kerim ve hatim takibi, kıble pusulası, namaz takibi, imsakiye ve zikirmatik tek uygulamada. Üyelik gerekmez.
 
 🕌 NAMAZ VE EZAN VAKİTLERİ
 • İmsak, güneş, öğle, ikindi, akşam ve yatsı vakitleri Diyanet hesaplama yöntemiyle
-• İnternet olmadan çalışır; konumunuza ya da seçtiğiniz il ve ilçeye göre
+• İnternet olmadan çalışır: konumunuza ya da listeden seçtiğiniz il ve ilçeye göre (Türkiye'nin tüm il ve ilçeleri, Avrupa ve KKTC şehirleri); diğer şehirler internetten aranır
 • Sıradaki vakte geri sayım, miladi ve hicri tarih
 • Vakit ince ayarı: her vakti dakika dakika düzeltebilirsiniz
 • Kerahat vakti uyarısı
 
 🔔 EZAN BİLDİRİMLERİ
 • Her vakit için ayrı ezan ya da bildirim sesi, sessiz bildirim seçeneği
-• Vakitten önce hatırlatma ve "Vakit çıkmadan hatırlat"
+• Bildirimdeki "Durdur" ile ezanı tek dokunuşla susturun
+• Vakitten önce hatırlatma ve "Vakit Çıkmadan Hatırlat"
 • "Sessiz modda da çal": telefon sessizdeyken de ezanı duyun
-• Bildirimdeki "Kıldım" düğmesiyle namazınızı tek dokunuşla işaretleyin
+• Bildirimdeki "Kıldım" ile namazınızı tek dokunuşla işaretleyin
+• Bildirim Kontrolü: ezan gelmiyorsa sebebini bulur, telefonunuza göre ayar adımları ve test ezanı
+
+📖 KUR'AN-I KERİM VE HATİM
+• Mushaf sayfası, ayet ayet ya da Diyanet meali ile okuma; sure ve cüz listesi, arama
+• Kaldığınız yerden devam, yer imi, ayeti resim olarak paylaşma
+• Hatim takibi: günlük sayfa hedefi, okudukça sayfalar sayılır, isteğe bağlı hatırlatma
+• Ramazan'da hatim planı
 
 ✅ NAMAZ TAKİBİ VE KAZA
 • Günlük namaz takibi, seri ve 30 günlük oran
-• Kılınamayan vakitleri kaza listesine ekleme
-• Kaza namazı ve oruç sayacı
+• 7 ve 40 günlük seri hedefleri
+• Kaza namazı ve oruç sayacı, kaza hesaplama
+• Özel günleri (hayız, nifas) işaretleme
+• Ramazan orucu takibi
 
-🌙 İMSAKİYE VE RAMAZAN
+🤲 NAMAZ HOCASI, DUALAR VE ZİKİR
+• Namaz Hocası: abdest, farzlar, rekâtlar ve namazın kılınışı adım adım
+• Dualar: Arapça metni, okunuşu ve anlamıyla
+• Namaz sonrası tesbihat sayacı
+• Zikirmatik: hazır zikirler, hedef, günlük sayı, ses tuşlarıyla sayma
+
+🌙 RAMAZAN, CUMA VE DİNİ GÜNLER
 • Aylık ve Ramazan imsakiyesi, resim olarak paylaşma
 • Ramazan'da sahur ve iftar geri sayımı
-• Dini günler ve kandiller
+• Kandil, dini gün ve Cuma bildirimleri; Cuma mesajları ve tebrik mesajları
+• Günün ayeti ve günün hadisi
 
 🧭 KIBLE PUSULASI
 • Bulunduğunuz yerden Kâbe yönü
 • Manyetik sapma otomatik düzeltilir, manyetik parazitte uyarı verir
-• Doğru kullanım için kalibrasyon ipuçları
 
-📿 ZİKİRMATİK VE DAHA FAZLASI
-• Arapça metinleriyle hazır zikirler ve sayaç
-• Günün ayeti ve günün hadisi
-• Esmaül Hüsna ve cuma mesajları
-• Zekât hesaplama (güncel altın ve döviz kurlarıyla)
+🧮 DAHA FAZLASI
+• Esmaül Hüsna
+• Zekât, fitre ve fidye hesaplama
+• Yakındaki camiler, harita uygulamanızda
+• Verilerinizi yedekleme ve geri yükleme
 
 📱 WİDGET VE KİŞİSELLEŞTİRME
-• Üç farklı ana ekran widget'ı ve bildirim çubuğunda geri sayım
-• Açık ve koyu tema, arka plan resimleri
-• Türkçe, English, Deutsch, Français ve العربية dil seçenekleri
+• Altı ana ekran widget'ı: Vakit Sayacı, Günün Vakitleri, Sıradaki Vakit, Vakit Halkası, Namaz Takibi ve Ramazan Sayacı
+• Bildirim çubuğunda isteğe bağlı geri sayım
+• Açık ve koyu tema, sade ve resimli arka planlar, yazı boyutu
+• Türkçe, English, Deutsch, Français ve العربية
 
 🔒 GİZLİLİK
 Vaktinde hesap istemez. Konumunuz vakit ve kıble hesabı için telefonunuzda kullanılır, sunucularımıza gönderilmez. Uygulama ücretsizdir ve aile dostu reklamlarla desteklenir.
 
 Görüş ve önerileriniz için: mmdigitall.dev@gmail.com
 ```
+
+## en-US
+
+### Uygulama adı
+```
+Vaktinde: Prayer Times & Qibla
+```
+
+### Kısa açıklama
+```
+Offline prayer times, adhan alerts, Quran & Khatm, Qibla and prayer tracker
+```
+
+### Tam açıklama
+```
+Vaktinde keeps prayer times in your pocket: calculated on your phone with the Diyanet method, without internet, together with the Quran and Khatm tracking, a Qibla compass, a prayer tracker, a prayer timetable and a dhikr counter in one app. No account needed.
+
+🕌 PRAYER TIMES
+• Imsak, Sunrise, Dhuhr, Asr, Maghrib and Isha, calculated with the Diyanet method
+• Works offline, by your location or a city from the built-in list (all of Turkey, cities across Europe and Northern Cyprus); other cities via online search
+• Countdown to the next prayer, Gregorian and Hijri date
+• Prayer Time Adjustment: fine-tune each prayer by the minute
+• Makruh time warning
+
+🔔 ADHAN NOTIFICATIONS
+• A separate adhan or notification sound for each prayer, or a silent notification
+• Silence the adhan with one tap on "Stop" in the notification
+• Reminder before prayer time and "Remind Before Prayer Time Ends"
+• "Play in silent mode too": hear the adhan even when your phone is on silent
+• Mark a prayer as done with "Prayed" in the notification
+• Notification Check: finds out why the adhan doesn't sound, with steps for your phone and a test adhan
+
+📖 QURAN AND KHATM
+• Read by mushaf page, verse by verse or with translation (Sahih International); surah and juz lists, search
+• Continue where you left off, bookmarks, share a verse as an image
+• Khatm tracking: a daily page goal, pages are counted as you read, optional reminder
+• Khatm plan for Ramadan
+
+✅ PRAYER TRACKER AND QADA
+• Daily prayer tracking, streak and 30-day rate
+• 7- and 40-day streak goals
+• Missed prayer and fasting counters, qada calculator
+• Mark excused days (menstruation)
+• Ramadan fasting tracker
+
+🤲 PRAYER GUIDE, DUAS AND DHIKR
+• Prayer Guide: wudu, obligations, rak'ahs and how to pray, step by step
+• Duas with Arabic text, transliteration and meaning
+• Tasbih after prayer counter
+• Dhikr Counter: ready-made dhikrs, targets, daily count, counting with the volume keys
+
+🌙 RAMADAN, FRIDAY AND RELIGIOUS DAYS
+• Monthly and Ramadan prayer timetable, share as an image
+• Suhoor and iftar countdown in Ramadan
+• Notifications for holy nights, religious days and Friday; Friday messages and greetings
+• Ayah of the Day and Hadith of the Day
+
+🧭 QIBLA COMPASS
+• The direction of the Kaaba from where you are
+• Automatic magnetic declination correction, warning about magnetic interference
+
+🧮 MORE
+• Names of Allah
+• Zakat, Fitra and Fidya calculators
+• Nearby mosques in your maps app
+• Back up and restore your data
+
+📱 WIDGETS AND PERSONALIZATION
+• Six home screen widgets: Prayer Countdown, Today's Prayer Times, Next Prayer, Prayer Ring, Prayer Tracker and Ramadan Countdown
+• Optional countdown in the notification bar
+• Light and dark theme, plain and photo backgrounds, text size
+• Türkçe, English, Deutsch, Français and العربية
+
+🔒 PRIVACY
+Vaktinde doesn't require an account. Your location is used on your phone to calculate prayer times and the Qibla; it is not sent to our servers. The app is free and supported by family-friendly ads.
+
+Feedback and suggestions: mmdigitall.dev@gmail.com
+```
+
+## de-DE
+
+### Uygulama adı
+```
+Vaktinde: Gebetszeiten & Qibla
+```
+
+### Kısa açıklama
+```
+Gebetszeiten offline, Adhan, Koran & Khatm, Qibla-Kompass und Gebetstracker
+```
+
+### Tam açıklama
+```
+Mit Vaktinde haben Sie die Gebetszeiten immer dabei: offline auf Ihrem Telefon nach der Diyanet-Methode berechnet, dazu der Koran mit Khatm-Plan, ein Qibla-Kompass, ein Gebetstracker, ein Gebetskalender und ein Dhikr-Zähler in einer App. Kein Konto nötig.
+
+🕌 GEBETSZEITEN
+• Imsak, Sonnenaufgang, Dhuhr, Asr, Maghrib und Ischa nach der Diyanet-Methode
+• Funktioniert offline, nach Ihrem Standort oder einer Stadt aus der integrierten Liste (ganze Türkei, Städte in Europa und Nordzypern); weitere Städte über die Online-Suche
+• Countdown bis zum nächsten Gebet, gregorianisches und Hidschri-Datum
+• Gebetszeiten anpassen: jede Zeit minutengenau korrigieren
+• Hinweis auf Makruh-Zeiten
+
+🔔 ADHAN-BENACHRICHTIGUNGEN
+• Für jedes Gebet ein eigener Adhan oder Benachrichtigungston, auch als stille Benachrichtigung
+• Adhan mit einem Tipp auf „Stoppen“ in der Benachrichtigung beenden
+• Erinnerung vor der Gebetszeit und „Vor Ende der Gebetszeit erinnern“
+• „Auch im Lautlos-Modus abspielen“: den Adhan auch bei lautlosem Telefon hören
+• Gebet mit „Gebetet“ direkt in der Benachrichtigung abhaken
+• Benachrichtigungen prüfen: findet heraus, warum der Adhan nicht ertönt, mit Schritten für Ihr Telefon und Test-Adhan
+
+📖 KORAN UND KHATM
+• Lesen als Mushaf-Seite, Vers für Vers oder mit Übersetzung (Abu Rida); Suren- und Dschuz-Liste, Suche
+• Weiterlesen, wo Sie aufgehört haben, Lesezeichen, Vers als Bild teilen
+• Khatm-Plan: tägliches Seitenziel, Seiten werden beim Lesen gezählt, optionale Erinnerung
+• Khatm-Plan für den Ramadan
+
+✅ GEBETSTRACKER UND QADA
+• Tägliches Gebetsprotokoll, Serie und 30-Tage-Quote
+• Serienziele für 7 und 40 Tage
+• Qada-Zähler für Gebete und Fasten, Qada-Rechner
+• Entschuldigte Tage (Menstruation) markieren
+• Ramadan-Fasten im Blick
+
+🤲 GEBETSANLEITUNG, BITTGEBETE UND DHIKR
+• Gebetsanleitung: Gebetswaschung, Pflichten, Rakats und Ablauf des Gebets Schritt für Schritt
+• Bittgebete mit arabischem Text, Umschrift und Bedeutung
+• Zähler für das Tasbih nach dem Gebet
+• Dhikr-Zähler: fertige Dhikrs, Ziele, Tageszahl, Zählen mit den Lautstärketasten
+
+🌙 RAMADAN, FREITAG UND RELIGIÖSE TAGE
+• Monatlicher und Ramadan-Gebetskalender, als Bild teilen
+• Countdown für Suhur und Iftar im Ramadan
+• Benachrichtigungen für gesegnete Nächte, religiöse Tage und den Freitag; Freitagsgrüße und Glückwünsche
+• Vers des Tages und Hadith des Tages
+
+🧭 QIBLA-KOMPASS
+• Die Richtung der Kaaba von Ihrem Standort aus
+• Automatische Korrektur der magnetischen Abweichung, Warnung bei magnetischen Störungen
+
+🧮 AUSSERDEM
+• Namen Allahs
+• Zakat-, Fitra- und Fidya-Rechner
+• Moscheen in der Nähe in Ihrer Karten-App
+• Daten sichern und wiederherstellen
+
+📱 WIDGETS UND ANPASSUNG
+• Sechs Startbildschirm-Widgets: Gebets-Countdown, Heutige Gebetszeiten, Nächste Gebetszeit, Gebetsring, Gebetstracker und Ramadan-Countdown
+• Optionaler Countdown in der Benachrichtigungsleiste
+• Helles und dunkles Design, schlichte und Foto-Hintergründe, Schriftgröße
+• Türkçe, English, Deutsch, Français und العربية
+
+🔒 DATENSCHUTZ
+Vaktinde braucht kein Konto. Ihr Standort wird auf Ihrem Telefon für Gebetszeiten und Qibla verwendet und nicht an unsere Server gesendet. Die App ist kostenlos und wird durch familienfreundliche Werbung finanziert.
+
+Feedback und Vorschläge: mmdigitall.dev@gmail.com
+```
+
+## fr-FR
+
+### Uygulama adı
+```
+Vaktinde : Horaires de prière
+```
+
+### Kısa açıklama
+```
+Horaires de prière hors ligne, adhan, Coran et Khatm, Qibla, suivi des prières
+```
+
+### Tam açıklama
+```
+Avec Vaktinde, vos horaires de prière sont toujours à portée de main : calculés hors ligne sur votre téléphone selon la méthode Diyanet, avec le Coran et le suivi du Khatm, une boussole Qibla, le suivi des prières, un calendrier des prières et un compteur de dhikr dans une seule application. Aucun compte nécessaire.
+
+🕌 HORAIRES DE PRIÈRE
+• Imsak, lever du soleil, Dhuhr, Asr, Maghrib et Isha selon la méthode Diyanet
+• Fonctionne hors ligne, selon votre position ou une ville de la liste intégrée (toute la Turquie, villes d'Europe et Chypre du Nord) ; autres villes via la recherche en ligne
+• Compte à rebours jusqu'à la prochaine prière, date grégorienne et hégirienne
+• Ajustement des horaires : corrigez chaque prière à la minute près
+• Alerte des temps makruh
+
+🔔 NOTIFICATIONS D'ADHAN
+• Un adhan ou un son de notification pour chaque prière, ou une notification silencieuse
+• Arrêtez l'adhan d'une touche avec « Arrêter » dans la notification
+• Rappel avant l'heure de la prière et « Rappel avant la fin du temps de prière »
+• « Jouer aussi en mode silencieux » : entendez l'adhan même quand le téléphone est en silencieux
+• Cochez votre prière avec « J'ai prié » dans la notification
+• Vérifier les notifications : trouve pourquoi l'adhan ne sonne pas, avec les étapes pour votre téléphone et un adhan de test
+
+📖 CORAN ET KHATM
+• Lecture par page du mushaf, verset par verset ou avec traduction (Hamidullah) ; listes des sourates et des juz, recherche
+• Reprise là où vous vous êtes arrêté, signets, partage d'un verset en image
+• Suivi du Khatm : objectif quotidien de pages, pages comptées au fil de la lecture, rappel facultatif
+• Plan de Khatm pour le Ramadan
+
+✅ SUIVI DES PRIÈRES ET QADA
+• Suivi quotidien des prières, série et taux sur 30 jours
+• Objectifs de série de 7 et 40 jours
+• Compteurs des prières et des jeûnes à rattraper, calculateur de qada
+• Jours d'excuse (menstruation)
+• Suivi du jeûne du Ramadan
+
+🤲 GUIDE DE LA PRIÈRE, INVOCATIONS ET DHIKR
+• Guide de la prière : ablutions, obligations, rak'ahs et déroulement de la prière, étape par étape
+• Invocations avec texte arabe, translittération et sens
+• Compteur de tasbih après la prière
+• Compteur de dhikr : dhikrs prêts à l'emploi, objectifs, total du jour, comptage avec les touches de volume
+
+🌙 RAMADAN, VENDREDI ET JOURS RELIGIEUX
+• Calendrier des prières mensuel et du Ramadan, partage en image
+• Compte à rebours du suhoor et de l'iftar pendant le Ramadan
+• Notifications des nuits bénies, des jours religieux et du vendredi ; messages du vendredi et vœux
+• Verset du jour et hadith du jour
+
+🧭 BOUSSOLE QIBLA
+• La direction de la Kaaba depuis l'endroit où vous êtes
+• Correction automatique de la déclinaison magnétique, alerte en cas d'interférences
+
+🧮 ET AUSSI
+• Noms d'Allah
+• Calculateurs de zakat, fitra et fidya
+• Mosquées à proximité dans votre application de cartes
+• Sauvegarde et restauration de vos données
+
+📱 WIDGETS ET PERSONNALISATION
+• Six widgets d'écran d'accueil : Compte à rebours, Horaires du jour, Prochaine prière, Anneau de prière, Suivi des prières et Compte à rebours du Ramadan
+• Compte à rebours facultatif dans la barre de notifications
+• Thème clair et sombre, fonds unis et photos, taille du texte
+• Türkçe, English, Deutsch, Français et العربية
+
+🔒 CONFIDENTIALITÉ
+Vaktinde ne demande aucun compte. Votre position est utilisée sur votre téléphone pour calculer les horaires et la Qibla ; elle n'est pas envoyée à nos serveurs. L'application est gratuite et financée par des publicités adaptées aux familles.
+
+Avis et suggestions : mmdigitall.dev@gmail.com
+```
+
+## ar
+
+### Uygulama adı
+```
+Vaktinde: مواقيت الصلاة
+```
+
+### Kısa açıklama
+```
+مواقيت الصلاة دون إنترنت، الأذان، القرآن والختمة، القبلة ومتابعة الصلوات
+```
+
+### Tam açıklama
+```
+مع Vaktinde تبقى مواقيت الصلاة معك دائمًا: تُحسب على هاتفك دون إنترنت وفق طريقة رئاسة الشؤون الدينية التركية (ديانت)، ومعها القرآن الكريم ومتابعة الختمة وبوصلة القبلة ومتابعة الصلوات وجدول المواقيت والمسبحة الإلكترونية في تطبيق واحد. لا حاجة إلى حساب.
+
+🕌 مواقيت الصلاة
+• الإمساك والشروق والظهر والعصر والمغرب والعشاء وفق طريقة ديانت
+• يعمل دون إنترنت حسب موقعك أو مدينة من القائمة المدمجة (كل تركيا ومدن أوروبا وقبرص الشمالية)، ومدن أخرى عبر البحث على الإنترنت
+• عدّ تنازلي للصلاة القادمة، والتاريخ الميلادي والهجري
+• ضبط أوقات الصلاة: تعديل كل وقت بالدقيقة
+• تنبيه أوقات الكراهة
+
+🔔 إشعارات الأذان
+• أذان أو صوت إشعار مستقل لكل صلاة، أو إشعار صامت
+• أوقفوا الأذان بلمسة واحدة على «إيقاف» في الإشعار
+• تذكير قبل دخول الوقت و«التذكير قبل خروج الوقت»
+• «التشغيل في الوضع الصامت أيضاً»: اسمعوا الأذان حتى والهاتف على الوضع الصامت
+• علِّموا صلاتكم بلمسة على «صلّيت» في الإشعار
+• فحص الإشعارات: يكتشف سبب عدم سماع الأذان مع خطوات خاصة بهاتفك وأذان تجريبي
+
+📖 القرآن الكريم والختمة
+• القراءة بصفحات المصحف أو آية بآية، مع قائمة السور والأجزاء والبحث
+• المتابعة من حيث توقفت، والعلامة المرجعية، ومشاركة الآية كصورة
+• متابعة الختمة: هدف يومي من الصفحات، تُحسب الصفحات أثناء القراءة، مع تذكير اختياري
+• خطة ختمة في رمضان
+
+✅ متابعة الصلوات والقضاء
+• متابعة يومية للصلوات، وسلسلة المواظبة ونسبة 30 يومًا
+• أهداف المواظبة لـ 7 و40 يومًا
+• عدّاد قضاء الصلاة والصوم، وحاسبة القضاء
+• تعليم أيام العذر (الحيض والنفاس)
+• متابعة صيام رمضان
+
+🤲 تعليم الصلاة والأدعية والذكر
+• تعليم الصلاة: الوضوء والفرائض والركعات وكيفية الصلاة خطوة بخطوة
+• الأدعية بنصها العربي المشكول مع مصادرها
+• عدّاد التسبيح بعد الصلاة
+• المسبحة الإلكترونية: أذكار جاهزة، هدف، عدد يومي، والعدّ بأزرار الصوت
+
+🌙 رمضان والجمعة والمناسبات الدينية
+• جدول المواقيت الشهري والرمضاني ومشاركته كصورة
+• عدّ تنازلي للسحور والإفطار في رمضان
+• إشعارات الليالي المباركة والمناسبات الدينية ويوم الجمعة، ورسائل الجمعة والتهاني
+• آية اليوم وحديث اليوم
+
+🧭 بوصلة القبلة
+• اتجاه الكعبة من مكانك
+• تصحيح تلقائي للانحراف المغناطيسي وتنبيه عند التشويش المغناطيسي
+
+🧮 المزيد
+• أسماء الله الحسنى
+• حاسبة الزكاة وزكاة الفطر والفدية
+• المساجد القريبة في تطبيق الخرائط لديك
+• النسخ الاحتياطي لبياناتك واستعادتها
+
+📱 الأدوات والتخصيص
+• ست أدوات للشاشة الرئيسية: العد التنازلي للصلاة، مواقيت اليوم، الصلاة القادمة، حلقة الصلاة، متابعة الصلوات والعد التنازلي لرمضان
+• عدّ تنازلي اختياري في شريط الإشعارات
+• سمة فاتحة وداكنة، خلفيات بسيطة ومصوّرة، وحجم الخط
+• Türkçe وEnglish وDeutsch وFrançais والعربية
+
+🔒 الخصوصية
+لا يتطلب Vaktinde حسابًا. يُستخدم موقعك على هاتفك لحساب المواقيت والقبلة، ولا يُرسل إلى خوادمنا. التطبيق مجاني ومدعوم بإعلانات مناسبة للعائلة.
+
+للآراء والاقتراحات: mmdigitall.dev@gmail.com
+```
+
+## Sürüm notları 1.3.0 (18)
+`docs/surum_notlari_1.3.0.txt`
 
 ## Sürüm notları 1.1.2 (16) — 1.1.1 üretime çıkmadığı için onun düzeltmeleri de var (her dil ≤500)
 ```
