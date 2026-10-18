@@ -7,7 +7,7 @@ Bu politika, Vaktinde uygulamasının ("Uygulama") hangi verileri hangi amaçla 
 Aşağıdaki bilgiler yalnızca telefonunuzda saklanır, bize gönderilmez:
 • Seçtiğiniz konum (il/ilçe adı ve koordinatlar) ve vakit ince ayarları
 • Ezan ve hatırlatma ayarları, ses seçimleri, dil, tema ve yazı boyutu tercihleri
-• Namaz takibi kayıtları ve seri hedefleri, kaza namazı ve oruç sayıları, zikir sayaçları, hatim planı ve okunan sayfalar, zekât hesapları
+• Namaz takibi kayıtları, özel gün (hayız/nifas) işaretleri ve seri hedefleri, Ramazan orucu kayıtları, kaza namazı ve oruç sayıları, zikir sayaçları, Kur'an'da kaldığınız yer ve yer imi, hatim planı ve okunan sayfalar, zekât hesapları
 Namaz vakitleri ve kıble yönü telefonunuzda, internet bağlantısı olmadan hesaplanır.
 Ayarlar > Yedekleme > "Verileri Yedekle" bu bilgileri (konumunuz dahil) tek bir dosyaya yazar ve dosyayı yalnızca sizin seçtiğiniz uygulamayla (ör. Google Drive, e-posta) paylaşır; dosya bize ya da başka bir yere kendiliğinden gönderilmez. Yedek dosyası konumunuzu ve namaz kayıtlarınızı içerdiğinden onu güvendiğiniz bir yerde saklayın. "Yedeği Geri Yükle" seçtiğiniz dosyayı yalnızca telefonunuzda okur. İzin durumları gibi cihaza özgü bilgiler ve reklam tercihleriniz yedeğe girmez.
 
