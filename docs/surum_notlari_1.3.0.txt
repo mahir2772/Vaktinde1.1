@@ -5,7 +5,7 @@
 • Yeni widget'lar: vakit halkası, namaz takibi, Ramazan
 • Ezanı bildirimdeki "Durdur" ile tek dokunuşla susturun
 • Cuma bildirimi, seri hedefleri ve kaza hesaplama
-• Uygulama içinden yazı boyutu; sadeleşen Ayarlar ve Araçlar
+• Yazı boyutu ve sade arka planlar; sadeleşen Ayarlar ve Araçlar
 • İnternetsiz şehir listesi, yedekleme ve hata düzeltmeleri
 </tr-TR>
 <en-US>
@@ -15,7 +15,7 @@
 • New widgets: prayer ring, prayer tracker, Ramadan
 • Silence the adhan with one tap on "Stop"
 • Friday reminder, streak goals and missed prayer calculator
-• In-app text size; simpler Settings and Tools
+• Text size and plain wallpapers; simpler Settings and Tools
 • Offline city list, backup and bug fixes
 </en-US>
 <de-DE>
@@ -25,7 +25,7 @@
 • Neue Widgets: Gebetsring, Gebetstracker, Ramadan
 • Adhan mit einem Tipp auf „Stoppen" beenden
 • Freitagserinnerung, Serienziele und Nachholgebet-Rechner
-• Schriftgröße in der App; einfachere Einstellungen und Tools
+• Schriftgröße, schlichte Hintergründe; einfachere Einstellungen
 • Offline-Städteliste, Sicherung und Fehlerbehebungen
 </de-DE>
 <fr-FR>
@@ -35,7 +35,7 @@
 • Nouveaux widgets : anneau des prières, suivi, Ramadan
 • Arrêtez l'adhan d'une touche avec « Arrêter »
 • Rappel du vendredi, objectifs de série, prières à rattraper
-• Taille du texte dans l'app ; Réglages et Outils simplifiés
+• Taille du texte, fonds unis ; Réglages et Outils simplifiés
 • Villes hors ligne, sauvegarde et corrections
 </fr-FR>
 <ar>
@@ -45,6 +45,6 @@
 • أدوات جديدة: حلقة الأوقات ومتابعة الصلاة ورمضان
 • أوقفوا الأذان بلمسة واحدة على «إيقاف»
 • تذكير الجمعة وأهداف المواظبة وحساب القضاء
-• حجم الخط من داخل التطبيق، وإعدادات وأدوات أبسط
+• حجم الخط وخلفيات بسيطة، وإعدادات وأدوات أبسط
 • قائمة مدن دون إنترنت والنسخ الاحتياطي وإصلاحات
 </ar>
