@@ -20,8 +20,8 @@ Ana ekran (sıradaki vakit, sayaç, kerahat) çekim saatine göre değişir; ö�
   instagram/triptik_1|2/{1,2,3}_*.png  1080×1440 üçlü ızgara (tek resmin üç parçası)
   instagram/karusel/{1..5}.png   1080×1350 kaydırmalı gönderi (kenarlardan akar)
   instagram/hikaye/{1,2,3}.png   1080×1920 hikâye
-  video/tanitim_dikey.mp4        1080×1920, 19 sn, 30 fps, sessiz (Reels/TikTok/Shorts)
-  video/tanitim_yatay.mp4        1920×1080, aynı akış (YouTube / Play tanıtım videosu)
+  video/<dil>/tanitim_dikey.mp4  1080×1920, 19 sn, 30 fps, sessiz (Reels/TikTok/Shorts); tr ve en
+  video/<dil>/tanitim_yatay.mp4  1920×1080, aynı akış (YouTube / Play tanıtım videosu)
   _onizleme_*.jpg, README.md, *.zip (her biri ≤ 24 MB)
 
 Dikey dosyalarda yazılar y 250–1570 arasında kalır (platform düğmeleri). Ekran görüntüleri
@@ -52,6 +52,7 @@ import make_content as mc  # noqa: E402  (font, star_points, wrap_balanced, logo
 REPO = mc.REPO
 SS, S = mc.SS, mc.S
 LANGS = ['tr', 'en', 'de', 'fr', 'ar']
+VIDEO_LANGS = ['tr', 'en']  # VIDEO_TEXT anahtarları
 ARB = {l: json.load(open(os.path.join(REPO, 'lib', 'l10n', f'app_{l}.arb'), encoding='utf-8'))
        for l in LANGS}
 WALL = os.path.join(REPO, 'assets', 'images', 'backgrounds', 'bg_plain{}.webp')
@@ -150,14 +151,31 @@ IG_TRIPTYCHS = [
                    ('Namaz takibi', 'Seri hedefleri ve kaza sayacı', '07_tracker'),
                    ('Zikirmatik', 'Hedef belirleyin, dokunun, sayın', '05_zikir')]),
 ]
-VIDEO_CAPTIONS = [  # (başlangıç sn, bitiş sn, başlık, alt yazı, ekran(lar))
-    (2.2, 5.0, 'Namaz vakitleri,|saniyesi saniyesine', 'Diyanet yöntemiyle, internetsiz', ['01_home']),
-    (5.0, 7.8, 'Ezanı tek dokunuşla|durdurun', 'Bildirimdeki “Durdur” ile', ['02_alarms']),
-    (7.8, 10.6, 'Kur’an-ı Kerim|ve hatim takibi', 'Mushaf sayfası ve günlük hedef', ['03_quran_tab', '15_quran_page']),
-    (10.6, 12.8, 'Namaz takibi|ve kaza', '7 ve 40 günlük seri hedefleri', ['07_tracker']),
-    (12.8, 14.6, 'Kıble pusulası', 'Bulunduğunuz yerden Kâbe yönü', ['04_qibla']),
-    (14.6, 16.2, 'Zikirmatik|ve dualar', 'Tesbihat ve Namaz Hocası', ['05_zikir']),
+VIDEO_SCENES = [  # (başlangıç sn, bitiş sn, ekran(lar)); başlıklar VIDEO_TEXT'te aynı sırayla
+    (2.2, 5.0, ['01_home']),
+    (5.0, 7.8, ['02_alarms']),
+    (7.8, 10.6, ['03_quran_tab', '15_quran_page']),
+    (10.6, 12.8, ['07_tracker']),
+    (12.8, 14.6, ['04_qibla']),
+    (14.6, 16.2, ['05_zikir']),
 ]
+# Video dilleri: sahne başlıkları (başlık, alt yazı), kapanış kapsülü, kapanıştaki özellikler
+VIDEO_TEXT = {
+    'tr': ([('Namaz vakitleri,|saniyesi saniyesine', 'Diyanet yöntemiyle, internetsiz'),
+            ('Ezanı tek dokunuşla|durdurun', 'Bildirimdeki “Durdur” ile'),
+            ('Kur’an-ı Kerim|ve hatim takibi', 'Mushaf sayfası ve günlük hedef'),
+            ('Namaz takibi|ve kaza', '7 ve 40 günlük seri hedefleri'),
+            ('Kıble pusulası', 'Bulunduğunuz yerden Kâbe yönü'),
+            ('Zikirmatik|ve dualar', 'Tesbihat ve Namaz Hocası')],
+           "Google Play'de Vaktinde", 'İmsakiye · Zikirmatik · Namaz Hocası · 5 dil'),
+    'en': ([('Prayer times,|to the second', 'Diyanet method, works offline'),
+            ('Silence the adhan|with one tap', 'With “Stop” in the notification'),
+            ('The Quran and|Khatm tracking', 'Mushaf pages and a daily goal'),
+            ('Prayer tracker|and qada', '7- and 40-day streak goals'),
+            ('Qibla compass', 'The Kaaba’s direction from where you are'),
+            ('Dhikr counter|and duas', 'Tasbih after prayer and a Prayer Guide')],
+           'Vaktinde on Google Play', 'Prayer Timetable · Dhikr Counter · Prayer Guide · 5 languages'),
+}
 VIDEO_SECONDS = 19.0
 FPS = 30
 
@@ -893,7 +911,7 @@ def build_instagram(args):
     return 'instagram', None
 
 
-# --- Video (sessiz; Türkçe başlıklar) ----------------------------------------------------------
+# --- Video (sessiz; VIDEO_TEXT dilleri) ----------------------------------------------------------
 def ease(t):
     t = min(1.0, max(0.0, t))
     return 1 - (1 - t) ** 3
@@ -935,10 +953,11 @@ VIDEO_FRAMES_PREVIEW = [1.0, 3.6, 6.8, 8.6, 10.0, 11.8, 13.8, 15.4, 18.4]
 
 
 def build_video(args):
-    shot_dir, out, orient = args
+    shot_dir, out, orient, lang = args
     vert = orient == 'dikey'
     W, H = (1080, 1920) if vert else (1920, 1080)
-    shots = Shots(shot_dir, 'tr')
+    shots = Shots(shot_dir, lang)
+    captions, pill_text, more_text = VIDEO_TEXT[lang]
     if vert:
         bd = Backdrop(W, H, [(540, 1250, 640, GLOW, 0.38), (0, 0, 520, SAND, 0.10), (1080, 0, 520, SAND, 0.08)],
                       [(1080, 300, 260), (0, 1620, 300)], ribbon=wave(1500, 110, 2200, 1.2))
@@ -953,7 +972,7 @@ def build_video(args):
 
     # Telefonlar (aynı çerçeve, farklı ekran) + gölge
     # ekran sırası başlıklardan: bir başlıkta birden çok ekran varsa süre eşit bölünür
-    schedule = [(a + j * (b - a) / len(sc_), n) for a, b, _, _, sc_ in VIDEO_CAPTIONS for j, n in enumerate(sc_)]
+    schedule = [(a + j * (b - a) / len(sc_), n) for a, b, sc_ in VIDEO_SCENES for j, n in enumerate(sc_)]
     phones = {}
     for _, n in schedule:
         ph = shots.phone(n, pw)
@@ -961,13 +980,13 @@ def build_video(args):
     ph_pad = round(ph.pad / SS)
     sh, sh_pad = shadow_layer(to1x(ph.mask), pw * 0.045, 0.55)
     bars = (ph.screen_box[1] + 145 * ph.screen_box[2] / 411) / SS  # telefon üstünden sekmelerin altına
-    card = to1x(notif_card('tr', S(pw * 1.02)))
+    card = to1x(notif_card(lang, S(pw * 1.02)))
     csh, csh_pad = shadow_layer(card.getchannel('A'), 18, 0.5)
 
     # Başlıklar
     caps = []
-    for a, b, title, sub, _ in VIDEO_CAPTIONS:
-        hd = Heading('tr', title, sub, max_w=cap_w, size=cap_size, sub_size=36)
+    for (a, b, _), (title, sub) in zip(VIDEO_SCENES, captions):
+        hd = Heading(lang, title, sub, max_w=cap_w, size=cap_size, sub_size=36)
         lw = cap_w + 200
         lay = layer(lw, hd.height + 40, lambda im, d, hd=hd: hd.draw(
             d, lw / 2 if cap_align == 'center' else 0, 10, cap_align))
@@ -977,10 +996,9 @@ def build_video(args):
     # Giriş ve kapanış: logo, ad, slogan (+ kapanışta metin kapsülü ve özellikler)
     sc = 1.0 if vert else 0.82
     logo = to1x(mc.logo_img(round(220 * sc)))
-    n = Txt('Vaktinde', 110 * sc, 'tr', kind='Bold', max_w=1000, max_lines=1)
+    n = Txt('Vaktinde', 110 * sc, lang, kind='Bold', max_w=1000, max_lines=1)
     name = layer(n.width + 40, n.height + 30, lambda im, d: n.draw(d, (n.width + 40) / 2, 10))
-    t = Txt("Ezan vakti, Kur'an ve kıble\ntek uygulamada", 44 * sc, 'tr', kind='Regular', color=CREAM,
-            lh=1.32, max_w=900)
+    t = Txt(FG_TEXT[lang][0].replace('|', '\n'), 44 * sc, lang, kind='Regular', color=CREAM, lh=1.32, max_w=900)
     tag = layer(960, t.height + 80, lambda im, d: (ornament(d, 480, 12), t.draw(d, 480, 50)), color=CREAM)
     by = 560 if vert else 120  # logonun üstü
     ny = by + logo.height + 30 * sc
@@ -988,14 +1006,14 @@ def build_video(args):
     # kapanış kapsülü: durağan zemine çizilir, zeminle karıştırılarak belirir
     pill_y = ty + tag.height + (90 if vert else 64)
     full = bd.render(0, 0, W, H)
-    brand_pill(full, W / 2, pill_y, "Google Play'de Vaktinde", size=34)
+    brand_pill(full, W / 2, pill_y, pill_text, size=34)
     pill_box = (W // 2 - 420, round(pill_y) - 52, W // 2 + 420, round(pill_y) + 96)
     pill_on, pill_off = to1x(full).crop(pill_box), bg.crop(pill_box)
-    more = Txt('İmsakiye · Zikirmatik · Namaz Hocası · 5 dil', 30, 'tr', kind='Medium', color=CREAM, max_w=1000)
+    more = Txt(more_text, 30, lang, kind='Medium', color=CREAM, max_w=1000)
     more_lay = layer(more.width + 40, more.height + 30, lambda im, d: more.draw(d, (more.width + 40) / 2, 10),
                      color=CREAM)
 
-    path = os.path.join(out, 'video', f'tanitim_{orient}.mp4')
+    path = os.path.join(out, 'video', lang, f'tanitim_{orient}.mp4')
     os.makedirs(os.path.dirname(path), exist_ok=True)
     cmd = [mc.FFMPEG, '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}',
            '-r', str(FPS), '-i', '-', '-an', '-vf', 'scale=out_color_matrix=bt709:out_range=tv,format=yuv420p',
@@ -1065,7 +1083,7 @@ def build_video(args):
     proc.stdin.close()
     if proc.wait() != 0:
         raise RuntimeError('ffmpeg hata verdi: ' + path)
-    return orient, previews
+    return (lang, orient), previews
 
 
 
@@ -1078,7 +1096,7 @@ def _thumb(path, w):
 def sheet(rows, path, gap=8, bgc=(234, 239, 238)):
     """rows: [(etiket, [resim, ...], aralık)] → tek JPG."""
     f = ImageFont.truetype(mc.POPPINS.format('Medium'), 22, layout_engine=ImageFont.Layout.RAQM)
-    lab = 84
+    lab = max(84, max(round(f.getlength(label)) + 16 for label, _, _ in rows))
     W = max(lab + sum(i.width for i in ims) + g * (len(ims) - 1) for _, ims, g in rows) + 2 * gap
     H = sum(max(i.height for i in ims) for _, ims, _ in rows) + gap * (len(rows) + 1)
     out = Image.new('RGB', (W, H), bgc)
@@ -1118,18 +1136,19 @@ def previews(out, langs, video_frames):
         sheet(rows, os.path.join(out, '_onizleme_instagram.jpg'))
     if video_frames:
         rows = []
-        for orient, frames in sorted(video_frames.items()):
+        for (lang, orient), frames in sorted(video_frames.items(), key=lambda kv: (VIDEO_LANGS.index(kv[0][0]), kv[0][1])):
             w = 150 if orient == 'dikey' else 300
             ims = [frames[k].resize((w, round(frames[k].height * w / frames[k].width)), Image.LANCZOS)
                    for k in sorted(frames)]
-            rows += [(orient, ims, 6)] if orient == 'dikey' else [(orient, ims[:5], 6), ('', ims[5:], 6)]
+            label = f'{lang} {orient}'
+            rows += [(label, ims, 6)] if orient == 'dikey' else [(label, ims[:5], 6), ('', ims[5:], 6)]
         sheet(rows, os.path.join(out, '_onizleme_video.jpg'))
 
 
 PLAY_URL = 'https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde'
 README = """# Vaktinde 1.3.0 tanıtım paketi
 
-Play Store görselleri (5 dil), Instagram gönderileri (Türkçe) ve sessiz tanıtım videoları.
+Play Store görselleri (5 dil), Instagram gönderileri (Türkçe) ve sessiz tanıtım videoları (Türkçe, İngilizce).
 Hepsi uygulamanın gerçek ekranlarından üretildi; çerçeve, durum çubuğu, ezan bildirimi ve ana ekran
 widget'ları uygulamanın kendi metin ve renkleriyle çizildi. Yeniden üretmek için:
 `python3 docs/marketing/make_store_assets.py <ekran_klasörü> <çıkış_klasörü>` (ayrıntı betiğin başında).
@@ -1145,7 +1164,7 @@ Play Console > Büyüme > Mağazada varlık > Ana mağaza girişi; her dilin çe
 |---|---|
 | `01_vakitler.png` … `08_widget.png` | Telefon ekran görüntüleri, **bu sırayla** (1080×1920). İlk ikisi temel değer: vakitler/ezan ve Kur'an/hatim |
 | `feature_graphic.png` | Öne çıkan grafik (1024×500) |
-| `video/tanitim_yatay.mp4` | Önce YouTube'a yükleyin, bağlantıyı "Video" alanına yapıştırın (3. bölüm) |
+| `video/<dil>/tanitim_yatay.mp4` | Önce YouTube'a yükleyin, bağlantıyı "Video" alanına yapıştırın (3. bölüm): tr-TR'ye Türkçe, diğer dillere İngilizce video |
 
 - Zemin sekiz görsel boyunca kesintisiz akar (mağazada yan yana bakınca birleşir). Arapça mağaza
   sağdan sola dizdiği için `ar` setinde zemin aynalandı; yükleme sırası yine 01 → 08.
@@ -1190,15 +1209,16 @@ Yazılar üst 250 ve alt 350 pikselin dışında. Her birine bağlantı çıkart
 
 Facebook için aynı görseller ve metinler kullanılabilir (Meta Business Suite'ten ikisine birlikte).
 
-## 3. Video (`video/`, sessiz)
+## 3. Video (`video/tr/`, `video/en/`; sessiz)
 
+İki dilde aynı akış: `tr` Türkçe, `en` İngilizce başlıklar ve uygulamanın İngilizce ekranları (London).
 Müzik yok: her uygulamanın kendi kütüphanesinden ekleyin (Instagram/Facebook "Ses", TikTok "Ses ekle",
 YouTube "Ses"). Dikey videoda önemli yazılar üst 250 / alt 350 pikselin dışında.
 
 | Dosya | Nereye |
 |---|---|
-| `tanitim_dikey.mp4` (1080×1920, 19 sn) | Instagram/Facebook Reels, TikTok, YouTube Shorts. Kapak: kapanış karesi (18. sn) |
-| `tanitim_yatay.mp4` (1920×1080, 19 sn) | YouTube (herkese açık ya da liste dışı, gömmeye açık, reklamsız) → bağlantısı Play Console "Video" alanına |
+| `<dil>/tanitim_dikey.mp4` (1080×1920, 19 sn) | Instagram/Facebook Reels, TikTok, YouTube Shorts. Kapak: kapanış karesi (18. sn) |
+| `<dil>/tanitim_yatay.mp4` (1920×1080, 19 sn) | YouTube (herkese açık ya da liste dışı, gömmeye açık, reklamsız) → bağlantısı Play Console "Video" alanına: tr-TR'de Türkçe, en-US/de-DE/fr-FR/ar'da İngilizce |
 
 **Reels / Facebook**
 ```
@@ -1221,6 +1241,15 @@ Kur'an-ı Kerim ve hatim takibi, namaz takibi, kıble pusulası, zikirmatik ve d
 ```
 
 **YouTube (yatay, Play tanıtım videosu)** başlık: `Vaktinde 1.3.0: Ezan Vakti, Kur'an ve Kıble`
+
+**İngilizce (`en/`)** YouTube başlığı: `Vaktinde: Prayer Times, Quran and Qibla in One App`
+```
+Prayer times calculated offline with the Diyanet method; silence the adhan with one tap on "Stop".
+Read the Quran by mushaf page and track your Khatm, keep track of your prayers, find the Qibla and count your dhikr.
+{url}&referrer=utm_source%3Dyoutube%26utm_medium%3Dvideo
+```
+Reels / TikTok: `Prayer times, adhan, Quran and Qibla in one app. Search "Vaktinde" on Google Play.
+#prayertimes #adhan #quran #qibla #muslimapp #vaktinde`
 
 ## 4. Zip paketleri
 Her paket 24 MB'tan küçük ve içinde bu README de var: `play_<diller>.zip`, `instagram.zip`, `video.zip`.
@@ -1281,15 +1310,16 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     frames = {}
     with ProcessPoolExecutor(max_workers=args.jobs) as ex:
-        jobs = [ex.submit(build_video, (args.shots, args.out, o)) for o in ('dikey', 'yatay') if 'video' in parts]
+        jobs = [ex.submit(build_video, (args.shots, args.out, o, l))
+                for l in VIDEO_LANGS if l in langs for o in ('dikey', 'yatay') if 'video' in parts]
         jobs += [ex.submit(build_play, (l, args.shots, args.out)) for l in langs if 'play' in parts]
         if 'instagram' in parts:
             jobs.append(ex.submit(build_instagram, (args.shots, args.out)))
         for j in jobs:
             key, info = j.result()
-            if key in ('dikey', 'yatay'):
+            if isinstance(key, tuple):  # video: (dil, yön)
                 frames[key] = info
-                info = 'tamam'
+                key, info = ' '.join(key), 'tamam'
             print(key, info)
     previews(args.out, langs, frames)
     write_readme(args.out)
