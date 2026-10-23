@@ -99,6 +99,7 @@ class _MainWrapperState extends State<MainWrapper> {
     NotificationRoutes.pending.addListener(_openNotificationRoute);
     _lifecycle = AppLifecycleListener(
       onResume: () => NotificationService().readLaunchRoute(),
+      onPause: NotificationService.forgetLaunch,
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

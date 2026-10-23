@@ -281,7 +281,7 @@ class NotificationService {
     // gövdeye ya da uygulamayı açan düğmeye dokunuş: uygulama içi yönlendirme
     await _notificationsPlugin.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: NotificationRoutes.handle,
+      onDidReceiveNotificationResponse: _onResponse,
       onDidReceiveBackgroundNotificationResponse:
           onNotificationActionBackground,
     );
@@ -635,9 +635,19 @@ class NotificationService {
 
   Future<void> cancel(int id) => _notificationsPlugin.cancel(id);
 
-  // Son açılan açılış dokunuşu (bildirim kimliği, eylem, yük): etkinliğin
-  // niyeti sonra da aynı kaldığından aynı dokunuş bir kez açılır
+  // Bu öne gelişte açılan dokunuş (bildirim kimliği, eylem, yük): eklenti
+  // açık uygulamadaki dokunuşu hem işleyiciye verir hem etkinliğin niyetine
+  // yazar; öne gelişte niyet yeniden okununca aynı dokunuş ikinci kez açılmaz.
+  // Arka plana geçince unutulur (MainActivity niyeti de temizler).
   static (int?, String?, String?)? _launchHandled;
+
+  static void _onResponse(NotificationResponse response) {
+    _launchHandled = (response.id, response.actionId, response.payload);
+    NotificationRoutes.handle(response);
+  }
+
+  /// Uygulama arka plana geçti: sonraki (aynı kimlikli) dokunuş yeniden açılır
+  static void forgetLaunch() => _launchHandled = null;
 
   /// Uygulamayı bildirime dokunuş açtıysa hedef (NotificationRoutes)
   /// bekleyene yazılır; açık uygulamadaki dokunuşlar initialize'daki

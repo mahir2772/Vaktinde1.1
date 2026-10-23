@@ -2,6 +2,8 @@
 // zamanları), hata eşleme, oturum önbelleği, kârî seçimi; oynatıcı sahte ses
 // katmanıyla (ayet izleme, ayet/sure tekrarı, atlama, hata, kârî değişimi,
 // durdurma, geç gelen eski yanıt).
+import 'dart:async';
+
 import 'package:ezan_saati/data/services/quran_audio_service.dart';
 import 'package:ezan_saati/features/quran/audio/quran_player.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -156,7 +158,7 @@ void main() {
         ],
       ]) {
         final audio = QuranAudioService.parseChapter({
-          'url': 'https://a.example/1.mp3',
+          'url': 'https://download.quranicaudio.com/1.mp3',
           'verses': bad,
         })!;
         expect(audio.hasTimings, isFalse, reason: '$bad');
@@ -192,6 +194,33 @@ void main() {
         ], null).id,
         5,
       );
+      // Ad dile göre gelir (tr / ar)
+      for (final name in ['Mişari Raşid el-Afasi', 'مشاري راشد العفاسي']) {
+        expect(
+          QuranAudioService.pickReciter([
+            const QuranReciter(id: 3, name: 'Ebû Bekir eş-Şâtırî'),
+            QuranReciter(id: 7, name: name),
+          ], null).id,
+          7,
+          reason: name,
+        );
+      }
+    });
+
+    test('ses sadece Quran Foundation / Quran.com sunucularından', () {
+      for (final url in [
+        'https://evil.example/1.mp3',
+        'https://quranicaudio.com.evil.example/1.mp3',
+        'https://u:p@download.quranicaudio.com/1.mp3',
+      ]) {
+        expect(QuranAudioService.parseChapter({'url': url}), isNull);
+      }
+      for (final url in [
+        'https://download.quranicaudio.com/qdc/1.mp3',
+        'https://verses.quran.foundation/Alafasy/mp3/001001.mp3',
+      ]) {
+        expect(QuranAudioService.parseChapter({'url': url}), isNotNull);
+      }
     });
   });
 
@@ -237,6 +266,38 @@ void main() {
       expect(engine.looping, isFalse);
     });
 
+    test('ayet zamanı olmayan kayıtta ayet tekrarı atlanır', () async {
+      server.ayahs[5] = 0;
+      await start(5);
+      expect(player.audio!.hasTimings, isFalse);
+      await player.cycleRepeat();
+      expect(player.repeat, QuranRepeat.surah);
+      expect(engine.looping, isTrue);
+    });
+
+    test('ilk yükleme sürerken ikinci "Dinle" ikinci oynatıcı açmaz', () async {
+      final gate = Completer<void>();
+      player = QuranPlayer(
+        service: QuranAudioService(api: fakeAudioApi, get: server.get),
+        engine: (channel) async {
+          engines++;
+          await gate.future;
+          return engine;
+        },
+      );
+      final first = start(1);
+      await pumpEventQueue();
+      expect(engines, 1);
+      final second = start(2);
+      await pumpEventQueue();
+      gate.complete();
+      await first;
+      await second;
+      expect(engines, 1);
+      expect(engine.url.toString(), endsWith('/2.mp3'));
+      expect(player.playing, isTrue);
+    });
+
     test('önceki / sonraki ayet sınırlarda kalır; bitince oynat baştan '
         'başlatır', () async {
       await start(2);
@@ -248,9 +309,11 @@ void main() {
       expect(player.ayah, 3);
       engine.calls.clear();
       engine.finish();
+      // just_audio sonda çalıyor kalır: duraklatılır ki oynat yeniden çalsın
       expect(player.playing, isFalse);
+      expect(engine.calls, ['pause']);
       await player.toggle();
-      expect(engine.calls, ['seek 0', 'play']);
+      expect(engine.calls, ['pause', 'seek 0', 'play']);
       await player.toggle();
       expect(engine.calls.last, 'pause');
     });
@@ -316,7 +379,10 @@ void main() {
       await Future.wait([first, second]);
       expect(player.surah, 2);
       expect(engine.calls.where((c) => c.startsWith('open')), hasLength(1));
-      expect(engine.url.toString(), 'https://cdn.example/2.mp3');
+      expect(
+        engine.url.toString(),
+        'https://download.quranicaudio.com/qdc/test/2.mp3',
+      );
     });
   });
 }

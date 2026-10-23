@@ -2,7 +2,7 @@
 // önbellek ve hata yanıtları; ağ çağrıları sahte.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { parseRoute, safeAudioUrl, resetTokenCacheForTest } from './worker.js';
+import worker, { parseRoute, safeAudioUrl, resetForTest } from './worker.js';
 
 const env = {
   ENABLED: '1',
@@ -21,7 +21,7 @@ function ctx() {
 }
 
 beforeEach(() => {
-  resetTokenCacheForTest();
+  resetForTest();
   calls = [];
   tokenCount = 0;
   apiStatus = [];
@@ -88,6 +88,30 @@ test('sure sesi: adres + sıralı ayet zamanları; sadece https', async () => {
   assert.equal(safeAudioUrl('http://a.com/1.mp3'), null);
   assert.equal(safeAudioUrl('https://u:p@a.com/1.mp3'), null);
   assert.equal(safeAudioUrl('javascript:alert(1)'), null);
+  // Sadece Quran Foundation / Quran.com ses sunucuları
+  assert.equal(safeAudioUrl('https://evil.example/1.mp3'), null);
+  assert.equal(safeAudioUrl('https://quranicaudio.com.evil.example/1.mp3'), null);
+  assert.ok(safeAudioUrl('https://verses.quran.foundation/Alafasy/mp3/001001.mp3'));
+});
+
+test('ses adresi bilinmeyen sunucudaysa 404; yok yanıtı hatırlanır', async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    if (String(url).includes('/chapter_recitations/')) {
+      calls.push({ url: String(url), init });
+      return Response.json({ audio_file: { audio_url: 'https://evil.example/1.mp3' } });
+    }
+    return realFetch(url, init);
+  };
+  assert.equal((await get('/v1/chapter/7/5')).status, 404);
+  const before = calls.length;
+  assert.equal((await get('/v1/chapter/7/5')).status, 404);
+  assert.equal(calls.length, before);
+});
+
+test('aynı anda gelen istekler tek belirteç alır', async () => {
+  await Promise.all([get('/v1/chapter/7/1'), get('/v1/chapter/7/2'), get('/v1/reciters')]);
+  assert.equal(tokenCount, 1);
 });
 
 test('geçersiz yol ve parametreler 404, GET dışı 405', async () => {
@@ -126,6 +150,8 @@ test('başarılı yanıt önbelleğe alınır (1 gün), hata alınmaz; hata ayr�
   const [stored] = store.values();
   assert.equal(stored.headers.get('Cache-Control'), 'public, max-age=86400');
   const before = calls.length;
+  // workers.dev: Cache API boş döner, süreç içi önbellek yine yanıtlar
+  store.clear();
   const again = await get('/v1/chapter/7/1?x=1');
   assert.equal(again.status, 200);
   assert.equal(calls.length, before); // sorgu eklemek önbelleği atlatmaz
@@ -135,7 +161,9 @@ test('başarılı yanıt önbelleğe alınır (1 gün), hata alınmaz; hata ayr�
   const failed = await get('/v1/chapter/7/9');
   assert.equal(failed.status, 502);
   assert.deepEqual(await failed.json(), { error: 'upstream' });
-  assert.equal(store.size, 1);
+  assert.equal(store.size, 0);
+  apiStatus = [];
+  assert.equal((await get('/v1/chapter/7/9')).status, 200); // hata hatırlanmaz
 });
 
 test('IP başına sınır aşılınca 429', async () => {

@@ -34,8 +34,18 @@ const CLIENT_CACHE_SECONDS = 3600;
 const UPSTREAM_TIMEOUT_MS = 10000;
 const USER_AGENT = 'Vaktinde-Audio-Proxy/1.0';
 
-// Süreç (isolate) içi belirteç önbelleği; süresi dolmadan 60 sn önce yenilenir
+// Ses adresi sadece Quran Foundation / Quran.com sunucularından (alt alan adları dahil)
+const AUDIO_HOSTS = ['quranicaudio.com', 'qurancdn.com', 'quran.foundation', 'quran.com'];
+
+// Süreç (isolate) içi belirteç önbelleği; süresi dolmadan 60 sn önce yenilenir.
+// Aynı anda gelen istekler tek belirteç isteğini bekler.
 let tokenCache = null;
+let tokenRequest = null;
+
+// Süreç içi yanıt önbelleği: Cache API *.workers.dev adresinde çalışmaz (sadece
+// özel alan adında); burada da 1 gün, en çok 500 kayıt (en eski çıkar)
+const MEMORY_CACHE_LIMIT = 500;
+const memoryCache = new Map();
 
 export default {
   async fetch(request, env, ctx) {
@@ -69,6 +79,8 @@ async function handle(request, env, ctx) {
 
   // Önbellek anahtarı sadece doğrulanmış parametrelerden (gereksiz sorgu
   // parametreleriyle önbellek atlatılamaz)
+  const remembered = memoryGet(route.key);
+  if (remembered) return withClientCache(json(remembered.body, remembered.status));
   const cacheKey = new Request(`https://cache.vaktinde/${route.key}`);
   const cache = caches.default;
   const cached = await cache.match(cacheKey);
@@ -76,12 +88,32 @@ async function handle(request, env, ctx) {
 
   const result = await route.load(env, upstream);
   const response = json(result.body, result.status);
+  // "Bu kârîde bu sure yok" (404) da hatırlanır: aynı istek QF'ye tekrar gitmez
+  if (result.status === 200 || result.status === 404) {
+    memoryPut(route.key, result.status, result.body);
+  }
   if (result.status === 200) {
     const stored = new Response(response.clone().body, response);
     stored.headers.set('Cache-Control', `public, max-age=${EDGE_CACHE_SECONDS}`);
     ctx.waitUntil(cache.put(cacheKey, stored));
   }
   return withClientCache(response);
+}
+
+function memoryGet(key) {
+  const hit = memoryCache.get(key);
+  if (!hit) return null;
+  if (hit.expires > Date.now()) return hit;
+  memoryCache.delete(key);
+  return null;
+}
+
+function memoryPut(key, status, body) {
+  memoryCache.delete(key);
+  if (memoryCache.size >= MEMORY_CACHE_LIMIT) {
+    memoryCache.delete(memoryCache.keys().next().value);
+  }
+  memoryCache.set(key, { status, body, expires: Date.now() + EDGE_CACHE_SECONDS * 1000 });
 }
 
 /** /v1/reciters?lang=xx ve /v1/chapter/{kârî}/{sure}; başka yol yok */
@@ -168,12 +200,14 @@ async function loadChapter(env, upstream, reciter, surah) {
   };
 }
 
-/** Sadece https, kullanıcı adı/şifre yok */
+/** Sadece https, kullanıcı adı/şifre yok, bilinen ses sunucusu */
 export function safeAudioUrl(value) {
   if (typeof value !== 'string') return null;
   try {
     const url = new URL(value);
     if (url.protocol !== 'https:' || url.username || url.password) return null;
+    const host = url.hostname;
+    if (!AUDIO_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))) return null;
     return url.toString();
   } catch {
     return null;
@@ -211,15 +245,22 @@ function mapStatus(status) {
 }
 
 async function accessToken(env, upstream, forceRefresh) {
-  const now = Date.now();
   if (
     !forceRefresh &&
     tokenCache &&
     tokenCache.auth === upstream.auth &&
-    tokenCache.expires - 60000 > now
+    tokenCache.expires - 60000 > Date.now()
   ) {
     return tokenCache.token;
   }
+  tokenRequest ??= fetchToken(env, upstream).finally(() => {
+    tokenRequest = null;
+  });
+  return tokenRequest;
+}
+
+async function fetchToken(env, upstream) {
+  const now = Date.now();
   const response = await fetch(`${upstream.auth}/oauth2/token`, {
     method: 'POST',
     headers: {
@@ -263,6 +304,8 @@ function withClientCache(response) {
 }
 
 // Testler için
-export function resetTokenCacheForTest() {
+export function resetForTest() {
   tokenCache = null;
+  tokenRequest = null;
+  memoryCache.clear();
 }

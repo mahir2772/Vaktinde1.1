@@ -9,8 +9,9 @@ QF_ENV = "prelive"
 # "1" dışında bir değer: uygulama dinlemeyi "şu an kullanılamıyor" der
 ENABLED = "1"
 
-# IP başına dakikada en çok 60 istek (kötüye kullanıma karşı)
+# IP başına dakikada en çok 20 istek (uygulama sure başına ~1-2 istek atar; ücretsiz planın
+# günlük istek kotasını tek kişinin tüketmesine karşı)
 [[ratelimits]]
 name = "RATE_LIMITER"
 namespace_id = "1001"
-simple = { limit = 60, period = 60 }
+simple = { limit = 20, period = 60 }

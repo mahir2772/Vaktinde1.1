@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 const String fakeAudioApi = 'https://audio.example/base';
 
 Map<String, Object?> fakeChapterJson(int surah, {int ayahs = 3}) => {
-  'url': 'https://cdn.example/$surah.mp3',
+  'url': 'https://download.quranicaudio.com/qdc/test/$surah.mp3',
   'verses': [
     for (var i = 0; i < ayahs; i++) [i * 1000 + 500, i * 1000 + 1400],
   ],
@@ -64,10 +64,9 @@ class FakeAudioEngine implements QuranAudioEngine {
   Stream<void> get completed => _completed.stream;
 
   void at(int ms) => _positions.add(Duration(milliseconds: ms));
-  void finish() {
-    _playing.add(false);
-    _completed.add(null);
-  }
+
+  /// just_audio gibi: dosya bitince "çalıyor" kalır, sadece bitti olayı gelir
+  void finish() => _completed.add(null);
 
   @override
   Future<void> open(

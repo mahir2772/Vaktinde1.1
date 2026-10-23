@@ -247,6 +247,26 @@ void main() {
       expect(NotificationRoutes.pending.value, 'friday');
       await platformTap(PrayerRefreshService.fridayKehfRoute, 'open|friday');
       expect(NotificationRoutes.pending.value, 'surah:18');
+
+      // Eklenti dokunuşu etkinliğin niyetine de yazar: öne gelişte yeniden
+      // okununca ikinci kez açılmaz; arka plana geçtikten sonraki aynı
+      // kimlikli dokunuş (ör. haftaya aynı hatırlatma) yine açılır
+      NotificationRoutes.pending.value = null;
+      launch = {
+        'notificationLaunchedApp': true,
+        'notificationResponse': {
+          'notificationId': 2400,
+          'actionId': PrayerRefreshService.fridayKehfRoute,
+          'input': null,
+          'payload': 'open|friday',
+          'notificationResponseType': 1,
+        },
+      };
+      await NotificationService().readLaunchRoute();
+      expect(NotificationRoutes.pending.value, isNull);
+      NotificationService.forgetLaunch();
+      await NotificationService().readLaunchRoute();
+      expect(NotificationRoutes.pending.value, 'surah:18');
     });
   });
 

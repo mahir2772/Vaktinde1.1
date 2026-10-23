@@ -197,14 +197,28 @@ class QuranAudioService {
     ];
   }
 
-  /// {url, verses: [[başlangıç, bitiş], …]}; adres https değilse null, zaman
-  /// listesi bozuksa zamansız
+  /// Ses sadece Quran Foundation / Quran.com sunucularından (alt alan
+  /// adları dahil; ara sunucu da aynı listeyle süzer)
+  static const List<String> audioHosts = [
+    'quranicaudio.com',
+    'qurancdn.com',
+    'quran.foundation',
+    'quran.com',
+  ];
+
+  /// {url, verses: [[başlangıç, bitiş], …]}; adres https değilse ya da bilinen
+  /// ses sunucusunda değilse null, zaman listesi bozuksa zamansız
   static QuranChapterAudio? parseChapter(Object? json) {
     if (json is! Map) return null;
     final url = Uri.tryParse(
       json['url'] is String ? json['url'] as String : '',
     );
-    if (url == null || url.scheme != 'https' || url.host.isEmpty) return null;
+    if (url == null ||
+        url.scheme != 'https' ||
+        url.userInfo.isNotEmpty ||
+        !audioHosts.any((h) => url.host == h || url.host.endsWith('.$h'))) {
+      return null;
+    }
     final verses = <({int from, int to})>[];
     final raw = json['verses'];
     if (raw is List) {
@@ -225,12 +239,13 @@ class QuranAudioService {
   }
 
   /// Seçilen kârî; listede yoksa (ilk kullanım ya da kaldırılmış) Mişari
-  /// Raşid el-Afasi, o da yoksa ilk kârî
+  /// Raşid el-Afasi (ad dile göre: Afasy / Afasi / العفاسي), o da yoksa ilk
   static QuranReciter pickReciter(List<QuranReciter> reciters, int? savedId) =>
       reciters.where((r) => r.id == savedId).firstOrNull ??
-      reciters
-          .where((r) => r.name.toLowerCase().contains('afasy'))
-          .firstOrNull ??
+      reciters.where((r) {
+        final name = r.name.toLowerCase();
+        return name.contains('afas') || name.contains('عفاسي');
+      }).firstOrNull ??
       reciters.first;
 
   static Future<int?> loadReciterId() async {

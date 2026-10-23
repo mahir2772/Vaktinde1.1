@@ -50,7 +50,10 @@ derlemek gerekmez.
 - **Anahtar yenileme:** 6 ayda bir (ya da sızdığından şüphelenince hemen) konsoldan yeni
   secret al, `wrangler secret put QF_CLIENT_SECRET`. Sızıntı şüphesini 24 saat içinde
   developers@quran.com'a bildir (QF şartı).
-- **Sınır:** IP başına dakikada 60 istek (`wrangler.toml` → `ratelimits`).
+- **Sınır:** IP başına dakikada 20 istek (`wrangler.toml` → `ratelimits`).
+- **Önbellek:** Cloudflare'in Cache API'si `*.workers.dev` adresinde çalışmaz (sadece özel alan
+  adında); Worker bu yüzden yanıtları kendi belleğinde de 1 gün tutar ("bu kârîde bu sure yok"
+  yanıtı dahil). Ses adresi sadece Quran Foundation / Quran.com sunucularından kabul edilir.
 - **Test:** `node --test` (Node 20+, bu klasörde; ağ çağrıları sahte).
 - Cloudflare ücretsiz planı günde 100.000 istek; uygulama kârî listesini ve sure bilgisini
   oturum boyunca tekrar istemez.

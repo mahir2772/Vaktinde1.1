@@ -121,6 +121,8 @@ class QuranPlayer extends ChangeNotifier {
       _engineFactory = engine ?? JustAudioEngine.create;
 
   QuranAudioEngine? _engine;
+  // Oynatıcı bir kez kurulur: art arda "Dinle" ikinci bir oynatıcı açmaz
+  Future<QuranAudioEngine>? _engineSetup;
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   /// Her başlatma / durdurmada artar: geç gelen eski yanıt yok sayılır
@@ -187,8 +189,7 @@ class QuranPlayer extends ChangeNotifier {
       final reciter = _reciter!;
       final audio = await _service.chapter(reciter.id, surah);
       if (session != _session) return;
-      final engine =
-          _engine ?? await _attach(await _engineFactory(channelName));
+      final engine = await (_engineSetup ??= _setupEngine(channelName));
       if (session != _session) return;
       await engine.open(
         audio.url,
@@ -221,7 +222,18 @@ class QuranPlayer extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<QuranAudioEngine> _attach(QuranAudioEngine engine) async {
+  Future<QuranAudioEngine> _setupEngine(String channelName) async {
+    try {
+      final engine = await _engineFactory(channelName);
+      _attach(engine);
+      return engine;
+    } catch (_) {
+      _engineSetup = null;
+      rethrow;
+    }
+  }
+
+  void _attach(QuranAudioEngine engine) {
     _engine = engine;
     _subscriptions
       ..add(engine.positions.listen(_onPosition))
@@ -234,7 +246,6 @@ class QuranPlayer extends ChangeNotifier {
         }),
       )
       ..add(engine.completed.listen((_) => _onCompleted()));
-    return engine;
   }
 
   void _onPosition(Duration value) {
@@ -265,9 +276,12 @@ class QuranPlayer extends ChangeNotifier {
       _engine?.play();
       return;
     }
+    // just_audio sonda "çalıyor" kalır (play() o zaman bir şey yapmaz):
+    // duraklatılır, sonraki dokunuş baştan çalar
     _completed = true;
     _playing = false;
     notifyListeners();
+    _engine?.pause();
   }
 
   Future<void> toggle() async {
@@ -309,10 +323,13 @@ class QuranPlayer extends ChangeNotifier {
     if (ayah != null) await seekAyah(ayah > 1 ? ayah - 1 : 1);
   }
 
-  /// Kapalı → ayet → sure → kapalı
+  /// Kapalı → ayet → sure → kapalı (ayet zamanı yoksa ayet tekrarı atlanır)
   Future<void> cycleRepeat() async {
     _repeat =
         QuranRepeat.values[(_repeat.index + 1) % QuranRepeat.values.length];
+    if (_repeat == QuranRepeat.ayah && _audio?.hasTimings != true) {
+      _repeat = QuranRepeat.surah;
+    }
     _repeatAyah = _ayah;
     notifyListeners();
     await _engine?.setLooping(_repeat == QuranRepeat.surah);
@@ -347,6 +364,7 @@ class QuranPlayer extends ChangeNotifier {
     _session++;
     final engine = _engine;
     _engine = null;
+    _engineSetup = null;
     for (final subscription in _subscriptions) {
       await subscription.cancel();
     }
