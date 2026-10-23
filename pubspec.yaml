@@ -1,7 +1,7 @@
 name: ezan_saati
 description: "Vaktinde - Ezan vakitleri, kıble ve zikirmatik uygulaması."
 publish_to: 'none'
-version: 1.3.0+18
+version: 1.4.0+19
 
 environment:
   sdk: '>=3.10.0 <4.0.0'

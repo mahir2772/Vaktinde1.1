@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/data/services/quran_audio_service.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'app_feature.dart';
 
@@ -21,44 +22,40 @@ class WhatsNew {
   static const String seenKey = 'whats_new_seen';
 
   /// Listenin ait olduğu sürüm
-  static const String version = '1.3.0';
+  static const String version = '1.4.0';
 
   static List<WhatsNewItem> items(AppLocalizations loc) => [
+    // Dinleme ara sunucusuyla derlenmediyse yok
+    if (QuranAudioService.configured)
+      (
+        icon: Icons.headphones_outlined,
+        title: loc.whatsNewListenTitle,
+        subtitle: loc.whatsNewListenDesc,
+        feature: AppFeature.quran,
+      ),
     (
       icon: Icons.flag_outlined,
       title: loc.hatimTitle,
-      subtitle: loc.hatimIntro,
+      subtitle: loc.whatsNewHatimDesc,
       feature: AppFeature.quran,
     ),
     (
       icon: Icons.auto_stories_outlined,
-      title: loc.whatsNewQuranTitle,
-      subtitle: loc.whatsNewQuranDesc,
-      feature: AppFeature.quran,
+      title: loc.duasTitle,
+      subtitle: loc.whatsNewDuasDesc,
+      feature: AppFeature.duas,
     ),
     (
-      icon: Icons.format_size,
-      title: loc.textSizeTitle,
-      subtitle: loc.whatsNewTextSizeDesc,
-      feature: AppFeature.textSize,
+      icon: Icons.history_edu_outlined,
+      title: loc.storiesTitle,
+      subtitle: loc.whatsNewStoriesDesc,
+      feature: AppFeature.stories,
     ),
     (
-      icon: Icons.forum_outlined,
-      title: loc.fridayNotifTitle,
-      subtitle: loc.fridayNotifSub,
-      feature: AppFeature.notificationSettings,
-    ),
-    (
-      icon: Icons.widgets_outlined,
-      title: loc.whatsNewWidgetsTitle,
-      subtitle: loc.whatsNewWidgetsDesc,
-      feature: AppFeature.widgets,
-    ),
-    (
-      icon: Icons.notifications_paused_outlined,
-      title: loc.whatsNewStopTitle,
-      subtitle: loc.whatsNewStopDesc,
-      feature: AppFeature.alarms,
+      icon: Icons.touch_app_outlined,
+      title: loc.whatsNewDhikrsTitle,
+      subtitle: loc.whatsNewDhikrsDesc,
+      feature: AppFeature.zikir,
     ),
   ];
 

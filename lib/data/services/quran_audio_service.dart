@@ -108,6 +108,19 @@ class QuranAudioService {
     _chapters.clear();
   }
 
+  /// Dinleme kullanılabilir mi (ara sunucu açık ve kârî listesi geldi);
+  /// liste oturumda saklanır, başarısızsa sonraki açılışta yeniden sorulur.
+  /// Sunucu kapalıyken (QF onayı beklenirken) okuyucu Dinle'yi göstermez.
+  Future<bool> isAvailable(String language) async {
+    if (_api == null) return false;
+    try {
+      await reciters(language);
+      return true;
+    } on QuranAudioException {
+      return false;
+    }
+  }
+
   Future<List<QuranReciter>> reciters(String language) async {
     final cached = _reciters[language];
     if (cached != null) return cached;

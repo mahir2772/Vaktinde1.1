@@ -125,25 +125,37 @@ class AppLocalizationsDe extends AppLocalizations {
   String get whatsNewTitle => 'Neuigkeiten';
 
   @override
-  String get whatsNewQuranTitle => 'Koran im unteren Menü';
-
-  @override
-  String get whatsNewQuranDesc =>
-      'Lesen Sie Seite für Seite wie im gedruckten Mushaf und machen Sie dort weiter, wo Sie aufgehört haben.';
-
-  @override
-  String get whatsNewWidgetsTitle => 'Neue Widgets';
-
-  @override
-  String get whatsNewWidgetsDesc =>
-      'Gebetsring und Gebetstracker: Gebete abhaken, ohne die App zu öffnen.';
-
-  @override
   String get whatsNewStopTitle => 'Adhan mit einem Tipp stoppen';
 
   @override
   String get whatsNewStopDesc =>
       'Während der Adhan läuft, beendet „Stoppen“ in der Benachrichtigung den Ton sofort.';
+
+  @override
+  String get whatsNewListenTitle => 'Den Koran anhören';
+
+  @override
+  String get whatsNewListenDesc =>
+      'Hören Sie eine Sure vom Rezitator Ihrer Wahl; der gerade rezitierte Vers wird hervorgehoben.';
+
+  @override
+  String get whatsNewStoriesDesc =>
+      'Kurze Erzählungen über die Propheten, das Leben des Propheten Muhammad, die Gefährten und große islamische Gelehrte.';
+
+  @override
+  String get whatsNewDuasDesc =>
+      '87 Bittgebete in 10 Kategorien mit arabischem Text, Umschrift, Bedeutung und Quelle, jetzt mit Suche.';
+
+  @override
+  String get whatsNewDhikrsTitle => 'Mehr Dhikr';
+
+  @override
+  String get whatsNewDhikrsDesc =>
+      '35 vorgefertigte Dhikr mit Bedeutung in der Dhikr-Liste.';
+
+  @override
+  String get whatsNewHatimDesc =>
+      'Neuer Khatm-Bildschirm: „Gelesen“ mit einem Tippen, Fortschritt nach Juz, Absicht und Gruppen-Khatm.';
 
   @override
   String get appGuideTitle => 'App kennenlernen';

@@ -64,6 +64,21 @@ void main() {
       expect(server.requests, isEmpty);
     });
 
+    test('kullanılabilirlik: kârî listesi gelirse açık, sunucu kapalıysa ya '
+        'da adres yoksa kapalı', () async {
+      expect(
+        await QuranAudioService(api: '', get: server.get).isAvailable('tr'),
+        isFalse,
+      );
+      server.status = 503;
+      final service = QuranAudioService(api: fakeAudioApi, get: server.get);
+      expect(await service.isAvailable('tr'), isFalse);
+      server.status = 200;
+      expect(await service.isAvailable('tr'), isTrue);
+      expect(await service.isAvailable('tr'), isTrue);
+      expect(server.requests, hasLength(2)); // başarılı liste oturumda kalır
+    });
+
     test('istek adresleri, oturum önbelleği', () async {
       final service = QuranAudioService(api: fakeAudioApi, get: server.get);
       final reciters = await service.reciters('tr');

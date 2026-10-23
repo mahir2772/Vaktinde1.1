@@ -1724,7 +1724,11 @@ void main() {
           'tr_edge_56_notification_settings',
           const NotificationSettingsView(),
         );
-        await _openRoute(tester, 'tr_edge_57_privacy_ads', const PrivacyAdsView());
+        await _openRoute(
+          tester,
+          'tr_edge_57_privacy_ads',
+          const PrivacyAdsView(),
+        );
 
         await _openRoute(tester, 'tr_edge_41_imsakiye', const ImsakiyeView());
         await _openRoute(
@@ -1964,7 +1968,7 @@ void main() {
             lang: lang,
             homeVm: _homeVm(lang),
             extraPrefs: {
-              WhatsNew.seenKey: '1.2.0',
+              WhatsNew.seenKey: '1.3.0',
               UsageReviewPrompt.countKey: 3,
               for (final id in _tipIds) FeatureTip.seenKey(id): false,
             },

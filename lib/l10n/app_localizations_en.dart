@@ -123,25 +123,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatsNewTitle => 'What\'s new';
 
   @override
-  String get whatsNewQuranTitle => 'Quran in the bottom menu';
-
-  @override
-  String get whatsNewQuranDesc =>
-      'Read page by page like a printed mushaf and pick up where you left off.';
-
-  @override
-  String get whatsNewWidgetsTitle => 'New widgets';
-
-  @override
-  String get whatsNewWidgetsDesc =>
-      'Prayer ring and prayer tracker: mark a prayer without opening the app.';
-
-  @override
   String get whatsNewStopTitle => 'Stop the adhan with one tap';
 
   @override
   String get whatsNewStopDesc =>
       'While the adhan plays, “Stop” in the notification silences it at once.';
+
+  @override
+  String get whatsNewListenTitle => 'Listen to the Quran';
+
+  @override
+  String get whatsNewListenDesc =>
+      'Listen to a surah by the reciter you choose; the ayah being recited is highlighted.';
+
+  @override
+  String get whatsNewStoriesDesc =>
+      'Short stories of the prophets, the life of Prophet Muhammad, the Companions and great Islamic scholars.';
+
+  @override
+  String get whatsNewDuasDesc =>
+      '87 duas in 10 categories with Arabic text, transliteration, meaning and source, now searchable.';
+
+  @override
+  String get whatsNewDhikrsTitle => 'More dhikr';
+
+  @override
+  String get whatsNewDhikrsDesc =>
+      '35 ready-made dhikr with their meanings in the dhikr list.';
+
+  @override
+  String get whatsNewHatimDesc =>
+      'New Khatm screen: “I\'ve read it” with one tap, juz-by-juz progress, intention and group khatm.';
 
   @override
   String get appGuideTitle => 'Get to know the app';

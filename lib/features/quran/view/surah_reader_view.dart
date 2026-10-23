@@ -131,8 +131,9 @@ class _SurahReaderViewState extends State<SurahReaderView>
   DateTime? _userScrolledAt;
   static const Duration _followPause = Duration(seconds: 8);
 
-  bool get _audioEnabled =>
-      QuranAudioService.configured || widget.player != null;
+  /// Dinle düğmesi: ara sunucu kârî listesini verdiyse (testte oynatıcı
+  /// verilince her zaman)
+  late bool _audioEnabled = widget.player != null;
 
   QuranViewMode get _viewMode =>
       QuranService.effectiveViewMode(_mode, _language ?? 'tr');
@@ -156,6 +157,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
     if (language != _language) {
       _language = language;
       _loadText();
+      _checkAudio(language);
     }
   }
 
@@ -408,6 +410,14 @@ class _SurahReaderViewState extends State<SurahReaderView>
   }
 
   // ------------------------------------------------------ Dinleme
+
+  Future<void> _checkAudio(String language) async {
+    if (widget.player != null || !QuranAudioService.configured) return;
+    final available = await QuranAudioService().isAvailable(language);
+    if (mounted && available != _audioEnabled) {
+      setState(() => _audioEnabled = available);
+    }
+  }
 
   void _onPlayer() {
     final ayah = _player.surah == widget.surah.number ? _player.ayah : null;

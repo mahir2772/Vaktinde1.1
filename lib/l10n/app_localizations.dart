@@ -302,30 +302,6 @@ abstract class AppLocalizations {
   /// **'Yenilikler'**
   String get whatsNewTitle;
 
-  /// No description provided for @whatsNewQuranTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kur\'an alt menüde'**
-  String get whatsNewQuranTitle;
-
-  /// No description provided for @whatsNewQuranDesc.
-  ///
-  /// In tr, this message translates to:
-  /// **'Mushaf gibi sayfa sayfa okuyun, kaldığınız yerden devam edin.'**
-  String get whatsNewQuranDesc;
-
-  /// No description provided for @whatsNewWidgetsTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Yeni widget\'lar'**
-  String get whatsNewWidgetsTitle;
-
-  /// No description provided for @whatsNewWidgetsDesc.
-  ///
-  /// In tr, this message translates to:
-  /// **'Vakit halkası ve namaz takibi: kıldığınız vakti uygulamayı açmadan işaretleyin.'**
-  String get whatsNewWidgetsDesc;
-
   /// No description provided for @whatsNewStopTitle.
   ///
   /// In tr, this message translates to:
@@ -337,6 +313,48 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.'**
   String get whatsNewStopDesc;
+
+  /// No description provided for @whatsNewListenTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an\'ı dinleyin'**
+  String get whatsNewListenTitle;
+
+  /// No description provided for @whatsNewListenDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sureyi seçtiğiniz hafızdan dinleyin; okunan ayet ekranda işaretlenir.'**
+  String get whatsNewListenDesc;
+
+  /// No description provided for @whatsNewStoriesDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Peygamberler, Peygamberimizin hayatı, sahabe ve İslam âlimlerinden kısa kıssalar.'**
+  String get whatsNewStoriesDesc;
+
+  /// No description provided for @whatsNewDuasDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'10 başlıkta 87 dua: Arapçası, okunuşu, anlamı ve kaynağıyla; arama da var.'**
+  String get whatsNewDuasDesc;
+
+  /// No description provided for @whatsNewDhikrsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni zikirler'**
+  String get whatsNewDhikrsTitle;
+
+  /// No description provided for @whatsNewDhikrsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir listesinde anlamlarıyla 35 hazır zikir.'**
+  String get whatsNewDhikrsDesc;
+
+  /// No description provided for @whatsNewHatimDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Hatim ekranı: tek dokunuşla “Okudum”, cüz cüz ilerleme, niyet ve toplu hatim.'**
+  String get whatsNewHatimDesc;
 
   /// No description provided for @appGuideTitle.
   ///

@@ -121,25 +121,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get whatsNewTitle => 'ما الجديد';
 
   @override
-  String get whatsNewQuranTitle => 'القرآن في القائمة السفلية';
-
-  @override
-  String get whatsNewQuranDesc =>
-      'اقرأ صفحةً صفحة كما في المصحف، وتابع من حيث توقفت.';
-
-  @override
-  String get whatsNewWidgetsTitle => 'أدوات جديدة';
-
-  @override
-  String get whatsNewWidgetsDesc =>
-      'حلقة الصلاة ومتابعة الصلوات: علِّم صلاتك دون فتح التطبيق.';
-
-  @override
   String get whatsNewStopTitle => 'أوقف الأذان بلمسة واحدة';
 
   @override
   String get whatsNewStopDesc =>
       'أثناء الأذان يوقف زر «إيقاف» في الإشعار الصوت فورًا.';
+
+  @override
+  String get whatsNewListenTitle => 'استمع إلى القرآن';
+
+  @override
+  String get whatsNewListenDesc =>
+      'استمع إلى السورة بصوت القارئ الذي تختاره، مع تمييز الآية التي تُتلى.';
+
+  @override
+  String get whatsNewStoriesDesc =>
+      'قصص قصيرة عن الأنبياء وسيرة النبي محمد والصحابة وكبار علماء الإسلام.';
+
+  @override
+  String get whatsNewDuasDesc =>
+      '87 دعاءً في 10 أقسام مع النص العربي والمعنى والمصدر، مع إمكانية البحث.';
+
+  @override
+  String get whatsNewDhikrsTitle => 'أذكار جديدة';
+
+  @override
+  String get whatsNewDhikrsDesc =>
+      '35 ذكرًا جاهزًا مع معانيها في قائمة الأذكار.';
+
+  @override
+  String get whatsNewHatimDesc =>
+      'شاشة جديدة للختمة: «قرأتُه» بلمسة واحدة، والتقدم جزءًا جزءًا، والنية، والختمة الجماعية.';
 
   @override
   String get appGuideTitle => 'تعرّف على التطبيق';

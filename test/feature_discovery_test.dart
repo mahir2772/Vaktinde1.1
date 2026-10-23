@@ -443,7 +443,7 @@ void main() {
       for (final item in WhatsNew.items(tr)) {
         expect(find.text(item.title), findsOneWidget, reason: item.title);
       }
-      expect(WhatsNew.items(tr), hasLength(inInclusiveRange(5, 6)));
+      expect(WhatsNew.items(tr), hasLength(inInclusiveRange(4, 6)));
       await tester.tap(find.text(tr.tipGotIt));
       await settle(tester);
       expect(find.text(tr.whatsNewTitle), findsNothing);
@@ -458,7 +458,7 @@ void main() {
       await pumpApp(
         tester,
         mainWrapper(),
-        prefs: {...updated, WhatsNew.seenKey: '1.2.0'},
+        prefs: {...updated, WhatsNew.seenKey: '1.3.0'},
       );
       expect(find.text(tr.whatsNewTitle), findsOneWidget);
       await finish(tester);
@@ -490,36 +490,25 @@ void main() {
         expect(find.text(tr.whatsNewTitle), findsNothing);
       }
 
-      for (final title in [tr.hatimTitle, tr.whatsNewQuranTitle]) {
-        await openRow(title);
-        expect(selected(tester), MainTab.quran.index, reason: title);
-        expect(find.byType(QuranView), findsOneWidget, reason: title);
-      }
+      await openRow(tr.hatimTitle);
+      expect(selected(tester), MainTab.quran.index);
+      expect(find.byType(QuranView), findsOneWidget);
 
-      // Araçlar sekmesinden: ana sekme + "Alarmlar"
+      // Araçlar sekmesinden: Zikir sekmesi
       await tester.tap(find.text(tr.navTools));
       await settle(tester);
-      await openRow(tr.whatsNewStopTitle);
-      expect(selected(tester), MainTab.home.index);
-      expect(find.text(tr.ezanAlarmStreamTitle).hitTestable(), findsOneWidget);
+      await openRow(tr.whatsNewDhikrsTitle);
+      expect(selected(tester), MainTab.zikir.index);
 
-      // Cuma bildirimi: Bildirim Ayarları
-      await openRow(tr.fridayNotifTitle);
-      expect(find.byType(NotificationSettingsView), findsOneWidget);
-      expect(find.text(tr.fridayNotifSub), findsOneWidget);
-      navigator(tester).pop();
-      await settle(tester);
-
-      await openRow(tr.whatsNewWidgetsTitle);
-      expect(find.text(tr.addWidgetHint), findsOneWidget);
-      navigator(tester).pop();
-      await settle(tester);
-
-      // Yazı boyutu: Görünüm Ayarları alt sayfası
-      await openRow(tr.textSizeTitle);
-      expect(find.text(tr.textSizeExtraLarge), findsOneWidget);
-      navigator(tester).pop();
-      await settle(tester);
+      for (final (title, page) in [
+        (tr.duasTitle, DuasView),
+        (tr.storiesTitle, StoriesView),
+      ]) {
+        await openRow(title);
+        expect(find.byType(page), findsOneWidget, reason: title);
+        navigator(tester).pop();
+        await settle(tester);
+      }
 
       expect(AdHelper.instance.debugShowRequests, ads);
       expect(tester.takeException(), isNull);

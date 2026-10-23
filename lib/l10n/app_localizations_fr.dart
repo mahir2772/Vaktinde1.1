@@ -126,25 +126,37 @@ class AppLocalizationsFr extends AppLocalizations {
   String get whatsNewTitle => 'Nouveautés';
 
   @override
-  String get whatsNewQuranTitle => 'Le Coran dans le menu du bas';
-
-  @override
-  String get whatsNewQuranDesc =>
-      'Lisez page par page comme dans un mushaf imprimé et reprenez là où vous vous étiez arrêté.';
-
-  @override
-  String get whatsNewWidgetsTitle => 'Nouveaux widgets';
-
-  @override
-  String get whatsNewWidgetsDesc =>
-      'Anneau de prière et suivi des prières : cochez une prière sans ouvrir l\'application.';
-
-  @override
   String get whatsNewStopTitle => 'Arrêtez l\'adhan d\'une touche';
 
   @override
   String get whatsNewStopDesc =>
       'Pendant l\'adhan, « Arrêter » dans la notification coupe le son aussitôt.';
+
+  @override
+  String get whatsNewListenTitle => 'Écoutez le Coran';
+
+  @override
+  String get whatsNewListenDesc =>
+      'Écoutez une sourate par le récitant de votre choix ; le verset récité est mis en évidence.';
+
+  @override
+  String get whatsNewStoriesDesc =>
+      'De courts récits sur les prophètes, la vie du Prophète Muhammad, les Compagnons et de grands savants de l\'islam.';
+
+  @override
+  String get whatsNewDuasDesc =>
+      '87 invocations en 10 catégories, avec texte arabe, translittération, sens et source, et une recherche.';
+
+  @override
+  String get whatsNewDhikrsTitle => 'Plus de dhikr';
+
+  @override
+  String get whatsNewDhikrsDesc =>
+      '35 dhikr prêts à l\'emploi, avec leur sens, dans la liste.';
+
+  @override
+  String get whatsNewHatimDesc =>
+      'Nouvel écran Khatm : « C\'est lu » d\'un geste, progression par juz, intention et khatm en groupe.';
 
   @override
   String get appGuideTitle => 'Découvrir l\'application';

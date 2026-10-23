@@ -125,25 +125,37 @@ class AppLocalizationsTr extends AppLocalizations {
   String get whatsNewTitle => 'Yenilikler';
 
   @override
-  String get whatsNewQuranTitle => 'Kur\'an alt menüde';
-
-  @override
-  String get whatsNewQuranDesc =>
-      'Mushaf gibi sayfa sayfa okuyun, kaldığınız yerden devam edin.';
-
-  @override
-  String get whatsNewWidgetsTitle => 'Yeni widget\'lar';
-
-  @override
-  String get whatsNewWidgetsDesc =>
-      'Vakit halkası ve namaz takibi: kıldığınız vakti uygulamayı açmadan işaretleyin.';
-
-  @override
   String get whatsNewStopTitle => 'Ezanı tek dokunuşla durdur';
 
   @override
   String get whatsNewStopDesc =>
       'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.';
+
+  @override
+  String get whatsNewListenTitle => 'Kur\'an\'ı dinleyin';
+
+  @override
+  String get whatsNewListenDesc =>
+      'Sureyi seçtiğiniz hafızdan dinleyin; okunan ayet ekranda işaretlenir.';
+
+  @override
+  String get whatsNewStoriesDesc =>
+      'Peygamberler, Peygamberimizin hayatı, sahabe ve İslam âlimlerinden kısa kıssalar.';
+
+  @override
+  String get whatsNewDuasDesc =>
+      '10 başlıkta 87 dua: Arapçası, okunuşu, anlamı ve kaynağıyla; arama da var.';
+
+  @override
+  String get whatsNewDhikrsTitle => 'Yeni zikirler';
+
+  @override
+  String get whatsNewDhikrsDesc =>
+      'Zikir listesinde anlamlarıyla 35 hazır zikir.';
+
+  @override
+  String get whatsNewHatimDesc =>
+      'Yeni Hatim ekranı: tek dokunuşla “Okudum”, cüz cüz ilerleme, niyet ve toplu hatim.';
 
   @override
   String get appGuideTitle => 'Uygulamayı Tanı';
