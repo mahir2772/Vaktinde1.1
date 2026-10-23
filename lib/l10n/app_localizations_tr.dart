@@ -2339,6 +2339,57 @@ class AppLocalizationsTr extends AppLocalizations {
   String get quranTextSource => 'Arapça metin: Tanzil Projesi (tanzil.net)';
 
   @override
+  String get quranListen => 'Dinle';
+
+  @override
+  String get quranListenFromAyah => 'Bu ayetten dinle';
+
+  @override
+  String get quranAudioChooseReciter => 'Kârî seçin';
+
+  @override
+  String get quranAudioPlay => 'Oynat';
+
+  @override
+  String get quranAudioPause => 'Duraklat';
+
+  @override
+  String get quranAudioPrevious => 'Önceki ayet';
+
+  @override
+  String get quranAudioNext => 'Sonraki ayet';
+
+  @override
+  String get quranAudioClose => 'Dinlemeyi kapat';
+
+  @override
+  String get quranAudioRepeatOff => 'Tekrar: kapalı';
+
+  @override
+  String get quranAudioRepeatAyah => 'Tekrar: ayet';
+
+  @override
+  String get quranAudioRepeatSurah => 'Tekrar: sure';
+
+  @override
+  String get quranAudioOffline =>
+      'Ses yüklenemedi. İnternet bağlantınızı kontrol edin.';
+
+  @override
+  String get quranAudioUnavailable =>
+      'Dinleme şu an kullanılamıyor. Daha sonra tekrar deneyin.';
+
+  @override
+  String get quranAudioNotFound =>
+      'Bu kârînin bu sure için kaydı yok. Başka bir kârî seçin.';
+
+  @override
+  String get quranAudioSource => 'Ses: Quran.com (Quran Foundation)';
+
+  @override
+  String get quranAudioChannel => 'Kur\'an dinleme';
+
+  @override
   String get hatimTitle => 'Hatim';
 
   @override

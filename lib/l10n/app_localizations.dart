@@ -4160,6 +4160,102 @@ abstract class AppLocalizations {
   /// **'Arapça metin: Tanzil Projesi (tanzil.net)'**
   String get quranTextSource;
 
+  /// No description provided for @quranListen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dinle'**
+  String get quranListen;
+
+  /// No description provided for @quranListenFromAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu ayetten dinle'**
+  String get quranListenFromAyah;
+
+  /// No description provided for @quranAudioChooseReciter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kârî seçin'**
+  String get quranAudioChooseReciter;
+
+  /// No description provided for @quranAudioPlay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oynat'**
+  String get quranAudioPlay;
+
+  /// No description provided for @quranAudioPause.
+  ///
+  /// In tr, this message translates to:
+  /// **'Duraklat'**
+  String get quranAudioPause;
+
+  /// No description provided for @quranAudioPrevious.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki ayet'**
+  String get quranAudioPrevious;
+
+  /// No description provided for @quranAudioNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki ayet'**
+  String get quranAudioNext;
+
+  /// No description provided for @quranAudioClose.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dinlemeyi kapat'**
+  String get quranAudioClose;
+
+  /// No description provided for @quranAudioRepeatOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar: kapalı'**
+  String get quranAudioRepeatOff;
+
+  /// No description provided for @quranAudioRepeatAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar: ayet'**
+  String get quranAudioRepeatAyah;
+
+  /// No description provided for @quranAudioRepeatSurah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar: sure'**
+  String get quranAudioRepeatSurah;
+
+  /// No description provided for @quranAudioOffline.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses yüklenemedi. İnternet bağlantınızı kontrol edin.'**
+  String get quranAudioOffline;
+
+  /// No description provided for @quranAudioUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dinleme şu an kullanılamıyor. Daha sonra tekrar deneyin.'**
+  String get quranAudioUnavailable;
+
+  /// No description provided for @quranAudioNotFound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kârînin bu sure için kaydı yok. Başka bir kârî seçin.'**
+  String get quranAudioNotFound;
+
+  /// No description provided for @quranAudioSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses: Quran.com (Quran Foundation)'**
+  String get quranAudioSource;
+
+  /// No description provided for @quranAudioChannel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an dinleme'**
+  String get quranAudioChannel;
+
   /// No description provided for @hatimTitle.
   ///
   /// In tr, this message translates to:

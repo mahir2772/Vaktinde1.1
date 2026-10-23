@@ -2388,6 +2388,57 @@ class AppLocalizationsDe extends AppLocalizations {
   String get quranTextSource => 'Arabischer Text: Tanzil-Projekt (tanzil.net)';
 
   @override
+  String get quranListen => 'Anhören';
+
+  @override
+  String get quranListenFromAyah => 'Ab diesem Vers anhören';
+
+  @override
+  String get quranAudioChooseReciter => 'Rezitator wählen';
+
+  @override
+  String get quranAudioPlay => 'Abspielen';
+
+  @override
+  String get quranAudioPause => 'Pause';
+
+  @override
+  String get quranAudioPrevious => 'Vorheriger Vers';
+
+  @override
+  String get quranAudioNext => 'Nächster Vers';
+
+  @override
+  String get quranAudioClose => 'Wiedergabe beenden';
+
+  @override
+  String get quranAudioRepeatOff => 'Wiederholen: aus';
+
+  @override
+  String get quranAudioRepeatAyah => 'Wiederholen: Vers';
+
+  @override
+  String get quranAudioRepeatSurah => 'Wiederholen: Sure';
+
+  @override
+  String get quranAudioOffline =>
+      'Audio konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung.';
+
+  @override
+  String get quranAudioUnavailable =>
+      'Anhören ist gerade nicht verfügbar. Bitte später erneut versuchen.';
+
+  @override
+  String get quranAudioNotFound =>
+      'Für diese Sure gibt es von diesem Rezitator keine Aufnahme. Wählen Sie einen anderen.';
+
+  @override
+  String get quranAudioSource => 'Audio: Quran.com (Quran Foundation)';
+
+  @override
+  String get quranAudioChannel => 'Koran anhören';
+
+  @override
   String get hatimTitle => 'Khatm';
 
   @override

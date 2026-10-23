@@ -2412,6 +2412,57 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quranTextSource => 'Texte arabe : projet Tanzil (tanzil.net)';
 
   @override
+  String get quranListen => 'Écouter';
+
+  @override
+  String get quranListenFromAyah => 'Écouter à partir de ce verset';
+
+  @override
+  String get quranAudioChooseReciter => 'Choisir un récitateur';
+
+  @override
+  String get quranAudioPlay => 'Lecture';
+
+  @override
+  String get quranAudioPause => 'Pause';
+
+  @override
+  String get quranAudioPrevious => 'Verset précédent';
+
+  @override
+  String get quranAudioNext => 'Verset suivant';
+
+  @override
+  String get quranAudioClose => 'Arrêter l\'écoute';
+
+  @override
+  String get quranAudioRepeatOff => 'Répétition : désactivée';
+
+  @override
+  String get quranAudioRepeatAyah => 'Répétition : verset';
+
+  @override
+  String get quranAudioRepeatSurah => 'Répétition : sourate';
+
+  @override
+  String get quranAudioOffline =>
+      'Impossible de charger l\'audio. Vérifiez votre connexion Internet.';
+
+  @override
+  String get quranAudioUnavailable =>
+      'L\'écoute est indisponible pour le moment. Réessayez plus tard.';
+
+  @override
+  String get quranAudioNotFound =>
+      'Ce récitateur n\'a pas d\'enregistrement de cette sourate. Choisissez-en un autre.';
+
+  @override
+  String get quranAudioSource => 'Audio : Quran.com (Quran Foundation)';
+
+  @override
+  String get quranAudioChannel => 'Écoute du Coran';
+
+  @override
   String get hatimTitle => 'Khatm';
 
   @override

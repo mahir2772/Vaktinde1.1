@@ -2406,6 +2406,56 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranTextSource => 'النص القرآني: مشروع تنزيل (tanzil.net)';
 
   @override
+  String get quranListen => 'استماع';
+
+  @override
+  String get quranListenFromAyah => 'استمع من هذه الآية';
+
+  @override
+  String get quranAudioChooseReciter => 'اختر القارئ';
+
+  @override
+  String get quranAudioPlay => 'تشغيل';
+
+  @override
+  String get quranAudioPause => 'إيقاف مؤقت';
+
+  @override
+  String get quranAudioPrevious => 'الآية السابقة';
+
+  @override
+  String get quranAudioNext => 'الآية التالية';
+
+  @override
+  String get quranAudioClose => 'إيقاف الاستماع';
+
+  @override
+  String get quranAudioRepeatOff => 'التكرار: متوقف';
+
+  @override
+  String get quranAudioRepeatAyah => 'التكرار: الآية';
+
+  @override
+  String get quranAudioRepeatSurah => 'التكرار: السورة';
+
+  @override
+  String get quranAudioOffline =>
+      'تعذّر تحميل الصوت. تحقق من اتصالك بالإنترنت.';
+
+  @override
+  String get quranAudioUnavailable => 'الاستماع غير متاح حاليًا. حاول لاحقًا.';
+
+  @override
+  String get quranAudioNotFound =>
+      'لا يوجد تسجيل لهذه السورة بصوت هذا القارئ. اختر قارئًا آخر.';
+
+  @override
+  String get quranAudioSource => 'الصوت: Quran.com (Quran Foundation)';
+
+  @override
+  String get quranAudioChannel => 'الاستماع إلى القرآن';
+
+  @override
   String get hatimTitle => 'الختمة';
 
   @override
