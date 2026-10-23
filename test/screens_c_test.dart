@@ -591,7 +591,12 @@ void main() {
       );
       final loc = _loc('tr');
       // Listenin sonuna (alt boşluk sayesinde son kart FAB'ın üstünde kalır)
-      await tester.drag(_listScrollable(), const Offset(0, -3000));
+      await tester.scrollUntilVisible(
+        find.text('Ya Vedûd'),
+        600,
+        scrollable: _listScrollable(),
+      );
+      await tester.drag(_listScrollable(), const Offset(0, -600));
       await _settle(tester, steps: 4);
       expect(find.text('Ya Vedûd'), findsOneWidget);
       await tester.tap(find.byTooltip(loc.deleteDhikr));

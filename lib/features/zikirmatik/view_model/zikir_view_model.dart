@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -816,7 +817,8 @@ class ZikirViewModel extends ChangeNotifier {
 
     _applyWakeLock();
     notifyListeners();
-    await _loadDhikrs(prefs);
+    // Beklenmez: geri yükleme ve açılış varlık okumasını beklemesin
+    unawaited(_loadDhikrs(prefs));
   }
 
   // Hazır zikirler sayaçtan sonra gelir (varlık okuması kayıtları bekletmez);
