@@ -8,8 +8,11 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../data/services/hatim.dart';
 import '../../../data/services/hatim_service.dart';
+import '../../../data/services/quran_audio_service.dart';
 import '../../../data/services/quran_service.dart';
 import '../../common/share_card.dart';
+import '../audio/quran_player.dart';
+import '../audio/quran_player_bar.dart';
 import '../widgets/ayah_sheet.dart';
 import '../widgets/go_to_ayah_dialog.dart';
 import '../widgets/mushaf_page.dart';
@@ -55,6 +58,9 @@ class SurahReaderView extends StatefulWidget {
   /// Hatim okuması ("Devam Et"); önceki / sonraki sureye geçince de sürer
   final bool hatim;
 
+  /// Test için (varsayılan: QuranPlayer.instance; verilirse dinleme açık)
+  final QuranPlayer? player;
+
   const SurahReaderView({
     super.key,
     required this.surah,
@@ -63,6 +69,7 @@ class SurahReaderView extends StatefulWidget {
     this.surahs,
     this.trackLastRead = true,
     this.hatim = false,
+    this.player,
   });
 
   @override
@@ -117,6 +124,16 @@ class _SurahReaderViewState extends State<SurahReaderView>
   int? _hatimPage;
   bool _hatimInOrder = false;
 
+  /// Dinleme: çalan ayet vurgulanır ve izlenir (kullanıcı son [_followPause]
+  /// içinde kaydırdıysa araya girilmez)
+  late final QuranPlayer _player = widget.player ?? QuranPlayer.instance;
+  int? _playingAyah;
+  DateTime? _userScrolledAt;
+  static const Duration _followPause = Duration(seconds: 8);
+
+  bool get _audioEnabled =>
+      QuranAudioService.configured || widget.player != null;
+
   QuranViewMode get _viewMode =>
       QuranService.effectiveViewMode(_mode, _language ?? 'tr');
 
@@ -127,6 +144,8 @@ class _SurahReaderViewState extends State<SurahReaderView>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _player.addListener(_onPlayer);
+    _playingAyah = _player.surah == widget.surah.number ? _player.ayah : null;
     _loadSettings();
   }
 
@@ -149,6 +168,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _player.removeListener(_onPlayer);
     _flashTimer?.cancel();
     _controller.dispose();
     super.dispose();
@@ -387,6 +407,79 @@ class _SurahReaderViewState extends State<SurahReaderView>
     });
   }
 
+  // ------------------------------------------------------ Dinleme
+
+  void _onPlayer() {
+    final ayah = _player.surah == widget.surah.number ? _player.ayah : null;
+    if (ayah == _playingAyah) return;
+    if (!mounted) return;
+    setState(() => _playingAyah = ayah);
+    if (ayah != null && _player.playing) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _followAyah(ayah);
+      });
+    }
+  }
+
+  /// [fromAyah]'tan dinler (verilmezse görünen ayetten); bu surenin sesi
+  /// zaten açıksa ayete atlar ya da çal / duraklat
+  void _listen({int? fromAyah}) {
+    if (_player.surah == widget.surah.number && _player.audio != null) {
+      fromAyah == null ? _player.toggle() : _player.seekAyah(fromAyah);
+      return;
+    }
+    startQuranListening(
+      context,
+      surah: widget.surah.number,
+      title: widget.surah.displayName(_language!),
+      fromAyah: fromAyah ?? _firstVisibleAyah() ?? _currentAyah ?? 1,
+      player: _player,
+    );
+  }
+
+  /// Dinlenen ayet ekranın üst bölümünde değilse ona kaydırılır (öge kurulu
+  /// değilse liste o ayetten yeniden kurulur)
+  void _followAyah(int ayah) {
+    final scrolled = _userScrolledAt;
+    if (scrolled != null &&
+        DateTime.now().difference(scrolled) < _followPause) {
+      return;
+    }
+    final text = _text;
+    final viewport = _viewportKey.currentContext?.findRenderObject();
+    if (text == null ||
+        viewport is! RenderBox ||
+        !viewport.hasSize ||
+        !_controller.hasClients) {
+      return;
+    }
+    final groups = _viewMode == QuranViewMode.ayah ? null : _pageGroups(text);
+    final item = _registry[_itemOfAyah(ayah, groups, text.ayahs.length)];
+    final box = item != null && item.mounted
+        ? item.context.findRenderObject()
+        : null;
+    if (box is! RenderBox || !box.attached || !box.hasSize) {
+      setState(() {
+        _anchor = ayah;
+        _generation++;
+      });
+      return;
+    }
+    final top =
+        box.localToGlobal(Offset(0, item!.offsetOf(ayah))).dy -
+        viewport.localToGlobal(Offset.zero).dy;
+    if (top >= 0 && top <= viewport.size.height * 0.6) return;
+    final position = _controller.position;
+    _controller.animateTo(
+      (position.pixels + top - AppSpacing.sm).clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      ),
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  }
+
   // ------------------------------------------------------ Ayarlar
 
   void _setMode(QuranViewMode mode) {
@@ -519,6 +612,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
           QuranBookmark(surah: widget.surah.number, ayah: ayah.number),
       onToggleBookmark: () =>
           _setBookmark(ayah.number, toggle: true, snack: false),
+      onListen: _audioEnabled ? () => _listen(fromAyah: ayah.number) : null,
     );
     if (mounted) setState(() => _sheetAyah = null);
   }
@@ -562,6 +656,12 @@ class _SurahReaderViewState extends State<SurahReaderView>
       child: AppScaffold(
         title: widget.surah.displayName(_language!),
         actions: [
+          if (_audioEnabled)
+            IconButton(
+              tooltip: loc.quranListen,
+              onPressed: ready ? _listen : null,
+              icon: const Icon(Icons.headphones_outlined),
+            ),
           IconButton(
             tooltip: loc.quranGoToAyah,
             onPressed: ready ? _goToAyah : null,
@@ -573,7 +673,14 @@ class _SurahReaderViewState extends State<SurahReaderView>
             icon: Icon(quranViewModeIcon(_viewMode)),
           ),
         ],
-        body: body,
+        body: _audioEnabled
+            ? Column(
+                children: [
+                  Expanded(child: body),
+                  QuranPlayerBar(player: _player),
+                ],
+              )
+            : body,
       ),
     );
   }
@@ -598,7 +705,7 @@ class _SurahReaderViewState extends State<SurahReaderView>
     final next = surahs?.where((s) => s.number == number + 1).firstOrNull;
     final bookmark = _bookmark;
     final bookmarked = bookmark?.surah == number ? bookmark!.ayah : null;
-    final selected = _sheetAyah ?? _flashAyah;
+    final selected = _sheetAyah ?? _flashAyah ?? _playingAyah;
     final surahName = widget.surah.displayName(language);
 
     Widget item(int index) {
@@ -659,7 +766,8 @@ class _SurahReaderViewState extends State<SurahReaderView>
               fontScale: _fontScale,
               translationScale: _translationScale,
               bookmarked: bookmarked == ayah.number,
-              highlighted: _flashAyah == ayah.number,
+              highlighted:
+                  _flashAyah == ayah.number || _playingAyah == ayah.number,
               onBookmark: () => _setBookmark(ayah.number, toggle: true),
               onLongPress: () => _setBookmark(ayah.number, toggle: false),
               onShare: () => _share(ayah),
@@ -696,6 +804,11 @@ class _SurahReaderViewState extends State<SurahReaderView>
       key: _viewportKey,
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
+          // Kullanıcı kaydırınca dinlenen ayet bir süre izlenmez
+          if (notification is ScrollStartNotification &&
+              notification.dragDetails != null) {
+            _userScrolledAt = DateTime.now();
+          }
           if (notification is ScrollEndNotification &&
               notification.depth == 0 &&
               !_jumping) {

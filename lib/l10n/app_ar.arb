@@ -579,6 +579,7 @@
     "hicriYilbasiNotifBody": "اليوم رأس السنة الهجرية. كل عام وأنتم بخير.",
     "asureGunuNotifBody": "اليوم يوم عاشوراء. جعله الله يوم خير وبركة عليكم.",
     "privacyPolicy": "سياسة الخصوصية",
+    "termsOfUse": "شروط الاستخدام",
     "endReminderSub": "يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.",
     "endReminderNotifTitle": "الوقت يوشك على الخروج",
     "endReminderNotifBody": "تبقّى {minute} دقيقة على خروج وقت {vakit}.",

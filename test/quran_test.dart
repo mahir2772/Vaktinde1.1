@@ -14,8 +14,10 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/services/hatim.dart';
 import 'package:ezan_saati/data/services/hatim_service.dart';
 import 'package:ezan_saati/data/services/prayer_tracker.dart';
+import 'package:ezan_saati/data/services/quran_audio_service.dart';
 import 'package:ezan_saati/data/services/quran_service.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
+import 'package:ezan_saati/features/duas/dua_data.dart';
 import 'package:ezan_saati/features/common/theme_provider.dart';
 import 'package:ezan_saati/features/common/widgets/ad_banner_widget.dart';
 import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
@@ -23,6 +25,7 @@ import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
 import 'package:ezan_saati/features/quran/widgets/ayah_sheet.dart';
 import 'package:ezan_saati/features/quran/widgets/go_to_ayah_dialog.dart';
+import 'package:ezan_saati/features/quran/audio/quran_player.dart';
 import 'package:ezan_saati/features/quran/view/hatim_view.dart';
 import 'package:ezan_saati/features/quran/widgets/hatim_card.dart';
 import 'package:ezan_saati/features/quran/widgets/mushaf_page.dart';
@@ -40,6 +43,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+import 'quran_audio_fakes.dart';
 
 final String _surahsJson = File('assets/data/surahs.json').readAsStringSync();
 final List<Surah> _surahs = QuranService.parseSurahs(_surahsJson);
@@ -1280,9 +1285,11 @@ void main() {
       // Araçlar'dan açılan gerçek servis listeyi rootBundle'dan okur: önbellek
       // gerçek zaman bölgesinde dolsun (sahte zamanda bekleyen Future kalmasın)
       await rootBundle.loadString(QuranService.surahsAsset);
-      // Hatim: sayfa tablosu ve Ramazan takvimi uygulama boyu önbelleklenir
+      // Hatim: sayfa tablosu, Ramazan takvimi ve hatim duası (dua kitaplığı)
+      // uygulama boyu önbelleklenir
       await HatimService.loadPages();
       await loadRamadanCalendar();
+      await DuaLibrary.load();
     });
 
     setUp(() {
@@ -2512,6 +2519,136 @@ void main() {
         await dispose(tester);
       },
     );
+
+    testWidgets('dinleme: Dinle görünen ayetten başlatır, çubuk (ayet, '
+        'kârî, duraklat), çalan ayet vurgulanır, alt sayfadan "Bu ayetten '
+        'dinle" ayete atlar, kârî listesi kaynakla, kapat', (tester) async {
+      final engine = FakeAudioEngine();
+      final player = QuranPlayer(
+        service: QuranAudioService(
+          api: fakeAudioApi,
+          get: FakeAudioServer().get,
+        ),
+        engine: (_) async => engine,
+      );
+      QuranAudioService.clearCache();
+      await pumpPhone(
+        tester,
+        SurahReaderView(
+          surah: _surah(112),
+          service: _service(),
+          player: player,
+        ),
+      );
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      expect(find.byTooltip(loc.quranAudioPause), findsNothing);
+
+      await tester.tap(find.byTooltip(loc.quranListen));
+      await settle(tester);
+      expect(engine.calls, ['open 500', 'play']);
+      expect(find.text(loc.quranAyahRef('İhlâs', 1)), findsOneWidget);
+      expect(find.text('Mishari Rashid al-`Afasy'), findsOneWidget);
+      expect(find.byTooltip(loc.quranAudioPause), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      // Çalan ayet sayfada vurgulanır
+      engine.at(1600);
+      await settle(tester);
+      expect(
+        tester.widget<MushafPage>(find.byType(MushafPage)).selectedAyah,
+        2,
+      );
+      expect(find.text(loc.quranAyahRef('İhlâs', 2)), findsOneWidget);
+
+      // Üst çubuktaki Dinle: duraklat
+      await tester.tap(find.byTooltip(loc.quranListen));
+      await settle(tester);
+      expect(engine.calls.last, 'pause');
+
+      // Ayet alt sayfası: "Bu ayetten dinle" ayete atlar ve çalar
+      await tester.tapOnText(find.textRange.ofSubstring(_arabic[2]));
+      await settle(tester);
+      await tester.tap(find.text(loc.quranListenFromAyah));
+      await settle(tester);
+      expect(engine.calls.sublist(engine.calls.length - 2), [
+        'seek 2500',
+        'play',
+      ]);
+      expect(find.byType(AyahSheet), findsNothing);
+
+      // Kârî listesi ve ses kaynağı
+      await tester.tap(find.text('Mishari Rashid al-`Afasy'));
+      await settle(tester);
+      expect(find.text(loc.quranAudioChooseReciter), findsOneWidget);
+      expect(find.text(loc.quranAudioSource), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.tap(find.text('Abu Bakr al-Shatri'));
+      await settle(tester);
+      expect(engine.artist, 'Abu Bakr al-Shatri');
+      expect(engine.calls.where((c) => c.startsWith('open')).last, 'open 2500');
+
+      // Kapat: ses katmanı kapanır, çubuk gider
+      await tester.tap(find.byTooltip(loc.quranAudioClose));
+      await settle(tester);
+      expect(engine.closed, isTrue);
+      expect(find.byTooltip(loc.quranAudioPause), findsNothing);
+      expect(
+        tester.widget<MushafPage>(find.byType(MushafPage)).selectedAyah,
+        isNull,
+      );
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    for (final lang in ['tr', 'ar']) {
+      testWidgets('$lang 320dp %130: dinleme çubuğu, kârî listesi ve hata '
+          'durumu taşmaz', (tester) async {
+        final server = FakeAudioServer();
+        final engine = FakeAudioEngine();
+        final player = QuranPlayer(
+          service: QuranAudioService(api: fakeAudioApi, get: server.get),
+          engine: (_) async => engine,
+        );
+        QuranAudioService.clearCache();
+        await pump(
+          tester,
+          SurahReaderView(
+            surah: _surah(112),
+            service: _service(),
+            player: player,
+          ),
+          lang: lang,
+        );
+        final loc = lookupAppLocalizations(Locale(lang));
+        await tester.tap(find.byTooltip(loc.quranListen));
+        await settle(tester);
+        expect(find.byTooltip(loc.quranAudioPause), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.tap(find.text('Mishari Rashid al-`Afasy'));
+        await settle(tester);
+        expect(find.text(loc.quranAudioSource), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        Navigator.of(tester.element(find.text(loc.quranAudioSource))).pop();
+        await settle(tester);
+        // Kayıt yok: açıklama ve Tekrar Dene
+        server.ayahs.remove(112);
+        QuranAudioService.clearCache();
+        // Sahte zamanda beklenmez: kayıt (SharedPreferences) gerçek döngüde
+        unawaited(
+          player.setReciter(
+            player.reciters.first,
+            channelName: loc.quranAudioChannel,
+          ),
+        );
+        await settle(tester);
+        expect(find.text(loc.quranAudioNotFound), findsOneWidget);
+        expect(find.text(loc.retry), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        unawaited(player.stop());
+        await settle(tester);
+        await dispose(tester);
+      });
+    }
 
     testWidgets('hatim okuması: Devam Et sonraki sayfanın başından açar, '
         'görünen sayfadan öncekiler okunmuş sayılır (sonraki sure dahil); '

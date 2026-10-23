@@ -1166,6 +1166,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override
+  String get termsOfUse => 'Nutzungsbedingungen';
+
+  @override
   String get endReminderSub =>
       'Benachrichtigt vor dem Ende der Zeit eines nicht als verrichtet markierten Gebets.';
 

@@ -1183,6 +1183,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get privacyPolicy => 'سياسة الخصوصية';
 
   @override
+  String get termsOfUse => 'شروط الاستخدام';
+
+  @override
   String get endReminderSub =>
       'يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.';
 

@@ -1168,6 +1168,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy Policy';
 
   @override
+  String get termsOfUse => 'Terms of Use';
+
+  @override
   String get endReminderSub =>
       'Notifies you before a prayer\'s time ends if it isn\'t marked as prayed.';
 

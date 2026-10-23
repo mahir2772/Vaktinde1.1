@@ -3,7 +3,9 @@ import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../../../data/services/hatim_service.dart';
+import '../../../data/services/quran_audio_service.dart';
 import '../../../data/services/quran_service.dart';
+import '../audio/quran_player_bar.dart';
 import '../widgets/hatim_card.dart';
 import '../widgets/quran_number_badge.dart';
 import 'surah_reader_view.dart';
@@ -112,13 +114,21 @@ class _QuranViewState extends State<QuranView> {
               return ErrorState(message: loc.noDataFound, onRetry: _retry);
             }
             final surahs = snapshot.data!;
-            return TabBarView(
+            final tabs = TabBarView(
               children: [
                 _buildSurahList(surahs),
                 _JuzList(
                   surahs: surahs,
                   onOpen: (surah, ayah) => _open(surahs, surah, ayah: ayah),
                 ),
+              ],
+            );
+            // Okuyucudan çıkınca da dinleme buradan yönetilir
+            if (!QuranAudioService.configured) return tabs;
+            return Column(
+              children: [
+                Expanded(child: tabs),
+                const QuranPlayerBar(),
               ],
             );
           },

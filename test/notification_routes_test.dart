@@ -181,8 +181,9 @@ void main() {
       );
     });
 
-    // Süreç başına bir kez okunur: bu dosyada init'i ilk çağıran test
-    test('uygulamayı bildirim açtıysa hedef bir kez okunur', () async {
+    // Bu dosyada init'i ilk çağıran test (son açılan dokunuş süreç boyu)
+    test('uygulamayı bildirim açtıysa hedef bir kez açılır; motor canlıyken '
+        'yeni etkinliği açan başka dokunuş da açılır', () async {
       launch = {
         'notificationLaunchedApp': true,
         'notificationResponse': {
@@ -197,11 +198,26 @@ void main() {
       expect(launchReads, 1);
       expect(NotificationRoutes.pending.value, 'friday');
 
-      // Sonraki init (başka hizmet nesnesi) aynı bildirimi yeniden açmaz
+      // Sonraki init / öne geliş aynı dokunuşu yeniden açmaz
       NotificationRoutes.pending.value = null;
       await NotificationService().init();
-      expect(launchReads, 1);
+      await NotificationService().readLaunchRoute();
+      expect(launchReads, 3);
       expect(NotificationRoutes.pending.value, isNull);
+
+      // Geri tuşuyla çıkılıp (motor canlı) hatim hatırlatmasına dokunuldu
+      launch = {
+        'notificationLaunchedApp': true,
+        'notificationResponse': {
+          'notificationId': 1103,
+          'actionId': null,
+          'input': null,
+          'payload': 'open|hatim',
+          'notificationResponseType': 0,
+        },
+      };
+      await NotificationService().readLaunchRoute();
+      expect(NotificationRoutes.pending.value, 'hatim');
     });
 
     test('açık uygulamada dokunuş: gövde ve düğme hedefe yazılır, "Kıldım" '

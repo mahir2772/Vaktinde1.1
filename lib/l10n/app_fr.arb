@@ -579,6 +579,7 @@
     "hicriYilbasiNotifBody": "Aujourd'hui, c'est le Nouvel An islamique. Que cette nouvelle année soit source de bien et de bénédictions.",
     "asureGunuNotifBody": "Aujourd'hui, c'est le jour d'Achoura. Qu'il soit source de bien et de bénédictions.",
     "privacyPolicy": "Politique de confidentialité",
+    "termsOfUse": "Conditions d'utilisation",
     "endReminderSub": "Vous avertit avant la fin du temps d'une prière non cochée.",
     "endReminderNotifTitle": "Fin du temps de prière",
     "endReminderNotifBody": "{vakit} : le temps de prière se termine dans {minute} minutes.",

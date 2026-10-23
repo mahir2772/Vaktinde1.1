@@ -22,6 +22,7 @@ import 'package:ezan_saati/features/common/open_surah.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
+import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/features/quran/view/hatim_view.dart';
 import 'package:ezan_saati/features/app_guide/whats_new.dart';
 
@@ -76,6 +77,10 @@ class _MainWrapperState extends State<MainWrapper> {
   late final StreakReviewPrompt _reviewPrompt;
   late final UsageReviewPrompt _usagePrompt;
 
+  // Öne gelişte uygulamayı açan bildirim yeniden okunur (motor canlı kalırken
+  // yeni etkinliği açan dokunuş; NotificationService.readLaunchRoute)
+  late final AppLifecycleListener _lifecycle;
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +97,9 @@ class _MainWrapperState extends State<MainWrapper> {
     TourRequests.replays.addListener(_replayTour);
     FeatureTip.attachGate(_canShowTip);
     NotificationRoutes.pending.addListener(_openNotificationRoute);
+    _lifecycle = AppLifecycleListener(
+      onResume: () => NotificationService().readLaunchRoute(),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -188,6 +196,7 @@ class _MainWrapperState extends State<MainWrapper> {
     TourRequests.replays.removeListener(_replayTour);
     FeatureTip.detachGate(_canShowTip);
     NotificationRoutes.pending.removeListener(_openNotificationRoute);
+    _lifecycle.dispose();
     _routeRetry?.cancel();
     _reviewPrompt.dispose();
     _usagePrompt.dispose();

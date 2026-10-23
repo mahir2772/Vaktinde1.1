@@ -2018,6 +2018,12 @@ abstract class AppLocalizations {
   /// **'Gizlilik Politikası'**
   String get privacyPolicy;
 
+  /// No description provided for @termsOfUse.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım Koşulları'**
+  String get termsOfUse;
+
   /// No description provided for @endReminderSub.
   ///
   /// In tr, this message translates to:

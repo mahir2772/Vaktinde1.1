@@ -9,13 +9,17 @@ import android.view.KeyEvent
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import io.flutter.embedding.android.FlutterFragmentActivity
+import com.ryanheise.audioservice.AudioServiceFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-// FlutterFragmentActivity: androidx ComponentActivity (enableEdgeToEdge); AppCompat teması gerekmez
-class MainActivity : FlutterFragmentActivity() {
+// AudioServiceFragmentActivity (FlutterFragmentActivity: androidx ComponentActivity,
+// enableEdgeToEdge; AppCompat teması gerekmez): Kur'an dinlemesi için Flutter motoru
+// audio_service'in önbelleğinden gelir ve etkinlik kapanınca yaşamaya devam eder (ses
+// arka planda sürer). Bu yüzden bildirimle açılış her öne gelişte okunur
+// (NotificationService.readLaunchRoute).
+class MainActivity : AudioServiceFragmentActivity() {
     // Kıble manyetometre akışı: sensör sadece Dart dinlerken ve ekran görünürken açık
     private var magnetic: MagneticStream? = null
 

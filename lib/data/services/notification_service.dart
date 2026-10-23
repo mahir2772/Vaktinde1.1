@@ -282,9 +282,10 @@ class NotificationService {
     await _notificationsPlugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: NotificationRoutes.handle,
-      onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground,
+      onDidReceiveBackgroundNotificationResponse:
+          onNotificationActionBackground,
     );
-    await _readLaunchRoute();
+    await readLaunchRoute();
   }
 
   static AndroidNotificationAction prayedAction(String label) =>
@@ -634,22 +635,28 @@ class NotificationService {
 
   Future<void> cancel(int id) => _notificationsPlugin.cancel(id);
 
-  // Uygulamayı açan bildirim süreç başına bir kez okunur (etkinliğin niyeti
-  // sonra da aynı kalır; hedef iki kez açılmasın)
-  static bool _launchRouteRead = false;
+  // Son açılan açılış dokunuşu (bildirim kimliği, eylem, yük): etkinliğin
+  // niyeti sonra da aynı kaldığından aynı dokunuş bir kez açılır
+  static (int?, String?, String?)? _launchHandled;
 
-  // Uygulamayı bildirime dokunuş açtıysa hedef (NotificationRoutes) bekleyene
-  // yazılır; açık uygulamadaki dokunuşlar initialize'daki işleyiciye gelir
-  Future<void> _readLaunchRoute() async {
-    if (_launchRouteRead) return;
-    _launchRouteRead = true;
+  /// Uygulamayı bildirime dokunuş açtıysa hedef (NotificationRoutes)
+  /// bekleyene yazılır; açık uygulamadaki dokunuşlar initialize'daki
+  /// işleyiciye gelir. Açılışta ve uygulama her öne geldiğinde (MainWrapper)
+  /// okunur: Kur'an dinlemesi Flutter motorunu canlı tuttuğundan geri tuşuyla
+  /// çıkıp bildirime dokununca yeni etkinlik eski motora bağlanır ve eklenti
+  /// bu dokunuşu sadece burada bildirir.
+  Future<void> readLaunchRoute() async {
     try {
       final details = await _notificationsPlugin
           .getNotificationAppLaunchDetails();
       final response = details?.notificationResponse;
-      if (details?.didNotificationLaunchApp == true && response != null) {
-        NotificationRoutes.handle(response);
+      if (details?.didNotificationLaunchApp != true || response == null) {
+        return;
       }
+      final key = (response.id, response.actionId, response.payload);
+      if (key == _launchHandled) return;
+      _launchHandled = key;
+      NotificationRoutes.handle(response);
     } catch (e) {
       // Okunamazsa uygulama ana ekranla açılır
     }

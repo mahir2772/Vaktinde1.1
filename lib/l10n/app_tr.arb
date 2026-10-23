@@ -600,6 +600,7 @@
     "hicriYilbasiNotifBody": "Bugün Hicri Yılbaşı. Yeni yılınız hayırlara vesile olsun.",
     "asureGunuNotifBody": "Bugün Aşure Günü. Hayırlara vesile olsun.",
     "privacyPolicy": "Gizlilik Politikası",
+    "termsOfUse": "Kullanım Koşulları",
     "endReminderSub": "Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.",
     "endReminderNotifTitle": "Vakit Çıkıyor",
     "endReminderNotifBody": "{vakit} vaktinin çıkmasına {minute} dakika kaldı.",

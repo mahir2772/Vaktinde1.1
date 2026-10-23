@@ -1183,6 +1183,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get privacyPolicy => 'Politique de confidentialité';
 
   @override
+  String get termsOfUse => 'Conditions d\'utilisation';
+
+  @override
   String get endReminderSub =>
       'Vous avertit avant la fin du temps d\'une prière non cochée.';
 

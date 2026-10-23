@@ -7,8 +7,8 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../common/ad_consent.dart';
 import '../../common/ad_helper.dart';
 
-/// Gizlilik ve Reklamlar (Ayarlar > Destek): gizlilik politikası, reklamlar
-/// hakkında açıklama ve AB/EEA'da reklam gizlilik ayarları
+/// Gizlilik ve Reklamlar (Ayarlar > Destek): gizlilik politikası, kullanım
+/// koşulları, reklamlar hakkında açıklama ve AB/EEA'da reklam gizlilik ayarları
 class PrivacyAdsView extends StatelessWidget {
   /// Gizlilik politikası adresi; boşken satır gizli
   final String privacyPolicyUrl;
@@ -40,8 +40,13 @@ class PrivacyAdsView extends StatelessWidget {
                   AppListTile(
                     leadingIcon: Icons.policy_outlined,
                     title: loc.privacyPolicy,
-                    onTap: _openPrivacyPolicy,
+                    onTap: () => _openExternal(privacyPolicyUrl),
                   ),
+                AppListTile(
+                  leadingIcon: Icons.gavel_outlined,
+                  title: loc.termsOfUse,
+                  onTap: () => _openExternal(AppLinks.termsOfUse),
+                ),
                 AppListTile(
                   leadingIcon: Icons.campaign_outlined,
                   title: loc.aboutAds,
@@ -63,16 +68,16 @@ class PrivacyAdsView extends StatelessWidget {
   }
 
   // Tarayıcıda (uygulama içi görünüm değil)
-  Future<void> _openPrivacyPolicy() async {
+  Future<void> _openExternal(String url) async {
     try {
       if (!await launchUrl(
-        Uri.parse(privacyPolicyUrl),
+        Uri.parse(url),
         mode: LaunchMode.externalApplication,
       )) {
-        debugPrint("Gizlilik politikası açılamadı");
+        debugPrint("Bağlantı açılamadı: $url");
       }
     } catch (e) {
-      debugPrint("Gizlilik politikası açılamadı: $e");
+      debugPrint("Bağlantı açılamadı: $e");
     }
   }
 }

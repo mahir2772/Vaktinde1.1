@@ -1146,6 +1146,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get privacyPolicy => 'Gizlilik Politikası';
 
   @override
+  String get termsOfUse => 'Kullanım Koşulları';
+
+  @override
   String get endReminderSub =>
       'Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.';
 

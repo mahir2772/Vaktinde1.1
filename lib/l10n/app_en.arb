@@ -579,6 +579,7 @@
     "hicriYilbasiNotifBody": "Today is the Islamic New Year. May it bring you goodness and blessings.",
     "asureGunuNotifBody": "Today is the Day of Ashura. May it bring you goodness and blessings.",
     "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
     "endReminderSub": "Notifies you before a prayer's time ends if it isn't marked as prayed.",
     "endReminderNotifTitle": "Prayer Time Ending",
     "endReminderNotifBody": "{minute} minutes left until {vakit} time ends.",
