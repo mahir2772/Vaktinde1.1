@@ -981,6 +981,16 @@
     "nearbyMosquesError": "تعذّر فتح الخريطة.",
     "toolEsmaDesc": "الأسماء الحسنى ومعانيها",
     "duasTitle": "الأدعية",
+    "duaSearchHint": "ابحث عن دعاء",
+    "duaNoResults": "لا يوجد دعاء يطابق البحث",
+    "duaCount": "{count, plural, =1{دعاء واحد} =2{دعاءان} few{{count} أدعية} many{{count} دعاءً} other{{count} دعاء}}",
+    "@duaCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "prayerGuideTitle": "تعليم الصلاة",
     "toolPrayerGuideDesc": "الوضوء وكيفية الصلاة خطوة بخطوة",
     "prayerGuideTabWudu": "الوضوء",

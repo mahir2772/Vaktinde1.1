@@ -38,11 +38,11 @@
             "ar": "يُقال في أول الصلاة بعد تكبيرة الإحرام."
           },
           "source": {
-            "tr": "Ebû Dâvûd, Tirmizî",
-            "en": "Abu Dawud, Tirmidhi",
-            "de": "Abu Dawud, Tirmidhi",
-            "fr": "Abou Dawoud, Tirmidhi",
-            "ar": "أبو داود، الترمذي"
+            "tr": "Ebû Dâvûd 776; Tirmizî 243",
+            "en": "Abu Dawud 776; Tirmidhi 243",
+            "de": "Abu Dawud 776; Tirmidhi 243",
+            "fr": "Abou Dawoud 776 ; Tirmidhi 243",
+            "ar": "أبو داود 776، الترمذي 243"
           }
         },
         {
@@ -73,11 +73,11 @@
             "ar": "يُقرأ في الجلوس للتشهد في الصلاة."
           },
           "source": {
-            "tr": "Buhârî, Müslim",
-            "en": "Bukhari, Muslim",
-            "de": "Buchari, Muslim",
-            "fr": "Boukhari, Muslim",
-            "ar": "البخاري، مسلم"
+            "tr": "Buhârî 6265; Müslim 402",
+            "en": "Bukhari 6265; Muslim 402",
+            "de": "Buchari 6265; Muslim 402",
+            "fr": "Boukhari 6265 ; Muslim 402",
+            "ar": "البخاري 6265، مسلم 402"
           }
         },
         {
@@ -108,11 +108,11 @@
             "ar": "تُقرأ في الجلوس الأخير بعد التشهد."
           },
           "source": {
-            "tr": "Buhârî",
-            "en": "Bukhari",
-            "de": "Buchari",
-            "fr": "Boukhari",
-            "ar": "البخاري"
+            "tr": "Buhârî 3370",
+            "en": "Bukhari 3370",
+            "de": "Buchari 3370",
+            "fr": "Boukhari 3370",
+            "ar": "البخاري 3370"
           }
         },
         {
@@ -143,11 +143,11 @@
             "ar": "تُقرأ بعد «اللهم صلِّ على محمد»."
           },
           "source": {
-            "tr": "Buhârî",
-            "en": "Bukhari",
-            "de": "Buchari",
-            "fr": "Boukhari",
-            "ar": "البخاري"
+            "tr": "Buhârî 3370",
+            "en": "Bukhari 3370",
+            "de": "Buchari 3370",
+            "fr": "Boukhari 3370",
+            "ar": "البخاري 3370"
           }
         },
         {
@@ -275,6 +275,340 @@
             "fr": "Seconde partie du qounout, récitée après la première.",
             "ar": "الجزء الثاني من دعاء القنوت، يُقرأ بعد الأول."
           }
+        },
+        {
+          "id": "ruku_tesbih",
+          "title": {
+            "tr": "Rükû Tesbihi",
+            "en": "Glorification in Ruku",
+            "de": "Lobpreis im Ruku",
+            "fr": "Glorification en roukou",
+            "ar": "تسبيح الركوع"
+          },
+          "arabic": "سُبْحَانَ رَبِّيَ الْعَظِيمِ",
+          "translit": {
+            "tr": "Sübhâne rabbiye'l-azîm.",
+            "latin": "Subhana rabbiyal-'azim."
+          },
+          "meaning": {
+            "tr": "Yüce Rabbimi her türlü eksiklikten tenzih ederim.",
+            "en": "Glory be to my Lord, the Magnificent.",
+            "de": "Gepriesen sei mein Herr, der Gewaltige.",
+            "fr": "Gloire à mon Seigneur, le Très Grand."
+          },
+          "note": {
+            "tr": "Rükûda en az üç defa söylenir.",
+            "en": "Said at least three times while bowing.",
+            "de": "Wird in der Verbeugung mindestens dreimal gesprochen.",
+            "fr": "Se dit au moins trois fois en inclinaison.",
+            "ar": "تُقال في الركوع ثلاث مرات على الأقل."
+          },
+          "source": {
+            "tr": "Müslim 772",
+            "en": "Muslim 772",
+            "de": "Muslim 772",
+            "fr": "Muslim 772",
+            "ar": "مسلم 772"
+          }
+        },
+        {
+          "id": "secde_tesbih",
+          "title": {
+            "tr": "Secde Tesbihi",
+            "en": "Glorification in Sujud",
+            "de": "Lobpreis in der Niederwerfung",
+            "fr": "Glorification en prosternation",
+            "ar": "تسبيح السجود"
+          },
+          "arabic": "سُبْحَانَ رَبِّيَ الْأَعْلَى",
+          "translit": {
+            "tr": "Sübhâne rabbiye'l-a'lâ.",
+            "latin": "Subhana rabbiyal-a'la."
+          },
+          "meaning": {
+            "tr": "En yüce olan Rabbimi her türlü eksiklikten tenzih ederim.",
+            "en": "Glory be to my Lord, the Most High.",
+            "de": "Gepriesen sei mein Herr, der Höchste.",
+            "fr": "Gloire à mon Seigneur, le Très-Haut."
+          },
+          "note": {
+            "tr": "Secdede en az üç defa söylenir.",
+            "en": "Said at least three times in prostration.",
+            "de": "Wird in der Niederwerfung mindestens dreimal gesprochen.",
+            "fr": "Se dit au moins trois fois en prosternation.",
+            "ar": "تُقال في السجود ثلاث مرات على الأقل."
+          },
+          "source": {
+            "tr": "Müslim 772",
+            "en": "Muslim 772",
+            "de": "Muslim 772",
+            "fr": "Muslim 772",
+            "ar": "مسلم 772"
+          }
+        },
+        {
+          "id": "semiallahu",
+          "title": {
+            "tr": "Rükûdan Doğrulurken",
+            "en": "Rising from Ruku",
+            "de": "Beim Aufrichten aus dem Ruku",
+            "fr": "En se relevant du roukou",
+            "ar": "الرفع من الركوع"
+          },
+          "arabic": "سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ، رَبَّنَا لَكَ الْحَمْدُ",
+          "translit": {
+            "tr": "Semi'allâhu limen hamideh. Rabbenâ leke'l-hamd.",
+            "latin": "Sami'allahu liman hamidah. Rabbana lakal-hamd."
+          },
+          "meaning": {
+            "tr": "Allah kendisine hamd edeni işitir. Rabbimiz, hamd sana mahsustur.",
+            "en": "Allah hears the one who praises Him. Our Lord, to You belongs all praise.",
+            "de": "Allah hört den, der Ihn lobt. Unser Herr, Dir gebührt alles Lob.",
+            "fr": "Allah entend celui qui Le loue. Notre Seigneur, à Toi la louange."
+          },
+          "note": {
+            "tr": "Rükûdan doğrulurken «Semi'allâhu limen hamideh», ayakta dururken «Rabbenâ leke'l-hamd» denir.",
+            "en": "Say \"Sami'allahu liman hamidah\" while rising, then \"Rabbana lakal-hamd\" when standing.",
+            "de": "Beim Aufrichten „Sami'allahu liman hamidah“, im Stehen „Rabbana lakal-hamd“ sprechen.",
+            "fr": "En se relevant, dire « Sami'allahu liman hamidah », puis debout « Rabbana lakal-hamd ».",
+            "ar": "يقول عند الرفع: سمع الله لمن حمده، فإذا استوى قائمًا: ربنا لك الحمد."
+          },
+          "source": {
+            "tr": "Müslim 772",
+            "en": "Muslim 772",
+            "de": "Muslim 772",
+            "fr": "Muslim 772",
+            "ar": "مسلم 772"
+          }
+        },
+        {
+          "id": "iki_secde_arasi",
+          "title": {
+            "tr": "İki Secde Arasında",
+            "en": "Between the Two Prostrations",
+            "de": "Zwischen den Niederwerfungen",
+            "fr": "Entre les deux prosternations",
+            "ar": "بين السجدتين"
+          },
+          "arabic": "رَبِّ اغْفِرْ لِي، رَبِّ اغْفِرْ لِي",
+          "translit": {
+            "tr": "Rabbiğfir lî, rabbiğfir lî.",
+            "latin": "Rabbighfir li, rabbighfir li."
+          },
+          "meaning": {
+            "tr": "Rabbim, beni bağışla. Rabbim, beni bağışla.",
+            "en": "My Lord, forgive me. My Lord, forgive me.",
+            "de": "Mein Herr, vergib mir. Mein Herr, vergib mir.",
+            "fr": "Seigneur, pardonne-moi. Seigneur, pardonne-moi."
+          },
+          "source": {
+            "tr": "Ebû Dâvûd 874; Nesâî 1145",
+            "en": "Abu Dawud 874; an-Nasa'i 1145",
+            "de": "Abu Dawud 874; an-Nasa'i 1145",
+            "fr": "Abou Dawoud 874 ; an-Nasa'i 1145",
+            "ar": "أبو داود 874، النسائي 1145"
+          }
+        },
+        {
+          "id": "entesselam",
+          "title": {
+            "tr": "Selamdan Sonra",
+            "en": "After the Salam",
+            "de": "Nach dem Salam",
+            "fr": "Après le salam",
+            "ar": "بعد السلام"
+          },
+          "arabic": "اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ",
+          "translit": {
+            "tr": "Allâhümme ente's-selâmü ve minke's-selâm, tebârekte yâ ze'l-celâli ve'l-ikrâm.",
+            "latin": "Allahumma antas-salamu wa minkas-salam, tabarakta ya dhal-jalali wal-ikram."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Sen selamsın, esenlik sendendir. Ey celal ve ikram sahibi, sen ne yücesin.",
+            "en": "O Allah, You are Peace and from You comes peace. Blessed are You, O Possessor of majesty and honour.",
+            "de": "O Allah, Du bist der Friede und von Dir kommt der Friede. Gesegnet bist Du, o Besitzer von Majestät und Ehre.",
+            "fr": "Ô Allah, Tu es la Paix et de Toi vient la paix. Béni sois-Tu, ô Détenteur de la majesté et de la générosité."
+          },
+          "note": {
+            "tr": "Farz namazlardan sonra selam verince okunur.",
+            "en": "Recited right after the salam of obligatory prayers.",
+            "de": "Wird nach dem Salam der Pflichtgebete gesprochen.",
+            "fr": "Récitée après le salam des prières obligatoires.",
+            "ar": "تُقال بعد السلام من الصلوات المفروضة."
+          },
+          "source": {
+            "tr": "Müslim 592",
+            "en": "Muslim 592",
+            "de": "Muslim 592",
+            "fr": "Muslim 592",
+            "ar": "مسلم 592"
+          }
+        },
+        {
+          "id": "ainni",
+          "title": {
+            "tr": "Allâhümme E'innî",
+            "en": "Allahumma A'inni",
+            "de": "Allahumma A'inni",
+            "fr": "Allahumma A'inni",
+            "ar": "اللهم أعني على ذكرك"
+          },
+          "arabic": "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+          "translit": {
+            "tr": "Allâhümme e'innî alâ zikrike ve şükrike ve hüsni ibâdetik.",
+            "latin": "Allahumma a'inni 'ala dhikrika wa shukrika wa husni 'ibadatik."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Seni anmak, sana şükretmek ve sana güzelce ibadet etmek için bana yardım et.",
+            "en": "O Allah, help me to remember You, to thank You and to worship You well.",
+            "de": "O Allah, hilf mir, Deiner zu gedenken, Dir zu danken und Dir gut zu dienen.",
+            "fr": "Ô Allah, aide-moi à T'invoquer, à Te remercier et à bien T'adorer."
+          },
+          "note": {
+            "tr": "Peygamberimiz her namazın sonunda okunmasını tavsiye etmiştir.",
+            "en": "The Prophet advised saying it at the end of every prayer.",
+            "de": "Der Prophet empfahl, es am Ende jedes Gebets zu sprechen.",
+            "fr": "Le Prophète a recommandé de la dire à la fin de chaque prière.",
+            "ar": "أوصى النبي ﷺ أن تُقال دبر كل صلاة."
+          },
+          "source": {
+            "tr": "Ebû Dâvûd 1522",
+            "en": "Abu Dawud 1522",
+            "de": "Abu Dawud 1522",
+            "fr": "Abou Dawoud 1522",
+            "ar": "أبو داود 1522"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ezan_abdest",
+      "title": {
+        "tr": "Ezan, Abdest ve Cami",
+        "en": "Adhan, Wudu & Mosque",
+        "de": "Adhan, Waschung & Moschee",
+        "fr": "Adhan, ablutions et mosquée",
+        "ar": "الأذان والوضوء والمسجد"
+      },
+      "duas": [
+        {
+          "id": "ezan_duasi",
+          "title": {
+            "tr": "Ezan Duası",
+            "en": "Dua after the Adhan",
+            "de": "Bittgebet nach dem Adhan",
+            "fr": "Invocation après l'adhan",
+            "ar": "دعاء الأذان"
+          },
+          "arabic": "اللَّهُمَّ رَبَّ هَٰذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ، آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ، وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ",
+          "translit": {
+            "tr": "Allâhümme rabbe hâzihi'd-da'veti't-tâmmeti ve's-salâti'l-kâimeh, âti Muhammeden el-vesîlete ve'l-fadîleh, veb'ashü makâmen mahmûdenillezî vaadteh.",
+            "latin": "Allahumma rabba hadhihid-da'watit-tammati was-salatil-qa'imah, ati Muhammadanil-wasilata wal-fadilah, wab'athhu maqaman mahmudanil-ladhi wa'adtah."
+          },
+          "meaning": {
+            "tr": "Ey bu eksiksiz davetin ve kılınacak namazın Rabbi Allah'ım! Muhammed'e vesileyi ve fazileti ver; onu, vaat ettiğin övülmüş makama ulaştır.",
+            "en": "O Allah, Lord of this perfect call and the prayer about to be established, grant Muhammad al-Wasila and excellence, and raise him to the praised station You promised him.",
+            "de": "O Allah, Herr dieses vollkommenen Rufes und des Gebets, das verrichtet wird, gewähre Muhammad die Wasila und den Vorzug und erhebe ihn zur gepriesenen Stellung, die Du ihm versprochen hast.",
+            "fr": "Ô Allah, Seigneur de cet appel parfait et de la prière qui va être accomplie, accorde à Muhammad al-Wasila et l'excellence, et élève-le au rang glorieux que Tu lui as promis."
+          },
+          "note": {
+            "tr": "Ezan bittikten sonra okunur.",
+            "en": "Recited after the adhan ends.",
+            "de": "Wird nach dem Ende des Adhan gesprochen.",
+            "fr": "Récitée à la fin de l'adhan.",
+            "ar": "يُقال بعد انتهاء الأذان."
+          },
+          "source": {
+            "tr": "Buhârî 614",
+            "en": "Bukhari 614",
+            "de": "Buchari 614",
+            "fr": "Boukhari 614",
+            "ar": "البخاري 614"
+          }
+        },
+        {
+          "id": "abdest_sonrasi",
+          "title": {
+            "tr": "Abdestten Sonra",
+            "en": "After Wudu",
+            "de": "Nach der Waschung",
+            "fr": "Après les ablutions",
+            "ar": "بعد الوضوء"
+          },
+          "arabic": "أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ، اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ وَاجْعَلْنِي مِنَ الْمُتَطَهِّرِينَ",
+          "translit": {
+            "tr": "Eşhedü en lâ ilâhe illallâhu vahdehû lâ şerîke leh, ve eşhedü enne Muhammeden abdühû ve rasûlüh. Allâhümme'c'alnî mine't-tevvâbîne vec'alnî mine'l-mütetahhirîn.",
+            "latin": "Ash-hadu an la ilaha illallahu wahdahu la sharika lah, wa ash-hadu anna Muhammadan 'abduhu wa rasuluh. Allahummaj'alni minat-tawwabina waj'alni minal-mutatahhirin."
+          },
+          "meaning": {
+            "tr": "Allah'tan başka ilah olmadığına, O'nun tek ve ortaksız olduğuna; Muhammed'in O'nun kulu ve elçisi olduğuna şahitlik ederim. Allah'ım! Beni tövbe edenlerden ve temizlenenlerden eyle.",
+            "en": "I bear witness that there is no god but Allah, alone without partner, and that Muhammad is His servant and Messenger. O Allah, make me among those who repent and those who purify themselves.",
+            "de": "Ich bezeuge, dass es keinen Gott gibt außer Allah, dem Einzigen ohne Partner, und dass Muhammad Sein Diener und Gesandter ist. O Allah, mache mich zu denen, die bereuen und sich reinigen.",
+            "fr": "J'atteste qu'il n'y a de dieu qu'Allah, Seul et sans associé, et que Muhammad est Son serviteur et Son messager. Ô Allah, place-moi parmi ceux qui se repentent et ceux qui se purifient."
+          },
+          "source": {
+            "tr": "Tirmizî 55",
+            "en": "Tirmidhi 55",
+            "de": "Tirmidhi 55",
+            "fr": "Tirmidhi 55",
+            "ar": "الترمذي 55"
+          }
+        },
+        {
+          "id": "cami_giris",
+          "title": {
+            "tr": "Camiye Girerken",
+            "en": "Entering the Mosque",
+            "de": "Beim Betreten der Moschee",
+            "fr": "En entrant dans la mosquée",
+            "ar": "دخول المسجد"
+          },
+          "arabic": "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+          "translit": {
+            "tr": "Allâhümme'f-tah lî ebvâbe rahmetik.",
+            "latin": "Allahummaf-tah li abwaba rahmatik."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Bana rahmetinin kapılarını aç.",
+            "en": "O Allah, open for me the gates of Your mercy.",
+            "de": "O Allah, öffne mir die Tore Deiner Barmherzigkeit.",
+            "fr": "Ô Allah, ouvre-moi les portes de Ta miséricorde."
+          },
+          "source": {
+            "tr": "Müslim 713",
+            "en": "Muslim 713",
+            "de": "Muslim 713",
+            "fr": "Muslim 713",
+            "ar": "مسلم 713"
+          }
+        },
+        {
+          "id": "cami_cikis",
+          "title": {
+            "tr": "Camiden Çıkarken",
+            "en": "Leaving the Mosque",
+            "de": "Beim Verlassen der Moschee",
+            "fr": "En sortant de la mosquée",
+            "ar": "الخروج من المسجد"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+          "translit": {
+            "tr": "Allâhümme innî es'elüke min fadlik.",
+            "latin": "Allahumma inni as'aluka min fadlik."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senden lütfunu ve ihsanını isterim.",
+            "en": "O Allah, I ask You of Your bounty.",
+            "de": "O Allah, ich bitte Dich um Deine Huld.",
+            "fr": "Ô Allah, je Te demande de Ta grâce."
+          },
+          "source": {
+            "tr": "Müslim 713",
+            "en": "Muslim 713",
+            "de": "Muslim 713",
+            "fr": "Muslim 713",
+            "ar": "مسلم 713"
+          }
         }
       ]
     },
@@ -386,11 +720,11 @@
             "ar": "يُقال ثلاث مرات في الصباح والمساء."
           },
           "source": {
-            "tr": "Ebû Dâvûd, Tirmizî",
-            "en": "Abu Dawud, Tirmidhi",
-            "de": "Abu Dawud, Tirmidhi",
-            "fr": "Abou Dawoud, Tirmidhi",
-            "ar": "أبو داود، الترمذي"
+            "tr": "Ebû Dâvûd 5088; Tirmizî 3388",
+            "en": "Abu Dawud 5088; Tirmidhi 3388",
+            "de": "Abu Dawud 5088; Tirmidhi 3388",
+            "fr": "Abou Dawoud 5088 ; Tirmidhi 3388",
+            "ar": "أبو داود 5088، الترمذي 3388"
           }
         },
         {
@@ -421,11 +755,151 @@
             "ar": "أفضل صيغ الاستغفار، يُقال في الصباح والمساء."
           },
           "source": {
-            "tr": "Buhârî",
-            "en": "Bukhari",
-            "de": "Buchari",
-            "fr": "Boukhari",
-            "ar": "البخاري"
+            "tr": "Buhârî 6306",
+            "en": "Bukhari 6306",
+            "de": "Buchari 6306",
+            "fr": "Boukhari 6306",
+            "ar": "البخاري 6306"
+          }
+        },
+        {
+          "id": "emseyna",
+          "title": {
+            "tr": "Akşam ve Sabah Duası",
+            "en": "Evening and Morning Dua",
+            "de": "Abend- und Morgenbittgebet",
+            "fr": "Invocation du soir et du matin",
+            "ar": "دعاء المساء والصباح"
+          },
+          "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+          "translit": {
+            "tr": "Emseynâ ve emse'l-mülkü lillâh, ve'l-hamdü lillâh, lâ ilâhe illallâhu vahdehû lâ şerîke leh.",
+            "latin": "Amsayna wa amsal-mulku lillah, wal-hamdu lillah, la ilaha illallahu wahdahu la sharika lah."
+          },
+          "meaning": {
+            "tr": "Akşama erdik, mülk de Allah'ın olarak akşama erdi. Hamd Allah'a mahsustur. Allah'tan başka ilah yoktur; O tektir, ortağı yoktur.",
+            "en": "We have reached the evening and the dominion belongs to Allah. Praise be to Allah. There is no god but Allah, alone without partner.",
+            "de": "Wir haben den Abend erreicht, und die Herrschaft gehört Allah. Lob sei Allah. Es gibt keinen Gott außer Allah, dem Einzigen ohne Partner.",
+            "fr": "Nous voici au soir et la royauté appartient à Allah. Louange à Allah. Il n'y a de dieu qu'Allah, Seul et sans associé."
+          },
+          "note": {
+            "tr": "Sabah okunurken «emseynâ ve emse'l-mülkü» yerine «asbahnâ ve asbaha'l-mülkü» denir.",
+            "en": "In the morning, say \"asbahna wa asbahal-mulku\" instead of \"amsayna wa amsal-mulku\".",
+            "de": "Morgens sagt man „asbahna wa asbahal-mulku“ statt „amsayna wa amsal-mulku“.",
+            "fr": "Le matin, on dit « asbahna wa asbahal-mulku » au lieu de « amsayna wa amsal-mulku ».",
+            "ar": "وفي الصباح يقول: أصبحنا وأصبح الملك لله."
+          },
+          "source": {
+            "tr": "Müslim 2723",
+            "en": "Muslim 2723",
+            "de": "Muslim 2723",
+            "fr": "Muslim 2723",
+            "ar": "مسلم 2723"
+          }
+        },
+        {
+          "id": "bike_asbahna",
+          "title": {
+            "tr": "Bike Asbahnâ",
+            "en": "Bika Asbahna",
+            "de": "Bika Asbahna",
+            "fr": "Bika Asbahna",
+            "ar": "اللهم بك أصبحنا"
+          },
+          "arabic": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ",
+          "translit": {
+            "tr": "Allâhümme bike asbahnâ ve bike emseynâ ve bike nahyâ ve bike nemûtü ve ileyke'l-masîr.",
+            "latin": "Allahumma bika asbahna wa bika amsayna wa bika nahya wa bika namutu wa ilaykal-masir."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senin izninle sabaha ve akşama erdik. Seninle yaşar, seninle ölürüz. Dönüş de sanadır.",
+            "en": "O Allah, by You we enter the morning and by You the evening, by You we live and by You we die, and to You is the final return.",
+            "de": "O Allah, durch Dich erreichen wir den Morgen und den Abend, durch Dich leben und sterben wir, und zu Dir ist die Heimkehr.",
+            "fr": "Ô Allah, c'est par Toi que nous atteignons le matin et le soir, par Toi que nous vivons et mourons, et vers Toi est le retour."
+          },
+          "note": {
+            "tr": "Sabah okunur. Akşam «Allâhümme bike emseynâ ve bike asbahnâ … ve ileyke'n-nüşûr» denir.",
+            "en": "Said in the morning. In the evening: \"Allahumma bika amsayna wa bika asbahna … wa ilaykan-nushur\".",
+            "de": "Morgens gesprochen. Abends: „Allahumma bika amsayna wa bika asbahna … wa ilaykan-nushur“.",
+            "fr": "Se dit le matin. Le soir : « Allahumma bika amsayna wa bika asbahna … wa ilaykan-nushur ».",
+            "ar": "تُقال في الصباح، وفي المساء: اللهم بك أمسينا وبك أصبحنا … وإليك النشور."
+          },
+          "source": {
+            "tr": "Tirmizî 3391",
+            "en": "Tirmidhi 3391",
+            "de": "Tirmidhi 3391",
+            "fr": "Tirmidhi 3391",
+            "ar": "الترمذي 3391"
+          }
+        },
+        {
+          "id": "afv_afiyet",
+          "title": {
+            "tr": "Af ve Âfiyet Duası",
+            "en": "Dua for Pardon and Well-being",
+            "de": "Bitte um Vergebung und Wohlergehen",
+            "fr": "Invocation du pardon et du bien-être",
+            "ar": "سؤال العفو والعافية"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي",
+          "translit": {
+            "tr": "Allâhümme innî es'elüke'l-afve ve'l-âfiyete fi'd-dünyâ ve'l-âhirah. Allâhümme innî es'elüke'l-afve ve'l-âfiyete fî dînî ve dünyâye ve ehlî ve mâlî.",
+            "latin": "Allahumma inni as'alukal-'afwa wal-'afiyata fid-dunya wal-akhirah. Allahumma inni as'alukal-'afwa wal-'afiyata fi dini wa dunyaya wa ahli wa mali."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senden dünyada ve ahirette af ve âfiyet isterim. Allah'ım! Dinimde, dünyamda, ailemde ve malımda af ve âfiyet isterim.",
+            "en": "O Allah, I ask You for pardon and well-being in this world and the Hereafter. O Allah, I ask You for pardon and well-being in my religion, my worldly life, my family and my wealth.",
+            "de": "O Allah, ich bitte Dich um Vergebung und Wohlergehen im Diesseits und Jenseits. O Allah, ich bitte Dich um Vergebung und Wohlergehen in meiner Religion, meinem Leben, meiner Familie und meinem Besitz.",
+            "fr": "Ô Allah, je Te demande le pardon et le bien-être ici-bas et dans l'au-delà. Ô Allah, je Te demande le pardon et le bien-être dans ma religion, ma vie, ma famille et mes biens."
+          },
+          "note": {
+            "tr": "Peygamberimiz bu duayı sabah ve akşam hiç bırakmazdı.",
+            "en": "The Prophet never left this dua in the morning and evening.",
+            "de": "Der Prophet ließ dieses Bittgebet morgens und abends nie aus.",
+            "fr": "Le Prophète ne délaissait jamais cette invocation matin et soir.",
+            "ar": "كان النبي ﷺ لا يدعها حين يمسي وحين يصبح."
+          },
+          "source": {
+            "tr": "İbn Mâce 3871",
+            "en": "Ibn Majah 3871",
+            "de": "Ibn Madscha 3871",
+            "fr": "Ibn Majah 3871",
+            "ar": "ابن ماجه 3871"
+          }
+        },
+        {
+          "id": "kelimatillah",
+          "title": {
+            "tr": "Kötülükten Korunma",
+            "en": "Seeking Protection from Harm",
+            "de": "Schutz vor Unheil",
+            "fr": "Protection contre le mal",
+            "ar": "الاستعاذة بكلمات الله"
+          },
+          "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+          "translit": {
+            "tr": "E'ûzü bi kelimâtillâhi't-tâmmâti min şerri mâ halak.",
+            "latin": "A'udhu bi kalimatillahit-tammati min sharri ma khalaq."
+          },
+          "meaning": {
+            "tr": "Yarattığı şeylerin şerrinden Allah'ın eksiksiz kelimelerine sığınırım.",
+            "en": "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+            "de": "Ich suche Zuflucht bei den vollkommenen Worten Allahs vor dem Übel dessen, was Er erschaffen hat.",
+            "fr": "Je cherche refuge auprès des paroles parfaites d'Allah contre le mal de ce qu'Il a créé."
+          },
+          "note": {
+            "tr": "Akşam üç defa okunur; bir yere konaklayınca da okunur.",
+            "en": "Said three times in the evening, and when stopping at a place.",
+            "de": "Abends dreimal sprechen, ebenso beim Halt an einem Ort.",
+            "fr": "À dire trois fois le soir, et en faisant halte quelque part.",
+            "ar": "تُقال في المساء ثلاثًا، وعند نزول منزل."
+          },
+          "source": {
+            "tr": "Müslim 2708",
+            "en": "Muslim 2708",
+            "de": "Muslim 2708",
+            "fr": "Muslim 2708",
+            "ar": "مسلم 2708"
           }
         }
       ]
@@ -468,11 +942,11 @@
             "ar": "تُقال عند بدء الطعام، فإن نسي قال إذا ذكر: بسم الله أوله وآخره."
           },
           "source": {
-            "tr": "Buhârî, Müslim",
-            "en": "Bukhari, Muslim",
-            "de": "Buchari, Muslim",
-            "fr": "Boukhari, Muslim",
-            "ar": "البخاري، مسلم"
+            "tr": "Ebû Dâvûd 3767; Tirmizî 1858",
+            "en": "Abu Dawud 3767; Tirmidhi 1858",
+            "de": "Abu Dawud 3767; Tirmidhi 1858",
+            "fr": "Abou Dawoud 3767 ; Tirmidhi 1858",
+            "ar": "أبو داود 3767، الترمذي 1858"
           }
         },
         {
@@ -496,11 +970,11 @@
             "fr": "Louange à Allah qui m'a nourri de ceci et me l'a accordé sans force ni puissance de ma part."
           },
           "source": {
-            "tr": "Ebû Dâvûd, Tirmizî",
-            "en": "Abu Dawud, Tirmidhi",
-            "de": "Abu Dawud, Tirmidhi",
-            "fr": "Abou Dawoud, Tirmidhi",
-            "ar": "أبو داود، الترمذي"
+            "tr": "Tirmizî 3458",
+            "en": "Tirmidhi 3458",
+            "de": "Tirmidhi 3458",
+            "fr": "Tirmidhi 3458",
+            "ar": "الترمذي 3458"
           }
         },
         {
@@ -524,13 +998,368 @@
             "fr": "Au nom d'Allah. Je place ma confiance en Allah. Il n'y a de force ni de puissance qu'en Allah."
           },
           "source": {
-            "tr": "Ebû Dâvûd, Tirmizî",
-            "en": "Abu Dawud, Tirmidhi",
-            "de": "Abu Dawud, Tirmidhi",
-            "fr": "Abou Dawoud, Tirmidhi",
-            "ar": "أبو داود، الترمذي"
+            "tr": "Ebû Dâvûd 5095; Tirmizî 3426",
+            "en": "Abu Dawud 5095; Tirmidhi 3426",
+            "de": "Abu Dawud 5095; Tirmidhi 3426",
+            "fr": "Abou Dawoud 5095 ; Tirmidhi 3426",
+            "ar": "أبو داود 5095، الترمذي 3426"
           }
         },
+        {
+          "id": "before_sleep",
+          "title": {
+            "tr": "Uyumadan Önce",
+            "en": "Before Sleeping",
+            "de": "Vor dem Schlafen",
+            "fr": "Avant de dormir",
+            "ar": "عند النوم"
+          },
+          "arabic": "اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا",
+          "translit": {
+            "tr": "Allâhümme bismike emûtü ve ahyâ.",
+            "latin": "Allahumma bismika amutu wa ahya."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senin adınla ölür, senin adınla dirilirim.",
+            "en": "O Allah, in Your name I die and I live.",
+            "de": "O Allah, in Deinem Namen sterbe ich und lebe ich.",
+            "fr": "Ô Allah, c'est en Ton nom que je meurs et que je vis."
+          },
+          "source": {
+            "tr": "Buhârî 6314",
+            "en": "Bukhari 6314",
+            "de": "Buchari 6314",
+            "fr": "Boukhari 6314",
+            "ar": "البخاري 6314"
+          }
+        },
+        {
+          "id": "waking_up",
+          "title": {
+            "tr": "Uyanınca",
+            "en": "On Waking Up",
+            "de": "Nach dem Aufwachen",
+            "fr": "Au réveil",
+            "ar": "عند الاستيقاظ"
+          },
+          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+          "translit": {
+            "tr": "Elhamdü lillâhillezî ahyânâ ba'de mâ emâtenâ ve ileyhin-nüşûr.",
+            "latin": "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur."
+          },
+          "meaning": {
+            "tr": "Bizi öldürdükten sonra dirilten Allah'a hamdolsun. Dönüş de O'nadır.",
+            "en": "Praise be to Allah who gave us life after He had caused us to die, and to Him is the resurrection.",
+            "de": "Gelobt sei Allah, Der uns wieder lebendig gemacht hat, nachdem Er uns sterben ließ, und zu Ihm ist die Auferstehung.",
+            "fr": "Louange à Allah qui nous a rendu la vie après nous avoir fait mourir, et c'est vers Lui que sera la résurrection."
+          },
+          "source": {
+            "tr": "Buhârî 6324",
+            "en": "Bukhari 6324",
+            "de": "Buchari 6324",
+            "fr": "Boukhari 6324",
+            "ar": "البخاري 6324"
+          }
+        },
+        {
+          "id": "tuvalet_giris",
+          "title": {
+            "tr": "Tuvalete Girerken",
+            "en": "Entering the Toilet",
+            "de": "Beim Betreten der Toilette",
+            "fr": "En entrant aux toilettes",
+            "ar": "دخول الخلاء"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+          "translit": {
+            "tr": "Allâhümme innî e'ûzü bike mine'l-hubusi ve'l-habâis.",
+            "latin": "Allahumma inni a'udhu bika minal-khubuthi wal-khaba'ith."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Erkek ve dişi şeytanların şerrinden sana sığınırım.",
+            "en": "O Allah, I seek refuge in You from male and female devils.",
+            "de": "O Allah, ich suche Zuflucht bei Dir vor den männlichen und weiblichen Teufeln.",
+            "fr": "Ô Allah, je cherche refuge auprès de Toi contre les démons mâles et femelles."
+          },
+          "note": {
+            "tr": "İçeri girmeden önce söylenir.",
+            "en": "Said before entering.",
+            "de": "Vor dem Eintreten sprechen.",
+            "fr": "À dire avant d'entrer.",
+            "ar": "تُقال قبل الدخول."
+          },
+          "source": {
+            "tr": "Buhârî 142; Müslim 375",
+            "en": "Bukhari 142; Muslim 375",
+            "de": "Buchari 142; Muslim 375",
+            "fr": "Boukhari 142 ; Muslim 375",
+            "ar": "البخاري 142، مسلم 375"
+          }
+        },
+        {
+          "id": "tuvalet_cikis",
+          "title": {
+            "tr": "Tuvaletten Çıkınca",
+            "en": "Leaving the Toilet",
+            "de": "Beim Verlassen der Toilette",
+            "fr": "En sortant des toilettes",
+            "ar": "الخروج من الخلاء"
+          },
+          "arabic": "غُفْرَانَكَ",
+          "translit": {
+            "tr": "Ğufrâneke.",
+            "latin": "Ghufranak."
+          },
+          "meaning": {
+            "tr": "Allah'ım, bağışlamanı dilerim.",
+            "en": "I ask Your forgiveness.",
+            "de": "Ich bitte um Deine Vergebung.",
+            "fr": "Je demande Ton pardon."
+          },
+          "source": {
+            "tr": "Tirmizî 7; Ebû Dâvûd 30",
+            "en": "Tirmidhi 7; Abu Dawud 30",
+            "de": "Tirmidhi 7; Abu Dawud 30",
+            "fr": "Tirmidhi 7 ; Abou Dawoud 30",
+            "ar": "الترمذي 7، أبو داود 30"
+          }
+        },
+        {
+          "id": "elbise",
+          "title": {
+            "tr": "Yeni Elbise Giyince",
+            "en": "Wearing New Clothes",
+            "de": "Beim Anziehen neuer Kleidung",
+            "fr": "En mettant un vêtement neuf",
+            "ar": "لبس الثوب الجديد"
+          },
+          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَٰذَا الثَّوْبَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
+          "translit": {
+            "tr": "Elhamdü lillâhillezî kesânî hâze's-sevbe ve rezekanîhi min ğayri havlin minnî ve lâ kuvveh.",
+            "latin": "Alhamdu lillahil-ladhi kasani hadhath-thawba wa razaqanihi min ghayri hawlin minni wa la quwwah."
+          },
+          "meaning": {
+            "tr": "Benim hiçbir güç ve kuvvetim olmadan bana bu elbiseyi giydiren ve rızık olarak veren Allah'a hamd olsun.",
+            "en": "Praise be to Allah who clothed me with this garment and provided it for me without any power or strength on my part.",
+            "de": "Lob sei Allah, Der mich mit diesem Gewand bekleidet und es mir ohne eigene Macht und Kraft geschenkt hat.",
+            "fr": "Louange à Allah qui m'a vêtu de ce vêtement et me l'a accordé sans force ni puissance de ma part."
+          },
+          "source": {
+            "tr": "Ebû Dâvûd 4023",
+            "en": "Abu Dawud 4023",
+            "de": "Abu Dawud 4023",
+            "fr": "Abou Dawoud 4023",
+            "ar": "أبو داود 4023"
+          }
+        },
+        {
+          "id": "aksirma",
+          "title": {
+            "tr": "Aksırınca",
+            "en": "When Sneezing",
+            "de": "Beim Niesen",
+            "fr": "En éternuant",
+            "ar": "عند العطاس"
+          },
+          "arabic": "الْحَمْدُ لِلَّهِ",
+          "translit": {
+            "tr": "Elhamdülillâh.",
+            "latin": "Alhamdulillah."
+          },
+          "meaning": {
+            "tr": "Hamd Allah'a mahsustur.",
+            "en": "Praise be to Allah.",
+            "de": "Lob sei Allah.",
+            "fr": "Louange à Allah."
+          },
+          "note": {
+            "tr": "Aksıran «Elhamdülillâh» der; duyan «Yerhamükellâh» (Allah sana rahmet etsin), aksıran da «Yehdîkümullâhu ve yuslihu bâleküm» (Allah sizi doğru yola iletsin ve hâlinizi düzeltsin) diye karşılık verir.",
+            "en": "The one who sneezes says \"Alhamdulillah\"; the listener replies \"Yarhamukallah\" (may Allah have mercy on you), and the sneezer answers \"Yahdikumullahu wa yuslihu balakum\" (may Allah guide you and set your affairs right).",
+            "de": "Wer niest, sagt „Alhamdulillah“; wer es hört, antwortet „Yarhamukallah“ (Allah erbarme Sich deiner), und der Niesende erwidert „Yahdikumullahu wa yuslihu balakum“ (Allah leite euch und bessere eure Lage).",
+            "fr": "Celui qui éternue dit « Alhamdulillah » ; celui qui l'entend répond « Yarhamukallah » (qu'Allah te fasse miséricorde), puis l'éternueur dit « Yahdikumullahu wa yuslihu balakum » (qu'Allah vous guide et améliore votre état).",
+            "ar": "يقول العاطس: الحمد لله، ويقول له أخوه: يرحمك الله، فيقول: يهديكم الله ويصلح بالكم."
+          },
+          "source": {
+            "tr": "Buhârî 6224",
+            "en": "Bukhari 6224",
+            "de": "Buchari 6224",
+            "fr": "Boukhari 6224",
+            "ar": "البخاري 6224"
+          }
+        },
+        {
+          "id": "misafir",
+          "title": {
+            "tr": "Ev Sahibine Dua",
+            "en": "Dua for the Host",
+            "de": "Bittgebet für den Gastgeber",
+            "fr": "Invocation pour l'hôte",
+            "ar": "الدعاء لصاحب الطعام"
+          },
+          "arabic": "اللَّهُمَّ بَارِكْ لَهُمْ فِي مَا رَزَقْتَهُمْ، وَاغْفِرْ لَهُمْ وَارْحَمْهُمْ",
+          "translit": {
+            "tr": "Allâhümme bârik lehüm fî mâ rezaktehüm, vağfir lehüm verhamhüm.",
+            "latin": "Allahumma barik lahum fima razaqtahum, waghfir lahum warhamhum."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Onlara verdiğin rızkı bereketli kıl; onları bağışla ve onlara merhamet et.",
+            "en": "O Allah, bless them in what You have provided them, forgive them and have mercy on them.",
+            "de": "O Allah, segne sie in dem, was Du ihnen gegeben hast, vergib ihnen und erbarme Dich ihrer.",
+            "fr": "Ô Allah, bénis-les dans ce que Tu leur as accordé, pardonne-leur et fais-leur miséricorde."
+          },
+          "note": {
+            "tr": "Misafir olunan evde yemekten sonra okunur.",
+            "en": "Said after eating as a guest.",
+            "de": "Wird als Gast nach dem Essen gesprochen.",
+            "fr": "À dire après avoir mangé chez un hôte.",
+            "ar": "يقولها الضيف بعد الطعام."
+          },
+          "source": {
+            "tr": "Müslim 2042",
+            "en": "Muslim 2042",
+            "de": "Muslim 2042",
+            "fr": "Muslim 2042",
+            "ar": "مسلم 2042"
+          }
+        },
+        {
+          "id": "yatarken",
+          "title": {
+            "tr": "Yatağa Uzanırken",
+            "en": "Lying Down to Sleep",
+            "de": "Beim Hinlegen zum Schlafen",
+            "fr": "En se couchant",
+            "ar": "عند النوم"
+          },
+          "arabic": "بِاسْمِكَ رَبِّ وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، إِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ",
+          "translit": {
+            "tr": "Bismike rabbî veda'tü cenbî ve bike erfeuh. İn emsekte nefsî ferhamhâ, ve in erseltehâ fahfazhâ bimâ tahfazu bihî ibâdeke's-sâlihîn.",
+            "latin": "Bismika rabbi wada'tu janbi wa bika arfa'uh. In amsakta nafsi farhamha, wa in arsaltaha fahfazha bima tahfazu bihi 'ibadakas-salihin."
+          },
+          "meaning": {
+            "tr": "Rabbim! Senin adınla yanımı yere koydum, senin izninle kaldırırım. Canımı alırsan ona merhamet et; bırakırsan salih kullarını koruduğun şeyle onu koru.",
+            "en": "In Your name, my Lord, I lay down my side and by You I raise it. If You take my soul, have mercy on it; if You release it, protect it as You protect Your righteous servants.",
+            "de": "In Deinem Namen, mein Herr, lege ich mich nieder und durch Dich erhebe ich mich. Nimmst Du meine Seele, so erbarme Dich ihrer; lässt Du sie frei, so schütze sie, wie Du Deine rechtschaffenen Diener schützt.",
+            "fr": "En Ton nom, mon Seigneur, je m'allonge et par Toi je me relève. Si Tu retiens mon âme, fais-lui miséricorde ; si Tu la renvoies, protège-la comme Tu protèges Tes serviteurs vertueux."
+          },
+          "source": {
+            "tr": "Buhârî 6320",
+            "en": "Bukhari 6320",
+            "de": "Buchari 6320",
+            "fr": "Boukhari 6320",
+            "ar": "البخاري 6320"
+          }
+        },
+        {
+          "id": "kizginlik",
+          "title": {
+            "tr": "Öfkelenince",
+            "en": "When Angry",
+            "de": "Bei Zorn",
+            "fr": "En cas de colère",
+            "ar": "عند الغضب"
+          },
+          "arabic": "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+          "translit": {
+            "tr": "E'ûzü billâhi mine'ş-şeytâni'r-racîm.",
+            "latin": "A'udhu billahi minash-shaytanir-rajim."
+          },
+          "meaning": {
+            "tr": "Kovulmuş şeytanın şerrinden Allah'a sığınırım.",
+            "en": "I seek refuge in Allah from the accursed Satan.",
+            "de": "Ich suche Zuflucht bei Allah vor dem verfluchten Satan.",
+            "fr": "Je cherche refuge auprès d'Allah contre Satan le maudit."
+          },
+          "source": {
+            "tr": "Buhârî 6115; Müslim 2610",
+            "en": "Bukhari 6115; Muslim 2610",
+            "de": "Buchari 6115; Muslim 2610",
+            "fr": "Boukhari 6115 ; Muslim 2610",
+            "ar": "البخاري 6115، مسلم 2610"
+          }
+        },
+        {
+          "id": "yagmur",
+          "title": {
+            "tr": "Yağmur Yağınca",
+            "en": "When It Rains",
+            "de": "Bei Regen",
+            "fr": "Quand il pleut",
+            "ar": "عند نزول المطر"
+          },
+          "arabic": "صَيِّبًا نَافِعًا",
+          "translit": {
+            "tr": "Sayyiben nâfiâ.",
+            "latin": "Sayyiban nafi'a."
+          },
+          "meaning": {
+            "tr": "(Allah'ım! Bunu) faydalı bir yağmur (eyle).",
+            "en": "(O Allah, make it) a beneficial rain.",
+            "de": "(O Allah, lass ihn) einen nützlichen Regen (sein).",
+            "fr": "(Ô Allah, fais-en) une pluie bénéfique."
+          },
+          "note": {
+            "tr": "Yağmurdan sonra «Mutırnâ bi fadlillâhi ve rahmetih» (Allah'ın lütfu ve rahmetiyle yağmura kavuştuk) denir (Buhârî 846).",
+            "en": "After the rain: \"Mutirna bi fadlillahi wa rahmatih\" (we were given rain by the grace and mercy of Allah) (Bukhari 846).",
+            "de": "Nach dem Regen: „Mutirna bi fadlillahi wa rahmatih“ (uns wurde Regen durch Allahs Huld und Barmherzigkeit zuteil) (Buchari 846).",
+            "fr": "Après la pluie : « Mutirna bi fadlillahi wa rahmatih » (nous avons reçu la pluie par la grâce et la miséricorde d'Allah) (Boukhari 846).",
+            "ar": "وبعد المطر: مُطِرنا بفضل الله ورحمته (البخاري 846)."
+          },
+          "source": {
+            "tr": "Buhârî 1032",
+            "en": "Bukhari 1032",
+            "de": "Buchari 1032",
+            "fr": "Boukhari 1032",
+            "ar": "البخاري 1032"
+          }
+        },
+        {
+          "id": "ruzgar",
+          "title": {
+            "tr": "Rüzgâr Esince",
+            "en": "When the Wind Blows",
+            "de": "Bei Wind",
+            "fr": "Quand le vent souffle",
+            "ar": "عند هبوب الريح"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَخَيْرَ مَا فِيهَا وَخَيْرَ مَا أُرْسِلَتْ بِهِ",
+          "translit": {
+            "tr": "Allâhümme innî es'elüke hayrahâ ve hayra mâ fîhâ ve hayra mâ ursilet bih.",
+            "latin": "Allahumma inni as'aluka khayraha wa khayra ma fiha wa khayra ma ursilat bih."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senden bu rüzgârın hayrını, içindekinin hayrını ve onunla gönderilenin hayrını isterim.",
+            "en": "O Allah, I ask You for its good, the good within it and the good it was sent with.",
+            "de": "O Allah, ich bitte Dich um sein Gutes, das Gute in ihm und das Gute, mit dem er gesandt wurde.",
+            "fr": "Ô Allah, je Te demande son bien, le bien qu'il contient et le bien avec lequel il a été envoyé."
+          },
+          "note": {
+            "tr": "Hadisin devamında şerrinden de Allah'a sığınılır.",
+            "en": "The hadith continues by seeking refuge from its harm.",
+            "de": "Im Hadith folgt die Bitte um Schutz vor seinem Übel.",
+            "fr": "Le hadith se poursuit en demandant protection contre son mal.",
+            "ar": "وتمامه الاستعاذة من شرها."
+          },
+          "source": {
+            "tr": "Müslim 899",
+            "en": "Muslim 899",
+            "de": "Muslim 899",
+            "fr": "Muslim 899",
+            "ar": "مسلم 899"
+          }
+        }
+      ]
+    },
+    {
+      "id": "travel",
+      "title": {
+        "tr": "Yolculuk",
+        "en": "Travel",
+        "de": "Reise",
+        "fr": "Voyage",
+        "ar": "السفر"
+      },
+      "duas": [
         {
           "id": "travel",
           "title": {
@@ -567,59 +1396,1283 @@
           }
         },
         {
-          "id": "before_sleep",
+          "id": "sefer_duasi",
           "title": {
-            "tr": "Uyumadan Önce",
-            "en": "Before Sleeping",
-            "de": "Vor dem Schlafen",
-            "fr": "Avant de dormir",
-            "ar": "عند النوم"
+            "tr": "Uzun Yolculuk Duası",
+            "en": "Full Travel Dua",
+            "de": "Ausführliches Reisebittgebet",
+            "fr": "Invocation complète du voyage",
+            "ar": "دعاء السفر كاملًا"
           },
-          "arabic": "اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا",
+          "arabic": "اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَٰذَا الْبِرَّ وَالتَّقْوَى، وَمِنَ الْعَمَلِ مَا تَرْضَى، اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَٰذَا وَاطْوِ عَنَّا بُعْدَهُ، اللَّهُمَّ أَنْتَ الصَّاحِبُ فِي السَّفَرِ وَالْخَلِيفَةُ فِي الْأَهْلِ",
           "translit": {
-            "tr": "Allâhümme bismike emûtü ve ahyâ.",
-            "latin": "Allahumma bismika amutu wa ahya."
+            "tr": "Allâhümme innâ nes'elüke fî seferinâ hâze'l-birra ve't-takvâ, ve mine'l-ameli mâ terdâ. Allâhümme hevvin aleynâ seferenâ hâzâ vatvi annâ bu'deh. Allâhümme ente's-sâhibü fi's-seferi ve'l-halîfetü fi'l-ehl.",
+            "latin": "Allahumma inna nas'aluka fi safarina hadhal-birra wat-taqwa, wa minal-'amali ma tarda. Allahumma hawwin 'alayna safarana hadha watwi 'anna bu'dah. Allahumma antas-sahibu fis-safari wal-khalifatu fil-ahl."
           },
           "meaning": {
-            "tr": "Allah'ım! Senin adınla ölür, senin adınla dirilirim.",
-            "en": "O Allah, in Your name I die and I live.",
-            "de": "O Allah, in Deinem Namen sterbe ich und lebe ich.",
-            "fr": "Ô Allah, c'est en Ton nom que je meurs et que je vis."
+            "tr": "Allah'ım! Bu yolculuğumuzda senden iyilik ve takva, razı olacağın ameller isteriz. Allah'ım! Bu yolculuğu bize kolaylaştır, uzaklığını yakın et. Allah'ım! Yolculukta yoldaş, geride kalan ailemizde koruyucu sensin.",
+            "en": "O Allah, we ask You on this journey for righteousness and piety, and deeds that please You. O Allah, make this journey easy for us and shorten its distance. O Allah, You are the Companion on the journey and the Guardian of the family.",
+            "de": "O Allah, wir bitten Dich auf dieser Reise um Güte und Gottesfurcht und um Taten, die Dir gefallen. O Allah, erleichtere uns diese Reise und verkürze ihre Entfernung. O Allah, Du bist der Gefährte auf der Reise und der Hüter der Familie.",
+            "fr": "Ô Allah, nous Te demandons en ce voyage la bonté et la piété, et des œuvres qui Te plaisent. Ô Allah, facilite-nous ce voyage et raccourcis-en la distance. Ô Allah, Tu es le Compagnon du voyage et le Gardien de la famille."
+          },
+          "note": {
+            "tr": "Taşıta binip «Sübhânellezî sahhara lenâ…» dedikten sonra okunur.",
+            "en": "Recited after \"Subhanal-ladhi sakhkhara lana…\" once seated on the vehicle.",
+            "de": "Wird nach „Subhanal-ladhi sakhkhara lana…“ im Fahrzeug gesprochen.",
+            "fr": "Récitée après « Subhanal-ladhi sakhkhara lana… » une fois installé.",
+            "ar": "تُقال بعد: سبحان الذي سخر لنا هذا… عند الركوب."
           },
           "source": {
-            "tr": "Buhârî",
-            "en": "Bukhari",
-            "de": "Buchari",
-            "fr": "Boukhari",
-            "ar": "البخاري"
+            "tr": "Müslim 1342",
+            "en": "Muslim 1342",
+            "de": "Muslim 1342",
+            "fr": "Muslim 1342",
+            "ar": "مسلم 1342"
           }
         },
         {
-          "id": "waking_up",
+          "id": "donus",
           "title": {
-            "tr": "Uyanınca",
-            "en": "On Waking Up",
-            "de": "Nach dem Aufwachen",
-            "fr": "Au réveil",
-            "ar": "عند الاستيقاظ"
+            "tr": "Yolculuktan Dönünce",
+            "en": "Returning from a Journey",
+            "de": "Bei der Heimkehr",
+            "fr": "Au retour du voyage",
+            "ar": "عند الرجوع من السفر"
           },
-          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+          "arabic": "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
           "translit": {
-            "tr": "Elhamdü lillâhillezî ahyânâ ba'de mâ emâtenâ ve ileyhin-nüşûr.",
-            "latin": "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur."
+            "tr": "Âyibûne tâibûne âbidûne li rabbinâ hâmidûn.",
+            "latin": "A'ibuna ta'ibuna 'abiduna li rabbina hamidun."
           },
           "meaning": {
-            "tr": "Bizi öldürdükten sonra dirilten Allah'a hamdolsun. Dönüş de O'nadır.",
-            "en": "Praise be to Allah who gave us life after He had caused us to die, and to Him is the resurrection.",
-            "de": "Gelobt sei Allah, Der uns wieder lebendig gemacht hat, nachdem Er uns sterben ließ, und zu Ihm ist die Auferstehung.",
-            "fr": "Louange à Allah qui nous a rendu la vie après nous avoir fait mourir, et c'est vers Lui que sera la résurrection."
+            "tr": "Dönüyoruz, tövbe ediyoruz, ibadet ediyoruz ve Rabbimize hamd ediyoruz.",
+            "en": "We return, repenting, worshipping and praising our Lord.",
+            "de": "Wir kehren zurück, bereuend, anbetend und unseren Herrn lobend.",
+            "fr": "Nous revenons, repentants, adorateurs, et louant notre Seigneur."
           },
           "source": {
-            "tr": "Buhârî",
-            "en": "Bukhari",
-            "de": "Buchari",
-            "fr": "Boukhari",
-            "ar": "البخاري"
+            "tr": "Buhârî 3085; Müslim 1342",
+            "en": "Bukhari 3085; Muslim 1342",
+            "de": "Buchari 3085; Muslim 1342",
+            "fr": "Boukhari 3085 ; Muslim 1342",
+            "ar": "البخاري 3085، مسلم 1342"
+          }
+        },
+        {
+          "id": "ugurlama",
+          "title": {
+            "tr": "Yolcu Uğurlarken",
+            "en": "Seeing Off a Traveller",
+            "de": "Beim Verabschieden eines Reisenden",
+            "fr": "En disant adieu à un voyageur",
+            "ar": "توديع المسافر"
+          },
+          "arabic": "أَسْتَوْدِعُ اللَّهَ دِينَكَ وَأَمَانَتَكَ وَخَوَاتِيمَ عَمَلِكَ",
+          "translit": {
+            "tr": "Estevdiullâhe dîneke ve emâneteke ve havâtîme amelik.",
+            "latin": "Astawdi'ullaha dinaka wa amanataka wa khawatima 'amalik."
+          },
+          "meaning": {
+            "tr": "Dinini, emanetini ve amellerinin sonunu Allah'a emanet ediyorum.",
+            "en": "I entrust to Allah your religion, your trust and the last of your deeds.",
+            "de": "Ich vertraue Allah deine Religion, dein anvertrautes Gut und den Abschluss deiner Taten an.",
+            "fr": "Je confie à Allah ta religion, ton dépôt et la fin de tes œuvres."
+          },
+          "source": {
+            "tr": "Tirmizî 3443; Ebû Dâvûd 2600",
+            "en": "Tirmidhi 3443; Abu Dawud 2600",
+            "de": "Tirmidhi 3443; Abu Dawud 2600",
+            "fr": "Tirmidhi 3443 ; Abou Dawoud 2600",
+            "ar": "الترمذي 3443، أبو داود 2600"
+          }
+        }
+      ]
+    },
+    {
+      "id": "distress",
+      "title": {
+        "tr": "Sıkıntı ve Hastalık",
+        "en": "Hardship & Illness",
+        "de": "Not & Krankheit",
+        "fr": "Épreuve et maladie",
+        "ar": "الكرب والمرض"
+      },
+      "duas": [
+        {
+          "id": "kerb",
+          "title": {
+            "tr": "Sıkıntı Anında",
+            "en": "In Times of Distress",
+            "de": "In Zeiten der Not",
+            "fr": "En période de détresse",
+            "ar": "دعاء الكرب"
+          },
+          "arabic": "لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ السَّمَوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ",
+          "translit": {
+            "tr": "Lâ ilâhe illallâhü'l-azîmü'l-halîm. Lâ ilâhe illallâhu rabbü'l-arşi'l-azîm. Lâ ilâhe illallâhu rabbü's-semâvâti ve rabbü'l-ardı ve rabbü'l-arşi'l-kerîm.",
+            "latin": "La ilaha illallahul-'azimul-halim. La ilaha illallahu rabbul-'arshil-'azim. La ilaha illallahu rabbus-samawati wa rabbul-ardi wa rabbul-'arshil-karim."
+          },
+          "meaning": {
+            "tr": "Azîm ve Halîm olan Allah'tan başka ilah yoktur. Büyük Arş'ın Rabbi Allah'tan başka ilah yoktur. Göklerin Rabbi, yerin Rabbi ve şerefli Arş'ın Rabbi Allah'tan başka ilah yoktur.",
+            "en": "There is no god but Allah, the Magnificent, the Forbearing. There is no god but Allah, Lord of the Mighty Throne. There is no god but Allah, Lord of the heavens, Lord of the earth and Lord of the Noble Throne.",
+            "de": "Es gibt keinen Gott außer Allah, dem Gewaltigen, dem Nachsichtigen. Es gibt keinen Gott außer Allah, dem Herrn des gewaltigen Thrones. Es gibt keinen Gott außer Allah, dem Herrn der Himmel, der Erde und des edlen Thrones.",
+            "fr": "Il n'y a de dieu qu'Allah, l'Immense, le Longanime. Il n'y a de dieu qu'Allah, Seigneur du Trône immense. Il n'y a de dieu qu'Allah, Seigneur des cieux, de la terre et du Trône noble."
+          },
+          "source": {
+            "tr": "Buhârî 6346; Müslim 2730",
+            "en": "Bukhari 6346; Muslim 2730",
+            "de": "Buchari 6346; Muslim 2730",
+            "fr": "Boukhari 6346 ; Muslim 2730",
+            "ar": "البخاري 6346، مسلم 2730"
+          }
+        },
+        {
+          "id": "rahmeteke",
+          "title": {
+            "tr": "Allah'a Sığınma",
+            "en": "Relying on Allah",
+            "de": "Vertrauen auf Allah",
+            "fr": "S'en remettre à Allah",
+            "ar": "دعاء المكروب"
+          },
+          "arabic": "اللَّهُمَّ رَحْمَتَكَ أَرْجُو، فَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ، وَأَصْلِحْ لِي شَأْنِي كُلَّهُ، لَا إِلَٰهَ إِلَّا أَنْتَ",
+          "translit": {
+            "tr": "Allâhümme rahmeteke ercû, felâ tekilnî ilâ nefsî tarfete ayn, ve aslih lî şe'nî küllehû, lâ ilâhe illâ ent.",
+            "latin": "Allahumma rahmataka arju, fala takilni ila nafsi tarfata 'ayn, wa aslih li sha'ni kullahu, la ilaha illa ant."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Rahmetini umuyorum. Beni göz açıp kapayıncaya kadar bile nefsimle baş başa bırakma. Bütün işlerimi düzelt. Senden başka ilah yoktur.",
+            "en": "O Allah, it is Your mercy that I hope for, so do not leave me to myself even for the blink of an eye, and set right all my affairs. There is no god but You.",
+            "de": "O Allah, auf Deine Barmherzigkeit hoffe ich; überlasse mich nicht einen Augenblick mir selbst und ordne all meine Angelegenheiten. Es gibt keinen Gott außer Dir.",
+            "fr": "Ô Allah, c'est Ta miséricorde que j'espère ; ne m'abandonne pas à moi-même, ne serait-ce qu'un clin d'œil, et arrange toutes mes affaires. Il n'y a de dieu que Toi."
+          },
+          "source": {
+            "tr": "Ebû Dâvûd 5090",
+            "en": "Abu Dawud 5090",
+            "de": "Abu Dawud 5090",
+            "fr": "Abou Dawoud 5090",
+            "ar": "أبو داود 5090"
+          }
+        },
+        {
+          "id": "hemm_hazen",
+          "title": {
+            "tr": "Kaygı ve Üzüntüde",
+            "en": "For Worry and Grief",
+            "de": "Bei Sorge und Kummer",
+            "fr": "Contre l'inquiétude et la tristesse",
+            "ar": "الاستعاذة من الهم والحزن"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْجُبْنِ وَالْبُخْلِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ",
+          "translit": {
+            "tr": "Allâhümme innî e'ûzü bike mine'l-hemmi ve'l-hazen, ve'l-aczi ve'l-kesel, ve'l-cübni ve'l-buhl, ve dalai'd-deyni ve ğalebeti'r-ricâl.",
+            "latin": "Allahumma inni a'udhu bika minal-hammi wal-hazan, wal-'ajzi wal-kasal, wal-jubni wal-bukhl, wa dala'id-dayni wa ghalabatir-rijal."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Kaygıdan ve üzüntüden, acizlikten ve tembellikten, korkaklıktan ve cimrilikten, borç yükünden ve insanların baskısından sana sığınırım.",
+            "en": "O Allah, I seek refuge in You from worry and grief, from incapacity and laziness, from cowardice and miserliness, from the burden of debt and from being overpowered by people.",
+            "de": "O Allah, ich suche Zuflucht bei Dir vor Sorge und Kummer, vor Unvermögen und Trägheit, vor Feigheit und Geiz, vor der Last der Schulden und der Übermacht der Menschen.",
+            "fr": "Ô Allah, je cherche refuge auprès de Toi contre l'inquiétude et la tristesse, l'incapacité et la paresse, la lâcheté et l'avarice, le poids des dettes et la domination des hommes."
+          },
+          "source": {
+            "tr": "Buhârî 6369",
+            "en": "Bukhari 6369",
+            "de": "Buchari 6369",
+            "fr": "Boukhari 6369",
+            "ar": "البخاري 6369"
+          }
+        },
+        {
+          "id": "musibet",
+          "title": {
+            "tr": "Musibet Anında",
+            "en": "When Struck by Misfortune",
+            "de": "Bei einem Unglück",
+            "fr": "Face à un malheur",
+            "ar": "عند المصيبة"
+          },
+          "arabic": "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا",
+          "translit": {
+            "tr": "İnnâ lillâhi ve innâ ileyhi râciûn. Allâhümme'cürnî fî musîbetî ve ahlif lî hayran minhâ.",
+            "latin": "Inna lillahi wa inna ilayhi raji'un. Allahumma'jurni fi musibati wa akhlif li khayran minha."
+          },
+          "meaning": {
+            "tr": "Biz Allah'a aidiz ve O'na döneceğiz. Allah'ım! Bu musibetimde bana ecir ver ve bana ondan daha hayırlısını nasip et.",
+            "en": "We belong to Allah and to Him we shall return. O Allah, reward me in my affliction and replace it for me with something better.",
+            "de": "Wir gehören Allah, und zu Ihm kehren wir zurück. O Allah, belohne mich in meinem Unglück und gib mir Besseres dafür.",
+            "fr": "Nous appartenons à Allah et c'est vers Lui que nous retournerons. Ô Allah, récompense-moi dans mon épreuve et remplace-la par mieux."
+          },
+          "source": {
+            "tr": "Müslim 918; Kur'an, Bakara 2/156",
+            "en": "Muslim 918; Quran, al-Baqara 2:156",
+            "de": "Muslim 918; Koran, al-Baqara 2:156",
+            "fr": "Muslim 918 ; Coran, al-Baqara 2:156",
+            "ar": "مسلم 918، سورة البقرة: 156"
+          }
+        },
+        {
+          "id": "hasta_ziyareti",
+          "title": {
+            "tr": "Hasta Ziyaretinde",
+            "en": "Visiting the Sick",
+            "de": "Beim Krankenbesuch",
+            "fr": "En visitant un malade",
+            "ar": "عند عيادة المريض"
+          },
+          "arabic": "لَا بَأْسَ، طَهُورٌ إِنْ شَاءَ اللَّهُ",
+          "translit": {
+            "tr": "Lâ be's, tahûrun inşâallâh.",
+            "latin": "La ba's, tahurun in sha' Allah."
+          },
+          "meaning": {
+            "tr": "Geçmiş olsun; inşallah (bu hastalık günahlardan) arınmaya vesiledir.",
+            "en": "No harm; it is a purification, if Allah wills.",
+            "de": "Keine Sorge, es ist eine Reinigung, so Allah will.",
+            "fr": "Ce n'est rien ; c'est une purification, si Allah le veut."
+          },
+          "source": {
+            "tr": "Buhârî 3616",
+            "en": "Bukhari 3616",
+            "de": "Buchari 3616",
+            "fr": "Boukhari 3616",
+            "ar": "البخاري 3616"
+          }
+        },
+        {
+          "id": "hastaya_sifa",
+          "title": {
+            "tr": "Hastanın Şifası İçin",
+            "en": "For the Healing of the Sick",
+            "de": "Für die Genesung eines Kranken",
+            "fr": "Pour la guérison d'un malade",
+            "ar": "الدعاء للمريض بالشفاء"
+          },
+          "arabic": "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ",
+          "translit": {
+            "tr": "Es'elullâhe'l-azîme rabbe'l-arşi'l-azîmi en yeşfiyek.",
+            "latin": "As'alullahal-'azima rabbal-'arshil-'azimi an yashfiyak."
+          },
+          "meaning": {
+            "tr": "Büyük Arş'ın Rabbi olan yüce Allah'tan sana şifa vermesini dilerim.",
+            "en": "I ask Allah the Magnificent, Lord of the Mighty Throne, to cure you.",
+            "de": "Ich bitte Allah, den Gewaltigen, den Herrn des gewaltigen Thrones, dich zu heilen.",
+            "fr": "Je demande à Allah l'Immense, Seigneur du Trône immense, de te guérir."
+          },
+          "note": {
+            "tr": "Hastanın yanında yedi defa söylenir.",
+            "en": "Said seven times at the side of the sick person.",
+            "de": "Wird beim Kranken siebenmal gesprochen.",
+            "fr": "À dire sept fois auprès du malade.",
+            "ar": "تُقال عند المريض سبع مرات."
+          },
+          "source": {
+            "tr": "Tirmizî 2083; Ebû Dâvûd 3106",
+            "en": "Tirmidhi 2083; Abu Dawud 3106",
+            "de": "Tirmidhi 2083; Abu Dawud 3106",
+            "fr": "Tirmidhi 2083 ; Abou Dawoud 3106",
+            "ar": "الترمذي 2083، أبو داود 3106"
+          }
+        },
+        {
+          "id": "sifa",
+          "title": {
+            "tr": "Şifa Duası",
+            "en": "Dua for Healing",
+            "de": "Bittgebet um Heilung",
+            "fr": "Invocation de guérison",
+            "ar": "دعاء الشفاء"
+          },
+          "arabic": "أَذْهِبِ الْبَاسَ رَبَّ النَّاسِ، اشْفِ وَأَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا",
+          "translit": {
+            "tr": "Ezhibi'l-be'se rabbe'n-nâs, işfi ve ente'ş-şâfî, lâ şifâe illâ şifâük, şifâen lâ yuğâdiru sekamâ.",
+            "latin": "Adhhibil-ba'sa rabban-nas, ishfi wa antash-shafi, la shifa'a illa shifa'uk, shifa'an la yughadiru saqama."
+          },
+          "meaning": {
+            "tr": "Ey insanların Rabbi! Sıkıntıyı gider. Şifa ver; şifa veren sensin. Senin şifandan başka şifa yoktur. Hiçbir hastalık bırakmayan bir şifa ver.",
+            "en": "Remove the harm, O Lord of mankind, and heal, for You are the Healer. There is no healing but Your healing, a healing that leaves no illness.",
+            "de": "Nimm das Leid hinweg, o Herr der Menschen, und heile, denn Du bist der Heiler. Es gibt keine Heilung außer Deiner, eine Heilung, die keine Krankheit zurücklässt.",
+            "fr": "Ôte le mal, ô Seigneur des hommes, et guéris, car Tu es Celui qui guérit. Il n'y a de guérison que la Tienne, une guérison qui ne laisse aucune maladie."
+          },
+          "source": {
+            "tr": "Buhârî 5675",
+            "en": "Bukhari 5675",
+            "de": "Buchari 5675",
+            "fr": "Boukhari 5675",
+            "ar": "البخاري 5675"
+          }
+        },
+        {
+          "id": "agri",
+          "title": {
+            "tr": "Ağrı Çekerken",
+            "en": "When in Pain",
+            "de": "Bei Schmerzen",
+            "fr": "En cas de douleur",
+            "ar": "عند الألم"
+          },
+          "arabic": "أَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ",
+          "translit": {
+            "tr": "E'ûzü billâhi ve kudretihî min şerri mâ ecidü ve uhâzir.",
+            "latin": "A'udhu billahi wa qudratihi min sharri ma ajidu wa uhadhir."
+          },
+          "meaning": {
+            "tr": "Hissettiğim ve endişe ettiğim şeyin şerrinden Allah'a ve O'nun kudretine sığınırım.",
+            "en": "I seek refuge in Allah and His power from the evil of what I feel and what I fear.",
+            "de": "Ich suche Zuflucht bei Allah und Seiner Macht vor dem Übel dessen, was ich spüre und befürchte.",
+            "fr": "Je cherche refuge auprès d'Allah et de Sa puissance contre le mal que je ressens et que je crains."
+          },
+          "note": {
+            "tr": "El ağrıyan yere konur, üç defa «Bismillâh», yedi defa bu dua söylenir.",
+            "en": "Place your hand on the painful spot, say \"Bismillah\" three times and this dua seven times.",
+            "de": "Die Hand auf die schmerzende Stelle legen, dreimal „Bismillah“ und siebenmal dieses Bittgebet sprechen.",
+            "fr": "Poser la main sur l'endroit douloureux, dire trois fois « Bismillah » et sept fois cette invocation.",
+            "ar": "يضع يده على موضع الألم ويقول: بسم الله ثلاثًا، وهذا الدعاء سبع مرات."
+          },
+          "source": {
+            "tr": "Müslim 2202",
+            "en": "Muslim 2202",
+            "de": "Muslim 2202",
+            "fr": "Muslim 2202",
+            "ar": "مسلم 2202"
+          }
+        },
+        {
+          "id": "borc",
+          "title": {
+            "tr": "Borçtan Kurtulmak İçin",
+            "en": "For Relief from Debt",
+            "de": "Für Befreiung von Schulden",
+            "fr": "Pour être libéré des dettes",
+            "ar": "دعاء قضاء الدين"
+          },
+          "arabic": "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+          "translit": {
+            "tr": "Allâhümme'kfinî bi halâlike an harâmik, ve ağninî bi fadlike ammen sivâk.",
+            "latin": "Allahummak-fini bi halalika 'an haramik, wa aghnini bi fadlika 'amman siwak."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Helalinle beni haramından koru; lütfunla beni senden başkasına muhtaç etme.",
+            "en": "O Allah, suffice me with what You have made lawful instead of what You have forbidden, and make me independent of all besides You by Your bounty.",
+            "de": "O Allah, lass mir das Erlaubte genügen statt des Verbotenen und mache mich durch Deine Huld unabhängig von allen außer Dir.",
+            "fr": "Ô Allah, suffis-moi par le licite plutôt que l'illicite, et rends-moi, par Ta grâce, indépendant de tout autre que Toi."
+          },
+          "source": {
+            "tr": "Tirmizî 3563",
+            "en": "Tirmidhi 3563",
+            "de": "Tirmidhi 3563",
+            "fr": "Tirmidhi 3563",
+            "ar": "الترمذي 3563"
+          }
+        },
+        {
+          "id": "korku",
+          "title": {
+            "tr": "Bir Kötülükten Korkunca",
+            "en": "When Fearing Harm from Others",
+            "de": "Bei Furcht vor anderen",
+            "fr": "Quand on craint autrui",
+            "ar": "عند الخوف من قوم"
+          },
+          "arabic": "اللَّهُمَّ إِنَّا نَجْعَلُكَ فِي نُحُورِهِمْ، وَنَعُوذُ بِكَ مِنْ شُرُورِهِمْ",
+          "translit": {
+            "tr": "Allâhümme innâ nec'alüke fî nuhûrihim ve neûzü bike min şurûrihim.",
+            "latin": "Allahumma inna naj'aluka fi nuhurihim wa na'udhu bika min shururihim."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Onlara karşı seni öne sürer, onların şerrinden sana sığınırız.",
+            "en": "O Allah, we place You before them and seek refuge in You from their evil.",
+            "de": "O Allah, wir stellen Dich ihnen entgegen und suchen Zuflucht bei Dir vor ihrem Übel.",
+            "fr": "Ô Allah, nous Te plaçons face à eux et cherchons refuge auprès de Toi contre leur mal."
+          },
+          "source": {
+            "tr": "Ebû Dâvûd 1537",
+            "en": "Abu Dawud 1537",
+            "de": "Abu Dawud 1537",
+            "fr": "Abou Dawoud 1537",
+            "ar": "أبو داود 1537"
+          }
+        },
+        {
+          "id": "tefviz",
+          "title": {
+            "tr": "İşini Allah'a Bırakma",
+            "en": "Entrusting Affairs to Allah",
+            "de": "Die Angelegenheit Allah überlassen",
+            "fr": "Remettre son affaire à Allah",
+            "ar": "تفويض الأمر إلى الله"
+          },
+          "arabic": "وَأُفَوِّضُ أَمْرِي إِلَى اللَّهِ، إِنَّ اللَّهَ بَصِيرٌ بِالْعِبَادِ",
+          "translit": {
+            "tr": "Ve üfevvidu emrî ilallâh, innallâhe basîrun bi'l-ibâd.",
+            "latin": "Wa ufawwidu amri ilallah, innallaha basirun bil-'ibad."
+          },
+          "meaning": {
+            "tr": "Ben işimi Allah'a bırakıyorum. Şüphesiz Allah kullarını hakkıyla görür.",
+            "en": "I entrust my affair to Allah. Indeed, Allah is All-Seeing of His servants.",
+            "de": "Ich überlasse meine Angelegenheit Allah. Wahrlich, Allah sieht Seine Diener wohl.",
+            "fr": "Je remets mon affaire à Allah. Allah voit parfaitement Ses serviteurs."
+          },
+          "source": {
+            "tr": "Kur'an, Mü'min 40/44",
+            "en": "Quran, Ghafir 40:44",
+            "de": "Koran, Ghafir 40:44",
+            "fr": "Coran, Ghafir 40:44",
+            "ar": "سورة غافر: 44"
+          }
+        }
+      ]
+    },
+    {
+      "id": "general",
+      "title": {
+        "tr": "Hayır ve Bağışlanma",
+        "en": "Goodness & Forgiveness",
+        "de": "Gutes & Vergebung",
+        "fr": "Bien et pardon",
+        "ar": "الخير والمغفرة"
+      },
+      "duas": [
+        {
+          "id": "huda_tuka",
+          "title": {
+            "tr": "Hidayet ve Takva",
+            "en": "Guidance and Piety",
+            "de": "Rechtleitung und Gottesfurcht",
+            "fr": "Guidée et piété",
+            "ar": "سؤال الهدى والتقى"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
+          "translit": {
+            "tr": "Allâhümme innî es'elüke'l-hüdâ ve't-tükâ ve'l-afâfe ve'l-ğınâ.",
+            "latin": "Allahumma inni as'alukal-huda wat-tuqa wal-'afafa wal-ghina."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senden hidayet, takva, iffet ve gönül zenginliği isterim.",
+            "en": "O Allah, I ask You for guidance, piety, chastity and self-sufficiency.",
+            "de": "O Allah, ich bitte Dich um Rechtleitung, Gottesfurcht, Keuschheit und Genügsamkeit.",
+            "fr": "Ô Allah, je Te demande la guidée, la piété, la chasteté et la suffisance."
+          },
+          "source": {
+            "tr": "Müslim 2721",
+            "en": "Muslim 2721",
+            "de": "Muslim 2721",
+            "fr": "Muslim 2721",
+            "ar": "مسلم 2721"
+          }
+        },
+        {
+          "id": "zalemtu",
+          "title": {
+            "tr": "Bağışlanma Duası",
+            "en": "Dua for Forgiveness",
+            "de": "Bitte um Vergebung",
+            "fr": "Invocation du pardon",
+            "ar": "دعاء طلب المغفرة"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا، وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ، فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ، وَارْحَمْنِي، إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ",
+          "translit": {
+            "tr": "Allâhümme innî zalemtü nefsî zulmen kesîrâ, ve lâ yağfiru'z-zünûbe illâ ent, fağfir lî mağfiraten min indik, verhamnî, inneke ente'l-ğafûru'r-rahîm.",
+            "latin": "Allahumma inni zalamtu nafsi zulman kathira, wa la yaghfirudh-dhunuba illa ant, faghfir li maghfiratan min 'indik, warhamni, innaka antal-ghafurur-rahim."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Ben nefsime çokça zulmettim. Günahları ancak sen bağışlarsın. Katından bir bağışlama ile beni bağışla ve bana merhamet et. Şüphesiz sen çok bağışlayan, çok merhamet edensin.",
+            "en": "O Allah, I have wronged myself greatly and none forgives sins but You, so grant me forgiveness from Yourself and have mercy on me. You are the Most Forgiving, the Most Merciful.",
+            "de": "O Allah, ich habe mir selbst viel Unrecht getan, und niemand vergibt die Sünden außer Dir. So vergib mir aus Deiner Gnade und erbarme Dich meiner. Du bist der Allvergebende, der Barmherzige.",
+            "fr": "Ô Allah, je me suis fait beaucoup de tort et nul ne pardonne les péchés hormis Toi ; accorde-moi un pardon de Ta part et fais-moi miséricorde. Tu es le Pardonneur, le Miséricordieux."
+          },
+          "note": {
+            "tr": "Peygamberimiz bu duayı Hz. Ebû Bekir'e namazda okuması için öğretmiştir.",
+            "en": "The Prophet taught it to Abu Bakr to say in his prayer.",
+            "de": "Der Prophet lehrte es Abu Bakr für sein Gebet.",
+            "fr": "Le Prophète l'a enseignée à Abou Bakr pour sa prière.",
+            "ar": "علّمه النبي ﷺ أبا بكر ليدعو به في صلاته."
+          },
+          "source": {
+            "tr": "Buhârî 834; Müslim 2705",
+            "en": "Bukhari 834; Muslim 2705",
+            "de": "Buchari 834; Muslim 2705",
+            "fr": "Boukhari 834 ; Muslim 2705",
+            "ar": "البخاري 834، مسلم 2705"
+          }
+        },
+        {
+          "id": "zeval_nimet",
+          "title": {
+            "tr": "Nimetin Korunması İçin",
+            "en": "For Protection of Blessings",
+            "de": "Für den Erhalt der Gaben",
+            "fr": "Pour la préservation des bienfaits",
+            "ar": "الاستعاذة من زوال النعمة"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ زَوَالِ نِعْمَتِكَ، وَتَحَوُّلِ عَافِيَتِكَ، وَفُجَاءَةِ نِقْمَتِكَ، وَجَمِيعِ سَخَطِكَ",
+          "translit": {
+            "tr": "Allâhümme innî e'ûzü bike min zevâli ni'metik, ve tehavvüli âfiyetik, ve fucâeti nikmetik, ve cemîi sahatik.",
+            "latin": "Allahumma inni a'udhu bika min zawali ni'matik, wa tahawwuli 'afiyatik, wa fuja'ati niqmatik, wa jami'i sakhatik."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Nimetinin yok olmasından, verdiğin sağlığın değişmesinden, cezanın ansızın gelmesinden ve her türlü gazabından sana sığınırım.",
+            "en": "O Allah, I seek refuge in You from the loss of Your blessings, the change of the well-being You gave, the suddenness of Your punishment and all Your displeasure.",
+            "de": "O Allah, ich suche Zuflucht bei Dir vor dem Schwinden Deiner Gaben, dem Wandel Deines Wohlergehens, Deiner plötzlichen Strafe und all Deinem Zorn.",
+            "fr": "Ô Allah, je cherche refuge auprès de Toi contre la disparition de Tes bienfaits, le changement de Ton bien-être, la soudaineté de Ton châtiment et tout Ton courroux."
+          },
+          "source": {
+            "tr": "Müslim 2739",
+            "en": "Muslim 2739",
+            "de": "Muslim 2739",
+            "fr": "Muslim 2739",
+            "ar": "مسلم 2739"
+          }
+        },
+        {
+          "id": "ilmen_nafia",
+          "title": {
+            "tr": "Faydalı İlim ve Helal Rızık",
+            "en": "Beneficial Knowledge and Good Provision",
+            "de": "Nützliches Wissen und gute Versorgung",
+            "fr": "Science utile et subsistance pure",
+            "ar": "سؤال العلم النافع"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا",
+          "translit": {
+            "tr": "Allâhümme innî es'elüke ilmen nâfiâ, ve rizkan tayyibâ, ve amelen mütekabbelâ.",
+            "latin": "Allahumma inni as'aluka 'ilman nafi'a, wa rizqan tayyiba, wa 'amalan mutaqabbala."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senden faydalı ilim, temiz rızık ve kabul edilmiş amel isterim.",
+            "en": "O Allah, I ask You for beneficial knowledge, good provision and accepted deeds.",
+            "de": "O Allah, ich bitte Dich um nützliches Wissen, gute Versorgung und angenommene Taten.",
+            "fr": "Ô Allah, je Te demande une science utile, une subsistance pure et des œuvres acceptées."
+          },
+          "note": {
+            "tr": "Peygamberimiz sabah namazından sonra okurdu.",
+            "en": "The Prophet said it after the dawn prayer.",
+            "de": "Der Prophet sprach es nach dem Morgengebet.",
+            "fr": "Le Prophète la disait après la prière de l'aube.",
+            "ar": "كان النبي ﷺ يقولها بعد صلاة الصبح."
+          },
+          "source": {
+            "tr": "İbn Mâce 925",
+            "en": "Ibn Majah 925",
+            "de": "Ibn Madscha 925",
+            "fr": "Ibn Majah 925",
+            "ar": "ابن ماجه 925"
+          }
+        },
+        {
+          "id": "acz_kesel",
+          "title": {
+            "tr": "Acizlik ve Tembellikten",
+            "en": "Against Incapacity and Laziness",
+            "de": "Gegen Unvermögen und Trägheit",
+            "fr": "Contre l'incapacité et la paresse",
+            "ar": "الاستعاذة من العجز والكسل"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَالْجُبْنِ وَالْهَرَمِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، وَأَعُوذُ بِكَ مِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ",
+          "translit": {
+            "tr": "Allâhümme innî e'ûzü bike mine'l-aczi ve'l-kesel, ve'l-cübni ve'l-heram, ve e'ûzü bike min azâbi'l-kabr, ve e'ûzü bike min fitneti'l-mahyâ ve'l-memât.",
+            "latin": "Allahumma inni a'udhu bika minal-'ajzi wal-kasal, wal-jubni wal-haram, wa a'udhu bika min 'adhabil-qabr, wa a'udhu bika min fitnatil-mahya wal-mamat."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Acizlikten, tembellikten, korkaklıktan ve düşkün ihtiyarlıktan sana sığınırım. Kabir azabından sana sığınırım. Hayatın ve ölümün fitnesinden sana sığınırım.",
+            "en": "O Allah, I seek refuge in You from incapacity, laziness, cowardice and decrepit old age. I seek refuge in You from the punishment of the grave, and from the trials of life and death.",
+            "de": "O Allah, ich suche Zuflucht bei Dir vor Unvermögen, Trägheit, Feigheit und Altersschwäche, vor der Strafe des Grabes und vor den Prüfungen des Lebens und des Todes.",
+            "fr": "Ô Allah, je cherche refuge auprès de Toi contre l'incapacité, la paresse, la lâcheté et la décrépitude, contre le châtiment de la tombe et contre les épreuves de la vie et de la mort."
+          },
+          "source": {
+            "tr": "Buhârî 6367",
+            "en": "Bukhari 6367",
+            "de": "Buchari 6367",
+            "fr": "Boukhari 6367",
+            "ar": "البخاري 6367"
+          }
+        },
+        {
+          "id": "aslih_dini",
+          "title": {
+            "tr": "Dünya ve Ahiretin Islahı",
+            "en": "For Good in Religion and Life",
+            "de": "Für Religion und Leben",
+            "fr": "Pour le bien de la religion et de la vie",
+            "ar": "دعاء صلاح الدين والدنيا"
+          },
+          "arabic": "اللَّهُمَّ أَصْلِحْ لِي دِينِيَ الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي، وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي، وَاجْعَلِ الْحَيَاةَ زِيَادَةً لِي فِي كُلِّ خَيْرٍ، وَاجْعَلِ الْمَوْتَ رَاحَةً لِي مِنْ كُلِّ شَرٍّ",
+          "translit": {
+            "tr": "Allâhümme aslih lî dîniyellezî hüve ismetü emrî, ve aslih lî dünyâyelletî fîhâ meâşî, ve aslih lî âhiratilletî fîhâ meâdî, vec'ali'l-hayâte ziyâdeten lî fî külli hayr, vec'ali'l-mevte râhaten lî min külli şerr.",
+            "latin": "Allahumma aslih li diniyal-ladhi huwa 'ismatu amri, wa aslih li dunyayal-lati fiha ma'ashi, wa aslih li akhiratil-lati fiha ma'adi, waj'alil-hayata ziyadatan li fi kulli khayr, waj'alil-mawta rahatan li min kulli sharr."
+          },
+          "meaning": {
+            "tr": "Allah'ım! İşimin koruyucusu olan dinimi, geçimimin içinde olduğu dünyamı ve dönüşümün olduğu ahiretimi düzelt. Hayatı benim için her hayrın artmasına, ölümü de her kötülükten kurtuluşa vesile kıl.",
+            "en": "O Allah, set right my religion, which is the safeguard of my affairs; my worldly life, in which is my livelihood; and my Hereafter, to which is my return. Make life an increase for me in every good, and death a relief for me from every evil.",
+            "de": "O Allah, bessere meine Religion, die der Schutz meiner Angelegenheiten ist, mein Diesseits, in dem mein Lebensunterhalt liegt, und mein Jenseits, zu dem ich heimkehre. Lass das Leben für mich ein Zuwachs an allem Guten sein und den Tod eine Erlösung von allem Übel.",
+            "fr": "Ô Allah, améliore ma religion qui est la sauvegarde de mes affaires, ma vie d'ici-bas où se trouve ma subsistance, et mon au-delà où sera mon retour. Fais de la vie un surcroît de tout bien et de la mort un repos de tout mal."
+          },
+          "source": {
+            "tr": "Müslim 2720",
+            "en": "Muslim 2720",
+            "de": "Muslim 2720",
+            "fr": "Muslim 2720",
+            "ar": "مسلم 2720"
+          }
+        },
+        {
+          "id": "cennet_nar",
+          "title": {
+            "tr": "Cenneti İsteme",
+            "en": "Asking for Paradise",
+            "de": "Bitte um das Paradies",
+            "fr": "Demander le Paradis",
+            "ar": "سؤال الجنة"
+          },
+          "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
+          "translit": {
+            "tr": "Allâhümme innî es'elüke'l-cennete ve e'ûzü bike mine'n-nâr.",
+            "latin": "Allahumma inni as'alukal-jannata wa a'udhu bika minan-nar."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Senden cenneti isterim ve cehennemden sana sığınırım.",
+            "en": "O Allah, I ask You for Paradise and seek refuge in You from the Fire.",
+            "de": "O Allah, ich bitte Dich um das Paradies und suche Zuflucht bei Dir vor dem Feuer.",
+            "fr": "Ô Allah, je Te demande le Paradis et cherche refuge auprès de Toi contre le Feu."
+          },
+          "source": {
+            "tr": "Ebû Dâvûd 792",
+            "en": "Abu Dawud 792",
+            "de": "Abu Dawud 792",
+            "fr": "Abou Dawoud 792",
+            "ar": "أبو داود 792"
+          }
+        },
+        {
+          "id": "rabbisrah",
+          "title": {
+            "tr": "İş ve Sınav Öncesi",
+            "en": "Before a Task or Exam",
+            "de": "Vor einer Aufgabe oder Prüfung",
+            "fr": "Avant une tâche ou un examen",
+            "ar": "دعاء تيسير الأمر"
+          },
+          "arabic": "رَبِّ اشْرَحْ لِي صَدْرِي، وَيَسِّرْ لِي أَمْرِي، وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي، يَفْقَهُوا قَوْلِي",
+          "translit": {
+            "tr": "Rabbişrah lî sadrî, ve yessir lî emrî, vahlul ukdeten min lisânî, yefkahû kavlî.",
+            "latin": "Rabbish-rah li sadri, wa yassir li amri, wahlul 'uqdatan min lisani, yafqahu qawli."
+          },
+          "meaning": {
+            "tr": "Rabbim! Göğsümü genişlet, işimi kolaylaştır, dilimdeki düğümü çöz ki sözümü anlasınlar.",
+            "en": "My Lord, expand my chest, ease my task for me and untie the knot from my tongue, so they may understand my speech.",
+            "de": "Mein Herr, weite mir meine Brust, erleichtere mir meine Aufgabe und löse den Knoten meiner Zunge, damit sie meine Rede verstehen.",
+            "fr": "Seigneur, ouvre-moi ma poitrine, facilite-moi ma tâche et dénoue ma langue, afin qu'ils comprennent mes paroles."
+          },
+          "note": {
+            "tr": "Hz. Mûsâ'nın duasıdır.",
+            "en": "The prayer of Prophet Musa.",
+            "de": "Das Bittgebet des Propheten Musa.",
+            "fr": "Invocation du prophète Moïse.",
+            "ar": "دعاء موسى عليه السلام."
+          },
+          "source": {
+            "tr": "Kur'an, Tâhâ 20/25-28",
+            "en": "Quran, Ta-Ha 20:25-28",
+            "de": "Koran, Ta-Ha 20:25-28",
+            "fr": "Coran, Ta-Ha 20:25-28",
+            "ar": "سورة طه: 25-28"
+          }
+        }
+      ]
+    },
+    {
+      "id": "quran",
+      "title": {
+        "tr": "Kur'an'dan Dualar",
+        "en": "Duas from the Quran",
+        "de": "Bittgebete aus dem Koran",
+        "fr": "Invocations du Coran",
+        "ar": "أدعية من القرآن"
+      },
+      "duas": [
+        {
+          "id": "tekabbel",
+          "title": {
+            "tr": "Rabbenâ Tekabbel",
+            "en": "Rabbana Taqabbal",
+            "de": "Rabbana Taqabbal",
+            "fr": "Rabbana Taqabbal",
+            "ar": "ربنا تقبل منا"
+          },
+          "arabic": "رَبَّنَا تَقَبَّلْ مِنَّا، إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ",
+          "translit": {
+            "tr": "Rabbenâ tekabbel minnâ, inneke ente's-semîu'l-alîm.",
+            "latin": "Rabbana taqabbal minna, innaka antas-sami'ul-'alim."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Bizden kabul buyur. Şüphesiz sen hakkıyla işitensin, hakkıyla bilensin.",
+            "en": "Our Lord, accept from us. Indeed, You are the All-Hearing, the All-Knowing.",
+            "de": "Unser Herr, nimm es von uns an. Du bist der Allhörende, der Allwissende.",
+            "fr": "Notre Seigneur, accepte cela de nous. Tu es Celui qui entend tout et sait tout."
+          },
+          "note": {
+            "tr": "Hz. İbrâhîm ve Hz. İsmâîl'in Kâbe'yi inşa ederken yaptığı duadır; hatim ve ibadet sonunda okunur.",
+            "en": "The prayer of Ibrahim and Isma'il while building the Kaaba; said after completing worship or the Quran.",
+            "de": "Das Bittgebet Ibrahims und Isma'ils beim Bau der Kaaba; nach einer Ibada oder Koranlesung gesprochen.",
+            "fr": "Invocation d'Abraham et d'Ismaël en bâtissant la Kaaba ; dite après un acte d'adoration ou la lecture du Coran.",
+            "ar": "دعاء إبراهيم وإسماعيل عليهما السلام عند بناء الكعبة، ويُقال بعد العبادة وختم القرآن."
+          },
+          "source": {
+            "tr": "Kur'an, Bakara 2/127",
+            "en": "Quran, al-Baqara 2:127",
+            "de": "Koran, al-Baqara 2:127",
+            "fr": "Coran, al-Baqara 2:127",
+            "ar": "سورة البقرة: 127"
+          }
+        },
+        {
+          "id": "la_tuahizna",
+          "title": {
+            "tr": "Rabbenâ Lâ Tüâhiznâ",
+            "en": "Rabbana La Tu'akhidhna",
+            "de": "Rabbana La Tu'akhidhna",
+            "fr": "Rabbana La Tu'akhidhna",
+            "ar": "ربنا لا تؤاخذنا"
+          },
+          "arabic": "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا، رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا، رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ، وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا، أَنْتَ مَوْلَانَا فَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+          "translit": {
+            "tr": "Rabbenâ lâ tüâhiznâ in nesînâ ev ahta'nâ. Rabbenâ ve lâ tahmil aleynâ ısran kemâ hameltehû ale'llezîne min kablinâ. Rabbenâ ve lâ tühammilnâ mâ lâ tâkate lenâ bih. Va'fü annâ, vağfir lenâ, verhamnâ. Ente mevlânâ fensurnâ ale'l-kavmi'l-kâfirîn.",
+            "latin": "Rabbana la tu'akhidhna in nasina aw akhta'na. Rabbana wa la tahmil 'alayna isran kama hamaltahu 'alal-ladhina min qablina. Rabbana wa la tuhammilna ma la taqata lana bih. Wa'fu 'anna, waghfir lana, warhamna. Anta mawlana fansurna 'alal-qawmil-kafirin."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Unutur ya da yanılırsak bizi sorumlu tutma. Rabbimiz! Bizden öncekilere yüklediğin gibi bize de ağır yük yükleme. Rabbimiz! Gücümüzün yetmediği şeyleri bize yükleme. Bizi affet, bizi bağışla, bize merhamet et. Sen bizim Mevlâmızsın; kâfirler topluluğuna karşı bize yardım et.",
+            "en": "Our Lord, do not take us to task if we forget or make a mistake. Our Lord, do not lay on us a burden like that You laid on those before us. Our Lord, do not burden us with what we cannot bear. Pardon us, forgive us and have mercy on us. You are our Protector, so help us against the disbelieving people.",
+            "de": "Unser Herr, belange uns nicht, wenn wir vergessen oder einen Fehler begehen. Unser Herr, lege uns keine Last auf, wie Du sie denen vor uns auferlegt hast. Unser Herr, bürde uns nichts auf, wozu wir keine Kraft haben. Verzeih uns, vergib uns und erbarme Dich unser. Du bist unser Beschützer, so hilf uns gegen das ungläubige Volk.",
+            "fr": "Notre Seigneur, ne nous châtie pas s'il nous arrive d'oublier ou de commettre une erreur. Notre Seigneur, ne nous charge pas d'un fardeau comme Tu en as chargé ceux qui nous ont précédés. Notre Seigneur, ne nous impose pas ce que nous ne pouvons supporter. Efface nos fautes, pardonne-nous et fais-nous miséricorde. Tu es notre Maître, accorde-nous donc la victoire sur les peuples mécréants."
+          },
+          "note": {
+            "tr": "Bakara suresinin son ayetidir; geceleyin okunması tavsiye edilmiştir (Buhârî 5009).",
+            "en": "The last verse of al-Baqara; reciting it at night is recommended (Bukhari 5009).",
+            "de": "Der letzte Vers von al-Baqara; das nächtliche Rezitieren wird empfohlen (Buchari 5009).",
+            "fr": "Dernier verset d'al-Baqara ; sa récitation la nuit est recommandée (Boukhari 5009).",
+            "ar": "آخر آية من سورة البقرة، ويُستحب قراءتها في الليل (البخاري 5009)."
+          },
+          "source": {
+            "tr": "Kur'an, Bakara 2/286",
+            "en": "Quran, al-Baqara 2:286",
+            "de": "Koran, al-Baqara 2:286",
+            "fr": "Coran, al-Baqara 2:286",
+            "ar": "سورة البقرة: 286"
+          }
+        },
+        {
+          "id": "la_tuzig",
+          "title": {
+            "tr": "Rabbenâ Lâ Tüziğ",
+            "en": "Rabbana La Tuzigh",
+            "de": "Rabbana La Tuzigh",
+            "fr": "Rabbana La Tuzigh",
+            "ar": "ربنا لا تزغ قلوبنا"
+          },
+          "arabic": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا، وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً، إِنَّكَ أَنْتَ الْوَهَّابُ",
+          "translit": {
+            "tr": "Rabbenâ lâ tüziğ kulûbenâ ba'de iz hedeytenâ, veheb lenâ min ledünke rahmeh, inneke ente'l-vehhâb.",
+            "latin": "Rabbana la tuzigh qulubana ba'da idh hadaytana, wa hab lana min ladunka rahmah, innaka antal-wahhab."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Bizi doğru yola ilettikten sonra kalplerimizi eğriltme. Bize katından bir rahmet bağışla. Şüphesiz sen çok bağışlayansın.",
+            "en": "Our Lord, do not let our hearts deviate after You have guided us, and grant us mercy from Yourself. Indeed, You are the Bestower.",
+            "de": "Unser Herr, lass unsere Herzen nicht abschweifen, nachdem Du uns rechtgeleitet hast, und schenke uns Barmherzigkeit von Dir. Du bist der Gebende.",
+            "fr": "Notre Seigneur, ne laisse pas dévier nos cœurs après nous avoir guidés, et accorde-nous Ta miséricorde. C'est Toi le Donateur."
+          },
+          "source": {
+            "tr": "Kur'an, Âl-i İmrân 3/8",
+            "en": "Quran, Al 'Imran 3:8",
+            "de": "Koran, Al 'Imran 3:8",
+            "fr": "Coran, Al 'Imran 3:8",
+            "ar": "سورة آل عمران: 8"
+          }
+        },
+        {
+          "id": "innena_amenna",
+          "title": {
+            "tr": "Rabbenâ İnnenâ Âmennâ",
+            "en": "Rabbana Innana Amanna",
+            "de": "Rabbana Innana Amanna",
+            "fr": "Rabbana Innana Amanna",
+            "ar": "ربنا إننا آمنا"
+          },
+          "arabic": "رَبَّنَا إِنَّنَا آمَنَّا فَاغْفِرْ لَنَا ذُنُوبَنَا وَقِنَا عَذَابَ النَّارِ",
+          "translit": {
+            "tr": "Rabbenâ innenâ âmennâ fağfir lenâ zünûbenâ ve kınâ azâbe'n-nâr.",
+            "latin": "Rabbana innana amanna faghfir lana dhunubana wa qina 'adhaban-nar."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Biz iman ettik; günahlarımızı bağışla ve bizi cehennem azabından koru.",
+            "en": "Our Lord, we have believed, so forgive us our sins and protect us from the punishment of the Fire.",
+            "de": "Unser Herr, wir glauben; so vergib uns unsere Sünden und bewahre uns vor der Strafe des Feuers.",
+            "fr": "Notre Seigneur, nous avons cru ; pardonne-nous nos péchés et protège-nous du châtiment du Feu."
+          },
+          "source": {
+            "tr": "Kur'an, Âl-i İmrân 3/16",
+            "en": "Quran, Al 'Imran 3:16",
+            "de": "Koran, Al 'Imran 3:16",
+            "fr": "Coran, Al 'Imran 3:16",
+            "ar": "سورة آل عمران: 16"
+          }
+        },
+        {
+          "id": "israfena",
+          "title": {
+            "tr": "Sebat ve Yardım İçin",
+            "en": "For Steadfastness and Help",
+            "de": "Für Standhaftigkeit und Hilfe",
+            "fr": "Pour la constance et le secours",
+            "ar": "دعاء الثبات والنصر"
+          },
+          "arabic": "رَبَّنَا اغْفِرْ لَنَا ذُنُوبَنَا وَإِسْرَافَنَا فِي أَمْرِنَا، وَثَبِّتْ أَقْدَامَنَا، وَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+          "translit": {
+            "tr": "Rabbenağfir lenâ zünûbenâ ve isrâfenâ fî emrinâ, ve sebbit akdâmenâ, vensurnâ ale'l-kavmi'l-kâfirîn.",
+            "latin": "Rabbanagh-fir lana dhunubana wa israfana fi amrina, wa thabbit aqdamana, wansurna 'alal-qawmil-kafirin."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Günahlarımızı ve işimizdeki aşırılıklarımızı bağışla. Ayaklarımızı sabit kıl ve kâfirler topluluğuna karşı bize yardım et.",
+            "en": "Our Lord, forgive us our sins and our excesses in our affairs, make our feet firm and help us against the disbelieving people.",
+            "de": "Unser Herr, vergib uns unsere Sünden und unser Übermaß in unseren Angelegenheiten, festige unsere Schritte und hilf uns gegen das ungläubige Volk.",
+            "fr": "Notre Seigneur, pardonne-nous nos péchés et nos excès dans nos affaires, affermis nos pas et donne-nous la victoire sur les peuples mécréants."
+          },
+          "source": {
+            "tr": "Kur'an, Âl-i İmrân 3/147",
+            "en": "Quran, Al 'Imran 3:147",
+            "de": "Koran, Al 'Imran 3:147",
+            "fr": "Coran, Al 'Imran 3:147",
+            "ar": "سورة آل عمران: 147"
+          }
+        },
+        {
+          "id": "maal_ebrar",
+          "title": {
+            "tr": "İyilerle Birlikte",
+            "en": "With the Righteous",
+            "de": "Mit den Rechtschaffenen",
+            "fr": "Avec les vertueux",
+            "ar": "وتوفنا مع الأبرار"
+          },
+          "arabic": "رَبَّنَا فَاغْفِرْ لَنَا ذُنُوبَنَا، وَكَفِّرْ عَنَّا سَيِّئَاتِنَا، وَتَوَفَّنَا مَعَ الْأَبْرَارِ",
+          "translit": {
+            "tr": "Rabbenâ fağfir lenâ zünûbenâ, ve keffir annâ seyyiâtinâ, ve teveffenâ mea'l-ebrâr.",
+            "latin": "Rabbana faghfir lana dhunubana, wa kaffir 'anna sayyi'atina, wa tawaffana ma'al-abrar."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Günahlarımızı bağışla, kötülüklerimizi ört ve canımızı iyilerle birlikte al.",
+            "en": "Our Lord, forgive us our sins, remove from us our misdeeds and cause us to die with the righteous.",
+            "de": "Unser Herr, vergib uns unsere Sünden, tilge unsere schlechten Taten und lass uns mit den Rechtschaffenen sterben.",
+            "fr": "Notre Seigneur, pardonne-nous nos péchés, efface nos méfaits et fais-nous mourir avec les vertueux."
+          },
+          "source": {
+            "tr": "Kur'an, Âl-i İmrân 3/193",
+            "en": "Quran, Al 'Imran 3:193",
+            "de": "Koran, Al 'Imran 3:193",
+            "fr": "Coran, Al 'Imran 3:193",
+            "ar": "سورة آل عمران: 193"
+          }
+        },
+        {
+          "id": "zalemna",
+          "title": {
+            "tr": "Hz. Âdem'in Duası",
+            "en": "The Prayer of Adam",
+            "de": "Das Bittgebet Adams",
+            "fr": "L'invocation d'Adam",
+            "ar": "دعاء آدم عليه السلام"
+          },
+          "arabic": "رَبَّنَا ظَلَمْنَا أَنْفُسَنَا، وَإِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ",
+          "translit": {
+            "tr": "Rabbenâ zalemnâ enfüsenâ, ve in lem tağfir lenâ ve terhamnâ lenekûnenne mine'l-hâsirîn.",
+            "latin": "Rabbana zalamna anfusana, wa in lam taghfir lana wa tarhamna lanakunanna minal-khasirin."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Biz kendimize zulmettik. Eğer bizi bağışlamaz ve bize merhamet etmezsen mutlaka kaybedenlerden oluruz.",
+            "en": "Our Lord, we have wronged ourselves. If You do not forgive us and have mercy on us, we will surely be among the losers.",
+            "de": "Unser Herr, wir haben uns selbst Unrecht getan. Wenn Du uns nicht vergibst und Dich unser nicht erbarmst, werden wir gewiss zu den Verlierern gehören.",
+            "fr": "Notre Seigneur, nous nous sommes fait du tort. Si Tu ne nous pardonnes pas et ne nous fais pas miséricorde, nous serons certes parmi les perdants."
+          },
+          "source": {
+            "tr": "Kur'an, A'râf 7/23",
+            "en": "Quran, al-A'raf 7:23",
+            "de": "Koran, al-A'raf 7:23",
+            "fr": "Coran, al-A'raf 7:23",
+            "ar": "سورة الأعراف: 23"
+          }
+        },
+        {
+          "id": "sabr",
+          "title": {
+            "tr": "Sabır Duası",
+            "en": "Dua for Patience",
+            "de": "Bitte um Geduld",
+            "fr": "Invocation de la patience",
+            "ar": "دعاء الصبر"
+          },
+          "arabic": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَتَوَفَّنَا مُسْلِمِينَ",
+          "translit": {
+            "tr": "Rabbenâ efriğ aleynâ sabran ve teveffenâ müslimîn.",
+            "latin": "Rabbana afrigh 'alayna sabran wa tawaffana muslimin."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Üzerimize sabır yağdır ve canımızı Müslüman olarak al.",
+            "en": "Our Lord, pour upon us patience and let us die as Muslims.",
+            "de": "Unser Herr, gieße Geduld über uns aus und lass uns als Muslime sterben.",
+            "fr": "Notre Seigneur, déverse sur nous la patience et fais-nous mourir soumis à Toi."
+          },
+          "source": {
+            "tr": "Kur'an, A'râf 7/126",
+            "en": "Quran, al-A'raf 7:126",
+            "de": "Koran, al-A'raf 7:126",
+            "fr": "Coran, al-A'raf 7:126",
+            "ar": "سورة الأعراف: 126"
+          }
+        },
+        {
+          "id": "rasada",
+          "title": {
+            "tr": "Ashâb-ı Kehf'in Duası",
+            "en": "The Prayer of the Cave Youths",
+            "de": "Das Bittgebet der Leute der Höhle",
+            "fr": "Invocation des gens de la Caverne",
+            "ar": "دعاء أصحاب الكهف"
+          },
+          "arabic": "رَبَّنَا آتِنَا مِنْ لَدُنْكَ رَحْمَةً، وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا",
+          "translit": {
+            "tr": "Rabbenâ âtinâ min ledünke rahmeten ve heyyi' lenâ min emrinâ raşedâ.",
+            "latin": "Rabbana atina min ladunka rahmatan wa hayyi' lana min amrina rashada."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Bize katından bir rahmet ver ve işimizde bize doğru yolu kolaylaştır.",
+            "en": "Our Lord, grant us mercy from Yourself and provide for us right guidance in our affair.",
+            "de": "Unser Herr, gewähre uns Barmherzigkeit von Dir und bereite uns in unserer Angelegenheit einen rechten Weg.",
+            "fr": "Notre Seigneur, accorde-nous une miséricorde de Ta part et assure-nous la droiture dans notre affaire."
+          },
+          "source": {
+            "tr": "Kur'an, Kehf 18/10",
+            "en": "Quran, al-Kahf 18:10",
+            "de": "Koran, al-Kahf 18:10",
+            "fr": "Coran, al-Kahf 18:10",
+            "ar": "سورة الكهف: 10"
+          }
+        },
+        {
+          "id": "hemezat",
+          "title": {
+            "tr": "Şeytanın Vesveselerinden",
+            "en": "Against Satan's Whispers",
+            "de": "Gegen die Einflüsterungen Satans",
+            "fr": "Contre les suggestions de Satan",
+            "ar": "الاستعاذة من همزات الشياطين"
+          },
+          "arabic": "رَبِّ أَعُوذُ بِكَ مِنْ هَمَزَاتِ الشَّيَاطِينِ، وَأَعُوذُ بِكَ رَبِّ أَنْ يَحْضُرُونِ",
+          "translit": {
+            "tr": "Rabbi e'ûzü bike min hemezâti'ş-şeyâtîn, ve e'ûzü bike rabbi en yahdurûn.",
+            "latin": "Rabbi a'udhu bika min hamazatish-shayatin, wa a'udhu bika rabbi an yahdurun."
+          },
+          "meaning": {
+            "tr": "Rabbim! Şeytanların vesveselerinden sana sığınırım. Rabbim! Onların yanımda bulunmalarından da sana sığınırım.",
+            "en": "My Lord, I seek refuge in You from the promptings of the devils, and I seek refuge in You, my Lord, lest they be present with me.",
+            "de": "Mein Herr, ich suche Zuflucht bei Dir vor den Einflüsterungen der Teufel, und ich suche Zuflucht bei Dir, mein Herr, dass sie nicht zu mir kommen.",
+            "fr": "Seigneur, je cherche refuge auprès de Toi contre les suggestions des démons, et je cherche refuge auprès de Toi, Seigneur, contre leur présence."
+          },
+          "source": {
+            "tr": "Kur'an, Mü'minûn 23/97-98",
+            "en": "Quran, al-Mu'minun 23:97-98",
+            "de": "Koran, al-Mu'minun 23:97-98",
+            "fr": "Coran, al-Mu'minun 23:97-98",
+            "ar": "سورة المؤمنون: 97-98"
+          }
+        },
+        {
+          "id": "evzini",
+          "title": {
+            "tr": "Şükür Duası",
+            "en": "Dua of Gratitude",
+            "de": "Bittgebet der Dankbarkeit",
+            "fr": "Invocation de gratitude",
+            "ar": "دعاء الشكر"
+          },
+          "arabic": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَى وَالِدَيَّ، وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ، وَأَدْخِلْنِي بِرَحْمَتِكَ فِي عِبَادِكَ الصَّالِحِينَ",
+          "translit": {
+            "tr": "Rabbi evzi'nî en eşküra ni'metekelletî en'amte aleyye ve alâ vâlideyye, ve en a'mele sâlihan terdâh, ve edhilnî bi rahmetike fî ibâdike's-sâlihîn.",
+            "latin": "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya, wa an a'mala salihan tardah, wa adkhilni bi rahmatika fi 'ibadikas-salihin."
+          },
+          "meaning": {
+            "tr": "Rabbim! Bana ve anne babama verdiğin nimete şükretmemi ve razı olacağın salih ameller işlememi sağla. Rahmetinle beni salih kullarının arasına kat.",
+            "en": "My Lord, enable me to be grateful for Your favour which You have bestowed upon me and my parents, and to do righteous deeds that please You, and admit me by Your mercy among Your righteous servants.",
+            "de": "Mein Herr, gib mir ein, für Deine Gnade dankbar zu sein, die Du mir und meinen Eltern erwiesen hast, und Gutes zu tun, das Dir gefällt, und lass mich durch Deine Barmherzigkeit unter Deine rechtschaffenen Diener eintreten.",
+            "fr": "Seigneur, inspire-moi de Te remercier pour le bienfait dont Tu m'as comblé ainsi que mes parents, et de faire le bien qui Te plaît, et fais-moi entrer par Ta miséricorde parmi Tes serviteurs vertueux."
+          },
+          "note": {
+            "tr": "Hz. Süleyman'ın duasıdır.",
+            "en": "The prayer of Prophet Sulayman.",
+            "de": "Das Bittgebet des Propheten Sulaiman.",
+            "fr": "Invocation du prophète Salomon.",
+            "ar": "دعاء سليمان عليه السلام."
+          },
+          "source": {
+            "tr": "Kur'an, Neml 27/19",
+            "en": "Quran, an-Naml 27:19",
+            "de": "Koran, an-Naml 27:19",
+            "fr": "Coran, an-Naml 27:19",
+            "ar": "سورة النمل: 19"
+          }
+        },
+        {
+          "id": "ihvanina",
+          "title": {
+            "tr": "Müminler İçin",
+            "en": "For the Believers",
+            "de": "Für die Gläubigen",
+            "fr": "Pour les croyants",
+            "ar": "الدعاء للمؤمنين"
+          },
+          "arabic": "رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ، وَلَا تَجْعَلْ فِي قُلُوبِنَا غِلًّا لِلَّذِينَ آمَنُوا، رَبَّنَا إِنَّكَ رَءُوفٌ رَحِيمٌ",
+          "translit": {
+            "tr": "Rabbenağfir lenâ ve li ihvâninellezîne sebekûnâ bi'l-îmân, ve lâ tec'al fî kulûbinâ ğıllen lillezîne âmenû, rabbenâ inneke raûfün rahîm.",
+            "latin": "Rabbanagh-fir lana wa li ikhwaninal-ladhina sabaquna bil-iman, wa la taj'al fi qulubina ghillan lilladhina amanu, rabbana innaka ra'ufun rahim."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Bizi ve bizden önce iman etmiş kardeşlerimizi bağışla. Kalplerimizde iman edenlere karşı hiçbir kin bırakma. Rabbimiz! Şüphesiz sen çok şefkatlisin, çok merhametlisin.",
+            "en": "Our Lord, forgive us and our brothers who preceded us in faith, and put no resentment in our hearts toward those who believe. Our Lord, You are Kind and Merciful.",
+            "de": "Unser Herr, vergib uns und unseren Brüdern, die uns im Glauben vorausgegangen sind, und lass in unseren Herzen keinen Groll gegen die Gläubigen. Unser Herr, Du bist gütig und barmherzig.",
+            "fr": "Notre Seigneur, pardonne-nous ainsi qu'à nos frères qui nous ont précédés dans la foi, et ne mets dans nos cœurs aucune rancune envers les croyants. Notre Seigneur, Tu es Compatissant et Miséricordieux."
+          },
+          "source": {
+            "tr": "Kur'an, Haşr 59/10",
+            "en": "Quran, al-Hashr 59:10",
+            "de": "Koran, al-Hashr 59:10",
+            "fr": "Coran, al-Hashr 59:10",
+            "ar": "سورة الحشر: 10"
+          }
+        },
+        {
+          "id": "nurena",
+          "title": {
+            "tr": "Nurumuzu Tamamla",
+            "en": "Perfect Our Light",
+            "de": "Vervollkommne unser Licht",
+            "fr": "Parfais notre lumière",
+            "ar": "ربنا أتمم لنا نورنا"
+          },
+          "arabic": "رَبَّنَا أَتْمِمْ لَنَا نُورَنَا وَاغْفِرْ لَنَا، إِنَّكَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+          "translit": {
+            "tr": "Rabbenâ etmim lenâ nûranâ vağfir lenâ, inneke alâ külli şey'in kadîr.",
+            "latin": "Rabbana atmim lana nurana waghfir lana, innaka 'ala kulli shay'in qadir."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Nurumuzu tamamla ve bizi bağışla. Şüphesiz sen her şeye kadirsin.",
+            "en": "Our Lord, perfect our light for us and forgive us. Indeed, You have power over all things.",
+            "de": "Unser Herr, vervollkommne uns unser Licht und vergib uns. Du hast Macht über alle Dinge.",
+            "fr": "Notre Seigneur, parfais-nous notre lumière et pardonne-nous. Tu es capable de toute chose."
+          },
+          "source": {
+            "tr": "Kur'an, Tahrîm 66/8",
+            "en": "Quran, at-Tahrim 66:8",
+            "de": "Koran, at-Tahrim 66:8",
+            "fr": "Coran, at-Tahrim 66:8",
+            "ar": "سورة التحريم: 8"
+          }
+        }
+      ]
+    },
+    {
+      "id": "family",
+      "title": {
+        "tr": "Aile ve Evlat",
+        "en": "Family & Children",
+        "de": "Familie & Kinder",
+        "fr": "Famille et enfants",
+        "ar": "الأسرة والذرية"
+      },
+      "duas": [
+        {
+          "id": "evlilik_tebrik",
+          "title": {
+            "tr": "Evlenene Tebrik",
+            "en": "Congratulating Newlyweds",
+            "de": "Glückwunsch zur Heirat",
+            "fr": "Félicitations aux mariés",
+            "ar": "التهنئة بالزواج"
+          },
+          "arabic": "بَارَكَ اللَّهُ لَكَ، وَبَارَكَ عَلَيْكَ، وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
+          "translit": {
+            "tr": "Bârakallâhü leke ve bâreke aleyke ve ceme'a beynekümâ fî hayr.",
+            "latin": "Barakallahu laka wa baraka 'alayka wa jama'a baynakuma fi khayr."
+          },
+          "meaning": {
+            "tr": "Allah sana bereket versin, üzerine bereket indirsin ve sizi hayırda bir araya getirsin.",
+            "en": "May Allah bless you, shower blessings upon you and unite you both in goodness.",
+            "de": "Möge Allah dich segnen, Segen auf dich herabsenden und euch beide im Guten vereinen.",
+            "fr": "Qu'Allah te bénisse, répande sur toi Sa bénédiction et vous unisse dans le bien."
+          },
+          "source": {
+            "tr": "Tirmizî 1091; Ebû Dâvûd 2130",
+            "en": "Tirmidhi 1091; Abu Dawud 2130",
+            "de": "Tirmidhi 1091; Abu Dawud 2130",
+            "fr": "Tirmidhi 1091 ; Abou Dawoud 2130",
+            "ar": "الترمذي 1091، أبو داود 2130"
+          }
+        },
+        {
+          "id": "zurriyet",
+          "title": {
+            "tr": "Hayırlı Evlat İçin",
+            "en": "For Righteous Offspring",
+            "de": "Für gute Nachkommen",
+            "fr": "Pour une descendance pieuse",
+            "ar": "دعاء طلب الذرية"
+          },
+          "arabic": "رَبِّ هَبْ لِي مِنْ لَدُنْكَ ذُرِّيَّةً طَيِّبَةً، إِنَّكَ سَمِيعُ الدُّعَاءِ",
+          "translit": {
+            "tr": "Rabbi heb lî min ledünke zürriyyeten tayyibeh, inneke semîu'd-duâ.",
+            "latin": "Rabbi hab li min ladunka dhurriyyatan tayyibah, innaka sami'ud-du'a'."
+          },
+          "meaning": {
+            "tr": "Rabbim! Bana katından temiz bir nesil bağışla. Şüphesiz sen duayı hakkıyla işitensin.",
+            "en": "My Lord, grant me from Yourself good offspring. Indeed, You are the Hearer of prayer.",
+            "de": "Mein Herr, schenke mir von Dir gute Nachkommenschaft. Du hörst das Bittgebet.",
+            "fr": "Seigneur, accorde-moi de Ta part une descendance pure. Tu entends bien les prières."
+          },
+          "note": {
+            "tr": "Hz. Zekeriyyâ'nın duasıdır.",
+            "en": "The prayer of Prophet Zakariyya.",
+            "de": "Das Bittgebet des Propheten Zakariyya.",
+            "fr": "Invocation du prophète Zacharie.",
+            "ar": "دعاء زكريا عليه السلام."
+          },
+          "source": {
+            "tr": "Kur'an, Âl-i İmrân 3/38",
+            "en": "Quran, Al 'Imran 3:38",
+            "de": "Koran, Al 'Imran 3:38",
+            "fr": "Coran, Al 'Imran 3:38",
+            "ar": "سورة آل عمران: 38"
+          }
+        },
+        {
+          "id": "la_tezerni",
+          "title": {
+            "tr": "Beni Yalnız Bırakma",
+            "en": "Do Not Leave Me Alone",
+            "de": "Lass mich nicht allein",
+            "fr": "Ne me laisse pas seul",
+            "ar": "رب لا تذرني فردًا"
+          },
+          "arabic": "رَبِّ لَا تَذَرْنِي فَرْدًا وَأَنْتَ خَيْرُ الْوَارِثِينَ",
+          "translit": {
+            "tr": "Rabbi lâ tezernî ferden ve ente hayru'l-vârisîn.",
+            "latin": "Rabbi la tadharni fardan wa anta khayrul-warithin."
+          },
+          "meaning": {
+            "tr": "Rabbim! Beni tek başıma (evlatsız) bırakma. Sen varislerin en hayırlısısın.",
+            "en": "My Lord, do not leave me alone (childless), and You are the best of inheritors.",
+            "de": "Mein Herr, lass mich nicht allein (kinderlos), und Du bist der beste Erbe.",
+            "fr": "Seigneur, ne me laisse pas seul (sans enfant), Toi qui es le meilleur des héritiers."
+          },
+          "note": {
+            "tr": "Hz. Zekeriyyâ'nın duasıdır.",
+            "en": "The prayer of Prophet Zakariyya.",
+            "de": "Das Bittgebet des Propheten Zakariyya.",
+            "fr": "Invocation du prophète Zacharie.",
+            "ar": "دعاء زكريا عليه السلام."
+          },
+          "source": {
+            "tr": "Kur'an, Enbiyâ 21/89",
+            "en": "Quran, al-Anbiya' 21:89",
+            "de": "Koran, al-Anbiya' 21:89",
+            "fr": "Coran, al-Anbiya' 21:89",
+            "ar": "سورة الأنبياء: 89"
+          }
+        },
+        {
+          "id": "kurrete_ayun",
+          "title": {
+            "tr": "Göz Aydınlığı Aile",
+            "en": "A Family That Brings Joy",
+            "de": "Eine Familie zur Augenweide",
+            "fr": "Une famille, joie des yeux",
+            "ar": "دعاء قرة العين"
+          },
+          "arabic": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ، وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+          "translit": {
+            "tr": "Rabbenâ heb lenâ min ezvâcinâ ve zürriyyâtinâ kurrete a'yün, vec'alnâ li'l-müttekîne imâmâ.",
+            "latin": "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yun, waj'alna lil-muttaqina imama."
+          },
+          "meaning": {
+            "tr": "Rabbimiz! Bize eşlerimizden ve çocuklarımızdan göz aydınlığı olacak kimseler bağışla ve bizi takva sahiplerine önder kıl.",
+            "en": "Our Lord, grant us from our spouses and offspring comfort to our eyes, and make us leaders of the righteous.",
+            "de": "Unser Herr, schenke uns an unseren Gattinnen und Nachkommen Augenweide und mache uns zu Vorbildern der Gottesfürchtigen.",
+            "fr": "Notre Seigneur, fais que nos épouses et nos descendants soient la joie de nos yeux, et fais de nous un guide pour les pieux."
+          },
+          "source": {
+            "tr": "Kur'an, Furkân 25/74",
+            "en": "Quran, al-Furqan 25:74",
+            "de": "Koran, al-Furqan 25:74",
+            "fr": "Coran, al-Furqan 25:74",
+            "ar": "سورة الفرقان: 74"
+          }
+        },
+        {
+          "id": "mukimes_salat",
+          "title": {
+            "tr": "Namazı Dosdoğru Kılmak İçin",
+            "en": "To Establish Prayer",
+            "de": "Für die Verrichtung des Gebets",
+            "fr": "Pour accomplir la prière",
+            "ar": "رب اجعلني مقيم الصلاة"
+          },
+          "arabic": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي، رَبَّنَا وَتَقَبَّلْ دُعَاءِ",
+          "translit": {
+            "tr": "Rabbic'alnî mukîme's-salâti ve min zürriyyetî, rabbenâ ve tekabbel duâ.",
+            "latin": "Rabbij-'alni muqimas-salati wa min dhurriyyati, rabbana wa taqabbal du'a'."
+          },
+          "meaning": {
+            "tr": "Rabbim! Beni ve soyumdan gelecekleri namazı dosdoğru kılanlardan eyle. Rabbimiz! Duamı kabul et.",
+            "en": "My Lord, make me and my descendants steadfast in prayer. Our Lord, accept my supplication.",
+            "de": "Mein Herr, mache mich und meine Nachkommen zu denen, die das Gebet verrichten. Unser Herr, nimm mein Bittgebet an.",
+            "fr": "Seigneur, fais que j'accomplisse assidûment la prière, ainsi que ma descendance. Notre Seigneur, exauce ma prière."
+          },
+          "note": {
+            "tr": "Hz. İbrâhîm'in duasıdır; ardından «Rabbenağfir lî…» gelir.",
+            "en": "The prayer of Prophet Ibrahim; followed by \"Rabbanagh-fir li…\".",
+            "de": "Das Bittgebet des Propheten Ibrahim; danach folgt „Rabbanagh-fir li…“.",
+            "fr": "Invocation du prophète Abraham ; suivie de « Rabbanagh-fir li… ».",
+            "ar": "دعاء إبراهيم عليه السلام، ويليه: ربنا اغفر لي…"
+          },
+          "source": {
+            "tr": "Kur'an, İbrâhîm 14/40",
+            "en": "Quran, Ibrahim 14:40",
+            "de": "Koran, Ibrahim 14:40",
+            "fr": "Coran, Ibrahim 14:40",
+            "ar": "سورة إبراهيم: 40"
+          }
+        },
+        {
+          "id": "anne_baba",
+          "title": {
+            "tr": "Anne Baba İçin",
+            "en": "For Parents",
+            "de": "Für die Eltern",
+            "fr": "Pour les parents",
+            "ar": "الدعاء للوالدين"
+          },
+          "arabic": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+          "translit": {
+            "tr": "Rabbirhamhümâ kemâ rabbeyânî sağîrâ.",
+            "latin": "Rabbir-hamhuma kama rabbayani saghira."
+          },
+          "meaning": {
+            "tr": "Rabbim! Onlar beni küçükken nasıl yetiştirdilerse sen de onlara öyle merhamet et.",
+            "en": "My Lord, have mercy on them as they raised me when I was small.",
+            "de": "Mein Herr, erbarme Dich ihrer, wie sie mich aufgezogen haben, als ich klein war.",
+            "fr": "Seigneur, fais-leur miséricorde comme ils m'ont élevé tout petit."
+          },
+          "source": {
+            "tr": "Kur'an, İsrâ 17/24",
+            "en": "Quran, al-Isra' 17:24",
+            "de": "Koran, al-Isra' 17:24",
+            "fr": "Coran, al-Isra' 17:24",
+            "ar": "سورة الإسراء: 24"
           }
         }
       ]
@@ -685,11 +2738,11 @@
             "ar": "يُقال عند الإفطار."
           },
           "source": {
-            "tr": "Ebû Dâvûd",
-            "en": "Abu Dawud",
-            "de": "Abu Dawud",
-            "fr": "Abou Dawoud",
-            "ar": "أبو داود"
+            "tr": "Ebû Dâvûd 2358",
+            "en": "Abu Dawud 2358",
+            "de": "Abu Dawud 2358",
+            "fr": "Abou Dawoud 2358",
+            "ar": "أبو داود 2358"
           }
         },
         {
@@ -720,11 +2773,74 @@
             "ar": "يُقال بعد الإفطار."
           },
           "source": {
-            "tr": "Ebû Dâvûd",
-            "en": "Abu Dawud",
-            "de": "Abu Dawud",
-            "fr": "Abou Dawoud",
-            "ar": "أبو داود"
+            "tr": "Ebû Dâvûd 2357",
+            "en": "Abu Dawud 2357",
+            "de": "Abu Dawud 2357",
+            "fr": "Abou Dawoud 2357",
+            "ar": "أبو داود 2357"
+          }
+        },
+        {
+          "id": "kadir_gecesi",
+          "title": {
+            "tr": "Kadir Gecesi Duası",
+            "en": "Laylat al-Qadr Dua",
+            "de": "Bittgebet der Nacht der Bestimmung",
+            "fr": "Invocation de la Nuit du Destin",
+            "ar": "دعاء ليلة القدر"
+          },
+          "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+          "translit": {
+            "tr": "Allâhümme inneke afüvvün kerîmün tühibbü'l-afve fa'fü annî.",
+            "latin": "Allahumma innaka 'afuwwun karimun tuhibbul-'afwa fa'fu 'anni."
+          },
+          "meaning": {
+            "tr": "Allah'ım! Sen çok affedicisin, cömertsin, affetmeyi seversin; beni de affet.",
+            "en": "O Allah, You are Pardoning and Generous, You love to pardon, so pardon me.",
+            "de": "O Allah, Du bist vergebend und großzügig, Du liebst das Vergeben, so vergib mir.",
+            "fr": "Ô Allah, Tu es Indulgent et Généreux, Tu aimes pardonner, alors pardonne-moi."
+          },
+          "note": {
+            "tr": "Hz. Âişe Kadir gecesinde ne dua edeceğini sorunca Peygamberimiz bunu öğretmiştir.",
+            "en": "The Prophet taught it to Aisha when she asked what to say on Laylat al-Qadr.",
+            "de": "Der Prophet lehrte es Aischa, als sie fragte, was sie in der Nacht der Bestimmung sagen solle.",
+            "fr": "Le Prophète l'a enseignée à Aïcha lorsqu'elle demanda quoi dire durant la Nuit du Destin.",
+            "ar": "علّمه النبي ﷺ عائشة لما سألته ما تقول ليلة القدر."
+          },
+          "source": {
+            "tr": "Tirmizî 3513",
+            "en": "Tirmidhi 3513",
+            "de": "Tirmidhi 3513",
+            "fr": "Tirmidhi 3513",
+            "ar": "الترمذي 3513"
+          }
+        },
+        {
+          "id": "iftara_davet",
+          "title": {
+            "tr": "İftar Veren Eve Dua",
+            "en": "Dua for the Iftar Host",
+            "de": "Bittgebet für den Iftar-Gastgeber",
+            "fr": "Invocation pour l'hôte de l'iftar",
+            "ar": "الدعاء لمن فطّر"
+          },
+          "arabic": "أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ، وَأَكَلَ طَعَامَكُمُ الْأَبْرَارُ، وَصَلَّتْ عَلَيْكُمُ الْمَلَائِكَةُ",
+          "translit": {
+            "tr": "Eftara indekümü's-sâimûn, ve ekele taâmekümü'l-ebrâr, ve sallet aleykümü'l-melâike.",
+            "latin": "Aftara 'indakumus-sa'imun, wa akala ta'amakumul-abrar, wa sallat 'alaykumul-mala'ikah."
+          },
+          "meaning": {
+            "tr": "Yanınızda oruçlular iftar etsin, yemeğinizi iyiler yesin ve melekler size dua etsin.",
+            "en": "May fasting people break their fast with you, may the righteous eat your food and may the angels pray for you.",
+            "de": "Mögen Fastende bei euch das Fasten brechen, mögen Rechtschaffene eure Speise essen und die Engel für euch bitten.",
+            "fr": "Que des jeûneurs rompent le jeûne chez vous, que les pieux mangent votre nourriture et que les anges prient pour vous."
+          },
+          "source": {
+            "tr": "Ebû Dâvûd 3854",
+            "en": "Abu Dawud 3854",
+            "de": "Abu Dawud 3854",
+            "fr": "Abou Dawoud 3854",
+            "ar": "أبو داود 3854"
           }
         }
       ]

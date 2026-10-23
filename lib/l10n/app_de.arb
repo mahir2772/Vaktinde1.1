@@ -981,6 +981,16 @@
     "nearbyMosquesError": "Die Karte konnte nicht geöffnet werden.",
     "toolEsmaDesc": "Die 99 Namen und ihre Bedeutung",
     "duasTitle": "Bittgebete",
+    "duaSearchHint": "Bittgebete suchen",
+    "duaNoResults": "Kein passendes Bittgebet gefunden",
+    "duaCount": "{count, plural, =1{1 Bittgebet} other{{count} Bittgebete}}",
+    "@duaCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "prayerGuideTitle": "Gebetsanleitung",
     "toolPrayerGuideDesc": "Gebetswaschung und Gebetsablauf, Schritt für Schritt",
     "prayerGuideTabWudu": "Wudu",

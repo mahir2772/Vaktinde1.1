@@ -2127,6 +2127,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get duasTitle => 'Duas';
 
   @override
+  String get duaSearchHint => 'Search duas';
+
+  @override
+  String get duaNoResults => 'No dua matches your search';
+
+  @override
+  String duaCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count duas',
+      one: '1 dua',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get prayerGuideTitle => 'Prayer Guide';
 
   @override

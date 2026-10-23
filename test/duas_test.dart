@@ -134,10 +134,17 @@ void main() {
     test('kategoriler dolu, kimlikler tekil, 5 dilde başlık', () {
       expect(parsed.categories.map((c) => c.id), [
         'prayer',
+        'ezan_abdest',
         'morning_evening',
         'daily',
+        'travel',
+        'distress',
+        'general',
+        'quran',
+        'family',
         'ramadan',
       ]);
+      expect(all.length, greaterThanOrEqualTo(80));
       for (final category in parsed.categories) {
         expect(category.duas, isNotEmpty, reason: category.id);
         for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
@@ -146,6 +153,23 @@ void main() {
       }
       final ids = all.map((d) => d.id).toList();
       expect(ids.toSet(), hasLength(ids.length));
+      // Namaz Hocası ve tesbihat bu kimliklere bağlı (1.3.0)
+      expect(
+        ids,
+        containsAll([
+          'subhaneke',
+          'ettehiyyatu',
+          'salli',
+          'barik',
+          'rabbena_atina',
+          'rabbenagfirli',
+          'kunut_1',
+          'kunut_2',
+          'ayetel_kursi',
+          'travel',
+          'iftar',
+        ]),
+      );
       for (final dua in all) {
         for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
           expect(dua.title[lang], isNotEmpty, reason: '${dua.id} $lang');
@@ -167,6 +191,32 @@ void main() {
         expect(dua.translit['tr'], isNotEmpty, reason: dua.id);
         expect(dua.translit['latin'], isNotEmpty, reason: dua.id);
       }
+    });
+
+    test('Arapçası olan her duada kaynak; aynı metin iki kez yok', () {
+      final arabic = <String>{};
+      for (final dua in all.where((d) => d.arabic.isNotEmpty)) {
+        // Kunut duaları (Hanefî vitir kunutu) numaralı kaynaksız
+        if (!dua.id.startsWith('kunut_')) {
+          expect(dua.source['tr'], isNotEmpty, reason: dua.id);
+        }
+        expect(arabic.add(dua.arabic), isTrue, reason: dua.id);
+      }
+    });
+
+    test('arama: başlık, okunuş, anlam ve Arapça; işaretler yok sayılır', () {
+      List<String> ids(String query, [String lang = 'tr']) =>
+          parsed.search(query, lang).map((d) => d.id).toList();
+      expect(ids(''), isEmpty);
+      expect(ids('  '), isEmpty);
+      expect(ids('yagmur'), contains('yagmur'));
+      expect(ids('YAĞMUR'), contains('yagmur'));
+      expect(ids('ezan duası'), contains('ezan_duasi'));
+      expect(ids('rahmetik'), contains('cami_giris'));
+      expect(ids('رحمتك'), containsAll(['cami_giris', 'rahmeteke']));
+      expect(ids('rain', 'en'), contains('yagmur'));
+      expect(ids('Regen', 'de'), contains('yagmur'));
+      expect(ids('zzzz'), isEmpty);
     });
 
     test('not ve kaynak varsa 5 dilde; Fransızcada noktalamadan önce '
@@ -276,6 +326,16 @@ void main() {
         expect(tester.takeException(), isNull);
         await _scrollThrough(tester);
         expect(tester.takeException(), isNull);
+        await _dispose(tester);
+      });
+
+      testWidgets('$lang: kategori sayfaları', (tester) async {
+        for (final category in library.categories) {
+          await _pump(tester, DuaCategoryView(category: category), lang: lang);
+          expect(tester.takeException(), isNull, reason: category.id);
+          await _scrollThrough(tester);
+          expect(tester.takeException(), isNull, reason: category.id);
+        }
         await _dispose(tester);
       });
 
@@ -410,7 +470,11 @@ void main() {
     await _settle(tester);
     expect(find.byType(DuasView), findsOneWidget);
 
-    final dua = library.categories.first.duas.first;
+    final category = library.categories.first;
+    await tester.tap(find.text(category.titleFor('tr')));
+    await _settle(tester);
+    expect(find.byType(DuaCategoryView), findsOneWidget);
+    final dua = category.duas.first;
     await tester.tap(find.text(dua.titleFor('tr')));
     await _settle(tester);
     expect(find.byType(DuaDetailView), findsOneWidget);
@@ -423,6 +487,45 @@ void main() {
     expect(text, startsWith(dua.arabic));
     expect(text, endsWith(shareCaption(dua.titleFor('tr'), 'dua')));
     expect(text, endsWith(AppLinks.playStoreLink('dua')));
+    expect(tester.takeException(), isNull);
+    await _dispose(tester);
+  });
+
+  testWidgets('Dualar: arama sonuç listesi ve boş sonuç', (tester) async {
+    await _pump(
+      tester,
+      const DuasView(),
+      textScale: 1,
+      width: 411,
+      height: 891,
+    );
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    final yagmur = library.byId('yagmur')!;
+    expect(find.text(loc.tesbihatTitle), findsOneWidget);
+    expect(find.text(library.categories.first.titleFor('tr')), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'yağmur');
+    await tester.pump();
+    expect(find.text(loc.tesbihatTitle), findsNothing);
+    expect(find.text(yagmur.titleFor('tr')), findsOneWidget);
+    await tester.tap(find.text(yagmur.titleFor('tr')));
+    await _settle(tester);
+    expect(find.byType(DuaDetailView), findsOneWidget);
+    Navigator.of(tester.element(find.byType(DuaDetailView))).pop();
+    await _settle(tester);
+
+    await tester.enterText(find.byType(TextField), 'zzzz');
+    await tester.pump();
+    expect(find.text(loc.duaNoResults), findsOneWidget);
+    await tester.tap(
+      find.byTooltip(
+        MaterialLocalizations.of(
+          tester.element(find.byType(DuasView)),
+        ).deleteButtonTooltip,
+      ),
+    );
+    await tester.pump();
+    expect(find.text(loc.tesbihatTitle), findsOneWidget);
     expect(tester.takeException(), isNull);
     await _dispose(tester);
   });

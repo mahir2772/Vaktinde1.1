@@ -8,8 +8,9 @@ import '../../zikirmatik/view/dhikr_names.dart';
 import '../dua_data.dart';
 import 'tesbihat_view.dart';
 
-/// Dualar: en üstte namaz sonrası tesbihat, altında kategoriler (namaz,
-/// sabah-akşam, günlük, Ramazan); satıra dokununca dua sayfası.
+/// Dualar: arama, namaz sonrası tesbihat ve kategoriler; kategoriye
+/// dokununca o kategorinin listesi, duaya dokununca dua sayfası. Arama
+/// bütün dualarda (başlık, okunuş, anlam, Arapça).
 class DuasView extends StatefulWidget {
   const DuasView({super.key});
 
@@ -19,6 +20,13 @@ class DuasView extends StatefulWidget {
 
 class _DuasViewState extends State<DuasView> {
   Future<DuaLibrary> _future = DuaLibrary.load();
+  final TextEditingController _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
 
   void _retry() => setState(() => _future = DuaLibrary.load());
 
@@ -39,41 +47,144 @@ class _DuasViewState extends State<DuasView> {
           }
           final library = snapshot.data;
           if (library == null) return const LoadingState();
+          final searching = _search.text.trim().isNotEmpty;
+          final results = library.search(_search.text, lang);
           return ListView(
             padding: const EdgeInsets.only(
               top: AppSpacing.lg,
               bottom: AppSpacing.xl,
             ),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             children: [
-              AppListSection(
-                children: [
-                  AppListTile(
-                    leadingIcon: Icons.touch_app_outlined,
-                    title: loc.tesbihatTitle,
-                    subtitle: loc.tesbihatDesc,
-                    onTap: () => _open(TesbihatView(steps: library.tesbihat)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: TextField(
+                  controller: _search,
+                  onChanged: (_) => setState(() {}),
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: loc.duaSearchHint,
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: searching
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            tooltip: MaterialLocalizations.of(
+                              context,
+                            ).deleteButtonTooltip,
+                            onPressed: () => setState(_search.clear),
+                          )
+                        : null,
                   ),
-                ],
+                ),
               ),
-              for (final category in library.categories) ...[
-                SectionHeader(category.titleFor(lang)),
+              const SizedBox(height: AppSpacing.lg),
+              if (!searching) ...[
                 AppListSection(
                   children: [
-                    for (final dua in category.duas)
+                    AppListTile(
+                      leadingIcon: Icons.touch_app_outlined,
+                      title: loc.tesbihatTitle,
+                      subtitle: loc.tesbihatDesc,
+                      onTap: () => _open(TesbihatView(steps: library.tesbihat)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                AppListSection(
+                  children: [
+                    for (final category in library.categories)
                       AppListTile(
-                        title: dua.titleFor(lang),
-                        subtitle: _subtitle(dua, lang),
-                        onTap: () => _open(DuaDetailView(dua: dua)),
+                        leadingIcon:
+                            _categoryIcons[category.id] ??
+                            Icons.auto_stories_outlined,
+                        title: category.titleFor(lang),
+                        subtitle: loc.duaCount(category.duas.length),
+                        onTap: () => _open(DuaCategoryView(category: category)),
                       ),
                   ],
                 ),
-              ],
+              ] else if (results.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  child: Text(
+                    loc.duaNoResults,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                )
+              else
+                AppListSection(
+                  children: [
+                    for (final dua in results) _DuaTile(dua: dua, lang: lang),
+                  ],
+                ),
             ],
           );
         },
       ),
     );
   }
+}
+
+const Map<String, IconData> _categoryIcons = {
+  'prayer': Icons.mosque_outlined,
+  'ezan_abdest': Icons.water_drop_outlined,
+  'morning_evening': Icons.wb_twilight_outlined,
+  'daily': Icons.today_outlined,
+  'travel': Icons.luggage_outlined,
+  'distress': Icons.healing_outlined,
+  'general': Icons.volunteer_activism_outlined,
+  'quran': Icons.menu_book_outlined,
+  'family': Icons.family_restroom_outlined,
+  'ramadan': Icons.nightlight_outlined,
+};
+
+/// Bir kategorinin duaları
+class DuaCategoryView extends StatelessWidget {
+  final DuaCategory category;
+
+  const DuaCategoryView({super.key, required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    final lang = Localizations.localeOf(context).languageCode;
+    return AppScaffold(
+      title: category.titleFor(lang),
+      body: ListView(
+        padding: const EdgeInsets.only(
+          top: AppSpacing.lg,
+          bottom: AppSpacing.xl,
+        ),
+        children: [
+          AppListSection(
+            children: [
+              for (final dua in category.duas) _DuaTile(dua: dua, lang: lang),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DuaTile extends StatelessWidget {
+  final Dua dua;
+  final String lang;
+
+  const _DuaTile({required this.dua, required this.lang});
+
+  @override
+  Widget build(BuildContext context) => AppListTile(
+    title: dua.titleFor(lang),
+    subtitle: _subtitle(dua, lang),
+    onTap: () => Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (_) => DuaDetailView(dua: dua)),
+    ),
+  );
 }
 
 /// Satır alt yazısı: okunuşun başı; Arapçada kısa açıklama

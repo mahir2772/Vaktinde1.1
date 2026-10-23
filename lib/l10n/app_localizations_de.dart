@@ -2131,6 +2131,23 @@ class AppLocalizationsDe extends AppLocalizations {
   String get duasTitle => 'Bittgebete';
 
   @override
+  String get duaSearchHint => 'Bittgebete suchen';
+
+  @override
+  String get duaNoResults => 'Kein passendes Bittgebet gefunden';
+
+  @override
+  String duaCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Bittgebete',
+      one: '1 Bittgebet',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get prayerGuideTitle => 'Gebetsanleitung';
 
   @override

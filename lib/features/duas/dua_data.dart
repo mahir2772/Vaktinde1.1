@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../../data/services/quran_service.dart';
+
 /// Dualar (assets/data/duas.json, çevrimdışı): kategoriler + namaz sonrası
 /// tesbihat adımları + zikirmatiğin hazır zikirleri. Arapça tek; okunuş Türkçe ("tr") ve diğer Latin
 /// diller için ortak ("latin"); anlam/not/kaynak dil başına. Arapça arayüzde
@@ -101,10 +103,28 @@ class DuaLibrary {
     this.dhikrs = const [],
   });
 
+  /// Kategorilerdeki bütün dualar (sırayla)
+  Iterable<Dua> get allDuas => categories.expand((c) => c.duas);
+
   /// Kimliğiyle dua (Namaz Hocası bağlantıları); yoksa null
-  Dua? byId(String id) => [
-    for (final c in categories) ...c.duas,
-  ].where((d) => d.id == id).firstOrNull;
+  Dua? byId(String id) => allDuas.where((d) => d.id == id).firstOrNull;
+
+  /// Başlık, okunuş, anlam ya da Arapça metinde geçen dualar (harf
+  /// işaretleri ve büyük/küçük harf yok sayılır); boş sorgu: boş liste
+  List<Dua> search(String query, String lang) {
+    final key = QuranService.searchKey(query);
+    if (key.isEmpty) return const [];
+    return [
+      for (final dua in allDuas)
+        if ([
+          dua.titleFor(lang),
+          dua.translitFor(lang),
+          dua.meaningFor(lang),
+          dua.arabic,
+        ].any((text) => QuranService.searchKey(text ?? '').contains(key)))
+          dua,
+    ];
+  }
 
   factory DuaLibrary.fromJson(Map<String, dynamic> json) {
     final categories = [

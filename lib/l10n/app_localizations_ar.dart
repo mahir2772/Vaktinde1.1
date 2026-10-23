@@ -2144,6 +2144,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get duasTitle => 'الأدعية';
 
   @override
+  String get duaSearchHint => 'ابحث عن دعاء';
+
+  @override
+  String get duaNoResults => 'لا يوجد دعاء يطابق البحث';
+
+  @override
+  String duaCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دعاء',
+      many: '$count دعاءً',
+      few: '$count أدعية',
+      two: 'دعاءان',
+      one: 'دعاء واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get prayerGuideTitle => 'تعليم الصلاة';
 
   @override

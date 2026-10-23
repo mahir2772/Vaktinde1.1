@@ -2103,6 +2103,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get duasTitle => 'Dualar';
 
   @override
+  String get duaSearchHint => 'Dua ara';
+
+  @override
+  String get duaNoResults => 'Aramanıza uyan dua bulunamadı';
+
+  @override
+  String duaCount(int count) {
+    return '$count dua';
+  }
+
+  @override
   String get prayerGuideTitle => 'Namaz Hocası';
 
   @override

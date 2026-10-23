@@ -981,6 +981,16 @@
     "nearbyMosquesError": "Could not open the map.",
     "toolEsmaDesc": "The 99 names and their meanings",
     "duasTitle": "Duas",
+    "duaSearchHint": "Search duas",
+    "duaNoResults": "No dua matches your search",
+    "duaCount": "{count, plural, =1{1 dua} other{{count} duas}}",
+    "@duaCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "prayerGuideTitle": "Prayer Guide",
     "toolPrayerGuideDesc": "Wudu and how to pray, step by step",
     "prayerGuideTabWudu": "Wudu",

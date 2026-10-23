@@ -2153,6 +2153,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get duasTitle => 'Invocations';
 
   @override
+  String get duaSearchHint => 'Rechercher une invocation';
+
+  @override
+  String get duaNoResults =>
+      'Aucune invocation ne correspond à votre recherche';
+
+  @override
+  String duaCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invocations',
+      one: '1 invocation',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get prayerGuideTitle => 'Guide de la prière';
 
   @override

@@ -981,6 +981,16 @@
     "nearbyMosquesError": "Impossible d'ouvrir la carte.",
     "toolEsmaDesc": "Les 99 noms et leur sens",
     "duasTitle": "Invocations",
+    "duaSearchHint": "Rechercher une invocation",
+    "duaNoResults": "Aucune invocation ne correspond à votre recherche",
+    "duaCount": "{count, plural, =1{1 invocation} other{{count} invocations}}",
+    "@duaCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "prayerGuideTitle": "Guide de la prière",
     "toolPrayerGuideDesc": "Ablutions et déroulement de la prière, pas à pas",
     "prayerGuideTabWudu": "Ablutions",

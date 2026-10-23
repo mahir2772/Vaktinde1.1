@@ -3758,6 +3758,24 @@ abstract class AppLocalizations {
   /// **'Dualar'**
   String get duasTitle;
 
+  /// No description provided for @duaSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dua ara'**
+  String get duaSearchHint;
+
+  /// No description provided for @duaNoResults.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aramanıza uyan dua bulunamadı'**
+  String get duaNoResults;
+
+  /// No description provided for @duaCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} dua'**
+  String duaCount(int count);
+
   /// No description provided for @prayerGuideTitle.
   ///
   /// In tr, this message translates to:
