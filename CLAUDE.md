@@ -302,12 +302,16 @@ lib/
                                            satırları) → DuaCategoryView → DuaDetailView; tesbihat_view.dart: namaz sonrası adım adım sayaç
                                            (Âyetü'l-Kürsî, 33×3, tevhid). Eski kimlikler sabit (Namaz Hocası, tesbihat, zikir kayıtları).
                                            Arapça standart imla, harekeli; yeni dua/zikir Arapçası kaynak metinle (sunnah.com / Tanzil) harf
-                                           harf doğrulanır; Türkçe anlam/okunuş hoca incelemesinden geçer
+                                           harf doğrulanır; not/sayı sadece kaynakta geçeni söyler. Türkçe anlamlar ve kıssalar 23.10.2026'da
+                                           Diyanet İşleri/Vakfı mealleri, Kütüb-i Sitte Türkçesi (github fawazahmed0 quran-api/hadith-api)
+                                           ve DİA ile karşılaştırıldı; yeni içerik aynı yolla denetlenir. Esmâ: her dilde 99, Arapça tekil
+                                           ve ar dosyasıyla aynı (testli)
     stories/                               Kıssalar (Araçlar > Bilgi, geçiş reklamlı): assets/data/stories.json — 4 kategori (25 peygamber,
                                            Peygamberimizin Hayatı, Sahabe, İslam Âlimleri), kıssa: başlık, kısa tanım, metin (\n\n paragraf),
                                            ibret, kaynak (5 dil); story_data.dart StoryLibrary.load (tek sefer); StoriesView → StoryCategoryView
                                            → StoryDetailView. Peygamber kıssaları sadece Kur'an'ın anlattığı (ayet aralıkları Tanzil'de ad
-                                           geçişiyle doğrulandı), hadisler Buhârî numarasıyla. Test: test/stories_test.dart
+                                           geçişiyle doğrulandı), hadisler Buhârî numarasıyla; âlimler ve gençlik yılları DİA maddeleri.
+                                           Test: test/stories_test.dart
     common/share_card.dart                 ShareCard (1080×1350 PNG, teal, Amiri, "Google Play'de Vaktinde") + shareAsImage/
                                            shareAsText (metin sonuna AppLinks.playStoreLink(kampanya)) + MessageCard (Cuma, tebrik)
                                            + SheetMessenger (alt sayfada SnackBar). Kampanyalar: friday/daily/greeting/invite/dua/iftar/quran

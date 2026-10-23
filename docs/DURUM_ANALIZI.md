@@ -9,13 +9,13 @@
   · Kur'an dinleme: Quran Foundation Content API (lisanslı), gizli anahtar sadece Cloudflare Worker'da
     (server/quran-audio), uygulamaya derlemede QURAN_AUDIO_API; tek FGS mediaPlayback. Kullanım Koşulları sayfası
     (docs/site/terms.html), gizlilik politikası güncel (ses, güvenlik, aktarım; posta adresi yer tutucusu doldurulacak).
-- DİNÎ İÇERİK İNCELEMESİ (yayından önce): Arapça metinler kaynakla (Tanzil, sunnah.com verisi) harf harf, kaynak
-  numaraları içerikle otomatik doğrulandı; Türkçe anlam/okunuş/not ve kıssa anlatımları elle yazıldı → hoca incelemesi
-  gerekir. Kullanıcıya inceleme PDF'i verildi (189 madde: dualar, tesbihat, zikirler, kıssalar + Namaz Hocası, Esmâ).
-  Âlimler (7 kıssa) kaynak satırı boş: hoca onaylarsa "TDV İslâm Ansiklopedisi, ilgili madde". Düzeltmeler gelince
-  duas.json / stories.json işlenir (diğer dillere de).
+- DİNÎ İÇERİK: Arapça metinler kaynakla (Tanzil, sunnah.com verisi) harf harf doğrulandı. 23 Ekim: kullanıcı hoca
+  bulamadı → Türkçe anlam/not/kıssalar Diyanet İşleri + Diyanet Vakfı mealleri, Kütüb-i Sitte Türkçe çevirileri ve
+  TDV İslâm Ansiklopedisi ile karşılaştırıldı (6 bağımsız kontrol, her bulgu kaynağında yeniden doğrulandı); düzeltmeler
+  5 dilde yapıldı (Ebû Bekir hadisi "üçüncüleri", Hatice 620, Esmâ El-Hakem Arapçası — 1.3.0'da da yanlıştı —, Namaz
+  Hocası zamm-ı sûre vb.). Güncel inceleme PDF'i kullanıcıda; bir din görevlisinin son bakışı yine tavsiye edilir.
 - YAYIN SIRASI (kullanıcı):
-  1. Hoca incelemesi → düzeltmeler.
+  1. (İsteğe bağlı) din görevlisine inceleme PDF'i; gelen düzeltmeler 5 dile işlenir.
   2. docs/gizlilik_politikasi.md: posta adresini doldur → Google Sites'a yapıştır. docs/site/terms.html + index.html →
      mahir2772.github.io (GitHub Pages).
   3. Dinleme: Quran Foundation'da sunucu (backend) uygulaması + üretim erişimi başvurusu; Cloudflare hesabı →
