@@ -319,7 +319,7 @@
     },
     "healthBackgroundStale": "Vaktinde ne s'est pas exécuté en arrière-plan depuis 48 heures : votre téléphone l'arrête peut-être.",
     "healthWidgetTitle": "Widgets et notification permanente",
-    "healthWidgetLate": "Ces 7 derniers jours, le compte à rebours a été mis à jour avec {minutes} min de retard à l'heure de la prière : votre téléphone retient Vaktinde en arrière-plan. Réglez la batterie sur « Sans restriction » et suivez les étapes ci-dessous.",
+    "healthWidgetLate": "Ces 7 derniers jours, le compte à rebours a été mis à jour avec {minutes} min de retard à l'heure de la prière : votre téléphone retient Vaktinde en arrière-plan. Réglez la batterie sur « Sans restriction » et suivez les étapes ci-dessous.",
     "@healthWidgetLate": {
         "placeholders": {
             "minutes": {
@@ -1246,6 +1246,81 @@
     "hatimCompleted": "Votre khatm est terminé. Qu'Allah l'accepte !",
     "hatimReminderChannel": "Rappel de khatm",
     "hatimReminderBody": "N'oubliez pas votre lecture du khatm aujourd'hui.",
+    "hatimTodayRange": "Lecture du jour : pages {from}–{to}",
+    "@hatimTodayRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMarkRead": "C'est lu",
+    "hatimGoalMet": "Lecture du jour terminée",
+    "hatimDetails": "Détails du khatm",
+    "hatimTargetLine": "Objectif : {date}",
+    "@hatimTargetLine": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimJuzHint": "Touchez un juz lu dans un mushaf imprimé pour le marquer.",
+    "hatimJuzMarkRead": "Marquer comme lu tout jusqu'à la fin du juz {juz} ?",
+    "@hatimJuzMarkRead": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimJuzMarkUnread": "Marquer le juz {juz} et la suite comme non lus ?",
+    "@hatimJuzMarkUnread": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMark": "Marquer",
+    "hatimUnmark": "Retirer la marque",
+    "hatimJuzDone": "lu",
+    "hatimJuzCurrent": "en cours",
+    "hatimJuzPending": "non lu",
+    "hatimNote": "Intention",
+    "hatimNoteHint": "Ex. : pour ma défunte mère",
+    "hatimNoteAdd": "Ajouter une intention (facultatif)",
+    "hatimGroup": "Khatm collectif",
+    "hatimGroupDesc": "Répartir les 30 juz et envoyer la liste",
+    "hatimGroupPeople": "Nombre de personnes",
+    "hatimGroupLine": "Personne {person} : {juz}",
+    "@hatimGroupLine": {
+        "placeholders": {
+            "person": {
+                "type": "int"
+            },
+            "juz": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimGroupRange": "Juz {from}–{to}",
+    "@hatimGroupRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimGroupFooter": "Prévenez quand vous avez terminé votre partie. Qu'Allah l'accepte.",
+    "hatimGroupShare": "Partager la liste",
+    "hatimDuaHeader": "Invocation après le khatm",
     "quranTranslationSource": "Traduction : {name}",
     "@quranTranslationSource": {
         "placeholders": {

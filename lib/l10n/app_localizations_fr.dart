@@ -634,7 +634,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String healthWidgetLate(int minutes) {
-    return 'Ces 7 derniers jours, le compte à rebours a été mis à jour avec $minutes min de retard à l\'heure de la prière : votre téléphone retient Vaktinde en arrière-plan. Réglez la batterie sur « Sans restriction » et suivez les étapes ci-dessous.';
+    return 'Ces 7 derniers jours, le compte à rebours a été mis à jour avec $minutes min de retard à l\'heure de la prière : votre téléphone retient Vaktinde en arrière-plan. Réglez la batterie sur « Sans restriction » et suivez les étapes ci-dessous.';
   }
 
   @override
@@ -2506,6 +2506,92 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get hatimReminderBody =>
       'N\'oubliez pas votre lecture du khatm aujourd\'hui.';
+
+  @override
+  String hatimTodayRange(int from, int to) {
+    return 'Lecture du jour : pages $from–$to';
+  }
+
+  @override
+  String get hatimMarkRead => 'C\'est lu';
+
+  @override
+  String get hatimGoalMet => 'Lecture du jour terminée';
+
+  @override
+  String get hatimDetails => 'Détails du khatm';
+
+  @override
+  String hatimTargetLine(String date) {
+    return 'Objectif : $date';
+  }
+
+  @override
+  String get hatimJuzHint =>
+      'Touchez un juz lu dans un mushaf imprimé pour le marquer.';
+
+  @override
+  String hatimJuzMarkRead(int juz) {
+    return 'Marquer comme lu tout jusqu\'à la fin du juz $juz ?';
+  }
+
+  @override
+  String hatimJuzMarkUnread(int juz) {
+    return 'Marquer le juz $juz et la suite comme non lus ?';
+  }
+
+  @override
+  String get hatimMark => 'Marquer';
+
+  @override
+  String get hatimUnmark => 'Retirer la marque';
+
+  @override
+  String get hatimJuzDone => 'lu';
+
+  @override
+  String get hatimJuzCurrent => 'en cours';
+
+  @override
+  String get hatimJuzPending => 'non lu';
+
+  @override
+  String get hatimNote => 'Intention';
+
+  @override
+  String get hatimNoteHint => 'Ex. : pour ma défunte mère';
+
+  @override
+  String get hatimNoteAdd => 'Ajouter une intention (facultatif)';
+
+  @override
+  String get hatimGroup => 'Khatm collectif';
+
+  @override
+  String get hatimGroupDesc => 'Répartir les 30 juz et envoyer la liste';
+
+  @override
+  String get hatimGroupPeople => 'Nombre de personnes';
+
+  @override
+  String hatimGroupLine(int person, String juz) {
+    return 'Personne $person : $juz';
+  }
+
+  @override
+  String hatimGroupRange(int from, int to) {
+    return 'Juz $from–$to';
+  }
+
+  @override
+  String get hatimGroupFooter =>
+      'Prévenez quand vous avez terminé votre partie. Qu\'Allah l\'accepte.';
+
+  @override
+  String get hatimGroupShare => 'Partager la liste';
+
+  @override
+  String get hatimDuaHeader => 'Invocation après le khatm';
 
   @override
   String quranTranslationSource(String name) {

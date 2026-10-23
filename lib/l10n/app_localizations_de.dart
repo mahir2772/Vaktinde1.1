@@ -2484,6 +2484,92 @@ class AppLocalizationsDe extends AppLocalizations {
       'Vergessen Sie Ihre heutige Khatm-Lesung nicht.';
 
   @override
+  String hatimTodayRange(int from, int to) {
+    return 'Heutige Lesung: Seiten $from–$to';
+  }
+
+  @override
+  String get hatimMarkRead => 'Gelesen';
+
+  @override
+  String get hatimGoalMet => 'Heutige Lesung erledigt';
+
+  @override
+  String get hatimDetails => 'Khatm-Details';
+
+  @override
+  String hatimTargetLine(String date) {
+    return 'Ziel: $date';
+  }
+
+  @override
+  String get hatimJuzHint =>
+      'Tippen Sie auf einen Juz, den Sie im gedruckten Mushaf gelesen haben, um ihn zu markieren.';
+
+  @override
+  String hatimJuzMarkRead(int juz) {
+    return 'Alles bis zum Ende von Juz $juz als gelesen markieren?';
+  }
+
+  @override
+  String hatimJuzMarkUnread(int juz) {
+    return 'Juz $juz und alles danach als ungelesen markieren?';
+  }
+
+  @override
+  String get hatimMark => 'Markieren';
+
+  @override
+  String get hatimUnmark => 'Markierung entfernen';
+
+  @override
+  String get hatimJuzDone => 'gelesen';
+
+  @override
+  String get hatimJuzCurrent => 'wird gelesen';
+
+  @override
+  String get hatimJuzPending => 'nicht gelesen';
+
+  @override
+  String get hatimNote => 'Absicht';
+
+  @override
+  String get hatimNoteHint => 'Z. B. für meine verstorbene Mutter';
+
+  @override
+  String get hatimNoteAdd => 'Absicht hinzufügen (optional)';
+
+  @override
+  String get hatimGroup => 'Gemeinsames Khatm';
+
+  @override
+  String get hatimGroupDesc => 'Die 30 Juz verteilen und die Liste senden';
+
+  @override
+  String get hatimGroupPeople => 'Anzahl der Personen';
+
+  @override
+  String hatimGroupLine(int person, String juz) {
+    return 'Person $person: $juz';
+  }
+
+  @override
+  String hatimGroupRange(int from, int to) {
+    return 'Juz $from–$to';
+  }
+
+  @override
+  String get hatimGroupFooter =>
+      'Bitte gebt Bescheid, wenn ihr euren Teil beendet habt. Möge Allah es annehmen.';
+
+  @override
+  String get hatimGroupShare => 'Liste teilen';
+
+  @override
+  String get hatimDuaHeader => 'Bittgebet nach dem Khatm';
+
+  @override
   String quranTranslationSource(String name) {
     return 'Übersetzung: $name';
   }

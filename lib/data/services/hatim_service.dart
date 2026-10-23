@@ -89,6 +89,19 @@ class HatimService {
   Future<void> begin(DateTime target) =>
       _update((_, today) => HatimPlan.begin(today, target));
 
+  /// "Okudum": bugünkü okuma bitti; hatim bu adımda tamamlandıysa true
+  Future<bool> markTodayRead() =>
+      _update((plan, today) => plan?.withTodayRead(today) ?? plan);
+
+  /// Cüz ızgarasında [juz] işaretlendi / işareti kaldırıldı; hatim bu
+  /// adımda tamamlandıysa true
+  Future<bool> toggleJuz(QuranPages pages, int juz) =>
+      _update((plan, today) => plan?.withJuzToggled(pages, juz, today));
+
+  /// Niyet (boş: kaldırılır)
+  Future<void> setNote(String? note) =>
+      _update((plan, _) => plan?.withNote(note));
+
   /// "Planı Değiştir": konum ve kayıt korunur
   Future<void> changeTarget(DateTime target) =>
       _update((plan, _) => plan?.withTarget(target));

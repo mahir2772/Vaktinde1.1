@@ -1246,6 +1246,81 @@
     "hatimCompleted": "Your Khatm is complete. May Allah accept it!",
     "hatimReminderChannel": "Khatm reminder",
     "hatimReminderBody": "Don't forget today's Khatm reading.",
+    "hatimTodayRange": "Today's reading: pages {from}–{to}",
+    "@hatimTodayRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMarkRead": "I've read it",
+    "hatimGoalMet": "Today's reading is done",
+    "hatimDetails": "Khatm details",
+    "hatimTargetLine": "Target: {date}",
+    "@hatimTargetLine": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimJuzHint": "Tap a juz you read from a printed mushaf to mark it.",
+    "hatimJuzMarkRead": "Mark everything up to the end of juz {juz} as read?",
+    "@hatimJuzMarkRead": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimJuzMarkUnread": "Mark juz {juz} and the rest as unread?",
+    "@hatimJuzMarkUnread": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMark": "Mark",
+    "hatimUnmark": "Unmark",
+    "hatimJuzDone": "read",
+    "hatimJuzCurrent": "in progress",
+    "hatimJuzPending": "not read",
+    "hatimNote": "Intention",
+    "hatimNoteHint": "E.g. for my late mother",
+    "hatimNoteAdd": "Add an intention (optional)",
+    "hatimGroup": "Group Khatm",
+    "hatimGroupDesc": "Share out the 30 juz and send the list",
+    "hatimGroupPeople": "Number of people",
+    "hatimGroupLine": "Person {person}: {juz}",
+    "@hatimGroupLine": {
+        "placeholders": {
+            "person": {
+                "type": "int"
+            },
+            "juz": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimGroupRange": "Juz {from}–{to}",
+    "@hatimGroupRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimGroupFooter": "Please let us know when you finish your part. May Allah accept it.",
+    "hatimGroupShare": "Share List",
+    "hatimDuaHeader": "Dua after completing the Quran",
     "quranTranslationSource": "Translation: {name}",
     "@quranTranslationSource": {
         "placeholders": {

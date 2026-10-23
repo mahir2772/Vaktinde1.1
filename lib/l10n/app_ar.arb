@@ -1246,6 +1246,81 @@
     "hatimCompleted": "اكتملت ختمتك، تقبّل الله منك!",
     "hatimReminderChannel": "تذكير الختمة",
     "hatimReminderBody": "لا تنسَ وِردك اليومي من الختمة.",
+    "hatimTodayRange": "ورد اليوم: الصفحات {from}–{to}",
+    "@hatimTodayRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMarkRead": "قرأتُه",
+    "hatimGoalMet": "اكتمل ورد اليوم",
+    "hatimDetails": "تفاصيل الختمة",
+    "hatimTargetLine": "الموعد: {date}",
+    "@hatimTargetLine": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimJuzHint": "اضغط على الجزء الذي قرأته من المصحف الورقي لتعليمه.",
+    "hatimJuzMarkRead": "هل تريد تعليم القراءة حتى نهاية الجزء {juz}؟",
+    "@hatimJuzMarkRead": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimJuzMarkUnread": "هل تريد تعليم الجزء {juz} وما بعده كغير مقروء؟",
+    "@hatimJuzMarkUnread": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMark": "تعليم",
+    "hatimUnmark": "إزالة التعليم",
+    "hatimJuzDone": "مقروء",
+    "hatimJuzCurrent": "قيد القراءة",
+    "hatimJuzPending": "غير مقروء",
+    "hatimNote": "النية",
+    "hatimNoteHint": "مثال: لروح والدتي",
+    "hatimNoteAdd": "أضف نية (اختياري)",
+    "hatimGroup": "ختمة جماعية",
+    "hatimGroupDesc": "وزّع الأجزاء الثلاثين وأرسل القائمة",
+    "hatimGroupPeople": "عدد الأشخاص",
+    "hatimGroupLine": "الشخص {person}: {juz}",
+    "@hatimGroupLine": {
+        "placeholders": {
+            "person": {
+                "type": "int"
+            },
+            "juz": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimGroupRange": "الأجزاء {from}–{to}",
+    "@hatimGroupRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimGroupFooter": "أخبرونا عند إتمام أجزائكم. تقبّل الله.",
+    "hatimGroupShare": "مشاركة القائمة",
+    "hatimDuaHeader": "دعاء بعد الختم",
     "quranTranslationSource": "الترجمة: {name}",
     "@quranTranslationSource": {
         "placeholders": {

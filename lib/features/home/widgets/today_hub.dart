@@ -17,7 +17,7 @@ import '../../duas/view/tesbihat_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../quran/view/quran_view.dart';
 import '../../quran/view/surah_reader_view.dart';
-import '../../quran/widgets/hatim_card.dart';
+import '../../quran/view/hatim_view.dart';
 import '../../main_wrapper/main_tabs.dart';
 import '../../religious_days/view/religious_days_view.dart';
 

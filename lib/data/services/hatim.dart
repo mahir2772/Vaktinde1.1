@@ -49,6 +49,18 @@ class QuranPages {
   ({int surah, int ayah}) startOf(int page) =>
       starts[page.clamp(1, starts.length) - 1];
 
+  /// Cüzün ([juz] 1–30) başladığı sayfa
+  int juzStartPage(int juz) {
+    final start = QuranService.juzStarts[juz.clamp(1, 30) - 1];
+    return pageOf(start.surah, start.ayah);
+  }
+
+  /// Cüzün okunmuş sayılması için bitirilmesi gereken son sayfa: sonraki
+  /// cüzün başladığı sayfadan önceki (sayfa ortasında başlıyorsa o sayfa
+  /// sonraki cüzle okunur, hiçbir ayet atlanmaz)
+  int juzEndPage(int juz) =>
+      juz >= 30 ? starts.length : juzStartPage(juz + 1) - 1;
+
   /// Ayetin sayfası: başı ayetten sonra olmayan son sayfa
   int pageOf(int surah, int ayah) {
     var low = 0;
@@ -89,11 +101,17 @@ class HatimPlan {
   /// "Ramazan'da hatim" seçeneği Ramazan'dan en çok bu kadar gün önce çıkar
   static const int ramadanLeadDays = 15;
 
+  /// Niyet notunun en çok uzunluğu
+  static const int noteMaxLength = 80;
+
   final DateTime start;
   final DateTime target;
   final int position;
   final Map<String, int> log;
   final DateTime? finished;
+
+  /// Niyet (ör. "Annemin ruhu için"); yoksa null
+  final String? note;
 
   const HatimPlan({
     required this.start,
@@ -101,6 +119,7 @@ class HatimPlan {
     required this.position,
     required this.log,
     this.finished,
+    this.note,
   });
 
   /// Bugün başlayan yeni hatim
@@ -110,6 +129,15 @@ class HatimPlan {
     position: 0,
     log: const {},
   );
+
+  /// Boşlukları atılmış, [noteMaxLength] karaktere kısaltılmış not; boşsa null
+  static String? cleanNote(String? note) {
+    final text = note?.trim().replaceAll(RegExp(r'\s+'), ' ') ?? '';
+    if (text.isEmpty) return null;
+    return text.length <= noteMaxLength
+        ? text
+        : text.substring(0, noteMaxLength).trimRight();
+  }
 
   bool get isFinished => position >= pageCount;
 
@@ -143,6 +171,50 @@ class HatimPlan {
   int dailyGoal(DateTime today) =>
       goalFor(remainingOn(today), PrayerTracker.daysBetween(today, target) + 1);
 
+  /// Bugünkü okumanın sayfaları: günün başındaki konumdan sonraki sayfadan
+  /// günlük hedef kadar (son sayfayı aşmaz)
+  ({int from, int to}) todayRange(DateTime today) {
+    final from = position - readOn(today) + 1;
+    return (from: from, to: math.min(pageCount, from + dailyGoal(today) - 1));
+  }
+
+  /// "Okudum": bugünkü okuma bitirildi (konum aralığın sonuna gelir); hedef
+  /// zaten tamamsa ya da hatim bittiyse null
+  HatimPlan? withTodayRead(DateTime today) {
+    final to = todayRange(today).to;
+    return isFinished || to <= position ? null : _moved(to, today);
+  }
+
+  /// Cüz ızgarası: [juz] okundu, okunuyor (sıradaki sayfa bu cüzde) ya da
+  /// okunmadı
+  HatimJuzState juzState(QuranPages pages, int juz) {
+    if (position >= pages.juzEndPage(juz)) return HatimJuzState.done;
+    return position + 1 >= pages.juzStartPage(juz)
+        ? HatimJuzState.current
+        : HatimJuzState.pending;
+  }
+
+  /// Cüze dokunuldu: okunmadıysa sonuna kadar okundu, okunduysa o cüz ve
+  /// sonrası okunmadı sayılır
+  HatimPlan withJuzToggled(QuranPages pages, int juz, DateTime today) =>
+      juzState(pages, juz) == HatimJuzState.done
+      ? withPosition(pages.juzStartPage(juz) - 1, today)
+      : withPosition(pages.juzEndPage(juz), today);
+
+  /// Toplu hatim: 30 cüz [people] kişiye sırayla, olabildiğince eşit
+  /// paylaştırılır (ilk kişilere birer fazla); kişi sayısı 1–30
+  static List<({int from, int to})> juzShares(int people) {
+    final count = people.clamp(1, 30);
+    final shares = <({int from, int to})>[];
+    var next = 1;
+    for (var i = 0; i < count; i++) {
+      final size = 30 ~/ count + (i < 30 % count ? 1 : 0);
+      shares.add((from: next, to: next + size - 1));
+      next += size;
+    }
+    return shares;
+  }
+
   /// Okuyucuda [page] sayfası bitirildi: konum ileri gider (fark bugüne
   /// yazılır; sıranın denetimi okuyucuda); geri dönüşte ya da bitmiş hatimde
   /// null
@@ -151,10 +223,10 @@ class HatimPlan {
       ? null
       : _moved(math.min(page, pageCount), today);
 
-  /// "Sayfa Gir" (basılı mushaftan okuyan): konum [page] olur (1–604); bugünün
-  /// kaydı fark kadar değişir, 0'ın altına inmez
+  /// "Sayfa Gir" (basılı mushaftan okuyan) ve cüz ızgarası: konum [page]
+  /// olur (0–604); bugünün kaydı fark kadar değişir, 0'ın altına inmez
   HatimPlan withPosition(int page, DateTime today) =>
-      _moved(page.clamp(1, pageCount), today);
+      _moved(page.clamp(0, pageCount), today);
 
   /// "Planı Değiştir": konum ve kayıt korunur
   HatimPlan withTarget(DateTime target) => HatimPlan(
@@ -163,6 +235,17 @@ class HatimPlan {
     position: position,
     log: log,
     finished: finished,
+    note: note,
+  );
+
+  /// Niyet değişti (boş: kaldırılır)
+  HatimPlan withNote(String? note) => HatimPlan(
+    start: start,
+    target: target,
+    position: position,
+    log: log,
+    finished: finished,
+    note: cleanNote(note),
   );
 
   HatimPlan _moved(int page, DateTime today) {
@@ -176,6 +259,7 @@ class HatimPlan {
       finished: page >= pageCount
           ? (finished ?? PrayerTracker.day(today))
           : null,
+      note: note,
     );
   }
 
@@ -221,6 +305,7 @@ class HatimPlan {
     'position': position,
     'log': log,
     if (finished != null) 'finished': PrayerTracker.dateKey(finished!),
+    if (note != null) 'note': note,
   });
 
   /// Kayıtlı plan; bozuk ya da tutarsızsa (bitiş günü konumla uyuşmuyor) null
@@ -245,15 +330,20 @@ class HatimPlan {
         if (value is! int || value < 0) return null;
         days[key] = value;
       }
+      final note = data['note'];
       return HatimPlan(
         start: start,
         target: target,
         position: position,
         log: days,
         finished: finished,
+        note: note is String ? cleanNote(note) : null,
       );
     } on FormatException {
       return null;
     }
   }
 }
+
+/// Hatim ekranındaki cüz hücresinin durumu
+enum HatimJuzState { done, current, pending }

@@ -22,7 +22,7 @@ import 'package:ezan_saati/features/common/open_surah.dart';
 import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
-import 'package:ezan_saati/features/quran/widgets/hatim_card.dart';
+import 'package:ezan_saati/features/quran/view/hatim_view.dart';
 import 'package:ezan_saati/features/app_guide/whats_new.dart';
 
 import 'app_showcase.dart';

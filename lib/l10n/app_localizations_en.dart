@@ -2478,6 +2478,92 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hatimReminderBody => 'Don\'t forget today\'s Khatm reading.';
 
   @override
+  String hatimTodayRange(int from, int to) {
+    return 'Today\'s reading: pages $from–$to';
+  }
+
+  @override
+  String get hatimMarkRead => 'I\'ve read it';
+
+  @override
+  String get hatimGoalMet => 'Today\'s reading is done';
+
+  @override
+  String get hatimDetails => 'Khatm details';
+
+  @override
+  String hatimTargetLine(String date) {
+    return 'Target: $date';
+  }
+
+  @override
+  String get hatimJuzHint =>
+      'Tap a juz you read from a printed mushaf to mark it.';
+
+  @override
+  String hatimJuzMarkRead(int juz) {
+    return 'Mark everything up to the end of juz $juz as read?';
+  }
+
+  @override
+  String hatimJuzMarkUnread(int juz) {
+    return 'Mark juz $juz and the rest as unread?';
+  }
+
+  @override
+  String get hatimMark => 'Mark';
+
+  @override
+  String get hatimUnmark => 'Unmark';
+
+  @override
+  String get hatimJuzDone => 'read';
+
+  @override
+  String get hatimJuzCurrent => 'in progress';
+
+  @override
+  String get hatimJuzPending => 'not read';
+
+  @override
+  String get hatimNote => 'Intention';
+
+  @override
+  String get hatimNoteHint => 'E.g. for my late mother';
+
+  @override
+  String get hatimNoteAdd => 'Add an intention (optional)';
+
+  @override
+  String get hatimGroup => 'Group Khatm';
+
+  @override
+  String get hatimGroupDesc => 'Share out the 30 juz and send the list';
+
+  @override
+  String get hatimGroupPeople => 'Number of people';
+
+  @override
+  String hatimGroupLine(int person, String juz) {
+    return 'Person $person: $juz';
+  }
+
+  @override
+  String hatimGroupRange(int from, int to) {
+    return 'Juz $from–$to';
+  }
+
+  @override
+  String get hatimGroupFooter =>
+      'Please let us know when you finish your part. May Allah accept it.';
+
+  @override
+  String get hatimGroupShare => 'Share List';
+
+  @override
+  String get hatimDuaHeader => 'Dua after completing the Quran';
+
+  @override
   String quranTranslationSource(String name) {
     return 'Translation: $name';
   }

@@ -4298,6 +4298,150 @@ abstract class AppLocalizations {
   /// **'Bugünkü hatim okumanızı unutmayın.'**
   String get hatimReminderBody;
 
+  /// No description provided for @hatimTodayRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünkü okuma: Sayfa {from}–{to}'**
+  String hatimTodayRange(int from, int to);
+
+  /// No description provided for @hatimMarkRead.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okudum'**
+  String get hatimMarkRead;
+
+  /// No description provided for @hatimGoalMet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünkü okuma tamam'**
+  String get hatimGoalMet;
+
+  /// No description provided for @hatimDetails.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim ayrıntıları'**
+  String get hatimDetails;
+
+  /// No description provided for @hatimTargetLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef: {date}'**
+  String hatimTargetLine(String date);
+
+  /// No description provided for @hatimJuzHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mushaftan okuduğunuz cüze dokunarak işaretleyebilirsiniz.'**
+  String get hatimJuzHint;
+
+  /// No description provided for @hatimJuzMarkRead.
+  ///
+  /// In tr, this message translates to:
+  /// **'{juz}. cüzün sonuna kadar okundu olarak işaretlensin mi?'**
+  String hatimJuzMarkRead(int juz);
+
+  /// No description provided for @hatimJuzMarkUnread.
+  ///
+  /// In tr, this message translates to:
+  /// **'{juz}. cüz ve sonrası okunmadı olarak işaretlensin mi?'**
+  String hatimJuzMarkUnread(int juz);
+
+  /// No description provided for @hatimMark.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşaretle'**
+  String get hatimMark;
+
+  /// No description provided for @hatimUnmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşareti kaldır'**
+  String get hatimUnmark;
+
+  /// No description provided for @hatimJuzDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'okundu'**
+  String get hatimJuzDone;
+
+  /// No description provided for @hatimJuzCurrent.
+  ///
+  /// In tr, this message translates to:
+  /// **'okunuyor'**
+  String get hatimJuzCurrent;
+
+  /// No description provided for @hatimJuzPending.
+  ///
+  /// In tr, this message translates to:
+  /// **'okunmadı'**
+  String get hatimJuzPending;
+
+  /// No description provided for @hatimNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Niyet'**
+  String get hatimNote;
+
+  /// No description provided for @hatimNoteHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: Annemin ruhu için'**
+  String get hatimNoteHint;
+
+  /// No description provided for @hatimNoteAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Niyet ekleyin (isteğe bağlı)'**
+  String get hatimNoteAdd;
+
+  /// No description provided for @hatimGroup.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplu Hatim'**
+  String get hatimGroup;
+
+  /// No description provided for @hatimGroupDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'30 cüzü kişilere paylaştırın, listeyi gönderin'**
+  String get hatimGroupDesc;
+
+  /// No description provided for @hatimGroupPeople.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi sayısı'**
+  String get hatimGroupPeople;
+
+  /// No description provided for @hatimGroupLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'{person}. kişi: {juz}'**
+  String hatimGroupLine(int person, String juz);
+
+  /// No description provided for @hatimGroupRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüz {from}–{to}'**
+  String hatimGroupRange(int from, int to);
+
+  /// No description provided for @hatimGroupFooter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüzünüzü bitirince haber verin. Allah kabul etsin.'**
+  String get hatimGroupFooter;
+
+  /// No description provided for @hatimGroupShare.
+  ///
+  /// In tr, this message translates to:
+  /// **'Listeyi Paylaş'**
+  String get hatimGroupShare;
+
+  /// No description provided for @hatimDuaHeader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim sonrası dua'**
+  String get hatimDuaHeader;
+
   /// No description provided for @quranTranslationSource.
   ///
   /// In tr, this message translates to:

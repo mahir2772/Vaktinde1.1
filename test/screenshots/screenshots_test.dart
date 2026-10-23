@@ -56,6 +56,7 @@ import 'package:ezan_saati/features/qibla/qibla_math.dart' show qiblaBearing;
 import 'package:ezan_saati/features/quran/ayah_model.dart';
 import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
+import 'package:ezan_saati/features/quran/view/hatim_view.dart';
 import 'package:ezan_saati/features/quran/widgets/hatim_card.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/settings/view/notification_settings_view.dart';
@@ -1031,6 +1032,7 @@ void main() {
     await DuaLibrary.load();
     await PrayerGuide.load();
     await rootBundle.loadString(QuranService.surahsAsset);
+    await HatimService.loadPages();
     await LocationCatalog.load();
     // Hatim hatırlatması (uygulamada NotificationService.init kurar)
     tz.initializeTimeZones();
@@ -2215,19 +2217,25 @@ void main() {
           await _shot(tester, name);
         }
 
-        Future<void> openMenu() async {
-          await tester.tap(
-            find.byTooltip(
-              MaterialLocalizations.of(
-                tester.element(find.byType(HatimCard)),
-              ).showMenuTooltip,
-            ),
-          );
+        Future<void> openHatim() async {
+          expect(find.byType(HatimCard), findsOneWidget);
+          await tester.tap(find.byTooltip(loc.hatimDetails));
           await _settle(tester, steps: 6);
         }
 
-        Future<void> menu(String label) async {
-          await openMenu();
+        /// Hatim ekranında [label]'a kaydırıp dokunur ([delta] < 0: yukarı)
+        Future<void> hatimTap(String label, {double delta = 200}) async {
+          await tester.scrollUntilVisible(
+            find.text(label),
+            delta,
+            scrollable: find
+                .descendant(
+                  of: find.byType(HatimView),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          );
+          await tester.pump();
           await tester.tap(find.text(label));
           await _settle(tester, steps: 6);
         }
@@ -2246,11 +2254,23 @@ void main() {
         await _settle(tester, steps: 2);
 
         await openQuran('${lang}_80_hatim_card');
-        _currentScreen = '${lang}_81_hatim_menu';
-        await openMenu();
-        await _shot(tester, '${lang}_81_hatim_menu');
-        await tester.tap(find.text(loc.hatimReminder));
-        await _settle(tester, steps: 6);
+        _currentScreen = '${lang}_81_hatim_view';
+        await openHatim();
+        await _shot(tester, '${lang}_81_hatim_view');
+        _currentScreen = '${lang}_81_hatim_juz';
+        await tester.scrollUntilVisible(
+          find.text(loc.hatimJuzHint),
+          200,
+          scrollable: find
+              .descendant(
+                of: find.byType(HatimView),
+                matching: find.byType(Scrollable),
+              )
+              .first,
+        );
+        await _settle(tester, steps: 2);
+        await _shot(tester, '${lang}_81_hatim_juz');
+        await hatimTap(loc.hatimReminder);
         _currentScreen = '${lang}_82_hatim_reminder';
         await tester.tap(find.text(loc.hatimReminderDaily));
         await _settle(tester, steps: 6);
@@ -2259,14 +2279,20 @@ void main() {
         await _settle(tester, steps: 6);
 
         _currentScreen = '${lang}_83_hatim_change_plan';
-        await menu(loc.hatimChangePlan);
+        await hatimTap(loc.hatimChangePlan);
         await _shot(tester, '${lang}_83_hatim_change_plan');
         _navigator(tester).pop();
         await _settle(tester, steps: 6);
 
-        // Sayfa Gir: son sayfa → hatim tamamlanır
+        _currentScreen = '${lang}_89_hatim_group';
+        await hatimTap(loc.hatimGroup);
+        await _shot(tester, '${lang}_89_hatim_group');
+        _navigator(tester).pop();
+        await _settle(tester, steps: 6);
+
+        // Sayfa Gir: son sayfa → hatim tamamlanır (bitiş + hatim duası)
         _currentScreen = '${lang}_84_hatim_enter_page';
-        await menu(loc.hatimEnterPage);
+        await hatimTap(loc.hatimEnterPage, delta: -200);
         await tester.enterText(
           find.descendant(
             of: find.byType(AlertDialog),
@@ -2316,8 +2342,11 @@ void main() {
               extraPrefs: _hatimPrefs(),
             );
             await openQuran('${lang}_87_hatim_card_$suffix');
+            _currentScreen = '${lang}_88_hatim_view_$suffix';
+            await openHatim();
+            await _shot(tester, '${lang}_88_hatim_view_$suffix');
             _currentScreen = '${lang}_88_hatim_change_plan_$suffix';
-            await menu(loc.hatimChangePlan);
+            await hatimTap(loc.hatimChangePlan);
             await _shot(tester, '${lang}_88_hatim_change_plan_$suffix');
             await _finish(tester);
           } finally {

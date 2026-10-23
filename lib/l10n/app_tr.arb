@@ -1332,6 +1332,81 @@
     "hatimCompleted": "Hatminiz tamamlandı. Allah kabul etsin!",
     "hatimReminderChannel": "Hatim hatırlatması",
     "hatimReminderBody": "Bugünkü hatim okumanızı unutmayın.",
+    "hatimTodayRange": "Bugünkü okuma: Sayfa {from}–{to}",
+    "@hatimTodayRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMarkRead": "Okudum",
+    "hatimGoalMet": "Bugünkü okuma tamam",
+    "hatimDetails": "Hatim ayrıntıları",
+    "hatimTargetLine": "Hedef: {date}",
+    "@hatimTargetLine": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimJuzHint": "Mushaftan okuduğunuz cüze dokunarak işaretleyebilirsiniz.",
+    "hatimJuzMarkRead": "{juz}. cüzün sonuna kadar okundu olarak işaretlensin mi?",
+    "@hatimJuzMarkRead": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimJuzMarkUnread": "{juz}. cüz ve sonrası okunmadı olarak işaretlensin mi?",
+    "@hatimJuzMarkUnread": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMark": "İşaretle",
+    "hatimUnmark": "İşareti kaldır",
+    "hatimJuzDone": "okundu",
+    "hatimJuzCurrent": "okunuyor",
+    "hatimJuzPending": "okunmadı",
+    "hatimNote": "Niyet",
+    "hatimNoteHint": "Örn: Annemin ruhu için",
+    "hatimNoteAdd": "Niyet ekleyin (isteğe bağlı)",
+    "hatimGroup": "Toplu Hatim",
+    "hatimGroupDesc": "30 cüzü kişilere paylaştırın, listeyi gönderin",
+    "hatimGroupPeople": "Kişi sayısı",
+    "hatimGroupLine": "{person}. kişi: {juz}",
+    "@hatimGroupLine": {
+        "placeholders": {
+            "person": {
+                "type": "int"
+            },
+            "juz": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimGroupRange": "Cüz {from}–{to}",
+    "@hatimGroupRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimGroupFooter": "Cüzünüzü bitirince haber verin. Allah kabul etsin.",
+    "hatimGroupShare": "Listeyi Paylaş",
+    "hatimDuaHeader": "Hatim sonrası dua",
     "quranTranslationSource": "Meal: {name}",
     "@quranTranslationSource": {
         "placeholders": {

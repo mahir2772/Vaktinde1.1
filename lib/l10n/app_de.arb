@@ -1246,6 +1246,81 @@
     "hatimCompleted": "Ihr Khatm ist abgeschlossen. Möge Allah ihn annehmen!",
     "hatimReminderChannel": "Khatm-Erinnerung",
     "hatimReminderBody": "Vergessen Sie Ihre heutige Khatm-Lesung nicht.",
+    "hatimTodayRange": "Heutige Lesung: Seiten {from}–{to}",
+    "@hatimTodayRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMarkRead": "Gelesen",
+    "hatimGoalMet": "Heutige Lesung erledigt",
+    "hatimDetails": "Khatm-Details",
+    "hatimTargetLine": "Ziel: {date}",
+    "@hatimTargetLine": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimJuzHint": "Tippen Sie auf einen Juz, den Sie im gedruckten Mushaf gelesen haben, um ihn zu markieren.",
+    "hatimJuzMarkRead": "Alles bis zum Ende von Juz {juz} als gelesen markieren?",
+    "@hatimJuzMarkRead": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimJuzMarkUnread": "Juz {juz} und alles danach als ungelesen markieren?",
+    "@hatimJuzMarkUnread": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMark": "Markieren",
+    "hatimUnmark": "Markierung entfernen",
+    "hatimJuzDone": "gelesen",
+    "hatimJuzCurrent": "wird gelesen",
+    "hatimJuzPending": "nicht gelesen",
+    "hatimNote": "Absicht",
+    "hatimNoteHint": "Z. B. für meine verstorbene Mutter",
+    "hatimNoteAdd": "Absicht hinzufügen (optional)",
+    "hatimGroup": "Gemeinsames Khatm",
+    "hatimGroupDesc": "Die 30 Juz verteilen und die Liste senden",
+    "hatimGroupPeople": "Anzahl der Personen",
+    "hatimGroupLine": "Person {person}: {juz}",
+    "@hatimGroupLine": {
+        "placeholders": {
+            "person": {
+                "type": "int"
+            },
+            "juz": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimGroupRange": "Juz {from}–{to}",
+    "@hatimGroupRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimGroupFooter": "Bitte gebt Bescheid, wenn ihr euren Teil beendet habt. Möge Allah es annehmen.",
+    "hatimGroupShare": "Liste teilen",
+    "hatimDuaHeader": "Bittgebet nach dem Khatm",
     "quranTranslationSource": "Übersetzung: {name}",
     "@quranTranslationSource": {
         "placeholders": {

@@ -2428,6 +2428,92 @@ class AppLocalizationsTr extends AppLocalizations {
   String get hatimReminderBody => 'Bugünkü hatim okumanızı unutmayın.';
 
   @override
+  String hatimTodayRange(int from, int to) {
+    return 'Bugünkü okuma: Sayfa $from–$to';
+  }
+
+  @override
+  String get hatimMarkRead => 'Okudum';
+
+  @override
+  String get hatimGoalMet => 'Bugünkü okuma tamam';
+
+  @override
+  String get hatimDetails => 'Hatim ayrıntıları';
+
+  @override
+  String hatimTargetLine(String date) {
+    return 'Hedef: $date';
+  }
+
+  @override
+  String get hatimJuzHint =>
+      'Mushaftan okuduğunuz cüze dokunarak işaretleyebilirsiniz.';
+
+  @override
+  String hatimJuzMarkRead(int juz) {
+    return '$juz. cüzün sonuna kadar okundu olarak işaretlensin mi?';
+  }
+
+  @override
+  String hatimJuzMarkUnread(int juz) {
+    return '$juz. cüz ve sonrası okunmadı olarak işaretlensin mi?';
+  }
+
+  @override
+  String get hatimMark => 'İşaretle';
+
+  @override
+  String get hatimUnmark => 'İşareti kaldır';
+
+  @override
+  String get hatimJuzDone => 'okundu';
+
+  @override
+  String get hatimJuzCurrent => 'okunuyor';
+
+  @override
+  String get hatimJuzPending => 'okunmadı';
+
+  @override
+  String get hatimNote => 'Niyet';
+
+  @override
+  String get hatimNoteHint => 'Örn: Annemin ruhu için';
+
+  @override
+  String get hatimNoteAdd => 'Niyet ekleyin (isteğe bağlı)';
+
+  @override
+  String get hatimGroup => 'Toplu Hatim';
+
+  @override
+  String get hatimGroupDesc => '30 cüzü kişilere paylaştırın, listeyi gönderin';
+
+  @override
+  String get hatimGroupPeople => 'Kişi sayısı';
+
+  @override
+  String hatimGroupLine(int person, String juz) {
+    return '$person. kişi: $juz';
+  }
+
+  @override
+  String hatimGroupRange(int from, int to) {
+    return 'Cüz $from–$to';
+  }
+
+  @override
+  String get hatimGroupFooter =>
+      'Cüzünüzü bitirince haber verin. Allah kabul etsin.';
+
+  @override
+  String get hatimGroupShare => 'Listeyi Paylaş';
+
+  @override
+  String get hatimDuaHeader => 'Hatim sonrası dua';
+
+  @override
   String quranTranslationSource(String name) {
     return 'Meal: $name';
   }

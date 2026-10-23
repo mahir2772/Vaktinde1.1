@@ -2504,6 +2504,91 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hatimReminderBody => 'لا تنسَ وِردك اليومي من الختمة.';
 
   @override
+  String hatimTodayRange(int from, int to) {
+    return 'ورد اليوم: الصفحات $from–$to';
+  }
+
+  @override
+  String get hatimMarkRead => 'قرأتُه';
+
+  @override
+  String get hatimGoalMet => 'اكتمل ورد اليوم';
+
+  @override
+  String get hatimDetails => 'تفاصيل الختمة';
+
+  @override
+  String hatimTargetLine(String date) {
+    return 'الموعد: $date';
+  }
+
+  @override
+  String get hatimJuzHint =>
+      'اضغط على الجزء الذي قرأته من المصحف الورقي لتعليمه.';
+
+  @override
+  String hatimJuzMarkRead(int juz) {
+    return 'هل تريد تعليم القراءة حتى نهاية الجزء $juz؟';
+  }
+
+  @override
+  String hatimJuzMarkUnread(int juz) {
+    return 'هل تريد تعليم الجزء $juz وما بعده كغير مقروء؟';
+  }
+
+  @override
+  String get hatimMark => 'تعليم';
+
+  @override
+  String get hatimUnmark => 'إزالة التعليم';
+
+  @override
+  String get hatimJuzDone => 'مقروء';
+
+  @override
+  String get hatimJuzCurrent => 'قيد القراءة';
+
+  @override
+  String get hatimJuzPending => 'غير مقروء';
+
+  @override
+  String get hatimNote => 'النية';
+
+  @override
+  String get hatimNoteHint => 'مثال: لروح والدتي';
+
+  @override
+  String get hatimNoteAdd => 'أضف نية (اختياري)';
+
+  @override
+  String get hatimGroup => 'ختمة جماعية';
+
+  @override
+  String get hatimGroupDesc => 'وزّع الأجزاء الثلاثين وأرسل القائمة';
+
+  @override
+  String get hatimGroupPeople => 'عدد الأشخاص';
+
+  @override
+  String hatimGroupLine(int person, String juz) {
+    return 'الشخص $person: $juz';
+  }
+
+  @override
+  String hatimGroupRange(int from, int to) {
+    return 'الأجزاء $from–$to';
+  }
+
+  @override
+  String get hatimGroupFooter => 'أخبرونا عند إتمام أجزائكم. تقبّل الله.';
+
+  @override
+  String get hatimGroupShare => 'مشاركة القائمة';
+
+  @override
+  String get hatimDuaHeader => 'دعاء بعد الختم';
+
+  @override
   String quranTranslationSource(String name) {
     return 'الترجمة: $name';
   }
