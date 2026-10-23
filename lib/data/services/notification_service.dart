@@ -195,7 +195,8 @@ class NotificationService {
   // Kip türe ve izinlere göre ([scheduleModeFor]). İzin sorgulanamadıysa ya da
   // kurulum sırasında geri alındıysa tam zamanlı kip (alarmClock da
   // exactAllowWhileIdle da) reddedilir: aynı bildirim gecikmeli kurulur.
-  Future<void> _zonedSchedule(
+  // Kurulduğu kip döner.
+  Future<AndroidScheduleMode> _zonedSchedule(
     int id,
     String title,
     String body,
@@ -221,6 +222,7 @@ class NotificationService {
         androidScheduleMode: mode,
         payload: payload,
       );
+      return mode;
     } on PlatformException catch (e) {
       if (e.code != exactAlarmsDeniedCode ||
           mode == AndroidScheduleMode.inexactAllowWhileIdle) {
@@ -239,6 +241,7 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         payload: payload,
       );
+      return AndroidScheduleMode.inexactAllowWhileIdle;
     }
   }
 
@@ -369,7 +372,8 @@ class NotificationService {
     }
   }
 
-  Future<void> schedulePrayerNotification({
+  /// Kurulduğu kip döner (vakti geçmişse kurulmaz: null)
+  Future<AndroidScheduleMode?> schedulePrayerNotification({
     required int id,
     required String title,
     required String body,
@@ -383,7 +387,7 @@ class NotificationService {
     String? stopLabel, // verilirse (sesli ezan) "Durdur" butonu eklenir
     bool alarmStream = false, // "sessiz modda da çal": alarm ses akışı (ezan)
   }) async {
-    if (scheduledTime.isBefore(DateTime.now())) return;
+    if (scheduledTime.isBefore(DateTime.now())) return null;
     final channel = prayerChannel(soundName, alarmStream: alarmStream);
 
     bool playSound = soundName != null;
@@ -395,7 +399,7 @@ class NotificationService {
       if (stopLabel != null) stopAction(stopLabel, title, body),
     ];
 
-    await _zonedSchedule(
+    return _zonedSchedule(
       id,
       title,
       body,

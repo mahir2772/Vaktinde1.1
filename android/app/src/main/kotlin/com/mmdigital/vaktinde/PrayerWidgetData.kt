@@ -49,6 +49,18 @@ object PrayerWidgetData {
     // İzinsiz yenileme penceresi (Android 12+ en kısa pencere 10 dk)
     private const val REFRESH_WINDOW_MS = 10 * 60 * 1000L
 
+    /** Yenileme alarmının hedeflediği an (ms): gelince gecikme ölçülür ([noteRefreshDelay]) */
+    const val EXTRA_TARGET = "vaktinde_refresh_target"
+
+    // Dart'ın yazdığı ezan "alarm saati" anları (WidgetService.alarmClockTimesKey)
+    private const val ALARM_CLOCK_TIMES_KEY = "alarm_clock_times"
+    private const val ALARM_CLOCK_MATCH_MS = 60 * 1000L
+
+    // Son geç yenileme: ne zaman, kaç ms (Bildirim Kontrolü okur); soğuk başlangıç payı 2 dk
+    private const val LATE_AT_KEY = "refresh_late_at"
+    private const val LATE_MS_KEY = "refresh_late_ms"
+    private const val LATE_THRESHOLD_MS = 2 * 60 * 1000L
+
     /**
      * Bugün gösterilecek 6 vakit ("HH:mm"), yatsıdan sonraki imsak; [rolledOver]: gün dönmüş, yarının
      * seti bugünün. [texts] / [nextImsakText]: aynı vakitlerin ekrandaki yazımı ([displayTime])
@@ -233,6 +245,7 @@ object PrayerWidgetData {
             }
             val intent = updateIntent(context, providerClass).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                putExtra(EXTRA_TARGET, targetTime)
             }
             val pendingIntent = PendingIntent.getBroadcast(
                 context, UPDATE_REQUEST_CODE, intent,
@@ -275,16 +288,56 @@ object PrayerWidgetData {
      * (Android 12/12L'de "Alarmlar ve hatırlatıcılar" kapalı) setAlarmClock da SecurityException
      * atar: izin istemeyen, cihazı uyandırmayan pencereli alarm kurulur (ekran açıkken en geç
      * 10 dk, kapalıyken açılınca gelir). setAndAllowWhileIdle olmaz: Doze'da ezanla aynı
-     * "9 dk'da bir" kotasını paylaşıp ezanı geciktirir.
+     * "9 dk'da bir" kotasını paylaşıp ezanı geciktirir. O dakikada ezan "alarm saati" kipinde
+     * kuruluysa yenileme de o kipte (güç yöneticileri geciktirmez; simge zaten ezan için var),
+     * değilse setExactAndAllowWhileIdle (bazı üreticiler dakikalarca geciktirir).
      */
     fun setRefreshAlarm(context: Context, targetTime: Long, pendingIntent: PendingIntent) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
             alarmManager.setWindow(AlarmManager.RTC, targetTime, REFRESH_WINDOW_MS, pendingIntent)
+        } else if (hasAlarmClockAt(context, targetTime)) {
+            val show = PendingIntent.getActivity(
+                context, 0, Intent(context, MainActivity::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(targetTime, show), pendingIntent)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
         } else {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, targetTime, pendingIntent)
+        }
+    }
+
+    /** [targetTime]'ın dakikasında ezan "alarm saati" kipinde kurulu mu (Dart'ın son kurulumu) */
+    fun hasAlarmClockAt(context: Context, targetTime: Long): Boolean = try {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(ALARM_CLOCK_TIMES_KEY, null)
+            ?.split(',')
+            ?.any { abs((it.trim().toLongOrNull() ?: 0L) - targetTime) < ALARM_CLOCK_MATCH_MS }
+            ?: false
+    } catch (e: ClassCastException) {
+        false
+    }
+
+    /**
+     * Yenileme alarmı geldiğinde: hedeften 2 dk'dan geç geldiyse son gecikme kaydedilir
+     * (Bildirim Kontrolü "telefon widget'ı geciktiriyor" der). Hedefsiz yayın (sistemin 30 dk'lık
+     * güncellemesi, uygulamanın yazımı) ölçülmez.
+     */
+    fun noteRefreshDelay(context: Context, intent: Intent?) {
+        try {
+            val target = intent?.getLongExtra(EXTRA_TARGET, 0L) ?: 0L
+            if (target <= 0L) return
+            val now = System.currentTimeMillis()
+            val late = now - target
+            if (late < LATE_THRESHOLD_MS) return
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+                .putLong(LATE_AT_KEY, now)
+                .putLong(LATE_MS_KEY, late)
+                .apply()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

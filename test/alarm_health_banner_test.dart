@@ -291,8 +291,13 @@ void main() {
   testWidgets('"Ayrıntılar" Bildirim Kontrolü ekranını açar', (tester) async {
     // Ekranın okuduğu cihaz durumu ve kurulum zamanı (yanıtsız kanal beklemesin)
     const device = MethodChannel('vaktinde/device');
+    const homeWidget = MethodChannel('home_widget');
     messenger.setMockMethodCallHandler(device, (call) async => null);
-    addTearDown(() => messenger.setMockMethodCallHandler(device, null));
+    messenger.setMockMethodCallHandler(homeWidget, (call) async => null);
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(device, null);
+      messenger.setMockMethodCallHandler(homeWidget, null);
+    });
     PackageInfo.setMockInitialValues(
       appName: 'Vaktinde',
       packageName: 'com.mmdigital.vaktinde',

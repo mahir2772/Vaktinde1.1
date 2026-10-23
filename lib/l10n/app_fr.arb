@@ -318,6 +318,15 @@
         }
     },
     "healthBackgroundStale": "Vaktinde ne s'est pas exécuté en arrière-plan depuis 48 heures : votre téléphone l'arrête peut-être.",
+    "healthWidgetTitle": "Widgets et notification permanente",
+    "healthWidgetLate": "Ces 7 derniers jours, le compte à rebours a été mis à jour avec {minutes} min de retard à l'heure de la prière : votre téléphone retient Vaktinde en arrière-plan. Réglez la batterie sur « Sans restriction » et suivez les étapes ci-dessous.",
+    "@healthWidgetLate": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
     "healthShowSteps": "Voir les étapes",
     "healthGuideTitle": "Paramètres pour {brand}",
     "@healthGuideTitle": {

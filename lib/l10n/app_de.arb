@@ -318,6 +318,15 @@
         }
     },
     "healthBackgroundStale": "Vaktinde lief in den letzten 48 Stunden nicht im Hintergrund: Ihr Telefon beendet die App möglicherweise.",
+    "healthWidgetTitle": "Widgets und dauerhafte Benachrichtigung",
+    "healthWidgetLate": "In den letzten 7 Tagen wurde der Countdown zur Gebetszeit {minutes} Min. zu spät aktualisiert: Ihr Telefon hält Vaktinde im Hintergrund zurück. Stellen Sie den Akku auf „Uneingeschränkt“ und folgen Sie den Schritten unten.",
+    "@healthWidgetLate": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
     "healthShowSteps": "Schritte anzeigen",
     "healthGuideTitle": "Einstellungen für {brand}",
     "@healthGuideTitle": {

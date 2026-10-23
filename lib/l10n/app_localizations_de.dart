@@ -617,6 +617,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Vaktinde lief in den letzten 48 Stunden nicht im Hintergrund: Ihr Telefon beendet die App möglicherweise.';
 
   @override
+  String get healthWidgetTitle => 'Widgets und dauerhafte Benachrichtigung';
+
+  @override
+  String healthWidgetLate(int minutes) {
+    return 'In den letzten 7 Tagen wurde der Countdown zur Gebetszeit $minutes Min. zu spät aktualisiert: Ihr Telefon hält Vaktinde im Hintergrund zurück. Stellen Sie den Akku auf „Uneingeschränkt“ und folgen Sie den Schritten unten.';
+  }
+
+  @override
   String get healthShowSteps => 'Schritte anzeigen';
 
   @override

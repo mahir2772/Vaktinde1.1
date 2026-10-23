@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show AndroidScheduleMode;
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -208,42 +210,6 @@ class PrayerRefreshService {
         ? HijriCalendar.now()
         : HijriCalendar.fromDate(date);
     return hijri.toFormat("dd MMMM yyyy");
-  }
-
-  /// Arka plan servisinin (kalıcı bildirim) kullandığı metinler
-  static Map<String, String> displayTexts(
-    AppLocalizations loc,
-    String hijriDateText,
-  ) {
-    String langCode = loc.localeName;
-    String remainingText = "Kalan";
-
-    if (langCode.startsWith('en'))
-      remainingText = "Left";
-    else if (langCode.startsWith('de'))
-      remainingText = "Übrig";
-    else if (langCode.startsWith('fr'))
-      remainingText = "Restant";
-    else if (langCode.startsWith('ar'))
-      remainingText = "الباقي";
-    return {
-      "next": loc.nextPrayer,
-      "remaining": remainingText,
-      "hijri_date": hijriDateText,
-      "İmsak": loc.imsak,
-      "Güneş": loc.gunes,
-      "Öğle": loc.ogle,
-      "İkindi": loc.ikindi,
-      "Akşam": loc.aksam,
-      "Yatsı": loc.yatsi,
-      "to_İmsak": loc.toImsak,
-      "to_Güneş": loc.toGunes,
-      "to_Öğle": loc.toOgle,
-      "to_İkindi": loc.toIkindi,
-      "to_Akşam": loc.toAksam,
-      "to_Yatsı": loc.toYatsi,
-      "loading": loc.loading,
-    };
   }
 
   // Widget yazımları sırayla: üst üste gelen çağrılar anahtarları karıştırmasın
@@ -1148,10 +1114,11 @@ class PrayerRefreshService {
     );
 
     final meta = {for (final id in keep.keys) '$id': savedMeta[id]!};
+    final alarmClockTimes = <DateTime>[];
     int succeeded = 0;
     for (final alarm in plan) {
       try {
-        await _notifications.schedulePrayerNotification(
+        final mode = await _notifications.schedulePrayerNotification(
           id: alarm.id,
           title: alarm.title,
           body: alarm.body,
@@ -1166,6 +1133,9 @@ class PrayerRefreshService {
           alarmStream: alarm.alarmStream,
         );
         succeeded++;
+        if (mode == AndroidScheduleMode.alarmClock) {
+          alarmClockTimes.add(alarm.time);
+        }
         if (alarm.payload != null) {
           meta['${alarm.id}'] = alarmFingerprint(alarm);
         }
@@ -1179,6 +1149,9 @@ class PrayerRefreshService {
       failures.add(e, st);
     }
     await failures.report('ezan alarmı', plan.length);
+    try {
+      await WidgetService.saveAlarmClockTimes(alarmClockTimes);
+    } catch (e) {}
 
     final remindersOk = await _syncEndReminders(
       previous: planDays.previous,
@@ -1467,8 +1440,6 @@ class PrayerRefreshService {
         hijri = hijriDateText(loc.localeName.substring(0, 2));
       } catch (e) {}
 
-      // Arka plan servisi (yeniden) başlarken kalıcı bildirim metnini buradan okur
-      await prefs.setString('bg_display', jsonEncode(displayTexts(loc, hijri)));
       final district = await service._storageService.loadDistrict();
       await service.updateHomeWidget(
         times: times,

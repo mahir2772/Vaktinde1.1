@@ -624,6 +624,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Vaktinde hasn\'t run in the background in the last 48 hours: your phone may be stopping it.';
 
   @override
+  String get healthWidgetTitle => 'Widgets and persistent notification';
+
+  @override
+  String healthWidgetLate(int minutes) {
+    return 'In the last 7 days the countdown was updated $minutes min late at prayer time: your phone is holding Vaktinde back in the background. Set battery to “Unrestricted” and follow the steps below.';
+  }
+
+  @override
   String get healthShowSteps => 'Show steps';
 
   @override

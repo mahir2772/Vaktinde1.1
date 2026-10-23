@@ -129,7 +129,6 @@ void main() {
     final today = clockNow.toIso8601String().split('T')[0];
     expect(prefs.getString('cached_prayer_date'), today);
     expect(prefs.getString('alarms_scheduled_date'), today);
-    expect(jsonDecode(prefs.getString('bg_display')!)['next'], de.nextPrayer);
 
     // Toplu iptal yok: sadece plandan çıkan bekleyen alarmlar iptal edilir
     expect(

@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:home_widget/home_widget.dart';
 
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
@@ -172,6 +173,38 @@ abstract final class NotificationHealth {
     if (filter == filterAll) return HealthStatus.ok;
     if (alarmStream && filter != filterNone) return HealthStatus.info;
     return HealthStatus.warning;
+  }
+
+  /// Geç yenileme kaydı bu süreden eskiyse gösterilmez
+  static const Duration refreshDelayWindow = Duration(days: 7);
+
+  /// Widget / kalıcı bildirim yenilemesinin vakitten ne kadar geç geldiği (Kotlin
+  /// PrayerWidgetData.noteRefreshDelay, 2 dk üstü); son 7 günde yoksa null
+  static Duration? recentRefreshDelay({
+    required int? lateAtMs,
+    required int? lateMs,
+    required DateTime now,
+  }) {
+    if (lateAtMs == null || lateMs == null || lateMs <= 0) return null;
+    final at = DateTime.fromMillisecondsSinceEpoch(lateAtMs);
+    if (now.difference(at) > refreshDelayWindow) return null;
+    return Duration(milliseconds: lateMs);
+  }
+
+  static Future<Duration?> readRefreshDelay() async {
+    try {
+      final (at, late) = await (
+        HomeWidget.getWidgetData<int>('refresh_late_at'),
+        HomeWidget.getWidgetData<int>('refresh_late_ms'),
+      ).wait;
+      return recentRefreshDelay(
+        lateAtMs: at,
+        lateMs: late,
+        now: DateTime.now(),
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Arka planda çalışma: son koşu 48 saatten eskiyse uyarı (az açılan uygulamada

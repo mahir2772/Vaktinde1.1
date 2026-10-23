@@ -375,6 +375,25 @@ void main() {
       expect(status(null, null), isNull);
     });
 
+    test('geç yenileme: son 7 gündeki kayıt gösterilir, eskisi ya da '
+        'eksiği yok', () {
+      final now = DateTime(2026, 10, 23, 12);
+      int daysAgo(int days) =>
+          now.subtract(Duration(days: days)).millisecondsSinceEpoch;
+      Duration? delay(int? at, int? ms) =>
+          NotificationHealth.recentRefreshDelay(
+            lateAtMs: at,
+            lateMs: ms,
+            now: now,
+          );
+      expect(delay(daysAgo(1), 230000), const Duration(milliseconds: 230000));
+      expect(delay(daysAgo(7), 230000)?.inMinutes, 3);
+      expect(delay(daysAgo(8), 230000), isNull);
+      expect(delay(null, 230000), isNull);
+      expect(delay(daysAgo(1), null), isNull);
+      expect(delay(daysAgo(1), 0), isNull);
+    });
+
     test('cihaz durumu: eksik alanlar null', () {
       final full = DeviceStatus.fromMap(_problemDevice);
       expect(full.manufacturer, 'Xiaomi');

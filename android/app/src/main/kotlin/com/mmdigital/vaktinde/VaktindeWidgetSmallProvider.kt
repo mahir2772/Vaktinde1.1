@@ -7,10 +7,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.SystemClock
 import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetProvider
 import java.util.Calendar
 
-class VaktindeWidgetSmallProvider : HomeWidgetProvider() {
+class VaktindeWidgetSmallProvider : VaktindeWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, widgetData: SharedPreferences) {
         val now = Calendar.getInstance()

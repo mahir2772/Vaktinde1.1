@@ -630,6 +630,14 @@ class AppLocalizationsAr extends AppLocalizations {
       'لم يعمل Vaktinde في الخلفية خلال آخر 48 ساعة: ربما يوقفه هاتفك.';
 
   @override
+  String get healthWidgetTitle => 'الأدوات والإشعار الدائم';
+
+  @override
+  String healthWidgetLate(int minutes) {
+    return 'خلال الأيام السبعة الماضية تأخر تحديث العدّ التنازلي $minutes دقيقة عند دخول الوقت: هاتفك يؤخّر Vaktinde في الخلفية. اجعل استخدام البطارية غير مقيّد واتبع الخطوات أدناه.';
+  }
+
+  @override
   String get healthShowSteps => 'عرض الخطوات';
 
   @override

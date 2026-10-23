@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.os.SystemClock
 import android.view.View
 import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetProvider
 import java.util.Calendar
 
 /**
@@ -18,7 +17,7 @@ import java.util.Calendar
  * vakitler diğer widget'larla ortak (PrayerWidgetData). Gün numarası ve kalan gün burada
  * tarihlerden hesaplanır: gece yarısı ve son iftardan sonra uygulama beklenmez.
  */
-class VaktindeWidgetRamadanProvider : HomeWidgetProvider() {
+class VaktindeWidgetRamadanProvider : VaktindeWidgetProvider() {
 
     enum class Mode { NONE, SAHUR, IFTAR, UNTIL }
 

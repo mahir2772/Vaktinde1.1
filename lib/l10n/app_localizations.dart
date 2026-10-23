@@ -1136,6 +1136,18 @@ abstract class AppLocalizations {
   /// **'Vaktinde son 48 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.'**
   String get healthBackgroundStale;
 
+  /// No description provided for @healthWidgetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Widget ve kalıcı bildirim'**
+  String get healthWidgetTitle;
+
+  /// No description provided for @healthWidgetLate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 7 günde sayaç, vakit girince {minutes} dk geç yenilendi: telefon Vaktinde\'yi arka planda bekletiyor. Pil ayarını “Kısıtlanmamış” yapın ve aşağıdaki adımları uygulayın.'**
+  String healthWidgetLate(int minutes);
+
   /// No description provided for @healthShowSteps.
   ///
   /// In tr, this message translates to:

@@ -1,49 +1,20 @@
 // Kalıcı bildirim (888, sıradaki vakte kalan süre) isteğe bağlı: yeni
-// kurulumda kapalı, ayardan önceki sürümü kullanmış kullanıcıda açık. Açıkken
-// ön plan servisi başlar (telefon açılışında da), kapalıyken durur, açılışta
-// başlamaz ve native taraf (HomeWidget bayrağı) 888'i çizmez. Eklenti
-// kanalları sahte.
-import 'dart:async';
-
+// kurulumda kapalı, ayardan önceki sürümü kullanmış kullanıcıda açık. Ön plan
+// servisi yok: ayar HomeWidget bayrağına yazılır, NotificationUpdater çizer
+// (açık) ya da kaldırır (kapalı). Eklenti kanalları sahte.
 import 'package:ezan_saati/data/services/background_manager.dart';
 import 'package:ezan_saati/data/services/storage_service.dart';
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/onboarding/install_guard.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class _FakeService implements ServiceInstance {
-  int stops = 0;
-  final _events = StreamController<Map<String, dynamic>>.broadcast(sync: true);
-
-  void send(String method) => _events.add({'method': method});
-
-  @override
-  Stream<Map<String, dynamic>?> on(String method) =>
-      _events.stream.where((e) => e['method'] == method).map((_) => null);
-
-  @override
-  void invoke(String method, [Map<String, dynamic>? args]) {}
-
-  @override
-  Future<void> stopSelf() async => stops++;
-}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-  const serviceChannel = MethodChannel(
-    'id.flutter/background_service/android/method',
-    JSONMethodCodec(),
-  );
-  const serviceEvents = EventChannel(
-    'id.flutter/background_service/android/event',
-    JSONMethodCodec(),
-  );
   const homeWidget = MethodChannel('home_widget');
   const notifications = MethodChannel(
     'dexterous.com/flutter/local_notifications',
@@ -51,31 +22,16 @@ void main() {
 
   // Çağrı sırası ("eklenti.yöntem") ve ayrıntılar
   late List<String> order;
-  late Map<String, dynamic> configured;
-  late List<Object?> sent;
   late Map<String, Object?> widgetData;
   late List<Object?> widgetUpdates;
+  late List<Object?> channels;
 
   setUp(() {
-    FlutterBackgroundServiceAndroid.registerWith();
     AndroidFlutterLocalNotificationsPlugin.registerWith();
     order = [];
-    configured = {};
-    sent = [];
     widgetData = {};
     widgetUpdates = [];
-    messenger.setMockMethodCallHandler(serviceChannel, (call) async {
-      order.add('service.${call.method}');
-      if (call.method == 'configure') {
-        configured = Map<String, dynamic>.from(call.arguments as Map);
-      }
-      if (call.method == 'sendData') sent.add(call.arguments);
-      return true;
-    });
-    messenger.setMockStreamHandler(
-      serviceEvents,
-      MockStreamHandler.inline(onListen: (arguments, events) {}),
-    );
+    channels = [];
     messenger.setMockMethodCallHandler(homeWidget, (call) async {
       order.add('widget.${call.method}');
       final args = call.arguments as Map;
@@ -87,13 +43,14 @@ void main() {
     });
     messenger.setMockMethodCallHandler(notifications, (call) async {
       order.add('notifications.${call.method}');
+      if (call.method == 'createNotificationChannel') {
+        channels.add((call.arguments as Map)['id']);
+      }
       return call.method == 'initialize' ? true : null;
     });
   });
 
   tearDown(() {
-    messenger.setMockMethodCallHandler(serviceChannel, null);
-    messenger.setMockStreamHandler(serviceEvents, null);
     messenger.setMockMethodCallHandler(homeWidget, null);
     messenger.setMockMethodCallHandler(notifications, null);
   });
@@ -151,77 +108,41 @@ void main() {
     });
   });
 
-  group('servis', () {
-    test('açık: önce bayrak, kanal; telefon açılışında da başlar; servis '
-        'başlatılır', () async {
-      SharedPreferences.setMockInitialValues({'language_code': 'tr'});
+  group('uygulama', () {
+    test('açık: önce bayrak, kanal, sonra 888 çizilir; eski servis metni '
+        'silinir', () async {
+      SharedPreferences.setMockInitialValues({
+        'language_code': 'tr',
+        'bg_display': '{}',
+      });
       await BackgroundManager.initializeService();
 
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.containsKey('bg_display'), isFalse);
       expect(widgetData[BackgroundManager.widgetFlagKey], isTrue);
-      expect(order.first, 'widget.saveWidgetData');
-      expect(order, contains('notifications.createNotificationChannel'));
-      expect(order.where((m) => m.startsWith('service.')), [
-        'service.configure',
-        'service.start',
+      expect(order, [
+        'widget.saveWidgetData',
+        'notifications.createNotificationChannel',
+        'widget.updateWidget',
       ]);
-      expect(configured['auto_start_on_boot'], isTrue);
-      expect(configured['auto_start'], isFalse);
-      expect(configured['is_foreground_mode'], isTrue);
-      expect(configured['foreground_notification_id'], 888);
-      expect(configured['notification_channel_id'], 'vaktinde_sticky_channel');
-      expect(configured['foreground_service_types'], ['specialUse']);
-      expect(sent, isEmpty);
-      expect(widgetUpdates, isEmpty);
+      expect(channels, ['vaktinde_sticky_channel']);
+      expect(widgetUpdates, ['NotificationUpdater']);
     });
 
-    test('kapalı (yeni kurulum): başlatılmaz, telefon açılışında başlamaz, '
-        'çalışıyorsa durdurulur, 888 kaldırılır', () async {
+    test('kapalı (yeni kurulum): kanal açılmaz, 888 kaldırılır', () async {
       SharedPreferences.setMockInitialValues({});
       await BackgroundManager.initializeService();
 
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool(key), isFalse);
       expect(widgetData[BackgroundManager.widgetFlagKey], isFalse);
-      expect(order.first, 'widget.saveWidgetData');
-      // Kullanılmayan kanal açılmaz
-      expect(order, isNot(contains('notifications.createNotificationChannel')));
-      expect(order, isNot(contains('service.start')));
-      expect(configured['auto_start_on_boot'], isFalse);
-      expect(configured['auto_start'], isFalse);
-      expect(sent, [
-        {'method': BackgroundManager.stopEvent, 'args': null},
-      ]);
+      expect(order, ['widget.saveWidgetData', 'widget.updateWidget']);
       expect(widgetUpdates, ['NotificationUpdater']);
-    });
-
-    test('servis isolate: kapalıyken başlatıldıysa (eski açılış kaydı) hemen '
-        'durur; açıkken "dur" isteğiyle durur', () async {
-      SharedPreferences.setMockInitialValues({key: false});
-      final off = _FakeService();
-      onStart(off);
-      await pumpEventQueue();
-      expect(off.stops, 1);
-      expect(order, isNot(contains('notifications.initialize')));
-
-      SharedPreferences.setMockInitialValues({key: true});
-      final on = _FakeService();
-      onStart(on);
-      await pumpEventQueue();
-      expect(on.stops, 0);
-      // Hızlı kapat-aç: istek gelene kadar ayar yeniden açıldıysa durmaz
-      on.send(BackgroundManager.stopEvent);
-      await pumpEventQueue();
-      expect(on.stops, 0);
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(key, false);
-      on.send(BackgroundManager.stopEvent);
-      await pumpEventQueue();
-      expect(on.stops, 1);
     });
   });
 
-  test('Ayarlar anahtarı (HomeViewModel): kaydedilir, servis durur ya da '
-      'başlar', () async {
+  test('Ayarlar anahtarı (HomeViewModel): kaydedilir, bayrak yazılır, 888 '
+      'yenilenir', () async {
     SharedPreferences.setMockInitialValues({'language_code': 'tr', key: true});
     final vm = HomeViewModel();
     addTearDown(vm.dispose);
@@ -232,16 +153,15 @@ void main() {
     expect(vm.persistentNotificationEnabled, isFalse);
     expect(prefs.getBool(key), isFalse);
     expect(widgetData[BackgroundManager.widgetFlagKey], isFalse);
-    expect(configured['auto_start_on_boot'], isFalse);
-    expect(sent, hasLength(1));
-    expect(order, isNot(contains('service.start')));
+    expect(channels, isEmpty);
+    expect(widgetUpdates, ['NotificationUpdater']);
 
     order.clear();
     await vm.setPersistentNotificationEnabled(true);
     expect(prefs.getBool(key), isTrue);
     expect(widgetData[BackgroundManager.widgetFlagKey], isTrue);
-    expect(configured['auto_start_on_boot'], isTrue);
-    expect(order, contains('service.start'));
+    expect(channels, ['vaktinde_sticky_channel']);
+    expect(order.last, 'widget.updateWidget');
 
     // Aynı değer: hiçbir şey yapılmaz
     order.clear();

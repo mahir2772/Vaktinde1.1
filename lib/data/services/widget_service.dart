@@ -87,6 +87,17 @@ class WidgetService {
     };
   }
 
+  /// Ezanın "alarm saati" kipinde kurulduğu anlar (ms, virgülle). Kotlin aynı
+  /// dakikadaki widget ve kalıcı bildirim yenilemesini de bu kipte kurar: üreticiler
+  /// bu kipi geciktirmez, durum çubuğundaki alarm simgesi de zaten ezan için vardır.
+  static const String alarmClockTimesKey = 'alarm_clock_times';
+
+  static Future<void> saveAlarmClockTimes(Iterable<DateTime> times) =>
+      HomeWidget.saveWidgetData<String>(
+        alarmClockTimesKey,
+        times.map((t) => t.millisecondsSinceEpoch).join(','),
+      );
+
   static Future<void> widgetiGuncelle({
     required String baslik,
     required int hedefZamanMs,
@@ -98,8 +109,10 @@ class WidgetService {
     String? tarih,
     Map<String, String>? yarinVakitler,
     String? yarinHijriDateText,
-    Map<String, String>? ramazan, // [ramadanData]; null: Ramazan anahtarları değişmez
-    String? dil, // AppLocalizations.localeName: saat yazımı ([textKey]); null: 24 saat
+    Map<String, String>?
+    ramazan, // [ramadanData]; null: Ramazan anahtarları değişmez
+    String?
+    dil, // AppLocalizations.localeName: saat yazımı ([textKey]); null: 24 saat
   }) async {
     try {
       await HomeWidget.saveWidgetData<String>('title_text', baslik);

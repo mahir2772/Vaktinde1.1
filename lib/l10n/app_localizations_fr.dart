@@ -630,6 +630,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vaktinde ne s\'est pas exécuté en arrière-plan depuis 48 heures : votre téléphone l\'arrête peut-être.';
 
   @override
+  String get healthWidgetTitle => 'Widgets et notification permanente';
+
+  @override
+  String healthWidgetLate(int minutes) {
+    return 'Ces 7 derniers jours, le compte à rebours a été mis à jour avec $minutes min de retard à l\'heure de la prière : votre téléphone retient Vaktinde en arrière-plan. Réglez la batterie sur « Sans restriction » et suivez les étapes ci-dessous.';
+  }
+
+  @override
   String get healthShowSteps => 'Voir les étapes';
 
   @override

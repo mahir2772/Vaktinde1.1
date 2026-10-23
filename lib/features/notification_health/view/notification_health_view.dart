@@ -37,6 +37,8 @@ class _NotificationHealthViewState extends State<NotificationHealthView> {
   ScheduledEzan? _next;
   DateTime? _lastRun;
   DateTime? _installedAt;
+  // Son 7 günde widget / kalıcı bildirim yenilemesi geç geldiyse ne kadar
+  Duration? _refreshDelay;
   bool _testing = false;
 
   @override
@@ -55,11 +57,12 @@ class _NotificationHealthViewState extends State<NotificationHealthView> {
   Future<void> _load() async {
     final vm = context.read<HomeViewModel>();
     unawaited(vm.alarmHealth.refresh());
-    final (device, next, lastRun, installedAt) = await (
+    final (device, next, lastRun, installedAt, refreshDelay) = await (
       NotificationHealth.readDevice(),
       _readNext(vm),
       PrayerRefreshService.lastHeadlessRun(),
       _readInstalledAt(),
+      NotificationHealth.readRefreshDelay(),
     ).wait;
     if (!mounted) return;
     setState(() {
@@ -69,6 +72,7 @@ class _NotificationHealthViewState extends State<NotificationHealthView> {
       _next = next.$2;
       _lastRun = lastRun;
       _installedAt = installedAt;
+      _refreshDelay = refreshDelay;
     });
   }
 
@@ -360,6 +364,19 @@ class _NotificationHealthViewState extends State<NotificationHealthView> {
           actionLabel: background == HealthStatus.warning
               ? loc.healthShowSteps
               : null,
+          onAction: _showSteps,
+        ),
+      );
+    }
+
+    final refreshDelay = _refreshDelay;
+    if (refreshDelay != null) {
+      checks.add(
+        _CheckTile(
+          status: HealthStatus.warning,
+          title: loc.healthWidgetTitle,
+          message: loc.healthWidgetLate(refreshDelay.inMinutes),
+          actionLabel: loc.healthShowSteps,
           onAction: _showSteps,
         ),
       );

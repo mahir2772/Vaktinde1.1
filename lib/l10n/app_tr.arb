@@ -339,6 +339,15 @@
         }
     },
     "healthBackgroundStale": "Vaktinde son 48 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.",
+    "healthWidgetTitle": "Widget ve kalıcı bildirim",
+    "healthWidgetLate": "Son 7 günde sayaç, vakit girince {minutes} dk geç yenilendi: telefon Vaktinde'yi arka planda bekletiyor. Pil ayarını “Kısıtlanmamış” yapın ve aşağıdaki adımları uygulayın.",
+    "@healthWidgetLate": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
     "healthShowSteps": "Adımları göster",
     "healthGuideTitle": "{brand} için ayarlar",
     "@healthGuideTitle": {

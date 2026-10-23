@@ -608,6 +608,14 @@ class AppLocalizationsTr extends AppLocalizations {
       'Vaktinde son 48 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.';
 
   @override
+  String get healthWidgetTitle => 'Widget ve kalıcı bildirim';
+
+  @override
+  String healthWidgetLate(int minutes) {
+    return 'Son 7 günde sayaç, vakit girince $minutes dk geç yenilendi: telefon Vaktinde\'yi arka planda bekletiyor. Pil ayarını “Kısıtlanmamış” yapın ve aşağıdaki adımları uygulayın.';
+  }
+
+  @override
   String get healthShowSteps => 'Adımları göster';
 
   @override

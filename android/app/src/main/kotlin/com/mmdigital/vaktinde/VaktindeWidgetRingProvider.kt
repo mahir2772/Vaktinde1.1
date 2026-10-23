@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.TypedValue
 import android.widget.RemoteViews
-import es.antonborri.home_widget.HomeWidgetProvider
 import java.util.Calendar
 
 /**
@@ -21,7 +20,7 @@ import java.util.Calendar
  * sonraki adım olduğundan WidgetRefresher (dakika tıkı, ekran / kilit açılışı, onarım işi) adım
  * geçince yeniden çizer; dakikalık doğruluk gerekmez.
  */
-class VaktindeWidgetRingProvider : HomeWidgetProvider() {
+class VaktindeWidgetRingProvider : VaktindeWidgetProvider() {
 
     /**
      * Çizilecek durum. [next]: sıradaki vakit (veri yoksa null), [timeText]: onun ekrandaki saati

@@ -121,9 +121,8 @@ object WidgetRefresher {
                     t.printStackTrace()
                 }
             }
-            // API 26 altında NotificationUpdater çizmez (servisin kendi bildirimi kalır); vakit
-            // yazılmadıysa servisin yer tutucusu boş sayaçla ezilmez; kalıcı bildirim kapalıysa
-            // (Ayarlar) ne yenilenir ne geri getirilir
+            // API 26 altında NotificationUpdater çizmez; vakit yazılmadıysa boş bildirim çıkmaz;
+            // kalıcı bildirim kapalıysa (Ayarlar) ne yenilenir ne geri getirilir
             val notification = drawn(state, NOTIFICATION_SURFACE)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && PrayerWidgetData.hasTimes(data) &&
                 PrayerWidgetData.persistentNotificationEnabled(data) && notification != current

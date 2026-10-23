@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -150,7 +149,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     if (_isDataLoaded) {
       _calculateHijriDate();
       _rescheduleAlarms();
-      _sendTimesToBackgroundService();
       _updateHomeScreenWidget();
     }
   }
@@ -163,7 +161,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       if (_isDataLoaded) {
         _refreshTimesIfNewDay();
         _calculateHijriDate(); // Uygulama uyanınca tarihi kontrol et
-        _sendTimesToBackgroundService();
         _updateHomeScreenWidget();
       }
     }
@@ -218,7 +215,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         _isDataLoaded = true;
         _timesDate = DateTime.now();
 
-        _sendTimesToBackgroundService();
+        _updateHomeScreenWidget();
         await _rescheduleAlarms();
 
         notifyListeners();
@@ -275,7 +272,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
     prayerTimes = times;
     notifyListeners();
-    _sendTimesToBackgroundService();
     _updateHomeScreenWidget();
     await _rescheduleAlarms();
   }
@@ -295,7 +291,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     if (times == null) return;
     prayerTimes = times;
     notifyListeners();
-    _sendTimesToBackgroundService();
+    _updateHomeScreenWidget();
     await _rescheduleAlarms();
   }
 
@@ -356,7 +352,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
         await _storageService.savePrayerTimesData(apiResult);
 
-        _sendTimesToBackgroundService();
+        _updateHomeScreenWidget();
         Future.microtask(() => _rescheduleAlarms());
         // Konum bilgisi (il/ilçe) analitiğe gönderilmez
         await AppAnalytics.logEvent(name: 'sehir_secildi');
@@ -441,20 +437,6 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       isLoading = false;
       notifyListeners();
     }
-  }
-
-  void _sendTimesToBackgroundService() {
-    if (prayerTimes == null || _currentLoc == null) return;
-    try {
-      FlutterBackgroundService().invoke("setPrayerTimes", {
-        "times": PrayerRefreshService.timesMap(prayerTimes!),
-        "display": PrayerRefreshService.displayTexts(
-          _currentLoc!,
-          hijriDateText,
-        ),
-      });
-      _updateHomeScreenWidget();
-    } catch (e) {}
   }
 
   void _updateHomeScreenWidget() {
@@ -555,8 +537,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  /// "Kalıcı bildirim": açılınca ön plan servisi başlar ve 888 çizilir;
-  /// kapatılınca servis durur, telefon açılışında başlamaz, bildirim kalkar
+  /// "Kalıcı bildirim": açılınca 888 çizilir (telefon açılışında da);
+  /// kapatılınca bildirim ve yenileme alarmı kalkar
   Future<void> setPersistentNotificationEnabled(bool value) async {
     if (persistentNotificationEnabled == value) return;
     persistentNotificationEnabled = value;
@@ -636,7 +618,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       _isDataLoaded = true;
       _calculateHijriDate();
       notifyListeners();
-      _sendTimesToBackgroundService(); // widget'ları da günceller
+      _updateHomeScreenWidget();
       await _rescheduleAlarms();
     } else if (savedCity != null && savedCity.isNotEmpty) {
       // Eski (koordinatsız) kayıt: konum bir kez çözümlenir (alarmları da

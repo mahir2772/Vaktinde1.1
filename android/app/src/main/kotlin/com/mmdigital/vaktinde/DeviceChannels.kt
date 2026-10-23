@@ -248,7 +248,7 @@ object SoundPreview {
  * (SensorManager 0..3, bilinmiyorsa -1); parazit / kalibrasyon uyarısı için. Olay
  * [büyüklük: Double, doğruluk: Int], saniyede en çok 5. Sensör yoksa bir kez "no_sensor".
  * Olaylar ana iş parçacığında (Handler'sız registerListener). Activity görünmezken sensör
- * bırakılır (ön plan servisi süreci arka planda da canlı tutar), dönünce yeniden açılır.
+ * bırakılır (süreç arka planda canlı kalabilir), dönünce yeniden açılır.
  */
 class MagneticStream(private val context: Context) : EventChannel.StreamHandler, SensorEventListener {
     private var sink: EventChannel.EventSink? = null

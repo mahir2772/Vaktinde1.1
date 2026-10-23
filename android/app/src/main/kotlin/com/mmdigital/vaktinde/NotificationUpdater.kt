@@ -18,11 +18,15 @@ class NotificationUpdater : BroadcastReceiver() {
     companion object {
         /** Vakitten sonra bildirimin kaldırılmasına kadar pay: zamanında gelen alarm önce yeniler */
         const val TIMEOUT_GRACE_MS = 5_000L
+
+        /** Güncellemeden sonra ikinci çizim: sistem ilk anlarda bildirimi çizemeyip düşürürse geri gelir */
+        private const val AFTER_UPDATE_REDRAW_MS = 60_000L
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        // Notification.Builder(context, kanal) API 26+ ister; eski sürümde servisin kendi bildirimi kalır
+        // Notification.Builder(context, kanal) API 26+ ister (7.x'te kalıcı bildirim yok)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        PrayerWidgetData.noteRefreshDelay(context, intent)
         try {
             // Dart'ın sisteme kaydettiği verileri okuyoruz
             val widgetData = context.getSharedPreferences(PrayerWidgetData.PREFS, Context.MODE_PRIVATE)
@@ -33,10 +37,9 @@ class NotificationUpdater : BroadcastReceiver() {
                 return
             }
 
-            // Saat değişimi: uygulama henüz vakit yazmadıysa boş bildirim çıkarılmaz
-            if (PrayerWidgetData.isTimeChange(intent.action) && !PrayerWidgetData.hasTimes(widgetData)) return
+            // Uygulama henüz vakit yazmadıysa boş bildirim çıkarılmaz
+            if (!PrayerWidgetData.hasTimes(widgetData)) return
 
-            // 2. adımda hazırladığımız o şık XML tasarımını belleğe alıyoruz
             val views = RemoteViews(context.packageName, R.layout.custom_notification)
 
             val now = Calendar.getInstance()
@@ -74,7 +77,6 @@ class NotificationUpdater : BroadcastReceiver() {
             
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             
-            // Background Service'in kullandığı 888 ID'sini ezerek kendi profesyonel XML tasarımımızı basıyoruz
             val builder = android.app.Notification.Builder(context, "vaktinde_sticky_channel")
                 .setSmallIcon(R.mipmap.launcher_icon)
                 .setStyle(android.app.Notification.DecoratedCustomViewStyle())
@@ -82,10 +84,9 @@ class NotificationUpdater : BroadcastReceiver() {
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent)
-            // Yenileme alarmı gelmezse (üretici güç yöneticisi süreci öldürdü) sayaç eksiye düşmesin:
-            // sistem bildirimi vakitten hemen sonra kaldırır, ilk yenilemede (alarm, WidgetHealJobService,
-            // açılış) geri gelir. Ön plan servisinin bildirimine uygulanmaz; o zaman süreç ayaktadır ve
-            // WidgetRefresher dakikada bir onarır.
+            // Yenileme alarmı gelmezse (üretici güç yöneticisi geciktirdi) sayaç eksiye düşmesin: sistem
+            // bildirimi vakitten hemen sonra kaldırır, ilk yenilemede (alarm, WidgetHealJobService, açılış)
+            // geri gelir
             if (nextPrayer != null && nextPrayer.time > currentTime) {
                 builder.setTimeoutAfter(nextPrayer.time - currentTime + TIMEOUT_GRACE_MS)
             }
@@ -93,25 +94,31 @@ class NotificationUpdater : BroadcastReceiver() {
             notificationManager.notify(888, builder.build())
             // Alarm gelmezse WidgetRefresher bu kayda bakıp yeniden çizer (888 açıksa)
             WidgetRefresher.markNotificationDrawn(context, nextPrayer?.time ?: 0L, now)
+            if (intent.action == Intent.ACTION_MY_PACKAGE_REPLACED) {
+                scheduleNextUpdate(context, currentTime + AFTER_UPDATE_REDRAW_MS)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun updateIntent(context: Context): Intent =
-        Intent(context, NotificationUpdater::class.java).apply { action = AppWidgetManager.ACTION_APPWIDGET_UPDATE }
+    private fun updateIntent(context: Context, targetTime: Long = 0L): Intent =
+        Intent(context, NotificationUpdater::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            if (targetTime > 0L) putExtra(PrayerWidgetData.EXTRA_TARGET, targetTime)
+        }
 
     // Widget alarmlarıyla aynı kurulum (PrayerWidgetData.setRefreshAlarm); sabit requestCode ile tek alarm
     private fun scheduleNextUpdate(context: Context, targetTime: Long) {
         try {
-            val pendingIntent = PendingIntent.getBroadcast(context, 888, updateIntent(context), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent = PendingIntent.getBroadcast(context, 888, updateIntent(context, targetTime), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             PrayerWidgetData.setRefreshAlarm(context, targetTime, pendingIntent)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    // Ön plan servisinin bildirimi iptal edilemez; o, servis durunca (stopForeground) kalkar
+    // Bildirim ve yenileme alarmı kaldırılır
     private fun remove(context: Context) {
         try {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(888)

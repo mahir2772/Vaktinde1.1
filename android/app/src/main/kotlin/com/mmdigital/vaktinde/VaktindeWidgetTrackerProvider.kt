@@ -9,7 +9,6 @@ import android.net.Uri
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import es.antonborri.home_widget.HomeWidgetPlugin
-import es.antonborri.home_widget.HomeWidgetProvider
 import java.util.Calendar
 
 /**
@@ -21,7 +20,7 @@ import java.util.Calendar
  * sadece yazıldığı gün geçerli: gece yarısı (yenileme alarmı / WidgetRefresher) Dart beklenmeden
  * sıfırlanır. Vakitler diğer widget'larla ortak (PrayerWidgetData).
  */
-class VaktindeWidgetTrackerProvider : HomeWidgetProvider() {
+class VaktindeWidgetTrackerProvider : VaktindeWidgetProvider() {
 
     enum class Cell { PRAYED, OPEN, NOT_DUE, EXCUSED }
 
