@@ -246,6 +246,13 @@
             "de": "Wird in der dritten Rak'a des Witr-Gebets nach der Rezitation und einem Takbir gesprochen (hanafitische Praxis).",
             "fr": "Récitée dans la troisième rak'a de la prière du witr, après la récitation et un takbir (pratique hanafite).",
             "ar": "يُقرأ في الركعة الثالثة من الوتر بعد القراءة والتكبير، على مذهب الحنفية."
+          },
+          "source": {
+            "tr": "Hz. Ömer'den rivayet: İbn Ebî Şeybe, el-Musannef; Tahâvî, Şerhu meâni'l-âsâr",
+            "en": "Narrated from Umar: Ibn Abi Shaybah, al-Musannaf; al-Tahawi, Sharh Ma'ani al-Athar",
+            "de": "Von Umar überliefert: Ibn Abi Schaiba, al-Musannaf; at-Tahawi, Scharh Ma'ani al-Athar",
+            "fr": "Rapporté d'Omar : Ibn Abi Chayba, al-Musannaf ; at-Tahawi, Charh Ma'ani al-Athar",
+            "ar": "مروي عن عمر رضي الله عنه: مصنف ابن أبي شيبة، وشرح معاني الآثار للطحاوي"
           }
         },
         {
@@ -274,6 +281,13 @@
             "de": "Der zweite Teil des Qunut, wird nach dem ersten gesprochen.",
             "fr": "Seconde partie du qounout, récitée après la première.",
             "ar": "الجزء الثاني من دعاء القنوت، يُقرأ بعد الأول."
+          },
+          "source": {
+            "tr": "Hz. Ömer'den rivayet: İbn Ebî Şeybe, el-Musannef; Tahâvî, Şerhu meâni'l-âsâr",
+            "en": "Narrated from Umar: Ibn Abi Shaybah, al-Musannaf; al-Tahawi, Sharh Ma'ani al-Athar",
+            "de": "Von Umar überliefert: Ibn Abi Schaiba, al-Musannaf; at-Tahawi, Scharh Ma'ani al-Athar",
+            "fr": "Rapporté d'Omar : Ibn Abi Chayba, al-Musannaf ; at-Tahawi, Charh Ma'ani al-Athar",
+            "ar": "مروي عن عمر رضي الله عنه: مصنف ابن أبي شيبة، وشرح معاني الآثار للطحاوي"
           }
         },
         {
@@ -304,11 +318,11 @@
             "ar": "تُقال في الركوع ثلاث مرات على الأقل."
           },
           "source": {
-            "tr": "Müslim 772",
-            "en": "Muslim 772",
-            "de": "Muslim 772",
-            "fr": "Muslim 772",
-            "ar": "مسلم 772"
+            "tr": "Müslim 772; Tirmizî 261; Ebû Dâvûd 886",
+            "en": "Muslim 772; Tirmidhi 261; Abu Dawud 886",
+            "de": "Muslim 772; Tirmidhi 261; Abu Dawud 886",
+            "fr": "Muslim 772 ; Tirmidhi 261 ; Abou Dawoud 886",
+            "ar": "مسلم 772، الترمذي 261، أبو داود 886"
           }
         },
         {
@@ -339,11 +353,11 @@
             "ar": "تُقال في السجود ثلاث مرات على الأقل."
           },
           "source": {
-            "tr": "Müslim 772",
-            "en": "Muslim 772",
-            "de": "Muslim 772",
-            "fr": "Muslim 772",
-            "ar": "مسلم 772"
+            "tr": "Müslim 772; Tirmizî 261; Ebû Dâvûd 886",
+            "en": "Muslim 772; Tirmidhi 261; Abu Dawud 886",
+            "de": "Muslim 772; Tirmidhi 261; Abu Dawud 886",
+            "fr": "Muslim 772 ; Tirmidhi 261 ; Abou Dawoud 886",
+            "ar": "مسلم 772، الترمذي 261، أبو داود 886"
           }
         },
         {
@@ -643,18 +657,18 @@
             "fr": "Allah ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par Lui-même. Ni somnolence ni sommeil ne Le saisissent. À Lui appartient tout ce qui est dans les cieux et sur la terre. Qui peut intercéder auprès de Lui sans Sa permission ? Il connaît ce qui est devant eux et ce qui est derrière eux, et de Sa science ils n'embrassent que ce qu'Il veut. Son Trône déborde les cieux et la terre, dont la garde ne Lui coûte aucune peine. Et Il est le Très-Haut, l'Immense."
           },
           "note": {
-            "tr": "Namazlardan sonra, sabah ve akşam, yatmadan önce okunur.",
-            "en": "Recited after the prayers, in the morning and evening, and before sleeping.",
-            "de": "Wird nach den Gebeten, morgens und abends sowie vor dem Schlafen gesprochen.",
-            "fr": "Récité après les prières, le matin et le soir, et avant de dormir.",
-            "ar": "تُقرأ بعد الصلوات وفي الصباح والمساء وعند النوم."
+            "tr": "Yatmadan önce ve farz namazlardan sonra okunması tavsiye edilmiştir.",
+            "en": "Recommended before sleeping and after the obligatory prayers.",
+            "de": "Empfohlen vor dem Schlafen und nach den Pflichtgebeten.",
+            "fr": "Recommandé avant de dormir et après les prières obligatoires.",
+            "ar": "يُستحب قراءتها عند النوم ودبر الصلوات المكتوبة."
           },
           "source": {
-            "tr": "Kur'an, Bakara 2/255",
-            "en": "Quran, al-Baqara 2:255",
-            "de": "Koran, al-Baqara 2:255",
-            "fr": "Coran, al-Baqara 2:255",
-            "ar": "سورة البقرة: 255"
+            "tr": "Kur'an, Bakara 2/255; Buhârî 2311; Nesâî, es-Sünenü'l-kübrâ",
+            "en": "Quran, al-Baqara 2:255; Bukhari 2311; an-Nasa'i, as-Sunan al-Kubra",
+            "de": "Koran, al-Baqara 2:255; Buchari 2311; an-Nasa'i, as-Sunan al-Kubra",
+            "fr": "Coran, al-Baqara 2:255 ; Boukhari 2311 ; an-Nasa'i, as-Sunan al-Kubra",
+            "ar": "سورة البقرة: 255، البخاري 2311، السنن الكبرى للنسائي"
           }
         },
         {
@@ -672,24 +686,24 @@
             "latin": "Bismillahir-rahmanir-rahim. Qul huwallahu ahad. Allahus-samad. Lam yalid wa lam yulad. Wa lam yakun lahu kufuwan ahad.\n\nBismillahir-rahmanir-rahim. Qul a'udhu bi-rabbil-falaq. Min sharri ma khalaq. Wa min sharri ghasiqin idha waqab. Wa min sharrin-naffathati fil-'uqad. Wa min sharri hasidin idha hasad.\n\nBismillahir-rahmanir-rahim. Qul a'udhu bi-rabbin-nas. Malikin-nas. Ilahin-nas. Min sharril-waswasil-khannas. Alladhi yuwaswisu fi sudurin-nas. Minal-jinnati wan-nas."
           },
           "meaning": {
-            "tr": "İhlâs: De ki: O, Allah'tır, bir tektir. Allah Samed'dir (her şey O'na muhtaçtır, O hiçbir şeye muhtaç değildir). O, doğurmamış ve doğmamıştır. Hiçbir şey O'na denk değildir.\n\nFelak: De ki: Yarattığı şeylerin kötülüğünden, karanlığı çöktüğü zaman gecenin kötülüğünden, düğümlere üfleyenlerin kötülüğünden ve haset ettiği zaman hasetçinin kötülüğünden, sabahın Rabbine sığınırım.\n\nNâs: De ki: Cinlerden ve insanlardan; insanların kalplerine vesvese veren o sinsi vesvesecinin kötülüğünden, insanların Rabbine, insanların Malik'ine, insanların İlah'ına sığınırım.",
+            "tr": "İhlâs: De ki: O, Allah'tır, bir tektir. Allah Samed'dir (her şey O'na muhtaçtır, O hiçbir şeye muhtaç değildir). O, doğurmamış ve doğmamıştır. Hiçbir şey O'na denk değildir.\n\nFelak: De ki: Yarattığı şeylerin kötülüğünden, karanlığı çöktüğü zaman gecenin kötülüğünden, düğümlere üfleyenlerin kötülüğünden ve haset ettiği zaman hasetçinin kötülüğünden, sabahın Rabbine sığınırım.\n\nNâs: De ki: Cinlerden ve insanlardan; insanların kalplerine vesvese veren o sinsi vesvesecinin kötülüğünden, insanların Rabbine, insanların Melik'ine (hükümdarına), insanların İlah'ına sığınırım.",
             "en": "Al-Ikhlas: Say: He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born, and there is none comparable to Him.\n\nAl-Falaq: Say: I seek refuge in the Lord of the daybreak, from the evil of what He has created, from the evil of the darkness when it settles, from the evil of those who blow on knots, and from the evil of the envier when he envies.\n\nAn-Nas: Say: I seek refuge in the Lord of mankind, the King of mankind, the God of mankind, from the evil of the retreating whisperer, who whispers in the hearts of mankind, from among the jinn and mankind.",
             "de": "Al-Ikhlas: Sprich: Er ist Allah, der Eine. Allah, der Absolute, auf den alle angewiesen sind. Er zeugt nicht und ist nicht gezeugt worden, und niemand ist Ihm gleich.\n\nAl-Falaq: Sprich: Ich suche Zuflucht beim Herrn des Tagesanbruchs vor dem Übel dessen, was Er erschaffen hat, vor dem Übel der Dunkelheit, wenn sie hereinbricht, vor dem Übel derer, die auf Knoten blasen, und vor dem Übel des Neiders, wenn er neidet.\n\nAn-Nas: Sprich: Ich suche Zuflucht beim Herrn der Menschen, dem König der Menschen, dem Gott der Menschen, vor dem Übel des Einflüsterers, des Davonschleichenden, der in die Herzen der Menschen einflüstert, sei er von den Dschinn oder von den Menschen.",
             "fr": "Al-Ikhlas : Dis : Il est Allah, l'Unique. Allah, l'Absolu, dont tout dépend. Il n'a jamais engendré et n'a pas été engendré, et nul n'est égal à Lui.\n\nAl-Falaq : Dis : Je cherche protection auprès du Seigneur de l'aube naissante, contre le mal de ce qu'Il a créé, contre le mal de l'obscurité quand elle s'étend, contre le mal de celles qui soufflent sur les nœuds, et contre le mal de l'envieux quand il envie.\n\nAn-Nas : Dis : Je cherche protection auprès du Seigneur des hommes, le Roi des hommes, le Dieu des hommes, contre le mal du tentateur furtif, qui souffle le mal dans les poitrines des hommes, qu'il soit djinn ou humain."
           },
           "note": {
-            "tr": "Sabah ve akşam üçer defa okunur (Ebû Dâvûd, Tirmizî).",
-            "en": "Recite each three times in the morning and evening (Abu Dawud, Tirmidhi).",
-            "de": "Morgens und abends jeweils dreimal rezitieren (Abu Dawud, Tirmidhi).",
-            "fr": "À réciter trois fois chacune, le matin et le soir (Abou Dawoud, Tirmidhi).",
-            "ar": "تُقرأ كل سورة ثلاث مرات في الصباح والمساء (أبو داود، الترمذي)."
+            "tr": "Sabah ve akşam üçer defa okunur.",
+            "en": "Recite each three times in the morning and evening.",
+            "de": "Morgens und abends jeweils dreimal rezitieren.",
+            "fr": "À réciter trois fois chacune, le matin et le soir.",
+            "ar": "تُقرأ كل سورة ثلاث مرات في الصباح والمساء."
           },
           "source": {
-            "tr": "Kur'an, İhlâs 112, Felak 113, Nâs 114",
-            "en": "Quran, al-Ikhlas 112, al-Falaq 113, an-Nas 114",
-            "de": "Koran, al-Ikhlas 112, al-Falaq 113, an-Nas 114",
-            "fr": "Coran, al-Ikhlas 112, al-Falaq 113, an-Nas 114",
-            "ar": "سور الإخلاص والفلق والناس"
+            "tr": "Kur'an, İhlâs 112, Felak 113, Nâs 114; Ebû Dâvûd 5082; Tirmizî 3575",
+            "en": "Quran, al-Ikhlas 112, al-Falaq 113, an-Nas 114; Abu Dawud 5082; Tirmidhi 3575",
+            "de": "Koran, al-Ikhlas 112, al-Falaq 113, an-Nas 114; Abu Dawud 5082; Tirmidhi 3575",
+            "fr": "Coran, al-Ikhlas 112, al-Falaq 113, an-Nas 114 ; Abou Dawoud 5082 ; Tirmidhi 3575",
+            "ar": "سور الإخلاص والفلق والناس، أبو داود 5082، الترمذي 3575"
           }
         },
         {
@@ -895,11 +909,11 @@
             "ar": "تُقال في المساء ثلاثًا، وعند نزول منزل."
           },
           "source": {
-            "tr": "Müslim 2708",
-            "en": "Muslim 2708",
-            "de": "Muslim 2708",
-            "fr": "Muslim 2708",
-            "ar": "مسلم 2708"
+            "tr": "Müslim 2708; Müslim 2709; Tirmizî 3604",
+            "en": "Muslim 2708; Muslim 2709; Tirmidhi 3604",
+            "de": "Muslim 2708; Muslim 2709; Tirmidhi 3604",
+            "fr": "Muslim 2708 ; Muslim 2709 ; Tirmidhi 3604",
+            "ar": "مسلم 2708، مسلم 2709، الترمذي 3604"
           }
         }
       ]
@@ -1048,7 +1062,7 @@
             "latin": "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur."
           },
           "meaning": {
-            "tr": "Bizi öldürdükten sonra dirilten Allah'a hamdolsun. Dönüş de O'nadır.",
+            "tr": "Bizi öldürdükten sonra dirilten Allah'a hamdolsun. Ölümden sonra diriliş de O'nadır.",
             "en": "Praise be to Allah who gave us life after He had caused us to die, and to Him is the resurrection.",
             "de": "Gelobt sei Allah, Der uns wieder lebendig gemacht hat, nachdem Er uns sterben ließ, und zu Ihm ist die Auferstehung.",
             "fr": "Louange à Allah qui nous a rendu la vie après nous avoir fait mourir, et c'est vers Lui que sera la résurrection."
@@ -1127,11 +1141,11 @@
         {
           "id": "elbise",
           "title": {
-            "tr": "Yeni Elbise Giyince",
-            "en": "Wearing New Clothes",
-            "de": "Beim Anziehen neuer Kleidung",
-            "fr": "En mettant un vêtement neuf",
-            "ar": "لبس الثوب الجديد"
+            "tr": "Elbise Giyince",
+            "en": "When Putting on Clothes",
+            "de": "Beim Anziehen von Kleidung",
+            "fr": "En mettant un vêtement",
+            "ar": "عند لبس الثوب"
           },
           "arabic": "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَٰذَا الثَّوْبَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
           "translit": {
@@ -1529,10 +1543,10 @@
         {
           "id": "rahmeteke",
           "title": {
-            "tr": "Allah'a Sığınma",
-            "en": "Relying on Allah",
-            "de": "Vertrauen auf Allah",
-            "fr": "S'en remettre à Allah",
+            "tr": "Sıkıntıya Düşenin Duası",
+            "en": "Dua of One in Distress",
+            "de": "Bittgebet des Bedrängten",
+            "fr": "Invocation de celui qui est dans la détresse",
             "ar": "دعاء المكروب"
           },
           "arabic": "اللَّهُمَّ رَحْمَتَكَ أَرْجُو، فَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ، وَأَصْلِحْ لِي شَأْنِي كُلَّهُ، لَا إِلَٰهَ إِلَّا أَنْتَ",
@@ -1767,7 +1781,7 @@
         {
           "id": "korku",
           "title": {
-            "tr": "Bir Kötülükten Korkunca",
+            "tr": "Bir Topluluktan Korkunca",
             "en": "When Fearing Harm from Others",
             "de": "Bei Furcht vor anderen",
             "fr": "Quand on craint autrui",
@@ -2110,11 +2124,11 @@
             "fr": "Notre Seigneur, accepte cela de nous. Tu es Celui qui entend tout et sait tout."
           },
           "note": {
-            "tr": "Hz. İbrâhîm ve Hz. İsmâîl'in Kâbe'yi inşa ederken yaptığı duadır; hatim ve ibadet sonunda okunur.",
-            "en": "The prayer of Ibrahim and Isma'il while building the Kaaba; said after completing worship or the Quran.",
-            "de": "Das Bittgebet Ibrahims und Isma'ils beim Bau der Kaaba; nach einer Ibada oder Koranlesung gesprochen.",
-            "fr": "Invocation d'Abraham et d'Ismaël en bâtissant la Kaaba ; dite après un acte d'adoration ou la lecture du Coran.",
-            "ar": "دعاء إبراهيم وإسماعيل عليهما السلام عند بناء الكعبة، ويُقال بعد العبادة وختم القرآن."
+            "tr": "Hz. İbrâhîm ve Hz. İsmâîl'in Kâbe'nin temellerini yükseltirken yaptığı duadır; hatim ve ibadet sonunda okunması da gelenek olmuştur.",
+            "en": "The prayer of Ibrahim and Isma'il while raising the foundations of the Kaaba; it is also customarily said after completing worship or the Quran.",
+            "de": "Das Bittgebet Ibrahims und Isma'ils beim Errichten der Grundmauern der Kaaba; es wird traditionell auch nach einer Ibada oder Koranlesung gesprochen.",
+            "fr": "Invocation d'Abraham et d'Ismaël en élevant les fondations de la Kaaba ; il est aussi d'usage de la dire après un acte d'adoration ou la lecture complète du Coran.",
+            "ar": "دعاء إبراهيم وإسماعيل عليهما السلام وهما يرفعان القواعد من البيت، وجرت العادة بقوله بعد العبادة وختم القرآن."
           },
           "source": {
             "tr": "Kur'an, Bakara 2/127",
@@ -2145,11 +2159,11 @@
             "fr": "Notre Seigneur, ne nous châtie pas s'il nous arrive d'oublier ou de commettre une erreur. Notre Seigneur, ne nous charge pas d'un fardeau comme Tu en as chargé ceux qui nous ont précédés. Notre Seigneur, ne nous impose pas ce que nous ne pouvons supporter. Efface nos fautes, pardonne-nous et fais-nous miséricorde. Tu es notre Maître, accorde-nous donc la victoire sur les peuples mécréants."
           },
           "note": {
-            "tr": "Bakara suresinin son ayetidir; geceleyin okunması tavsiye edilmiştir (Buhârî 5009).",
-            "en": "The last verse of al-Baqara; reciting it at night is recommended (Bukhari 5009).",
-            "de": "Der letzte Vers von al-Baqara; das nächtliche Rezitieren wird empfohlen (Buchari 5009).",
-            "fr": "Dernier verset d'al-Baqara ; sa récitation la nuit est recommandée (Boukhari 5009).",
-            "ar": "آخر آية من سورة البقرة، ويُستحب قراءتها في الليل (البخاري 5009)."
+            "tr": "Bakara suresinin son ayetinin dua kısmıdır. Peygamberimiz, Bakara'nın son iki ayetini (285-286) geceleyin okuyana bunların yeteceğini bildirmiştir (Buhârî 5009).",
+            "en": "The prayer at the end of the last verse of al-Baqara. The Prophet said that the last two verses of al-Baqara (285-286) suffice whoever recites them at night (Bukhari 5009).",
+            "de": "Das Bittgebet am Ende des letzten Verses von al-Baqara. Der Prophet sagte, dass die letzten beiden Verse von al-Baqara (285-286) dem genügen, der sie nachts rezitiert (Buchari 5009).",
+            "fr": "L'invocation qui clôt le dernier verset d'al-Baqara. Le Prophète a dit que les deux derniers versets d'al-Baqara (285-286) suffisent à celui qui les récite la nuit (Boukhari 5009).",
+            "ar": "هي دعاء خاتمة سورة البقرة، وأخبر النبي ﷺ أن من قرأ الآيتين من آخر سورة البقرة في ليلة كفتاه (البخاري 5009)."
           },
           "source": {
             "tr": "Kur'an, Bakara 2/286",
@@ -2871,7 +2885,14 @@
         "de": "Gepriesen sei Allah.",
         "fr": "Gloire à Allah."
       },
-      "count": 33
+      "count": 33,
+      "source": {
+        "tr": "Müslim 597",
+        "en": "Muslim 597",
+        "de": "Muslim 597",
+        "fr": "Muslim 597",
+        "ar": "مسلم 597"
+      }
     },
     {
       "id": "elhamdulillah",
@@ -2893,7 +2914,14 @@
         "de": "Alles Lob gebührt Allah.",
         "fr": "Louange à Allah."
       },
-      "count": 33
+      "count": 33,
+      "source": {
+        "tr": "Müslim 597",
+        "en": "Muslim 597",
+        "de": "Muslim 597",
+        "fr": "Muslim 597",
+        "ar": "مسلم 597"
+      }
     },
     {
       "id": "allahu_ekber",
@@ -2915,7 +2943,14 @@
         "de": "Allah ist der Größte.",
         "fr": "Allah est le plus grand."
       },
-      "count": 33
+      "count": 33,
+      "source": {
+        "tr": "Müslim 597",
+        "en": "Muslim 597",
+        "de": "Muslim 597",
+        "fr": "Muslim 597",
+        "ar": "مسلم 597"
+      }
     },
     {
       "id": "tevhid",
@@ -2938,11 +2973,11 @@
         "fr": "Il n'y a de dieu qu'Allah, Seul, sans associé. À Lui la royauté et à Lui la louange, et Il est capable de toute chose."
       },
       "source": {
-        "tr": "Müslim",
-        "en": "Muslim",
-        "de": "Muslim",
-        "fr": "Muslim",
-        "ar": "مسلم"
+        "tr": "Müslim 597",
+        "en": "Muslim 597",
+        "de": "Muslim 597",
+        "fr": "Muslim 597",
+        "ar": "مسلم 597"
       },
       "count": 1
     },
@@ -3413,10 +3448,10 @@
         "fr": "Gloire à Allah, louange à Allah, il n'y a de dieu qu'Allah, et Allah est le plus Grand."
       },
       "note": {
-        "tr": "Allah katında sözlerin en sevimlisidir; söyleyen için üzerine güneş doğan her şeyden daha hayırlıdır.",
-        "en": "The words most beloved to Allah; dearer than everything the sun rises upon.",
-        "de": "Die Allah liebsten Worte; wertvoller als alles, worüber die Sonne aufgeht.",
-        "fr": "Les paroles les plus aimées d'Allah ; meilleures que tout ce sur quoi le soleil se lève.",
+        "tr": "Allah katında sözlerin en sevimlisidir (Müslim 2137). Peygamberimiz bunları söylemenin kendisine, üzerine güneş doğan her şeyden daha sevimli olduğunu bildirmiştir (Müslim 2695).",
+        "en": "The words most beloved to Allah (Muslim 2137); the Prophet said that saying them was dearer to him than everything the sun rises upon (Muslim 2695).",
+        "de": "Die Allah liebsten Worte (Muslim 2137); der Prophet sagte, sie zu sprechen sei ihm lieber als alles, worüber die Sonne aufgeht (Muslim 2695).",
+        "fr": "Les paroles les plus aimées d'Allah (Muslim 2137) ; le Prophète a dit que les prononcer lui était plus cher que tout ce sur quoi le soleil se lève (Muslim 2695).",
         "ar": "أحب الكلام إلى الله، وهي أحب إلى النبي ﷺ مما طلعت عليه الشمس."
       },
       "source": {
@@ -3766,20 +3801,20 @@
         "fr": "J'agrée Allah comme Seigneur, l'islam comme religion et Muhammad comme Prophète."
       },
       "note": {
-        "tr": "Sabah ve akşam üçer defa söylenir.",
-        "en": "Said three times in the morning and in the evening.",
-        "de": "Wird morgens und abends je dreimal gesprochen.",
-        "fr": "Se dit trois fois le matin et le soir.",
-        "ar": "تُقال ثلاث مرات صباحًا ومساءً."
+        "tr": "Sabah ve akşam söylenir; söyleyeni (kıyamet günü) razı etmek Allah'ın üzerine bir haktır.",
+        "en": "Said in the morning and evening; Allah has taken it upon Himself to please whoever says it (on the Day of Judgement).",
+        "de": "Wird morgens und abends gesprochen; Allah hat es auf Sich genommen, den, der es sagt, (am Tag der Auferstehung) zufriedenzustellen.",
+        "fr": "Se dit le matin et le soir ; Allah S'est engagé à satisfaire (au Jour de la Résurrection) celui qui le dit.",
+        "ar": "يُقال في الصباح والمساء، وكان حقًا على الله أن يرضي قائله يوم القيامة."
       },
       "source": {
-        "tr": "Tirmizî 3389",
-        "en": "Tirmidhi 3389",
-        "de": "Tirmidhi 3389",
-        "fr": "Tirmidhi 3389",
-        "ar": "الترمذي 3389"
+        "tr": "Tirmizî 3389; Ebû Dâvûd 5072; İbn Mâce 3870",
+        "en": "Tirmidhi 3389; Abu Dawud 5072; Ibn Majah 3870",
+        "de": "Tirmidhi 3389; Abu Dawud 5072; Ibn Madscha 3870",
+        "fr": "Tirmidhi 3389 ; Abou Dawoud 5072 ; Ibn Maja 3870",
+        "ar": "الترمذي 3389، أبو داود 5072، ابن ماجه 3870"
       },
-      "count": 3
+      "count": 1
     },
     {
       "id": "hasbiyallah",

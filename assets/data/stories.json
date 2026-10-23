@@ -34,18 +34,18 @@
             "ar": "خلق الله آدم من طين، وعلّمه الأسماء كلها، وأمر الملائكة بالسجود له، فأبى إبليس واستكبر.\n\nوأغوى الشيطانُ آدمَ وزوجه فاقتربا من الشجرة التي نُهيا عنها، فلما أدركا خطأهما قالا: «ربنا ظلمنا أنفسنا»، فتاب الله عليهما وأهبطهما إلى الأرض."
           },
           "lesson": {
-            "tr": "Hata eden insan için tövbe kapısı her zaman açıktır.",
-            "en": "The door of repentance is always open to those who err.",
-            "de": "Die Tür der Reue steht dem, der sich irrt, immer offen.",
-            "fr": "La porte du repentir est toujours ouverte à celui qui se trompe.",
-            "ar": "باب التوبة مفتوح دائمًا لمن أخطأ."
+            "tr": "Hata eden insan, pişman olup samimiyetle Allah'a yöneldiğinde tövbe kapısını açık bulur.",
+            "en": "Whoever errs and turns to Allah in sincere regret finds the door of repentance open.",
+            "de": "Wer sich irrt und sich in aufrichtiger Reue Allah zuwendet, findet die Tür der Reue offen.",
+            "fr": "Celui qui se trompe et revient à Allah avec un repentir sincère trouve la porte du repentir ouverte.",
+            "ar": "من أخطأ ثم ندم ورجع إلى الله صادقًا وجد باب التوبة مفتوحًا."
           },
           "source": {
-            "tr": "Kur'an, Bakara 2/30-37; A'râf 7/11-25",
-            "en": "Quran, Al-Baqarah 2:30-37; Al-A'raf 7:11-25",
-            "de": "Koran, Al-Baqarah 2:30-37; Al-A'raf 7:11-25",
-            "fr": "Coran, Al-Baqarah 2:30-37 ; Al-A'raf 7:11-25",
-            "ar": "سورة البقرة: 30-37، سورة الأعراف: 11-25"
+            "tr": "Kur'an, Bakara 2/30-37; Âl-i İmrân 3/33; Âl-i İmrân 3/59; A'râf 7/11-25",
+            "en": "Quran, Al-Baqarah 2:30-37; Ali 'Imran 3:33; Ali 'Imran 3:59; Al-A'raf 7:11-25",
+            "de": "Koran, Al-Baqarah 2:30-37; Ali 'Imran 3:33; Ali 'Imran 3:59; Al-A'raf 7:11-25",
+            "fr": "Coran, Al-Baqarah 2:30-37 ; Ali 'Imran 3:33 ; Ali 'Imran 3:59 ; Al-A'raf 7:11-25",
+            "ar": "سورة البقرة: 30-37، سورة آل عمران: 33، سورة آل عمران: 59، سورة الأعراف: 11-25"
           }
         },
         {
@@ -103,11 +103,11 @@
             "ar": "السفينة والطوفان"
           },
           "text": {
-            "tr": "Nûh, kavmini dokuz yüz elli yıl boyunca yalnız Allah'a kulluğa çağırdı. Kavminin çoğu onunla alay etti, ancak az bir kısmı iman etti.\n\nAllah'ın emriyle bir gemi yaptı. Tufan geldiğinde iman edenler ve her canlıdan birer çift gemiye bindi. Nûh'un iman etmeyen oğlu dağa sığınacağını söyledi ama boğuldu. Gemi Cûdî dağının üzerine oturdu.",
-            "en": "Nuh called his people to worship Allah alone for nine hundred and fifty years. Most of them mocked him; only a few believed.\n\nBy Allah's command he built an ark. When the flood came, the believers and a pair of every kind boarded it. His disbelieving son said he would take refuge on a mountain, but he drowned. The ark came to rest on Mount Judi.",
-            "de": "Nuh rief sein Volk neunhundertfünfzig Jahre lang dazu auf, Allah allein zu dienen. Die meisten verspotteten ihn, nur wenige glaubten.\n\nAuf Allahs Befehl baute er eine Arche. Als die Flut kam, stiegen die Gläubigen und von jeder Art ein Paar ein. Sein ungläubiger Sohn wollte sich auf einen Berg retten, doch er ertrank. Die Arche ließ sich auf dem Berg Dschudi nieder.",
-            "fr": "Noé appela son peuple pendant neuf cent cinquante ans à n'adorer qu'Allah. La plupart se moquèrent de lui ; seuls quelques-uns crurent.\n\nSur l'ordre d'Allah, il construisit une arche. Quand vint le déluge, les croyants et un couple de chaque espèce y montèrent. Son fils mécréant voulut se réfugier sur une montagne, mais il fut noyé. L'arche s'immobilisa sur le mont Djoudi.",
-            "ar": "دعا نوحٌ قومه إلى عبادة الله وحده ألف سنة إلا خمسين عامًا، فسخر منه أكثرهم وما آمن معه إلا قليل.\n\nوصنع الفلك بأمر الله، فلما جاء الطوفان ركبها المؤمنون ومن كل زوجين اثنين، وأبى ابنه الكافر وقال سآوي إلى جبل فكان من المغرقين، واستوت السفينة على الجودي."
+            "tr": "Nûh, kavminin arasında bin yıldan elli yıl eksik bir süre kaldı ve onları yalnız Allah'a kulluğa çağırdı. Kavminin ileri gelenleri onu yalanlayıp onunla alay etti; onunla birlikte pek az kişi iman etti.\n\nAllah'ın emriyle bir gemi yaptı. Tufan geldiğinde iman edenler ve her canlıdan birer çift gemiye bindi. Nûh'un iman etmeyen oğlu dağa sığınacağını söyledi ama boğuldu. Gemi Cûdî dağının üzerine oturdu.",
+            "en": "Nuh stayed among his people a thousand years less fifty, calling them to worship Allah alone. The leaders of his people denied and mocked him; only a few believed with him.\n\nBy Allah's command he built an ark. When the flood came, the believers and a pair of every kind boarded it. His disbelieving son said he would take refuge on a mountain, but he drowned. The ark came to rest on Mount Judi.",
+            "de": "Nuh blieb tausend Jahre weniger fünfzig unter seinem Volk und rief es dazu auf, Allah allein zu dienen. Die Vornehmen seines Volkes leugneten und verspotteten ihn; nur wenige glaubten mit ihm.\n\nAuf Allahs Befehl baute er eine Arche. Als die Flut kam, stiegen die Gläubigen und von jeder Art ein Paar ein. Sein ungläubiger Sohn wollte sich auf einen Berg retten, doch er ertrank. Die Arche ließ sich auf dem Berg Dschudi nieder.",
+            "fr": "Noé demeura parmi son peuple mille ans moins cinquante, l'appelant à n'adorer qu'Allah. Les notables de son peuple le démentirent et se moquèrent de lui ; seuls quelques-uns crurent avec lui.\n\nSur l'ordre d'Allah, il construisit une arche. Quand vint le déluge, les croyants et un couple de chaque espèce y montèrent. Son fils mécréant voulut se réfugier sur une montagne, mais il fut noyé. L'arche s'immobilisa sur le mont Djoudi.",
+            "ar": "لبث نوحٌ في قومه ألف سنة إلا خمسين عامًا يدعوهم إلى عبادة الله وحده، فكذّبه الملأ من قومه وسخروا منه، وما آمن معه إلا قليل.\n\nوصنع الفلك بأمر الله، فلما جاء الطوفان ركبها المؤمنون ومن كل زوجين اثنين، وأبى ابنه الكافر وقال سآوي إلى جبل فكان من المغرقين، واستوت السفينة على الجودي."
           },
           "lesson": {
             "tr": "Davette sabır gerekir; kurtuluş soy bağıyla değil imanla olur.",
@@ -155,11 +155,11 @@
             "ar": "القوة والثراء لا يغنيان عن أحد من الله شيئًا."
           },
           "source": {
-            "tr": "Kur'an, Hûd 11/50-60; Hâkka 69/6-8",
-            "en": "Quran, Hud 11:50-60; Al-Haqqah 69:6-8",
-            "de": "Koran, Hud 11:50-60; Al-Haqqah 69:6-8",
-            "fr": "Coran, Hud 11:50-60 ; Al-Haqqah 69:6-8",
-            "ar": "سورة هود: 50-60، سورة الحاقة: 6-8"
+            "tr": "Kur'an, Hûd 11/50-60; Şuarâ 26/123-140; Fussilet 41/15-16; Hâkka 69/6-8",
+            "en": "Quran, Hud 11:50-60; Ash-Shu'ara 26:123-140; Fussilat 41:15-16; Al-Haqqah 69:6-8",
+            "de": "Koran, Hud 11:50-60; Ash-Shu'ara 26:123-140; Fussilat 41:15-16; Al-Haqqah 69:6-8",
+            "fr": "Coran, Hud 11:50-60 ; Ash-Shu'ara 26:123-140 ; Fussilat 41:15-16 ; Al-Haqqah 69:6-8",
+            "ar": "سورة هود: 50-60، سورة الشعراء: 123-140، سورة فصلت: 15-16، سورة الحاقة: 6-8"
           }
         },
         {
@@ -231,11 +231,11 @@
             "ar": "الاستسلام التام لله والثبات على التوحيد."
           },
           "source": {
-            "tr": "Kur'an, Enbiyâ 21/51-70; Sâffât 37/99-111; Bakara 2/124-129",
-            "en": "Quran, Al-Anbiya 21:51-70; As-Saffat 37:99-111; Al-Baqarah 2:124-129",
-            "de": "Koran, Al-Anbiya 21:51-70; As-Saffat 37:99-111; Al-Baqarah 2:124-129",
-            "fr": "Coran, Al-Anbiya 21:51-70 ; As-Saffat 37:99-111 ; Al-Baqarah 2:124-129",
-            "ar": "سورة الأنبياء: 51-70، سورة الصافات: 99-111، سورة البقرة: 124-129"
+            "tr": "Kur'an, Bakara 2/124-130; Âl-i İmrân 3/95; Nisâ 4/125; Enbiyâ 21/51-70; Sâffât 37/97-111",
+            "en": "Quran, Al-Baqarah 2:124-130; Ali 'Imran 3:95; An-Nisa 4:125; Al-Anbiya 21:51-70; As-Saffat 37:97-111",
+            "de": "Koran, Al-Baqarah 2:124-130; Ali 'Imran 3:95; An-Nisa 4:125; Al-Anbiya 21:51-70; As-Saffat 37:97-111",
+            "fr": "Coran, Al-Baqarah 2:124-130 ; Ali 'Imran 3:95 ; An-Nisa 4:125 ; Al-Anbiya 21:51-70 ; As-Saffat 37:97-111",
+            "ar": "سورة البقرة: 124-130، سورة آل عمران: 95، سورة النساء: 125، سورة الأنبياء: 51-70، سورة الصافات: 97-111"
           }
         },
         {
@@ -307,11 +307,11 @@
             "ar": "الوفاء بالوعد وحثّ الأهل على العبادة."
           },
           "source": {
-            "tr": "Kur'an, Meryem 19/54-55; Bakara 2/127; Sâffât 37/101-107",
-            "en": "Quran, Maryam 19:54-55; Al-Baqarah 2:127; As-Saffat 37:101-107",
-            "de": "Koran, Maryam 19:54-55; Al-Baqarah 2:127; As-Saffat 37:101-107",
-            "fr": "Coran, Maryam 19:54-55 ; Al-Baqarah 2:127 ; As-Saffat 37:101-107",
-            "ar": "سورة مريم: 54-55، سورة البقرة: 127، سورة الصافات: 101-107"
+            "tr": "Kur'an, Bakara 2/127; İbrâhîm 14/39; Meryem 19/54-55; Sâffât 37/101-107",
+            "en": "Quran, Al-Baqarah 2:127; Ibrahim 14:39; Maryam 19:54-55; As-Saffat 37:101-107",
+            "de": "Koran, Al-Baqarah 2:127; Ibrahim 14:39; Maryam 19:54-55; As-Saffat 37:101-107",
+            "fr": "Coran, Al-Baqarah 2:127 ; Ibrahim 14:39 ; Maryam 19:54-55 ; As-Saffat 37:101-107",
+            "ar": "سورة البقرة: 127، سورة إبراهيم: 39، سورة مريم: 54-55، سورة الصافات: 101-107"
           }
         },
         {
@@ -383,11 +383,11 @@
             "ar": "الصبر والتوكل على الله عند المصيبة."
           },
           "source": {
-            "tr": "Kur'an, Bakara 2/132-133; Yûsuf 12/83-87",
-            "en": "Quran, Al-Baqarah 2:132-133; Yusuf 12:83-87",
-            "de": "Koran, Al-Baqarah 2:132-133; Yusuf 12:83-87",
-            "fr": "Coran, Al-Baqarah 2:132-133 ; Yusuf 12:83-87",
-            "ar": "سورة البقرة: 132-133، سورة يوسف: 83-87"
+            "tr": "Kur'an, Bakara 2/132-133; Yûsuf 12/18; Yûsuf 12/38; Yûsuf 12/83-87; Yûsuf 12/99-100; Buhârî 3382",
+            "en": "Quran, Al-Baqarah 2:132-133; Yusuf 12:18; Yusuf 12:38; Yusuf 12:83-87; Yusuf 12:99-100; Bukhari 3382",
+            "de": "Koran, Al-Baqarah 2:132-133; Yusuf 12:18; Yusuf 12:38; Yusuf 12:83-87; Yusuf 12:99-100; Buchari 3382",
+            "fr": "Coran, Al-Baqarah 2:132-133 ; Yusuf 12:18 ; Yusuf 12:38 ; Yusuf 12:83-87 ; Yusuf 12:99-100 ; Boukhari 3382",
+            "ar": "سورة البقرة: 132-133، سورة يوسف: 18، سورة يوسف: 38، سورة يوسف: 83-87، سورة يوسف: 99-100، البخاري 3382"
           }
         },
         {
@@ -407,11 +407,11 @@
             "ar": "أحسن القصص"
           },
           "text": {
-            "tr": "Kur'an, Yûsuf'un kıssasını «kıssaların en güzeli» olarak anlatır. Kıskanç kardeşleri onu kuyuya attı; köle olarak Mısır'a satıldı. Yetiştiği evin hanımının ısrarlı davetine karşı iffetini korudu ve haksız yere zindana atıldı.\n\nZindanda rüyaları yorumladı; kralın rüyasını yorumlayınca Mısır'ın hazinelerinden sorumlu oldu. Kıtlıkta yardım istemeye gelen kardeşlerini tanıdı ve «Bugün size kınama yok» diyerek onları bağışladı.",
-            "en": "The Quran tells the story of Yusuf as “the most beautiful of stories.” His jealous brothers threw him into a well and he was sold as a slave in Egypt. He guarded his chastity against the insistent advances of the lady of the house and was unjustly imprisoned.\n\nIn prison he interpreted dreams; after interpreting the king's dream he was put in charge of Egypt's storehouses. When his brothers came for help during the famine, he recognised them and forgave them, saying, “No blame upon you today.”",
-            "de": "Der Koran erzählt die Geschichte Yusufs als „die schönste der Geschichten“. Seine neidischen Brüder warfen ihn in einen Brunnen, und er wurde als Sklave nach Ägypten verkauft. Er bewahrte seine Keuschheit gegenüber dem beharrlichen Werben der Herrin des Hauses und kam unschuldig ins Gefängnis.\n\nIm Gefängnis deutete er Träume; nachdem er den Traum des Königs gedeutet hatte, wurde er über die Vorratskammern Ägyptens gesetzt. Als seine Brüder in der Hungersnot um Hilfe kamen, erkannte er sie und vergab ihnen: „Kein Tadel trifft euch heute.“",
-            "fr": "Le Coran raconte l'histoire de Joseph comme « le plus beau des récits ». Ses frères jaloux le jetèrent dans un puits et il fut vendu comme esclave en Égypte. Il préserva sa chasteté face aux avances insistantes de la maîtresse de maison et fut emprisonné injustement.\n\nEn prison, il interpréta des rêves ; après avoir interprété le rêve du roi, il fut chargé des greniers de l'Égypte. Quand ses frères vinrent chercher de l'aide pendant la famine, il les reconnut et leur pardonna : « Pas de reproche contre vous aujourd'hui. »",
-            "ar": "قصّ القرآن قصة يوسف بوصفها «أحسن القصص»؛ ألقاه إخوته حسدًا في الجبّ، وبيع عبدًا في مصر، فاستعصم أمام مراودة امرأة العزيز، وسُجن ظلمًا.\n\nوفي السجن عبّر الرؤى، ولما عبّر رؤيا الملك جُعل على خزائن الأرض، فلما جاءه إخوته في المجاعة عرفهم وعفا عنهم قائلًا: «لا تثريب عليكم اليوم»."
+            "tr": "Yûsuf suresi «Sana en güzel kıssaları anlatıyoruz» ayetiyle başlar; bu yüzden Yûsuf'un kıssası «kıssaların en güzeli» diye anılır. Kıskanç kardeşleri onu kuyuya attı; köle olarak Mısır'a satıldı. Yetiştiği evin hanımının ısrarlı davetine karşı iffetini korudu ve haksız yere zindana atıldı.\n\nZindanda rüyaları yorumladı; kralın rüyasını yorumlayınca Mısır'ın hazinelerinden sorumlu oldu. Kıtlıkta yardım istemeye gelen kardeşlerini tanıdı ve «Bugün size kınama yok» diyerek onları bağışladı.",
+            "en": "Surah Yusuf opens with the verse “We relate to you the best of stories”; this is why the story of Yusuf is called “the most beautiful of stories.” His jealous brothers threw him into a well and he was sold as a slave in Egypt. He guarded his chastity against the insistent advances of the lady of the house and was unjustly imprisoned.\n\nIn prison he interpreted dreams; after interpreting the king's dream he was put in charge of Egypt's storehouses. When his brothers came for help during the famine, he recognised them and forgave them, saying, “No blame upon you today.”",
+            "de": "Die Sure Yusuf beginnt mit dem Vers „Wir erzählen dir die schönsten Geschichten“; deshalb wird die Geschichte Yusufs „die schönste der Geschichten“ genannt. Seine neidischen Brüder warfen ihn in einen Brunnen, und er wurde als Sklave nach Ägypten verkauft. Er bewahrte seine Keuschheit gegenüber dem beharrlichen Werben der Herrin des Hauses und kam unschuldig ins Gefängnis.\n\nIm Gefängnis deutete er Träume; nachdem er den Traum des Königs gedeutet hatte, wurde er über die Vorratskammern Ägyptens gesetzt. Als seine Brüder in der Hungersnot um Hilfe kamen, erkannte er sie und vergab ihnen: „Kein Tadel trifft euch heute.“",
+            "fr": "La sourate Yusuf s'ouvre sur le verset « Nous te racontons le meilleur des récits » ; c'est pourquoi l'histoire de Joseph est appelée « le plus beau des récits ». Ses frères jaloux le jetèrent dans un puits et il fut vendu comme esclave en Égypte. Il préserva sa chasteté face aux avances insistantes de la maîtresse de maison et fut emprisonné injustement.\n\nEn prison, il interpréta des rêves ; après avoir interprété le rêve du roi, il fut chargé des greniers de l'Égypte. Quand ses frères vinrent chercher de l'aide pendant la famine, il les reconnut et leur pardonna : « Pas de reproche contre vous aujourd'hui. »",
+            "ar": "تبدأ سورة يوسف بقوله تعالى: «نحن نقص عليك أحسن القصص»، ولذا تُعرف قصة يوسف بأنها «أحسن القصص»؛ ألقاه إخوته حسدًا في الجبّ، وبيع عبدًا في مصر، فاستعصم أمام مراودة امرأة العزيز، وسُجن ظلمًا.\n\nوفي السجن عبّر الرؤى، ولما عبّر رؤيا الملك جُعل على خزائن الأرض، فلما جاءه إخوته في المجاعة عرفهم وعفا عنهم قائلًا: «لا تثريب عليكم اليوم»."
           },
           "lesson": {
             "tr": "İffet, sabır ve affedicilik sonunda kazandırır.",
@@ -421,11 +421,11 @@
             "ar": "العفة والصبر والعفو عاقبتها الخير."
           },
           "source": {
-            "tr": "Kur'an, Yûsuf 12/3-6; Yûsuf 12/23-24; Yûsuf 12/54-56; Yûsuf 12/89-92",
-            "en": "Quran, Yusuf 12:3-6; Yusuf 12:23-24; Yusuf 12:54-56; Yusuf 12:89-92",
-            "de": "Koran, Yusuf 12:3-6; Yusuf 12:23-24; Yusuf 12:54-56; Yusuf 12:89-92",
-            "fr": "Coran, Yusuf 12:3-6 ; Yusuf 12:23-24 ; Yusuf 12:54-56 ; Yusuf 12:89-92",
-            "ar": "سورة يوسف: 3-6، سورة يوسف: 23-24، سورة يوسف: 54-56، سورة يوسف: 89-92"
+            "tr": "Kur'an, Yûsuf 12/3-24; Yûsuf 12/32-58; Yûsuf 12/89-92",
+            "en": "Quran, Yusuf 12:3-24; Yusuf 12:32-58; Yusuf 12:89-92",
+            "de": "Koran, Yusuf 12:3-24; Yusuf 12:32-58; Yusuf 12:89-92",
+            "fr": "Coran, Yusuf 12:3-24 ; Yusuf 12:32-58 ; Yusuf 12:89-92",
+            "ar": "سورة يوسف: 3-24، سورة يوسف: 32-58، سورة يوسف: 89-92"
           }
         },
         {
@@ -535,11 +535,11 @@
             "ar": "مهما بدا الظالم قويًّا فالنجاة لمن توكّل على الله."
           },
           "source": {
-            "tr": "Kur'an, Kasas 28/3-46; Tâhâ 20/9-24; Şuarâ 26/52-68; Nisâ 4/164",
-            "en": "Quran, Al-Qasas 28:3-46; Ta-Ha 20:9-24; Ash-Shu'ara 26:52-68; An-Nisa 4:164",
-            "de": "Koran, Al-Qasas 28:3-46; Ta-Ha 20:9-24; Ash-Shu'ara 26:52-68; An-Nisa 4:164",
-            "fr": "Coran, Al-Qasas 28:3-46 ; Ta-Ha 20:9-24 ; Ash-Shu'ara 26:52-68 ; An-Nisa 4:164",
-            "ar": "سورة القصص: 3-46، سورة طه: 9-24، سورة الشعراء: 52-68، سورة النساء: 164"
+            "tr": "Kur'an, Nisâ 4/164; Tâhâ 20/9-24; Tâhâ 20/47; Şuarâ 26/18; Şuarâ 26/52-68; Kasas 28/3-46",
+            "en": "Quran, An-Nisa 4:164; Ta-Ha 20:9-24; Ta-Ha 20:47; Ash-Shu'ara 26:18; Ash-Shu'ara 26:52-68; Al-Qasas 28:3-46",
+            "de": "Koran, An-Nisa 4:164; Ta-Ha 20:9-24; Ta-Ha 20:47; Ash-Shu'ara 26:18; Ash-Shu'ara 26:52-68; Al-Qasas 28:3-46",
+            "fr": "Coran, An-Nisa 4:164 ; Ta-Ha 20:9-24 ; Ta-Ha 20:47 ; Ash-Shu'ara 26:18 ; Ash-Shu'ara 26:52-68 ; Al-Qasas 28:3-46",
+            "ar": "سورة النساء: 164، سورة طه: 9-24، سورة طه: 47، سورة الشعراء: 18، سورة الشعراء: 52-68، سورة القصص: 3-46"
           }
         },
         {
@@ -573,11 +573,11 @@
             "ar": "التعاون على الحق والتحذير من الفتنة."
           },
           "source": {
-            "tr": "Kur'an, Tâhâ 20/29-36; Kasas 28/34; Tâhâ 20/90-94; Meryem 19/53",
-            "en": "Quran, Ta-Ha 20:29-36; Al-Qasas 28:34; Ta-Ha 20:90-94; Maryam 19:53",
-            "de": "Koran, Ta-Ha 20:29-36; Al-Qasas 28:34; Ta-Ha 20:90-94; Maryam 19:53",
-            "fr": "Coran, Ta-Ha 20:29-36 ; Al-Qasas 28:34 ; Ta-Ha 20:90-94 ; Maryam 19:53",
-            "ar": "سورة طه: 29-36، سورة القصص: 34، سورة طه: 90-94، سورة مريم: 53"
+            "tr": "Kur'an, A'râf 7/142; Meryem 19/53; Tâhâ 20/29-36; Tâhâ 20/85-94; Kasas 28/34",
+            "en": "Quran, Al-A'raf 7:142; Maryam 19:53; Ta-Ha 20:29-36; Ta-Ha 20:85-94; Al-Qasas 28:34",
+            "de": "Koran, Al-A'raf 7:142; Maryam 19:53; Ta-Ha 20:29-36; Ta-Ha 20:85-94; Al-Qasas 28:34",
+            "fr": "Coran, Al-A'raf 7:142 ; Maryam 19:53 ; Ta-Ha 20:29-36 ; Ta-Ha 20:85-94 ; Al-Qasas 28:34",
+            "ar": "سورة الأعراف: 142، سورة مريم: 53، سورة طه: 29-36، سورة طه: 85-94، سورة القصص: 34"
           }
         },
         {
@@ -597,11 +597,11 @@
             "ar": "من الصابرين"
           },
           "text": {
-            "tr": "Kur'an, Zülkifl'i İsmâil ve İdrîs ile birlikte sabredenlerden, rahmetine aldığı salih kullardan ve hayırlılardan sayar. Hayatına dair Kur'an'da başka ayrıntı yoktur.",
-            "en": "The Quran counts Dhul-Kifl, together with Ismail and Idris, among the patient, among the righteous whom Allah admitted into His mercy, and among the best. The Quran gives no further details of his life.",
-            "de": "Der Koran zählt Dhul-Kifl zusammen mit Ismail und Idris zu den Geduldigen, zu den Rechtschaffenen, die Allah in Seine Barmherzigkeit aufnahm, und zu den Besten. Weitere Einzelheiten seines Lebens nennt der Koran nicht.",
-            "fr": "Le Coran compte Dhul-Kifl, avec Ismaël et Idris, parmi les endurants, parmi les vertueux qu'Allah fit entrer dans Sa miséricorde, et parmi les meilleurs. Le Coran ne donne pas d'autres détails sur sa vie.",
-            "ar": "يعدّ القرآنُ ذا الكفل مع إسماعيل وإدريس من الصابرين ومن الصالحين الذين أدخلهم الله في رحمته ومن الأخيار، ولم يذكر القرآن تفاصيل أخرى عن حياته."
+            "tr": "Kur'an, Zülkifl'i İsmâil ve İdrîs ile birlikte sabredenlerden ve rahmetine aldığı salih kullardan; İsmâil ve Elyesa ile birlikte de hayırlılardan sayar. Hayatına dair Kur'an'da başka ayrıntı yoktur.",
+            "en": "The Quran counts Dhul-Kifl, together with Ismail and Idris, among the patient and the righteous whom Allah admitted into His mercy; and, together with Ismail and Al-Yasa, among the best. The Quran gives no further details of his life.",
+            "de": "Der Koran zählt Dhul-Kifl zusammen mit Ismail und Idris zu den Geduldigen und den Rechtschaffenen, die Allah in Seine Barmherzigkeit aufnahm, und zusammen mit Ismail und Al-Yasa zu den Besten. Weitere Einzelheiten seines Lebens nennt der Koran nicht.",
+            "fr": "Le Coran compte Dhul-Kifl, avec Ismaël et Idris, parmi les endurants et les vertueux qu'Allah fit entrer dans Sa miséricorde ; et, avec Ismaël et Élisée, parmi les meilleurs. Le Coran ne donne pas d'autres détails sur sa vie.",
+            "ar": "يعدّ القرآنُ ذا الكفل مع إسماعيل وإدريس من الصابرين ومن الصالحين الذين أدخلهم الله في رحمته، ومع إسماعيل واليسع من الأخيار، ولم يذكر القرآن تفاصيل أخرى عن حياته."
           },
           "lesson": {
             "tr": "Sabır, Allah'ın rahmetine girmenin yoludur.",
@@ -635,10 +635,10 @@
             "ar": "النبي الذي آتاه الله الزبور"
           },
           "text": {
-            "tr": "Dâvûd, zorba Câlût'u öldürdü; Allah ona hükümdarlık ve hikmet verdi. Kendisine Zebur indirildi.\n\nDağlar ve kuşlar onunla birlikte Allah'ı tesbih ederdi. Allah demiri ona yumuşattı, o da zırhlar yaptı. İnsanlar arasında hakkaniyetle hükmetmesi emredildi.",
-            "en": "Dawud killed the tyrant Jalut (Goliath); Allah gave him kingship and wisdom. The Zabur (Psalms) was revealed to him.\n\nThe mountains and the birds glorified Allah with him. Allah made iron soft for him, and he made coats of mail. He was commanded to judge between people with justice.",
-            "de": "Dawud tötete den Tyrannen Dschalut (Goliath); Allah gab ihm Königsherrschaft und Weisheit. Ihm wurde der Zabur (die Psalmen) offenbart.\n\nDie Berge und die Vögel priesen Allah mit ihm. Allah machte ihm das Eisen weich, und er fertigte Panzerhemden. Ihm wurde geboten, gerecht zwischen den Menschen zu richten.",
-            "fr": "David tua le tyran Goliath ; Allah lui donna la royauté et la sagesse. Le Zabour (les Psaumes) lui fut révélé.\n\nLes montagnes et les oiseaux glorifiaient Allah avec lui. Allah lui assouplit le fer, et il fabriqua des cottes de mailles. Il lui fut ordonné de juger les gens avec équité.",
+            "tr": "Dâvûd, Câlût'u öldürdü; Allah ona hükümdarlık ve hikmet verdi. Kendisine Zebur indirildi.\n\nDağlar ve kuşlar onunla birlikte Allah'ı tesbih ederdi. Allah demiri ona yumuşattı, o da zırhlar yaptı. İnsanlar arasında hakkaniyetle hükmetmesi emredildi.",
+            "en": "Dawud killed Jalut (Goliath); Allah gave him kingship and wisdom. The Zabur (Psalms) was revealed to him.\n\nThe mountains and the birds glorified Allah with him. Allah made iron soft for him, and he made coats of mail. He was commanded to judge between people with justice.",
+            "de": "Dawud tötete Dschalut (Goliath); Allah gab ihm Königsherrschaft und Weisheit. Ihm wurde der Zabur (die Psalmen) offenbart.\n\nDie Berge und die Vögel priesen Allah mit ihm. Allah machte ihm das Eisen weich, und er fertigte Panzerhemden. Ihm wurde geboten, gerecht zwischen den Menschen zu richten.",
+            "fr": "David tua Goliath ; Allah lui donna la royauté et la sagesse. Le Zabour (les Psaumes) lui fut révélé.\n\nLes montagnes et les oiseaux glorifiaient Allah avec lui. Allah lui assouplit le fer, et il fabriqua des cottes de mailles. Il lui fut ordonné de juger les gens avec équité.",
             "ar": "قتل داود جالوت، وآتاه الله الملك والحكمة، وأنزل عليه الزبور.\n\nوسخّر الله الجبال والطير يسبّحن معه، وألان له الحديد فصنع الدروع، وأمره أن يحكم بين الناس بالحق."
           },
           "lesson": {
@@ -673,7 +673,7 @@
             "ar": "النبي الملك الذي عُلّم منطق الطير"
           },
           "text": {
-            "tr": "Süleyman, Hz. Dâvûd'un oğludur. Allah ona kuşların dilini öğretti; rüzgârı ve cinleri onun emrine verdi.\n\nBir karınca ordusunu gördüğünde karıncanın sözünü işitip tebessüm etti ve verilen nimete şükür için dua etti. Hüdhüd kuşunun haberiyle Sebe melikesini tek Allah'a çağırdı; melike sonunda «Süleyman ile birlikte âlemlerin Rabbi Allah'a teslim oldum» dedi.",
+            "tr": "Süleyman, Hz. Dâvûd'un oğludur. Allah ona kuşların dilini öğretti; rüzgârı ve cinleri onun emrine verdi.\n\nOrdusuyla karınca vadisine geldiğinde, bir karıncanın ezilmesinler diye diğerlerini uyardığını işitip tebessüm etti ve verilen nimete şükür için dua etti. Hüdhüd kuşunun haberiyle Sebe melikesini tek Allah'a çağırdı; melike sonunda «Süleyman ile birlikte âlemlerin Rabbi Allah'a teslim oldum» dedi.",
             "en": "Sulayman was the son of Dawud. Allah taught him the speech of birds and placed the wind and the jinn under his command.\n\nWhen he heard an ant warn the others of his army, he smiled and prayed to be grateful for the blessings he had been given. Through the news of the hoopoe, he invited the Queen of Sheba to the One God; she finally said, “I submit with Sulayman to Allah, Lord of the worlds.”",
             "de": "Sulaiman war der Sohn Dawuds. Allah lehrte ihn die Sprache der Vögel und stellte den Wind und die Dschinn unter seinen Befehl.\n\nAls er hörte, wie eine Ameise die anderen vor seinem Heer warnte, lächelte er und betete, für die erwiesenen Gaben dankbar zu sein. Durch die Nachricht des Wiedehopfs rief er die Königin von Saba zum einen Gott; sie sagte schließlich: „Ich ergebe mich mit Sulaiman Allah, dem Herrn der Welten.“",
             "fr": "Salomon était le fils de David. Allah lui enseigna le langage des oiseaux et soumit à ses ordres le vent et les djinns.\n\nEntendant une fourmi avertir les autres de l'approche de son armée, il sourit et pria pour être reconnaissant des bienfaits reçus. Grâce aux nouvelles de la huppe, il appela la reine de Saba au Dieu unique ; elle finit par dire : « Je me soumets avec Salomon à Allah, Seigneur des mondes. »",
@@ -687,11 +687,11 @@
             "ar": "عِظم النعمة يستوجب عِظم الشكر."
           },
           "source": {
-            "tr": "Kur'an, Neml 27/15-44; Sebe' 34/12-13",
-            "en": "Quran, An-Naml 27:15-44; Saba 34:12-13",
-            "de": "Koran, An-Naml 27:15-44; Saba 34:12-13",
-            "fr": "Coran, An-Naml 27:15-44 ; Saba 34:12-13",
-            "ar": "سورة النمل: 15-44، سورة سبأ: 12-13"
+            "tr": "Kur'an, Neml 27/15-44; Sebe' 34/12-13; Sâd 38/30",
+            "en": "Quran, An-Naml 27:15-44; Saba 34:12-13; Sad 38:30",
+            "de": "Koran, An-Naml 27:15-44; Saba 34:12-13; Sad 38:30",
+            "fr": "Coran, An-Naml 27:15-44 ; Saba 34:12-13 ; Sad 38:30",
+            "ar": "سورة النمل: 15-44، سورة سبأ: 12-13، سورة ص: 30"
           }
         },
         {
@@ -711,10 +711,10 @@
             "ar": "التوحيد في وجه بعل"
           },
           "text": {
-            "tr": "İlyas, Ba'l adlı puta tapan kavmine gönderildi: «Allah'tan korkmuyor musunuz? Yaratanların en güzelini bırakıp Ba'l'e mi yalvarıyorsunuz?» dedi.\n\nKavmi onu yalanladı; ihlaslı kullar dışında onlar hesaba çekilecektir. Kur'an onu salihlerden sayar ve «İlyas'a selam olsun» der.",
-            "en": "Ilyas was sent to a people who worshipped an idol called Baal. He said, “Will you not fear Allah? Do you call upon Baal and forsake the best of creators?”\n\nHis people denied him, and except for Allah's sincere servants they will be called to account. The Quran counts him among the righteous and says, “Peace be upon Ilyas.”",
-            "de": "Ilyas wurde zu einem Volk gesandt, das einen Götzen namens Baal anbetete. Er sagte: „Wollt ihr Allah nicht fürchten? Ruft ihr Baal an und lasst den besten Schöpfer?“\n\nSein Volk leugnete ihn; außer Allahs aufrichtigen Dienern werden sie zur Rechenschaft gezogen. Der Koran zählt ihn zu den Rechtschaffenen und sagt: „Friede sei auf Ilyas.“",
-            "fr": "Élie fut envoyé à un peuple qui adorait une idole nommée Baal. Il dit : « Ne craindrez-vous pas Allah ? Invoquez-vous Baal en délaissant le meilleur des créateurs ? »\n\nSon peuple le démentit ; hormis les serviteurs sincères d'Allah, ils devront rendre des comptes. Le Coran le compte parmi les vertueux et dit : « Paix sur Élie. »",
+            "tr": "İlyas, Ba'l adlı puta tapan kavmine gönderildi: «Allah'tan korkmuyor musunuz? Yaratanların en güzelini bırakıp Ba'l'e mi yalvarıyorsunuz?» dedi.\n\nKavmi onu yalanladı; Allah'ın ihlaslı kulları dışında hepsi (azap için) mutlaka hazır bulundurulacaktır. Kur'an onu salihlerden sayar ve «İlyas'a selam olsun» der.",
+            "en": "Ilyas was sent to a people who worshipped an idol called Baal. He said, “Will you not fear Allah? Do you call upon Baal and forsake the best of creators?”\n\nHis people denied him, so they will surely be brought forth (for punishment), except Allah's sincere servants. The Quran counts him among the righteous and says, “Peace be upon Ilyas.”",
+            "de": "Ilyas wurde zu einem Volk gesandt, das einen Götzen namens Baal anbetete. Er sagte: „Wollt ihr Allah nicht fürchten? Ruft ihr Baal an und lasst den besten Schöpfer?“\n\nSein Volk leugnete ihn; darum werden sie (zur Strafe) vorgeführt werden, außer Allahs aufrichtigen Dienern. Der Koran zählt ihn zu den Rechtschaffenen und sagt: „Friede sei auf Ilyas.“",
+            "fr": "Élie fut envoyé à un peuple qui adorait une idole nommée Baal. Il dit : « Ne craindrez-vous pas Allah ? Invoquez-vous Baal en délaissant le meilleur des créateurs ? »\n\nSon peuple le démentit ; ils seront donc amenés (au châtiment), hormis les serviteurs sincères d'Allah. Le Coran le compte parmi les vertueux et dit : « Paix sur Élie. »",
             "ar": "أُرسل إلياس إلى قوم يعبدون صنمًا اسمه بعل، فقال: «ألا تتقون أتدعون بعلًا وتذرون أحسن الخالقين».\n\nفكذّبوه فإنهم لمحضرون إلا عباد الله المخلصين، ويعدّه القرآن من الصالحين ويقول: «سلام على إل ياسين»."
           },
           "lesson": {
@@ -780,11 +780,11 @@
             "ar": "الدعاء في بطن الحوت"
           },
           "text": {
-            "tr": "Yûnus, kavmi kendisini dinlemeyince öfkeyle onlardan ayrıldı. Bindiği gemiden atıldı ve onu büyük bir balık yuttu.\n\nKaranlıklar içinde «Senden başka ilah yoktur; seni tenzih ederim; ben zalimlerden oldum» diye yalvardı. Allah onu kurtardı ve tekrar kavmine gönderdi; yüz bini aşkın kavmi iman etti ve dünyada rezil olmaktan kurtuldu.",
-            "en": "When his people would not listen, Yunus left them in anger. He was cast from a ship and swallowed by a great fish.\n\nIn the depths of darkness he cried, “There is no god but You; glory be to You; I have been among the wrongdoers.” Allah delivered him and sent him back to his people; over a hundred thousand believed and were spared disgrace in this world.",
-            "de": "Als sein Volk nicht auf ihn hörte, verließ Yunus es im Zorn. Er wurde von einem Schiff geworfen und von einem großen Fisch verschlungen.\n\nIn den Finsternissen rief er: „Es gibt keinen Gott außer Dir; gepriesen seist Du; ich gehörte zu den Ungerechten.“ Allah rettete ihn und sandte ihn zu seinem Volk zurück; über hunderttausend glaubten und blieben von Schande im Diesseits verschont.",
-            "fr": "Son peuple ne l'écoutant pas, Jonas le quitta en colère. Il fut jeté d'un navire et avalé par un grand poisson.\n\nDans les ténèbres, il implora : « Pas de dieu à part Toi ; gloire à Toi ; j'ai été du nombre des injustes. » Allah le délivra et le renvoya à son peuple ; plus de cent mille crurent et furent épargnés de l'humiliation ici-bas.",
-            "ar": "خرج يونس مغاضبًا لما لم يستجب له قومه، فألقي من السفينة فالتقمه الحوت.\n\nفنادى في الظلمات: «لا إله إلا أنت سبحانك إني كنت من الظالمين»، فنجّاه الله وأرسله إلى مائة ألف أو يزيدون فآمنوا، فكشف الله عنهم عذاب الخزي في الحياة الدنيا."
+            "tr": "Yûnus öfkelenerek çekip gitti ve dolu bir gemiye kaçtı. Gemidekilerle kura çekti, kaybedince denize atıldı ve onu bir balık yuttu.\n\nKaranlıklar içinde «Senden başka ilah yoktur; seni tenzih ederim; ben zalimlerden oldum» diye yalvardı. Allah onu kurtardı ve halsiz hâlde sahile çıkardı; onu yüz bin veya daha fazla kişiye peygamber olarak gönderdi. Onlar iman etti, Allah da dünya hayatındaki rezil edici azabı onlardan kaldırdı.",
+            "en": "Yunus went away in anger and fled to a laden ship. He cast lots with those on board, lost, was thrown into the sea, and a fish swallowed him.\n\nIn the depths of darkness he cried, “There is no god but You; glory be to You; I have been among the wrongdoers.” Allah delivered him and cast him, ill, onto the shore; He sent him to a hundred thousand or more. They believed, and Allah lifted from them the punishment of disgrace in this world.",
+            "de": "Yunus ging im Zorn fort und floh auf ein voll beladenes Schiff. Er warf mit den Leuten an Bord das Los, verlor, wurde ins Meer geworfen, und ein Fisch verschlang ihn.\n\nIn den Finsternissen rief er: „Es gibt keinen Gott außer Dir; gepriesen seist Du; ich gehörte zu den Ungerechten.“ Allah rettete ihn und warf ihn geschwächt an die Küste; Er sandte ihn zu hunderttausend oder mehr. Sie glaubten, und Allah nahm die schändliche Strafe im diesseitigen Leben von ihnen.",
+            "fr": "Jonas partit en colère et s'enfuit sur un navire chargé. Il tira au sort avec ceux du bord, perdit, fut jeté à la mer et un poisson l'avala.\n\nDans les ténèbres, il implora : « Pas de dieu à part Toi ; gloire à Toi ; j'ai été du nombre des injustes. » Allah le délivra et le jeta, affaibli, sur le rivage ; Il l'envoya à cent mille hommes ou plus. Ils crurent, et Allah leur épargna le châtiment humiliant de la vie d'ici-bas.",
+            "ar": "خرج يونس مغاضبًا، فأبق إلى الفلك المشحون، فساهم فكان من المدحضين، فالتقمه الحوت.\n\nفنادى في الظلمات: «لا إله إلا أنت سبحانك إني كنت من الظالمين»، فنجّاه الله ونبذه بالعراء وهو سقيم، وأرسله إلى مائة ألف أو يزيدون فآمنوا، فكشف الله عنهم عذاب الخزي في الحياة الدنيا."
           },
           "lesson": {
             "tr": "Hata eden kul, tövbe ve duayla Rabbine döner.",
@@ -932,11 +932,11 @@
             "ar": "خاتم النبيين ورحمة للعالمين"
           },
           "text": {
-            "tr": "Hz. Muhammed, Allah'ın elçisi ve peygamberlerin sonuncusudur. Allah onu âlemlere rahmet olarak gönderdi ve onun yüce bir ahlak üzere olduğunu bildirdi.\n\nKur'an-ı Kerim yirmi üç yıl boyunca ona indirildi. Hayatının ayrıntıları «Peygamberimizin Hayatı» bölümündedir.",
-            "en": "Muhammad is the Messenger of Allah and the seal of the prophets. Allah sent him as a mercy to the worlds and declared that he is of an exalted character.\n\nThe Holy Quran was revealed to him over twenty-three years. The details of his life are in the section “The Life of the Prophet”.",
-            "de": "Muhammad ist der Gesandte Allahs und das Siegel der Propheten. Allah sandte ihn als Barmherzigkeit für die Welten und erklärte, dass er von großartiger Wesensart ist.\n\nDer edle Koran wurde ihm über dreiundzwanzig Jahre offenbart. Einzelheiten seines Lebens stehen im Abschnitt „Das Leben des Propheten“.",
-            "fr": "Muhammad est le Messager d'Allah et le sceau des prophètes. Allah l'envoya comme miséricorde pour les mondes et déclara qu'il est d'une moralité sublime.\n\nLe Noble Coran lui fut révélé sur vingt-trois ans. Les détails de sa vie se trouvent dans la section « La vie du Prophète ».",
-            "ar": "محمد رسول الله وخاتم النبيين، أرسله الله رحمة للعالمين، وأخبر أنه على خلق عظيم.\n\nونزل عليه القرآن الكريم على مدى ثلاث وعشرين سنة، وتفاصيل حياته في قسم «سيرة النبي»."
+            "tr": "Hz. Muhammed, Allah'ın elçisi ve peygamberlerin sonuncusudur. Allah onu âlemlere rahmet olarak gönderdi ve onun yüce bir ahlak üzere olduğunu bildirdi.\n\nKur'an-ı Kerim ona yaklaşık yirmi üç yıl boyunca parça parça indirildi. Hayatının ayrıntıları «Peygamberimizin Hayatı» bölümündedir.",
+            "en": "Muhammad is the Messenger of Allah and the seal of the prophets. Allah sent him as a mercy to the worlds and declared that he is of an exalted character.\n\nThe Holy Quran was revealed to him in parts over about twenty-three years. The details of his life are in the section “The Life of the Prophet”.",
+            "de": "Muhammad ist der Gesandte Allahs und das Siegel der Propheten. Allah sandte ihn als Barmherzigkeit für die Welten und erklärte, dass er von großartiger Wesensart ist.\n\nDer edle Koran wurde ihm stückweise über etwa dreiundzwanzig Jahre offenbart. Einzelheiten seines Lebens stehen im Abschnitt „Das Leben des Propheten“.",
+            "fr": "Muhammad est le Messager d'Allah et le sceau des prophètes. Allah l'envoya comme miséricorde pour les mondes et déclara qu'il est d'une moralité sublime.\n\nLe Noble Coran lui fut révélé par fragments sur environ vingt-trois ans. Les détails de sa vie se trouvent dans la section « La vie du Prophète ».",
+            "ar": "محمد رسول الله وخاتم النبيين، أرسله الله رحمة للعالمين، وأخبر أنه على خلق عظيم.\n\nونزل عليه القرآن الكريم منجّمًا على مدى نحو ثلاث وعشرين سنة، وتفاصيل حياته في قسم «سيرة النبي»."
           },
           "lesson": {
             "tr": "Onu örnek almak, Allah'ın sevgisine ulaştırır.",
@@ -946,11 +946,11 @@
             "ar": "اتباعه طريق إلى محبة الله."
           },
           "source": {
-            "tr": "Kur'an, Ahzâb 33/40; Enbiyâ 21/107; Kalem 68/4; Âl-i İmrân 3/31",
-            "en": "Quran, Al-Ahzab 33:40; Al-Anbiya 21:107; Al-Qalam 68:4; Ali 'Imran 3:31",
-            "de": "Koran, Al-Ahzab 33:40; Al-Anbiya 21:107; Al-Qalam 68:4; Ali 'Imran 3:31",
-            "fr": "Coran, Al-Ahzab 33:40 ; Al-Anbiya 21:107 ; Al-Qalam 68:4 ; Ali 'Imran 3:31",
-            "ar": "سورة الأحزاب: 40، سورة الأنبياء: 107، سورة القلم: 4، سورة آل عمران: 31"
+            "tr": "Kur'an, Âl-i İmrân 3/31; İsrâ 17/106; Enbiyâ 21/107; Ahzâb 33/40; Kalem 68/4; Buhârî 3851",
+            "en": "Quran, Ali 'Imran 3:31; Al-Isra 17:106; Al-Anbiya 21:107; Al-Ahzab 33:40; Al-Qalam 68:4; Bukhari 3851",
+            "de": "Koran, Ali 'Imran 3:31; Al-Isra 17:106; Al-Anbiya 21:107; Al-Ahzab 33:40; Al-Qalam 68:4; Buchari 3851",
+            "fr": "Coran, Ali 'Imran 3:31 ; Al-Isra 17:106 ; Al-Anbiya 21:107 ; Al-Ahzab 33:40 ; Al-Qalam 68:4 ; Boukhari 3851",
+            "ar": "سورة آل عمران: 31، سورة الإسراء: 106، سورة الأنبياء: 107، سورة الأحزاب: 40، سورة القلم: 4، البخاري 3851"
           }
         }
       ]
@@ -1032,6 +1032,13 @@
             "de": "Vertrauenswürdigkeit ist das stärkste Zeugnis, noch vor jeder Verkündigung.",
             "fr": "La fiabilité est le plus fort des témoignages, avant même la prédication.",
             "ar": "الأمانة أقوى شهادة قبل الدعوة."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Hatice» ve «Hacerülesved» maddeleri",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), articles “Hatice” and “Hacerülesved”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Hatice“ und „Hacerülesved“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), articles « Hatice » et « Hacerülesved »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادتا «خديجة» و«الحجر الأسود»"
           }
         },
         {
@@ -1089,11 +1096,11 @@
             "ar": "610–622م"
           },
           "text": {
-            "tr": "Davet önce gizli yürütüldü, sonra açıkça ilan edildi. Müslümanlar ağır baskı ve işkence gördü; bir kısmı Habeşistan'a hicret etti (615). Müslümanlara uygulanan boykot yıllar sürdü.\n\n619'da Hz. Hatice ve Ebû Tâlib vefat etti; bu yıl «hüzün yılı» diye anılır. İsrâ ve Mi'rac'ta Peygamberimiz Mescid-i Harâm'dan Mescid-i Aksâ'ya götürüldü ve beş vakit namaz farz kılındı. Akabe'de Medineli Müslümanlarla yapılan biatlar hicretin yolunu açtı.",
-            "en": "The call was first carried out in secret, then announced openly. The Muslims faced heavy pressure and torture; some emigrated to Abyssinia (615). A boycott imposed on the Muslims lasted for years.\n\nIn 619 Khadija and Abu Talib died; this year is remembered as “the year of sorrow.” In the Isra and Miraj the Prophet was taken from the Sacred Mosque to al-Aqsa, and the five daily prayers were made obligatory. The pledges of Aqaba with the Muslims of Medina opened the way to the Hijra.",
-            "de": "Die Einladung geschah zuerst im Verborgenen, dann öffentlich. Die Muslime erlitten schweren Druck und Folter; einige wanderten nach Abessinien aus (615). Ein Boykott gegen die Muslime dauerte Jahre.\n\n619 starben Chadidscha und Abu Talib; dieses Jahr heißt „Jahr der Trauer“. Bei Isra und Miradsch wurde der Prophet von der Heiligen Moschee zur al-Aqsa geführt, und die fünf täglichen Gebete wurden verpflichtend. Die Treueide von Aqaba mit den Muslimen Medinas ebneten den Weg zur Hidschra.",
-            "fr": "L'appel fut d'abord mené en secret, puis proclamé ouvertement. Les musulmans subirent de lourdes pressions et des tortures ; certains émigrèrent en Abyssinie (615). Un boycott imposé aux musulmans dura des années.\n\nEn 619 moururent Khadija et Abou Talib ; cette année est appelée « l'année de la tristesse ». Lors de l'Isra et du Mi'raj, le Prophète fut transporté de la Mosquée sacrée à al-Aqsa, et les cinq prières quotidiennes furent prescrites. Les serments d'Aqaba avec les musulmans de Médine ouvrirent la voie à l'Hégire.",
-            "ar": "كانت الدعوة سرية ثم جهرية، فلقي المسلمون أشد الأذى، وهاجر بعضهم إلى الحبشة (615م)، وحوصروا في المقاطعة سنين.\n\nوتوفيت خديجة وأبو طالب سنة 619م فسُمّي «عام الحزن»، وأُسري بالنبي ﷺ من المسجد الحرام إلى المسجد الأقصى وعُرج به وفُرضت الصلوات الخمس، ثم مهّدت بيعتا العقبة مع أهل المدينة للهجرة."
+            "tr": "Davet önce gizli yürütüldü, sonra açıkça ilan edildi. Müslümanlar ağır baskı ve işkence gördü; bir kısmı Habeşistan'a hicret etti (615). Peygamberimizi korumaktan vazgeçmeyen Hâşimoğulları ve Muttaliboğulları'na uygulanan boykot yaklaşık üç yıl sürdü.\n\n620'de önce Hz. Hatice, kısa süre sonra Ebû Tâlib vefat etti; bu yıl «hüzün yılı» diye anılır. İsrâ ve Mi'rac'ta Peygamberimiz Mescid-i Harâm'dan Mescid-i Aksâ'ya götürüldü ve beş vakit namaz farz kılındı. Akabe'de Medineli Müslümanlarla yapılan biatlar hicretin yolunu açtı.",
+            "en": "The call was first carried out in secret, then announced openly. The Muslims faced heavy pressure and torture; some emigrated to Abyssinia (615). A boycott imposed on the clans of Hashim and al-Muttalib, who would not stop protecting the Prophet, lasted about three years.\n\nIn 620 Khadija died, and shortly afterwards Abu Talib; this year is remembered as “the year of sorrow.” In the Isra and Miraj the Prophet was taken from the Sacred Mosque to al-Aqsa, and the five daily prayers were made obligatory. The pledges of Aqaba with the Muslims of Medina opened the way to the Hijra.",
+            "de": "Die Einladung geschah zuerst im Verborgenen, dann öffentlich. Die Muslime erlitten schweren Druck und Folter; einige wanderten nach Abessinien aus (615). Ein Boykott gegen die Sippen Haschim und al-Muttalib, die den Propheten weiter beschützten, dauerte etwa drei Jahre.\n\n620 starb Chadidscha, kurz darauf Abu Talib; dieses Jahr heißt „Jahr der Trauer“. Bei Isra und Miradsch wurde der Prophet von der Heiligen Moschee zur al-Aqsa geführt, und die fünf täglichen Gebete wurden verpflichtend. Die Treueide von Aqaba mit den Muslimen Medinas ebneten den Weg zur Hidschra.",
+            "fr": "L'appel fut d'abord mené en secret, puis proclamé ouvertement. Les musulmans subirent de lourdes pressions et des tortures ; certains émigrèrent en Abyssinie (615). Un boycott imposé aux clans de Hâchim et d'al-Muttalib, qui continuaient de protéger le Prophète, dura environ trois ans.\n\nEn 620 mourut Khadija, puis peu après Abou Talib ; cette année est appelée « l'année de la tristesse ». Lors de l'Isra et du Mi'raj, le Prophète fut transporté de la Mosquée sacrée à al-Aqsa, et les cinq prières quotidiennes furent prescrites. Les serments d'Aqaba avec les musulmans de Médine ouvrirent la voie à l'Hégire.",
+            "ar": "كانت الدعوة سرية ثم جهرية، فلقي المسلمون أشد الأذى، وهاجر بعضهم إلى الحبشة (615م)، وحوصر بنو هاشم وبنو المطلب الذين أبوا أن يسلموا النبي ﷺ في المقاطعة نحو ثلاث سنين.\n\nوتوفيت خديجة ثم أبو طالب بعدها بقليل سنة 620م فسُمّي «عام الحزن»، وأُسري بالنبي ﷺ من المسجد الحرام إلى المسجد الأقصى وعُرج به وفُرضت الصلوات الخمس، ثم مهّدت بيعتا العقبة مع أهل المدينة للهجرة."
           },
           "lesson": {
             "tr": "Zorluk dönemleri sabır ve kardeşlikle aşılır.",
@@ -1103,11 +1110,11 @@
             "ar": "تُتجاوز الشدائد بالصبر والأخوّة."
           },
           "source": {
-            "tr": "Kur'an, İsrâ 17/1",
-            "en": "Quran, Al-Isra 17:1",
-            "de": "Koran, Al-Isra 17:1",
-            "fr": "Coran, Al-Isra 17:1",
-            "ar": "سورة الإسراء: 1"
+            "tr": "Kur'an, İsrâ 17/1; Buhârî 349",
+            "en": "Quran, Al-Isra 17:1; Bukhari 349",
+            "de": "Koran, Al-Isra 17:1; Buchari 349",
+            "fr": "Coran, Al-Isra 17:1 ; Boukhari 349",
+            "ar": "سورة الإسراء: 1، البخاري 349"
           }
         },
         {
@@ -1253,7 +1260,7 @@
             "ar": "الخليفة الأول (632–634م)، «الصدّيق»"
           },
           "text": {
-            "tr": "Peygamberimizin en yakın dostu ve ilk iman eden hür erkektir. Peygamberimizi her durumda tasdik ettiği için «Sıddîk» diye anıldı. Hicrette Sevr mağarasında onunla birlikteydi; Peygamberimiz ona «İkincileri Allah olan iki kişi hakkında ne düşünürsün?» demişti.\n\nPeygamberimizin vefatından sonra ilk halife oldu. Kısa hilafetinde birliği korudu ve Kur'an'ın bir mushafta toplanmasını sağladı. 634'te vefat etti ve Peygamberimizin yanına defnedildi.",
+            "tr": "Peygamberimizin en yakın dostu ve ilk iman eden hür erkektir. Peygamberimizi her durumda tasdik ettiği için «Sıddîk» diye anıldı. Hicrette Sevr mağarasında onunla birlikteydi; Peygamberimiz ona «Üçüncüleri Allah olan iki kişi hakkında ne düşünürsün?» demişti.\n\nPeygamberimizin vefatından sonra ilk halife oldu. Kısa hilafetinde birliği korudu ve Kur'an'ın bir mushafta toplanmasını sağladı. 634'te vefat etti ve Peygamberimizin yanına defnedildi.",
             "en": "He was the Prophet's closest friend and the first free man to believe. He was called “as-Siddiq” for affirming the Prophet in every situation. During the Hijra he was with him in the cave of Thawr, where the Prophet said to him, “What do you think of two whose third is Allah?”\n\nAfter the Prophet's death he became the first caliph. In his short caliphate he preserved unity and had the Quran compiled into a single volume. He died in 634 and was buried beside the Prophet.",
             "de": "Er war der engste Freund des Propheten und der erste freie Mann, der glaubte. Er wurde „as-Siddiq“ genannt, weil er den Propheten in jeder Lage bestätigte. Bei der Hidschra war er mit ihm in der Höhle Thaur, wo der Prophet zu ihm sagte: „Was denkst du von zweien, deren Dritter Allah ist?“\n\nNach dem Tod des Propheten wurde er der erste Kalif. In seinem kurzen Kalifat bewahrte er die Einheit und ließ den Koran in einem Band sammeln. Er starb 634 und wurde neben dem Propheten beigesetzt.",
             "fr": "Il fut l'ami le plus proche du Prophète et le premier homme libre à croire. On l'appela « as-Siddîq » parce qu'il confirmait le Prophète en toute circonstance. Lors de l'Hégire, il était avec lui dans la grotte de Thawr, où le Prophète lui dit : « Que penses-tu de deux dont le troisième est Allah ? »\n\nÀ la mort du Prophète, il devint le premier calife. Durant son court califat, il préserva l'unité et fit rassembler le Coran en un seul volume. Il mourut en 634 et fut enterré auprès du Prophète.",
@@ -1343,11 +1350,11 @@
             "ar": "الجود والحياء."
           },
           "source": {
-            "tr": "Buhârî 2778",
-            "en": "Bukhari 2778",
-            "de": "Buchari 2778",
-            "fr": "Boukhari 2778",
-            "ar": "البخاري 2778"
+            "tr": "Buhârî 2778; Tirmizî 3703",
+            "en": "Bukhari 2778; Tirmidhi 3703",
+            "de": "Buchari 2778; Tirmidhi 3703",
+            "fr": "Boukhari 2778 ; Tirmidhi 3703",
+            "ar": "البخاري 2778، الترمذي 3703"
           }
         },
         {
@@ -1367,11 +1374,11 @@
             "ar": "الخليفة الرابع (656–661م)"
           },
           "text": {
-            "tr": "Peygamberimizin amcasının oğlu ve Hz. Fâtıma ile evlenerek damadıdır; Hasan ve Hüseyin'in babasıdır. Çocuk yaşta ilk iman edenlerdendir; hicret gecesi Peygamberimizin yatağında yattı. Peygamberimiz ona «Bana göre Hârûn'un Mûsâ'ya göre konumunda olmaya razı değil misin?» buyurdu.\n\nİlmi, cesareti ve hitabetiyle tanındı. 656'da halife oldu; 661'de Kûfe'de sabah namazına giderken saldırıya uğrayıp şehit edildi.",
-            "en": "He was the Prophet's cousin and, through his marriage to Fatima, his son-in-law; the father of Hasan and Husayn. He was among the first to believe as a child; on the night of the Hijra he slept in the Prophet's bed. The Prophet said to him, “Are you not pleased to be to me as Harun was to Musa?”\n\nHe was known for his knowledge, courage and eloquence. He became caliph in 656; in 661 he was attacked in Kufa on his way to the dawn prayer and died a martyr.",
-            "de": "Er war der Vetter des Propheten und durch die Ehe mit Fatima sein Schwiegersohn; der Vater von Hasan und Husain. Schon als Kind gehörte er zu den ersten Gläubigen; in der Nacht der Hidschra schlief er im Bett des Propheten. Der Prophet sagte zu ihm: „Bist du nicht zufrieden, für mich zu sein, was Harun für Musa war?“\n\nEr war für sein Wissen, seinen Mut und seine Beredsamkeit bekannt. 656 wurde er Kalif; 661 wurde er in Kufa auf dem Weg zum Morgengebet angegriffen und starb als Märtyrer.",
-            "fr": "Il était le cousin du Prophète et, par son mariage avec Fatima, son gendre ; le père de Hassan et Houssein. Il fut parmi les premiers à croire dès l'enfance ; la nuit de l'Hégire, il dormit dans le lit du Prophète. Le Prophète lui dit : « N'es-tu pas satisfait d'être pour moi ce qu'Aaron était pour Moïse ? »\n\nIl était connu pour son savoir, son courage et son éloquence. Il devint calife en 656 ; en 661, il fut attaqué à Koufa en se rendant à la prière de l'aube et mourut en martyr.",
-            "ar": "علي ابن عم النبي ﷺ وزوج ابنته فاطمة وأبو الحسن والحسين، من أوائل من أسلم صبيًّا، ونام في فراش النبي ﷺ ليلة الهجرة، وقال له النبي ﷺ: «أما ترضى أن تكون مني بمنزلة هارون من موسى».\n\nعُرف بالعلم والشجاعة والفصاحة، وتولّى الخلافة سنة 656م، واستُشهد بالكوفة سنة 661م وهو خارج لصلاة الفجر."
+            "tr": "Peygamberimizin amcasının oğlu ve Hz. Fâtıma ile evlenerek damadıdır; Hasan ve Hüseyin'in babasıdır. Çocuk yaşta ilk iman edenlerdendir; hicret gecesi Peygamberimizin yatağında yattı. Tebük seferine çıkarken onu Medine'de bırakan Peygamberimiz ona «Bana göre Hârûn'un Mûsâ'ya göre konumunda olmaya razı değil misin? Ancak benden sonra peygamber yoktur.» buyurdu.\n\nİlmi, cesareti ve hitabetiyle tanındı. 656'da halife oldu; 661'de Kûfe'de sabah namazına giderken saldırıya uğrayıp şehit edildi.",
+            "en": "He was the Prophet's cousin and, through his marriage to Fatima, his son-in-law; the father of Hasan and Husayn. He was among the first to believe as a child; on the night of the Hijra he slept in the Prophet's bed. When he left him in Medina on setting out for Tabuk, the Prophet said to him, “Are you not pleased to be to me as Harun was to Musa, except that there is no prophet after me?”\n\nHe was known for his knowledge, courage and eloquence. He became caliph in 656; in 661 he was attacked in Kufa on his way to the dawn prayer and died a martyr.",
+            "de": "Er war der Vetter des Propheten und durch die Ehe mit Fatima sein Schwiegersohn; der Vater von Hasan und Husain. Schon als Kind gehörte er zu den ersten Gläubigen; in der Nacht der Hidschra schlief er im Bett des Propheten. Als der Prophet ihn beim Aufbruch nach Tabuk in Medina zurückließ, sagte er zu ihm: „Bist du nicht zufrieden, für mich zu sein, was Harun für Musa war, nur dass es nach mir keinen Propheten gibt?“\n\nEr war für sein Wissen, seinen Mut und seine Beredsamkeit bekannt. 656 wurde er Kalif; 661 wurde er in Kufa auf dem Weg zum Morgengebet angegriffen und starb als Märtyrer.",
+            "fr": "Il était le cousin du Prophète et, par son mariage avec Fatima, son gendre ; le père de Hassan et Houssein. Il fut parmi les premiers à croire dès l'enfance ; la nuit de l'Hégire, il dormit dans le lit du Prophète. En le laissant à Médine lors de l'expédition de Tabouk, le Prophète lui dit : « N'es-tu pas satisfait d'être pour moi ce qu'Aaron était pour Moïse, sauf qu'il n'y a pas de prophète après moi ? »\n\nIl était connu pour son savoir, son courage et son éloquence. Il devint calife en 656 ; en 661, il fut attaqué à Koufa en se rendant à la prière de l'aube et mourut en martyr.",
+            "ar": "علي ابن عم النبي ﷺ وزوج ابنته فاطمة وأبو الحسن والحسين، من أوائل من أسلم صبيًّا، ونام في فراش النبي ﷺ ليلة الهجرة، وخلّفه النبي ﷺ في المدينة حين خرج إلى تبوك وقال له: «أما ترضى أن تكون مني بمنزلة هارون من موسى، إلا أنه ليس نبي بعدي».\n\nعُرف بالعلم والشجاعة والفصاحة، وتولّى الخلافة سنة 656م، واستُشهد بالكوفة سنة 661م وهو خارج لصلاة الفجر."
           },
           "lesson": {
             "tr": "İlim ve cesaret bir arada.",
@@ -1381,11 +1388,11 @@
             "ar": "العلم والشجاعة معًا."
           },
           "source": {
-            "tr": "Buhârî 3706",
-            "en": "Bukhari 3706",
-            "de": "Buchari 3706",
-            "fr": "Boukhari 3706",
-            "ar": "البخاري 3706"
+            "tr": "Buhârî 3706; Buhârî 4416",
+            "en": "Bukhari 3706; Bukhari 4416",
+            "de": "Buchari 3706; Buchari 4416",
+            "fr": "Boukhari 3706 ; Boukhari 4416",
+            "ar": "البخاري 3706، البخاري 4416"
           }
         },
         {
@@ -1405,11 +1412,11 @@
             "ar": "أول من آمن، أم المؤمنين"
           },
           "text": {
-            "tr": "Mekke'nin saygın ve varlıklı bir tüccarıydı; Peygamberimizle 595'te evlendi. İlk vahiy geldiğinde onu teselli eden ve ilk iman eden odur; malıyla ve desteğiyle İslam'ın en zor yıllarında yanında durdu.\n\nPeygamberimizin İbrâhîm dışındaki bütün çocuklarının, Fâtıma'nın da annesidir. Peygamberimiz, Cebrâil'in ona Rabbinin selamını ilettiğini ve onu cennette bir köşkle müjdelediğini bildirmiştir. 619'da vefat etti.",
-            "en": "She was a respected and wealthy merchant of Mecca and married the Prophet in 595. When the first revelation came, she was the one who comforted him and the first to believe; with her wealth and support she stood by him in Islam's hardest years.\n\nShe was the mother of all the Prophet's children except Ibrahim, Fatima among them. The Prophet related that Jibril conveyed to her greetings from her Lord and gave her glad tidings of a house in Paradise. She died in 619.",
-            "de": "Sie war eine angesehene, wohlhabende Kauffrau Mekkas und heiratete den Propheten 595. Als die erste Offenbarung kam, tröstete sie ihn und glaubte als Erste; mit ihrem Vermögen und ihrer Unterstützung stand sie ihm in den schwersten Jahren des Islam bei.\n\nSie war die Mutter aller Kinder des Propheten außer Ibrahim, darunter Fatima. Der Prophet berichtete, dass Dschibril ihr Grüße ihres Herrn überbrachte und ihr ein Haus im Paradies verkündete. Sie starb 619.",
-            "fr": "Commerçante respectée et fortunée de La Mecque, elle épousa le Prophète en 595. À la première révélation, c'est elle qui le réconforta et crut la première ; par ses biens et son soutien, elle se tint à ses côtés durant les années les plus dures de l'islam.\n\nElle fut la mère de tous les enfants du Prophète, sauf Ibrahim, dont Fatima. Le Prophète rapporta que Gabriel lui transmit le salut de son Seigneur et lui annonça une demeure au Paradis. Elle mourut en 619.",
-            "ar": "كانت خديجة تاجرة شريفة موسرة بمكة، تزوجها النبي ﷺ سنة 595م، وهي التي ثبّتته عند نزول الوحي وأول من آمن به، وواسته بمالها في أشد سنوات الدعوة.\n\nوهي أم أولاده كلهم إلا إبراهيم، ومنهم فاطمة، وأخبر النبي ﷺ أن جبريل أقرأها السلام من ربها وبشّرها ببيت في الجنة، وتوفيت سنة 619م."
+            "tr": "Mekke'nin saygın ve varlıklı bir tüccarıydı; Peygamberimizle 595'te evlendi. İlk vahiy geldiğinde onu teselli eden ve ilk iman eden odur; malıyla ve desteğiyle İslam'ın en zor yıllarında yanında durdu.\n\nPeygamberimizin İbrâhîm dışındaki bütün çocuklarının, Fâtıma'nın da annesidir. Peygamberimiz, Cebrâil'in ona Rabbinin selamını ilettiğini ve onu cennette bir köşkle müjdelediğini bildirmiştir. 620'de Mekke'de vefat etti.",
+            "en": "She was a respected and wealthy merchant of Mecca and married the Prophet in 595. When the first revelation came, she was the one who comforted him and the first to believe; with her wealth and support she stood by him in Islam's hardest years.\n\nShe was the mother of all the Prophet's children except Ibrahim, Fatima among them. The Prophet related that Jibril conveyed to her greetings from her Lord and gave her glad tidings of a house in Paradise. She died in Mecca in 620.",
+            "de": "Sie war eine angesehene, wohlhabende Kauffrau Mekkas und heiratete den Propheten 595. Als die erste Offenbarung kam, tröstete sie ihn und glaubte als Erste; mit ihrem Vermögen und ihrer Unterstützung stand sie ihm in den schwersten Jahren des Islam bei.\n\nSie war die Mutter aller Kinder des Propheten außer Ibrahim, darunter Fatima. Der Prophet berichtete, dass Dschibril ihr Grüße ihres Herrn überbrachte und ihr ein Haus im Paradies verkündete. Sie starb 620 in Mekka.",
+            "fr": "Commerçante respectée et fortunée de La Mecque, elle épousa le Prophète en 595. À la première révélation, c'est elle qui le réconforta et crut la première ; par ses biens et son soutien, elle se tint à ses côtés durant les années les plus dures de l'islam.\n\nElle fut la mère de tous les enfants du Prophète, sauf Ibrahim, dont Fatima. Le Prophète rapporta que Gabriel lui transmit le salut de son Seigneur et lui annonça une demeure au Paradis. Elle mourut à La Mecque en 620.",
+            "ar": "كانت خديجة تاجرة شريفة موسرة بمكة، تزوجها النبي ﷺ سنة 595م، وهي التي ثبّتته عند نزول الوحي وأول من آمن به، وواسته بمالها في أشد سنوات الدعوة.\n\nوهي أم أولاده كلهم إلا إبراهيم، ومنهم فاطمة، وأخبر النبي ﷺ أن جبريل أقرأها السلام من ربها وبشّرها ببيت في الجنة، وتوفيت بمكة سنة 620م."
           },
           "lesson": {
             "tr": "Zor günde destek olmak en büyük vefadır.",
@@ -1457,11 +1464,11 @@
             "ar": "طلب العلم وتعليمه مفتوح للرجال والنساء."
           },
           "source": {
-            "tr": "Buhârî 3770",
-            "en": "Bukhari 3770",
-            "de": "Buchari 3770",
-            "fr": "Boukhari 3770",
-            "ar": "البخاري 3770"
+            "tr": "Buhârî 3770; Tirmizî 3883",
+            "en": "Bukhari 3770; Tirmidhi 3883",
+            "de": "Buchari 3770; Tirmidhi 3883",
+            "fr": "Boukhari 3770 ; Tirmidhi 3883",
+            "ar": "البخاري 3770، الترمذي 3883"
           }
         },
         {
@@ -1495,11 +1502,11 @@
             "ar": "حياة الزهد والصبر حياة غالية."
           },
           "source": {
-            "tr": "Buhârî 3714; Buhârî 4240",
-            "en": "Bukhari 3714; Bukhari 4240",
-            "de": "Buchari 3714; Buchari 4240",
-            "fr": "Boukhari 3714 ; Boukhari 4240",
-            "ar": "البخاري 3714، البخاري 4240"
+            "tr": "Buhârî 3705; Buhârî 3714; Buhârî 4240",
+            "en": "Bukhari 3705; Bukhari 3714; Bukhari 4240",
+            "de": "Buchari 3705; Buchari 3714; Buchari 4240",
+            "fr": "Boukhari 3705 ; Boukhari 3714 ; Boukhari 4240",
+            "ar": "البخاري 3705، البخاري 3714، البخاري 4240"
           }
         },
         {
@@ -1657,6 +1664,13 @@
             "de": "Beratung in der Wissenschaft und rechtmäßiger Erwerb.",
             "fr": "La concertation dans le savoir et le gain licite.",
             "ar": "الشورى في العلم والكسب الحلال."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Ebû Hanîfe» maddesi",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), article “Ebû Hanîfe”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Ebû Hanîfe“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), article « Ebû Hanîfe »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادة «أبو حنيفة»"
           }
         },
         {
@@ -1669,11 +1683,11 @@
             "ar": "الإمام مالك"
           },
           "subtitle": {
-            "tr": "Mâlikî mezhebinin imamı (711–795)",
-            "en": "Founder of the Maliki school (711–795)",
-            "de": "Begründer der malikitischen Rechtsschule (711–795)",
-            "fr": "Fondateur de l'école malikite (711–795)",
-            "ar": "إمام المذهب المالكي (711–795م)"
+            "tr": "Mâlikî mezhebinin imamı (712–795)",
+            "en": "Founder of the Maliki school (712–795)",
+            "de": "Begründer der malikitischen Rechtsschule (712–795)",
+            "fr": "Fondateur de l'école malikite (712–795)",
+            "ar": "إمام المذهب المالكي (712–795م)"
           },
           "text": {
             "tr": "Mâlik b. Enes, Medine'de doğdu ve ömrünü orada geçirdi. Peygamber şehrinin ilmini ve Medine halkının uygulamasını esas aldı. Hadis ve fıkıh alanındaki ilk büyük eserlerden el-Muvatta'ı yazdı.\n\nPeygamberimizin hadislerine büyük saygı gösterir, hadis okutmadan önce temizlenip güzel giyinirdi. 795'te Medine'de vefat etti.",
@@ -1688,6 +1702,13 @@
             "de": "Ehrfurcht vor dem Wissen und den Worten des Propheten.",
             "fr": "Le respect du savoir et de la parole du Prophète.",
             "ar": "تعظيم العلم وحديث النبي ﷺ."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Mâlik b. Enes» maddesi",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), article “Mâlik b. Enes”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Mâlik b. Enes“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), article « Mâlik b. Enes »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادة «مالك بن أنس»"
           }
         },
         {
@@ -1719,6 +1740,13 @@
             "de": "Methode und Ausgewogenheit in der Wissenschaft.",
             "fr": "La méthode et l'équilibre dans le savoir.",
             "ar": "المنهج والاتزان في العلم."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Şâfiî» maddesi",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), article “Şâfiî”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Şâfiî“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), article « Şâfiî »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادة «الشافعي»"
           }
         },
         {
@@ -1750,6 +1778,13 @@
             "de": "Standhaftigkeit in dem, was man als richtig erkannt hat.",
             "fr": "La constance dans ce que l'on sait être juste.",
             "ar": "الثبات على ما يُعتقد أنه الحق."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Ahmed b. Hanbel» maddesi",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), article “Ahmed b. Hanbel”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Ahmed b. Hanbel“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), article « Ahmed b. Hanbel »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادة «أحمد بن حنبل»"
           }
         },
         {
@@ -1781,6 +1816,13 @@
             "de": "Sorgfalt und Überprüfung im Wissen.",
             "fr": "La rigueur et la vérification dans le savoir.",
             "ar": "التثبت والتحري في العلم."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Buhârî, Muhammed b. İsmâil» maddesi",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), article “Buhârî, Muhammed b. İsmâil”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Buhârî, Muhammed b. İsmâil“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), article « Buhârî, Muhammed b. İsmâil »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادة «البخاري»"
           }
         },
         {
@@ -1812,6 +1854,13 @@
             "de": "Vernunft und Offenbarung ergänzen einander.",
             "fr": "La raison et la révélation se complètent.",
             "ar": "العقل والوحي يتكاملان."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Mâtürîdî» maddesi",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), article “Mâtürîdî”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Mâtürîdî“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), article « Mâtürîdî »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادة «الماتريدي»"
           }
         },
         {
@@ -1843,6 +1892,13 @@
             "de": "Wissen gewinnt an Wert, wenn es sich mit Ethik und Aufrichtigkeit verbindet.",
             "fr": "Le savoir prend sa valeur lorsqu'il s'unit à l'éthique et à la sincérité.",
             "ar": "العلم يزكو إذا اقترن بالأخلاق والإخلاص."
+          },
+          "source": {
+            "tr": "TDV İslâm Ansiklopedisi, «Gazzâlî» maddesi",
+            "en": "TDV Encyclopedia of Islam (İslâm Ansiklopedisi), article “Gazzâlî”",
+            "de": "TDV-Enzyklopädie des Islam (İslâm Ansiklopedisi), Artikel „Gazzâlî“",
+            "fr": "Encyclopédie de l'islam TDV (İslâm Ansiklopedisi), article « Gazzâlî »",
+            "ar": "موسوعة الإسلام لوقف الديانة التركي (TDV İslâm Ansiklopedisi)، مادة «الغزالي»"
           }
         }
       ]

@@ -531,11 +531,11 @@
             "ar": "القعدة الأخيرة"
           },
           "text": {
-            "tr": "Namazın sonunda oturmak",
-            "en": "Sitting at the end of the prayer",
-            "de": "Am Ende des Gebets sitzen",
-            "fr": "S'asseoir à la fin de la prière",
-            "ar": "الجلوس في آخر الصلاة"
+            "tr": "Namazın sonunda Ettehiyyâtü'yü okuyacak kadar oturmak",
+            "en": "Sitting at the end of the prayer for as long as it takes to recite at-Tahiyyat",
+            "de": "Am Ende des Gebets so lange sitzen, wie man für at-Tahiyyat braucht",
+            "fr": "S'asseoir à la fin de la prière le temps de réciter at-Tahiyyat",
+            "ar": "الجلوس في آخر الصلاة قدر قراءة التشهد"
           }
         }
       ]
@@ -974,6 +974,22 @@
             "fr": "Sourate Al-Fatiha",
             "ar": "سورة الفاتحة"
           }
+        },
+        {
+          "title": {
+            "tr": "Zamm-ı sûre",
+            "en": "Additional surah",
+            "de": "Zusätzliche Sure",
+            "fr": "Sourate supplémentaire",
+            "ar": "ضمّ السورة"
+          },
+          "text": {
+            "tr": "Fâtiha'dan sonra bir sûre ya da en az üç kısa ayet okunur.",
+            "en": "After al-Fatihah, recite a surah or at least three short verses.",
+            "de": "Nach al-Fatiha eine Sure oder mindestens drei kurze Verse rezitieren.",
+            "fr": "Après Al-Fatiha, réciter une sourate ou au moins trois versets courts.",
+            "ar": "يقرأ بعد الفاتحة سورة أو ثلاث آيات قصار على الأقل."
+          }
         }
       ]
     },
@@ -1270,11 +1286,11 @@
       ],
       "notes": [
         {
-          "tr": "Müekkede sünnetlerde (ör. öğlenin ilk sünneti) 3. ve 4. rekâtlarda da Fâtiha'dan sonra zamm-ı sûre okunur.",
-          "en": "In emphasized sunnah prayers (e.g. the first sunnah of Dhuhr), an additional surah is also recited after al-Fatihah in the 3rd and 4th rak'ahs.",
-          "de": "In den bekräftigten Sunna-Gebeten (z. B. der ersten Sunna des Dhuhr-Gebets) wird auch in der 3. und 4. Rak'a nach al-Fatiha eine zusätzliche Sure rezitiert.",
-          "fr": "Dans les sunnas confirmées (p. ex. la première sunna de Dhuhr), on récite aussi une sourate supplémentaire après Al-Fatiha dans les 3e et 4e rak'as.",
-          "ar": "في السنن المؤكدة (كسنة الظهر القبلية) تُقرأ سورة بعد الفاتحة في الركعتين الثالثة والرابعة أيضًا."
+          "tr": "Sünnetlerde (müekkede ve gayr-i müekkede; ör. öğlenin, ikindinin ve yatsının ilk sünneti) 3. ve 4. rekâtlarda da Fâtiha'dan sonra zamm-ı sûre okunur.",
+          "en": "In sunnah prayers (emphasized and non-emphasized, e.g. the first sunnah of Dhuhr, Asr and Isha), an additional surah is also recited after al-Fatihah in the 3rd and 4th rak'ahs.",
+          "de": "In den Sunna-Gebeten (bekräftigt und nicht bekräftigt, z. B. die erste Sunna von Dhuhr, Asr und Ischa) wird auch in der 3. und 4. Rak'a nach al-Fatiha eine zusätzliche Sure rezitiert.",
+          "fr": "Dans les sunnas (confirmées ou non, p. ex. la première sunna de Dhuhr, d'Asr et d'Isha), on récite aussi une sourate supplémentaire après Al-Fatiha dans les 3e et 4e rak'as.",
+          "ar": "في السنن كلها، المؤكدة وغير المؤكدة (كسنة الظهر والعصر والعشاء القبلية)، تُقرأ سورة بعد الفاتحة في الركعتين الثالثة والرابعة أيضًا."
         },
         {
           "tr": "Gayr-i müekkede sünnetlerde (ikindinin ve yatsının ilk sünneti) ilk oturuşta Ettehiyyâtü'den sonra Allâhümme salli ve Allâhümme bârik de okunur; 3. rekâta Sübhâneke ile başlanır.",

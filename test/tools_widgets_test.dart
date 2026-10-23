@@ -1,5 +1,6 @@
 // Araçlar ekranları: tr/de/ar, açık/koyu, 320dp genişlik ve %130 yazıda
 // taşmadan çizilmeli; zekat açılır listeleri her dilde geçerli değerle açılmalı.
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:ezan_saati/core/app_links.dart';
@@ -907,6 +908,29 @@ void main() {
   });
 
   group('Esmaül Hüsna', () {
+    test(
+      'her dilde 99 isim; Arapçalar tekil ve Arapça dosyayla aynı sırada',
+      () {
+        List<dynamic> read(String lang) =>
+            jsonDecode(
+                  File(
+                    'assets/data/esmaul_husna_$lang.json',
+                  ).readAsStringSync(),
+                )
+                as List<dynamic>;
+        final arabic = [for (final e in read('ar')) e['arabic'] as String];
+        expect(arabic, hasLength(99));
+        expect(arabic.toSet(), hasLength(99));
+        for (final lang in ['tr', 'en', 'de', 'fr']) {
+          expect(
+            [for (final e in read(lang)) e['arabic'] as String],
+            arabic,
+            reason: lang,
+          );
+        }
+      },
+    );
+
     testWidgets('kart dokununca ayrıntı; önceki/sonraki düğmeleri', (
       tester,
     ) async {
