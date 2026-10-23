@@ -133,7 +133,11 @@ class _ZikirViewState extends State<ZikirView> with WidgetsBindingObserver {
       body: SafeArea(
         child: Consumer<ZikirViewModel>(
           builder: (context, viewModel, child) {
-            final name = dhikrDisplayName(viewModel.selectedDhikr, loc);
+            final name = dhikrDisplayName(
+              viewModel.selectedDhikr,
+              loc,
+              dhikr: viewModel.dhikrOf(viewModel.selectedDhikr),
+            );
             final arabic = viewModel.getArabicForDhikr(viewModel.selectedDhikr);
             final progress = viewModel.progress;
             void editCount() => _editCount(context, viewModel, loc);

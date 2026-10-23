@@ -1794,21 +1794,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get zikirmatikTitle => 'Dhikr-Zähler';
 
   @override
-  String get dhikrSubhanallah => 'Subhanallah';
-
-  @override
-  String get dhikrElhamdulillah => 'Alhamdulillah';
-
-  @override
-  String get dhikrAllahuEkber => 'Allahu Akbar';
-
-  @override
-  String get dhikrKalima => 'Kalimat at-Tawhid';
-
-  @override
-  String get dhikrSalavat => 'Salawat';
-
-  @override
   String get targetReached => 'Ziel erreicht!';
 
   @override
@@ -1866,6 +1851,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteDhikr => 'Löschen';
 
   @override
+  String get dhikrInfo => 'Bedeutung und Quelle';
+
+  @override
   String get statisticsTitle => 'Statistiken';
 
   @override
@@ -1887,21 +1875,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get statsEmpty => 'Noch keine Dhikr-Daten.';
-
-  @override
-  String get dhikrEstagfirullah => 'Astaghfirullah';
-
-  @override
-  String get dhikrLaHavle => 'La Hawla wa la Quwwata';
-
-  @override
-  String get dhikrHasbunallah => 'Hasbunallah';
-
-  @override
-  String get dhikrSubhanallahi => 'Subhanallahi wa bihamdihi';
-
-  @override
-  String get dhikrYunus => 'Bittgebet des Propheten Yunus';
 
   @override
   String get dhikrYaAllah => 'Ya Allah (J.J.)';

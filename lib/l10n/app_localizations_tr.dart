@@ -1767,21 +1767,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get zikirmatikTitle => 'Zikirmatik';
 
   @override
-  String get dhikrSubhanallah => 'Sübhanallah';
-
-  @override
-  String get dhikrElhamdulillah => 'Elhamdülillah';
-
-  @override
-  String get dhikrAllahuEkber => 'Allahu Ekber';
-
-  @override
-  String get dhikrKalima => 'Kelime-i Tevhid';
-
-  @override
-  String get dhikrSalavat => 'Salavat';
-
-  @override
   String get targetReached => 'Hedefe Ulaştınız!';
 
   @override
@@ -1839,6 +1824,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deleteDhikr => 'Sil';
 
   @override
+  String get dhikrInfo => 'Anlamı ve kaynağı';
+
+  @override
   String get statisticsTitle => 'İstatistikler';
 
   @override
@@ -1860,21 +1848,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get statsEmpty => 'Henüz zikir verisi yok.';
-
-  @override
-  String get dhikrEstagfirullah => 'Estağfirullah';
-
-  @override
-  String get dhikrLaHavle => 'La Havle Vela Kuvvete İlla Billah';
-
-  @override
-  String get dhikrHasbunallah => 'Hasbünallah';
-
-  @override
-  String get dhikrSubhanallahi => 'Sübhanallahi ve Bihamdihi';
-
-  @override
-  String get dhikrYunus => 'Hz. Yunus\'un Duası';
 
   @override
   String get dhikrYaAllah => 'Ya Allah (C.C.)';

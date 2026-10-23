@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/features/duas/view/duas_view.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../view_model/zikir_view_model.dart';
 import 'dhikr_names.dart';
@@ -49,12 +50,19 @@ class DhikrListView extends StatelessWidget {
                     96, // FAB üstüne binmesin
                   ),
                   children: [
-                    for (final dhikr in viewModel.predefinedDhikrsList)
+                    for (final dhikr in viewModel.predefinedDhikrs)
                       _DhikrTile(
-                        title: dhikrDisplayName(dhikr["id"]!, loc),
-                        arabic: dhikr["ar"] ?? "",
-                        isSelected: viewModel.selectedDhikr == dhikr["id"],
-                        onTap: () => select(dhikr["id"]!),
+                        title: dhikrDisplayName(dhikr.id, loc, dhikr: dhikr),
+                        arabic: dhikr.arabic,
+                        subtitle: dhikr.meaningFor(langCode) ?? "",
+                        isSelected: viewModel.selectedDhikr == dhikr.id,
+                        onTap: () => select(dhikr.id),
+                        onInfo: () => Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (_) => DuaDetailView(dua: dhikr),
+                          ),
+                        ),
                       ),
                     SectionHeader(
                       loc.dhikrOther,
@@ -182,6 +190,9 @@ class _DhikrTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onDelete;
 
+  /// Okunuş, anlam, not ve kaynak (hazır zikirler)
+  final VoidCallback? onInfo;
+
   const _DhikrTile({
     required this.title,
     this.arabic = "",
@@ -189,6 +200,7 @@ class _DhikrTile extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     this.onDelete,
+    this.onInfo,
   });
 
   @override
@@ -206,7 +218,7 @@ class _DhikrTile extends StatelessWidget {
           padding: EdgeInsetsDirectional.fromSTEB(
             AppSpacing.lg,
             AppSpacing.md,
-            onDelete == null ? AppSpacing.lg : AppSpacing.xs,
+            onDelete == null && onInfo == null ? AppSpacing.lg : AppSpacing.xs,
             AppSpacing.md,
           ),
           child: Row(
@@ -252,6 +264,12 @@ class _DhikrTile extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Icon(Icons.check_circle, color: scheme.primary),
               ],
+              if (onInfo != null)
+                IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  tooltip: loc.dhikrInfo,
+                  onPressed: onInfo,
+                ),
               if (onDelete != null)
                 IconButton(
                   icon: Icon(Icons.delete_outline, color: scheme.error),

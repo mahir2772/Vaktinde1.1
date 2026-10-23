@@ -208,6 +208,49 @@ void main() {
       }
     });
 
+    test('zikirler: 35 hazır zikir, eski 10 kimlik korunur; Arapça, okunuş, '
+        '4 dilde anlam, 5 dilde ad ve kaynak; Fransızca boşluk', () {
+      final dhikrs = parsed.dhikrs;
+      expect(dhikrs, hasLength(35));
+      final ids = dhikrs.map((d) => d.id).toList();
+      expect(ids.toSet(), hasLength(ids.length));
+      // Sayaç/hedef kayıtları bu kimliklerle tutuluyor (1.3.0 ve öncesi)
+      expect(ids.take(10), [
+        'Sübhanallah',
+        'Elhamdülillah',
+        'Allahu Ekber',
+        'Kelime-i Tevhid',
+        'Salavat',
+        'Estağfirullah',
+        'La Havle',
+        'Hasbünallah',
+        'Subhanallahi',
+        'Hz. Yunus',
+      ]);
+      for (final d in dhikrs) {
+        expect(d.arabic, matches(_arabicOnly), reason: d.id);
+        expect(d.translit['tr'], isNotEmpty, reason: d.id);
+        expect(d.translit['latin'], isNotEmpty, reason: d.id);
+        for (final lang in ['tr', 'en', 'de', 'fr']) {
+          expect(d.meaning[lang], isNotEmpty, reason: '${d.id} $lang');
+        }
+        for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
+          expect(d.title[lang], isNotEmpty, reason: '${d.id} $lang');
+          expect(d.source[lang], isNotEmpty, reason: '${d.id} $lang');
+        }
+        for (final texts in [d.title, d.meaning, d.note, d.source]) {
+          expect(texts['fr'] ?? '', isNot(matches(r' [!?:;»]|« ')));
+        }
+      }
+      // Kaynakta geçen sayılar (yoksa 0: hedef varsayılan 33)
+      final counts = {for (final d in dhikrs) d.id: d.count};
+      expect(counts['Sübhanallah'], 33);
+      expect(counts['Estağfirullah'], 100);
+      expect(counts['tehlil'], 100);
+      expect(counts['adede_halkihi'], 3);
+      expect(counts['Kelime-i Tevhid'], 0);
+    });
+
     test('dil seçimi: Arapçada okunuş ve anlam yok, diğerlerinde var', () {
       final subhaneke = all.firstWhere((d) => d.id == 'subhaneke');
       expect(subhaneke.translitFor('tr'), startsWith('Sübhânekellâhümme'));

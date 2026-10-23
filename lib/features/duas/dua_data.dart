@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 /// Dualar (assets/data/duas.json, çevrimdışı): kategoriler + namaz sonrası
-/// tesbihat adımları. Arapça tek; okunuş Türkçe ("tr") ve diğer Latin
+/// tesbihat adımları + zikirmatiğin hazır zikirleri. Arapça tek; okunuş Türkçe ("tr") ve diğer Latin
 /// diller için ortak ("latin"); anlam/not/kaynak dil başına. Arapça arayüzde
 /// okunuş ve anlam gösterilmez (not ve kaynak gösterilir).
 class Dua {
@@ -91,7 +91,15 @@ class DuaLibrary {
   /// Namaz sonrası tesbihat: Âyetü'l-Kürsî → 33'er tesbih → tevhid → dua
   final List<Dua> tesbihat;
 
-  const DuaLibrary({required this.categories, required this.tesbihat});
+  /// Zikirmatiğin hazır zikirleri (kimlik = sayaç kaydı anahtarı; [Dua.count]
+  /// kaynakta geçen sayı, 0: yok)
+  final List<Dua> dhikrs;
+
+  const DuaLibrary({
+    required this.categories,
+    required this.tesbihat,
+    this.dhikrs = const [],
+  });
 
   /// Kimliğiyle dua (Namaz Hocası bağlantıları); yoksa null
   Dua? byId(String id) => [
@@ -137,10 +145,21 @@ class DuaLibrary {
         ),
       );
     }
-    return DuaLibrary(categories: categories, tesbihat: tesbihat);
+    return DuaLibrary(
+      categories: categories,
+      tesbihat: tesbihat,
+      dhikrs: [
+        for (final d in json['dhikrs'] as List? ?? const [])
+          Dua.fromJson(d as Map<String, dynamic>),
+      ],
+    );
   }
 
   static Future<DuaLibrary>? _cache;
+
+  /// Okunmuşsa kitaplık (beklemeden kullanılır), değilse null
+  static DuaLibrary? get loaded => _loaded;
+  static DuaLibrary? _loaded;
 
   /// Bir kez okunur; hata olursa sonraki çağrı yeniden dener
   static Future<DuaLibrary> load() => _cache ??= _read();
@@ -148,7 +167,9 @@ class DuaLibrary {
   static Future<DuaLibrary> _read() async {
     try {
       final raw = await rootBundle.loadString(asset);
-      return DuaLibrary.fromJson(json.decode(raw) as Map<String, dynamic>);
+      return _loaded = DuaLibrary.fromJson(
+        json.decode(raw) as Map<String, dynamic>,
+      );
     } catch (_) {
       _cache = null;
       rethrow;

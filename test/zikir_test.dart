@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/features/duas/dua_data.dart';
 import 'package:ezan_saati/features/zikirmatik/view/dhikr_stats_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_settings_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
@@ -196,6 +197,8 @@ Future<void> _volumeKey(WidgetTester tester, int delta) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() async {
+    // Hazır zikirler (duas.json): sahte zamanlı testlerden önce bir kez okunur
+    await DuaLibrary.load();
     await _loadFont('Poppins', [
       for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold'])
         'assets/google_fonts/Poppins-$w.ttf',
@@ -360,6 +363,28 @@ void main() {
       vm.dispose();
       await pumpEventQueue();
     });
+
+    test(
+      'hedef: kayıt yoksa kaynaktaki sayı (yoksa 33), kayıt varsa o',
+      () async {
+        final vm = await model({
+          'selected_dhikr': 'Estağfirullah',
+          'dhikr_target_Kelime-i Tevhid': 99,
+        });
+        await pumpEventQueue();
+        expect(vm.predefinedDhikrs, hasLength(35));
+        expect(vm.target, 100);
+        await vm.changeDhikr('adede_halkihi');
+        expect(vm.target, 3);
+        await vm.changeDhikr('Kelime-i Tevhid');
+        expect(vm.target, 99);
+        await vm.changeDhikr('Hz. Yunus');
+        expect(vm.target, 33);
+        expect(vm.getArabicForDhikr('Hz. Yunus'), startsWith('لَا إِلَهَ'));
+        vm.dispose();
+        await pumpEventQueue();
+      },
+    );
 
     test('kapalı kip (varsayılan): sayaç toplam, tur artmaz', () async {
       final vm = await model({
@@ -566,7 +591,8 @@ void main() {
       await tester.fling(header, const Offset(-300, 0), 1000);
       await _settle(tester);
       expect(selected(), 'Elhamdülillah');
-      expect(find.text(loc.dhikrElhamdulillah), findsOneWidget);
+      // Ad hazır zikir kitaplığından (duas.json)
+      expect(find.text('Elhamdülillah'), findsOneWidget);
       await tester.fling(header, const Offset(300, 0), 1000);
       await _settle(tester);
       expect(selected(), 'Sübhanallah');
@@ -638,25 +664,28 @@ void main() {
       await _finish(tester);
     });
 
-    testWidgets('altta bugünkü toplam: sayınca artar, dokununca istatistikler', (
-      tester,
-    ) async {
-      final loc = _loc('tr');
-      final today = DateTime.now().toIso8601String().substring(0, 10);
-      await _pumpZikir(
-        tester,
-        prefs: {'dhikr_daily_stats': jsonEncode({today: 12})},
-      );
-      expect(find.text(loc.zikirTodayCount(12)), findsOneWidget);
-      await tester.tap(find.byKey(ZikirView.counterKey));
-      await _settle(tester);
-      expect(find.text(loc.zikirTodayCount(13)), findsOneWidget);
+    testWidgets(
+      'altta bugünkü toplam: sayınca artar, dokununca istatistikler',
+      (tester) async {
+        final loc = _loc('tr');
+        final today = DateTime.now().toIso8601String().substring(0, 10);
+        await _pumpZikir(
+          tester,
+          prefs: {
+            'dhikr_daily_stats': jsonEncode({today: 12}),
+          },
+        );
+        expect(find.text(loc.zikirTodayCount(12)), findsOneWidget);
+        await tester.tap(find.byKey(ZikirView.counterKey));
+        await _settle(tester);
+        expect(find.text(loc.zikirTodayCount(13)), findsOneWidget);
 
-      await tester.tap(find.text(loc.zikirTodayCount(13)));
-      await _settle(tester);
-      expect(find.byType(DhikrStatsView), findsOneWidget);
-      await _finish(tester);
-    });
+        await tester.tap(find.text(loc.zikirTodayCount(13)));
+        await _settle(tester);
+        expect(find.byType(DhikrStatsView), findsOneWidget);
+        await _finish(tester);
+      },
+    );
 
     testWidgets('sayacın çevresindeki boş alana dokunmak sayar; başlık ve '
         'düğmeler saymaz', (tester) async {
@@ -679,7 +708,7 @@ void main() {
       expect(_vm(tester).count, 7);
 
       // Başlık kartı (Arapça metin) ve alttaki düğme saymaz
-      await tester.tap(find.text('سُبْحَانَ ٱللَّٰهِ'));
+      await tester.tap(find.text('سُبْحَانَ اللَّهِ'));
       await _settle(tester);
       expect(_vm(tester).count, 7);
       await tester.tap(find.text(loc.editCounterTitle));

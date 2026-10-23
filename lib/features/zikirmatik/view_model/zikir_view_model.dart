@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import 'package:ezan_saati/features/duas/dua_data.dart';
 import '../zikir_logic.dart';
 
 class ZikirViewModel extends ChangeNotifier {
@@ -61,23 +62,19 @@ class ZikirViewModel extends ChangeNotifier {
   int get todayCount => _dailyStats[_today()] ?? 0;
   List<String> get customDhikrs => _customDhikrs;
 
-  // HAZIR ZİKİRLER VE ARAPÇALARI
-  final List<Map<String, String>> predefinedDhikrsList = [
-    {"id": "Sübhanallah", "ar": "سُبْحَانَ ٱللَّٰهِ"},
-    {"id": "Elhamdülillah", "ar": "ٱلْحَمْدُ لِلَّٰهِ"},
-    {"id": "Allahu Ekber", "ar": "ٱللَّٰهُ أَكْبَرُ"},
-    {"id": "Kelime-i Tevhid", "ar": "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ"},
-    {"id": "Salavat", "ar": "ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ"},
-    {"id": "Estağfirullah", "ar": "أَسْتَغْفِرُ ٱللَّٰهَ"},
-    {"id": "La Havle", "ar": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّٰهِ"},
-    {"id": "Hasbünallah", "ar": "حَسْبُنَا ٱللَّٰهُ وَنِعْمَ ٱلْوَكِيلُ"},
-    {"id": "Subhanallahi", "ar": "سُبْحَانَ ٱللَّٰهِ وَبِحَمْدِهِ"},
-    {
-      "id": "Hz. Yunus",
-      "ar":
-          "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-    },
-  ];
+  // Hazır zikirler (assets/data/duas.json "dhikrs": Arapça, okunuş, anlam,
+  // kaynak, kaynakta geçen sayı); yüklenene kadar boş
+  List<Dua> _dhikrs = const [];
+  bool _disposed = false;
+  List<Dua> get predefinedDhikrs => _dhikrs;
+
+  Dua? dhikrOf(String id) => _dhikrs.where((d) => d.id == id).firstOrNull;
+
+  /// Kayıtlı hedefi olmayan zikrin hedefi: kaynaktaki sayı, yoksa 33
+  int defaultTargetOf(String id) {
+    final count = dhikrOf(id)?.count ?? 0;
+    return count > 0 ? count : 33;
+  }
 
   // 99 İSİM (ESMAÜL HÜSNA) KÜTÜPHANESİ - ÇOKLU DİL DESTEKLİ
   final List<Map<String, String>> esmaulHusnaList = [
@@ -776,19 +773,15 @@ class ZikirViewModel extends ChangeNotifier {
     },
   ];
 
-  // ARAPÇAYI BULAN FONKSİYON (GÜNCELLENDİ: Hem Temel hem Esma'da arar)
+  /// Hazır zikrin ya da esmanın Arapçası (özel zikirde boş)
   String getArabicForDhikr(String dhikrName) {
-    var found = predefinedDhikrsList.firstWhere(
+    final dhikr = dhikrOf(dhikrName);
+    if (dhikr != null) return dhikr.arabic;
+    final esma = esmaulHusnaList.firstWhere(
       (element) => element["id"] == dhikrName,
       orElse: () => {"ar": ""},
     );
-    if (found["ar"] == "") {
-      found = esmaulHusnaList.firstWhere(
-        (element) => element["id"] == dhikrName,
-        orElse: () => {"ar": ""},
-      );
-    }
-    return found["ar"] ?? "";
+    return esma["ar"] ?? "";
   }
 
   final List<int> targetOptions = [33, 99, 100, 1000];
@@ -823,6 +816,21 @@ class ZikirViewModel extends ChangeNotifier {
 
     _applyWakeLock();
     notifyListeners();
+    await _loadDhikrs(prefs);
+  }
+
+  // Hazır zikirler sayaçtan sonra gelir (varlık okuması kayıtları bekletmez);
+  // kayıtlı hedefi olmayan zikrin hedefi kaynaktaki sayıya göre güncellenir
+  Future<void> _loadDhikrs(SharedPreferences prefs) async {
+    if (_dhikrs.isNotEmpty) return;
+    try {
+      _dhikrs = (DuaLibrary.loaded ?? await DuaLibrary.load()).dhikrs;
+    } catch (e) {
+      return; // Varlık okunamadı: hazır zikir listesi boş, sayaç yine çalışır
+    }
+    if (_disposed) return;
+    _readTarget(prefs);
+    notifyListeners();
   }
 
   /// Yedekten geri yüklemeden sonra kayıtlar yeniden okunur (kayıtta olmayan
@@ -835,10 +843,16 @@ class ZikirViewModel extends ChangeNotifier {
   /// Seçili zikrin sayacı, hedefi (en az 1) ve turu (en az 1)
   void _readCounter(SharedPreferences prefs) {
     _count = prefs.getInt('dhikr_count_$_selectedDhikr') ?? 0;
-    final target = prefs.getInt('dhikr_target_$_selectedDhikr') ?? 33;
-    _target = target < 1 ? 33 : target;
+    _readTarget(prefs);
     final round = prefs.getInt('$roundPrefix$_selectedDhikr') ?? 1;
     _round = round < 1 ? 1 : round;
+  }
+
+  void _readTarget(SharedPreferences prefs) {
+    final target =
+        prefs.getInt('dhikr_target_$_selectedDhikr') ??
+        defaultTargetOf(_selectedDhikr);
+    _target = target < 1 ? 33 : target;
   }
 
   /// Sayaç ve tur seçili zikrin adıyla kaydedilir. Değerler beklemeden önce
@@ -991,7 +1005,7 @@ class ZikirViewModel extends ChangeNotifier {
 
   /// Kaydırma / oklarla geçilen zikirler: temel + kullanıcının zikirleri
   List<String> get mainDhikrIds => [
-    for (final dhikr in predefinedDhikrsList) dhikr["id"]!,
+    for (final dhikr in _dhikrs) dhikr.id,
     ..._customDhikrs,
   ];
 
@@ -1107,6 +1121,7 @@ class ZikirViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     WakelockPlus.disable();
     _audioPlayer.dispose();
     super.dispose();

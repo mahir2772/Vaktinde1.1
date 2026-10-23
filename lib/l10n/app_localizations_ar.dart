@@ -1811,21 +1811,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zikirmatikTitle => 'مسبحة إلكترونية';
 
   @override
-  String get dhikrSubhanallah => 'سبحان الله';
-
-  @override
-  String get dhikrElhamdulillah => 'الحمد لله';
-
-  @override
-  String get dhikrAllahuEkber => 'الله أكبر';
-
-  @override
-  String get dhikrKalima => 'كلمة التوحيد';
-
-  @override
-  String get dhikrSalavat => 'الصلاة على النبي';
-
-  @override
   String get targetReached => 'لقد وصلت إلى الهدف!';
 
   @override
@@ -1883,6 +1868,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteDhikr => 'حذف';
 
   @override
+  String get dhikrInfo => 'المعنى والمصدر';
+
+  @override
   String get statisticsTitle => 'الإحصائيات';
 
   @override
@@ -1904,21 +1892,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statsEmpty => 'لا توجد بيانات للأذكار بعد.';
-
-  @override
-  String get dhikrEstagfirullah => 'أستغفر الله';
-
-  @override
-  String get dhikrLaHavle => 'لا حول ولا قوة إلا بالله';
-
-  @override
-  String get dhikrHasbunallah => 'حسبنا الله';
-
-  @override
-  String get dhikrSubhanallahi => 'سبحان الله وبحمده';
-
-  @override
-  String get dhikrYunus => 'دعاء نبي الله يونس';
 
   @override
   String get dhikrYaAllah => 'يا الله (جل جلاله)';

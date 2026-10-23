@@ -1,32 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/features/duas/dua_data.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
-/// Kayıtlı zikir kimliğinin (Türkçe ad) seçili dildeki adı.
-/// Özel zikirler kullanıcının yazdığı gibi döner.
-String dhikrDisplayName(String id, AppLocalizations loc) {
+/// Zikir kimliğinin seçili dildeki adı: hazır zikirde [dhikr] başlığı,
+/// çevirisi olan esmada ARB, yoksa (özel zikir, diğer esmalar) kimliğin kendisi.
+String dhikrDisplayName(String id, AppLocalizations loc, {Dua? dhikr}) {
+  if (dhikr != null) return dhikr.titleFor(loc.localeName);
   switch (id) {
-    case "Sübhanallah":
-      return loc.dhikrSubhanallah;
-    case "Elhamdülillah":
-      return loc.dhikrElhamdulillah;
-    case "Allahu Ekber":
-      return loc.dhikrAllahuEkber;
-    case "Kelime-i Tevhid":
-      return loc.dhikrKalima;
-    case "Salavat":
-      return loc.dhikrSalavat;
-    case "Estağfirullah":
-      return loc.dhikrEstagfirullah;
-    case "La Havle":
-      return loc.dhikrLaHavle;
-    case "Hasbünallah":
-      return loc.dhikrHasbunallah;
-    case "Subhanallahi":
-      return loc.dhikrSubhanallahi;
-    case "Hz. Yunus":
-      return loc.dhikrYunus;
     case "Ya Allah":
       return loc.dhikrYaAllah;
     case "Ya Rahman":

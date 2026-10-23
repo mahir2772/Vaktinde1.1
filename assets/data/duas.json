@@ -848,5 +848,1221 @@
       },
       "count": 0
     }
+  ],
+  "dhikrs": [
+    {
+      "id": "Sübhanallah",
+      "title": {
+        "tr": "Sübhanallah",
+        "en": "Subhanallah",
+        "de": "Subhanallah",
+        "fr": "Soubhanallah",
+        "ar": "سبحان الله"
+      },
+      "arabic": "سُبْحَانَ اللَّهِ",
+      "translit": {
+        "tr": "Sübhânallâh",
+        "latin": "Subhanallah"
+      },
+      "meaning": {
+        "tr": "Allah'ı her türlü eksiklikten tenzih ederim.",
+        "en": "Glory be to Allah.",
+        "de": "Gepriesen sei Allah.",
+        "fr": "Gloire à Allah."
+      },
+      "note": {
+        "tr": "Her namazdan sonra 33 defa söylenir.",
+        "en": "Said 33 times after every prayer.",
+        "de": "Wird nach jedem Gebet 33-mal gesprochen.",
+        "fr": "Se dit 33 fois après chaque prière.",
+        "ar": "تُقال ثلاثًا وثلاثين مرة بعد كل صلاة."
+      },
+      "source": {
+        "tr": "Müslim 597; Müslim 2137",
+        "en": "Muslim 597; Muslim 2137",
+        "de": "Muslim 597; Muslim 2137",
+        "fr": "Muslim 597 ; Muslim 2137",
+        "ar": "مسلم 597، مسلم 2137"
+      },
+      "count": 33
+    },
+    {
+      "id": "Elhamdülillah",
+      "title": {
+        "tr": "Elhamdülillah",
+        "en": "Alhamdulillah",
+        "de": "Alhamdulillah",
+        "fr": "Alhamdulillah",
+        "ar": "الحمد لله"
+      },
+      "arabic": "الْحَمْدُ لِلَّهِ",
+      "translit": {
+        "tr": "Elhamdülillâh",
+        "latin": "Alhamdulillah"
+      },
+      "meaning": {
+        "tr": "Hamd Allah'a mahsustur.",
+        "en": "All praise is due to Allah.",
+        "de": "Alles Lob gebührt Allah.",
+        "fr": "Louange à Allah."
+      },
+      "note": {
+        "tr": "Her namazdan sonra 33 defa söylenir.",
+        "en": "Said 33 times after every prayer.",
+        "de": "Wird nach jedem Gebet 33-mal gesprochen.",
+        "fr": "Se dit 33 fois après chaque prière.",
+        "ar": "تُقال ثلاثًا وثلاثين مرة بعد كل صلاة."
+      },
+      "source": {
+        "tr": "Müslim 597; Müslim 2137",
+        "en": "Muslim 597; Muslim 2137",
+        "de": "Muslim 597; Muslim 2137",
+        "fr": "Muslim 597 ; Muslim 2137",
+        "ar": "مسلم 597، مسلم 2137"
+      },
+      "count": 33
+    },
+    {
+      "id": "Allahu Ekber",
+      "title": {
+        "tr": "Allahu Ekber",
+        "en": "Allahu Akbar",
+        "de": "Allahu Akbar",
+        "fr": "Allahu Akbar",
+        "ar": "الله أكبر"
+      },
+      "arabic": "اللَّهُ أَكْبَرُ",
+      "translit": {
+        "tr": "Allâhu ekber",
+        "latin": "Allahu akbar"
+      },
+      "meaning": {
+        "tr": "Allah en büyüktür.",
+        "en": "Allah is the Greatest.",
+        "de": "Allah ist der Größte.",
+        "fr": "Allah est le plus Grand."
+      },
+      "note": {
+        "tr": "Her namazdan sonra 33 defa söylenir.",
+        "en": "Said 33 times after every prayer.",
+        "de": "Wird nach jedem Gebet 33-mal gesprochen.",
+        "fr": "Se dit 33 fois après chaque prière.",
+        "ar": "تُقال ثلاثًا وثلاثين مرة بعد كل صلاة."
+      },
+      "source": {
+        "tr": "Müslim 597; Müslim 2137",
+        "en": "Muslim 597; Muslim 2137",
+        "de": "Muslim 597; Muslim 2137",
+        "fr": "Muslim 597 ; Muslim 2137",
+        "ar": "مسلم 597، مسلم 2137"
+      },
+      "count": 33
+    },
+    {
+      "id": "Kelime-i Tevhid",
+      "title": {
+        "tr": "Kelime-i Tevhid",
+        "en": "Kalimat al-Tawhid",
+        "de": "Kalimat at-Tawhid",
+        "fr": "Kalimat At-Tawhid",
+        "ar": "كلمة التوحيد"
+      },
+      "arabic": "لَا إِلَهَ إِلَّا اللَّهُ",
+      "translit": {
+        "tr": "Lâ ilâhe illallâh",
+        "latin": "La ilaha illallah"
+      },
+      "meaning": {
+        "tr": "Allah'tan başka ilah yoktur.",
+        "en": "There is no god but Allah.",
+        "de": "Es gibt keinen Gott außer Allah.",
+        "fr": "Il n'y a de dieu qu'Allah."
+      },
+      "note": {
+        "tr": "Peygamberimiz zikrin en faziletlisinin bu olduğunu bildirmiştir.",
+        "en": "The Prophet said this is the best remembrance.",
+        "de": "Der Prophet sagte, dies sei das beste Gedenken.",
+        "fr": "Le Prophète a dit que c'est le meilleur des rappels.",
+        "ar": "أخبر النبي ﷺ أنها أفضل الذكر."
+      },
+      "source": {
+        "tr": "Tirmizî 3383; İbn Mâce 3800",
+        "en": "Tirmidhi 3383; Ibn Majah 3800",
+        "de": "Tirmidhi 3383; Ibn Madscha 3800",
+        "fr": "Tirmidhi 3383 ; Ibn Majah 3800",
+        "ar": "الترمذي 3383، ابن ماجه 3800"
+      }
+    },
+    {
+      "id": "Salavat",
+      "title": {
+        "tr": "Salavat",
+        "en": "Salawat",
+        "de": "Salawat",
+        "fr": "Salawat",
+        "ar": "الصلاة على النبي"
+      },
+      "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ",
+      "translit": {
+        "tr": "Allâhümme salli alâ Muhammed",
+        "latin": "Allahumma salli ala Muhammad"
+      },
+      "meaning": {
+        "tr": "Allah'ım! Muhammed'e salât eyle (rahmetini ve şerefini artır).",
+        "en": "O Allah, send Your blessings upon Muhammad.",
+        "de": "O Allah, segne Muhammad.",
+        "fr": "Ô Allah, prie sur Muhammad."
+      },
+      "note": {
+        "tr": "Peygamberimiz: \"Kim bana bir salavat getirirse Allah ona on rahmet eder.\"",
+        "en": "The Prophet said: \"Whoever sends blessings upon me once, Allah sends blessings upon him ten times.\"",
+        "de": "Der Prophet sagte: „Wer einmal den Segen über mich spricht, den segnet Allah zehnmal.“",
+        "fr": "Le Prophète a dit : « Quiconque prie sur moi une fois, Allah prie sur lui dix fois. »",
+        "ar": "قال النبي ﷺ: «من صلى عليّ واحدة صلى الله عليه عشرًا»."
+      },
+      "source": {
+        "tr": "Kur'an, Ahzâb 33/56; Buhârî 3370; Müslim 408",
+        "en": "Quran, al-Ahzab 33:56; Bukhari 3370; Muslim 408",
+        "de": "Koran, al-Ahzab 33:56; Buchari 3370; Muslim 408",
+        "fr": "Coran, al-Ahzab 33:56 ; Boukhari 3370 ; Muslim 408",
+        "ar": "سورة الأحزاب: 56، البخاري 3370، مسلم 408"
+      }
+    },
+    {
+      "id": "Estağfirullah",
+      "title": {
+        "tr": "Estağfirullah",
+        "en": "Astaghfirullah",
+        "de": "Astaghfirullah",
+        "fr": "Astaghfiroullah",
+        "ar": "أستغفر الله"
+      },
+      "arabic": "أَسْتَغْفِرُ اللَّهَ",
+      "translit": {
+        "tr": "Estağfirullâh",
+        "latin": "Astaghfirullah"
+      },
+      "meaning": {
+        "tr": "Allah'tan bağışlanma dilerim.",
+        "en": "I seek Allah's forgiveness.",
+        "de": "Ich bitte Allah um Vergebung.",
+        "fr": "Je demande pardon à Allah."
+      },
+      "note": {
+        "tr": "Peygamberimiz günde yüz defa istiğfar ederdi.",
+        "en": "The Prophet sought Allah's forgiveness a hundred times a day.",
+        "de": "Der Prophet bat Allah hundertmal am Tag um Vergebung.",
+        "fr": "Le Prophète demandait pardon à Allah cent fois par jour.",
+        "ar": "كان النبي ﷺ يستغفر الله في اليوم مائة مرة."
+      },
+      "source": {
+        "tr": "Müslim 2702",
+        "en": "Muslim 2702",
+        "de": "Muslim 2702",
+        "fr": "Muslim 2702",
+        "ar": "مسلم 2702"
+      },
+      "count": 100
+    },
+    {
+      "id": "La Havle",
+      "title": {
+        "tr": "La Havle Vela Kuvvete İlla Billah",
+        "en": "La Hawla wa la Quwwata illa Billah",
+        "de": "La Hawla wa la Quwwata",
+        "fr": "La Hawla wa la Quwwata",
+        "ar": "لا حول ولا قوة إلا بالله"
+      },
+      "arabic": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+      "translit": {
+        "tr": "Lâ havle ve lâ kuvvete illâ billâh",
+        "latin": "La hawla wa la quwwata illa billah"
+      },
+      "meaning": {
+        "tr": "Güç ve kuvvet ancak Allah'ın yardımıyladır.",
+        "en": "There is no might nor power except with Allah.",
+        "de": "Es gibt keine Macht und keine Kraft außer bei Allah.",
+        "fr": "Il n'y a de force ni de puissance qu'en Allah."
+      },
+      "note": {
+        "tr": "Cennet hazinelerinden bir hazinedir.",
+        "en": "It is one of the treasures of Paradise.",
+        "de": "Es ist einer der Schätze des Paradieses.",
+        "fr": "C'est l'un des trésors du Paradis.",
+        "ar": "كنز من كنوز الجنة."
+      },
+      "source": {
+        "tr": "Buhârî 6384; Müslim 2704",
+        "en": "Bukhari 6384; Muslim 2704",
+        "de": "Buchari 6384; Muslim 2704",
+        "fr": "Boukhari 6384 ; Muslim 2704",
+        "ar": "البخاري 6384، مسلم 2704"
+      }
+    },
+    {
+      "id": "Hasbünallah",
+      "title": {
+        "tr": "Hasbünallah",
+        "en": "Hasbunallah",
+        "de": "Hasbunallah",
+        "fr": "Hasbounallah",
+        "ar": "حسبنا الله"
+      },
+      "arabic": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+      "translit": {
+        "tr": "Hasbünallâhu ve ni'me'l-vekîl",
+        "latin": "Hasbunallahu wa ni'mal-wakil"
+      },
+      "meaning": {
+        "tr": "Allah bize yeter; O ne güzel vekildir.",
+        "en": "Allah is sufficient for us, and He is the best Disposer of affairs.",
+        "de": "Allah genügt uns, und welch vortrefflicher Sachwalter ist Er!",
+        "fr": "Allah nous suffit, et quel excellent Garant !"
+      },
+      "note": {
+        "tr": "Hz. İbrahim ateşe atılırken bunu söylemiştir.",
+        "en": "Prophet Ibrahim said it when he was thrown into the fire.",
+        "de": "Der Prophet Ibrahim sprach es, als er ins Feuer geworfen wurde.",
+        "fr": "Le prophète Ibrahim l'a dit lorsqu'il fut jeté dans le feu.",
+        "ar": "قالها إبراهيم عليه السلام حين أُلقي في النار."
+      },
+      "source": {
+        "tr": "Kur'an, Âl-i İmrân 3/173; Buhârî 4563",
+        "en": "Quran, Al 'Imran 3:173; Bukhari 4563",
+        "de": "Koran, Al 'Imran 3:173; Buchari 4563",
+        "fr": "Coran, Al 'Imran 3:173 ; Boukhari 4563",
+        "ar": "سورة آل عمران: 173، البخاري 4563"
+      }
+    },
+    {
+      "id": "Subhanallahi",
+      "title": {
+        "tr": "Sübhanallahi ve Bihamdihi",
+        "en": "Subhanallahi wa bihamdihi",
+        "de": "Subhanallahi wa bihamdihi",
+        "fr": "Soubhanallahi wa bihamdihi",
+        "ar": "سبحان الله وبحمده"
+      },
+      "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "translit": {
+        "tr": "Sübhânallâhi ve bihamdihî",
+        "latin": "Subhanallahi wa bihamdihi"
+      },
+      "meaning": {
+        "tr": "Allah'ı hamd ile tesbih ederim.",
+        "en": "Glory be to Allah and praise be to Him.",
+        "de": "Gepriesen sei Allah und gelobt.",
+        "fr": "Gloire et louange à Allah."
+      },
+      "note": {
+        "tr": "Günde yüz defa söyleyenin günahları deniz köpüğü kadar olsa bile bağışlanır.",
+        "en": "Whoever says it a hundred times a day, his sins are forgiven even if they are like the foam of the sea.",
+        "de": "Wer es hundertmal am Tag spricht, dem werden die Sünden vergeben, selbst wenn sie wie der Schaum des Meeres wären.",
+        "fr": "Celui qui le dit cent fois par jour, ses péchés sont effacés, fussent-ils comme l'écume de la mer.",
+        "ar": "من قالها في يوم مائة مرة حُطّت خطاياه وإن كانت مثل زبد البحر."
+      },
+      "source": {
+        "tr": "Buhârî 6405; Müslim 2691",
+        "en": "Bukhari 6405; Muslim 2691",
+        "de": "Buchari 6405; Muslim 2691",
+        "fr": "Boukhari 6405 ; Muslim 2691",
+        "ar": "البخاري 6405، مسلم 2691"
+      },
+      "count": 100
+    },
+    {
+      "id": "Hz. Yunus",
+      "title": {
+        "tr": "Hz. Yunus'un Duası",
+        "en": "Dua of Prophet Yunus",
+        "de": "Bittgebet des Propheten Yunus",
+        "fr": "Invocation du prophète Younous",
+        "ar": "دعاء نبي الله يونس"
+      },
+      "arabic": "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+      "translit": {
+        "tr": "Lâ ilâhe illâ ente sübhâneke innî küntü mine’z-zâlimîn",
+        "latin": "La ilaha illa anta subhanaka inni kuntu minaz-zalimin"
+      },
+      "meaning": {
+        "tr": "Senden başka ilah yoktur. Seni tenzih ederim. Ben gerçekten zalimlerden oldum.",
+        "en": "There is no god but You. Glory be to You. Indeed, I have been among the wrongdoers.",
+        "de": "Es gibt keinen Gott außer Dir. Gepriesen seist Du! Ich war wahrlich einer der Ungerechten.",
+        "fr": "Il n'y a de dieu que Toi. Gloire à Toi ! J'ai été vraiment du nombre des injustes."
+      },
+      "note": {
+        "tr": "Hz. Yunus balığın karnında böyle dua etmiştir; sıkıntıda bu duayı okuyan Müslümanın duası kabul olunur.",
+        "en": "Prophet Yunus prayed thus in the belly of the whale; a Muslim who supplicates with it in distress is answered.",
+        "de": "So betete der Prophet Yunus im Bauch des Fisches; einem Muslim, der damit in Not bittet, wird geantwortet.",
+        "fr": "Le prophète Younous a ainsi invoqué dans le ventre du poisson ; le musulman qui l'invoque dans la détresse est exaucé.",
+        "ar": "دعا بها يونس عليه السلام وهو في بطن الحوت، ولم يدعُ بها مسلم في شيء قط إلا استجاب الله له."
+      },
+      "source": {
+        "tr": "Kur'an, Enbiyâ 21/87; Tirmizî 3505",
+        "en": "Quran, al-Anbiya' 21:87; Tirmidhi 3505",
+        "de": "Koran, al-Anbiya' 21:87; Tirmidhi 3505",
+        "fr": "Coran, al-Anbiya' 21:87 ; Tirmidhi 3505",
+        "ar": "سورة الأنبياء: 87، الترمذي 3505"
+      }
+    },
+    {
+      "id": "subhanallahil_azim",
+      "title": {
+        "tr": "Sübhânallâhi'l-Azîm",
+        "en": "Subhanallahil Azim",
+        "de": "Subhanallahil Azim",
+        "fr": "Soubhanallahil Azim",
+        "ar": "سبحان الله العظيم"
+      },
+      "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ",
+      "translit": {
+        "tr": "Sübhânallâhi ve bihamdihî, sübhânallâhi'l-azîm",
+        "latin": "Subhanallahi wa bihamdihi, subhanallahil-azim"
+      },
+      "meaning": {
+        "tr": "Allah'ı hamd ile tesbih ederim; yüce Allah'ı tesbih ederim.",
+        "en": "Glory be to Allah and praise be to Him; glory be to Allah the Magnificent.",
+        "de": "Gepriesen sei Allah und gelobt; gepriesen sei Allah, der Gewaltige.",
+        "fr": "Gloire et louange à Allah ; gloire à Allah le Très-Grand."
+      },
+      "note": {
+        "tr": "Dile hafif, mizanda ağır, Rahmân'a sevimli iki kelimedir.",
+        "en": "Two phrases light on the tongue, heavy on the Scale and beloved to the Most Merciful.",
+        "de": "Zwei Worte, leicht für die Zunge, schwer auf der Waage und dem Allerbarmer lieb.",
+        "fr": "Deux paroles légères sur la langue, lourdes dans la Balance et aimées du Tout-Miséricordieux.",
+        "ar": "كلمتان خفيفتان على اللسان، ثقيلتان في الميزان، حبيبتان إلى الرحمن."
+      },
+      "source": {
+        "tr": "Müslim 2694",
+        "en": "Muslim 2694",
+        "de": "Muslim 2694",
+        "fr": "Muslim 2694",
+        "ar": "مسلم 2694"
+      }
+    },
+    {
+      "id": "tehlil",
+      "title": {
+        "tr": "Lâ ilâhe illallâhu vahdehû",
+        "en": "La ilaha illallahu wahdahu",
+        "de": "La ilaha illallahu wahdahu",
+        "fr": "La ilaha illallahu wahdahu",
+        "ar": "لا إله إلا الله وحده"
+      },
+      "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "translit": {
+        "tr": "Lâ ilâhe illallâhu vahdehû lâ şerîke leh, lehü’l-mülkü ve lehü’l-hamdü ve hüve alâ külli şey’in kadîr",
+        "latin": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadir"
+      },
+      "meaning": {
+        "tr": "Allah'tan başka ilah yoktur; O tektir, ortağı yoktur. Mülk O'nundur, hamd O'na mahsustur ve O her şeye kadirdir.",
+        "en": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things.",
+        "de": "Es gibt keinen Gott außer Allah allein, ohne Teilhaber. Sein ist die Herrschaft und Sein ist das Lob, und Er hat Macht über alle Dinge.",
+        "fr": "Il n'y a de dieu qu'Allah, Seul, sans associé. À Lui la royauté, à Lui la louange, et Il est capable de toute chose."
+      },
+      "note": {
+        "tr": "Günde yüz defa söyleyene on köle azat etmiş gibi sevap yazılır, yüz günahı silinir ve o gün akşama kadar şeytandan korunur.",
+        "en": "Whoever says it a hundred times a day gets the reward of freeing ten slaves, a hundred sins are erased, and he is protected from Satan until evening.",
+        "de": "Wer es hundertmal am Tag spricht, erhält den Lohn für die Befreiung von zehn Sklaven, hundert Sünden werden getilgt und er ist bis zum Abend vor dem Satan geschützt.",
+        "fr": "Celui qui le dit cent fois par jour reçoit la récompense de l'affranchissement de dix esclaves, cent péchés lui sont effacés et il est protégé de Satan jusqu'au soir.",
+        "ar": "من قالها في يوم مائة مرة كانت له عدل عشر رقاب، ومحيت عنه مائة سيئة، وكانت له حرزًا من الشيطان حتى يمسي."
+      },
+      "source": {
+        "tr": "Buhârî 6403; Müslim 2691",
+        "en": "Bukhari 6403; Muslim 2691",
+        "de": "Buchari 6403; Muslim 2691",
+        "fr": "Boukhari 6403 ; Muslim 2691",
+        "ar": "البخاري 6403، مسلم 2691"
+      },
+      "count": 100
+    },
+    {
+      "id": "dort_kelime",
+      "title": {
+        "tr": "Dört güzel kelime",
+        "en": "The four beloved words",
+        "de": "Die vier geliebten Worte",
+        "fr": "Les quatre paroles aimées",
+        "ar": "الكلمات الأربع"
+      },
+      "arabic": "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ",
+      "translit": {
+        "tr": "Sübhânallâhi ve’l-hamdü lillâhi ve lâ ilâhe illallâhu vallâhu ekber",
+        "latin": "Subhanallahi wal-hamdu lillahi wa la ilaha illallahu wallahu akbar"
+      },
+      "meaning": {
+        "tr": "Allah'ı tesbih ederim, hamd Allah'a mahsustur, Allah'tan başka ilah yoktur, Allah en büyüktür.",
+        "en": "Glory be to Allah, praise be to Allah, there is no god but Allah, and Allah is the Greatest.",
+        "de": "Gepriesen sei Allah, Lob sei Allah, es gibt keinen Gott außer Allah, und Allah ist der Größte.",
+        "fr": "Gloire à Allah, louange à Allah, il n'y a de dieu qu'Allah, et Allah est le plus Grand."
+      },
+      "note": {
+        "tr": "Allah katında sözlerin en sevimlisidir; söyleyen için üzerine güneş doğan her şeyden daha hayırlıdır.",
+        "en": "The words most beloved to Allah; dearer than everything the sun rises upon.",
+        "de": "Die Allah liebsten Worte; wertvoller als alles, worüber die Sonne aufgeht.",
+        "fr": "Les paroles les plus aimées d'Allah ; meilleures que tout ce sur quoi le soleil se lève.",
+        "ar": "أحب الكلام إلى الله، وهي أحب إلى النبي ﷺ مما طلعت عليه الشمس."
+      },
+      "source": {
+        "tr": "Müslim 2137; Müslim 2695",
+        "en": "Muslim 2137; Muslim 2695",
+        "de": "Muslim 2137; Muslim 2695",
+        "fr": "Muslim 2137 ; Muslim 2695",
+        "ar": "مسلم 2137، مسلم 2695"
+      }
+    },
+    {
+      "id": "adede_halkihi",
+      "title": {
+        "tr": "Adede halkıhî",
+        "en": "'Adada khalqihi",
+        "de": "'Adada khalqihi",
+        "fr": "'Adada khalqihi",
+        "ar": "سبحان الله وبحمده عدد خلقه"
+      },
+      "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ",
+      "translit": {
+        "tr": "Sübhânallâhi ve bihamdihî adede halkıhî ve rızâ nefsihî ve zinete arşihî ve midâde kelimâtih",
+        "latin": "Subhanallahi wa bihamdihi 'adada khalqihi wa rida nafsihi wa zinata 'arshihi wa midada kalimatih"
+      },
+      "meaning": {
+        "tr": "Yarattıklarının sayısınca, kendi rızası kadar, arşının ağırlığınca ve kelimelerinin mürekkebi kadar Allah'ı hamd ile tesbih ederim.",
+        "en": "Glory be to Allah and praise be to Him, as many times as the number of His creation, as much as pleases Him, as much as the weight of His Throne and as much as the ink of His words.",
+        "de": "Gepriesen sei Allah und gelobt, so oft wie die Zahl Seiner Geschöpfe, so sehr es Ihm gefällt, so schwer wie Sein Thron und so viel wie die Tinte Seiner Worte.",
+        "fr": "Gloire et louange à Allah, autant que le nombre de Ses créatures, autant qu'il Lui plaît, autant que le poids de Son Trône et autant que l'encre de Ses paroles."
+      },
+      "note": {
+        "tr": "Sabah üç defa söylenir; Peygamberimiz bunun uzun süre yapılan zikirlerden daha ağır geldiğini bildirmiştir.",
+        "en": "Said three times in the morning; the Prophet said it outweighs long hours of remembrance.",
+        "de": "Wird morgens dreimal gesprochen; der Prophet sagte, es wiege langes Gedenken auf.",
+        "fr": "Se dit trois fois le matin ; le Prophète a dit qu'elle pèse plus que de longues heures de rappel.",
+        "ar": "تُقال ثلاث مرات صباحًا، وهي أثقل في الميزان من ذكر طويل."
+      },
+      "source": {
+        "tr": "Müslim 2726",
+        "en": "Muslim 2726",
+        "de": "Muslim 2726",
+        "fr": "Muslim 2726",
+        "ar": "مسلم 2726"
+      },
+      "count": 3
+    },
+    {
+      "id": "azim_bihamdihi",
+      "title": {
+        "tr": "Sübhânallâhi'l-azîmi ve bihamdihî",
+        "en": "Subhanallahil-azimi wa bihamdihi",
+        "de": "Subhanallahil-azimi wa bihamdihi",
+        "fr": "Soubhanallahil-azimi wa bihamdihi",
+        "ar": "سبحان الله العظيم وبحمده"
+      },
+      "arabic": "سُبْحَانَ اللَّهِ الْعَظِيمِ وَبِحَمْدِهِ",
+      "translit": {
+        "tr": "Sübhânallâhi'l-azîmi ve bihamdihî",
+        "latin": "Subhanallahil-azimi wa bihamdihi"
+      },
+      "meaning": {
+        "tr": "Yüce Allah'ı hamd ile tesbih ederim.",
+        "en": "Glory be to Allah the Magnificent, and praise be to Him.",
+        "de": "Gepriesen sei Allah, der Gewaltige, und gelobt.",
+        "fr": "Gloire et louange à Allah le Très-Grand."
+      },
+      "note": {
+        "tr": "Söyleyen için cennette bir hurma ağacı dikilir.",
+        "en": "A palm tree is planted in Paradise for the one who says it.",
+        "de": "Für den, der es spricht, wird im Paradies eine Dattelpalme gepflanzt.",
+        "fr": "Un palmier est planté au Paradis pour celui qui le dit.",
+        "ar": "من قالها غُرست له نخلة في الجنة."
+      },
+      "source": {
+        "tr": "Tirmizî 3465",
+        "en": "Tirmidhi 3465",
+        "de": "Tirmidhi 3465",
+        "fr": "Tirmidhi 3465",
+        "ar": "الترمذي 3465"
+      }
+    },
+    {
+      "id": "kebiran",
+      "title": {
+        "tr": "Allâhu ekber kebîrâ",
+        "en": "Allahu akbar kabira",
+        "de": "Allahu akbar kabira",
+        "fr": "Allahu akbar kabira",
+        "ar": "الله أكبر كبيرًا"
+      },
+      "arabic": "اللَّهُ أَكْبَرُ كَبِيرًا، وَالْحَمْدُ لِلَّهِ كَثِيرًا، وَسُبْحَانَ اللَّهِ بُكْرَةً وَأَصِيلًا",
+      "translit": {
+        "tr": "Allâhu ekber kebîrâ, ve’l-hamdü lillâhi kesîrâ, ve sübhânallâhi bükraten ve asîlâ",
+        "latin": "Allahu akbaru kabira, wal-hamdu lillahi kathira, wa subhanallahi bukratan wa asila"
+      },
+      "meaning": {
+        "tr": "Allah en büyüktür; hamd çokça Allah'a mahsustur; sabah akşam Allah'ı tesbih ederim.",
+        "en": "Allah is the Greatest indeed; much praise be to Allah; glory be to Allah morning and evening.",
+        "de": "Allah ist wahrlich der Größte; viel Lob sei Allah; gepriesen sei Allah morgens und abends.",
+        "fr": "Allah est le plus Grand ; abondante louange à Allah ; gloire à Allah matin et soir."
+      },
+      "note": {
+        "tr": "Peygamberimiz bu sözler için gök kapılarının açıldığını bildirmiştir.",
+        "en": "The Prophet said the gates of heaven were opened for these words.",
+        "de": "Der Prophet sagte, für diese Worte seien die Tore des Himmels geöffnet worden.",
+        "fr": "Le Prophète a dit que les portes du ciel se sont ouvertes pour ces paroles.",
+        "ar": "أخبر النبي ﷺ أن أبواب السماء فُتحت لها."
+      },
+      "source": {
+        "tr": "Müslim 601",
+        "en": "Muslim 601",
+        "de": "Muslim 601",
+        "fr": "Muslim 601",
+        "ar": "مسلم 601"
+      }
+    },
+    {
+      "id": "bihamdihi_estagfiruhu",
+      "title": {
+        "tr": "Sübhânallâhi ve bihamdihî, estağfirullâh",
+        "en": "Subhanallahi wa bihamdihi, astaghfirullah",
+        "de": "Subhanallahi wa bihamdihi, astaghfirullah",
+        "fr": "Soubhanallahi wa bihamdihi, astaghfiroullah",
+        "ar": "سبحان الله وبحمده، أستغفر الله"
+      },
+      "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "translit": {
+        "tr": "Sübhânallâhi ve bihamdihî, estağfirullâhe ve etûbü ileyh",
+        "latin": "Subhanallahi wa bihamdihi, astaghfirullaha wa atubu ilayh"
+      },
+      "meaning": {
+        "tr": "Allah'ı hamd ile tesbih ederim; Allah'tan bağışlanma diler, O'na tövbe ederim.",
+        "en": "Glory be to Allah and praise be to Him; I seek Allah’s forgiveness and turn to Him in repentance.",
+        "de": "Gepriesen sei Allah und gelobt; ich bitte Allah um Vergebung und wende mich Ihm reuig zu.",
+        "fr": "Gloire et louange à Allah ; je demande pardon à Allah et je me repens à Lui."
+      },
+      "note": {
+        "tr": "Peygamberimiz bunu çokça söylerdi.",
+        "en": "The Prophet used to say this often.",
+        "de": "Der Prophet sprach dies häufig.",
+        "fr": "Le Prophète le disait souvent.",
+        "ar": "كان النبي ﷺ يكثر من قولها."
+      },
+      "source": {
+        "tr": "Müslim 484",
+        "en": "Muslim 484",
+        "de": "Muslim 484",
+        "fr": "Muslim 484",
+        "ar": "مسلم 484"
+      }
+    },
+    {
+      "id": "estagfirullah_etubu",
+      "title": {
+        "tr": "Estağfirullâh ve etûbü ileyh",
+        "en": "Astaghfirullah wa atubu ilayh",
+        "de": "Astaghfirullah wa atubu ilayh",
+        "fr": "Astaghfiroullah wa atoubou ilayh",
+        "ar": "أستغفر الله وأتوب إليه"
+      },
+      "arabic": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "translit": {
+        "tr": "Estağfirullâhe ve etûbü ileyh",
+        "latin": "Astaghfirullaha wa atubu ilayh"
+      },
+      "meaning": {
+        "tr": "Allah'tan bağışlanma diler, O'na tövbe ederim.",
+        "en": "I seek Allah’s forgiveness and turn to Him in repentance.",
+        "de": "Ich bitte Allah um Vergebung und wende mich Ihm reuig zu.",
+        "fr": "Je demande pardon à Allah et je me repens à Lui."
+      },
+      "note": {
+        "tr": "Peygamberimiz günde yetmiş defadan fazla istiğfar ve tövbe ederdi.",
+        "en": "The Prophet sought forgiveness and repented more than seventy times a day.",
+        "de": "Der Prophet bat mehr als siebzigmal am Tag um Vergebung und bereute.",
+        "fr": "Le Prophète demandait pardon et se repentait plus de soixante-dix fois par jour.",
+        "ar": "كان النبي ﷺ يستغفر الله ويتوب إليه في اليوم أكثر من سبعين مرة."
+      },
+      "source": {
+        "tr": "Buhârî 6307",
+        "en": "Bukhari 6307",
+        "de": "Buchari 6307",
+        "fr": "Boukhari 6307",
+        "ar": "البخاري 6307"
+      }
+    },
+    {
+      "id": "istigfar_hayyul_kayyum",
+      "title": {
+        "tr": "Estağfirullâhe'llezî lâ ilâhe illâ hüve",
+        "en": "Astaghfirullahal-ladhi la ilaha illa huwa",
+        "de": "Astaghfirullahal-ladhi la ilaha illa huwa",
+        "fr": "Astaghfiroullahal-ladhi la ilaha illa houwa",
+        "ar": "أستغفر الله الذي لا إله إلا هو"
+      },
+      "arabic": "أَسْتَغْفِرُ اللَّهَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
+      "translit": {
+        "tr": "Estağfirullâhe'llezî lâ ilâhe illâ hüve’l-hayyü’l-kayyûmu ve etûbü ileyh",
+        "latin": "Astaghfirullahal-ladhi la ilaha illa huwal-hayyul-qayyumu wa atubu ilayh"
+      },
+      "meaning": {
+        "tr": "Kendisinden başka ilah olmayan, diri ve her şeyi ayakta tutan Allah'tan bağışlanma diler, O'na tövbe ederim.",
+        "en": "I seek forgiveness from Allah, besides whom there is no god, the Ever-Living, the Sustainer, and I turn to Him in repentance.",
+        "de": "Ich bitte Allah um Vergebung, außer dem es keinen Gott gibt, den Lebendigen, den Beständigen, und wende mich Ihm reuig zu.",
+        "fr": "Je demande pardon à Allah, en dehors de qui il n'y a pas de dieu, le Vivant, Celui qui subsiste par Lui-même, et je me repens à Lui."
+      },
+      "note": {
+        "tr": "Bunu söyleyen, savaştan kaçmış olsa bile bağışlanır.",
+        "en": "Whoever says it is forgiven, even if he had fled from battle.",
+        "de": "Wer es spricht, dem wird vergeben, selbst wenn er aus der Schlacht geflohen wäre.",
+        "fr": "Celui qui le dit est pardonné, même s'il avait fui le combat.",
+        "ar": "من قالها غُفر له وإن كان قد فرّ من الزحف."
+      },
+      "source": {
+        "tr": "Ebû Dâvûd 1517",
+        "en": "Abu Dawud 1517",
+        "de": "Abu Dawud 1517",
+        "fr": "Abou Dawoud 1517",
+        "ar": "أبو داود 1517"
+      }
+    },
+    {
+      "id": "rabbigfirli_tub",
+      "title": {
+        "tr": "Rabbiğfir lî ve tüb aleyye",
+        "en": "Rabbighfir li wa tub 'alayya",
+        "de": "Rabbighfir li wa tub 'alayya",
+        "fr": "Rabbighfir li wa toub 'alayya",
+        "ar": "رب اغفر لي وتب علي"
+      },
+      "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ، إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+      "translit": {
+        "tr": "Rabbiğfir lî ve tüb aleyye inneke ente’t-tevvâbü’r-rahîm",
+        "latin": "Rabbighfir li wa tub 'alayya innaka antat-tawwabur-rahim"
+      },
+      "meaning": {
+        "tr": "Rabbim! Beni bağışla, tövbemi kabul et. Şüphesiz sen tövbeleri çok kabul eden, çok merhametli olansın.",
+        "en": "My Lord, forgive me and accept my repentance; You are the Accepter of repentance, the Most Merciful.",
+        "de": "Mein Herr, vergib mir und nimm meine Reue an; Du bist der Reue-Annehmende, der Barmherzige.",
+        "fr": "Seigneur, pardonne-moi et accepte mon repentir ; Tu es Celui qui accueille le repentir, le Très-Miséricordieux."
+      },
+      "note": {
+        "tr": "Peygamberimizin tek bir mecliste bunu yüz defa söylediği sayılmıştır.",
+        "en": "It was counted that the Prophet said this a hundred times in a single sitting.",
+        "de": "Man zählte, dass der Prophet dies in einer Sitzung hundertmal sprach.",
+        "fr": "On a compté que le Prophète l'a dit cent fois en une seule assemblée.",
+        "ar": "كان يُعدّ للنبي ﷺ في المجلس الواحد مائة مرة."
+      },
+      "source": {
+        "tr": "Ebû Dâvûd 1516",
+        "en": "Abu Dawud 1516",
+        "de": "Abu Dawud 1516",
+        "fr": "Abou Dawoud 1516",
+        "ar": "أبو داود 1516"
+      },
+      "count": 100
+    },
+    {
+      "id": "ya_hayyu",
+      "title": {
+        "tr": "Yâ Hayyu yâ Kayyûm",
+        "en": "Ya Hayyu ya Qayyum",
+        "de": "Ya Hayyu ya Qayyum",
+        "fr": "Ya Hayyou ya Qayyoum",
+        "ar": "يا حي يا قيوم"
+      },
+      "arabic": "يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ",
+      "translit": {
+        "tr": "Yâ Hayyu yâ Kayyûm, bi rahmetike esteğîs",
+        "latin": "Ya Hayyu ya Qayyum, bi rahmatika astaghith"
+      },
+      "meaning": {
+        "tr": "Ey diri olan, ey her şeyi ayakta tutan! Rahmetinle yardım dilerim.",
+        "en": "O Ever-Living, O Sustainer, by Your mercy I seek help.",
+        "de": "O Lebendiger, o Beständiger, bei Deiner Barmherzigkeit flehe ich um Hilfe.",
+        "fr": "Ô Vivant, ô Toi qui subsistes par Toi-même, c'est par Ta miséricorde que j'implore secours."
+      },
+      "note": {
+        "tr": "Peygamberimiz bir sıkıntıya düştüğünde böyle dua ederdi.",
+        "en": "The Prophet would supplicate thus when something distressed him.",
+        "de": "So betete der Prophet, wenn ihn etwas bedrückte.",
+        "fr": "Le Prophète invoquait ainsi lorsqu'une chose l'affligeait.",
+        "ar": "كان النبي ﷺ إذا كربه أمر قال ذلك."
+      },
+      "source": {
+        "tr": "Tirmizî 3524",
+        "en": "Tirmidhi 3524",
+        "de": "Tirmidhi 3524",
+        "fr": "Tirmidhi 3524",
+        "ar": "الترمذي 3524"
+      }
+    },
+    {
+      "id": "melikil_kuddus",
+      "title": {
+        "tr": "Sübhâne'l-Meliki'l-Kuddûs",
+        "en": "Subhanal-Malikil-Quddus",
+        "de": "Subhanal-Malikil-Quddus",
+        "fr": "Soubhanal-Malikil-Qouddous",
+        "ar": "سبحان الملك القدوس"
+      },
+      "arabic": "سُبْحَانَ الْمَلِكِ الْقُدُّوسِ",
+      "translit": {
+        "tr": "Sübhâne'l-meliki'l-kuddûs",
+        "latin": "Subhanal-malikil-quddus"
+      },
+      "meaning": {
+        "tr": "Mülkün sahibi, her türlü eksiklikten uzak Allah'ı tesbih ederim.",
+        "en": "Glory be to the Sovereign, the Most Holy.",
+        "de": "Gepriesen sei der König, der Heilige.",
+        "fr": "Gloire au Souverain, le Très-Saint."
+      },
+      "note": {
+        "tr": "Vitir namazından sonra üç defa söylenir.",
+        "en": "Said three times after the witr prayer.",
+        "de": "Wird nach dem Witr-Gebet dreimal gesprochen.",
+        "fr": "Se dit trois fois après la prière du witr.",
+        "ar": "تُقال ثلاث مرات بعد صلاة الوتر."
+      },
+      "source": {
+        "tr": "Ebû Dâvûd 1430; Nesâî 1699",
+        "en": "Abu Dawud 1430; an-Nasa'i 1699",
+        "de": "Abu Dawud 1430; an-Nasa'i 1699",
+        "fr": "Abou Dawoud 1430 ; an-Nasa'i 1699",
+        "ar": "أبو داود 1430، النسائي 1699"
+      },
+      "count": 3
+    },
+    {
+      "id": "raditu",
+      "title": {
+        "tr": "Radîtü billâhi rabben",
+        "en": "Raditu billahi rabba",
+        "de": "Raditu billahi rabba",
+        "fr": "Raditou billahi rabba",
+        "ar": "رضيت بالله ربًّا"
+      },
+      "arabic": "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ نَبِيًّا",
+      "translit": {
+        "tr": "Radîtü billâhi rabben ve bi’l-İslâmi dînen ve bi Muhammedin nebiyyâ",
+        "latin": "Raditu billahi rabba, wa bil-islami dina, wa bi Muhammadin nabiyya"
+      },
+      "meaning": {
+        "tr": "Rab olarak Allah'tan, din olarak İslâm'dan, peygamber olarak Muhammed'den razıyım.",
+        "en": "I am pleased with Allah as my Lord, with Islam as my religion and with Muhammad as my Prophet.",
+        "de": "Ich bin zufrieden mit Allah als Herrn, mit dem Islam als Religion und mit Muhammad als Propheten.",
+        "fr": "J'agrée Allah comme Seigneur, l'islam comme religion et Muhammad comme Prophète."
+      },
+      "note": {
+        "tr": "Sabah ve akşam üçer defa söylenir.",
+        "en": "Said three times in the morning and in the evening.",
+        "de": "Wird morgens und abends je dreimal gesprochen.",
+        "fr": "Se dit trois fois le matin et le soir.",
+        "ar": "تُقال ثلاث مرات صباحًا ومساءً."
+      },
+      "source": {
+        "tr": "Tirmizî 3389",
+        "en": "Tirmidhi 3389",
+        "de": "Tirmidhi 3389",
+        "fr": "Tirmidhi 3389",
+        "ar": "الترمذي 3389"
+      },
+      "count": 3
+    },
+    {
+      "id": "hasbiyallah",
+      "title": {
+        "tr": "Hasbiyallâhu lâ ilâhe illâ hû",
+        "en": "Hasbiyallahu la ilaha illa huwa",
+        "de": "Hasbiyallahu la ilaha illa huwa",
+        "fr": "Hasbiyallahou la ilaha illa houwa",
+        "ar": "حسبي الله لا إله إلا هو"
+      },
+      "arabic": "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ، عَلَيْهِ تَوَكَّلْتُ، وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
+      "translit": {
+        "tr": "Hasbiyallâhu lâ ilâhe illâ hû, aleyhi tevekkeltü ve hüve rabbü'l-arşi'l-azîm",
+        "latin": "Hasbiyallahu la ilaha illa huwa, 'alayhi tawakkaltu wa huwa rabbul-'arshil-'azim"
+      },
+      "meaning": {
+        "tr": "Allah bana yeter. O'ndan başka ilah yoktur. Ben yalnız O'na tevekkül ettim. O, büyük arşın Rabbidir.",
+        "en": "Allah is sufficient for me; there is no god but Him. In Him I put my trust, and He is the Lord of the Mighty Throne.",
+        "de": "Allah genügt mir; es gibt keinen Gott außer Ihm. Auf Ihn verlasse ich mich, und Er ist der Herr des gewaltigen Thrones.",
+        "fr": "Allah me suffit ; il n'y a de dieu que Lui. En Lui je place ma confiance, et Il est le Seigneur du Trône immense."
+      },
+      "source": {
+        "tr": "Kur'an, Tevbe 9/129",
+        "en": "Quran, at-Tawba 9:129",
+        "de": "Koran, at-Tawba 9:129",
+        "fr": "Coran, at-Tawba 9:129",
+        "ar": "سورة التوبة: 129"
+      }
+    },
+    {
+      "id": "sehadet",
+      "title": {
+        "tr": "Kelime-i Şehâdet",
+        "en": "Kalimat ash-Shahada",
+        "de": "Kalimat asch-Schahada",
+        "fr": "Kalimat ach-Chahada",
+        "ar": "كلمة الشهادة"
+      },
+      "arabic": "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+      "translit": {
+        "tr": "Eşhedü en lâ ilâhe illallâhu vahdehû lâ şerîke leh, ve eşhedü enne Muhammeden abdühû ve resûlüh",
+        "latin": "Ash-hadu an la ilaha illallahu wahdahu la sharika lah, wa ash-hadu anna Muhammadan 'abduhu wa rasuluh"
+      },
+      "meaning": {
+        "tr": "Şahitlik ederim ki Allah'tan başka ilah yoktur; O tektir, ortağı yoktur. Yine şahitlik ederim ki Muhammed O'nun kulu ve elçisidir.",
+        "en": "I bear witness that there is no god but Allah alone, without partner, and I bear witness that Muhammad is His servant and Messenger.",
+        "de": "Ich bezeuge, dass es keinen Gott gibt außer Allah allein, ohne Teilhaber, und ich bezeuge, dass Muhammad Sein Diener und Gesandter ist.",
+        "fr": "J'atteste qu'il n'y a de dieu qu'Allah, Seul, sans associé, et j'atteste que Muhammad est Son serviteur et Son Messager."
+      },
+      "note": {
+        "tr": "Abdestten sonra söyleyene cennetin sekiz kapısı açılır.",
+        "en": "For whoever says it after wudu, the eight gates of Paradise are opened.",
+        "de": "Wer es nach der Gebetswaschung spricht, dem werden die acht Tore des Paradieses geöffnet.",
+        "fr": "Pour celui qui la dit après les ablutions, les huit portes du Paradis s'ouvrent.",
+        "ar": "من قالها بعد الوضوء فُتحت له أبواب الجنة الثمانية."
+      },
+      "source": {
+        "tr": "Müslim 234",
+        "en": "Muslim 234",
+        "de": "Muslim 234",
+        "fr": "Muslim 234",
+        "ar": "مسلم 234"
+      }
+    },
+    {
+      "id": "hamden_kesiran",
+      "title": {
+        "tr": "Hamden kesîran tayyiben",
+        "en": "Hamdan kathiran tayyiban",
+        "de": "Hamdan kathiran tayyiban",
+        "fr": "Hamdan kathiran tayyiban",
+        "ar": "حمدًا كثيرًا طيبًا"
+      },
+      "arabic": "رَبَّنَا وَلَكَ الْحَمْدُ، حَمْدًا كَثِيرًا طَيِّبًا مُبَارَكًا فِيهِ",
+      "translit": {
+        "tr": "Rabbenâ ve leke’l-hamd, hamden kesîran tayyiben mübâreken fîh",
+        "latin": "Rabbana wa lakal-hamd, hamdan kathiran tayyiban mubarakan fih"
+      },
+      "meaning": {
+        "tr": "Rabbimiz! Hamd sana mahsustur; çok, temiz ve bereketli bir hamd.",
+        "en": "Our Lord, to You belongs all praise: abundant, pure and blessed praise.",
+        "de": "Unser Herr, Dir gebührt das Lob: reichliches, reines und gesegnetes Lob.",
+        "fr": "Notre Seigneur, à Toi la louange : une louange abondante, pure et bénie."
+      },
+      "note": {
+        "tr": "Bir sahâbî rükûdan kalkınca bunu söyleyince, otuz küsur meleğin onu yazmak için yarıştığı bildirilmiştir.",
+        "en": "When a Companion said it on rising from bowing, more than thirty angels raced to record it.",
+        "de": "Als ein Gefährte es beim Aufrichten aus der Verbeugung sprach, eilten über dreißig Engel, es aufzuschreiben.",
+        "fr": "Quand un Compagnon l'a dit en se relevant de l'inclinaison, plus de trente anges se sont empressés de l'inscrire.",
+        "ar": "قالها صحابي حين رفع من الركوع، فرأى النبي ﷺ بضعة وثلاثين ملكًا يبتدرونها."
+      },
+      "source": {
+        "tr": "Buhârî 799",
+        "en": "Bukhari 799",
+        "de": "Buchari 799",
+        "fr": "Boukhari 799",
+        "ar": "البخاري 799"
+      }
+    },
+    {
+      "id": "mukallib",
+      "title": {
+        "tr": "Yâ Mukallibe'l-kulûb",
+        "en": "Ya Muqallibal-qulub",
+        "de": "Ya Muqallibal-qulub",
+        "fr": "Ya Mouqallibal-qouloub",
+        "ar": "يا مقلب القلوب"
+      },
+      "arabic": "يَا مُقَلِّبَ الْقُلُوبِ، ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
+      "translit": {
+        "tr": "Yâ mukallibe'l-kulûb, sebbit kalbî alâ dînik",
+        "latin": "Ya muqallibal-qulub, thabbit qalbi 'ala dinik"
+      },
+      "meaning": {
+        "tr": "Ey kalpleri halden hale çeviren! Kalbimi dinin üzere sabit kıl.",
+        "en": "O Turner of hearts, make my heart firm upon Your religion.",
+        "de": "O Du, der die Herzen wendet, festige mein Herz in Deiner Religion.",
+        "fr": "Ô Toi qui retournes les cœurs, affermis mon cœur dans Ta religion."
+      },
+      "note": {
+        "tr": "Peygamberimiz bu duayı çok okurdu.",
+        "en": "The Prophet often made this supplication.",
+        "de": "Der Prophet sprach dieses Bittgebet oft.",
+        "fr": "Le Prophète faisait souvent cette invocation.",
+        "ar": "كان النبي ﷺ يكثر أن يقولها."
+      },
+      "source": {
+        "tr": "Tirmizî 2140",
+        "en": "Tirmidhi 2140",
+        "de": "Tirmidhi 2140",
+        "fr": "Tirmidhi 2140",
+        "ar": "الترمذي 2140"
+      }
+    },
+    {
+      "id": "masallah",
+      "title": {
+        "tr": "Mâşâallah lâ kuvvete illâ billâh",
+        "en": "Masha'Allah la quwwata illa billah",
+        "de": "Masha'Allah la quwwata illa billah",
+        "fr": "Macha'Allah la qouwwata illa billah",
+        "ar": "ما شاء الله لا قوة إلا بالله"
+      },
+      "arabic": "مَا شَاءَ اللَّهُ لَا قُوَّةَ إِلَّا بِاللَّهِ",
+      "translit": {
+        "tr": "Mâşâallâhu lâ kuvvete illâ billâh",
+        "latin": "Ma sha'Allahu la quwwata illa billah"
+      },
+      "meaning": {
+        "tr": "Allah ne dilerse o olur; kuvvet ancak Allah'ın yardımıyladır.",
+        "en": "What Allah wills [comes to pass]; there is no power except with Allah.",
+        "de": "Was Allah will [geschieht]; es gibt keine Kraft außer bei Allah.",
+        "fr": "Ce qu'Allah veut [se réalise] ; il n'y a de force qu'en Allah."
+      },
+      "note": {
+        "tr": "Hoşa giden bir şey görüldüğünde söylenir.",
+        "en": "Said on seeing something pleasing.",
+        "de": "Wird gesprochen, wenn man etwas Erfreuliches sieht.",
+        "fr": "Se dit en voyant une chose qui plaît.",
+        "ar": "تُقال عند رؤية ما يُعجب."
+      },
+      "source": {
+        "tr": "Kur'an, Kehf 18/39",
+        "en": "Quran, al-Kahf 18:39",
+        "de": "Koran, al-Kahf 18:39",
+        "fr": "Coran, al-Kahf 18:39",
+        "ar": "سورة الكهف: 39"
+      }
+    },
+    {
+      "id": "ala_kulli_hal",
+      "title": {
+        "tr": "Elhamdülillâhi alâ külli hâl",
+        "en": "Alhamdulillahi 'ala kulli hal",
+        "de": "Alhamdulillahi 'ala kulli hal",
+        "fr": "Alhamdoulillahi 'ala koulli hal",
+        "ar": "الحمد لله على كل حال"
+      },
+      "arabic": "الْحَمْدُ لِلَّهِ عَلَى كُلِّ حَالٍ",
+      "translit": {
+        "tr": "Elhamdülillâhi alâ külli hâl",
+        "latin": "Alhamdulillahi 'ala kulli hal"
+      },
+      "meaning": {
+        "tr": "Her hâlükârda hamd Allah'a mahsustur.",
+        "en": "Praise be to Allah in every circumstance.",
+        "de": "Lob sei Allah in jeder Lage.",
+        "fr": "Louange à Allah en toute circonstance."
+      },
+      "note": {
+        "tr": "Peygamberimiz hoşlanmadığı bir durumla karşılaşınca böyle derdi.",
+        "en": "The Prophet would say this when faced with something he disliked.",
+        "de": "So sprach der Prophet, wenn ihm etwas Unangenehmes widerfuhr.",
+        "fr": "Le Prophète disait cela face à une chose qu'il n'aimait pas.",
+        "ar": "كان النبي ﷺ يقولها إذا رأى ما يكره."
+      },
+      "source": {
+        "tr": "İbn Mâce 3803",
+        "en": "Ibn Majah 3803",
+        "de": "Ibn Madscha 3803",
+        "fr": "Ibn Majah 3803",
+        "ar": "ابن ماجه 3803"
+      }
+    },
+    {
+      "id": "bi_nimetihi",
+      "title": {
+        "tr": "Elhamdülillâhillezî bi ni’metihî",
+        "en": "Alhamdulillahil-ladhi bi ni'matihi",
+        "de": "Alhamdulillahil-ladhi bi ni'matihi",
+        "fr": "Alhamdoulillahil-ladhi bi ni'matihi",
+        "ar": "الحمد لله الذي بنعمته"
+      },
+      "arabic": "الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ",
+      "translit": {
+        "tr": "Elhamdülillâhillezî bi ni'metihî tetimmü’s-sâlihât",
+        "latin": "Alhamdulillahil-ladhi bi ni'matihi tatimmus-salihat"
+      },
+      "meaning": {
+        "tr": "Nimetiyle iyi işlerin tamamlandığı Allah'a hamd olsun.",
+        "en": "Praise be to Allah, by whose grace good things are completed.",
+        "de": "Lob sei Allah, durch dessen Gnade die guten Dinge vollendet werden.",
+        "fr": "Louange à Allah, par la grâce de qui les bonnes choses s’accomplissent."
+      },
+      "note": {
+        "tr": "Peygamberimiz sevindirici bir durumla karşılaşınca böyle derdi.",
+        "en": "The Prophet would say this when he saw something that pleased him.",
+        "de": "So sprach der Prophet, wenn ihn etwas erfreute.",
+        "fr": "Le Prophète disait cela lorsqu’il voyait une chose qui le réjouissait.",
+        "ar": "كان النبي ﷺ يقولها إذا رأى ما يحب."
+      },
+      "source": {
+        "tr": "İbn Mâce 3803",
+        "en": "Ibn Majah 3803",
+        "de": "Ibn Madscha 3803",
+        "fr": "Ibn Majah 3803",
+        "ar": "ابن ماجه 3803"
+      }
+    },
+    {
+      "id": "besmele",
+      "title": {
+        "tr": "Besmele",
+        "en": "Basmala",
+        "de": "Basmala",
+        "fr": "Basmala",
+        "ar": "البسملة"
+      },
+      "arabic": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
+      "translit": {
+        "tr": "Bismillâhirrahmânirrahîm",
+        "latin": "Bismillahir-rahmanir-rahim"
+      },
+      "meaning": {
+        "tr": "Rahmân ve Rahîm olan Allah'ın adıyla.",
+        "en": "In the name of Allah, the Most Gracious, the Most Merciful.",
+        "de": "Im Namen Allahs, des Allerbarmers, des Barmherzigen.",
+        "fr": "Au nom d’Allah, le Tout-Miséricordieux, le Très-Miséricordieux."
+      },
+      "note": {
+        "tr": "Her hayırlı işe besmele ile başlanır.",
+        "en": "Every good deed is begun with the basmala.",
+        "de": "Jede gute Tat beginnt man mit der Basmala.",
+        "fr": "Toute bonne action commence par la basmala.",
+        "ar": "يُبدأ بها كل أمر ذي بال."
+      },
+      "source": {
+        "tr": "Kur'an, Fâtiha 1/1; Kur'an, Neml 27/30",
+        "en": "Quran, al-Fatiha 1:1; Quran, an-Naml 27:30",
+        "de": "Koran, al-Fatiha 1:1; Koran, an-Naml 27:30",
+        "fr": "Coran, al-Fatiha 1:1 ; Coran, an-Naml 27:30",
+        "ar": "سورة الفاتحة: 1، سورة النمل: 30"
+      }
+    },
+    {
+      "id": "rabbisrah",
+      "title": {
+        "tr": "Rabbişrah lî sadrî",
+        "en": "Rabbishrah li sadri",
+        "de": "Rabbishrah li sadri",
+        "fr": "Rabbichrah li sadri",
+        "ar": "رب اشرح لي صدري"
+      },
+      "arabic": "رَبِّ اشْرَحْ لِي صَدْرِي، وَيَسِّرْ لِي أَمْرِي",
+      "translit": {
+        "tr": "Rabbişrah lî sadrî ve yessir lî emrî",
+        "latin": "Rabbishrah li sadri wa yassir li amri"
+      },
+      "meaning": {
+        "tr": "Rabbim! Göğsümü genişlet, işimi kolaylaştır.",
+        "en": "My Lord, expand my chest for me and ease my task for me.",
+        "de": "Mein Herr, weite mir meine Brust und erleichtere mir meine Aufgabe.",
+        "fr": "Seigneur, ouvre-moi ma poitrine et facilite-moi ma tâche."
+      },
+      "note": {
+        "tr": "Hz. Musa’nın duasıdır.",
+        "en": "The supplication of Prophet Musa.",
+        "de": "Das Bittgebet des Propheten Musa.",
+        "fr": "L’invocation du prophète Moussa.",
+        "ar": "دعاء موسى عليه السلام."
+      },
+      "source": {
+        "tr": "Kur'an, Tâhâ 20/25-26",
+        "en": "Quran, Ta-Ha 20:25-26",
+        "de": "Koran, Ta-Ha 20:25-26",
+        "fr": "Coran, Ta-Ha 20:25-26",
+        "ar": "سورة طه: 25-26"
+      }
+    },
+    {
+      "id": "rabbi_zidni",
+      "title": {
+        "tr": "Rabbi zidnî ilmâ",
+        "en": "Rabbi zidni 'ilma",
+        "de": "Rabbi zidni 'ilma",
+        "fr": "Rabbi zidni 'ilma",
+        "ar": "رب زدني علمًا"
+      },
+      "arabic": "رَبِّ زِدْنِي عِلْمًا",
+      "translit": {
+        "tr": "Rabbi zidnî ilmâ",
+        "latin": "Rabbi zidni 'ilma"
+      },
+      "meaning": {
+        "tr": "Rabbim! İlmimi artır.",
+        "en": "My Lord, increase me in knowledge.",
+        "de": "Mein Herr, mehre mein Wissen.",
+        "fr": "Seigneur, accrois mon savoir."
+      },
+      "source": {
+        "tr": "Kur'an, Tâhâ 20/114",
+        "en": "Quran, Ta-Ha 20:114",
+        "de": "Koran, Ta-Ha 20:114",
+        "fr": "Coran, Ta-Ha 20:114",
+        "ar": "سورة طه: 114"
+      }
+    },
+    {
+      "id": "rabbi_fakir",
+      "title": {
+        "tr": "Rabbi innî limâ enzelte",
+        "en": "Rabbi inni lima anzalta",
+        "de": "Rabbi inni lima anzalta",
+        "fr": "Rabbi inni lima anzalta",
+        "ar": "رب إني لما أنزلت إلي"
+      },
+      "arabic": "رَبِّ إِنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+      "translit": {
+        "tr": "Rabbi innî limâ enzelte ileyye min hayrin fakîr",
+        "latin": "Rabbi inni lima anzalta ilayya min khayrin faqir"
+      },
+      "meaning": {
+        "tr": "Rabbim! Bana indireceğin her hayra muhtacım.",
+        "en": "My Lord, I am truly in need of whatever good You send down to me.",
+        "de": "Mein Herr, ich bin bedürftig nach allem Guten, das Du zu mir herabsendest.",
+        "fr": "Seigneur, j’ai grand besoin du bien que Tu feras descendre vers moi."
+      },
+      "note": {
+        "tr": "Hz. Musa’nın duasıdır.",
+        "en": "The supplication of Prophet Musa.",
+        "de": "Das Bittgebet des Propheten Musa.",
+        "fr": "L’invocation du prophète Moussa.",
+        "ar": "دعاء موسى عليه السلام."
+      },
+      "source": {
+        "tr": "Kur'an, Kasas 28/24",
+        "en": "Quran, al-Qasas 28:24",
+        "de": "Koran, al-Qasas 28:24",
+        "fr": "Coran, al-Qasas 28:24",
+        "ar": "سورة القصص: 24"
+      }
+    },
+    {
+      "id": "rabbigfir_verham",
+      "title": {
+        "tr": "Rabbiğfir verham",
+        "en": "Rabbighfir warham",
+        "de": "Rabbighfir warham",
+        "fr": "Rabbighfir warham",
+        "ar": "رب اغفر وارحم"
+      },
+      "arabic": "رَبِّ اغْفِرْ وَارْحَمْ وَأَنْتَ خَيْرُ الرَّاحِمِينَ",
+      "translit": {
+        "tr": "Rabbiğfir verham ve ente hayru’r-râhimîn",
+        "latin": "Rabbighfir warham wa anta khayrur-rahimin"
+      },
+      "meaning": {
+        "tr": "Rabbim! Bağışla, merhamet et. Sen merhamet edenlerin en hayırlısısın.",
+        "en": "My Lord, forgive and have mercy, for You are the best of the merciful.",
+        "de": "Mein Herr, vergib und erbarme Dich, denn Du bist der beste der Erbarmer.",
+        "fr": "Seigneur, pardonne et fais miséricorde, car Tu es le meilleur des miséricordieux."
+      },
+      "source": {
+        "tr": "Kur'an, Mü'minûn 23/118",
+        "en": "Quran, al-Mu'minun 23:118",
+        "de": "Koran, al-Mu'minun 23:118",
+        "fr": "Coran, al-Mu'minun 23:118",
+        "ar": "سورة المؤمنون: 118"
+      }
+    }
   ]
 }

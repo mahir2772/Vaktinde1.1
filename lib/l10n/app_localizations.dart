@@ -3128,36 +3128,6 @@ abstract class AppLocalizations {
   /// **'Zikirmatik'**
   String get zikirmatikTitle;
 
-  /// No description provided for @dhikrSubhanallah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sübhanallah'**
-  String get dhikrSubhanallah;
-
-  /// No description provided for @dhikrElhamdulillah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Elhamdülillah'**
-  String get dhikrElhamdulillah;
-
-  /// No description provided for @dhikrAllahuEkber.
-  ///
-  /// In tr, this message translates to:
-  /// **'Allahu Ekber'**
-  String get dhikrAllahuEkber;
-
-  /// No description provided for @dhikrKalima.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kelime-i Tevhid'**
-  String get dhikrKalima;
-
-  /// No description provided for @dhikrSalavat.
-  ///
-  /// In tr, this message translates to:
-  /// **'Salavat'**
-  String get dhikrSalavat;
-
   /// No description provided for @targetReached.
   ///
   /// In tr, this message translates to:
@@ -3266,6 +3236,12 @@ abstract class AppLocalizations {
   /// **'Sil'**
   String get deleteDhikr;
 
+  /// No description provided for @dhikrInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anlamı ve kaynağı'**
+  String get dhikrInfo;
+
   /// No description provided for @statisticsTitle.
   ///
   /// In tr, this message translates to:
@@ -3307,36 +3283,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Henüz zikir verisi yok.'**
   String get statsEmpty;
-
-  /// No description provided for @dhikrEstagfirullah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Estağfirullah'**
-  String get dhikrEstagfirullah;
-
-  /// No description provided for @dhikrLaHavle.
-  ///
-  /// In tr, this message translates to:
-  /// **'La Havle Vela Kuvvete İlla Billah'**
-  String get dhikrLaHavle;
-
-  /// No description provided for @dhikrHasbunallah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hasbünallah'**
-  String get dhikrHasbunallah;
-
-  /// No description provided for @dhikrSubhanallahi.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sübhanallahi ve Bihamdihi'**
-  String get dhikrSubhanallahi;
-
-  /// No description provided for @dhikrYunus.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hz. Yunus\'un Duası'**
-  String get dhikrYunus;
 
   /// No description provided for @dhikrYaAllah.
   ///
