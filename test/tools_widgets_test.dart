@@ -21,6 +21,7 @@ import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
 import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
+import 'package:ezan_saati/features/stories/view/stories_view.dart';
 import 'package:ezan_saati/features/tools/view/tools_view.dart';
 import 'package:ezan_saati/features/zakat/view/zakat_view.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -160,6 +161,7 @@ void main() {
     'İmsakiye': () => const ImsakiyeView(),
     'Zekat': () => const ZakatView(),
     'Esmaül Hüsna': () => const EsmaulHusnaView(),
+    'Kıssalar': () => const StoriesView(),
     'Cuma mesajları': () => const FridayMessagesView(),
     'Dini günler': () => const ReligiousDaysView(),
     'Kaza': () => const PrayerTrackerView(initialTab: TrackerTab.kaza),
@@ -200,13 +202,14 @@ void main() {
         ReligiousDaysView,
       ),
       loc.esmaulHusnaTitle: (loc.toolEsmaDesc, true, EsmaulHusnaView),
+      loc.storiesTitle: (loc.toolStoriesDesc, true, StoriesView),
       loc.fridayMessagesTitle: (loc.toolFridayDesc, true, FridayMessagesView),
       loc.zakatTitle: (loc.toolZakatDesc, true, ZakatView),
       loc.fitreTitle: (loc.toolFitreDesc, true, FitreView),
     };
     Finder tile(String title) => find.widgetWithText(ToolTile, title);
 
-    testWidgets('10 araç kutucuğu (kaza ayrı değil) + Ayarlar satırı; '
+    testWidgets('11 araç kutucuğu (kaza ayrı değil) + Ayarlar satırı; '
         'kutucuk düğme, başlık etiket, açıklama ipucu', (tester) async {
       await _pumpScreen(tester, const ToolsView(), width: 411, textScale: 1);
       final semantics = tester.ensureSemantics();

@@ -41,6 +41,7 @@ import 'package:ezan_saati/features/zakat/view/zakat_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/zikir_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view_model/zikir_view_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:ezan_saati/features/stories/view/stories_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -568,6 +569,7 @@ void main() {
         (tr.imsakiyeTitle, ImsakiyeView),
         (tr.religiousDaysTitle, ReligiousDaysView),
         (tr.esmaulHusnaTitle, EsmaulHusnaView),
+        (tr.storiesTitle, StoriesView),
         (tr.fridayMessagesTitle, FridayMessagesView),
         (tr.zakatTitle, ZakatView),
         (tr.fitreTitle, FitreView),

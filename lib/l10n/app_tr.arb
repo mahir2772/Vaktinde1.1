@@ -1071,6 +1071,18 @@
             }
         }
     },
+    "storiesTitle": "Kıssalar",
+    "toolStoriesDesc": "Peygamberler, siyer, sahabe ve âlimler",
+    "storiesNote": "Özetler Kur'an-ı Kerim'e ve hadis, siyer ve biyografi kaynaklarına dayanır. Dinî konularda ayrıntı için bir din görevlisine danışın.",
+    "storyCount": "{count} kıssa",
+    "@storyCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storyLesson": "İbret",
     "prayerGuideTitle": "Namaz Hocası",
     "toolPrayerGuideDesc": "Abdest ve namazın kılınışı, adım adım",
     "prayerGuideTabWudu": "Abdest",

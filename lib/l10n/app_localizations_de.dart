@@ -2151,6 +2151,31 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get storiesTitle => 'Geschichten';
+
+  @override
+  String get toolStoriesDesc =>
+      'Propheten, Prophetenbiografie, Gefährten und Gelehrte';
+
+  @override
+  String get storiesNote =>
+      'Die Zusammenfassungen beruhen auf dem edlen Koran sowie auf Hadith-, Sira- und Biografiequellen. Für Einzelheiten in religiösen Fragen wenden Sie sich an einen Gelehrten.';
+
+  @override
+  String storyCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Geschichten',
+      one: '1 Geschichte',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get storyLesson => 'Lehre';
+
+  @override
   String get prayerGuideTitle => 'Gebetsanleitung';
 
   @override

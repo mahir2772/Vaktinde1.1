@@ -2174,6 +2174,31 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get storiesTitle => 'Récits';
+
+  @override
+  String get toolStoriesDesc =>
+      'Prophètes, vie du Prophète, Compagnons et savants';
+
+  @override
+  String get storiesNote =>
+      'Les résumés s\'appuient sur le Noble Coran et sur des sources de hadith, de sira et de biographie. Pour les détails religieux, consultez un savant.';
+
+  @override
+  String storyCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count récits',
+      one: '1 récit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get storyLesson => 'Leçon';
+
+  @override
   String get prayerGuideTitle => 'Guide de la prière';
 
   @override

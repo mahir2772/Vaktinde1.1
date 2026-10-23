@@ -992,6 +992,18 @@
             }
         }
     },
+    "storiesTitle": "القصص",
+    "toolStoriesDesc": "الأنبياء والسيرة والصحابة والعلماء",
+    "storiesNote": "تعتمد هذه الملخصات على القرآن الكريم ومصادر الحديث والسيرة والتراجم، وللتفصيل في المسائل الدينية راجع أهل العلم.",
+    "storyCount": "{count, plural, =1{قصة واحدة} =2{قصتان} few{{count} قصص} many{{count} قصة} other{{count} قصة}}",
+    "@storyCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storyLesson": "العبرة",
     "prayerGuideTitle": "تعليم الصلاة",
     "toolPrayerGuideDesc": "الوضوء وكيفية الصلاة خطوة بخطوة",
     "prayerGuideTabWudu": "الوضوء",

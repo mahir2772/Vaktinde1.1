@@ -3782,6 +3782,36 @@ abstract class AppLocalizations {
   /// **'{count} dua'**
   String duaCount(int count);
 
+  /// No description provided for @storiesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıssalar'**
+  String get storiesTitle;
+
+  /// No description provided for @toolStoriesDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Peygamberler, siyer, sahabe ve âlimler'**
+  String get toolStoriesDesc;
+
+  /// No description provided for @storiesNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özetler Kur\'an-ı Kerim\'e ve hadis, siyer ve biyografi kaynaklarına dayanır. Dinî konularda ayrıntı için bir din görevlisine danışın.'**
+  String get storiesNote;
+
+  /// No description provided for @storyCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} kıssa'**
+  String storyCount(int count);
+
+  /// No description provided for @storyLesson.
+  ///
+  /// In tr, this message translates to:
+  /// **'İbret'**
+  String get storyLesson;
+
   /// No description provided for @prayerGuideTitle.
   ///
   /// In tr, this message translates to:

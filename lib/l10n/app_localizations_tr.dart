@@ -2117,6 +2117,24 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get storiesTitle => 'Kıssalar';
+
+  @override
+  String get toolStoriesDesc => 'Peygamberler, siyer, sahabe ve âlimler';
+
+  @override
+  String get storiesNote =>
+      'Özetler Kur\'an-ı Kerim\'e ve hadis, siyer ve biyografi kaynaklarına dayanır. Dinî konularda ayrıntı için bir din görevlisine danışın.';
+
+  @override
+  String storyCount(int count) {
+    return '$count kıssa';
+  }
+
+  @override
+  String get storyLesson => 'İbret';
+
+  @override
   String get prayerGuideTitle => 'Namaz Hocası';
 
   @override

@@ -3,6 +3,7 @@ import 'package:ezan_saati/l10n/app_localizations.dart';
 
 import '../duas/view/duas_view.dart';
 import '../esmaul_husna/view/esmaul_husna_view.dart';
+import '../stories/view/stories_view.dart';
 import '../fitre/view/fitre_view.dart';
 import '../friday_messages/view/friday_messages_view.dart';
 import '../home/view/home_view.dart';
@@ -39,6 +40,7 @@ enum AppFeature {
   imsakiye,
   religiousDays,
   esma,
+  stories,
   fridayMessages,
   zakat,
   fitre,
@@ -98,6 +100,8 @@ Future<void> openAppFeature(BuildContext context, AppFeature feature) async {
       push(const ReligiousDaysView());
     case AppFeature.esma:
       push(const EsmaulHusnaView());
+    case AppFeature.stories:
+      push(const StoriesView());
     case AppFeature.fridayMessages:
       push(const FridayMessagesView());
     case AppFeature.zakat:

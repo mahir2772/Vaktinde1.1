@@ -992,6 +992,18 @@
             }
         }
     },
+    "storiesTitle": "Récits",
+    "toolStoriesDesc": "Prophètes, vie du Prophète, Compagnons et savants",
+    "storiesNote": "Les résumés s'appuient sur le Noble Coran et sur des sources de hadith, de sira et de biographie. Pour les détails religieux, consultez un savant.",
+    "storyCount": "{count, plural, =1{1 récit} other{{count} récits}}",
+    "@storyCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storyLesson": "Leçon",
     "prayerGuideTitle": "Guide de la prière",
     "toolPrayerGuideDesc": "Ablutions et déroulement de la prière, pas à pas",
     "prayerGuideTabWudu": "Ablutions",

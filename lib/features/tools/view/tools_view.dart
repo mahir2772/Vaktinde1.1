@@ -9,6 +9,7 @@ import '../../common/ad_helper.dart';
 import '../../common/theme_provider.dart';
 import '../../duas/view/duas_view.dart';
 import '../../esmaul_husna/view/esmaul_husna_view.dart';
+import '../../stories/view/stories_view.dart';
 import '../../fitre/view/fitre_view.dart';
 import '../../friday_messages/view/friday_messages_view.dart';
 import '../../imsakiye/view/imsakiye_view.dart';
@@ -95,6 +96,12 @@ class ToolsView extends StatelessWidget {
             loc.esmaulHusnaTitle,
             loc.toolEsmaDesc,
             () => const EsmaulHusnaView(),
+          ),
+          _ToolItem(
+            Icons.history_edu_outlined,
+            loc.storiesTitle,
+            loc.toolStoriesDesc,
+            () => const StoriesView(),
           ),
           _ToolItem(
             Icons.forum_outlined,
@@ -302,9 +309,7 @@ class _GroupHeader extends StatelessWidget {
             ),
             child: Text(
               title,
-              style: theme.textTheme.titleSmall!.copyWith(
-                color: colors.onHero,
-              ),
+              style: theme.textTheme.titleSmall!.copyWith(color: colors.onHero),
             ),
           ),
         ),

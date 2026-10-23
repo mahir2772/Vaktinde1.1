@@ -103,7 +103,12 @@ class AppGuideView extends StatelessWidget {
             loc.guideQuran,
             AppFeature.quran,
           ),
-          (Icons.flag_outlined, loc.hatimTitle, loc.hatimIntro, AppFeature.quran),
+          (
+            Icons.flag_outlined,
+            loc.hatimTitle,
+            loc.hatimIntro,
+            AppFeature.quran,
+          ),
           (
             Icons.menu_book_outlined,
             loc.duasTitle,
@@ -132,6 +137,12 @@ class AppGuideView extends StatelessWidget {
             loc.esmaulHusnaTitle,
             loc.toolEsmaDesc,
             AppFeature.esma,
+          ),
+          (
+            Icons.history_edu_outlined,
+            loc.storiesTitle,
+            loc.toolStoriesDesc,
+            AppFeature.stories,
           ),
           (
             Icons.forum_outlined,

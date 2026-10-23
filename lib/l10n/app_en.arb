@@ -992,6 +992,18 @@
             }
         }
     },
+    "storiesTitle": "Stories",
+    "toolStoriesDesc": "Prophets, the Prophet's life, Companions and scholars",
+    "storiesNote": "The summaries are based on the Holy Quran and on hadith, sira and biography sources. Consult a religious scholar for details on religious matters.",
+    "storyCount": "{count, plural, =1{1 story} other{{count} stories}}",
+    "@storyCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storyLesson": "Lesson",
     "prayerGuideTitle": "Prayer Guide",
     "toolPrayerGuideDesc": "Wudu and how to pray, step by step",
     "prayerGuideTabWudu": "Wudu",
