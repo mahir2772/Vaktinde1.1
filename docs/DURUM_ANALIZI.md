@@ -1,4 +1,4 @@
-# Vaktinde — Durum (Play'de 1.3.0+18; 1.4.0+19 bu dalda hazır, yayın bekliyor — 24 Ekim 2026)
+# Vaktinde — Durum (Play'de 1.3.0+18; 1.4.0+19 incelemede — 24 Ekim 2026)
 
 ## SON DURUM — 1.4.0+19 (23 Ekim 2026)
 - Kod işleri bitti (tek güncelleme: 1.3.1 ve 1.4.0 birleşti). İçerik:
@@ -15,18 +15,16 @@
   TDV İslâm Ansiklopedisi ile karşılaştırıldı (6 bağımsız kontrol, her bulgu kaynağında yeniden doğrulandı); düzeltmeler
   5 dilde yapıldı (Ebû Bekir hadisi "üçüncüleri", Hatice 620, Esmâ El-Hakem Arapçası — 1.3.0'da da yanlıştı —, Namaz
   Hocası zamm-ı sûre vb.). Güncel inceleme PDF'i kullanıcıda; bir din görevlisinin son bakışı yine tavsiye edilir.
-- YAYIN SIRASI (kullanıcı):
-  1. (İsteğe bağlı) din görevlisine inceleme PDF'i; gelen düzeltmeler 5 dile işlenir.
-  2. docs/gizlilik_politikasi.md → Google Sites'a yapıştır (ses bölümü ve posta adresi satırı çıkarıldı).
-  3. CollectAPI anahtarını yenile → `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<yeni>`.
-  4. Play Console > Uygulama içeriği > Ön plan hizmetleri: specialUse beyanını kaldır (uygulamada artık ön plan hizmeti
-     yok). Veri güvenliği: yeni toplanan/paylaşılan veri yok.
-  5. Dahili test, cihazda: kalıcı bildirim (6 vakit sığıyor mu) (FGS yok: aç/kapat, telefon yeniden başlayınca, güncellemeden sonra), widget'lar,
-     bildirime dokunma (uygulamadan geri tuşuyla çıktıktan sonra da), Hatim ekranı, dua arama, kıssalar, zikir listesi,
-     yedekle/geri yükle, 1.3.0 üstüne kurulumda Yenilikler.
-  6. ✅ Sürüm notları docs/surum_notlari_1.4.0.txt (5 dil, ≤500) ve mağaza metni docs/magaza_girisi.md (24 Ekim: tr kısa
-     açıklama, Hatim/kaydırma/87 dua/35 zikir/Kıssalar/kalıcı bildirim satırları, 5 dilde kayıtların telefonda kaldığı
-     cümlesi; fr 3992/4000). Play'e: ana giriş + çeviriler + Avrupa özel girişinin tam açıklaması; görseller isteğe bağlı → üretim.
+- YAYIN (24 Ekim 2026): AAB 1.4.0+19 (eski CollectAPI anahtarıyla; kullanıcı şimdilik yenilemiyor) dahili testte cihazda
+  denendi, sorunsuz. Üretim (tam kullanıma sunma) + mağaza metni (ana giriş 5 dil, Avrupa özel girişi 5 dil, Avrupa kitlesi
+  %50 → %100) tek seferde incelemeye gönderildi. Gizlilik metni Google Sites'ta (Android'in Google cihaz yedeği cümlesiyle).
+- KALAN (kullanıcı):
+  1. 1.4.0 yayına girince (tüm kanallarda FGS'li sürüm kalmayınca): Play Console > Politika ve programlar > Uygulama içeriği
+     > Ön plan hizmeti izinleri: hâlâ isteniyorsa specialUse beyanını kaldır. Önce değil: 1.3.0 yayındayken beyan gerekir.
+     Veri güvenliği: değişiklik yok.
+  2. CollectAPI anahtarını bir sonraki sürümün derleme günü yenile (eskisi git geçmişinde açık; önce yenilenirse yayındaki
+     sürümün canlı kuru durur).
+  3. (İsteğe bağlı) din görevlisine inceleme PDF'i; gelen düzeltmeler 5 dile işlenir.
 
 ## 1.3.0 dönemi (17 Ekim 2026)
 - Kod işleri bitti; dal `claude/vaktinde-app-analysis-bocjca` = 1.3.0 adayı (pubspec hâlâ 1.2.0+17). Tüm testler geçiyor
