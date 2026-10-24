@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/hadith_service.dart';
 import 'package:ezan_saati/data/services/error_reporter.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
@@ -155,13 +158,19 @@ void main() {
           'hatırlatma, vakit çıkış, günlük içerik)', () async {
         SharedPreferences.setMockInitialValues(basePrefs());
         canScheduleExact = allowed;
+        await _cacheHadith(
+          PrayerRefreshService.dailyContentDay(
+            PrayerRefreshService.hadithNotificationId,
+            clockNow,
+          ),
+        );
         expect(await PrayerRefreshService.runHeadless(clock: clock), isTrue);
 
         final ids = scheduleCalls().map((c) => c.arguments['id'] as int);
         expect(ids.where(isEzan), isNotEmpty);
         expect(ids.where(isPreReminder), isNotEmpty);
         expect(ids.where(PrayerTracker.isEndReminderId), isNotEmpty);
-        expect(ids.where(isDaily), isNotEmpty); // hadis (yerel yedek)
+        expect(ids.where(isDaily), isNotEmpty); // hadis (önceden alınmış)
         expect(modes(isEzan), {
           allowed ? 'alarmClock' : 'inexactAllowWhileIdle',
         });
@@ -593,3 +602,14 @@ void main() {
     }
   });
 }
+
+// Ağdan alınmış (önbellekteki) günün hadisi: bildirim yerel yedekle kurulmaz
+Future<void> _cacheHadith(DateTime day) => HadithService(
+  fetch: (url) async => url.path.endsWith('/list/')
+      ? jsonEncode({
+          'data': [
+            {'id': '1'},
+          ],
+        })
+      : jsonEncode({'hadeeth': 'hadis', 'attribution': 'kaynak'}),
+).getDailyHadith(const Locale('tr'), day: day);

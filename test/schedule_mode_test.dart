@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
+import 'package:ezan_saati/data/services/hadith_service.dart';
 import 'package:ezan_saati/data/services/ayah_service.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
@@ -460,8 +461,8 @@ void main() {
   });
 
   group('Günün ayeti ve hadisi ayarı', () {
-    // Yarın 08:00: iki bildirim de o gün çalar; o günün ayeti önceden alınmış
-    // (önbellekte), hadis: ağ yok → yerel yedek
+    // Yarın 08:00: iki bildirim de o gün çalar; o günün ayeti ve hadisi
+    // önceden alınmış (önbellekte)
     final now = DateTime.now();
     final at = DateTime(now.year, now.month, now.day + 1, 8);
     final ayahJson = jsonEncode({
@@ -486,6 +487,7 @@ void main() {
           await AyahService(
             fetch: (_) async => ayahJson,
           ).getDailyAyah('tr', day: at);
+          await _cacheHadith(at);
           final notifications = NotificationService();
           await notifications.init();
           await PrayerRefreshService(
@@ -535,6 +537,9 @@ void main() {
     test('Ayarlar anahtarı (HomeViewModel): kapatınca hemen iptal, bir daha '
         'kurulmaz; açınca kurulur', () async {
       SharedPreferences.setMockInitialValues({});
+      final now = DateTime.now();
+      await _cacheHadith(now);
+      await _cacheHadith(DateTime(now.year, now.month, now.day + 1));
       await NotificationService().init();
       final vm = HomeViewModel();
       addTearDown(vm.dispose);
@@ -555,7 +560,7 @@ void main() {
         PrayerRefreshService.dailyContentIds.toSet(),
       );
       expect(pending, isEmpty);
-      // Yeni içerik gelse de kurulmaz (hadis: ağ yok → yerel yedek)
+      // Yeni içerik gelse de kurulmaz
       await vm.getDailyHadith(const Locale('tr'));
       expect(vm.dailyHadith, isNotNull);
       expect(scheduledIds(), isEmpty);
@@ -570,3 +575,14 @@ void main() {
     });
   });
 }
+
+// Ağdan alınmış (önbellekteki) günün hadisi: bildirim yerel yedekle kurulmaz
+Future<void> _cacheHadith(DateTime day) => HadithService(
+  fetch: (url) async => url.path.endsWith('/list/')
+      ? jsonEncode({
+          'data': [
+            {'id': '1'},
+          ],
+        })
+      : jsonEncode({'hadeeth': 'hadis', 'attribution': 'kaynak'}),
+).getDailyHadith(const Locale('tr'), day: day);
