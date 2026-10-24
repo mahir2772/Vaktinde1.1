@@ -2379,6 +2379,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quranNextSurah => 'السورة التالية';
 
   @override
+  String get quranSwipeNextHint => 'اسحب لأعلى للانتقال إلى السورة التالية';
+
+  @override
   String get toolQuranDesc => 'سور القرآن الكريم بالرسم العثماني';
 
   @override

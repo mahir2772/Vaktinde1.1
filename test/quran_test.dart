@@ -1350,8 +1350,15 @@ void main() {
       await tester.pump(const Duration(seconds: 3));
     }
 
+    // Kenarda durur: kenardan yeniden çekmek sonraki / önceki sureye geçirir
+    bool atEdge(WidgetTester tester, {required bool end}) {
+      final position = tester.state<ScrollableState>(_vertical()).position;
+      return (end ? position.extentAfter : position.extentBefore) < 1;
+    }
+
     Future<void> scrollThrough(WidgetTester tester) async {
       for (var i = 0; i < 8; i++) {
+        if (atEdge(tester, end: true)) break;
         await tester.drag(_vertical(), const Offset(0, -400));
         await tester.pump(const Duration(milliseconds: 100));
       }
@@ -1359,6 +1366,7 @@ void main() {
 
     Future<void> scrollToTop(WidgetTester tester) async {
       for (var i = 0; i < 8; i++) {
+        if (atEdge(tester, end: false)) break;
         await tester.drag(_vertical(), const Offset(0, 600));
         await tester.pump(const Duration(milliseconds: 100));
       }
@@ -2122,6 +2130,39 @@ void main() {
       expect(reader.surah.number, 113);
       expect(reader.trackLastRead, isFalse);
       expect(prefs.getString(QuranService.lastReadKey), isNull);
+      expect(tester.takeException(), isNull);
+      await dispose(tester);
+    });
+
+    testWidgets('kaydırarak geçiş (reels gibi): sonda yukarı çekince sonraki '
+        'sure baştan, başta aşağı çekince önceki sure sonundan', (
+      tester,
+    ) async {
+      await pumpPhone(
+        tester,
+        SurahReaderView(surah: _surah(112), service: _service()),
+      );
+      await settle(tester);
+      final loc = lookupAppLocalizations(const Locale('tr'));
+      SurahReaderView reader() =>
+          tester.widget<SurahReaderView>(find.byType(SurahReaderView));
+      Future<void> pull(double dy) async {
+        await tester.drag(find.byType(CustomScrollView), Offset(0, dy));
+        await settle(tester);
+      }
+
+      // Kısa sure ekrana sığar: sonu da görünür
+      expect(find.text(loc.quranSwipeNextHint), findsOneWidget);
+      // Kısa çekme geçmez
+      await pull(-60);
+      expect(reader().surah.number, 112);
+      await pull(-400);
+      expect(reader().surah.number, 113);
+      expect(reader().initialAyah, isNull);
+
+      await pull(400);
+      expect(reader().surah.number, 112);
+      expect(reader().initialAyah, _surah(112).ayahCount);
       expect(tester.takeException(), isNull);
       await dispose(tester);
     });

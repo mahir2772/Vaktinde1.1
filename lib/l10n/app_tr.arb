@@ -1239,6 +1239,7 @@
     "quranGo": "Git",
     "quranPreviousSurah": "Önceki sure",
     "quranNextSurah": "Sonraki sure",
+    "quranSwipeNextHint": "Sonraki sureye geçmek için yukarı kaydırın",
     "toolQuranDesc": "Sureler, Arapça metin ve meal",
     "quranContinue": "Kaldığın yerden devam et",
     "quranAyahRef": "{surah} {ayah}. ayet",

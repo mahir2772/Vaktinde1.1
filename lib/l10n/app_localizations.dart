@@ -4106,6 +4106,12 @@ abstract class AppLocalizations {
   /// **'Sonraki sure'**
   String get quranNextSurah;
 
+  /// No description provided for @quranSwipeNextHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki sureye geçmek için yukarı kaydırın'**
+  String get quranSwipeNextHint;
+
   /// No description provided for @toolQuranDesc.
   ///
   /// In tr, this message translates to:

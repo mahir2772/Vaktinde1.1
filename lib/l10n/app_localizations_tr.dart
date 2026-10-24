@@ -2312,6 +2312,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get quranNextSurah => 'Sonraki sure';
 
   @override
+  String get quranSwipeNextHint => 'Sonraki sureye geçmek için yukarı kaydırın';
+
+  @override
   String get toolQuranDesc => 'Sureler, Arapça metin ve meal';
 
   @override

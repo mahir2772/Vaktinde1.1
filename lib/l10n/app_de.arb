@@ -1153,6 +1153,7 @@
     "quranGo": "Springen",
     "quranPreviousSurah": "Vorherige Sure",
     "quranNextSurah": "Nächste Sure",
+    "quranSwipeNextHint": "Nach oben wischen, um zur nächsten Sure zu gelangen",
     "toolQuranDesc": "Suren mit arabischem Text und Übersetzung",
     "quranContinue": "Weiterlesen, wo Sie aufgehört haben",
     "quranAyahRef": "{surah}, Vers {ayah}",

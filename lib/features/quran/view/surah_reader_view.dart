@@ -98,6 +98,15 @@ class _SurahReaderViewState extends State<SurahReaderView>
   int _laidOutGeneration = -1;
   bool _visibleCheckScheduled = false;
   bool _jumping = false;
+
+  // Kenardan çekme (reels gibi): sonda yukarı → sonraki sure, başta aşağı →
+  // önceki surenin sonu. Sadece kenardayken başlayan sürüklemenin taşması
+  // sayılır: kaydırırken sona varan ya da hızla kenara çarpan geçmez
+  static const double _edgePullToTurn = 120;
+  double _edgePull = 0;
+  bool _pullFromStart = false;
+  bool _pullFromEnd = false;
+  bool _leaving = false;
   int? _currentAyah;
   int? _savedAyah;
 
@@ -428,17 +437,35 @@ class _SurahReaderViewState extends State<SurahReaderView>
     if (ayah != null && mounted) _jumpTo(ayah);
   }
 
-  void _openSurah(Surah surah) {
+  /// [swipe]: kaydırarak geçiş (yukarı: sonraki sure baştan, aşağı: önceki
+  /// sure sonundan); dikey kayarak açılır
+  void _openSurah(Surah surah, {AxisDirection? swipe}) {
+    if (_leaving) return;
+    _leaving = true;
     _updateVisibleAyah();
-    final route = MaterialPageRoute<void>(
-      builder: (_) => SurahReaderView(
-        surah: surah,
-        service: _service,
-        surahs: _surahs,
-        trackLastRead: widget.trackLastRead,
-        hatim: widget.hatim,
-      ),
+    final page = SurahReaderView(
+      surah: surah,
+      initialAyah: swipe == AxisDirection.down ? surah.ayahCount : null,
+      service: _service,
+      surahs: _surahs,
+      trackLastRead: widget.trackLastRead,
+      hatim: widget.hatim,
     );
+    final Route<void> route = swipe == null
+        ? MaterialPageRoute<void>(builder: (_) => page)
+        : PageRouteBuilder<void>(
+            pageBuilder: (_, _, _) => page,
+            transitionsBuilder: (_, animation, _, child) => SlideTransition(
+              position:
+                  Tween<Offset>(
+                        begin: Offset(0, swipe == AxisDirection.up ? 1 : -1),
+                        end: Offset.zero,
+                      )
+                      .chain(CurveTween(curve: Curves.easeOutCubic))
+                      .animate(animation),
+              child: child,
+            ),
+          );
     // Listeye dönüş, değiştirilen okuyucunun kapanmasını bekler (son okunan
     // yer orada yenilenir)
     Navigator.of(context).pushReplacement(route, result: route.popped);
@@ -643,6 +670,20 @@ class _SurahReaderViewState extends State<SurahReaderView>
                   onTap: () => _openSurah(next),
                 ),
               ),
+            if (next != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.xs,
+                ),
+                child: Text(
+                  loc.quranSwipeNextHint,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
             _SourceNote(translationEdition: text.translationEdition),
           ],
         );
@@ -696,16 +737,33 @@ class _SurahReaderViewState extends State<SurahReaderView>
       key: _viewportKey,
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
-          if (notification is ScrollEndNotification &&
-              notification.depth == 0 &&
-              !_jumping) {
+          if (notification.depth != 0 || _jumping) return false;
+          if (notification is ScrollStartNotification) {
+            _edgePull = 0;
+            _pullFromStart = notification.metrics.extentBefore < 1;
+            _pullFromEnd = notification.metrics.extentAfter < 1;
+          } else if (notification is OverscrollNotification &&
+              notification.dragDetails != null) {
+            _edgePull += notification.overscroll;
+          } else if (notification is ScrollEndNotification) {
             _scheduleVisibleCheck();
+            final pull = _edgePull;
+            _edgePull = 0;
+            if (pull > _edgePullToTurn && _pullFromEnd && next != null) {
+              _openSurah(next, swipe: AxisDirection.up);
+            } else if (pull < -_edgePullToTurn &&
+                _pullFromStart &&
+                previous != null) {
+              _openSurah(previous, swipe: AxisDirection.down);
+            }
           }
           return false;
         },
         child: CustomScrollView(
           key: ValueKey(_generation),
           controller: _controller,
+          // Kısa sure ekrana sığsa da çekme algılansın (kaydırarak geçiş)
+          physics: const AlwaysScrollableScrollPhysics(),
           center: _centerKey,
           slivers: [
             // Merkezden önceki öğeler ters sırayla yukarı doğru dizilir

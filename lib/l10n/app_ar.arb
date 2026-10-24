@@ -1153,6 +1153,7 @@
     "quranGo": "انتقال",
     "quranPreviousSurah": "السورة السابقة",
     "quranNextSurah": "السورة التالية",
+    "quranSwipeNextHint": "اسحب لأعلى للانتقال إلى السورة التالية",
     "toolQuranDesc": "سور القرآن الكريم بالرسم العثماني",
     "quranContinue": "متابعة القراءة من حيث توقفت",
     "quranAyahRef": "{surah}، الآية {ayah}",

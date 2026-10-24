@@ -1153,6 +1153,7 @@
     "quranGo": "Go",
     "quranPreviousSurah": "Previous surah",
     "quranNextSurah": "Next surah",
+    "quranSwipeNextHint": "Swipe up to continue to the next surah",
     "toolQuranDesc": "Surahs with Arabic text and translation",
     "quranContinue": "Continue where you left off",
     "quranAyahRef": "{surah}, verse {ayah}",

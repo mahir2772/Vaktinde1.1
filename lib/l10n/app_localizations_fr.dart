@@ -2386,6 +2386,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quranNextSurah => 'Sourate suivante';
 
   @override
+  String get quranSwipeNextHint =>
+      'Balayez vers le haut pour passer à la sourate suivante';
+
+  @override
   String get toolQuranDesc => 'Sourates, texte arabe et traduction';
 
   @override
