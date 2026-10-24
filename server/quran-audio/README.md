@@ -1,5 +1,8 @@
 # Kur'an sesi ara sunucusu (Cloudflare Worker)
 
+> **ASKIDA (24 Ekim 2026):** Kur'an dinleme uygulamadan çıkarıldı (kullanıcı kararı). Bu klasör ve git geçmişi
+> (23cabfc, b5685ac, 52c06f2, 4eed065) geri getirmek içindir; uygulama şu an bu sunucuyu kullanmaz.
+
 Vaktinde'deki "Dinle" özelliği sesleri **Quran Foundation (Quran.com) Content API**'sinden
 alır. QF şartlarına göre API'nin gizli anahtarı (`client_secret`) mobil uygulamaya
 konamaz; anahtar bu küçük sunucuda durur. Uygulama sadece kârî listesini ve surenin ses

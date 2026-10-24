@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
-import 'package:ezan_saati/data/services/quran_audio_service.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'app_feature.dart';
 
@@ -25,14 +24,6 @@ class WhatsNew {
   static const String version = '1.4.0';
 
   static List<WhatsNewItem> items(AppLocalizations loc) => [
-    // Dinleme ara sunucusuyla derlenmediyse yok
-    if (QuranAudioService.configured)
-      (
-        icon: Icons.headphones_outlined,
-        title: loc.whatsNewListenTitle,
-        subtitle: loc.whatsNewListenDesc,
-        feature: AppFeature.quran,
-      ),
     (
       icon: Icons.flag_outlined,
       title: loc.hatimTitle,

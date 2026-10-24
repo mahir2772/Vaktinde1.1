@@ -3,15 +3,13 @@ Son güncelleme: Ekim 2026
 
 Bu politika, Vaktinde uygulamasının ("Uygulama") hangi verileri hangi amaçla kullandığını, kimlerle paylaştığını ve haklarınızı açıklar. Uygulama üyelik istemez; adınız, e-posta adresiniz veya telefon numaranız gibi bilgileri toplamaz.
 
-Kur'an dinleme özelliği Quran Foundation API'lerini (Quran.com ve QuranReflect ekosistemi) kullanır. Vaktinde bağımsız bir uygulamadır, Quran Foundation'ın resmî uygulaması değildir; bu API'leri Quran Foundation geliştirici şartlarına uygun olarak kullanır.
-
 1. Telefonunuzda kalan bilgiler
 Aşağıdaki bilgiler yalnızca telefonunuzda saklanır, bize gönderilmez:
 • Seçtiğiniz konum (il/ilçe adı ve koordinatlar) ve vakit ince ayarları
 • Ezan ve hatırlatma ayarları, ses seçimleri, dil, tema ve yazı boyutu tercihleri
 • Namaz takibi kayıtları, özel gün (hayız/nifas) işaretleri ve seri hedefleri, Ramazan orucu kayıtları, kaza namazı ve oruç sayıları, zikir sayaçları, Kur'an'da kaldığınız yer ve yer imi, hatim planı ve okunan sayfalar, zekât hesapları
 Namaz vakitleri ve kıble yönü telefonunuzda, internet bağlantısı olmadan hesaplanır.
-Namaz, oruç, hatim ve özel gün kayıtları gibi dinî inançlarınızla ilgili bilgiler birçok yasada (KVKK, GDPR) özel nitelikli/hassas veri sayılır. Bu kayıtlar yalnızca sizin girdiğiniz anda ve yalnızca telefonunuzda tutulur; bize, Quran Foundation'a veya başka bir hizmete gönderilmez, reklam profili oluşturmak ya da yapay zekâ eğitmek için kullanılmaz.
+Namaz, oruç, hatim ve özel gün kayıtları gibi dinî inançlarınızla ilgili bilgiler birçok yasada (KVKK, GDPR) özel nitelikli/hassas veri sayılır. Bu kayıtlar yalnızca sizin girdiğiniz anda ve yalnızca telefonunuzda tutulur; bize veya başka bir hizmete gönderilmez, reklam profili oluşturmak ya da yapay zekâ eğitmek için kullanılmaz.
 Ayarlar > Yedekleme > "Verileri Yedekle" bu bilgileri (konumunuz dahil) tek bir dosyaya yazar ve dosyayı yalnızca sizin seçtiğiniz uygulamayla (ör. Google Drive, e-posta) paylaşır; dosya bize ya da başka bir yere kendiliğinden gönderilmez. Yedek dosyası konumunuzu ve namaz kayıtlarınızı içerdiğinden onu güvendiğiniz bir yerde saklayın. "Yedeği Geri Yükle" seçtiğiniz dosyayı yalnızca telefonunuzda okur. İzin durumları gibi cihaza özgü bilgiler ve reklam tercihleriniz yedeğe girmez.
 
 2. Konum
@@ -24,7 +22,6 @@ Konum izni vermeden şehrinizi elle seçebilirsiniz.
 
 3. İçerik servisleri
 Günün ayeti ve Kur'an okuyucudaki ayet ve mealler (alquran.cloud), günün hadisi (hadeethenc.com), zekât ekranındaki altın/döviz kurları (CollectAPI) ve fitre/fidye ekranındaki Diyanet tutarı (uygulamanın GitHub Pages sayfası, mahir2772.github.io) bu servislerden indirilir. Bu isteklerde kişisel veri gönderilmez; her internet isteğinde olduğu gibi servisler IP adresinizi görebilir.
-Kur'an dinleme: Kur'an okuyucuyu açtığınızda kârî listesi (dinlemenin kullanılabilir olup olmadığını anlamak için, uygulama açık kaldığı sürece bir kez), "Dinle"ye dokunduğunuzda surenin ses adresi, Cloudflare Workers üzerinde çalışan ara sunucumuzdan alınır; ara sunucu bunları Quran Foundation Content API'sinden getirir. Ses, Quran Foundation'ın ses sunucusundan (quranicaudio.com) akışla çalınır ve telefonunuza kaydedilmez. Bu isteklerde yalnızca sure numarası, kârî numarası ve arayüz diliniz gönderilir; IP adresinizi Cloudflare ve Quran Foundation görebilir. Ara sunucumuz kişisel veri ya da istek kaydı tutmaz (Cloudflare'in kendi güvenlik ve işletim kayıtları dışında). Seçtiğiniz kârî yalnızca telefonunuzda saklanır. Cloudflare gizlilik politikası: https://www.cloudflare.com/privacypolicy/ · Quran Foundation ses sunucusu (quranicaudio.com) gizlilik politikası: https://quranicaudio.com/privacy
 
 4. Analiz ve hata raporları (Google Firebase)
 Uygulamayı geliştirmek için Google Firebase hizmetleri kullanılır:
@@ -46,14 +43,13 @@ Google'ın verileri nasıl kullandığı: https://policies.google.com/technologi
 • Bildirimler: ezan ve hatırlatma bildirimleri
 • Alarmlar ve hatırlatıcılar: ezanın tam vaktinde çalması
 • Telefon açılınca başlatma: alarmların ve (Ayarlar'dan açarsanız) vakte kalan süreyi gösteren kalıcı bildirimin yeniden kurulması
-• Ön plan hizmeti (medya oynatma): yalnızca Kur'an dinlerken; ekran kapalıyken de çalması ve kilit ekranındaki oynat/duraklat kontrolleri
-• İnternet: içerikler, Kur'an sesi, reklamlar ve hata raporları
+• İnternet: içerikler, reklamlar ve hata raporları
 
 7. Paylaşım ve yurt dışına aktarım
-Verilerinizi satmayız, reklam profili oluşturmak için kullanmayız. Hizmet sağlayıcılarımız (Google Firebase ve AdMob, Cloudflare, Quran Foundation) verileri Türkiye dışındaki sunucularda işleyebilir. Bu sağlayıcıların sözleşme koşulları verileri korumalarını gerektirir; uluslararası aktarımlarda AB Standart Sözleşme Maddeleri (SCC) veya eşdeğer güvenceler kullanılır. Hizmet sağlayıcılarının Kur'an metnini ve İslami içeriği kötüye kullanmaları yasaktır.
+Verilerinizi satmayız, reklam profili oluşturmak için kullanmayız. Hizmet sağlayıcılarımız (Google Firebase ve AdMob) verileri Türkiye dışındaki sunucularda işleyebilir. Bu sağlayıcıların sözleşme koşulları verileri korumalarını gerektirir; uluslararası aktarımlarda AB Standart Sözleşme Maddeleri (SCC) veya eşdeğer güvenceler kullanılır.
 
 8. Güvenlik
-Uygulamanın tüm bağlantıları şifrelidir (TLS/HTTPS). Kişisel kayıtlar yalnızca telefonunuzda, Android'in uygulamaya özel korumalı alanında tutulur. Quran Foundation erişim anahtarı uygulamada değil, ara sunucuda şifreli gizli değişken olarak saklanır, yalnızca geliştirici erişebilir ve en az altı ayda bir yenilenir. Bir güvenlik olayından şüphelenildiğinde 24 saat içinde müdahale edilir ve Quran Foundation'a bildirilir. Güvenlik uygulamalarımız Quran Foundation geliştirici şartlarının güvenlik kurallarıyla (Security Rule 6.9) uyumludur.
+Uygulamanın tüm bağlantıları şifrelidir (TLS/HTTPS). Kişisel kayıtlar yalnızca telefonunuzda, Android'in uygulamaya özel korumalı alanında tutulur. Bir güvenlik olayından şüphelenildiğinde gecikmeden müdahale edilir.
 
 9. Saklama ve silme
 Telefonunuzdaki verileri Ayarlar > Uygulamalar > Vaktinde > Depolama > "Verileri temizle" ile ya da Uygulamayı kaldırarak silebilirsiniz. Oluşturduğunuz yedek dosyaları bu yolla silinmez; onları kaydettiğiniz yerden kendiniz silebilirsiniz. Google hizmetlerindeki kayıtlar yukarıdaki sürelerin sonunda silinir; silinmesini istediğiniz veriler için bize e-posta gönderebilirsiniz.
@@ -62,11 +58,10 @@ Telefonunuzdaki verileri Ayarlar > Uygulamalar > Vaktinde > Depolama > "Verileri
 Uygulama genel kitleye yöneliktir; 13 yaşından küçük çocuklardan bilerek kişisel veri toplamayız. Çocuğunuza ait bilgilerin toplandığını düşünüyorsanız bize yazın.
 
 11. Haklarınız
-6698 sayılı Kişisel Verilerin Korunması Kanunu'nun 11. maddesi ve AB Genel Veri Koruma Tüzüğü (GDPR) kapsamında verilerinize erişme, düzeltilmesini veya silinmesini isteme ve işlenmesine itiraz etme haklarına sahipsiniz. Uygulama hesap ya da Quran Foundation girişi kullanmadığından iptal edilecek bir erişim izni (OAuth) yoktur; telefonunuzdaki verileri 9. maddedeki gibi siz silebilirsiniz. Talepleriniz için aşağıdaki adrese yazabilirsiniz; en geç 30 gün içinde yanıt verilir.
+6698 sayılı Kişisel Verilerin Korunması Kanunu'nun 11. maddesi ve AB Genel Veri Koruma Tüzüğü (GDPR) kapsamında verilerinize erişme, düzeltilmesini veya silinmesini isteme ve işlenmesine itiraz etme haklarına sahipsiniz. Uygulama hesap kullanmadığından iptal edilecek bir erişim izni yoktur; telefonunuzdaki verileri 9. maddedeki gibi siz silebilirsiniz. Talepleriniz için aşağıdaki adrese yazabilirsiniz; en geç 30 gün içinde yanıt verilir.
 
 12. Değişiklikler
 Bu politikayı güncelleyebiliriz; güncel sürüm bu sayfada ve Uygulama içindeki bağlantıda yayımlanır, sayfanın başındaki "Son güncelleme" tarihi değişir. Önemli değişiklikler Uygulama içindeki "Yenilikler" bölümünde duyurulur.
 
 13. İletişim
 E-posta: mmdigitall.dev@gmail.com
-Posta adresi: [Google Play Console'daki geliştirici adresiniz]

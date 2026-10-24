@@ -181,9 +181,8 @@ void main() {
       );
     });
 
-    // Bu dosyada init'i ilk çağıran test (son açılan dokunuş süreç boyu)
-    test('uygulamayı bildirim açtıysa hedef bir kez açılır; motor canlıyken '
-        'yeni etkinliği açan başka dokunuş da açılır', () async {
+    // Süreç başına bir kez okunur: bu dosyada init'i ilk çağıran test
+    test('uygulamayı bildirim açtıysa hedef bir kez okunur', () async {
       launch = {
         'notificationLaunchedApp': true,
         'notificationResponse': {
@@ -198,26 +197,11 @@ void main() {
       expect(launchReads, 1);
       expect(NotificationRoutes.pending.value, 'friday');
 
-      // Sonraki init / öne geliş aynı dokunuşu yeniden açmaz
+      // Sonraki init (başka hizmet nesnesi) aynı bildirimi yeniden açmaz
       NotificationRoutes.pending.value = null;
       await NotificationService().init();
-      await NotificationService().readLaunchRoute();
-      expect(launchReads, 3);
+      expect(launchReads, 1);
       expect(NotificationRoutes.pending.value, isNull);
-
-      // Geri tuşuyla çıkılıp (motor canlı) hatim hatırlatmasına dokunuldu
-      launch = {
-        'notificationLaunchedApp': true,
-        'notificationResponse': {
-          'notificationId': 1103,
-          'actionId': null,
-          'input': null,
-          'payload': 'open|hatim',
-          'notificationResponseType': 0,
-        },
-      };
-      await NotificationService().readLaunchRoute();
-      expect(NotificationRoutes.pending.value, 'hatim');
     });
 
     test('açık uygulamada dokunuş: gövde ve düğme hedefe yazılır, "Kıldım" '
@@ -246,26 +230,6 @@ void main() {
       await platformTap(null, 'open|friday');
       expect(NotificationRoutes.pending.value, 'friday');
       await platformTap(PrayerRefreshService.fridayKehfRoute, 'open|friday');
-      expect(NotificationRoutes.pending.value, 'surah:18');
-
-      // Eklenti dokunuşu etkinliğin niyetine de yazar: öne gelişte yeniden
-      // okununca ikinci kez açılmaz; arka plana geçtikten sonraki aynı
-      // kimlikli dokunuş (ör. haftaya aynı hatırlatma) yine açılır
-      NotificationRoutes.pending.value = null;
-      launch = {
-        'notificationLaunchedApp': true,
-        'notificationResponse': {
-          'notificationId': 2400,
-          'actionId': PrayerRefreshService.fridayKehfRoute,
-          'input': null,
-          'payload': 'open|friday',
-          'notificationResponseType': 1,
-        },
-      };
-      await NotificationService().readLaunchRoute();
-      expect(NotificationRoutes.pending.value, isNull);
-      NotificationService.forgetLaunch();
-      await NotificationService().readLaunchRoute();
       expect(NotificationRoutes.pending.value, 'surah:18');
     });
   });

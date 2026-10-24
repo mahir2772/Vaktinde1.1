@@ -15,11 +15,6 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     
-    <!-- Kur'an dinleme (audio_service): ekran kapalıyken çalma, kilit ekranı kontrolleri.
-         Tek ön plan servisi tipi: mediaPlayback (Play Console FGS beyanı) -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-
     <!-- workmanager eklentisinin eklediği FGS izinleri: uzun süreli worker kullanılmıyor -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" tools:node="remove" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" tools:node="remove" />
@@ -201,27 +196,6 @@
             android:name=".WidgetHealJobService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false" />
-
-        <!-- Kur'an dinleme: medya servisi (standart MediaStyle bildirimi; özel düzen yok) ve
-             kulaklık/kilit ekranı medya tuşları. Medya oturumuna bağlanmak için dışa açık -->
-        <service
-            android:name="com.ryanheise.audioservice.AudioService"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="true"
-            tools:ignore="Instantiatable">
-            <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-        </service>
-
-        <receiver
-            android:name="com.ryanheise.audioservice.MediaButtonReceiver"
-            android:exported="true"
-            tools:ignore="Instantiatable">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-        </receiver>
 
         <!-- WorkManager'ın dataSync tipli ön plan servisi kullanılmıyor (Play FGS beyanı gerekmesin) -->
         <service

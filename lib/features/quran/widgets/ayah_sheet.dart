@@ -23,7 +23,6 @@ Future<void> showAyahSheet(
   required double translationScale,
   required bool bookmarked,
   required Future<bool?> Function() onToggleBookmark,
-  VoidCallback? onListen,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -43,7 +42,6 @@ Future<void> showAyahSheet(
         translationScale: translationScale,
         bookmarked: bookmarked,
         onToggleBookmark: onToggleBookmark,
-        onListen: onListen,
       ),
     ),
   );
@@ -59,9 +57,6 @@ class AyahSheet extends StatefulWidget {
   final bool bookmarked;
   final Future<bool?> Function() onToggleBookmark;
 
-  /// "Bu ayetten dinle" (dinleme açıksa; alt sayfa kapanır)
-  final VoidCallback? onListen;
-
   const AyahSheet({
     super.key,
     required this.surah,
@@ -72,7 +67,6 @@ class AyahSheet extends StatefulWidget {
     required this.translationScale,
     required this.bookmarked,
     required this.onToggleBookmark,
-    this.onListen,
   });
 
   @override
@@ -217,18 +211,6 @@ class _AyahSheetState extends State<AyahSheet> {
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children: [
-              if (widget.onListen case final listen?)
-                FilledButton.tonalIcon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    listen();
-                  },
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size(64, AppSizes.minTouch),
-                  ),
-                  icon: const Icon(Icons.headphones_outlined),
-                  label: Text(loc.quranListenFromAyah),
-                ),
               OutlinedButton.icon(
                 onPressed: _toggleBookmark,
                 icon: Icon(

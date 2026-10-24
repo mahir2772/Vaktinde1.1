@@ -128,13 +128,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'أثناء الأذان يوقف زر «إيقاف» في الإشعار الصوت فورًا.';
 
   @override
-  String get whatsNewListenTitle => 'استمع إلى القرآن';
-
-  @override
-  String get whatsNewListenDesc =>
-      'استمع إلى السورة بصوت القارئ الذي تختاره، مع تمييز الآية التي تُتلى.';
-
-  @override
   String get whatsNewStoriesDesc =>
       'قصص قصيرة عن الأنبياء وسيرة النبي محمد والصحابة وكبار علماء الإسلام.';
 
@@ -1193,9 +1186,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'سياسة الخصوصية';
-
-  @override
-  String get termsOfUse => 'شروط الاستخدام';
 
   @override
   String get endReminderSub =>
@@ -2446,56 +2436,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get quranTextSource => 'النص القرآني: مشروع تنزيل (tanzil.net)';
-
-  @override
-  String get quranListen => 'استماع';
-
-  @override
-  String get quranListenFromAyah => 'استمع من هذه الآية';
-
-  @override
-  String get quranAudioChooseReciter => 'اختر القارئ';
-
-  @override
-  String get quranAudioPlay => 'تشغيل';
-
-  @override
-  String get quranAudioPause => 'إيقاف مؤقت';
-
-  @override
-  String get quranAudioPrevious => 'الآية السابقة';
-
-  @override
-  String get quranAudioNext => 'الآية التالية';
-
-  @override
-  String get quranAudioClose => 'إيقاف الاستماع';
-
-  @override
-  String get quranAudioRepeatOff => 'التكرار: متوقف';
-
-  @override
-  String get quranAudioRepeatAyah => 'التكرار: الآية';
-
-  @override
-  String get quranAudioRepeatSurah => 'التكرار: السورة';
-
-  @override
-  String get quranAudioOffline =>
-      'تعذّر تحميل الصوت. تحقق من اتصالك بالإنترنت.';
-
-  @override
-  String get quranAudioUnavailable => 'الاستماع غير متاح حاليًا. حاول لاحقًا.';
-
-  @override
-  String get quranAudioNotFound =>
-      'لا يوجد تسجيل لهذه السورة بصوت هذا القارئ. اختر قارئًا آخر.';
-
-  @override
-  String get quranAudioSource => 'الصوت: Quran.com (Quran Foundation)';
-
-  @override
-  String get quranAudioChannel => 'الاستماع إلى القرآن';
 
   @override
   String get hatimTitle => 'الختمة';

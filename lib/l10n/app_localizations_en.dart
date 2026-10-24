@@ -130,13 +130,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'While the adhan plays, “Stop” in the notification silences it at once.';
 
   @override
-  String get whatsNewListenTitle => 'Listen to the Quran';
-
-  @override
-  String get whatsNewListenDesc =>
-      'Listen to a surah by the reciter you choose; the ayah being recited is highlighted.';
-
-  @override
   String get whatsNewStoriesDesc =>
       'Short stories of the prophets, the life of Prophet Muhammad, the Companions and great Islamic scholars.';
 
@@ -1178,9 +1171,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Privacy Policy';
-
-  @override
-  String get termsOfUse => 'Terms of Use';
 
   @override
   String get endReminderSub =>
@@ -2422,57 +2412,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quranTextSource => 'Arabic text: Tanzil Project (tanzil.net)';
-
-  @override
-  String get quranListen => 'Listen';
-
-  @override
-  String get quranListenFromAyah => 'Listen from this verse';
-
-  @override
-  String get quranAudioChooseReciter => 'Choose a reciter';
-
-  @override
-  String get quranAudioPlay => 'Play';
-
-  @override
-  String get quranAudioPause => 'Pause';
-
-  @override
-  String get quranAudioPrevious => 'Previous verse';
-
-  @override
-  String get quranAudioNext => 'Next verse';
-
-  @override
-  String get quranAudioClose => 'Stop listening';
-
-  @override
-  String get quranAudioRepeatOff => 'Repeat: off';
-
-  @override
-  String get quranAudioRepeatAyah => 'Repeat: verse';
-
-  @override
-  String get quranAudioRepeatSurah => 'Repeat: surah';
-
-  @override
-  String get quranAudioOffline =>
-      'Audio could not be loaded. Check your internet connection.';
-
-  @override
-  String get quranAudioUnavailable =>
-      'Listening is unavailable right now. Please try again later.';
-
-  @override
-  String get quranAudioNotFound =>
-      'This reciter has no recording of this surah. Choose another reciter.';
-
-  @override
-  String get quranAudioSource => 'Audio: Quran.com (Quran Foundation)';
-
-  @override
-  String get quranAudioChannel => 'Quran listening';
 
   @override
   String get hatimTitle => 'Khatm';

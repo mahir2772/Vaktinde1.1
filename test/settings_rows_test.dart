@@ -440,20 +440,6 @@ void main() {
     expect(url.isEmpty || Uri.parse(url).scheme == 'https', isTrue);
   });
 
-  testWidgets('Kullanım koşulları dış tarayıcıda açılır (https)', (
-    tester,
-  ) async {
-    expect(Uri.parse(AppLinks.termsOfUse).scheme, 'https');
-    await pumpSettings(tester);
-    await open(tester, loc.privacyAdsTitle);
-    await tester.tap(find.text(loc.termsOfUse));
-    await tester.pump();
-    expect(launches.single.arguments['url'], AppLinks.termsOfUse);
-    expect(launches.single.arguments['useWebView'], isFalse);
-    expect(tester.takeException(), isNull);
-    await finish(tester);
-  });
-
   for (final required in [false, true]) {
     testWidgets('Gizlilik ve Reklamlar: UMP gerekli=$required → Ayarlar alt '
         'yazısı ve reklam gizlilik satırı; sayfa reklamsız', (tester) async {

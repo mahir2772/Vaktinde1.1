@@ -9,22 +9,13 @@ import android.view.KeyEvent
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import com.ryanheise.audioservice.AudioServiceFragmentActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-// AudioServiceFragmentActivity (FlutterFragmentActivity: androidx ComponentActivity,
-// enableEdgeToEdge; AppCompat teması gerekmez): Kur'an dinlemesi için Flutter motoru
-// audio_service'in önbelleğinden gelir ve etkinlik kapanınca yaşamaya devam eder (ses
-// arka planda sürer). Bu yüzden bildirimle açılış her öne gelişte okunur
-// (NotificationService.readLaunchRoute).
-class MainActivity : AudioServiceFragmentActivity() {
-    private companion object {
-        // flutter_local_notifications'ın bildirim dokunuşu niyetleri
-        val NOTIFICATION_ACTIONS = setOf("SELECT_NOTIFICATION", "SELECT_FOREGROUND_NOTIFICATION")
-    }
-
+// FlutterFragmentActivity: androidx ComponentActivity (enableEdgeToEdge); AppCompat teması gerekmez
+class MainActivity : FlutterFragmentActivity() {
     // Kıble manyetometre akışı: sensör sadece Dart dinlerken ve ekran görünürken açık
     private var magnetic: MagneticStream? = null
 
@@ -95,10 +86,6 @@ class MainActivity : AudioServiceFragmentActivity() {
         magnetic?.pause()
         // Görünmezken ses tuşları sayılmaz; Dart ön plana dönünce (resumed) yeniden açar
         volumeKeys.reset()
-        // Bildirim dokunuşu niyeti okundu (NotificationService.readLaunchRoute): motor canlı
-        // kaldığından sonraki öne gelişte eski dokunuş yeniden açılmasın
-        val action = intent?.action
-        if (action != null && action in NOTIFICATION_ACTIONS) intent = Intent(this, MainActivity::class.java)
         super.onStop()
     }
 

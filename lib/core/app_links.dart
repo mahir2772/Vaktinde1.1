@@ -6,10 +6,6 @@ class AppLinks {
   static const String privacyPolicy =
       'https://sites.google.com/view/vaktinde-privacy/ana-sayfa';
 
-  /// Kullanım koşulları (GitHub Pages: docs/site/terms.html, Türkçe +
-  /// İngilizce); Quran Foundation API şartı
-  static const String termsOfUse = 'https://mahir2772.github.io/terms.html';
-
   /// Play Store sayfası
   static const String playStore =
       'https://play.google.com/store/apps/details?id=com.mmdigital.vaktinde';

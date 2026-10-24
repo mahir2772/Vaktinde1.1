@@ -9,7 +9,6 @@ import '../../features/common/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
 import 'hatim.dart';
 import 'hatim_service.dart';
-import 'quran_audio_service.dart';
 import 'quran_service.dart';
 import 'storage_service.dart';
 
@@ -167,7 +166,6 @@ abstract final class BackupService {
     // Kur'an: kaldığın yer ve yazı boyutu (sure önbelleği değil), hatim
     QuranService.bookmarkKey: const _Field(_Kind.text),
     QuranService.fontScaleKey: const _Field(_Kind.decimal, _isFinite),
-    QuranAudioService.reciterKey: const _Field(_Kind.integer, _isPositive),
     HatimService.planKey: const _Field(_Kind.text, _isHatimPlan),
     HatimService.countKey: const _Field(_Kind.integer, _isNonNegative),
     HatimService.reminderKey: const _Field(_Kind.boolean),

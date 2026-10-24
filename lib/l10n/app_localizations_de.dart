@@ -132,13 +132,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Während der Adhan läuft, beendet „Stoppen“ in der Benachrichtigung den Ton sofort.';
 
   @override
-  String get whatsNewListenTitle => 'Den Koran anhören';
-
-  @override
-  String get whatsNewListenDesc =>
-      'Hören Sie eine Sure vom Rezitator Ihrer Wahl; der gerade rezitierte Vers wird hervorgehoben.';
-
-  @override
   String get whatsNewStoriesDesc =>
       'Kurze Erzählungen über die Propheten, das Leben des Propheten Muhammad, die Gefährten und große islamische Gelehrte.';
 
@@ -1176,9 +1169,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Datenschutzerklärung';
-
-  @override
-  String get termsOfUse => 'Nutzungsbedingungen';
 
   @override
   String get endReminderSub =>
@@ -2426,57 +2416,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get quranTextSource => 'Arabischer Text: Tanzil-Projekt (tanzil.net)';
-
-  @override
-  String get quranListen => 'Anhören';
-
-  @override
-  String get quranListenFromAyah => 'Ab diesem Vers anhören';
-
-  @override
-  String get quranAudioChooseReciter => 'Rezitator wählen';
-
-  @override
-  String get quranAudioPlay => 'Abspielen';
-
-  @override
-  String get quranAudioPause => 'Pause';
-
-  @override
-  String get quranAudioPrevious => 'Vorheriger Vers';
-
-  @override
-  String get quranAudioNext => 'Nächster Vers';
-
-  @override
-  String get quranAudioClose => 'Wiedergabe beenden';
-
-  @override
-  String get quranAudioRepeatOff => 'Wiederholen: aus';
-
-  @override
-  String get quranAudioRepeatAyah => 'Wiederholen: Vers';
-
-  @override
-  String get quranAudioRepeatSurah => 'Wiederholen: Sure';
-
-  @override
-  String get quranAudioOffline =>
-      'Audio konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung.';
-
-  @override
-  String get quranAudioUnavailable =>
-      'Anhören ist gerade nicht verfügbar. Bitte später erneut versuchen.';
-
-  @override
-  String get quranAudioNotFound =>
-      'Für diese Sure gibt es von diesem Rezitator keine Aufnahme. Wählen Sie einen anderen.';
-
-  @override
-  String get quranAudioSource => 'Audio: Quran.com (Quran Foundation)';
-
-  @override
-  String get quranAudioChannel => 'Koran anhören';
 
   @override
   String get hatimTitle => 'Khatm';

@@ -281,11 +281,10 @@ class NotificationService {
     // gövdeye ya da uygulamayı açan düğmeye dokunuş: uygulama içi yönlendirme
     await _notificationsPlugin.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: _onResponse,
-      onDidReceiveBackgroundNotificationResponse:
-          onNotificationActionBackground,
+      onDidReceiveNotificationResponse: NotificationRoutes.handle,
+      onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground,
     );
-    await readLaunchRoute();
+    await _readLaunchRoute();
   }
 
   static AndroidNotificationAction prayedAction(String label) =>
@@ -635,38 +634,22 @@ class NotificationService {
 
   Future<void> cancel(int id) => _notificationsPlugin.cancel(id);
 
-  // Bu öne gelişte açılan dokunuş (bildirim kimliği, eylem, yük): eklenti
-  // açık uygulamadaki dokunuşu hem işleyiciye verir hem etkinliğin niyetine
-  // yazar; öne gelişte niyet yeniden okununca aynı dokunuş ikinci kez açılmaz.
-  // Arka plana geçince unutulur (MainActivity niyeti de temizler).
-  static (int?, String?, String?)? _launchHandled;
+  // Uygulamayı açan bildirim süreç başına bir kez okunur (etkinliğin niyeti
+  // sonra da aynı kalır; hedef iki kez açılmasın)
+  static bool _launchRouteRead = false;
 
-  static void _onResponse(NotificationResponse response) {
-    _launchHandled = (response.id, response.actionId, response.payload);
-    NotificationRoutes.handle(response);
-  }
-
-  /// Uygulama arka plana geçti: sonraki (aynı kimlikli) dokunuş yeniden açılır
-  static void forgetLaunch() => _launchHandled = null;
-
-  /// Uygulamayı bildirime dokunuş açtıysa hedef (NotificationRoutes)
-  /// bekleyene yazılır; açık uygulamadaki dokunuşlar initialize'daki
-  /// işleyiciye gelir. Açılışta ve uygulama her öne geldiğinde (MainWrapper)
-  /// okunur: Kur'an dinlemesi Flutter motorunu canlı tuttuğundan geri tuşuyla
-  /// çıkıp bildirime dokununca yeni etkinlik eski motora bağlanır ve eklenti
-  /// bu dokunuşu sadece burada bildirir.
-  Future<void> readLaunchRoute() async {
+  // Uygulamayı bildirime dokunuş açtıysa hedef (NotificationRoutes) bekleyene
+  // yazılır; açık uygulamadaki dokunuşlar initialize'daki işleyiciye gelir
+  Future<void> _readLaunchRoute() async {
+    if (_launchRouteRead) return;
+    _launchRouteRead = true;
     try {
       final details = await _notificationsPlugin
           .getNotificationAppLaunchDetails();
       final response = details?.notificationResponse;
-      if (details?.didNotificationLaunchApp != true || response == null) {
-        return;
+      if (details?.didNotificationLaunchApp == true && response != null) {
+        NotificationRoutes.handle(response);
       }
-      final key = (response.id, response.actionId, response.payload);
-      if (key == _launchHandled) return;
-      _launchHandled = key;
-      NotificationRoutes.handle(response);
     } catch (e) {
       // Okunamazsa uygulama ana ekranla açılır
     }

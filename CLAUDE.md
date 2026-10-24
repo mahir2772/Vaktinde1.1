@@ -6,7 +6,7 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 - Flutter (Dart SDK >=3.10), state: `provider` (ChangeNotifier), mimari: feature-based MVVM (gevşek).
 - Dil: tr/en/de/fr/ar — `lib/l10n/*.arb` → `flutter gen-l10n` (`generate: true`), çıktı `lib/l10n/app_localizations*.dart` (elle düzenleme yok).
 - Android-only fiilen (`AdHelper` iOS'ta `UnsupportedError` atar). iOS/macOS klasörleri şablon.
-- Firebase (core + analytics + crashlytics), AdMob (`google_mobile_ads`), home_widget, flutter_local_notifications, adhan_dart, workmanager (arka plan yenileme), just_audio + just_audio_background (Kur'an dinleme). Tek ön plan servisi `mediaPlayback` (sadece dinlerken; kalıcı bildirim için FGS yok, 1.4.0).
+- Firebase (core + analytics + crashlytics), AdMob (`google_mobile_ads`), home_widget, flutter_local_notifications, adhan_dart, workmanager (arka plan yenileme). Ön plan servisi YOK (1.4.0; kalıcı bildirim native NotificationUpdater).
 - Fontlar: pubspec `fonts:` ile gömülü — `Poppins` (400-700, `assets/google_fonts/`, italik yok; ExtraBold/Black boyut için çıkarıldı) ve Arapça metin için `Amiri` (`assets/fonts/amiri/`); OFL lisansları main.dart'ta LicenseRegistry'ye kayıtlı. Tema `google_fonts` kullanmaz.
 
 ## Arayüz (lib/core/ui) — her ekran buradan beslenir
@@ -35,7 +35,7 @@ Flutter ezan vakti uygulaması (Play Store: `com.mmdigital.vaktinde`). Bu dosya 
 QuranView(asTab: true; kendi banner/geri düğmesi yok), QiblaView, ZikirView, ToolsView ("Araçlar"; Kur'an satırı yok). Turda Kur'an adımı var. Sekmeler IndexedStack'te ilk ziyarette kurulur (kıble pusulası/konum açılışta başlamaz). Sekme geçişinde reklam yok. Geçiş reklamı sadece kullanıcının açtığı ekrana geçişte: Araçlar'daki araçlar, ana ekranda "Bugün için" Cuma mesajları/dini günler ve "Bugün" takip satırı. Kur'an (Hatim dahil), Kıble, Zikir, Dualar/Tesbihat, Namaz Hocası, Ayarlar, Bildirim Kontrolü, Yakındaki Camiler reklamsız. Sıklık `AdHelper.canShowInterstitial`: 4 dk soğuma + günde en çok 8 (zekat dahil ortak; 'interstitial_log' ile süreç kapansa da korunur). `HomeViewModel.initializeApp` sadece buradan, tek sefer (`_initRun`). Alt menü etiketleri kısa (`navZikir`) ve tek satır (tema: `overflow: ellipsis`).
 Açılış sırası (`_runStartupFlow`, yükleme bitince bir kez; pencereler üst üste binmez): tur hiç görülmediyse (`tourSeenKey` = 'is_first_launch_showcase_v3', tur BAŞLARKEN yazılır) → ekranda olan hedeflerle tur (`ShowcaseView.get().isTargetRendered`; eksik hedef 5.x'te turu bitirir), izinler turun `onFinish`'inde. Aksi halde → `primePermissionsIfNeeded` ('permissions_primed' yoksa: izinler zaten verilmişse sadece işaretlenir, değilse açıklama + bildirim + konum; tur yarıda kalsa bile Android 13+ bildirim izni sonraki açılışta istenir; elle seçilen şehir GPS ile ezilmez) → `requestBatteryOptimizationOnce`. Sonra bu sürüme güncelleyene bir kez "Yenilikler" (app_guide/whats_new.dart, 'whats_new_seen' = WhatsNew.version; yeni kurulumda tur görülür, liste görüldü sayılır; yeni sürümde liste + version değişir). Akış bitince (tur yolunda da) `StreakReviewPrompt.start()`: `PrayerTrackerService.changes` ile seri 7+'ya çıkınca bir kez `InAppReview.requestReview` ('review_requested'; isAvailable, ön plan, izin/rıza/tur penceresi yokken). SettingsView araçlar ekranındaki karttan açılır ("Bize Puan Ver" = openStoreListing).
 `ToolsView` (gruplu kutucuk ızgarası: Namaz / Bilgi / Hesap + en altta Ayarlar satırı; üst çubukta Ayarlar dişlisi; core/ui `ToolTile`: ortalı başlık, açıklama `hint` = ekran okuyucu ipucu; sütun sayısı en uzun başlık kelimesi bölünmeden, en çok 3; `_ToolGrid` satırları eşit yükseklik) → Imsakiye, PrayerTracker (Takip | Kaza; ayrı Kaza aracı yok), Dualar, Namaz Hocası, Yakındaki Camiler (`tools/nearby_mosques.dart`: `geo:lat,lng?q=<nearbyMosquesQuery>`, olmazsa Google Haritalar web araması; uygulamadan çıkar, reklam yok), ReligiousDays, EsmaulHusna, Kıssalar (reklamlı), FridayMessages, Zakat, Fitre.
-Bildirimden yönlendirme (`core/notification_routes.dart`): 'open|<hedef>' gövde yükünde ya da showsUserInterface düğmesinin kimliğinde (prayed|/stop_ezan|/"Kıldım" değil); NotificationService.init `onDidReceiveNotificationResponse: NotificationRoutes.handle` + uygulamayı açan bildirim (getNotificationAppLaunchDetails) init'te ve MainWrapper'da her resume'da `NotificationService.readLaunchRoute` (motor AudioServiceFragmentActivity ile etkinlikten uzun yaşar; aynı (id, eylem, yük) bir kez) → `NotificationRoutes.pending`; MainWrapper `_openNotificationRoute` açılış akışından sonra, tur/izin/rıza kapalıyken (1 sn'de yeniden dener) switch ile açar: friday → FridayMessagesView, surah:<n> → `openSurahReader` (common/open_surah.dart, trackLastRead: false; Namaz Hocası da), hatim → `openHatimReading`. Geçiş reklamı yok. Yeni hedef = bir case.
+Bildirimden yönlendirme (`core/notification_routes.dart`): 'open|<hedef>' gövde yükünde ya da showsUserInterface düğmesinin kimliğinde (prayed|/stop_ezan|/"Kıldım" değil); NotificationService.init `onDidReceiveNotificationResponse: NotificationRoutes.handle` + uygulamayı açan bildirim süreç başına bir kez (getNotificationAppLaunchDetails) → `NotificationRoutes.pending`; MainWrapper `_openNotificationRoute` açılış akışından sonra, tur/izin/rıza kapalıyken (1 sn'de yeniden dener) switch ile açar: friday → FridayMessagesView, surah:<n> → `openSurahReader` (common/open_surah.dart, trackLastRead: false; Namaz Hocası da), hatim → `openHatimReading`. Geçiş reklamı yok. Yeni hedef = bir case.
 
 ## Klasörler
 ```
@@ -217,8 +217,7 @@ lib/
                                            kalıcı bildirim anahtarları (HomeViewModel.set…)
     settings/view/privacy_ads_view.dart    (banner yok) Gizlilik Politikası (core/app_links.dart AppLinks.privacyPolicy = Google Sites,
                                            harici tarayıcı; SettingsView.privacyPolicyUrl → parametre, boşsa gizli; metnin kaynağı
-                                           docs/gizlilik_politikasi.md), Kullanım Koşulları (AppLinks.termsOfUse = GitHub Pages
-                                           docs/site/terms.html, tr+en; Quran Foundation şartı), Reklamlar Hakkında, Reklam gizlilik ayarları
+                                           docs/gizlilik_politikasi.md), Reklamlar Hakkında, Reklam gizlilik ayarları
                                            (AdConsent.privacyOptionsRequired; Ayarlar satırının alt yazısı o zaman bunu söyler).
                                            Banner'sız liste sayfası alt boşluğa MediaQuery.paddingOf(context).bottom ekler
                                            Play linki tek yer: AppLinks.playStore / playStoreLink(kampanya) (utm_source=app_share)
@@ -276,16 +275,10 @@ lib/
                                            Kur'an sekmesi + okuyucu sonraki sayfanın başından (hatim: true). Okuyucu: görünen ayetin
                                            sayfasından öncekiler bitmiş sayılır, Nâs'ın sonunda 604; kaydırarak ilerleme (sıradayken) her
                                            adımda, atlamada en çok 2 sayfa (uzak atlama sıradan çıkarır, geri dönünce girer)
-    quran/audio/ + data/services/quran_audio_service.dart  Kur'an dinleme (lisanslı: Quran Foundation Content API). Gizli anahtar
-                                           uygulamada YOK: server/quran-audio (Cloudflare Worker; README) anahtarı secret olarak tutar,
-                                           sadece GET /v1/reciters?lang= ve /v1/chapter/<kârî>/<sure> → {url (https), verses [[başlangıç, bitiş] ms]}
-                                           döner (yol doğrulama, IP sınırı, 1 gün önbellek, ENABLED/QF_ENV). Adres derlemede
-                                           `--dart-define=QURAN_AUDIO_API=` (yoksa configured false → hiçbir şey görünmez); okuyucuda "Dinle"
-                                           sadece kârî listesi gelirse (isAvailable). Akış yalnızca dinlerken, kalıcı indirme yok.
-                                           QuranPlayer (tekil; just_audio, JustAudioBackground ilk çalışta init, kanal
-                                           com.mmdigital.vaktinde.quran_audio; ayet izleme, tekrar kapalı/ayet/sure, önceki/sonraki ayet,
-                                           kârî 'quran_reciter' yedekte), QuranPlayerBar (okuyucu altı + sure listesi), ayet alt sayfasında
-                                           "Bu ayetten dinle"; çalan ayet vurgulanır ve izlenir (kullanıcı kaydırınca 8 sn bekler)
+    (Kur'an dinleme ASKIDA, 24.10.2026)    Kod git geçmişinde (23cabfc, b5685ac, 52c06f2, 4eed065 — kaldırma: sonraki commit):
+                                           Quran Foundation Content API + server/quran-audio (Cloudflare Worker, anahtar orada) +
+                                           just_audio_background; tam Kur'an için QF üretim onayı ve Play mediaPlayback FGS beyanı gerekir.
+                                           Talep gelirse geri alınır; uygulamada şu an ses/FGS yok
     data/services/hatim(_service).dart     saf HatimPlan (position = bitirilen son sayfa; günlük hedef = bugünün başında kalan / kalan gün,
                                            en az 1; 60 gün kayıt) + QuranPages (assets/data/quran_pages.json, quran-meta MIT, alquran.cloud
                                            page ile aynı; 4 cüz sayfa ortasında). 'hatim_plan', 'hatim_count', 'hatim_reminder_enabled'/
@@ -354,12 +347,10 @@ lib/
                                            sistem × seçim doğrusal, en çok maxTextScale 2.0 (sistem ≥2.0 ise dokunulmaz). Paylaşım resimleri
                                            ölçeği sıfırlar; widget/bildirim yerel. Test: test/text_scale_test.dart
 android/app/src/main/
-  AndroidManifest.xml   application android:name=".VaktindeApplication"; AdMob APP ID, izinler (FGS sadece FOREGROUND_SERVICE_MEDIA_PLAYBACK), audio_service AudioService (mediaPlayback) +
-                        MediaButtonReceiver, receiver/widget tanımları
+  AndroidManifest.xml   application android:name=".VaktindeApplication"; AdMob APP ID, izinler (FOREGROUND_SERVICE yok), receiver/widget tanımları
                         (showWhenLocked/turnScreenOn YOK: kilit ekranı üstünde açılmaz); widget'lar + NotificationUpdater
                         TIME_SET/TIMEZONE_CHANGED dinler
-  kotlin/com/mmdigital/vaktinde/ — MainActivity: AudioServiceFragmentActivity (motor önbellekte: etkinlik kapanınca dinleme sürer;
-                                   bildirimle açılış resume'da okunur); onCreate'te super'den SONRA enableEdgeToEdge()
+  kotlin/com/mmdigital/vaktinde/ — MainActivity: FlutterFragmentActivity; onCreate'te super'den SONRA enableEdgeToEdge()
                                    (API 30 altı gezinme çubuğu siyah: Flutter eski bayrakları her resume'da sıfırlar).
                                    DeviceChannels.kt: 'vaktinde/device' playSound/stopSound (SoundPreview: res/raw önizleme,
                                    MediaPlayer, geçici ses odağı; assets/sounds'ta sadece click.mp3) + sdkInt + geomagnetic {lat,lng} → {declination doğu+,
@@ -417,7 +408,7 @@ Tüm ID'ler `common/ad_helper.dart` → `AdIds` içinde; `kReleaseMode` ile debu
 
 ## Build / yayın
 - `pubspec.yaml` version `x.y.z+build` → versionCode. Play'e her yüklemede build numarası artmalı.
-- İmza: `android/key.properties` (+ .jks) git'te yok, yerelde olmalı. `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<anahtar> --dart-define=QURAN_AUDIO_API=<https://…workers.dev>` (README; ikisi de yoksa ilgili özellik kapalı, anahtar/sır repoya ve sohbete girmez).
+- İmza: `android/key.properties` (+ .jks) git'te yok, yerelde olmalı. `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<anahtar>` (README; yoksa zekatta canlı kur yok; anahtar repoya ve sohbete girmez).
 - Crashlytics gradle plugin: root `build.gradle.kts` classpath + app `plugins`.
 - R8 (1.1.2+): release'de `isMinifyEnabled = true` (küçültme + optimizasyon + karartma; Play "DEX kodu optimizasyonu",
   son tarih Şub 2027), `proguard-android-optimize.txt` + `android/app/proguard-rules.pro`: `-keep class com.dexterous.** { *; }`

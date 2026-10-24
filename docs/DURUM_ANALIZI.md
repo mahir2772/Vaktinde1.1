@@ -1,4 +1,4 @@
-# Vaktinde — Durum (Play'de 1.3.0+18; 1.4.0+19 bu dalda hazır, yayın bekliyor — 23 Ekim 2026)
+# Vaktinde — Durum (Play'de 1.3.0+18; 1.4.0+19 bu dalda hazır, yayın bekliyor — 24 Ekim 2026)
 
 ## SON DURUM — 1.4.0+19 (23 Ekim 2026)
 - Kod işleri bitti (tek güncelleme: 1.3.1 ve 1.4.0 birleşti). İçerik:
@@ -6,9 +6,10 @@
     yenilemesi güçlendi (alarm saati kipinde ezanla aynı dakika, gecikme Bildirim Kontrolü'nde).
   · Zikirmatik 35 hazır zikir; Dualar 87 (10 kategori, arama); ayrı Hatim ekranı (Okudum, cüz ızgarası, niyet, toplu
     hatim, hatim duası); Kıssalar (49: 25 peygamber, siyer, sahabe, âlimler).
-  · Kur'an dinleme: Quran Foundation Content API (lisanslı), gizli anahtar sadece Cloudflare Worker'da
-    (server/quran-audio), uygulamaya derlemede QURAN_AUDIO_API; tek FGS mediaPlayback. Kullanım Koşulları sayfası
-    (docs/site/terms.html), gizlilik politikası güncel (ses, güvenlik, aktarım; posta adresi yer tutucusu doldurulacak).
+  · Kur'an dinleme ASKIDA (24 Ekim, kullanıcı kararı: QF üretim onayı + Cloudflare + Play mediaPlayback beyanı
+    istenmedi; talep gelirse). Uygulamadan çıkarıldı (ses/FGS yok); kod git geçmişinde ve server/quran-audio'da.
+  · Günün hadisi: arka planda ağ yokken her gün aynı yedek hadis ("Ameller niyetlere göredir") bildirime giriyordu →
+    düzeltildi. Kalıcı bildirimde 6 vakit.
 - DİNÎ İÇERİK: Arapça metinler kaynakla (Tanzil, sunnah.com verisi) harf harf doğrulandı. 23 Ekim: kullanıcı hoca
   bulamadı → Türkçe anlam/not/kıssalar Diyanet İşleri + Diyanet Vakfı mealleri, Kütüb-i Sitte Türkçe çevirileri ve
   TDV İslâm Ansiklopedisi ile karşılaştırıldı (6 bağımsız kontrol, her bulgu kaynağında yeniden doğrulandı); düzeltmeler
@@ -16,22 +17,14 @@
   Hocası zamm-ı sûre vb.). Güncel inceleme PDF'i kullanıcıda; bir din görevlisinin son bakışı yine tavsiye edilir.
 - YAYIN SIRASI (kullanıcı):
   1. (İsteğe bağlı) din görevlisine inceleme PDF'i; gelen düzeltmeler 5 dile işlenir.
-  2. docs/gizlilik_politikasi.md: posta adresini doldur → Google Sites'a yapıştır. docs/site/terms.html + index.html →
-     mahir2772.github.io (GitHub Pages).
-  3. Dinleme: Quran Foundation'da sunucu (backend) uygulaması + üretim erişimi başvurusu; Cloudflare hesabı →
-     server/quran-audio/README.md (wrangler secret put QF_CLIENT_ID / QF_CLIENT_SECRET, deploy). Onaya kadar QF_ENV
-     "prelive" (sadece 1–2. sure) → bu sürede yayın derlemesine QURAN_AUDIO_API EKLENMEZ ve sürüm notlarının ilk
-     satırı silinir (Yenilikler satırı derlemeyle kendiliğinden gizli).
-  4. CollectAPI anahtarını yenile → `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<yeni>
-     [--dart-define=QURAN_AUDIO_API=<adres>]`.
-  5. Play Console > Uygulama içeriği > Ön plan hizmetleri: specialUse beyanını kaldır, mediaPlayback beyan et
-     (kullanıcı başlatır, ses çalarken bildirim; kısa video). Veri güvenliği: yeni toplanan/paylaşılan veri yok (ses
-     isteğinde IP yalnızca iletim için, kaydedilmez); formu birlikte gözden geçir.
-  6. Dahili test, cihazda: dinleme (kilit ekranı/bildirim düğmeleri, kulaklık çıkınca duraklama, tekrar, kârî değiştirme,
-     ayet izleme), kalıcı bildirim (FGS yok: aç/kapat, telefon yeniden başlayınca, güncellemeden sonra), widget'lar,
+  2. docs/gizlilik_politikasi.md → Google Sites'a yapıştır (ses bölümü ve posta adresi satırı çıkarıldı).
+  3. CollectAPI anahtarını yenile → `flutter build appbundle --release --dart-define=COLLECT_API_KEY=<yeni>`.
+  4. Play Console > Uygulama içeriği > Ön plan hizmetleri: specialUse beyanını kaldır (uygulamada artık ön plan hizmeti
+     yok). Veri güvenliği: yeni toplanan/paylaşılan veri yok.
+  5. Dahili test, cihazda: kalıcı bildirim (6 vakit sığıyor mu) (FGS yok: aç/kapat, telefon yeniden başlayınca, güncellemeden sonra), widget'lar,
      bildirime dokunma (uygulamadan geri tuşuyla çıktıktan sonra da), Hatim ekranı, dua arama, kıssalar, zikir listesi,
      yedekle/geri yükle, 1.3.0 üstüne kurulumda Yenilikler.
-  7. Sürüm notları docs/surum_notlari_1.4.0.txt (5 dil, ≤500). Mağaza: kısa açıklama, 5 dilde gizlilik cümlesi, Avrupa
+  6. Sürüm notları docs/surum_notlari_1.4.0.txt (5 dil, ≤500). Mağaza: kısa açıklama, 5 dilde gizlilik cümlesi, Avrupa
      özel girişi, yeni görseller → üretim.
 
 ## 1.3.0 dönemi (17 Ekim 2026)
