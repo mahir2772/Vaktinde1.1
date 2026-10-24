@@ -152,7 +152,9 @@ lib/
       quran_service         sure çekme (alquran.cloud, quran-uthmani + meal), Besmele 1. ayetten ayrılır (1 ve 9 hariç),
                             önbellek SharedPreferences (en çok 10 sure / 400k karakter, LRU; yer imli sure korunur),
                             'quran_bookmark' {surah, ayah}, 'quran_font_scale' 0.8–1.6
-      economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır
+      economy_service       CollectAPI altın/döviz (zekat için) — anahtar `--dart-define=COLLECT_API_KEY`, yoksa canlı kur atlanır.
+                            Zekât tutar alanları AmountInputFormatter (zakat_view.dart): yazarken binlik ayraç (tr/de/fr "100.000,5",
+                            en/ar "100,000.5"), kurlar format() ile; okuma parseAmount (her iki biçim)
       http_client           httpGet(): tüm dış isteklerde 10 sn timeout
       error_reporter        reportNonFatal(): Crashlytics ölümcül olmayan kayıt; Firebase yoksa (WorkManager isolate) başlatmayı dener, fırlatmaz.
                             installCrashlyticsHandlers(): Flutter/Dart hataları ÖLÜMCÜL OLMAYAN kayıt (uygulamayı kapatmayan hata çökme sayılmaz)
@@ -262,7 +264,9 @@ lib/
                                            API'nin `page` alanıyla gerçek mushaf sayfası, ﴿١٢﴾, ayete dokun → alt sayfa: meal, yer imi,
                                            kopyala, resimli paylaş) / Ayet ayet / Meal (ar'da yok). 'quran_last_read' kendiliğinden (QuranService.lastReadChanges → liste hemen yenilenir)
                                            ("Kaldığın yerden devam"), 'quran_bookmark' = Yer imi; Görünüm alt sayfası: A-/A+ Arapça,
-                                           'quran_translation_scale'; Ayete git; önceki/sonraki sure. Önbellek sürüm 2 (page/juz/hizb/
+                                           'quran_translation_scale'; Ayete git; önceki/sonraki sure (düğme ya da reels gibi
+                                           kenardan çekme ≥120 px: sonda yukarı → sonraki baştan, başta aşağı → önceki sonundan;
+                                           sadece kenarda başlayan sürükleme, AlwaysScrollableScrollPhysics). Önbellek sürüm 2 (page/juz/hizb/
                                            sajda); sürüm 1 açılınca 5 sn'de yenilenir, olmazsa ≤10 ayetlik gruplar. widgets/: mushaf_page,
                                            translation_page, quran_page_frame, ayah_sheet, view_settings_sheet… Sonda Tanzil + mütercim notu
     quran/widgets/hatim_card.dart          Hatim kartı (Kur'an listesinin başı, reklamsız): yok → açıklama + "Hatim Başlat"; sürüyor →

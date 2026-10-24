@@ -405,6 +405,66 @@ void main() {
       });
     });
 
+    test('tutar alanı yazarken binlik ayraç koyar; okunan değer aynı', () {
+      String type(AmountInputFormatter f, String keys) {
+        var value = TextEditingValue.empty;
+        for (final key in keys.split('')) {
+          final text = value.text + key;
+          value = f.formatEditUpdate(
+            value,
+            TextEditingValue(
+              text: text,
+              selection: TextSelection.collapsed(offset: text.length),
+            ),
+          );
+        }
+        return value.text;
+      }
+
+      const tr = AmountInputFormatter(decimal: ',');
+      const en = AmountInputFormatter(decimal: '.');
+      final cases = <(AmountInputFormatter, String, String, double)>[
+        (tr, '100000', '100.000', 100000),
+        (tr, '1234567', '1.234.567', 1234567),
+        (tr, '2500,5', '2.500,5', 2500.5),
+        (tr, '2500.5', '2.500,5', 2500.5), // klavyede sadece nokta
+        (tr, '0012', '12', 12),
+        (tr, ',5', '0,5', 0.5),
+        (tr, '12,5,6', '12,56', 12.56),
+        (en, '100000', '100,000', 100000),
+        (en, '2500.75', '2,500.75', 2500.75),
+        (en, '999', '999', 999),
+      ];
+      for (final (f, keys, text, number) in cases) {
+        final typed = type(f, keys);
+        expect(typed, text, reason: keys);
+        expect(parseAmount(typed), closeTo(number, 1e-9), reason: keys);
+      }
+      expect(tr.format(1), '1,00');
+      expect(tr.format(2500.5), '2.500,50');
+      expect(en.format(1234567.891), '1,234,567.89');
+      for (final f in [tr, en]) {
+        expect(parseAmount(f.format(2500.5)), 2500.5);
+      }
+      // Silince boşalır; ortadan silmede imleç rakamın yerinde kalır
+      expect(
+        tr.formatEditUpdate(
+          const TextEditingValue(text: '5'),
+          const TextEditingValue(text: ''),
+        ),
+        TextEditingValue.empty,
+      );
+      final edited = tr.formatEditUpdate(
+        const TextEditingValue(text: '100.000'),
+        const TextEditingValue(
+          text: '10.000',
+          selection: TextSelection.collapsed(offset: 1),
+        ),
+      );
+      expect(edited.text, '10.000');
+      expect(edited.selection.baseOffset, 1);
+    });
+
     for (final lang in ['tr', 'en', 'de', 'fr', 'ar']) {
       testWidgets('$lang: tüm bölümler açılır, varsayılan seçimler geçerli', (
         tester,

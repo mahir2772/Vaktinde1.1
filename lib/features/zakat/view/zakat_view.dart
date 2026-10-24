@@ -46,6 +46,85 @@ double parseAmount(String text) {
   return (value == null || value.isNaN || value.isInfinite) ? 0 : value;
 }
 
+/// Tutar alanı: yazarken tam kısım binlik ayraçla gruplanır ("100.000,5";
+/// en/ar "100,000.5"). Ondalık ayraç [decimal]; klavyede sadece öbürü varsa
+/// sona yazılan ayraç da ondalık sayılır. Çıktı [parseAmount] ile okunur.
+class AmountInputFormatter extends TextInputFormatter {
+  final String decimal;
+
+  const AmountInputFormatter({required this.decimal});
+
+  /// Dile göre ondalık ayraç: en/ar nokta, diğerleri virgül
+  factory AmountInputFormatter.of(BuildContext context) {
+    final lang = Localizations.maybeLocaleOf(context)?.languageCode;
+    return AmountInputFormatter(
+      decimal: lang == 'en' || lang == 'ar' ? '.' : ',',
+    );
+  }
+
+  String get _group => decimal == ',' ? '.' : ',';
+
+  /// Uygulamanın yazdığı tutar (kur, fiyat): 2 ondalık, gruplu
+  String format(double value) {
+    final fixed = value.toStringAsFixed(2).split('.');
+    return '${_grouped(fixed[0])}$decimal${fixed[1]}';
+  }
+
+  String _grouped(String digits) {
+    final out = StringBuffer();
+    for (var i = 0; i < digits.length; i++) {
+      if (i > 0 && (digits.length - i) % 3 == 0) out.write(_group);
+      out.write(digits[i]);
+    }
+    return out.toString();
+  }
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final raw = newValue.text.replaceAll(RegExp(r'[^0-9.,]'), '');
+    if (raw.isEmpty) return const TextEditingValue();
+    var at = raw.indexOf(decimal);
+    // Gruplamayı biz yaptığımızdan sona yeni yazılan ayraç ondalıktır
+    if (at < 0 &&
+        raw.length > oldValue.text.length &&
+        (raw.endsWith('.') || raw.endsWith(','))) {
+      at = raw.length - 1;
+    }
+    final digitsOnly = RegExp(r'[^0-9]');
+    var whole = (at < 0 ? raw : raw.substring(0, at)).replaceAll(
+      digitsOnly,
+      '',
+    );
+    whole = whole.replaceFirst(RegExp(r'^0+(?=\d)'), '');
+    if (whole.isEmpty && at >= 0) whole = '0';
+    final text = at < 0
+        ? _grouped(whole)
+        : '${_grouped(whole)}$decimal${raw.substring(at + 1).replaceAll(digitsOnly, '')}';
+    // İmleç: önündeki rakam sayısı korunur (sondaysa sonda kalır)
+    final cursor = newValue.selection.end.clamp(0, newValue.text.length);
+    var offset = text.length;
+    if (cursor < newValue.text.length) {
+      final before = newValue.text
+          .substring(0, cursor)
+          .replaceAll(digitsOnly, '')
+          .length;
+      var seen = 0;
+      offset = 0;
+      while (offset < text.length && seen < before) {
+        if (RegExp(r'\d').hasMatch(text[offset])) seen++;
+        offset++;
+      }
+    }
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: offset),
+    );
+  }
+}
+
 // Servis/hesap anahtarları (ekranda yerelleştirilmiş adları gösterilir)
 const String _tryKey = 'Türk Lirası (TRY)';
 const String _manualKey = 'Diğer (Manuel)';
@@ -225,11 +304,7 @@ class _ZakatViewState extends State<ZakatView> {
         _selectedReceivableAssetType,
         keepManual: true,
       );
-      _applyRate(
-        _debtRateController,
-        _selectedDebtAssetType,
-        keepManual: true,
-      );
+      _applyRate(_debtRateController, _selectedDebtAssetType, keepManual: true);
     });
   }
 
@@ -242,13 +317,14 @@ class _ZakatViewState extends State<ZakatView> {
     String key, {
     bool keepManual = false,
   }) {
+    final amount = AmountInputFormatter.of(context);
     if (key == _tryKey) {
-      controller.text = "1.00";
+      controller.text = amount.format(1);
       return;
     }
     final live = _liveRates[key];
     if (live != null) {
-      controller.text = live.toStringAsFixed(2);
+      controller.text = amount.format(live);
       return;
     }
     // Canlı fiyat yok: 24 ayar için nisab alanına girilen fiyat kullanılır
@@ -724,10 +800,7 @@ class _ZakatViewState extends State<ZakatView> {
     }
     if (_hasLiveGold) {
       return [
-        InfoBanner(
-          tone: InfoTone.success,
-          message: loc.liveRatesInfo,
-        ),
+        InfoBanner(tone: InfoTone.success, message: loc.liveRatesInfo),
         const SizedBox(height: AppSpacing.md),
       ];
     }
@@ -740,7 +813,7 @@ class _ZakatViewState extends State<ZakatView> {
         child: TextField(
           controller: _nisabGoldPriceController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [_amountFormatter],
+          inputFormatters: [AmountInputFormatter.of(context)],
           onChanged: _onNisabGoldPriceChanged,
           decoration: InputDecoration(
             labelText: loc.zakatGoldGramPrice,
@@ -865,9 +938,6 @@ class _ZakatViewState extends State<ZakatView> {
 
   // --- Form parçaları ---
 
-  static final TextInputFormatter _amountFormatter =
-      FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'));
-
   Widget _amountField(
     TextEditingController controller,
     String label, {
@@ -878,7 +948,7 @@ class _ZakatViewState extends State<ZakatView> {
       controller: controller,
       readOnly: readOnly,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [_amountFormatter],
+      inputFormatters: [AmountInputFormatter.of(context)],
       decoration: InputDecoration(labelText: label, suffixText: suffix),
     );
   }
@@ -891,7 +961,11 @@ class _ZakatViewState extends State<ZakatView> {
         if (constraints.maxWidth < 300 * scale) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [first, const SizedBox(height: AppSpacing.md), second],
+            children: [
+              first,
+              const SizedBox(height: AppSpacing.md),
+              second,
+            ],
           );
         }
         return Row(
