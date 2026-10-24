@@ -54,7 +54,7 @@ Vaktinde ile namaz vakitleri her zaman cebinizde: Diyanet yöntemiyle telefonunu
 • Namaz Hocası: abdest, farzlar, rekâtlar ve namazın kılınışı adım adım
 • Dualar: 10 başlıkta 87 dua; Arapça metni, okunuşu, anlamı ve kaynağıyla, arama
 • Namaz sonrası tesbihat sayacı
-• Zikirmatik: anlamıyla 35 hazır zikir, hedef, günlük sayı, ses tuşlarıyla sayma
+• Zikirmatik: anlamlarıyla 35 hazır zikir, hedef, günlük sayı, ses tuşlarıyla sayma
 
 🌙 RAMAZAN, CUMA VE DİNİ GÜNLER
 • Aylık ve Ramazan imsakiyesi, resim olarak paylaşma
