@@ -1087,7 +1087,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get persistentNotifSub =>
-      'يعرض في شريط الإشعارات الوقت المتبقي حتى الصلاة القادمة.';
+      'يعرض في شريط الإشعارات الوقت المتبقي حتى الصلاة القادمة ومواقيت اليوم.';
 
   @override
   String get dailyContentNotifSub => 'يرسل آية كل صباح وحديثًا كل مساء.';

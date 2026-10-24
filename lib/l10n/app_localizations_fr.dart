@@ -1085,7 +1085,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get persistentNotifSub =>
-      'Affiche dans la barre de notifications le temps restant avant la prochaine prière.';
+      'Affiche dans la barre de notifications le temps restant avant la prochaine prière et les horaires du jour.';
 
   @override
   String get dailyContentNotifSub =>

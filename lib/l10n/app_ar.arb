@@ -552,7 +552,7 @@
     "endReminderTitle": "التذكير قبل خروج الوقت",
     "dailyContentNotifTitle": "إشعارات آية اليوم وحديث اليوم",
     "persistentNotifTitle": "إشعار دائم",
-    "persistentNotifSub": "يعرض في شريط الإشعارات الوقت المتبقي حتى الصلاة القادمة.",
+    "persistentNotifSub": "يعرض في شريط الإشعارات الوقت المتبقي حتى الصلاة القادمة ومواقيت اليوم.",
     "dailyContentNotifSub": "يرسل آية كل صباح وحديثًا كل مساء.",
     "religiousDaysNotifTitle": "إشعارات المناسبات الدينية والليالي المباركة",
     "religiousDaysNotifSub": "يذكّرك صباحًا بالليالي المباركة والأعياد وسائر المناسبات الدينية.",

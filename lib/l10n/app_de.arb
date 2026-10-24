@@ -552,7 +552,7 @@
     "endReminderTitle": "Vor Ende der Gebetszeit erinnern",
     "dailyContentNotifTitle": "Benachrichtigungen für Vers und Hadith des Tages",
     "persistentNotifTitle": "Dauerhafte Benachrichtigung",
-    "persistentNotifSub": "Zeigt in der Benachrichtigungsleiste die verbleibende Zeit bis zum nächsten Gebet.",
+    "persistentNotifSub": "Zeigt in der Benachrichtigungsleiste die verbleibende Zeit bis zum nächsten Gebet und die heutigen Gebetszeiten.",
     "dailyContentNotifSub": "Sendet jeden Morgen einen Vers und jeden Abend einen Hadith.",
     "religiousDaysNotifTitle": "Benachrichtigungen für religiöse Tage",
     "religiousDaysNotifSub": "Erinnert morgens an gesegnete Nächte, Feste und andere religiöse Tage.",

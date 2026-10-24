@@ -1068,7 +1068,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get persistentNotifSub =>
-      'Zeigt in der Benachrichtigungsleiste die verbleibende Zeit bis zum nächsten Gebet.';
+      'Zeigt in der Benachrichtigungsleiste die verbleibende Zeit bis zum nächsten Gebet und die heutigen Gebetszeiten.';
 
   @override
   String get dailyContentNotifSub =>

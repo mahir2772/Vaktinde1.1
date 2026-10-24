@@ -3,33 +3,38 @@
 • 87 dua, 10 başlıkta; Arapçası, okunuşu, anlamı ve kaynağıyla
 • Kıssalar: peygamberler, Peygamberimizin hayatı, sahabe ve âlimler
 • Zikirmatik'te 35 hazır zikir
-• Kalıcı bildirim ve widget'lar daha güvenilir; hata düzeltmeleri
+• Kalıcı bildirimde günün tüm vakitleri; Kur'an'da kaydırarak sonraki sure
+• Widget'lar daha güvenilir, zekâtta binlik ayraç; hata düzeltmeleri
 </tr-TR>
 <en-US>
 • New Khatm screen: "I've read it" with one tap, juz progress, group khatm
 • 87 duas in 10 categories with Arabic, transliteration, meaning and source
 • Stories of the prophets, the Prophet's life, the Companions and scholars
 • 35 ready-made dhikr in the Dhikr Counter
-• More reliable persistent notification and widgets; bug fixes
+• Persistent notification shows all of today's prayer times; swipe to the next surah
+• More reliable widgets, thousand separators in Zakat; bug fixes
 </en-US>
 <de-DE>
 • Neuer Khatm-Bildschirm: „Gelesen“ mit einem Tippen, Juz-Fortschritt, Gruppen-Khatm
 • 87 Bittgebete in 10 Kategorien mit Arabisch, Umschrift, Bedeutung und Quelle
 • Geschichten der Propheten, das Leben des Propheten, Gefährten und Gelehrte
 • 35 fertige Dhikr im Dhikr-Zähler
-• Zuverlässigere Daueranzeige und Widgets; Fehlerbehebungen
+• Dauerhafte Benachrichtigung mit allen heutigen Gebetszeiten; zur nächsten Sure wischen
+• Zuverlässigere Widgets, Tausendertrennzeichen bei Zakat; Fehlerbehebungen
 </de-DE>
 <fr-FR>
 • Nouvel écran Khatm : « C'est lu » d'un geste, progression par juz, khatm en groupe
 • 87 invocations en 10 catégories : arabe, translittération, sens et source
 • Récits des prophètes, vie du Prophète, Compagnons et savants
 • 35 dhikr prêts à l'emploi dans le compteur
-• Notification permanente et widgets plus fiables ; corrections
+• Notification permanente avec tous les horaires du jour ; balayez vers la sourate suivante
+• Widgets plus fiables, séparateur des milliers pour la zakat ; corrections
 </fr-FR>
 <ar>
 • شاشة جديدة للختمة: «قرأتُه» بلمسة واحدة، والتقدم بالأجزاء، والختمة الجماعية
 • 87 دعاءً في 10 أقسام مع النص العربي والمعنى والمصدر
 • قصص الأنبياء وسيرة النبي والصحابة والعلماء
 • 35 ذكرًا جاهزًا في عدّاد الأذكار
-• إشعار دائم وأدوات أكثر موثوقية، وإصلاحات
+• الإشعار الدائم يعرض مواقيت اليوم كلها، والانتقال إلى السورة التالية بالسحب
+• أدوات أكثر موثوقية وفواصل الآلاف في الزكاة، وإصلاحات
 </ar>

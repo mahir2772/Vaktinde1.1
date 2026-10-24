@@ -1859,7 +1859,7 @@ abstract class AppLocalizations {
   /// No description provided for @persistentNotifSub.
   ///
   /// In tr, this message translates to:
-  /// **'Bildirim çubuğunda sıradaki vakte kalan süreyi gösterir.'**
+  /// **'Bildirim çubuğunda sıradaki vakte kalan süreyi ve günün vakitlerini gösterir.'**
   String get persistentNotifSub;
 
   /// No description provided for @dailyContentNotifSub.

@@ -9,7 +9,7 @@
   · Kur'an dinleme ASKIDA (24 Ekim, kullanıcı kararı: QF üretim onayı + Cloudflare + Play mediaPlayback beyanı
     istenmedi; talep gelirse). Uygulamadan çıkarıldı (ses/FGS yok); kod git geçmişinde ve server/quran-audio'da.
   · Günün hadisi: arka planda ağ yokken her gün aynı yedek hadis ("Ameller niyetlere göredir") bildirime giriyordu →
-    düzeltildi. Kalıcı bildirimde 6 vakit.
+    düzeltildi. Kalıcı bildirimde 6 vakit. Kur'an okuyucuda kaydırarak sonraki/önceki sure; zekâtta binlik ayraç.
 - DİNÎ İÇERİK: Arapça metinler kaynakla (Tanzil, sunnah.com verisi) harf harf doğrulandı. 23 Ekim: kullanıcı hoca
   bulamadı → Türkçe anlam/not/kıssalar Diyanet İşleri + Diyanet Vakfı mealleri, Kütüb-i Sitte Türkçe çevirileri ve
   TDV İslâm Ansiklopedisi ile karşılaştırıldı (6 bağımsız kontrol, her bulgu kaynağında yeniden doğrulandı); düzeltmeler
@@ -24,8 +24,9 @@
   5. Dahili test, cihazda: kalıcı bildirim (6 vakit sığıyor mu) (FGS yok: aç/kapat, telefon yeniden başlayınca, güncellemeden sonra), widget'lar,
      bildirime dokunma (uygulamadan geri tuşuyla çıktıktan sonra da), Hatim ekranı, dua arama, kıssalar, zikir listesi,
      yedekle/geri yükle, 1.3.0 üstüne kurulumda Yenilikler.
-  6. Sürüm notları docs/surum_notlari_1.4.0.txt (5 dil, ≤500). Mağaza: kısa açıklama, 5 dilde gizlilik cümlesi, Avrupa
-     özel girişi, yeni görseller → üretim.
+  6. ✅ Sürüm notları docs/surum_notlari_1.4.0.txt (5 dil, ≤500) ve mağaza metni docs/magaza_girisi.md (24 Ekim: tr kısa
+     açıklama, Hatim/kaydırma/87 dua/35 zikir/Kıssalar/kalıcı bildirim satırları, 5 dilde kayıtların telefonda kaldığı
+     cümlesi; fr 3992/4000). Play'e: ana giriş + çeviriler + Avrupa özel girişinin tam açıklaması; görseller isteğe bağlı → üretim.
 
 ## 1.3.0 dönemi (17 Ekim 2026)
 - Kod işleri bitti; dal `claude/vaktinde-app-analysis-bocjca` = 1.3.0 adayı (pubspec hâlâ 1.2.0+17). Tüm testler geçiyor

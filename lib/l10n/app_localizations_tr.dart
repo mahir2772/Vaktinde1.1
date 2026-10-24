@@ -1050,7 +1050,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get persistentNotifSub =>
-      'Bildirim çubuğunda sıradaki vakte kalan süreyi gösterir.';
+      'Bildirim çubuğunda sıradaki vakte kalan süreyi ve günün vakitlerini gösterir.';
 
   @override
   String get dailyContentNotifSub =>

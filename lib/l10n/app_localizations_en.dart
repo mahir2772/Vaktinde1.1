@@ -1070,7 +1070,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get persistentNotifSub =>
-      'Shows the time left until the next prayer in the notification bar.';
+      'Shows the time left until the next prayer and today\'s prayer times in the notification bar.';
 
   @override
   String get dailyContentNotifSub =>

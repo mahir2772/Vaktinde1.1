@@ -552,7 +552,7 @@
     "endReminderTitle": "Remind Before Prayer Time Ends",
     "dailyContentNotifTitle": "Daily Ayah & Hadith Notifications",
     "persistentNotifTitle": "Persistent Notification",
-    "persistentNotifSub": "Shows the time left until the next prayer in the notification bar.",
+    "persistentNotifSub": "Shows the time left until the next prayer and today's prayer times in the notification bar.",
     "dailyContentNotifSub": "Sends an ayah every morning and a hadith every evening.",
     "religiousDaysNotifTitle": "Religious Day & Holy Night Notifications",
     "religiousDaysNotifSub": "Sends a morning reminder for holy nights, Eids and other religious days.",

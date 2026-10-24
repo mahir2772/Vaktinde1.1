@@ -552,7 +552,7 @@
     "endReminderTitle": "Rappel avant la fin du temps de prière",
     "dailyContentNotifTitle": "Notifications du verset et du hadith du jour",
     "persistentNotifTitle": "Notification permanente",
-    "persistentNotifSub": "Affiche dans la barre de notifications le temps restant avant la prochaine prière.",
+    "persistentNotifSub": "Affiche dans la barre de notifications le temps restant avant la prochaine prière et les horaires du jour.",
     "dailyContentNotifSub": "Envoie un verset chaque matin et un hadith chaque soir.",
     "religiousDaysNotifTitle": "Notifications des jours religieux et des nuits bénies",
     "religiousDaysNotifSub": "Vous rappelle le matin même les nuits bénies, les fêtes et les autres jours religieux.",
