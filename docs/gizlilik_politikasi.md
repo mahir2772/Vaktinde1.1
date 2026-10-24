@@ -4,13 +4,14 @@ Son güncelleme: Ekim 2026
 Bu politika, Vaktinde uygulamasının ("Uygulama") hangi verileri hangi amaçla kullandığını, kimlerle paylaştığını ve haklarınızı açıklar. Uygulama üyelik istemez; adınız, e-posta adresiniz veya telefon numaranız gibi bilgileri toplamaz.
 
 1. Telefonunuzda kalan bilgiler
-Aşağıdaki bilgiler yalnızca telefonunuzda saklanır, bize gönderilmez:
+Aşağıdaki bilgiler telefonunuzda saklanır, bize gönderilmez:
 • Seçtiğiniz konum (il/ilçe adı ve koordinatlar) ve vakit ince ayarları
 • Ezan ve hatırlatma ayarları, ses seçimleri, dil, tema ve yazı boyutu tercihleri
 • Namaz takibi kayıtları, özel gün (hayız/nifas) işaretleri ve seri hedefleri, Ramazan orucu kayıtları, kaza namazı ve oruç sayıları, zikir sayaçları, Kur'an'da kaldığınız yer ve yer imi, hatim planı ve okunan sayfalar, zekât hesapları
 Namaz vakitleri ve kıble yönü telefonunuzda, internet bağlantısı olmadan hesaplanır.
-Namaz, oruç, hatim ve özel gün kayıtları gibi dinî inançlarınızla ilgili bilgiler birçok yasada (KVKK, GDPR) özel nitelikli/hassas veri sayılır. Bu kayıtlar yalnızca sizin girdiğiniz anda ve yalnızca telefonunuzda tutulur; bize veya başka bir hizmete gönderilmez, reklam profili oluşturmak ya da yapay zekâ eğitmek için kullanılmaz.
+Namaz, oruç, hatim ve özel gün kayıtları gibi dinî inançlarınızla ilgili bilgiler birçok yasada (KVKK, GDPR) özel nitelikli/hassas veri sayılır. Bu kayıtlar sizin girdiğiniz anda telefonunuzda tutulur; Uygulama bunları bize ya da başka bir hizmete göndermez, reklam profili oluşturmak veya yapay zekâ eğitmek için kullanmaz.
 Ayarlar > Yedekleme > "Verileri Yedekle" bu bilgileri (konumunuz dahil) tek bir dosyaya yazar ve dosyayı yalnızca sizin seçtiğiniz uygulamayla (ör. Google Drive, e-posta) paylaşır; dosya bize ya da başka bir yere kendiliğinden gönderilmez. Yedek dosyası konumunuzu ve namaz kayıtlarınızı içerdiğinden onu güvendiğiniz bir yerde saklayın. "Yedeği Geri Yükle" seçtiğiniz dosyayı yalnızca telefonunuzda okur. İzin durumları gibi cihaza özgü bilgiler ve reklam tercihleriniz yedeğe girmez.
+Telefonunuzda Google yedeklemesi açıksa Android, diğer uygulamalarda olduğu gibi bu bilgileri Google hesabınızdaki şifreli cihaz yedeğine ekleyebilir ve yeni telefona geçerken aktarabilir. Bu yedeğe biz erişemeyiz; telefonunuzun ayarlarındaki Google > Yedekleme bölümünden kapatabilirsiniz.
 
 2. Konum
 Konum izni verirseniz telefonunuzun konumu (enlem ve boylam) namaz vakitlerini ve kıble yönünü hesaplamak için kullanılır.
@@ -49,7 +50,7 @@ Google'ın verileri nasıl kullandığı: https://policies.google.com/technologi
 Verilerinizi satmayız, reklam profili oluşturmak için kullanmayız. Hizmet sağlayıcılarımız (Google Firebase ve AdMob) verileri Türkiye dışındaki sunucularda işleyebilir. Bu sağlayıcıların sözleşme koşulları verileri korumalarını gerektirir; uluslararası aktarımlarda AB Standart Sözleşme Maddeleri (SCC) veya eşdeğer güvenceler kullanılır.
 
 8. Güvenlik
-Uygulamanın tüm bağlantıları şifrelidir (TLS/HTTPS). Kişisel kayıtlar yalnızca telefonunuzda, Android'in uygulamaya özel korumalı alanında tutulur. Bir güvenlik olayından şüphelenildiğinde gecikmeden müdahale edilir.
+Uygulamanın tüm bağlantıları şifrelidir (TLS/HTTPS). Kişisel kayıtlar telefonunuzda, Android'in uygulamaya özel korumalı alanında tutulur. Bir güvenlik olayından şüphelenildiğinde gecikmeden müdahale edilir.
 
 9. Saklama ve silme
 Telefonunuzdaki verileri Ayarlar > Uygulamalar > Vaktinde > Depolama > "Verileri temizle" ile ya da Uygulamayı kaldırarak silebilirsiniz. Oluşturduğunuz yedek dosyaları bu yolla silinmez; onları kaydettiğiniz yerden kendiniz silebilirsiniz. Google hizmetlerindeki kayıtlar yukarıdaki sürelerin sonunda silinir; silinmesini istediğiniz veriler için bize e-posta gönderebilirsiniz.
