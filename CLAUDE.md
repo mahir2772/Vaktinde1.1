@@ -437,4 +437,6 @@ Tüm ID'ler `common/ad_helper.dart` → `AdIds` içinde; `kReleaseMode` ile debu
 
 ## Kurallar
 - Kullanıcı min token istiyor: projeyi baştan tarama, bu dosyayı kullan; mimari değişince burayı güncelle.
+- Kullanıcı Windows + PowerShell'de çalışır (yerel klasör adı ezan_saati): komutları ona göre ver (grep/open/sed yok;
+  findstr, explorer). Adımları sohbette tek tek ver; sürüm numarasını (pubspec version) sen ayarla, kullanıcıya düzenletme.
 - Commit mesajları Türkçe.
