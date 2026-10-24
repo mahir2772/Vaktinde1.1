@@ -226,6 +226,67 @@ void main() {
     });
   });
 
+  group('Günün hadisi: önceden alma, bildirimde yedek yok', () {
+    test('ağ varken sonraki 7 gün önbelleğe alınır, bugünkü silinmez; sonra '
+        'ağ yokken o günler bulunur', () async {
+      SharedPreferences.setMockInitialValues({});
+      final now = DateTime.now();
+      final urls = <Uri>[];
+      final online = HadithService(
+        fetch: (url) async {
+          urls.add(url);
+          return _hadithJson(url);
+        },
+      );
+      final today = (await online.getDailyHadith(tr, day: now))!.content;
+      await online.prefetch(tr);
+      // 3 farklı liste sayfası en çok bir kez: 1 + 7 hadis + ≤3 liste
+      expect(urls.length, lessThanOrEqualTo(11));
+
+      final offline = HadithService(
+        fetch: (_) async => throw const SocketException('yok'),
+      );
+      expect((await offline.getDailyHadith(tr, day: now))!.content, today);
+      for (var i = 1; i <= 7; i++) {
+        final day = PrayerTracker.addDays(now, i);
+        final cached = await offline.getDailyHadith(
+          tr,
+          day: day,
+          useFallback: false,
+        );
+        expect(cached!.content, startsWith('tr hadis '), reason: '$i');
+      }
+      expect(
+        await offline.getDailyHadith(
+          tr,
+          day: PrayerTracker.addDays(now, 8),
+          useFallback: false,
+        ),
+        isNull,
+      );
+    });
+
+    test(
+      'bildirim için yedek dönmez (bugün yedek gösterilmiş olsa da)',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final offline = HadithService(fetch: (_) async => null);
+        final shown = await offline.getDailyHadith(tr);
+        expect(offline.isFallback(shown!, tr), isTrue);
+        expect(await offline.getDailyHadith(tr, useFallback: false), isNull);
+        await offline.prefetch(tr); // ağ yok: hata yok, bir şey yazılmaz
+        expect(
+          await offline.getDailyHadith(
+            tr,
+            day: PrayerTracker.addDays(DateTime.now(), 1),
+            useFallback: false,
+          ),
+          isNull,
+        );
+      },
+    );
+  });
+
   group('Bildirim çalacağı günün içeriğiyle', () {
     test('çalacağı gün: saati geçmediyse bugün, geçtiyse yarın', () {
       DateTime day(int id, int hour, int minute) =>
@@ -316,5 +377,23 @@ void main() {
         );
       });
     }
+
+    test(
+      'ağ yokken (önbellek de yok) hadis bildirimi yedekle kurulmaz',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final notifications = NotificationService();
+        await notifications.init();
+        // Testte gerçek ağ isteği HTTP hatası döner
+        await PrayerRefreshService(
+          notifications,
+          clock: () => DateTime.now(),
+        ).scheduleDailyContent(localeName: 'tr', ayah: false);
+        expect(
+          bodies.containsKey(PrayerRefreshService.hadithNotificationId),
+          isFalse,
+        );
+      },
+    );
   });
 }

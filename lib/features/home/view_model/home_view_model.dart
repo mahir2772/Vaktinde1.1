@@ -500,6 +500,10 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       _hadithDate = today;
       notifyListeners();
       await _scheduleDailyContent();
+      // Ağ varken sonraki günler önceden alınır (arka plandaki bildirim için)
+      if (!_hadithService.isFallback(hadith, locale)) {
+        unawaited(_hadithService.prefetch(locale).catchError((Object _) {}));
+      }
     }
   }
 

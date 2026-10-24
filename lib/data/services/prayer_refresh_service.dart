@@ -1313,7 +1313,11 @@ class PrayerRefreshService {
         ? await AyahService().getDailyAyah(langCode, day: ayahDay)
         : null;
     final dayHadith = hadith
-        ? await HadithService().getDailyHadith(Locale(langCode), day: hadithDay)
+        ? await HadithService().getDailyHadith(
+            Locale(langCode),
+            day: hadithDay,
+            useFallback: false,
+          )
         : null;
     // Beklerken saati geçtiyse içerik başka güne kurulmaz (sonraki tur kurar)
     bool stillFor(int id, DateTime day) => dailyContentDay(id, _clock()) == day;

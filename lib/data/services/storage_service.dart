@@ -190,8 +190,7 @@ class StorageService {
   }
 
   /// Kazaya eklenmiş (tarih, vakit) çiftleri; aynı vakit iki kez eklenmez
-  Future<Map<String, int>> loadKazaAdded() =>
-      _loadMaskMap('prayer_kaza_added');
+  Future<Map<String, int>> loadKazaAdded() => _loadMaskMap('prayer_kaza_added');
 
   Future<void> saveKazaAdded(Map<String, int> added) async {
     final prefs = await SharedPreferences.getInstance();
@@ -436,7 +435,11 @@ class StorageService {
     Object value,
   ) async {
     final prefs = await SharedPreferences.getInstance();
-    final oldest = PrayerTracker.dateKey(PrayerTracker.addDays(day, -1));
+    // Dünden eskiler silinir; ileri günün kaydı (önceden alma) bugünü silmez
+    final now = DateTime.now();
+    final oldest = PrayerTracker.dateKey(
+      PrayerTracker.addDays(day.isBefore(now) ? day : now, -1),
+    );
     final entries = _dailyCache(prefs.getString(key))
       ..removeWhere((entry, _) => entry.compareTo(oldest) < 0)
       ..[_dailyCacheEntry(day, lang)] = value;

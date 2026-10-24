@@ -44,8 +44,14 @@ class HadithService {
   };
 
   /// [day] (varsayılan bugün) gününün hadisi: seçim güne bağlı; gün + dil
-  /// başına bir kez ağdan alınır, sonra önbellekten. Alınamazsa yerel yedek.
-  Future<HadithModel?> getDailyHadith(Locale locale, {DateTime? day}) async {
+  /// başına bir kez ağdan alınır, sonra önbellekten. Alınamazsa yerel yedek;
+  /// [useFallback] false ise (bildirim) yedek yerine null: her gün aynı yedek
+  /// hadis bildirime girmez.
+  Future<HadithModel?> getDailyHadith(
+    Locale locale, {
+    DateTime? day,
+    bool useFallback = true,
+  }) async {
     final now = DateTime.now();
     final date = day ?? now;
     String langCode = _languageCodes[locale.languageCode] ?? "tr";
@@ -58,7 +64,11 @@ class HadithService {
       );
       if (cached is Map<String, dynamic>) {
         final cachedHadith = HadithModel.fromJson(cached);
-        if (cachedHadith.content != null) return cachedHadith;
+        if (cachedHadith.content != null) {
+          return useFallback || !isFallback(cachedHadith, locale)
+              ? cachedHadith
+              : null;
+        }
       }
 
       // 2. Rastgelelik için günün tarihine göre bir tohum (seed) oluştur
@@ -68,14 +78,16 @@ class HadithService {
       // Sayfa sınırını aşmamak için 1 ile 3 arası rastgele bir sayfa seçiyoruz
       int randomPage = random.nextInt(3) + 1;
 
-      // HTTP hatasında liste boş sayılır
+      // HTTP hatasında liste boş sayılır; aynı sayfa bu nesnede bir kez alınır
       Future<List> list(int perPage, int page) async {
-        final body = await _fetch(
-          Uri.parse(
-            "$_baseUrl/hadeeths/list/?language=$langCode&category_id=${_categoryIds[langCode] ?? '2'}&per_page=$perPage&page=$page",
-          ),
-        );
-        return body == null ? [] : json.decode(body)['data'] ?? [];
+        final url =
+            "$_baseUrl/hadeeths/list/?language=$langCode&category_id=${_categoryIds[langCode] ?? '2'}&per_page=$perPage&page=$page";
+        final known = _lists[url];
+        if (known != null) return known;
+        final body = await _fetch(Uri.parse(url));
+        final data = body == null ? null : json.decode(body)['data'];
+        if (data is! List) return [];
+        return _lists[url] = data;
       }
 
       List hadiths = await list(20, randomPage);
@@ -113,6 +125,8 @@ class HadithService {
       print("❌ Hadis Servis Hatası: $e");
     }
 
+    if (!useFallback) return null;
+
     // Yukarıdaki işlemlerin hiçbirinden sağ çıkamazsak mecburen yedeği göster.
     // Bugün gösterilen yedek gün boyu kalır (hafızaya yazılır); ileri bir günün
     // (yarının bildirimi) yedeği yazılmaz, o gün ağdan yeniden denenir
@@ -131,6 +145,25 @@ class HadithService {
     }
     return fallback;
   }
+
+  final Map<String, List> _lists = {};
+
+  /// Önümüzdeki [days] günün hadisi önbelleğe alınır (uygulama açıkken): ağ
+  /// yokken arka planda kurulan bildirim de o günün hadisini bulur. Ağ
+  /// yoksa ilk başarısız günde durur; hata fırlatmaz.
+  Future<void> prefetch(Locale locale, {int days = 7}) async {
+    final today = DateTime.now();
+    for (var i = 1; i <= days; i++) {
+      final day = PrayerTracker.addDays(today, i);
+      if (await getDailyHadith(locale, day: day, useFallback: false) == null) {
+        return;
+      }
+    }
+  }
+
+  /// Ağdan alınamayınca gösterilen yerel yedek mi
+  bool isFallback(HadithModel hadith, Locale locale) =>
+      hadith.content == _getFallbackHadith(locale).content;
 
   HadithModel _getFallbackHadith(Locale locale) {
     if (locale.languageCode == 'en') {
