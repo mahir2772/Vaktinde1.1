@@ -7,8 +7,12 @@ import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Build
 import android.os.SystemClock
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.RemoteViews
 import java.util.Calendar
@@ -21,6 +25,23 @@ class NotificationUpdater : BroadcastReceiver() {
 
         /** Güncellemeden sonra ikinci çizim: sistem ilk anlarda bildirimi çizemeyip düşürürse geri gelir */
         private const val AFTER_UPDATE_REDRAW_MS = 60_000L
+
+        // Altı vakit sütunu (0 imsak … 5 yatsı): ad ve saat
+        private val LABEL_IDS = intArrayOf(
+            R.id.notif_label_0, R.id.notif_label_1, R.id.notif_label_2,
+            R.id.notif_label_3, R.id.notif_label_4, R.id.notif_label_5,
+        )
+        private val TIME_IDS = intArrayOf(
+            R.id.notif_time_0, R.id.notif_time_1, R.id.notif_time_2,
+            R.id.notif_time_3, R.id.notif_time_4, R.id.notif_time_5,
+        )
+
+        /** Sıradaki vaktin adı ve saati kalın (yazı stili sistemin; RemoteViews yazı tipi alamaz) */
+        private fun emphasized(text: CharSequence, bold: Boolean): CharSequence =
+            if (!bold || text.isEmpty()) text
+            else SpannableString(text).apply {
+                setSpan(StyleSpan(Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -46,11 +67,24 @@ class NotificationUpdater : BroadcastReceiver() {
             // Gün dönmüşse yarının seti, yatsıdan sonra yarının imsakı
             val day = PrayerWidgetData.today(widgetData, now)
 
-            views.setTextViewText(R.id.notif_location, widgetData.getString("location_text", ""))
-            views.setTextViewText(R.id.notif_hijri_date, PrayerWidgetData.hijriText(widgetData, day))
+            // Konum · hicri tarih (biri yoksa diğeri)
+            val place = listOf(widgetData.getString("location_text", "") ?: "", PrayerWidgetData.hijriText(widgetData, day))
+                .filter { it.isNotBlank() }
+            views.setTextViewText(R.id.notif_location, place.joinToString(" · "))
 
             val currentTime = now.timeInMillis
             val nextPrayer = PrayerWidgetData.nextPrayer(widgetData, day, now)
+
+            // Günün altı vakti; sıradaki kalın. Yatsıdan sonra sıradaki yarının imsakı: o sütunda onun saati
+            val nextIndex = if (nextPrayer != null && nextPrayer.time > 0L) nextPrayer.index else -1
+            val texts = day.texts.toMutableList()
+            if (nextIndex == 0 && PrayerWidgetData.timeMs(day.times[0], 0, now) <= currentTime) {
+                texts[0] = day.nextImsakText
+            }
+            for (i in 0 until minOf(texts.size, TIME_IDS.size)) {
+                views.setTextViewText(LABEL_IDS[i], emphasized(PrayerWidgetData.label(widgetData, i), i == nextIndex))
+                views.setTextViewText(TIME_IDS[i], emphasized(PrayerWidgetData.styledTime(texts[i]), i == nextIndex))
+            }
 
             if (nextPrayer != null && nextPrayer.time > 0L) {
                 val targetTime = nextPrayer.time
@@ -81,6 +115,9 @@ class NotificationUpdater : BroadcastReceiver() {
                 .setSmallIcon(R.mipmap.launcher_icon)
                 .setStyle(android.app.Notification.DecoratedCustomViewStyle())
                 .setCustomContentView(views)
+                // Açınca da aynı görünüm (kapalı hâl yükseklik sınırında kırpılırsa hepsi açıkta görünür)
+                .setCustomBigContentView(views)
+                .setShowWhen(false)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent)

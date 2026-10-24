@@ -384,7 +384,9 @@ android/app/src/main/
                           Çizilen hedefi geçmiş ama kapalı 888 (setTimeoutAfter kaldırdı / servis durdu) geri getirilir;
                           hedef geçmeden kapatılan dokunulmaz. Dinleyici: TIME_TICK, SCREEN_ON, USER_PRESENT, USER_UNLOCKED
     NotificationUpdater.kt  888'e setTimeoutAfter(hedef + 5 sn): yenileme alarmı gelmezse sistem bildirimi kaldırır, eksi
-                          sayaç kalmaz; vakit verisi yoksa 888 çizilmez
+                          sayaç kalmaz; vakit verisi yoksa 888 çizilmez. Görünüm custom_notification.xml (kapalı = açık):
+                          konum · hicri + sıradaki vakit ve sayaç, altında 6 vakit (label_* + *_text; sıradaki kalın
+                          StyleSpan, autoSize 8-13sp; yatsıdan sonra imsak sütunu yarının imsakı)
     WidgetHealJobService.kt  JobScheduler periyodik iş (15 dk, kalıcı, JOB_ID 0x56414B54 — WorkManager kimliklerinden uzak):
                           süreç yokken WidgetRefresher.refreshStale; VaktindeApplication.onCreate kurar (kuruluysa dokunmaz)
   res/layout/vaktinde_widget_*.xml, custom_notification.xml (sistem TextAppearance.Material.Notification*, sabit renk ve

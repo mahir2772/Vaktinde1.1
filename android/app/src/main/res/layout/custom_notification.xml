@@ -1,85 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kalıcı bildirim (NotificationUpdater, DecoratedCustomViewStyle). Zemini sistem çizer; cihaza ve
-     sürüme göre açık ya da koyu (Android 10+ gece kipi). Yazı renkleri bu yüzden sabit değil:
-     sistemin bildirim yazı stilleri (TextAppearance.Material.Notification*: açık zeminde koyu,
-     gece kipinde açık yazı). Simge iki zeminde de ≥3:1 okunan nötr gri. Metinleri
-     NotificationUpdater yazar; yer tutucu yok (veri yoksa boş) -->
+<!-- Kalıcı bildirim (NotificationUpdater, DecoratedCustomViewStyle; kapalı ve açık hâli aynı). Zemini
+     sistem çizer; cihaza ve sürüme göre açık ya da koyu (Android 10+ gece kipi). Yazı renkleri bu yüzden
+     sabit değil: sistemin bildirim yazı stilleri (TextAppearance.Material.Notification*). Kapalı bildirim
+     yüksekliğine sığsın diye iki satır: konum · hicri tarih + sıradaki vakit ve sayaç; altında günün altı
+     vakti (ad + saat; sıradaki kalın). Dar ekranda / uzun adda yazı kendiliğinden küçülür (autoSize).
+     Metinleri NotificationUpdater yazar; yer tutucu yok (veri yoksa boş) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
-    <!-- SOL BLOK: Konum ve Hicri Tarih -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="start">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:src="@android:drawable/ic_menu_mylocation"
-                android:tint="#808080" />
-
-            <TextView
-                android:id="@+id/notif_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/notif_hijri_date"
-            android:layout_width="wrap_content"
+            android:id="@+id/notif_location"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="2dp"
+            android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
             android:textSize="12sp" />
-    </LinearLayout>
-
-    <!-- SAĞ BLOK: Vakit İsmi ve Geri Sayım -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:orientation="vertical">
 
         <TextView
             android:id="@+id/notif_next_prayer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@android:style/TextAppearance.Material.Notification"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textStyle="bold" />
 
         <Chronometer
             android:id="@+id/notif_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginStart="4dp"
             android:countDown="true"
             android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_label_0"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="15dp"
+                android:autoSizeMaxTextSize="12sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+
+            <TextView
+                android:id="@+id/notif_time_0"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="17dp"
+                android:autoSizeMaxTextSize="13sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_label_1"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="15dp"
+                android:autoSizeMaxTextSize="12sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+
+            <TextView
+                android:id="@+id/notif_time_1"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="17dp"
+                android:autoSizeMaxTextSize="13sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_label_2"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="15dp"
+                android:autoSizeMaxTextSize="12sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+
+            <TextView
+                android:id="@+id/notif_time_2"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="17dp"
+                android:autoSizeMaxTextSize="13sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_label_3"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="15dp"
+                android:autoSizeMaxTextSize="12sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+
+            <TextView
+                android:id="@+id/notif_time_3"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="17dp"
+                android:autoSizeMaxTextSize="13sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_label_4"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="15dp"
+                android:autoSizeMaxTextSize="12sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+
+            <TextView
+                android:id="@+id/notif_time_4"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="17dp"
+                android:autoSizeMaxTextSize="13sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_label_5"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="15dp"
+                android:autoSizeMaxTextSize="12sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification" />
+
+            <TextView
+                android:id="@+id/notif_time_5"
+                android:layout_width="match_parent"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeStepGranularity="1sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_height="17dp"
+                android:autoSizeMaxTextSize="13sp"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
