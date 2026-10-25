@@ -18,6 +18,8 @@
 - YAYIN (24 Ekim 2026): AAB 1.4.0+19 (eski CollectAPI anahtarıyla; kullanıcı şimdilik yenilemiyor) dahili testte cihazda
   denendi, sorunsuz. Üretim (tam kullanıma sunma) + mağaza metni (ana giriş 5 dil, Avrupa özel girişi 5 dil, Avrupa kitlesi
   %50 → %100) tek seferde incelemeye gönderildi. Gizlilik metni Google Sites'ta (Android'in Google cihaz yedeği cümlesiyle).
+- Sosyal medya (25 Ekim): Kasım paketi (16 parça, docs/marketing/make_kasim.py + kasim_takvimi.md) kullanıcıya
+  gönderildi; 31 Ekim – 26 Kasım, günlük ayet/hadisin yanına haftada 3–4 içerik. 1.4.0 duyurusu güncelleme yayına girince.
 - KALAN (kullanıcı):
   1. 1.4.0 yayına girince (tüm kanallarda FGS'li sürüm kalmayınca): Play Console > Politika ve programlar > Uygulama içeriği
      > Ön plan hizmeti izinleri: hâlâ isteniyorsa specialUse beyanını kaldır. Önce değil: 1.3.0 yayındayken beyan gerekir.

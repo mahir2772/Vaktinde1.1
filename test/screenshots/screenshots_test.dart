@@ -63,6 +63,8 @@ import 'package:ezan_saati/features/settings/view/notification_settings_view.dar
 import 'package:ezan_saati/features/settings/view/privacy_ads_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
 import 'package:ezan_saati/features/settings/view/time_adjust_view.dart';
+import 'package:ezan_saati/features/stories/story_data.dart';
+import 'package:ezan_saati/features/stories/view/stories_view.dart';
 import 'package:ezan_saati/features/zakat/view/zakat_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/dhikr_list_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view/dhikr_stats_view.dart';
@@ -2382,6 +2384,7 @@ void main() {
         final loc = lookupAppLocalizations(Locale(lang));
         final library = (await tester.runAsync(DuaLibrary.load))!;
         final ayah = library.byId('rabbena_atina')!;
+        final stories = (await tester.runAsync(StoryLibrary.load))!;
         final p = 'm_$lang';
         File(
           '$_outDir/${p}_clock.txt',
@@ -2464,6 +2467,24 @@ void main() {
               '${p}_11_prayer_guide',
               const PrayerGuideView(),
               loc.prayerGuideTabSteps,
+            );
+            // 1.4.0 yenilikleri: Hatim ekranı, Dualar, Kıssalar
+            await _openRoute(tester, '${p}_06_hatim', const HatimView());
+            await _openRoute(tester, '${p}_12_duas', const DuasView());
+            await _openRoute(
+              tester,
+              '${p}_13_dua_travel',
+              DuaDetailView(dua: library.byId('travel')!),
+            );
+            await _openRoute(tester, '${p}_17_stories', const StoriesView());
+            await _openRoute(
+              tester,
+              '${p}_18_story_bilal',
+              StoryDetailView(
+                story: stories.categories
+                    .expand((c) => c.stories)
+                    .firstWhere((s) => s.id == 'bilal'),
+              ),
             );
             await tapShot(
               '${p}_14_appearance',

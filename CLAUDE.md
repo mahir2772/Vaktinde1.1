@@ -432,6 +432,10 @@ Tüm ID'ler `common/ad_helper.dart` → `AdIds` içinde; `kReleaseMode` ile debu
   Instagram (üçlü ızgara, karusel, hikâye), sessiz dikey/yatay video. Ekranlar `SCREENSHOT_MARKETING=<dil> SCREENSHOT_DPR=3
   SCREENSHOT_DIR=<klasör> TZ=<dilim> flutter test test/screenshots/ --plain-name "<dil>: pazarlama"` (tr/ar Europe/Istanbul, en
   London, de Berlin, fr Paris). Widget ve bildirim kartı res/layout + l10n ile çizilir. Çıktılar repoya girmez.
+- Sosyal medya Kasım paketi: `docs/marketing/make_kasim.py <ekran_klasörü> <çıkış>` → 16 parça (kıssa/abdest/esma
+  karuselleri, dua kartları, "Biliyor muydun?" videoları, etkileşim hikâyeleri, 1.4.0 duyurusu) + kasim_<n>.zip;
+  ekranlar tr pazarlama çeşidinden (06_hatim, 12_duas, 13_dua_travel, 17_stories, 18_story_bilal dahil). Dini metin
+  betikte yazılmaz, json'lardan okunur. Takvim + açıklamalar docs/marketing/kasim_takvimi.md.
 - Bulut ortamında Flutter SDK hazır gelmiyor (gerekirse scratchpad'e indirilir); Android SDK indirilemiyor (dl.google.com kapalı) → APK derlenemez. api.aladhan.com ve diyanet.gov.tr erişimi kapalı.
 - `flutter pub get` farklı SDK ile SDK-pinli paketleri (characters, meta, intl…) değiştirir; lock'a sadece gerçek bağımlılık değişikliklerini al. `flutter analyze` analysis_options.yaml'a exclude ekler → geri al.
 
