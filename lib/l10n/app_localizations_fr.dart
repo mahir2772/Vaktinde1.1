@@ -680,6 +680,36 @@ class AppLocalizationsFr extends AppLocalizations {
       'Si vous voyez cette notification, les notifications d\'adhan fonctionnent.';
 
   @override
+  String get testEzanOfferTitle => 'L\'adhan sonne-t-il sur votre téléphone ?';
+
+  @override
+  String get notNow => 'Pas maintenant';
+
+  @override
+  String get tipVendorGuide =>
+      'Ce téléphone a besoin de quelques réglages pour que l\'adhan ne soit pas retardé.';
+
+  @override
+  String get tipVendorGuideAction => 'Voir les réglages';
+
+  @override
+  String get weeklySummaryTitle => 'Bilan hebdomadaire des prières';
+
+  @override
+  String get weeklySummarySub =>
+      'Le lundi, le bilan de la semaine passée si vous utilisez le suivi des prières';
+
+  @override
+  String weeklySummaryBody(int done, int total) {
+    return 'La semaine dernière, vous avez accompli $done prières sur $total.';
+  }
+
+  @override
+  String weeklySummaryFull(int total) {
+    return 'La semaine dernière, vous avez accompli les $total prières. Qu\'Allah les accepte.';
+  }
+
+  @override
   String get healthStepXiaomiAutostart =>
       'Dans les paramètres de l\'application, activez le démarrage automatique.';
 

@@ -345,6 +345,31 @@
     "healthTestButton": "أذان تجريبي بعد دقيقة",
     "healthTestScheduled": "سيُرفع الأذان التجريبي بعد دقيقة واحدة. يمكنك إغلاق التطبيق.",
     "healthTestNotifBody": "إذا ظهر لك هذا الإشعار فإشعارات الأذان تعمل.",
+    "testEzanOfferTitle": "هل يعمل الأذان على هاتفك؟",
+    "notNow": "ليس الآن",
+    "tipVendorGuide": "يحتاج هذا الهاتف إلى بعض الإعدادات حتى لا يتأخر الأذان.",
+    "tipVendorGuideAction": "عرض الإعدادات",
+    "weeklySummaryTitle": "ملخص الصلوات الأسبوعي",
+    "weeklySummarySub": "كل يوم اثنين ملخص الأسبوع الماضي إن كنت تستخدم متابعة الصلوات",
+    "weeklySummaryBody": "الأسبوع الماضي: {done} من {total} صلاة.",
+    "@weeklySummaryBody": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "weeklySummaryFull": "الأسبوع الماضي: أدّيت الصلوات كلها ({total}). تقبّل الله.",
+    "@weeklySummaryFull": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
     "healthStepXiaomiAutostart": "فعّل التشغيل التلقائي من إعدادات التطبيق.",
     "healthStepXiaomiBattery": "من الشاشة نفسها، افتح موفّر البطارية (أو البطارية) وألغِ كل القيود.",
     "healthStepHuaweiLaunch": "افتح إدارة تشغيل التطبيقات في الإعدادات (ضمن البطارية أو التطبيقات)، وأوقف الإدارة التلقائية لتطبيق Vaktinde، واترك كل الخيارات مفعّلة في النافذة التي تظهر.",

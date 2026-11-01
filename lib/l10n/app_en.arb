@@ -345,6 +345,31 @@
     "healthTestButton": "Test adhan in 1 min",
     "healthTestScheduled": "The test adhan will play in 1 minute. You can close the app.",
     "healthTestNotifBody": "If you see this notification, adhan notifications are working.",
+    "testEzanOfferTitle": "Does the adhan play on your phone?",
+    "notNow": "Not now",
+    "tipVendorGuide": "This phone needs a few settings so the adhan isn't delayed.",
+    "tipVendorGuideAction": "Show settings",
+    "weeklySummaryTitle": "Weekly prayer summary",
+    "weeklySummarySub": "On Mondays, last week's summary if you use the prayer tracker",
+    "weeklySummaryBody": "Last week you prayed {done} of {total} prayers.",
+    "@weeklySummaryBody": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "weeklySummaryFull": "Last week you prayed all {total} prayers. May Allah accept them.",
+    "@weeklySummaryFull": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
     "healthStepXiaomiAutostart": "In the app settings, turn on “Autostart”.",
     "healthStepXiaomiBattery": "On the same screen, under Battery saver (or Battery), choose “No restrictions”.",
     "healthStepHuaweiLaunch": "Open “App launch” in Settings (under Battery or Apps). Turn off automatic management for Vaktinde and leave all options on in the window that appears.",

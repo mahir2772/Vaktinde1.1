@@ -1422,6 +1422,60 @@ class PrayerRefreshService {
     }
   }
 
+  static const int weeklySummaryId = 2500;
+  // Gösterilen haftanın Pazartesisi (yyyy-MM-dd)
+  static const String weeklySummaryShownKey = 'weekly_summary_shown';
+
+  /// Haftalık namaz özeti: Pazartesi–Salı 09:00–21:00 arasındaki ilk koşuda
+  /// (uygulama açılışı / arka plan görevi) geçen haftanın (Pzt–Paz) takibi bir
+  /// kez bildirilir. Takip kullanılmadıysa ya da ayar kapalıysa gösterilmez.
+  /// Hata fırlatmaz.
+  Future<void> showWeeklySummaryIfDue(AppLocalizations loc) async {
+    try {
+      final now = _clock();
+      if (now.weekday > DateTime.tuesday || now.hour < 9 || now.hour >= 21) {
+        return;
+      }
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.reload(); // diğer isolate'in işaretleri ve kaydı
+      if (!(prefs.getBool(StorageService.weeklySummaryEnabledKey) ?? true)) {
+        return;
+      }
+      final weekStart = PrayerTracker.addDays(
+        PrayerTracker.day(now),
+        -(now.weekday - 1) - 7,
+      );
+      final week = PrayerTracker.dateKey(weekStart);
+      if (prefs.getString(weeklySummaryShownKey) == week) return;
+      await prefs.setString(weeklySummaryShownKey, week);
+      // Sadece okur (özel gün dönemini tamamlayıp kaydetmek takip servisinin işi)
+      final since = await _storageService.loadTrackerSince();
+      final summary = PrayerTracker.weekSummary(
+        await _storageService.loadPrayerLog(),
+        weekStart,
+        since: since == null ? null : PrayerTracker.parseDateKey(since),
+        excused: PrayerTracker.excusedThrough(
+          await _storageService.loadTrackerExcused(),
+          await _storageService.loadExcusedOpen(),
+          now,
+        ),
+      );
+      if (summary == null) return;
+      await _notifications.showInfo(
+        id: weeklySummaryId,
+        title: loc.weeklySummaryTitle,
+        body: summary.done >= summary.total
+            ? loc.weeklySummaryFull(summary.total)
+            : loc.weeklySummaryBody(summary.done, summary.total),
+        channelId: 'weekly_summary_channel',
+        localizedChannelName: loc.weeklySummaryTitle,
+        payload: NotificationRoutes.route(NotificationRoutes.tracker),
+      );
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'haftalık özet gösterilemedi');
+    }
+  }
+
   /// WorkManager görevi (uygulama kapalıyken de): bugünün vakitleri → cache, widget'lar,
   /// kalıcı bildirim; alarmlar günde bir kez 5 gün ileriye uzatılır. Hata fırlatmaz,
   /// beklenmeyen hatada false döner (WorkManager yeniden dener). [clock] sadece testte.
@@ -1490,6 +1544,7 @@ class PrayerRefreshService {
         );
       }
       await service._topUpDailyContent(loc);
+      await service.showWeeklySummaryIfDue(loc);
       return await _headlessDone(prefs, now);
     } catch (e, st) {
       await reportNonFatal(e, st, reason: 'arka plan yenilemesi başarısız');

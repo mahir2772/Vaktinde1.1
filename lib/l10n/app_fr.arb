@@ -345,6 +345,31 @@
     "healthTestButton": "Adhan de test dans 1 min",
     "healthTestScheduled": "L'adhan de test retentira dans 1 minute. Vous pouvez fermer l'application.",
     "healthTestNotifBody": "Si vous voyez cette notification, les notifications d'adhan fonctionnent.",
+    "testEzanOfferTitle": "L'adhan sonne-t-il sur votre téléphone ?",
+    "notNow": "Pas maintenant",
+    "tipVendorGuide": "Ce téléphone a besoin de quelques réglages pour que l'adhan ne soit pas retardé.",
+    "tipVendorGuideAction": "Voir les réglages",
+    "weeklySummaryTitle": "Bilan hebdomadaire des prières",
+    "weeklySummarySub": "Le lundi, le bilan de la semaine passée si vous utilisez le suivi des prières",
+    "weeklySummaryBody": "La semaine dernière, vous avez accompli {done} prières sur {total}.",
+    "@weeklySummaryBody": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "weeklySummaryFull": "La semaine dernière, vous avez accompli les {total} prières. Qu'Allah les accepte.",
+    "@weeklySummaryFull": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
     "healthStepXiaomiAutostart": "Dans les paramètres de l'application, activez le démarrage automatique.",
     "healthStepXiaomiBattery": "Sur le même écran, dans l'économiseur de batterie (ou Batterie), supprimez toutes les restrictions.",
     "healthStepHuaweiLaunch": "Dans les paramètres, ouvrez la gestion du lancement des applications (sous Batterie ou Applications). Désactivez la gestion automatique pour Vaktinde et laissez toutes les options activées dans la fenêtre qui s'affiche.",

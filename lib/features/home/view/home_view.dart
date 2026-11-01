@@ -14,6 +14,8 @@ import '../../../core/ui/state_views.dart';
 import '../../common/theme_provider.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../main_wrapper/app_showcase.dart';
+import '../../notification_health/notification_health.dart';
+import '../../notification_health/view/notification_health_view.dart';
 import '../../prayer_tracker/streak_review.dart';
 import '../../settings/view/add_widget_sheet.dart';
 import '../../settings/view/settings_view.dart';
@@ -88,12 +90,21 @@ class _HomeViewState extends State<HomeView>
 
   void _showTimesTab() => _tabController.index = 0;
 
-  // Widget ipucu: uygulama en az 3 farklı günde açıldıysa ve başlatıcı
-  // uygulamadan widget eklemeyi destekliyorsa
+  // Widget ipucu: uygulama en az 2 farklı günde açıldıysa (ilk gün tur ve
+  // izinlerle dolu; ertesi gün ezanlar gelmiş olur) ve başlatıcı destekliyorsa
   static Future<bool> _widgetTipDue() async {
     final prefs = await SharedPreferences.getInstance();
-    return (prefs.getInt(UsageReviewPrompt.countKey) ?? 0) >= 3 &&
+    return (prefs.getInt(UsageReviewPrompt.countKey) ?? 0) >= 2 &&
         await canPinHomeWidget();
+  }
+
+  // Üretici ipucu: ezanı arka planda kesen üreticilerde (Xiaomi, Huawei…) bir
+  // kez Bildirim Kontrolü'ndeki rehbere yönlendirir
+  static Future<bool> _vendorTipDue() async {
+    final d = await NotificationHealth.readDevice();
+    return d != null &&
+        NotificationHealth.vendorOf(d.manufacturer, d.brand) !=
+            PhoneVendor.generic;
   }
 
   String? _computeNextKey(HomeViewModel vm) {
@@ -322,6 +333,19 @@ class _HomeViewState extends State<HomeView>
               ),
             ),
           ],
+          FeatureTip(
+            id: 'vendor_guide',
+            icon: Icons.battery_alert_outlined,
+            message: loc.tipVendorGuide,
+            actionLabel: loc.tipVendorGuideAction,
+            onAction: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const NotificationHealthView(),
+              ),
+            ),
+            when: _vendorTipDue,
+            padding: const EdgeInsets.only(top: AppSpacing.lg),
+          ),
           FeatureTip(
             id: 'home_widget',
             icon: Icons.widgets_outlined,

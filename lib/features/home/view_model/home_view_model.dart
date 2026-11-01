@@ -76,6 +76,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool religiousDaysEnabled = true;
   // "Cuma bildirimi" (varsayılan açık)
   bool fridayNotifEnabled = true;
+  bool weeklySummaryEnabled = true;
   // "Özel günde ezanı sessiz bildir" (varsayılan açık)
   bool excusedSilentEzan = true;
   // "Kalıcı bildirim" (yeni kurulumda kapalı, eski kullanıcıda açık)
@@ -159,6 +160,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       // Ayarlardan dönülmüş olabilir: izinler yeniden okunur (düzeldiyse uyarı kalkar)
       alarmHealth.refresh();
       if (_isDataLoaded) {
+        _showWeeklySummary();
         _refreshTimesIfNewDay();
         _calculateHijriDate(); // Uygulama uyanınca tarihi kontrol et
         _updateHomeScreenWidget();
@@ -182,7 +184,13 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   /// (MainWrapper başlatır).
   Future<void> initializeApp(AppLocalizations loc) {
     _currentLoc = loc;
-    return _initRun ??= _initialize(loc);
+    return _initRun ??= _initialize(loc).whenComplete(_showWeeklySummary);
+  }
+
+  // Pazartesi haftalık namaz özeti (arka plan görevi gecikirse açılışta)
+  void _showWeeklySummary() {
+    final loc = _currentLoc;
+    if (loc != null) unawaited(_refreshService.showWeeklySummaryIfDue(loc));
   }
 
   Future<void> _initialize(AppLocalizations loc) async {
@@ -535,6 +543,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     dailyContentEnabled = await _storageService.loadDailyContentEnabled();
     religiousDaysEnabled = await _storageService.loadReligiousDaysEnabled();
     fridayNotifEnabled = await _storageService.loadFridayNotifEnabled();
+    weeklySummaryEnabled = await _storageService.loadWeeklySummaryEnabled();
     excusedSilentEzan = await _storageService.loadExcusedSilentEzan();
     persistentNotificationEnabled = await _storageService
         .loadPersistentNotification();
@@ -682,6 +691,18 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     final loc = _currentLoc;
     if (loc == null) return;
     await _refreshService.syncFridayNotifications(loc);
+  }
+
+  /// Pazartesi haftalık namaz özeti (bildirim o an gösterilir; kurulu alarm yok)
+  Future<void> setWeeklySummaryEnabled(bool value) async {
+    if (weeklySummaryEnabled == value) return;
+    weeklySummaryEnabled = value;
+    notifyListeners();
+    try {
+      await _storageService.saveWeeklySummaryEnabled(value);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'haftalık özet ayarı kaydedilemedi');
+    }
   }
 
   /// "Özel günde ezanı sessiz bildir": ezanlar, hatırlatmalar ve vakit çıkış

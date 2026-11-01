@@ -380,9 +380,9 @@ void main() {
       return prompt;
     }
 
-    /// Dördüncü gün dün sayılmış: bugünkü açılış beşinci gün
-    Map<String, Object> fourDays() => {
-      UsageReviewPrompt.countKey: 4,
+    /// İkinci gün dün sayılmış: bugünkü açılış üçüncü gün
+    Map<String, Object> twoDays() => {
+      UsageReviewPrompt.countKey: 2,
       UsageReviewPrompt.lastDayKey: day(now) - 1,
     };
 
@@ -395,7 +395,7 @@ void main() {
       await lifecycle(AppLifecycleState.resumed);
     }
 
-    test('sayım kuralı: yeni gün bir sayılır, aynı gün tekrar sayılmaz; 5. '
+    test('sayım kuralı: yeni gün bir sayılır, aynı gün tekrar sayılmaz; 3. '
         'günde açılışta ya da yeni günün ilk ön plana gelişinde istenir', () {
       ({int count, bool ask}) open(
         int count,
@@ -408,26 +408,26 @@ void main() {
         launch: launch,
       );
       expect(open(0, null, launch: true), (count: 1, ask: false));
-      expect(open(3, 100), (count: 3, ask: false));
-      expect(open(3, 100, launch: true), (count: 3, ask: false));
-      expect(open(3, 99), (count: 4, ask: false));
-      expect(open(4, 90), (count: 5, ask: true)); // aradaki boş günler sayılmaz
-      expect(open(4, 100, launch: true), (count: 4, ask: false));
+      expect(open(1, 100), (count: 1, ask: false));
+      expect(open(1, 100, launch: true), (count: 1, ask: false));
+      expect(open(1, 99), (count: 2, ask: false));
+      expect(open(2, 90), (count: 3, ask: true)); // aradaki boş günler sayılmaz
+      expect(open(2, 100, launch: true), (count: 2, ask: false));
       // Hedefteyken aynı gün ön plana dönüş (reklam, ayarlar) istemez
-      expect(open(5, 100), (count: 5, ask: false));
-      expect(open(5, 100, launch: true), (count: 5, ask: true));
+      expect(open(3, 100), (count: 3, ask: false));
+      expect(open(3, 100, launch: true), (count: 3, ask: true));
       expect(open(9, 99), (count: 10, ask: true));
     });
 
-    test('5. gün açılışında bir kez istenir; kayıt seriyle ortak, sonra '
+    test('3. gün açılışında bir kez istenir; kayıt seriyle ortak, sonra '
         'hiç istenmez', () async {
-      SharedPreferences.setMockInitialValues(fourDays());
+      SharedPreferences.setMockInitialValues(twoDays());
       final prompt = startUsage();
       await prompt.settled;
       expect(reviewRequests, 1);
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool(StreakReviewPrompt.requestedKey), isTrue);
-      expect(prefs.getInt(UsageReviewPrompt.countKey), 5);
+      expect(prefs.getInt(UsageReviewPrompt.countKey), 3);
       expect(prefs.getInt(UsageReviewPrompt.lastDayKey), day(now));
 
       // Sonraki oturumda, yeni günde de (kayıttan) istenmez
@@ -444,54 +444,54 @@ void main() {
     test('aynı gün tekrar açılış ve ön plana dönüş sayılmaz; uygulama '
         'açıkken gün dönünce ön plana gelişte sayılır', () async {
       SharedPreferences.setMockInitialValues({
-        UsageReviewPrompt.countKey: 3,
+        UsageReviewPrompt.countKey: 1,
         UsageReviewPrompt.lastDayKey: day(now),
       });
       final prompt = startUsage();
       await prompt.settled;
       await resume();
       await prompt.settled;
-      expect(await storedCount(), 3);
+      expect(await storedCount(), 1);
 
       now = now.add(const Duration(days: 1));
       await resume();
       await prompt.settled;
       await resume();
       await prompt.settled;
-      expect(await storedCount(), 4);
+      expect(await storedCount(), 2);
       expect(reviewRequests, 0);
 
       now = now.add(const Duration(days: 1));
       await resume();
       await prompt.settled;
-      expect(await storedCount(), 5);
+      expect(await storedCount(), 3);
       expect(reviewRequests, 1);
     });
 
     test('arka plandayken sayılmaz ve istenmez; ön plana gelince sayılır ve '
         'istenir', () async {
-      SharedPreferences.setMockInitialValues(fourDays());
+      SharedPreferences.setMockInitialValues(twoDays());
       await lifecycle(AppLifecycleState.paused);
       final prompt = startUsage();
       await prompt.settled;
-      expect(await storedCount(), 4);
+      expect(await storedCount(), 2);
       expect(reviewRequests, 0);
 
       await lifecycle(AppLifecycleState.hidden);
       await lifecycle(AppLifecycleState.inactive);
       await lifecycle(AppLifecycleState.resumed);
       await prompt.settled;
-      expect(await storedCount(), 5);
+      expect(await storedCount(), 3);
       expect(reviewRequests, 1);
     });
 
     test('başka pencere açıkken istenmez; aynı gün ön plana dönüşte de '
         'istenmez, sonraki açılışta istenir', () async {
       var dialogOpen = true;
-      SharedPreferences.setMockInitialValues(fourDays());
+      SharedPreferences.setMockInitialValues(twoDays());
       final prompt = startUsage(canPrompt: () => !dialogOpen);
       await prompt.settled;
-      expect(await storedCount(), 5);
+      expect(await storedCount(), 3);
       expect(reviewRequests, 0);
 
       dialogOpen = false;
@@ -507,30 +507,30 @@ void main() {
 
     test('Play değerlendirmesi yoksa istenmez, kayıt yazılmaz', () async {
       available = false;
-      SharedPreferences.setMockInitialValues(fourDays());
+      SharedPreferences.setMockInitialValues(twoDays());
       final prompt = startUsage();
       await prompt.settled;
       expect(reviewRequests, 0);
-      expect(await storedCount(), 5);
+      expect(await storedCount(), 3);
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool(StreakReviewPrompt.requestedKey), isNull);
     });
 
     test('seri tetiği istediyse kullanım günü istemez, saymaz', () async {
       SharedPreferences.setMockInitialValues({
-        ...fourDays(),
+        ...twoDays(),
         StreakReviewPrompt.requestedKey: true,
       });
       final prompt = startUsage();
       await prompt.settled;
       expect(reviewRequests, 0);
-      expect(await storedCount(), 4);
+      expect(await storedCount(), 2);
     });
 
     test('iki tetik aynı oturumda: tek istek', () async {
       SharedPreferences.setMockInitialValues({
         ...streakPrefs(6),
-        ...fourDays(),
+        ...twoDays(),
       });
       final usage = startUsage();
       final streak = StreakReviewPrompt(
@@ -654,16 +654,16 @@ void main() {
       await finish(tester);
     });
 
-    /// Dördüncü gün dün sayılmış: bu açılış beşinci gün
-    Map<String, Object> fourUsageDays() => {
-      UsageReviewPrompt.countKey: 4,
+    /// İkinci gün dün sayılmış: bu açılış üçüncü gün
+    Map<String, Object> twoUsageDays() => {
+      UsageReviewPrompt.countKey: 2,
       UsageReviewPrompt.lastDayKey: PrayerTracker.epochDay(DateTime.now()) - 1,
     };
 
-    testWidgets('5. kullanım günü: açılış akışından birkaç saniye sonra '
+    testWidgets('3. kullanım günü: açılış akışından birkaç saniye sonra '
         'istenir', (tester) async {
       await pumpMain(tester, {
-        ...fourUsageDays(),
+        ...twoUsageDays(),
         tourSeenKey: false,
         permissionsPrimedKey: true,
         WhatsNew.seenKey: WhatsNew.version,
@@ -672,13 +672,13 @@ void main() {
       await _pumpFor(tester, const Duration(seconds: 3));
       expect(reviewRequests, 1);
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getInt(UsageReviewPrompt.countKey), 5);
+      expect(prefs.getInt(UsageReviewPrompt.countKey), 3);
       await finish(tester);
     });
 
-    testWidgets('5. kullanım günü: tanıtım turu ya da izin penceresi '
+    testWidgets('3. kullanım günü: tanıtım turu ya da izin penceresi '
         'sürerken istenmez', (tester) async {
-      await pumpMain(tester, {...fourUsageDays(), permissionsPrimedKey: true});
+      await pumpMain(tester, {...twoUsageDays(), permissionsPrimedKey: true});
       final loc = lookupAppLocalizations(const Locale('tr'));
       expect(find.text(loc.showcaseLanguage), findsOneWidget);
       await _pumpFor(tester, const Duration(seconds: 4));
@@ -686,17 +686,17 @@ void main() {
       await finish(tester);
 
       locationPermission = 0;
-      await pumpMain(tester, {...fourUsageDays(), tourSeenKey: false});
+      await pumpMain(tester, {...twoUsageDays(), tourSeenKey: false});
       expect(find.text(loc.permissionPrimingTitle), findsOneWidget);
       await _pumpFor(tester, const Duration(seconds: 4));
       expect(reviewRequests, 0);
       await finish(tester);
     });
 
-    testWidgets('5. kullanım günü: Yenilikler açıkken istenmez, kapanınca '
+    testWidgets('3. kullanım günü: Yenilikler açıkken istenmez, kapanınca '
         'istenir', (tester) async {
       await pumpMain(tester, {
-        ...fourUsageDays(),
+        ...twoUsageDays(),
         tourSeenKey: false,
         permissionsPrimedKey: true,
       });

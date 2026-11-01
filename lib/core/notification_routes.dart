@@ -20,6 +20,9 @@ class NotificationRoutes {
   /// Hatim okuması (hatim sayfasında okuyucu)
   static const String hatim = 'hatim';
 
+  /// Namaz takibi (haftalık özet)
+  static const String tracker = 'tracker';
+
   /// Yükte ya da eylem kimliğinde taşınan biçim
   static String route(String target) => '$_prefix$target';
 

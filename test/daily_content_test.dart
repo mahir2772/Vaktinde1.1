@@ -56,17 +56,31 @@ void main() {
   const tr = Locale('tr');
 
   group('Günün ayeti', () {
-    test('güne bağlı: 1..6236, saatten bağımsız, ardışık günler farklı, '
-        '6236 gün boyunca tekrar yok', () {
+    test('güne bağlı: aday listesinden, saatten bağımsız, ardışık günler '
+        'farklı, liste bitene kadar tekrar yok', () async {
+      final candidates =
+          (jsonDecode(
+                    File(AyahService.candidatesAsset).readAsStringSync(),
+                  )['ayahs']
+                  as List)
+              .cast<int>();
+      // Kısa ayetler (hurûf-ı mukattaa, tek kelimeler) yok, liste anlamlı uzunlukta
+      expect(candidates.length, greaterThan(500));
+      expect(candidates.toSet(), hasLength(candidates.length));
+      expect(
+        candidates.every((n) => n >= 1 && n <= AyahService.totalAyahs),
+        isTrue,
+      );
+      expect(candidates, isNot(contains(8))); // Bakara 1: Elif Lâm Mîm
       final start = DateTime(2026, 1, 1);
       final seen = <int>{};
       int? previous;
-      for (var i = 0; i < AyahService.totalAyahs; i++) {
+      for (var i = 0; i < candidates.length; i++) {
         final day = PrayerTracker.addDays(start, i);
-        final number = AyahService.ayahNumberFor(day);
-        expect(number, inInclusiveRange(1, AyahService.totalAyahs));
+        final number = await AyahService.ayahNumberFor(day);
+        expect(candidates, contains(number));
         expect(
-          AyahService.ayahNumberFor(
+          await AyahService.ayahNumberFor(
             DateTime(day.year, day.month, day.day, 23, 59),
           ),
           number,
@@ -75,7 +89,7 @@ void main() {
         previous = number;
         seen.add(number);
       }
-      expect(seen, hasLength(AyahService.totalAyahs));
+      expect(seen, hasLength(candidates.length));
     });
 
     test('gün + dil başına bir kez ağdan; dil değişince aynı ayetin meali, '
@@ -89,7 +103,7 @@ void main() {
         },
       );
       final day = DateTime(2026, 10, 13, 9);
-      final number = AyahService.ayahNumberFor(day);
+      final number = await AyahService.ayahNumberFor(day);
       final first = await service().getDailyAyah('tr', day: day);
       expect(first!.translatedText, 'tr.diyanet $number');
 

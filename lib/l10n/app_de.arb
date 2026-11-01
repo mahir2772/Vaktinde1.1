@@ -345,6 +345,31 @@
     "healthTestButton": "Test-Adhan in 1 Min.",
     "healthTestScheduled": "Der Test-Adhan ertönt in 1 Minute. Sie können die App schließen.",
     "healthTestNotifBody": "Wenn Sie diese Benachrichtigung sehen, funktionieren die Adhan-Benachrichtigungen.",
+    "testEzanOfferTitle": "Ertönt der Adhan auf Ihrem Telefon?",
+    "notNow": "Nicht jetzt",
+    "tipVendorGuide": "Auf diesem Telefon sind ein paar Einstellungen nötig, damit der Adhan nicht verspätet ertönt.",
+    "tipVendorGuideAction": "Einstellungen zeigen",
+    "weeklySummaryTitle": "Wöchentliche Gebetsübersicht",
+    "weeklySummarySub": "Montags die Übersicht der Vorwoche, wenn Sie den Gebetstracker nutzen",
+    "weeklySummaryBody": "Letzte Woche haben Sie {done} von {total} Gebeten verrichtet.",
+    "@weeklySummaryBody": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "weeklySummaryFull": "Letzte Woche haben Sie alle {total} Gebete verrichtet. Möge Allah sie annehmen.",
+    "@weeklySummaryFull": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
     "healthStepXiaomiAutostart": "Aktivieren Sie in den App-Einstellungen „Autostart“.",
     "healthStepXiaomiBattery": "Wählen Sie auf demselben Bildschirm unter Energiesparmodus (bzw. Akku) „Keine Beschränkungen“.",
     "healthStepHuaweiLaunch": "Öffnen Sie in den Einstellungen „App-Start“ (unter Akku oder Apps). Deaktivieren Sie für Vaktinde die automatische Verwaltung und lassen Sie im folgenden Fenster alle Optionen aktiviert.",

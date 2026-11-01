@@ -143,7 +143,7 @@ class StreakReviewPrompt {
   }
 }
 
-/// Uygulama 5 farklı günde ön planda açılınca (seriden bağımsız) aynı ömür boyu
+/// Uygulama 3 farklı günde ön planda açılınca (seriden bağımsız) aynı ömür boyu
 /// tek değerlendirme isteği ([StreakReviewPrompt.requestedKey]). Kayıt küçük:
 /// sayılan gün sayısı + son sayılan gün. MainWrapper açılış pencerelerinden
 /// sonra başlatır; istek açılışta ya da yeni günün ilk ön plana gelişinde
@@ -161,7 +161,7 @@ class UsageReviewPrompt {
 
   /// Son sayılan gün ([PrayerTracker.epochDay])
   static const String lastDayKey = 'usage_last_day';
-  static const int goalDays = 5;
+  static const int goalDays = 3;
 
   /// Başka bir pencere (izin, rıza formu, tanıtım turu) açıksa false
   final bool Function()? canPrompt;

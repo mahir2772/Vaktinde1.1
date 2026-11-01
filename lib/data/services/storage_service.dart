@@ -364,6 +364,19 @@ class StorageService {
     await prefs.setBool(fridayNotifEnabledKey, enabled);
   }
 
+  /// Pazartesi haftalık namaz özeti (varsayılan açık)
+  static const String weeklySummaryEnabledKey = 'weekly_summary_enabled';
+
+  Future<bool> loadWeeklySummaryEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(weeklySummaryEnabledKey) ?? true;
+  }
+
+  Future<void> saveWeeklySummaryEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(weeklySummaryEnabledKey, enabled);
+  }
+
   /// "Özel günde ezanı sessiz bildir" (varsayılan açık): özel günde vakit
   /// bildirimi sessiz, hatırlatmalar kurulmaz
   static const String excusedSilentEzanKey = 'excused_silent_ezan';

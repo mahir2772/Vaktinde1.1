@@ -303,6 +303,27 @@ class PrayerTracker {
     return done / total;
   }
 
+  /// Haftalık özet: [weekStart]tan 7 gün; takibe başlanmadan önceki ([since])
+  /// ve özel günler ([excused]) sayılmaz. Hafta boyunca hiç işaret yoksa null
+  /// (takip kullanılmıyor).
+  static ({int done, int total})? weekSummary(
+    Map<String, int> log,
+    DateTime weekStart, {
+    required DateTime? since,
+    Set<String> excused = const {},
+  }) {
+    if (since == null) return null;
+    int done = 0;
+    int total = 0;
+    for (int i = 0; i < 7; i++) {
+      final d = addDays(weekStart, i);
+      if (daysBetween(since, d) < 0 || isExcused(excused, d)) continue;
+      done += countOf(maskOf(log, d));
+      total += prayerKeys.length;
+    }
+    return done == 0 ? null : (done: done, total: total);
+  }
+
   /// Kazaya eklenecek (tarih → vakit maskesi): dünden geriye [kazaDays] gün, [since]
   /// öncesi hariç; kılındı işaretli ya da daha önce eklenmiş ([added]) vakitler hariç.
   /// Özel günlerin ([excused]) namazı kaza edilmez, hiç aday olmaz.

@@ -667,6 +667,36 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wenn Sie diese Benachrichtigung sehen, funktionieren die Adhan-Benachrichtigungen.';
 
   @override
+  String get testEzanOfferTitle => 'Ertönt der Adhan auf Ihrem Telefon?';
+
+  @override
+  String get notNow => 'Nicht jetzt';
+
+  @override
+  String get tipVendorGuide =>
+      'Auf diesem Telefon sind ein paar Einstellungen nötig, damit der Adhan nicht verspätet ertönt.';
+
+  @override
+  String get tipVendorGuideAction => 'Einstellungen zeigen';
+
+  @override
+  String get weeklySummaryTitle => 'Wöchentliche Gebetsübersicht';
+
+  @override
+  String get weeklySummarySub =>
+      'Montags die Übersicht der Vorwoche, wenn Sie den Gebetstracker nutzen';
+
+  @override
+  String weeklySummaryBody(int done, int total) {
+    return 'Letzte Woche haben Sie $done von $total Gebeten verrichtet.';
+  }
+
+  @override
+  String weeklySummaryFull(int total) {
+    return 'Letzte Woche haben Sie alle $total Gebete verrichtet. Möge Allah sie annehmen.';
+  }
+
+  @override
   String get healthStepXiaomiAutostart =>
       'Aktivieren Sie in den App-Einstellungen „Autostart“.';
 

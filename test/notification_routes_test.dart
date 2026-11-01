@@ -25,6 +25,7 @@ import 'package:ezan_saati/features/friday_messages/view/friday_messages_view.da
 import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
 import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
+import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view_model/zikir_view_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
@@ -414,6 +415,16 @@ void main() {
       await settle(tester);
       expect(NotificationRoutes.pending.value, isNull);
       expect(navigator.canPop(), isFalse);
+      expect(tester.takeException(), isNull);
+      await finish(tester);
+    });
+
+    testWidgets('haftalık özet: namaz takibi açılır', (tester) async {
+      await pumpApp(tester);
+      NotificationRoutes.pending.value = NotificationRoutes.tracker;
+      await settle(tester);
+      expect(find.byType(PrayerTrackerView), findsOneWidget);
+      expect(NotificationRoutes.pending.value, isNull);
       expect(tester.takeException(), isNull);
       await finish(tester);
     });

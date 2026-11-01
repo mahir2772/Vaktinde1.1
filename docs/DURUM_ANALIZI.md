@@ -1,6 +1,21 @@
-# Vaktinde — Durum (Play'de 1.3.0+18; 1.4.0+19 incelemede — 24 Ekim 2026)
+# Vaktinde — Durum (Play'de 1.4.0+19; 1.4.1+20 hazır — 1 Kasım 2026)
 
-## SON DURUM — 1.4.0+19 (23 Ekim 2026)
+## SON DURUM — 1.4.1+20 (1 Kasım 2026)
+- 1.4.0 onaylandı, yayında. Veriler (25 Ekim – 1 Kasım): mağaza görüntüleme → ziyaret ~%7, ziyaret → indirme ~%35;
+  yeni puan/yorum yok (darboğaz). Crashlytics: 1.3.0'ın tek çökmesi eski ön plan servisinden (1.4.0'da yok); libflutter.so
+  çökmesi eksik kurulum (split eksik), bizim kodumuz değil.
+- 1.4.1 kod işleri bitti (tüm testler + analyze temiz):
+  · Puan isteği 3. kullanım gününde (5 → 3); widget ipucu 2. günden (3 → 2).
+  · Debug derlemesi Analytics'e kullanıcı olarak sayılmaz (debug manifest).
+  · Günün ayeti: 644 kendi başına anlaşılan, orta uzunlukta ayetten (assets/data/daily_ayahs.json, tool/daily_ayahs.py).
+  · İlk açılışta bildirim izni verilince "1 dk sonra test ezanı" önerisi (olay test_ezani).
+  · Xiaomi/Huawei/OPPO/vivo/Samsung/Transsion'da ana ekranda bir kez "Ayarları göster" ipucu → Bildirim Kontrolü rehberi.
+  · Pazartesi haftalık namaz özeti bildirimi (ID 2500, dokununca Namaz Takibi; Bildirim Ayarları'ndan kapanır).
+  · Sürüm notları docs/surum_notlari_1.4.1.txt (5 dil). Yenilikler listesi değişmedi (1.4.0'ınki).
+- YAYIN (kullanıcı): CollectAPI anahtarını bu derleme günü yenile → AAB → dahili test (test ezanı önerisi, üretici ipucu,
+  Pazartesi özeti) → üretim. Cihazda denenecek: Pazartesi 09:00 sonrası açılışta özet (geçen hafta işaret varsa).
+
+## 1.4.0+19 (23 Ekim 2026)
 - Kod işleri bitti (tek güncelleme: 1.3.1 ve 1.4.0 birleşti). İçerik:
   · Kalıcı bildirim ön plan servisinden ayrıldı (flutter_background_service yok; specialUse FGS beyanı kalkar), widget
     yenilemesi güçlendi (alarm saati kipinde ezanla aynı dakika, gecikme Bildirim Kontrolü'nde).

@@ -77,6 +77,22 @@ class NotificationSettingsView extends StatelessWidget {
               const FridayNotificationSetting(),
               Consumer<HomeViewModel>(
                 builder: (context, viewModel, child) {
+                  final enabled = viewModel.weeklySummaryEnabled;
+                  return AppListTile(
+                    leadingIcon: Icons.insights_outlined,
+                    title: loc.weeklySummaryTitle,
+                    subtitle: loc.weeklySummarySub,
+                    showChevron: false,
+                    trailing: Switch(
+                      value: enabled,
+                      onChanged: viewModel.setWeeklySummaryEnabled,
+                    ),
+                    onTap: () => viewModel.setWeeklySummaryEnabled(!enabled),
+                  );
+                },
+              ),
+              Consumer<HomeViewModel>(
+                builder: (context, viewModel, child) {
                   final enabled = viewModel.excusedSilentEzan;
                   return AppListTile(
                     leadingIcon: kExcusedIcon,

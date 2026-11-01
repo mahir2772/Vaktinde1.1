@@ -1214,6 +1214,54 @@ abstract class AppLocalizations {
   /// **'Bu bildirim geldiyse ezan bildirimleri çalışıyor.'**
   String get healthTestNotifBody;
 
+  /// No description provided for @testEzanOfferTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan telefonunuzda çalıyor mu?'**
+  String get testEzanOfferTitle;
+
+  /// No description provided for @notNow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şimdi değil'**
+  String get notNow;
+
+  /// No description provided for @tipVendorGuide.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu telefonda ezanın gecikmemesi için birkaç ayar yapmanız gerekiyor.'**
+  String get tipVendorGuide;
+
+  /// No description provided for @tipVendorGuideAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarları göster'**
+  String get tipVendorGuideAction;
+
+  /// No description provided for @weeklySummaryTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haftalık namaz özeti'**
+  String get weeklySummaryTitle;
+
+  /// No description provided for @weeklySummarySub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pazartesi, namaz takibini kullanıyorsanız geçen haftanın özeti'**
+  String get weeklySummarySub;
+
+  /// No description provided for @weeklySummaryBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçen hafta {total} vakitten {done} vakit kıldınız.'**
+  String weeklySummaryBody(int done, int total);
+
+  /// No description provided for @weeklySummaryFull.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçen hafta {total} vaktin hepsini kıldınız. Allah kabul etsin.'**
+  String weeklySummaryFull(int total);
+
   /// No description provided for @healthStepXiaomiAutostart.
   ///
   /// In tr, this message translates to:

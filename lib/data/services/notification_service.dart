@@ -282,7 +282,8 @@ class NotificationService {
     await _notificationsPlugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: NotificationRoutes.handle,
-      onDidReceiveBackgroundNotificationResponse: onNotificationActionBackground,
+      onDidReceiveBackgroundNotificationResponse:
+          onNotificationActionBackground,
     );
     await _readLaunchRoute();
   }
@@ -548,6 +549,30 @@ class NotificationService {
 
     await _notificationsPlugin.show(888, title, body, platformChannelSpecifics);
   }
+
+  /// Hemen gösterilen bilgi bildirimi (haftalık özet); [payload] dokununca açılan
+  /// ekran (NotificationRoutes)
+  Future<void> showInfo({
+    required int id,
+    required String title,
+    required String body,
+    required String channelId,
+    required String localizedChannelName,
+    String? payload,
+  }) => _notificationsPlugin.show(
+    id,
+    title,
+    body,
+    NotificationDetails(
+      android: AndroidNotificationDetails(
+        channelId,
+        localizedChannelName,
+        icon: '@mipmap/launcher_icon',
+        styleInformation: BigTextStyleInformation(body),
+      ),
+    ),
+    payload: payload,
+  );
 
   Future<void> scheduleDailyContent({
     required int id,

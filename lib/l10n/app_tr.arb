@@ -366,6 +366,31 @@
     "healthTestButton": "1 dk sonra test ezanı",
     "healthTestScheduled": "Test ezanı 1 dakika sonra çalacak. Uygulamayı kapatabilirsiniz.",
     "healthTestNotifBody": "Bu bildirim geldiyse ezan bildirimleri çalışıyor.",
+    "testEzanOfferTitle": "Ezan telefonunuzda çalıyor mu?",
+    "notNow": "Şimdi değil",
+    "tipVendorGuide": "Bu telefonda ezanın gecikmemesi için birkaç ayar yapmanız gerekiyor.",
+    "tipVendorGuideAction": "Ayarları göster",
+    "weeklySummaryTitle": "Haftalık namaz özeti",
+    "weeklySummarySub": "Pazartesi, namaz takibini kullanıyorsanız geçen haftanın özeti",
+    "weeklySummaryBody": "Geçen hafta {total} vakitten {done} vakit kıldınız.",
+    "@weeklySummaryBody": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "weeklySummaryFull": "Geçen hafta {total} vaktin hepsini kıldınız. Allah kabul etsin.",
+    "@weeklySummaryFull": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
     "healthStepXiaomiAutostart": "Uygulama ayarlarında “Otomatik başlatma” seçeneğini açın.",
     "healthStepXiaomiBattery": "Aynı ekranda Pil tasarrufu (ya da Pil) bölümünden “Kısıtlama yok” seçeneğini işaretleyin.",
     "healthStepHuaweiLaunch": "Ayarlar'da “Uygulama başlatma” bölümünü açın (Pil ya da Uygulamalar altında). Vaktinde için otomatik yönetimi kapatın ve açılan penceredeki tüm seçenekleri açık bırakın.",

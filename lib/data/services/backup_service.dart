@@ -135,6 +135,7 @@ abstract final class BackupService {
     StorageService.dailyContentEnabledKey: const _Field(_Kind.boolean),
     StorageService.religiousDaysEnabledKey: const _Field(_Kind.boolean),
     StorageService.fridayNotifEnabledKey: const _Field(_Kind.boolean),
+    StorageService.weeklySummaryEnabledKey: const _Field(_Kind.boolean),
     StorageService.excusedSilentEzanKey: const _Field(_Kind.boolean),
     StorageService.persistentNotificationKey: const _Field(_Kind.boolean),
     // Namaz takibi, kaza sayaçları, Ramazan orucu

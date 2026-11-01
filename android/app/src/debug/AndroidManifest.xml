@@ -4,4 +4,9 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Geliştirme kurulumları Analytics'e kullanıcı olarak sayılmasın
+         (yalnız debug derlemesine girer; release'de toplama açık) -->
+    <application>
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false"/>
+    </application>
 </manifest>

@@ -658,6 +658,36 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu bildirim geldiyse ezan bildirimleri çalışıyor.';
 
   @override
+  String get testEzanOfferTitle => 'Ezan telefonunuzda çalıyor mu?';
+
+  @override
+  String get notNow => 'Şimdi değil';
+
+  @override
+  String get tipVendorGuide =>
+      'Bu telefonda ezanın gecikmemesi için birkaç ayar yapmanız gerekiyor.';
+
+  @override
+  String get tipVendorGuideAction => 'Ayarları göster';
+
+  @override
+  String get weeklySummaryTitle => 'Haftalık namaz özeti';
+
+  @override
+  String get weeklySummarySub =>
+      'Pazartesi, namaz takibini kullanıyorsanız geçen haftanın özeti';
+
+  @override
+  String weeklySummaryBody(int done, int total) {
+    return 'Geçen hafta $total vakitten $done vakit kıldınız.';
+  }
+
+  @override
+  String weeklySummaryFull(int total) {
+    return 'Geçen hafta $total vaktin hepsini kıldınız. Allah kabul etsin.';
+  }
+
+  @override
   String get healthStepXiaomiAutostart =>
       'Uygulama ayarlarında “Otomatik başlatma” seçeneğini açın.';
 

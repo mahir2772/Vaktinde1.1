@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
@@ -63,6 +65,11 @@ class _FakeHomeViewModel extends HomeViewModel {
   Future<void> requestBatteryOptimizationOnce() async {
     batteryRequests++;
   }
+
+  int testEzans = 0;
+
+  @override
+  Future<void> scheduleTestEzan(AppLocalizations loc) async => testEzans++;
 }
 
 const _umpChannel = 'plugins.flutter.io/google_mobile_ads/ump';
@@ -418,6 +425,36 @@ void main() {
       expect(events, hasLength(4));
       await finish(tester);
     });
+  });
+
+  testWidgets('ilk açılış test ezanı önerisi: "Şimdi değil" kurmaz, '
+      '"Test ezanı" 1 dk sonrasına kurar; sonuç olayı', (tester) async {
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    final events = <(String, Map<String, Object>?)>[];
+    final originalSink = AppAnalytics.sink;
+    AppAnalytics.sink = (name, parameters) async =>
+        events.add((name, parameters));
+    addTearDown(() => AppAnalytics.sink = originalSink);
+    final vm = await pumpApp(tester, const Scaffold(body: SizedBox()));
+    final context = tester.element(find.byType(SizedBox).last);
+
+    unawaited(offerTestEzan(context));
+    await tester.pumpAndSettle();
+    expect(find.text(loc.testEzanOfferTitle), findsOneWidget);
+    await tester.tap(find.text(loc.notNow));
+    await tester.pumpAndSettle();
+    expect(vm.testEzans, 0);
+
+    unawaited(offerTestEzan(context));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(loc.healthTestButton));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(vm.testEzans, 1);
+    expect(find.text(loc.healthTestScheduled), findsOneWidget);
+    expect(events.map((e) => e.$1), ['test_ezani', 'test_ezani']);
+    expect(events.map((e) => e.$2?['sonuc']), ['istenmedi', 'istendi']);
+    await finish(tester);
   });
 
   group('Ayarlar > Gizlilik ve Reklamlar: reklam gizlilik satırı', () {

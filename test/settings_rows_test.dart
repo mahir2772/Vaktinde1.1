@@ -251,11 +251,22 @@ void main() {
       loc.dailyContentNotifTitle,
       loc.religiousDaysNotifTitle,
       loc.fridayNotifTitle,
+      loc.weeklySummaryTitle,
       loc.excusedSilentEzanTitle,
       loc.persistentNotifTitle,
     ]);
     expect(tops, [...tops]..sort());
-    expect(find.byType(Switch), findsNWidgets(6));
+    expect(find.byType(Switch), findsNWidgets(7));
+
+    // Haftalık özet: varsayılan açık, satıra dokununca kapanır
+    await tester.tap(find.text(loc.weeklySummaryTitle));
+    await tester.pump();
+    expect(
+      (await SharedPreferences.getInstance()).getBool(
+        StorageService.weeklySummaryEnabledKey,
+      ),
+      isFalse,
+    );
     expect(find.byType(AdBannerWidget), findsNothing);
 
     // Dini gün ve kandil: varsayılan açık, satıra dokununca kapanır

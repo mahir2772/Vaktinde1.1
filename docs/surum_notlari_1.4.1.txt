@@ -1,0 +1,35 @@
+<tr-TR>
+• Günün ayeti artık kendi başına anlaşılan, orta uzunlukta ayetlerden seçiliyor
+• Pazartesi haftalık namaz özeti (Bildirim Ayarları'ndan kapatılabilir)
+• İlk kurulumda "1 dk sonra test ezanı" ile ezanın telefonunuzda çaldığını görün
+• Xiaomi, Huawei, OPPO, vivo, Samsung ve Tecno'da ezanın gecikmemesi için ayar rehberi
+• Hata düzeltmeleri ve iyileştirmeler
+</tr-TR>
+<en-US>
+• Verse of the day now picks medium-length verses that make sense on their own
+• Weekly prayer summary on Mondays (can be turned off in Notification Settings)
+• On first install, play a test adhan in 1 minute to check it works on your phone
+• Settings guide for Xiaomi, Huawei, OPPO, vivo, Samsung and Tecno so the adhan isn't delayed
+• Bug fixes and improvements
+</en-US>
+<de-DE>
+• Der Vers des Tages wählt jetzt mittellange, für sich verständliche Verse
+• Wöchentliche Gebetsübersicht am Montag (in den Benachrichtigungseinstellungen abschaltbar)
+• Bei der Erstinstallation Test-Adhan in 1 Minute: prüfen Sie, ob er auf Ihrem Telefon ertönt
+• Einstellungshilfe für Xiaomi, Huawei, OPPO, vivo, Samsung und Tecno, damit der Adhan nicht verspätet kommt
+• Fehlerbehebungen und Verbesserungen
+</de-DE>
+<fr-FR>
+• Le verset du jour choisit désormais des versets de longueur moyenne, compréhensibles seuls
+• Résumé hebdomadaire des prières le lundi (désactivable dans les réglages des notifications)
+• À la première installation, adhan de test dans 1 minute pour vérifier qu'il sonne
+• Guide de réglages pour Xiaomi, Huawei, OPPO, vivo, Samsung et Tecno afin que l'adhan ne soit pas retardé
+• Corrections et améliorations
+</fr-FR>
+<ar>
+• آية اليوم تُختار الآن من آيات متوسطة الطول مفهومة بذاتها
+• ملخص أسبوعي للصلوات يوم الاثنين (يمكن إيقافه من إعدادات الإشعارات)
+• عند التثبيت الأول: أذان تجريبي بعد دقيقة للتأكد من أنه يعمل على هاتفك
+• دليل إعدادات لهواتف Xiaomi وHuawei وOPPO وvivo وSamsung وTecno حتى لا يتأخر الأذان
+• إصلاحات وتحسينات
+</ar>

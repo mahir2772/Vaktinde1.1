@@ -387,7 +387,7 @@ void main() {
       await finish(tester);
     });
 
-    testWidgets('Ana ekran widget ipucu: 3 farklı günden sonra ve başlatıcı '
+    testWidgets('Ana ekran widget ipucu: 2 farklı günden sonra ve başlatıcı '
         'destekliyorsa; "Widget ekle" seçimi açar', (tester) async {
       Widget home() => ShowCaseWidget(builder: (context) => const HomeView());
       Future<void> pumpHome(int days) async {
@@ -400,12 +400,12 @@ void main() {
         );
       }
 
-      await pumpHome(2);
+      await pumpHome(1);
       expect(find.text(tr.tipWidget), findsNothing);
       await finish(tester);
 
       pinSupported = false;
-      await pumpHome(3);
+      await pumpHome(2);
       expect(find.text(tr.tipWidget), findsNothing);
       await finish(tester);
 
@@ -417,6 +417,32 @@ void main() {
       expect(find.text(tr.addWidgetHint), findsOneWidget);
       expect(find.text(tr.tipWidget), findsNothing);
       expect((await savedPrefs())[FeatureTip.seenKey('home_widget')], isTrue);
+      await finish(tester);
+    });
+
+    testWidgets('Üretici ipucu: sadece ezanı kesen üreticilerde; "Ayarları '
+        'göster" Bildirim Kontrolü\'nü açar', (tester) async {
+      const device = MethodChannel('vaktinde/device');
+      var manufacturer = 'Google';
+      messenger.setMockMethodCallHandler(device, (call) async {
+        if (call.method != 'deviceInfo') return null;
+        return {'manufacturer': manufacturer, 'brand': manufacturer};
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(device, null));
+      Widget home() => ShowCaseWidget(builder: (context) => const HomeView());
+
+      await pumpApp(tester, home(), height: 1600);
+      expect(find.text(tr.tipVendorGuide), findsNothing);
+      await finish(tester);
+
+      FeatureTip.debugReset();
+      manufacturer = 'Xiaomi';
+      await pumpApp(tester, home(), height: 1600);
+      expect(find.text(tr.tipVendorGuide), findsOneWidget);
+      await tester.tap(find.text(tr.tipVendorGuideAction));
+      await settle(tester);
+      expect(find.text(tr.healthTitle), findsWidgets);
+      expect((await savedPrefs())[FeatureTip.seenKey('vendor_guide')], isTrue);
       await finish(tester);
     });
   });

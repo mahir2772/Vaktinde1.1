@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:showcaseview/showcaseview.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../../data/services/error_reporter.dart';
 import '../../common/app_analytics.dart';
 import '../../common/language_provider.dart';
 import '../../home/view_model/home_view_model.dart';
@@ -266,6 +268,55 @@ Future<void> _runPermissionPriming(
     }
   } catch (e) {
     debugPrint("Konum izni hatası: $e");
+  }
+
+  // 3. Bildirim izni verildiyse ezanın bu telefonda çaldığını hemen görsün
+  if (notificationsGranted == true && context.mounted) {
+    await offerTestEzan(context);
+  }
+}
+
+/// İlk açılışta bir kez: "1 dk sonra test ezanı" önerisi (Bildirim Kontrolü'ndeki
+/// testin aynısı). Ezanın gelmediğini fark edip uygulamayı silenlere erken uyarı.
+@visibleForTesting
+Future<void> offerTestEzan(BuildContext context) async {
+  final yes = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      final loc = AppLocalizations.of(dialogContext)!;
+      return AlertDialog(
+        icon: const Icon(Icons.volume_up_outlined, size: 36),
+        title: Text(loc.testEzanOfferTitle, textAlign: TextAlign.center),
+        content: SingleChildScrollView(
+          child: Text(loc.healthTestInfo, textAlign: TextAlign.center),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(loc.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(loc.healthTestButton),
+          ),
+        ],
+      );
+    },
+  );
+  AppAnalytics.logEvent(
+    name: 'test_ezani',
+    parameters: {'sonuc': yes == true ? 'istendi' : 'istenmedi'},
+  );
+  if (yes != true || !context.mounted) return;
+  final loc = AppLocalizations.of(context)!;
+  final messenger = ScaffoldMessenger.maybeOf(context);
+  try {
+    await context.read<HomeViewModel>().scheduleTestEzan(loc);
+    messenger?.showSnackBar(SnackBar(content: Text(loc.healthTestScheduled)));
+  } catch (e, st) {
+    unawaited(
+      reportNonFatal(e, st, reason: 'ilk açılış test ezanı kurulamadı'),
+    );
   }
 }
 

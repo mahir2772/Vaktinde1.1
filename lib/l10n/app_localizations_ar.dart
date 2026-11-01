@@ -679,6 +679,36 @@ class AppLocalizationsAr extends AppLocalizations {
       'إذا ظهر لك هذا الإشعار فإشعارات الأذان تعمل.';
 
   @override
+  String get testEzanOfferTitle => 'هل يعمل الأذان على هاتفك؟';
+
+  @override
+  String get notNow => 'ليس الآن';
+
+  @override
+  String get tipVendorGuide =>
+      'يحتاج هذا الهاتف إلى بعض الإعدادات حتى لا يتأخر الأذان.';
+
+  @override
+  String get tipVendorGuideAction => 'عرض الإعدادات';
+
+  @override
+  String get weeklySummaryTitle => 'ملخص الصلوات الأسبوعي';
+
+  @override
+  String get weeklySummarySub =>
+      'كل يوم اثنين ملخص الأسبوع الماضي إن كنت تستخدم متابعة الصلوات';
+
+  @override
+  String weeklySummaryBody(int done, int total) {
+    return 'الأسبوع الماضي: $done من $total صلاة.';
+  }
+
+  @override
+  String weeklySummaryFull(int total) {
+    return 'الأسبوع الماضي: أدّيت الصلوات كلها ($total). تقبّل الله.';
+  }
+
+  @override
   String get healthStepXiaomiAutostart =>
       'فعّل التشغيل التلقائي من إعدادات التطبيق.';
 

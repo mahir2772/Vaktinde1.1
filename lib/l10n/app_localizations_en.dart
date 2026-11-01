@@ -673,6 +673,36 @@ class AppLocalizationsEn extends AppLocalizations {
       'If you see this notification, adhan notifications are working.';
 
   @override
+  String get testEzanOfferTitle => 'Does the adhan play on your phone?';
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
+  String get tipVendorGuide =>
+      'This phone needs a few settings so the adhan isn\'t delayed.';
+
+  @override
+  String get tipVendorGuideAction => 'Show settings';
+
+  @override
+  String get weeklySummaryTitle => 'Weekly prayer summary';
+
+  @override
+  String get weeklySummarySub =>
+      'On Mondays, last week\'s summary if you use the prayer tracker';
+
+  @override
+  String weeklySummaryBody(int done, int total) {
+    return 'Last week you prayed $done of $total prayers.';
+  }
+
+  @override
+  String weeklySummaryFull(int total) {
+    return 'Last week you prayed all $total prayers. May Allah accept them.';
+  }
+
+  @override
   String get healthStepXiaomiAutostart =>
       'In the app settings, turn on “Autostart”.';
 
