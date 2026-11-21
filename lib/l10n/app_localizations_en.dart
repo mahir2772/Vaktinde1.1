@@ -1296,8 +1296,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kazaCalcRamadans => 'Ramadans not fasted';
 
   @override
+  String get kazaCalcFastDays => 'Missed fasting (days)';
+
+  @override
+  String get kazaCalcAddRamadan => '+1 Ramadan (+30 days)';
+
+  @override
   String get kazaCalcOptionalInfo =>
-      'Prayers missed during menstruation don\'t need to be made up, so these days are subtracted from the prayers. They are not subtracted from fasting: Ramadan fasts missed during menstruation must be made up too. Each Ramadan counts as 30 days.';
+      'Prayers missed during menstruation don\'t need to be made up, so the days you enter are subtracted from the prayers. They are not subtracted from fasting: fasts missed during menstruation must be made up too. You can enter missed fasts day by day or add +30 days for a full Ramadan.';
 
   @override
   String get kazaCalcResult => 'Estimated qada';

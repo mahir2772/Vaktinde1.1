@@ -1294,8 +1294,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get kazaCalcRamadans => 'Nicht gefastete Ramadan-Monate';
 
   @override
+  String get kazaCalcFastDays => 'Versäumtes Fasten (Tage)';
+
+  @override
+  String get kazaCalcAddRamadan => '+1 Ramadan (+30 Tage)';
+
+  @override
   String get kazaCalcOptionalInfo =>
-      'Gebete, die während der Menstruation ausfallen, müssen nicht nachgeholt werden; diese Tage werden von den Gebeten abgezogen. Beim Fasten wird nichts abgezogen: Auch während der Menstruation ausgelassenes Ramadan-Fasten muss nachgeholt werden. Jeder Ramadan zählt als 30 Tage.';
+      'Gebete, die während der Menstruation ausfallen, müssen nicht nachgeholt werden; die eingegebenen Tage werden von den Gebeten abgezogen. Beim Fasten wird nichts abgezogen: Auch während der Menstruation ausgelassenes Fasten muss nachgeholt werden. Sie können versäumte Fastentage einzeln eingeben oder für einen ganzen Ramadan +30 Tage hinzufügen.';
 
   @override
   String get kazaCalcResult => 'Geschätztes Qada';

@@ -1311,8 +1311,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get kazaCalcRamadans => 'عدد أشهر رمضان التي لم تُصَم';
 
   @override
+  String get kazaCalcFastDays => 'أيام الصيام الفائتة';
+
+  @override
+  String get kazaCalcAddRamadan => '+1 رمضان (+30 يومًا)';
+
+  @override
   String get kazaCalcOptionalInfo =>
-      'لا يجب قضاء الصلوات التي فاتت في أيام الحيض، لذا تُطرح هذه الأيام من الصلوات. ولا تُطرح من الصيام: فما فات من صيام رمضان بسبب الحيض يجب قضاؤه أيضًا. يُحسب كل رمضان ثلاثين يومًا.';
+      'للا يجب قضاء الصلوات التي فاتت في أيام الحيض، لذا تُطرح الأيام التي تُدخلها من الصلوات. ولا تُطرح من الصيام: فما فات من الصيام بسبب الحيض يجب قضاؤه أيضًا. يمكنك إدخال أيام الصيام الفائتة يومًا بيوم أو إضافة 30 يومًا عن شهر رمضان كامل.';
 
   @override
   String get kazaCalcResult => 'القضاء التقديري';

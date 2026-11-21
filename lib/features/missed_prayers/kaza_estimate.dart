@@ -1,12 +1,14 @@
 /// "Kaza hesapla" tahmini (saf, test edilebilir): yıl 365, ay 30 gün sayılır.
 /// Hayız günlerinde kılınmayan namazın kazası gerekmez: toplam ay × aylık özel
-/// gün namazdan düşülür. Oruçtan düşülmez (hayızda tutulamayan Ramazan orucu
-/// da kaza edilir); her Ramazan 30 gün.
+/// gün namazdan düşülür. Oruçtan düşülmez (hayızda tutulamayan oruç da kaza
+/// edilir); oruç kazası doğrudan gün gün ([fastDays]) ya da Ramazan ([ramadans]
+/// × 30) olarak verilebilir.
 class KazaEstimate {
   static const int maxYears = 80;
   static const int maxMonths = 11;
   static const int maxExcusedDays = 10;
   static const int maxRamadans = 80;
+  static const int maxFastDays = maxRamadans * 30;
 
   /// 5 vaktin ve vitrin her birine eklenecek kaza
   final int prayers;
@@ -20,14 +22,19 @@ class KazaEstimate {
     int years = 0,
     int months = 0,
     int excusedDays = 0,
+    int fastDays = 0,
     int ramadans = 0,
   }) {
-    final days = years * 365 + months * 30;
+    final safeYears = years.clamp(0, maxYears);
+    final safeMonths = months.clamp(0, maxMonths);
+    final days = safeYears * 365 + safeMonths * 30;
     final excused =
-        (years * 12 + months) * excusedDays.clamp(0, maxExcusedDays);
-    return KazaEstimate._(days - excused, ramadans * 30);
+        (safeYears * 12 + safeMonths) * excusedDays.clamp(0, maxExcusedDays);
+    final prayers = (days - excused).clamp(0, days);
+    final fasts = (fastDays + ramadans * 30).clamp(0, maxFastDays);
+    return KazaEstimate._(prayers, fasts);
   }
 
-  /// Eklenecek kaza yok (süre ve Ramazan 0): ekleme düğmesi kapalı
+  /// Eklenecek kaza yok (süre ve oruç 0): ekleme düğmesi kapalı
   bool get isEmpty => prayers == 0 && fasts == 0;
 }

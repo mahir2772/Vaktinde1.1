@@ -762,18 +762,27 @@ void main() {
         ),
       );
 
-      // Yıl elle (sayıya dokununca) 2; ay +1, özel gün +2, Ramazan +1
-      await tap(inSheet(find.text('0')).first);
+      // Yıl elle (sayıya dokununca) 2; ay +1; özel gün (hayız) elle 2;
+      // oruç gün gün +1 ve +1 Ramazan (+30 gün) → toplam 31 gün
+      final steppers = inSheet(find.byType(CounterStepper));
+      await tap(find.descendant(of: steppers.at(0), matching: find.text('0')));
       await tester.enterText(find.byType(TextField), '2');
       await tester.tap(find.text(loc.save));
       await _settle(tester);
+
       final plus = inSheet(find.byIcon(Icons.add));
       await tap(plus.at(1));
-      await tap(plus.at(2));
-      await tap(plus.at(2));
+
+      await tap(find.descendant(of: steppers.at(2), matching: find.text('0')));
+      await tester.enterText(find.byType(TextField), '2');
+      await tester.tap(find.text(loc.save));
+      await _settle(tester);
+
       await tap(plus.at(3));
+      await tap(inSheet(find.text(loc.kazaCalcAddRamadan)));
+
       expect(
-        tester.getSemantics(inSheet(find.byType(CounterStepper)).first),
+        tester.getSemantics(steppers.first),
         containsSemantics(
           label: loc.kazaCalcYears,
           value: '2',
@@ -781,14 +790,14 @@ void main() {
           hasTapAction: true,
         ),
       );
-      // 2 × 365 + 30 − 25 ay × 2 gün = 710; oruç 30
+      // 2 × 365 + 30 − 25 ay × 2 gün = 710; oruç 1 + 30 = 31 (sayaç + sonuç)
       expect(inSheet(find.text('710')), findsOneWidget);
-      expect(inSheet(find.text('30')), findsOneWidget);
+      expect(inSheet(find.text('31')), findsNWidgets(2));
       expect(addEnabled(), isTrue);
 
       // İptal: sayfa açık kalır, sayaçlar değişmez
       await tap(add);
-      expect(find.text(loc.kazaCalcConfirm(710, 30)), findsOneWidget);
+      expect(find.text(loc.kazaCalcConfirm(710, 31)), findsOneWidget);
       await tester.tap(find.text(loc.cancel));
       await _settle(tester);
       final prefs = await SharedPreferences.getInstance();
@@ -805,12 +814,12 @@ void main() {
       for (final key in ['İkindi', 'Akşam', 'Yatsı', 'Vitir']) {
         expect(prefs.getInt('kaza_$key'), 710);
       }
-      expect(prefs.getInt('kaza_Oruç'), 32);
+      expect(prefs.getInt('kaza_Oruç'), 33);
       expect(find.text(loc.kazaCalcAdded), findsOneWidget);
       expect(find.text('722'), findsOneWidget);
       // "Kaza" sekmesinin listesi (sekmeler yatay kaydırılır)
       await tester.scrollUntilVisible(
-        find.text('32'),
+        find.text('33'),
         200,
         scrollable: find
             .descendant(
@@ -819,7 +828,7 @@ void main() {
             )
             .first,
       );
-      expect(find.text('32'), findsOneWidget);
+      expect(find.text('33'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await _dispose(tester);
     });

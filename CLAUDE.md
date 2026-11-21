@@ -92,7 +92,7 @@ lib/
                             'excused_silent_ezan' (varsayılan açık, Ayarlar): özel günlerde (dönemin gelecek günleri dahil) vakit bildirimleri
                             sessiz kanalda yüksüz (Kıldım/Durdur yok, alarm_plan_meta'ya girmez), hatırlatma ve vakit çıkış kurulmaz.
                             addToKazaCounters: "Kaza hesapla" (missed_prayers/kaza_estimate.dart KazaEstimate: yıl×365+ay×30, özel gün düşümü
-                            sadece namazdan, Ramazan×30 oruç) sayaçlara ekler
+                            sadece namazdan, ay/özel gün elle de girilebilir; oruç gün gün fastDays + "+1 Ramazan (+30 gün)" kısayolu) sayaçlara ekler
       background_manager    Kalıcı bildirim (888) — ön plan servisi YOK (1.4.0): sadece native NotificationUpdater çizer (vakitte
                             alarmla kendini yeniler; BOOT_COMPLETED ve MY_PACKAGE_REPLACED + 60 sn sonra ikinci çizim). Çizemezse
                             sadece bildirim düşer, uygulama kapanmaz. initializeService eski 'bg_display'i siler.
@@ -151,12 +151,16 @@ lib/
                             registerInteractivityCallback): "Kıldım" kurallarıyla (sıralı, kazaya eklenmiş/özel gün/vakti girmemiş
                             işaretlenmez, geri alınca vakit çıkış hatırlatması eşitlenir). PrayerTrackerService.changes, "Kıldım"
                             ve updateHomeWidget (WorkManager dahil) widget'ı yeniler
-      hadith_service        hadeethenc.com API + yerel json fallback; getDailyHadith(locale, {day}) gün tohumlu, yedek de gün boyu sabit
+      hadith_service        hadeethenc.com API (7 ana kök kategori: 2, 5, 3, 4, 7, 1, 6; meta.last_page sayfalama; hadith_category_pages) + yerel yedek;
+                            görülen kimlikler 'seen_hadith_ids' (son 1000, yedekte) ile kalıcı korunur → ardışık tekrar ve güncellemede başa sarma yok;
+                            günlük atama 'daily_hadith_assignments' (14 gün) dil değişiminde aynı hadisi dener; önbellek 'daily_hadith_cache'
       ayah_service          api.alquran.cloud (meal eşlemesi tek yer: quran_service.dart QuranEdition — tr.diyanet, en.sahih,
-                            de.aburida, fr.hamidullah; ar sadece Arapça); getDailyAyah(dil, {day}): ayahNumberFor(gün) =
-                            assets/data/daily_ayahs.json listesinden (644 ayet: Diyanet mealinde kendi başına anlaşılan, 90-330
-                            harf, bağlam/diyalog ile başlamayan, gruplu meal hariç; tool/daily_ayahs.py fawazahmed0 tur-diyanetisleri
-                            verisinden üretir) [epochDay×3853 mod liste]; liste okunamazsa epochDay×3853 mod 6236 + 1 (dilden bağımsız). Önbellek 'daily_ayah_cache' / 'daily_hadith_cache' ("yyyy-MM-dd|dil", yedeğe girmez)
+                            de.aburida, fr.hamidullah; ar sadece Arapça); getDailyAyah(dil, {day}): aday listesi
+                            assets/data/daily_ayahs.json (644 ayet: Diyanet mealinde kendi başına anlaşılan, 90-330 harf,
+                            bağlam/diyalog ile başlamayan, gruplu meal hariç; tool/daily_ayahs.py fawazahmed0 tur-diyanetisleri
+                            verisinden üretir; liste okunamazsa 6236 ayet); taban adım epochDay×3853, görülen ayetler 'seen_ayah_numbers'
+                            (yedekte) ile kalıcı korunur (liste bitince son 30 gün atlanarak yeni döngü), günlük atama
+                            'daily_ayah_assignments' (14 gün, dilden bağımsız). Önbellek 'daily_ayah_cache' ("yyyy-MM-dd|dil", yedeğe girmez)
       quran_service         sure çekme (alquran.cloud, quran-uthmani + meal), Besmele 1. ayetten ayrılır (1 ve 9 hariç),
                             önbellek SharedPreferences (en çok 10 sure / 400k karakter, LRU; yer imli sure korunur),
                             'quran_bookmark' {surah, ayah}, 'quran_font_scale' 0.8–1.6
@@ -263,8 +267,8 @@ lib/
                                            UsageReviewPrompt: 3 farklı kullanım günü (goalDays) ('usage_days_count', 'usage_last_day'),
                                            açılışta/yeni güne dönüşte; ikisi 'review_requested' ve süreç kilidini paylaşır
     fitre/view/fitre_view.dart             Fitre & Fidye (Araçlar > Hesap): data/services/fitre_service.dart — assets/data/fitre.json
-                                           + uzak https://mahir2772.github.io/fitre.json (docs/site/fitre.json yüklenir; prefs
-                                           'fitre_remote_json'); validFrom ≤ bugün olan en yeni tutar. Yeni yıl: girdi EKLE, silme
+                                           + uzak [https://mahir2772.github.io/fitre.json](https://mahir2772.github.io/fitre.json) (docs/site/fitre.json yüklenir; prefs
+                                           'fitre_remote_json'); validFrom ≤ bugün olan en yeni tutar; TRY için doğrudan '₺' simgesi. Yeni yıl: girdi EKLE, silme
     prayer_tracker/widgets/ramadan_fast_card.dart  Ramazan orucu kartı (Ramazan + bitişten 30 gün): data/services/
                                            fast_tracker(.dart|_service.dart), 'fast_log', 'fast_kaza_added' → kaza_Oruç (tekil, geri alınır)
     quran/view/{quran_view,surah_reader_view}.dart  Kur'an (Araçlar > Bilgi): assets/data/surahs.json (114, 6236 ayet);

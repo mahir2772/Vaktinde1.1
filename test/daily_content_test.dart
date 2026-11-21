@@ -1,6 +1,7 @@
-// Günün ayeti ve hadisi: güne bağlı seçim (ayet dilden bağımsız), gün + dil
-// önbelleği (aynı gün ağa çıkmaz, internetsiz önbellekten), gün boyu kalan
-// yerel yedek ve 10:00 / 19:00 bildiriminin çalacağı günün içeriğiyle kurulması.
+// Günün ayeti ve hadisi: güne bağlı seçim (ayet dilden bağımsız), kalıcı
+// görülen geçmişi (tekrar ve güncellemede başa sarmama), gün + dil önbelleği
+// (aynı gün ağa çıkmaz, internetsiz önbellekten), gün boyu kalan yerel yedek
+// ve 10:00 / 19:00 bildiriminin çalacağı günün içeriğiyle kurulması.
 import 'dart:convert';
 import 'dart:io';
 
@@ -34,15 +35,17 @@ String _ayahJson(Uri url) {
   });
 }
 
-// hadeethenc: liste (sayfa başına 20 kimlik) ve tek hadis
-String _hadithJson(Uri url) {
+// hadeethenc: liste (kategori + sayfa başına 20 kimlik) ve tek hadis
+String _hadithJson(Uri url, {int lastPage = 3}) {
   final query = url.queryParameters;
   if (url.path.endsWith('/list/')) {
+    final cat = int.tryParse(query['category_id'] ?? '2') ?? 2;
     final page = int.parse(query['page']!);
     return jsonEncode({
       'data': [
-        for (var i = 0; i < 20; i++) {'id': '${page * 100 + i}'},
+        for (var i = 0; i < 20; i++) {'id': '${cat * 10000 + page * 100 + i}'},
       ],
+      'meta': {'current_page': '$page', 'last_page': lastPage},
     });
   }
   return jsonEncode({
@@ -122,6 +125,30 @@ void main() {
 
       await service().getDailyAyah('tr', day: DateTime(2026, 10, 14));
       expect(_ayahNumberOf(urls.last), isNot(number));
+    });
+
+    test('geçmiş korunur: daha önce görülen ayetler tekrar seçilmez', () async {
+      final day = DateTime(2026, 10, 13);
+      final baseNumber = await AyahService.ayahNumberFor(day);
+      // Güncellemeden önce bugün düşecek ayet zaten görülmüş sayılır
+      SharedPreferences.setMockInitialValues({
+        AyahService.seenKey: ['$baseNumber'],
+      });
+      final urls = <Uri>[];
+      final ayah = await AyahService(
+        fetch: (url) async {
+          urls.add(url);
+          return _ayahJson(url);
+        },
+      ).getDailyAyah('tr', day: day);
+      expect(ayah, isNotNull);
+      final picked = _ayahNumberOf(urls.single);
+      expect(picked, isNot(baseNumber));
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getStringList(AyahService.seenKey), [
+        '$baseNumber',
+        '$picked',
+      ]);
     });
 
     test(
@@ -204,6 +231,31 @@ void main() {
       );
     });
 
+    test('ardışık günlerde tekrar yok; sayfa bitince sonraki sayfaya geçer ve '
+        'güncellemede başa sarmaz', () async {
+      SharedPreferences.setMockInitialValues({});
+      final seenContents = <String>{};
+      final start = DateTime(2026, 10, 1);
+
+      // 45 ardışık gün (her gün yeni servis örneği = yeni açılış/güncelleme)
+      for (var i = 0; i < 45; i++) {
+        final service = HadithService(
+          fetch: (url) async => _hadithJson(url, lastPage: 5),
+        );
+        final hadith = await service.getDailyHadith(
+          tr,
+          day: PrayerTracker.addDays(start, i),
+        );
+        expect(hadith?.content, isNotNull);
+        expect(
+          seenContents.add(hadith!.content!),
+          isTrue,
+          reason: 'Gün $i tekrar etti: ${hadith.content}',
+        );
+      }
+      expect(seenContents, hasLength(45));
+    });
+
     test('yerel yedek: bugün gösterilen gün boyu kalır (ağ gelse de); '
         'ileri günün yedeği saklanmaz', () async {
       SharedPreferences.setMockInitialValues({});
@@ -254,12 +306,13 @@ void main() {
       );
       final today = (await online.getDailyHadith(tr, day: now))!.content;
       await online.prefetch(tr);
-      // 3 farklı liste sayfası en çok bir kez: 1 + 7 hadis + ≤3 liste
+      // En fazla 2 farklı hafta listesi + 8 hadis detayı = ≤10 istek (≤11)
       expect(urls.length, lessThanOrEqualTo(11));
 
       final offline = HadithService(
         fetch: (_) async => throw const SocketException('yok'),
       );
+      final weekContents = <String>{today!};
       expect((await offline.getDailyHadith(tr, day: now))!.content, today);
       for (var i = 1; i <= 7; i++) {
         final day = PrayerTracker.addDays(now, i);
@@ -269,6 +322,8 @@ void main() {
           useFallback: false,
         );
         expect(cached!.content, startsWith('tr hadis '), reason: '$i');
+        // 8 günün tamamı birbirinden farklı
+        expect(weekContents.add(cached.content!), isTrue, reason: '$i');
       }
       expect(
         await offline.getDailyHadith(

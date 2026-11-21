@@ -71,6 +71,8 @@ const Map<String, Object> _userData = {
   'hatim_count': 2,
   'hatim_reminder_enabled': true,
   'hatim_reminder_time': 1260,
+  AyahService.seenKey: ['255', '1024'],
+  HadithService.seenKey: ['20101', '50104'],
 };
 
 // Yedeğe girmemesi gerekenler (cihaza özgü, önbellek, rıza, sayaç, tur)
@@ -85,7 +87,10 @@ final Map<String, Object> _notBackedUp = {
   'daily_hadith_date': '2026-10-11',
   'daily_hadith_lang': 'tr',
   AyahService.cacheKey: '{"2026-10-11|tr":"{}"}',
+  AyahService.assignmentsKey: '{"2026-10-11":255}',
   HadithService.cacheKey: '{"2026-10-11|tr":{"content":"hadis"}}',
+  HadithService.assignmentsKey: '{"2026-10-11":"20101"}',
+  'hadith_category_pages': '{"tr|2":2}',
   FitreService.cacheKey: '{"x":1}',
   QuranService.cacheIndexKey: ['quran_surah_1'],
   '${QuranService.cachePrefix}1': 'metin',
@@ -328,6 +333,8 @@ void main() {
         'hatim_reminder_time': 1440,
         'end_reminder_minutes': 0,
         'daily_content_enabled': null,
+        AyahService.seenKey: ['0'],
+        HadithService.seenKey: ['  '],
       };
       for (final MapEntry(:key, :value) in bad.entries) {
         expect(
@@ -406,8 +413,8 @@ void main() {
     });
 
     test('yedekte konum yoksa telefondaki konum ve vakit önbelleği, dil '
-        'yoksa seçili dil, kalıcı bildirim ayarı yoksa (eski sürümün yedeği) '
-        'telefondaki ayar korunur', () async {
+        'yoksa seçili dil, kalıcı bildirim ayarı ve içerik geçmişi yoksa '
+        '(eski sürümün yedeği) telefondaki kayıtlar korunur', () async {
       final prefs = await prefsWith({
         'saved_city': 'İzmir',
         'saved_district': 'Konak',
@@ -418,6 +425,8 @@ void main() {
         'language_code': 'fr',
         'kaza_Sabah': 40,
         'persistent_notification_enabled': false,
+        AyahService.seenKey: ['255'],
+        HadithService.seenKey: ['20101'],
       });
       await BackupService.restore(prefs, backupOf({'kaza_Sabah': 3}));
       expect(prefs.getString('saved_city'), 'İzmir');
@@ -427,6 +436,8 @@ void main() {
       expect(prefs.getString('cached_prayer_times'), '{"imsak":"05:10"}');
       expect(prefs.getString('language_code'), 'fr');
       expect(prefs.getBool('persistent_notification_enabled'), isFalse);
+      expect(prefs.getStringList(AyahService.seenKey), ['255']);
+      expect(prefs.getStringList(HadithService.seenKey), ['20101']);
       expect(prefs.getInt('kaza_Sabah'), 3);
     });
 
@@ -454,7 +465,7 @@ void main() {
       final before = PrayerTrackerService.changes.value;
       final replacements = PrayerTrackerService.replacements;
       // Dinleyici bildirildiğinde yeni kaydı okur
-      final reads = <Future<Map<String, int>>>[];
+      final List<Future<dynamic>> reads = [];
       void listener() => reads.add(PrayerTrackerService().loadLog());
 
       PrayerTrackerService.changes.addListener(listener);

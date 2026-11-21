@@ -1,35 +1,35 @@
 <tr-TR>
-• Günün ayeti artık kendi başına anlaşılan, orta uzunlukta ayetlerden seçiliyor
+• Günün ayeti kendi başına anlaşılan orta uzunlukta ayetlerden seçiliyor; ayet ve hadis artık tekrar etmiyor, güncellemede başa sarmıyor
+• Kaza hesaplama: oruçlar gün gün (+1 Ramazan kısayoluyla), aylık özel gün elle girilebiliyor
 • Pazartesi haftalık namaz özeti (Bildirim Ayarları'ndan kapatılabilir)
-• İlk kurulumda "1 dk sonra test ezanı" ile ezanın telefonunuzda çaldığını görün
-• Xiaomi, Huawei, OPPO, vivo, Samsung ve Tecno'da ezanın gecikmemesi için ayar rehberi
+• İlk kurulumda "1 dk sonra test ezanı" önerisi; Xiaomi, Huawei, OPPO, vivo, Samsung ve Tecno için ayar rehberi
 • Hata düzeltmeleri ve iyileştirmeler
 </tr-TR>
 <en-US>
-• Verse of the day now picks medium-length verses that make sense on their own
+• Daily verse picks standalone medium-length verses; daily verse and hadith no longer repeat or reset after updates
+• Qada calculator: enter missed fasts day by day (with a +1 Ramadan shortcut) and type menstruation days manually
 • Weekly prayer summary on Mondays (can be turned off in Notification Settings)
-• On first install, play a test adhan in 1 minute to check it works on your phone
-• Settings guide for Xiaomi, Huawei, OPPO, vivo, Samsung and Tecno so the adhan isn't delayed
+• Test adhan in 1 min on first install; settings guide for Xiaomi, Huawei, OPPO, vivo, Samsung and Tecno
 • Bug fixes and improvements
 </en-US>
 <de-DE>
-• Der Vers des Tages wählt jetzt mittellange, für sich verständliche Verse
-• Wöchentliche Gebetsübersicht am Montag (in den Benachrichtigungseinstellungen abschaltbar)
-• Bei der Erstinstallation Test-Adhan in 1 Minute: prüfen Sie, ob er auf Ihrem Telefon ertönt
-• Einstellungshilfe für Xiaomi, Huawei, OPPO, vivo, Samsung und Tecno, damit der Adhan nicht verspätet kommt
+• Vers des Tages wählt mittellange, für sich verständliche Verse; Vers und Hadith wiederholen sich nicht mehr und starten nach Updates nicht neu
+• Qada-Rechner: versäumte Fastentage einzeln (+1 Ramadan) und Menstruationstage manuell eingeben
+• Wöchentliche Gebetsübersicht am Montag (in Benachrichtigungen abschaltbar)
+• Test-Adhan in 1 Min. beim Erststart; Hilfe für Xiaomi, Huawei, OPPO, vivo, Samsung und Tecno
 • Fehlerbehebungen und Verbesserungen
 </de-DE>
 <fr-FR>
-• Le verset du jour choisit désormais des versets de longueur moyenne, compréhensibles seuls
-• Résumé hebdomadaire des prières le lundi (désactivable dans les réglages des notifications)
-• À la première installation, adhan de test dans 1 minute pour vérifier qu'il sonne
-• Guide de réglages pour Xiaomi, Huawei, OPPO, vivo, Samsung et Tecno afin que l'adhan ne soit pas retardé
+• Le verset du jour choisit des versets autonomes ; verset et hadith ne se répètent plus ni ne repartent à zéro après mise à jour
+• Calculateur de qada : jeûnes manqués jour par jour (+1 Ramadan) et jours de menstrues saisis manuellement
+• Bilan hebdomadaire des prières le lundi (désactivable dans les réglages)
+• Adhan de test dans 1 min à l'installation ; guide Xiaomi, Huawei, OPPO, vivo, Samsung et Tecno
 • Corrections et améliorations
 </fr-FR>
 <ar>
-• آية اليوم تُختار الآن من آيات متوسطة الطول مفهومة بذاتها
+• آية اليوم تُختار من آيات متوسطة مفهومة بذاتها؛ ولم تعد الآية والحديث يتكرران أو يعودان للبداية بعد التحديث
+• حاسبة القضاء: إدخال أيام الصيام الفائتة يومًا بيوم (مع اختصار +1 رمضان) وإدخال أيام الحيض يدويًا
 • ملخص أسبوعي للصلوات يوم الاثنين (يمكن إيقافه من إعدادات الإشعارات)
-• عند التثبيت الأول: أذان تجريبي بعد دقيقة للتأكد من أنه يعمل على هاتفك
-• دليل إعدادات لهواتف Xiaomi وHuawei وOPPO وvivo وSamsung وTecno حتى لا يتأخر الأذان
+• أذان تجريبي بعد دقيقة عند التثبيت الأول؛ ودليل إعدادات لهواتف Xiaomi وHuawei وOPPO وvivo وSamsung وTecno
 • إصلاحات وتحسينات
 </ar>

@@ -1311,8 +1311,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get kazaCalcRamadans => 'Ramadans non jeûnés';
 
   @override
+  String get kazaCalcFastDays => 'Jeûnes manqués (jours)';
+
+  @override
+  String get kazaCalcAddRamadan => '+1 Ramadan (+30 jours)';
+
+  @override
   String get kazaCalcOptionalInfo =>
-      'Les prières manquées pendant les menstrues n\'ont pas à être rattrapées : ces jours sont déduits des prières. Ils ne sont pas déduits du jeûne : les jeûnes du Ramadan manqués pendant les menstrues doivent aussi être rattrapés. Chaque Ramadan compte pour 30 jours.';
+      'Les prières manquées pendant les menstrues n\'ont pas à être rattrapées : les jours saisis sont déduits des prières. Ils ne sont pas déduits du jeûne : les jeûnes manqués pendant les menstrues doivent aussi être rattrapés. Vous pouvez saisir les jeûnes manqués jour par jour ou ajouter +30 jours pour un Ramadan complet.';
 
   @override
   String get kazaCalcResult => 'Qada estimé';

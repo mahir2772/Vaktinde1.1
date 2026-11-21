@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/common/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
+import 'ayah_service.dart';
+import 'hadith_service.dart';
 import 'hatim.dart';
 import 'hatim_service.dart';
 import 'quran_service.dart';
@@ -171,6 +173,9 @@ abstract final class BackupService {
     HatimService.countKey: const _Field(_Kind.integer, _isNonNegative),
     HatimService.reminderKey: const _Field(_Kind.boolean),
     HatimService.reminderTimeKey: const _Field(_Kind.integer, _isMinuteOfDay),
+    // Günün ayeti ve hadisi geçmişi (güncelleme/aktarımda başa sarmasın)
+    AyahService.seenKey: const _Field(_Kind.textList, _isAyahNumberList),
+    HadithService.seenKey: const _Field(_Kind.textList, _isNonEmptyStringList),
   };
 
   // Zikir adına göre (hazır, Esmaü'l-Hüsna ya da kullanıcının eklediği)
@@ -322,7 +327,9 @@ abstract final class BackupService {
       if (!isBackedUp(key) || values.containsKey(key)) continue;
       if (!replaceLocation && locationKeys.contains(key)) continue;
       if (key == _languageKey ||
-          key == StorageService.persistentNotificationKey) {
+          key == StorageService.persistentNotificationKey ||
+          key == AyahService.seenKey ||
+          key == HadithService.seenKey) {
         continue;
       }
       await prefs.remove(key);
@@ -415,3 +422,13 @@ bool _isTimeOffsets(Object v) => _isIntMap(
       BackupService._vakitler.contains(vakit) &&
       minutes.abs() <= BackupService.maxTimeOffset,
 );
+
+bool _isAyahNumberList(Object v) =>
+    v is List<String> &&
+    v.every((s) {
+      final n = int.tryParse(s);
+      return n != null && n >= 1 && n <= AyahService.totalAyahs;
+    });
+
+bool _isNonEmptyStringList(Object v) =>
+    v is List<String> && v.every((s) => s.trim().isNotEmpty);

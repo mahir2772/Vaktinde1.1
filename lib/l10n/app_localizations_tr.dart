@@ -1273,8 +1273,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get kazaCalcRamadans => 'Tutulmayan Ramazan sayısı';
 
   @override
+  String get kazaCalcFastDays => 'Tutulmayan oruç (gün)';
+
+  @override
+  String get kazaCalcAddRamadan => '+1 Ramazan (+30 gün)';
+
+  @override
   String get kazaCalcOptionalInfo =>
-      'Hayız günlerinde kılınamayan namazların kazası gerekmez; bu günler namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan Ramazan oruçlarının da kazası gerekir. Her Ramazan 30 gün sayılır.';
+      'Hayız günlerinde kılınamayan namazların kazası gerekmez; girdiğiniz gün sayısı namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan oruçların da kazası gerekir. Tutulmayan oruçları gün gün girebilir ya da tam bir Ramazan için +30 gün ekleyebilirsiniz.';
 
   @override
   String get kazaCalcResult => 'Tahmini kaza';

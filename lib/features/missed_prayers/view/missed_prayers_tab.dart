@@ -297,8 +297,9 @@ class _KazaRow extends StatelessWidget {
 }
 
 /// "Kaza hesapla" alt sayfası: kılınmayan süre (yıl/ay), isteğe bağlı aylık
-/// özel gün ve tutulmayan Ramazan → canlı tahmin. "Kaza Takibi'ne ekle"
-/// onaylanınca sayfa tahmini döndürerek kapanır.
+/// özel gün (elle de girilebilir) ve gün gün tutulmayan oruç (+1 Ramazan
+/// kısayoluyla) → canlı tahmin. "Kaza Takibi'ne ekle" onaylanınca sayfa tahmini
+/// döndürerek kapanır.
 class _KazaCalculatorSheet extends StatefulWidget {
   const _KazaCalculatorSheet();
 
@@ -310,9 +311,9 @@ class _KazaCalculatorSheetState extends State<_KazaCalculatorSheet> {
   int _years = 0;
   int _months = 0;
   int _excusedDays = 0;
-  int _ramadans = 0;
+  int _fastDays = 0;
 
-  /// Büyük sayılar için elle giriş (sayıya dokununca); sınıra kırpılır
+  /// Elle giriş (sayıya dokununca); [max] sınırına kırpılır
   Future<void> _enter(
     String title,
     int current,
@@ -346,7 +347,7 @@ class _KazaCalculatorSheetState extends State<_KazaCalculatorSheet> {
       years: _years,
       months: _months,
       excusedDays: _excusedDays,
-      ramadans: _ramadans,
+      fastDays: _fastDays,
     );
     const divider = Divider(
       height: 1,
@@ -404,6 +405,13 @@ class _KazaCalculatorSheetState extends State<_KazaCalculatorSheet> {
                   value: _months,
                   max: KazaEstimate.maxMonths,
                   onChanged: (v) => setState(() => _months = v),
+                  onValueTap: () => _enter(
+                    loc.kazaCalcPeriod,
+                    _months,
+                    KazaEstimate.maxMonths,
+                    (v) => _months = v,
+                    label: loc.kazaCalcMonths,
+                  ),
                 ),
               ],
             ),
@@ -414,25 +422,58 @@ class _KazaCalculatorSheetState extends State<_KazaCalculatorSheet> {
             child: Column(
               children: [
                 _KazaRow(
-                  // Namaz takibindeki özel gün simgesi
+                  // Namaz takibindeki özel gün simgesi; sayıya dokunarak da
+                  // 0–10 arası elle girilebilir
                   icon: Icons.spa_outlined,
                   title: loc.kazaCalcExcused,
                   value: _excusedDays,
                   max: KazaEstimate.maxExcusedDays,
                   onChanged: (v) => setState(() => _excusedDays = v),
+                  onValueTap: () => _enter(
+                    loc.kazaCalcExcused,
+                    _excusedDays,
+                    KazaEstimate.maxExcusedDays,
+                    (v) => _excusedDays = v,
+                  ),
                 ),
                 divider,
                 _KazaRow(
                   icon: Icons.restaurant_menu,
-                  title: loc.kazaCalcRamadans,
-                  value: _ramadans,
-                  max: KazaEstimate.maxRamadans,
-                  onChanged: (v) => setState(() => _ramadans = v),
+                  title: loc.kazaCalcFastDays,
+                  value: _fastDays,
+                  max: KazaEstimate.maxFastDays,
+                  onChanged: (v) => setState(() => _fastDays = v),
                   onValueTap: () => _enter(
-                    loc.kazaCalcRamadans,
-                    _ramadans,
-                    KazaEstimate.maxRamadans,
-                    (v) => _ramadans = v,
+                    loc.kazaCalcFastDays,
+                    _fastDays,
+                    KazaEstimate.maxFastDays,
+                    (v) => _fastDays = v,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                    AppSpacing.lg,
+                    0,
+                    AppSpacing.lg,
+                    AppSpacing.md,
+                  ),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(0, kMinInteractiveDimension),
+                      ),
+                      onPressed: _fastDays >= KazaEstimate.maxFastDays
+                          ? null
+                          : () => setState(
+                              () => _fastDays = (_fastDays + 30).clamp(
+                                0,
+                                KazaEstimate.maxFastDays,
+                              ),
+                            ),
+                      icon: const Icon(Icons.add, size: 18),
+                      label: Text(loc.kazaCalcAddRamadan),
+                    ),
                   ),
                 ),
               ],

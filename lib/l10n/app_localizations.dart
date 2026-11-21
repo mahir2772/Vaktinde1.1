@@ -2234,10 +2234,22 @@ abstract class AppLocalizations {
   /// **'Tutulmayan Ramazan sayısı'**
   String get kazaCalcRamadans;
 
+  /// No description provided for @kazaCalcFastDays.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutulmayan oruç (gün)'**
+  String get kazaCalcFastDays;
+
+  /// No description provided for @kazaCalcAddRamadan.
+  ///
+  /// In tr, this message translates to:
+  /// **'+1 Ramazan (+30 gün)'**
+  String get kazaCalcAddRamadan;
+
   /// No description provided for @kazaCalcOptionalInfo.
   ///
   /// In tr, this message translates to:
-  /// **'Hayız günlerinde kılınamayan namazların kazası gerekmez; bu günler namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan Ramazan oruçlarının da kazası gerekir. Her Ramazan 30 gün sayılır.'**
+  /// **'Hayız günlerinde kılınamayan namazların kazası gerekmez; girdiğiniz gün sayısı namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan oruçların da kazası gerekir. Tutulmayan oruçları gün gün girebilir ya da tam bir Ramazan için +30 gün ekleyebilirsiniz.'**
   String get kazaCalcOptionalInfo;
 
   /// No description provided for @kazaCalcResult.

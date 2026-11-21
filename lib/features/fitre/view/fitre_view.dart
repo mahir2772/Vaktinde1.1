@@ -85,6 +85,7 @@ class _FitreViewState extends State<FitreView> {
 
   static String? _symbol(String? code, String localeName) {
     if (code == null) return null;
+    if (code == 'TRY') return '₺';
     try {
       return NumberFormat.simpleCurrency(
         locale: localeName,
