@@ -24,6 +24,7 @@ import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dar
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/view/hatim_view.dart';
+import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/app_guide/whats_new.dart';
 
 import 'app_showcase.dart';
@@ -73,7 +74,7 @@ class _MainWrapperState extends State<MainWrapper> {
   Timer? _routeRetry;
 
   // Değerlendirme isteği (açılış akışından sonra; ömür boyu tek istek ortak):
-  // 7 günlük tam seride ya da uygulama 5 farklı günde açılınca
+  // 7 günlük tam seride ya da uygulama 3 farklı günde açılınca
   late final StreakReviewPrompt _reviewPrompt;
   late final UsageReviewPrompt _usagePrompt;
 
@@ -173,6 +174,11 @@ class _MainWrapperState extends State<MainWrapper> {
         Navigator.push(
           context,
           MaterialPageRoute<void>(builder: (_) => const FridayMessagesView()),
+        );
+      case [NotificationRoutes.religiousDays]:
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(builder: (_) => const ReligiousDaysView()),
         );
       case [NotificationRoutes.surah, final number]:
         final surah = int.tryParse(number);

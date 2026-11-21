@@ -1,9 +1,10 @@
 // Dini gün ve kandil bildirimleri (ID 2000-2399): religious_days.json'dan plan
-// (o gün 10:00, Ramazan bir gün önce, aynı gün tek bildirim), kip/kanal, ayar,
-// uygulama içi ve arka plan (WorkManager) kurulumu
+// (o gün 10:00, Ramazan bir gün önce, aynı gün tek bildirim, dokununca Dini
+// Günler açılır), kip/kanal, ayar, uygulama içi ve arka plan (WorkManager) kurulumu
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:ezan_saati/core/notification_routes.dart';
 import 'package:ezan_saati/data/services/dini_gunler_service.dart';
 import 'package:ezan_saati/data/services/notification_service.dart';
 import 'package:ezan_saati/data/services/prayer_refresh_service.dart';
@@ -29,6 +30,9 @@ void main() {
   final days = DiniGunlerService.parseBildirimGunleri(
     jsonDecode(File('assets/data/religious_days.json').readAsStringSync())
         as List,
+  );
+  final religiousRoute = NotificationRoutes.route(
+    NotificationRoutes.religiousDays,
   );
 
   List<PlannedAlarm> planAt(DateTime now, [AppLocalizations? loc]) =>
@@ -65,7 +69,7 @@ void main() {
         expect(a.id, PrayerRefreshService.religiousDayId(day), reason: '$day');
         expect(a.kind, NotificationKind.religiousDay);
         expect(a.channelName, tr.religiousDaysChannel);
-        expect(a.payload, isNull);
+        expect(a.payload, religiousRoute);
         expect(
           (a.title, a.body),
           tur == null
@@ -253,10 +257,17 @@ void main() {
   });
 
   group('Kurulum', () {
-    // Eklentinin bekleyen listesi: ID → (başlık, metin, kip, kanal, saat)
+    // Eklentinin bekleyen listesi: ID → (başlık, metin, kip, kanal, saat, yük)
     late Map<
       int,
-      ({String title, String body, String mode, String channel, String at})
+      ({
+        String title,
+        String body,
+        String mode,
+        String channel,
+        String at,
+        String payload,
+      })
     >
     pending;
     late List<MethodCall> calls;
@@ -286,6 +297,7 @@ void main() {
               mode: specifics['scheduleMode'] as String,
               channel: specifics['channelId'] as String,
               at: call.arguments['scheduledDateTime'] as String,
+              payload: call.arguments['payload'] as String? ?? '',
             );
             return null;
           case 'cancel':
@@ -298,7 +310,7 @@ void main() {
                   'id': e.key,
                   'title': e.value.title,
                   'body': e.value.body,
-                  'payload': '',
+                  'payload': e.value.payload,
                 },
             ];
           default:
@@ -328,6 +340,7 @@ void main() {
           mode: mode,
           channel: 'religious_days_channel',
           at: '',
+          payload: '',
         );
 
     // Eklenti geçmiş saati reddeder: gerçek saate göre en az iki gün sonraki ilk
@@ -386,6 +399,7 @@ void main() {
           mode: 'inexactAllowWhileIdle',
           channel: 'religious_days_channel',
           at: '${PrayerTracker.dateKey(a.time)}T10:00:00',
+          payload: religiousRoute,
         ));
       }
       expect(pending.keys, contains(PrayerRefreshService.ayahNotificationId));
@@ -478,6 +492,7 @@ void main() {
         expect(pending[a.id]!.title, a.title);
         expect(pending[a.id]!.body, a.body);
         expect(pending[a.id]!.mode, 'inexactAllowWhileIdle');
+        expect(pending[a.id]!.payload, religiousRoute);
       }
       expect(expected.first.body, isNot(planAt(at).first.body)); // Almanca
 

@@ -14,6 +14,9 @@ class NotificationRoutes {
   /// Cuma mesajları
   static const String friday = 'friday';
 
+  /// Dini günler ve kandil tebrikleri
+  static const String religiousDays = 'religious_days';
+
   /// Kur'an okuyucusunda sure: 'surah:<numara>'
   static const String surah = 'surah';
 

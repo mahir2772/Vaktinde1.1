@@ -669,6 +669,7 @@ class PrayerRefreshService {
           time: time,
           sound: null, // kanalın varsayılan sesi
           channelName: loc.religiousDaysChannel,
+          payload: NotificationRoutes.route(NotificationRoutes.religiousDays),
         ),
       );
     }
@@ -896,6 +897,7 @@ class PrayerRefreshService {
               body: day.body,
               scheduledTime: day.time,
               localizedChannelName: day.channelName,
+              payload: day.payload,
             );
             succeeded++;
           } catch (e, st) {

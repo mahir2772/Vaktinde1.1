@@ -3,8 +3,8 @@
 // eylemleri yönlendirme değildir. Uygulamayı açan bildirim süreç başına bir
 // kez okunur, açık uygulamadaki dokunuş initialize işleyicisine gelir.
 // MainWrapper hedefi açılış akışından sonra (tur ve Yenilikler kapanınca)
-// açar: Cuma mesajları, Kur'an okuyucusunda sure, hatim okuması; geçiş
-// reklamı yok.
+// açar: Cuma mesajları, Dini Günler, Kur'an okuyucusunda sure, hatim okuması,
+// namaz takibi; geçiş reklamı yok.
 import 'dart:convert';
 
 import 'package:ezan_saati/core/notification_routes.dart';
@@ -27,6 +27,7 @@ import 'package:ezan_saati/features/main_wrapper/main_wrapper.dart';
 import 'package:ezan_saati/features/onboarding/view/onboarding_language_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
 import 'package:ezan_saati/features/quran/view/surah_reader_view.dart';
+import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/zikirmatik/view_model/zikir_view_model.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -92,8 +93,16 @@ void main() {
         'open|friday',
       );
       expect(
+        NotificationRoutes.route(NotificationRoutes.religiousDays),
+        'open|religious_days',
+      );
+      expect(
         NotificationRoutes.targetOf(tap(payload: 'open|friday')),
         'friday',
+      );
+      expect(
+        NotificationRoutes.targetOf(tap(payload: 'open|religious_days')),
+        'religious_days',
       );
       expect(
         NotificationRoutes.targetOf(
@@ -352,6 +361,19 @@ void main() {
       expect(NotificationRoutes.pending.value, isNull);
       expect(AdHelper.instance.debugShowRequests, ads);
       expect(find.text(tr.adInfoTitle), findsNothing);
+      expect(tester.takeException(), isNull);
+      await finish(tester);
+    });
+
+    testWidgets('dini gün/kandil bildirimi: Dini Günler açılır, geçiş reklamı '
+        'yok', (tester) async {
+      final ads = AdHelper.instance.debugShowRequests;
+      await pumpApp(tester);
+      NotificationRoutes.pending.value = NotificationRoutes.religiousDays;
+      await settle(tester);
+      expect(find.byType(ReligiousDaysView), findsOneWidget);
+      expect(NotificationRoutes.pending.value, isNull);
+      expect(AdHelper.instance.debugShowRequests, ads);
       expect(tester.takeException(), isNull);
       await finish(tester);
     });
