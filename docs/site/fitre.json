@@ -1,0 +1,6 @@
+{
+  "currency": "TRY",
+  "amounts": [
+    { "validFrom": "2026-02-18", "amount": 240, "source": "Diyanet" }
+  ]
+}

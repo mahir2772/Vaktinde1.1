@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget seçicide ad ve açıklama (açıklama Android 12+) -->
+    <string name="vaktinde_widget_small_label">Vakit Sayacı</string>
+    <string name="vaktinde_widget_small_description">Sıradaki vakte kalan süre</string>
+    <string name="vaktinde_widget_large_label">Günün Vakitleri</string>
+    <string name="vaktinde_widget_large_description">Konum, hicri tarih, günün vakitleri ve sıradaki vakte kalan süre</string>
+    <string name="vaktinde_widget_small2_label">Sıradaki Vakit</string>
+    <string name="vaktinde_widget_small2_description">Konum, hicri tarih ve sıradaki vakte kalan süre</string>
+    <string name="vaktinde_widget_ramadan_label">Ramazan Sayacı</string>
+    <string name="vaktinde_widget_ramadan_description">İftara ve sahura kalan süre; Ramazan dışında Ramazan\'a kalan gün</string>
+    <string name="vaktinde_widget_ring_label">Vakit Halkası</string>
+    <string name="vaktinde_widget_ring_description">Sıradaki vakte kalan süre; halka önceki vakitten bu yana geçen süreyi gösterir</string>
+    <string name="vaktinde_widget_tracker_label">Namaz Takibi</string>
+    <string name="vaktinde_widget_tracker_description">Bugünün beş vakti; vakte dokunarak kılındı olarak işaretleyin</string>
+
+    <!-- Önizleme ve ilk çizim yer tutucuları; gerçek metinleri uygulama yazar -->
+    <string name="vaktinde_widget_location">Konum</string>
+    <string name="vaktinde_widget_hijri_sample">25 Zilhicce</string>
+    <string name="vaktinde_widget_remaining">Kalan</string>
+    <string name="vaktinde_widget_next_sample">İkindiye</string>
+    <string name="vaktinde_widget_imsak">İmsak</string>
+    <string name="vaktinde_widget_gunes">Güneş</string>
+    <string name="vaktinde_widget_ogle">Öğle</string>
+    <string name="vaktinde_widget_ikindi">İkindi</string>
+    <string name="vaktinde_widget_aksam">Akşam</string>
+    <string name="vaktinde_widget_yatsi">Yatsı</string>
+    <string name="vaktinde_widget_ramadan_day_sample">Ramazan · 12. gün</string>
+    <string name="vaktinde_widget_ramadan_title_sample">İftara Kalan</string>
+    <string name="vaktinde_widget_ramadan_time_sample">Akşam 19:05</string>
+    <string name="vaktinde_widget_today">Bugün</string>
+    <string name="vaktinde_widget_sabah">Sabah</string>
+</resources>

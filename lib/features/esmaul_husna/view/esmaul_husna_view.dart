@@ -1,165 +1,65 @@
 import 'package:flutter/material.dart';
-// --- DİL İMPORTU ---
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-// -------------------
-import '../../../data/services/json_service.dart';
-// --- REKLAM İMPORTU ---
-import '../../common/widgets/ad_banner_widget.dart';
 
-class EsmaulHusnaView extends StatelessWidget {
+import '../../../data/services/json_service.dart';
+
+/// Esmaül Hüsna: okunur kart listesi (Arapça Amiri ile); karta dokununca
+/// ayrıntı penceresi (önceki/sonraki).
+class EsmaulHusnaView extends StatefulWidget {
   const EsmaulHusnaView({super.key});
 
   @override
+  State<EsmaulHusnaView> createState() => _EsmaulHusnaViewState();
+}
+
+class _EsmaulHusnaViewState extends State<EsmaulHusnaView> {
+  final JsonService _jsonService = JsonService();
+  Future<List<Map<String, dynamic>>>? _future;
+  String? _language;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final language = Localizations.localeOf(context).languageCode;
+    if (language != _language) {
+      _language = language;
+      _future = _jsonService.getEsmaulHusna(language);
+    }
+  }
+
+  void _retry() {
+    setState(() => _future = _jsonService.getEsmaulHusna(_language ?? 'tr'));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final JsonService jsonService = JsonService();
     final loc = AppLocalizations.of(context)!;
-    String currentLanguage = Localizations.localeOf(context).languageCode;
+    final isArabic = _language == 'ar';
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.esmaulHusnaTitle),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      // --- REKLAM ALANI EKLENDİ ---
-      bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
-      // ---------------------------
-      backgroundColor: Colors.grey.shade100,
+    return AppScaffold(
+      title: loc.esmaulHusnaTitle,
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: jsonService.getEsmaulHusna(currentLanguage),
+        future: _future,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.teal),
-            );
+          if (snapshot.hasError) {
+            return ErrorState(message: loc.noDataFound, onRetry: _retry);
           }
-
+          if (!snapshot.hasData) return const LoadingState();
           final data = snapshot.data!;
-
-          return GridView.builder(
-            padding: const EdgeInsets.all(10),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 0.75,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
+          if (data.isEmpty) {
+            return EmptyState(icon: Icons.menu_book, title: loc.noDataFound);
+          }
+          return ListView.separated(
+            padding: const EdgeInsets.all(AppSpacing.lg),
             itemCount: data.length,
-            itemBuilder: (context, index) {
-              final item = data[index];
-
-              return GestureDetector(
-                onTap: () {
-                  _showDetailDialog(context, data, index, loc);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.teal.withValues(alpha: 0.05),
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 5,
-                          vertical: 10,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              item['arabic'],
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 26,
-                                color: Colors.teal,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Amiri',
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              item['name'],
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.symmetric(vertical: 5),
-                              width: 30,
-                              height: 2,
-                              decoration: BoxDecoration(
-                                color: Colors.teal.withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  item['meaning'],
-                                  textAlign: TextAlign.center,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey.shade600,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Icon(
-                              Icons.touch_app_outlined,
-                              size: 14,
-                              color: Colors.teal.withValues(alpha: 0.4),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: const BoxDecoration(
-                            color: Colors.teal,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(15),
-                              bottomLeft: Radius.circular(10),
-                            ),
-                          ),
-                          child: Text(
-                            "${index + 1}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
+            itemBuilder: (context, index) => _EsmaCard(
+              index: index,
+              item: data[index],
+              isArabic: isArabic,
+              onTap: () => _showDetailDialog(context, data, index, isArabic),
+            ),
           );
         },
       ),
@@ -170,99 +70,95 @@ class EsmaulHusnaView extends StatelessWidget {
     BuildContext context,
     List<Map<String, dynamic>> allData,
     int initialIndex,
-    AppLocalizations loc,
+    bool isArabic,
   ) {
-    showDialog(
+    var index = initialIndex;
+    showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
+        final loc = AppLocalizations.of(context)!;
         return StatefulBuilder(
           builder: (context, setState) {
-            final item = allData[initialIndex];
-            bool isFirst = initialIndex == 0;
-            bool isLast = initialIndex == allData.length - 1;
+            final theme = Theme.of(context);
+            final scheme = theme.colorScheme;
+            final item = allData[index];
+            final isFirst = index == 0;
+            final isLast = index == allData.length - 1;
+            final name = '${item['name'] ?? ''}';
+            final arabic = '${item['arabic'] ?? ''}';
+            final meaning = '${item['meaning'] ?? ''}';
 
             return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.xl,
+                  AppSpacing.xl,
+                  AppSpacing.xl,
+                  AppSpacing.md,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      item['arabic'],
-                      style: const TextStyle(
-                        fontSize: 45,
-                        color: Colors.teal,
-                        fontFamily: 'Amiri',
-                        fontWeight: FontWeight.bold,
+                      arabic,
+                      textAlign: TextAlign.center,
+                      textDirection: TextDirection.rtl,
+                      style: TextStyle(
+                        fontFamily: AppTheme.arabicFamily,
+                        fontSize: 44,
+                        height: 1.4,
+                        color: scheme.primary,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
-                      "${initialIndex + 1}. ${item['name']}",
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                      '${index + 1}. $name',
+                      textAlign: TextAlign.center,
+                      style: isArabic
+                          ? TextStyle(
+                              fontFamily: AppTheme.arabicFamily,
+                              fontSize: 24,
+                              color: scheme.onSurface,
+                            )
+                          : theme.textTheme.titleLarge,
                     ),
-                    const Divider(color: Colors.teal, thickness: 1, height: 30),
+                    const Divider(height: AppSpacing.xxl),
                     Flexible(
                       child: SingleChildScrollView(
                         child: Text(
-                          item['meaning'],
+                          meaning,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 17,
+                          style: theme.textTheme.bodyLarge!.copyWith(
                             height: 1.5,
-                            color: Colors.black87,
+                            color: scheme.onSurface,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.lg),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton.filledTonal(
+                          tooltip: loc.previousItem,
                           onPressed: isFirst
                               ? null
-                              : () {
-                                  setState(() {
-                                    initialIndex--;
-                                  });
-                                },
-                          icon: const Icon(Icons.arrow_back_ios_new),
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.teal.shade50,
-                            foregroundColor: Colors.teal,
-                          ),
+                              : () => setState(() => index--),
+                          icon: const Icon(Icons.chevron_left),
                         ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text(
-                            loc.closeCaps,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Center(
+                            child: TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(loc.close),
                             ),
                           ),
                         ),
                         IconButton.filledTonal(
+                          tooltip: loc.nextItem,
                           onPressed: isLast
                               ? null
-                              : () {
-                                  setState(() {
-                                    initialIndex++;
-                                  });
-                                },
-                          icon: const Icon(Icons.arrow_forward_ios),
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.teal.shade50,
-                            foregroundColor: Colors.teal,
-                          ),
+                              : () => setState(() => index++),
+                          icon: const Icon(Icons.chevron_right),
                         ),
                       ],
                     ),
@@ -273,6 +169,112 @@ class EsmaulHusnaView extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _EsmaCard extends StatelessWidget {
+  final int index;
+  final Map<String, dynamic> item;
+  final bool isArabic;
+  final VoidCallback onTap;
+
+  const _EsmaCard({
+    required this.index,
+    required this.item,
+    required this.isArabic,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final name = '${item['name'] ?? ''}';
+    final arabic = '${item['arabic'] ?? ''}';
+    final meaning = '${item['meaning'] ?? ''}';
+
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: scheme.primaryContainer,
+              shape: BoxShape.circle,
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                child: Text(
+                  '${index + 1}',
+                  style: theme.textTheme.labelMedium!.copyWith(
+                    color: scheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  name,
+                  style: isArabic
+                      ? TextStyle(
+                          fontFamily: AppTheme.arabicFamily,
+                          fontSize: 22,
+                          height: 1.4,
+                          color: scheme.primary,
+                        )
+                      : theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  meaning,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Arapça arayüzde ad zaten Arapça; diğer dillerde yanında gösterilir
+          if (!isArabic) ...[
+            const SizedBox(width: AppSpacing.md),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 96),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  arabic,
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(
+                    fontFamily: AppTheme.arabicFamily,
+                    fontSize: 28,
+                    height: 1.4,
+                    color: scheme.primary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

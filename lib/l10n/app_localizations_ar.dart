@@ -12,13 +12,534 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
-  String get nextPrayer => 'الصلاة القادمة';
+  String get navZikir => 'الذكر';
+
+  @override
+  String get todayHubTitle => 'لهذا اليوم';
+
+  @override
+  String get todayQuranOpen => 'قراءة القرآن الكريم';
+
+  @override
+  String get todayFridayMessage => 'إرسال رسالة الجمعة';
+
+  @override
+  String get a11yAlarmSettingsHint => 'فتح إعدادات المنبه';
+
+  @override
+  String get navQuran => 'القرآن';
+
+  @override
+  String get showcaseQuran => 'اقرأ القرآن الكريم هنا وتابع من حيث توقفت.';
+
+  @override
+  String zikirRound(int round) {
+    return 'الدورة $round';
+  }
+
+  @override
+  String zikirProgress(int count, int target) {
+    return '$count / $target';
+  }
+
+  @override
+  String get zikirPrevious => 'الذكر السابق';
+
+  @override
+  String get zikirNext => 'الذكر التالي';
+
+  @override
+  String get zikirCountingSection => 'العدّ';
+
+  @override
+  String get zikirRoundMode => 'البدء من الصفر عند بلوغ الهدف (عدّ الدورات)';
+
+  @override
+  String get zikirVolumeKeys => 'العدّ بأزرار الصوت';
+
+  @override
+  String get zikirVolumeKeysDesc =>
+      'رفع الصوت +1، خفض الصوت −1. فقط أثناء فتح شاشة الذكر، ولا يتغير صوت النظام.';
+
+  @override
+  String get adPrivacySettings => 'إعدادات خصوصية الإعلانات';
+
+  @override
+  String get adPrivacySettingsSub => 'غيّر موافقتك على الإعلانات المخصصة';
+
+  @override
+  String get showcaseLanguage =>
+      'يمكنك تغيير لغة التطبيق والإعدادات الأخرى من هنا.';
+
+  @override
+  String get showcaseStory => 'اقرأ آية اليوم وحديث اليوم من هنا.';
+
+  @override
+  String get showcaseAlarms => 'اضبط منبهات الأذان والتذكير لكل صلاة من هنا.';
+
+  @override
+  String get showcaseQibla => 'اعثر على اتجاه القبلة باستخدام البوصلة.';
+
+  @override
+  String get showcaseZikir => 'تابع أذكارك من هنا.';
+
+  @override
+  String get showcaseTracker =>
+      'علِّم هنا الصلوات التي أدّيتها. وفي أيام العذر اضغط مطوّلًا على «اليوم».';
+
+  @override
+  String get showcaseTools =>
+      'جدول المواقيت وتعليم الصلاة وحاسبة القضاء والمزيد هنا.';
+
+  @override
+  String get tipGotIt => 'فهمت';
+
+  @override
+  String get tipTracker =>
+      'في أيام العذر اضغط مطوّلًا على اسم اليوم أو المس رمز الزهرة في زاوية البطاقة، فلا تنقطع سلسلتك. ومن «إضافة الصلوات غير المؤدّاة إلى القضاء» في الأسفل تنقل ما فاتك إلى عدّادات القضاء.';
+
+  @override
+  String get tipZikir =>
+      'اسحب البطاقة في الأعلى يمينًا أو يسارًا لتغيير الذكر. وفعّل «العدّ بأزرار الصوت» من الإعدادات لتعدّ دون النظر إلى الشاشة.';
+
+  @override
+  String get tipQuranReader =>
+      'اختر من زر «طريقة العرض» في الأعلى: صفحات المصحف أو آية آية. والمس أي آية في الصفحة لحفظ علامة أو نسخها أو مشاركتها.';
+
+  @override
+  String get tipAlarmsSilent =>
+      'ولتسمعه والهاتف صامت فعّل «التشغيل في الوضع الصامت أيضاً».';
+
+  @override
+  String get tipWidget =>
+      'أضف أداة Vaktinde إلى الشاشة الرئيسية لترى المواقيت دون فتح التطبيق.';
+
+  @override
+  String get tipWidgetAction => 'إضافة أداة';
+
+  @override
+  String get whatsNewTitle => 'ما الجديد';
+
+  @override
+  String get whatsNewStopTitle => 'أوقف الأذان بلمسة واحدة';
+
+  @override
+  String get whatsNewStopDesc =>
+      'أثناء الأذان يوقف زر «إيقاف» في الإشعار الصوت فورًا.';
+
+  @override
+  String get whatsNewStoriesDesc =>
+      'قصص قصيرة عن الأنبياء وسيرة النبي محمد والصحابة وكبار علماء الإسلام.';
+
+  @override
+  String get whatsNewDuasDesc =>
+      '87 دعاءً في 10 أقسام مع النص العربي والمعنى والمصدر، مع إمكانية البحث.';
+
+  @override
+  String get whatsNewDhikrsTitle => 'أذكار جديدة';
+
+  @override
+  String get whatsNewDhikrsDesc =>
+      '35 ذكرًا جاهزًا مع معانيها في قائمة الأذكار.';
+
+  @override
+  String get whatsNewHatimDesc =>
+      'شاشة جديدة للختمة: «قرأتُه» بلمسة واحدة، والتقدم جزءًا جزءًا، والنية، والختمة الجماعية.';
+
+  @override
+  String get appGuideTitle => 'تعرّف على التطبيق';
+
+  @override
+  String get appGuideSub => 'كل الميزات وطريقة استخدامها';
+
+  @override
+  String get appGuideReplayTour => 'إعادة الجولة التعريفية';
+
+  @override
+  String get appGuideReplayTourSub =>
+      'أعد تشغيل الجولة القصيرة في الشاشة الرئيسية';
+
+  @override
+  String get guideGroupTimes => 'المواقيت والمنبهات';
+
+  @override
+  String get guideGroupPrayer => 'الصلاة';
+
+  @override
+  String get guideGroupQuran => 'القرآن والأدعية';
+
+  @override
+  String get guideGroupWidgets => 'أدوات الشاشة الرئيسية';
+
+  @override
+  String get guideLocation =>
+      'المس اسم المدينة في الشاشة الرئيسية؛ قائمة المدن تعمل دون إنترنت أيضًا.';
+
+  @override
+  String get guideAlarms =>
+      'الأذان أو إشعار صامت وتذكير مسبق لكل صلاة. ولمس وقت الصلاة في الشاشة الرئيسية يفتح هذه الإعدادات أيضًا.';
+
+  @override
+  String get guideTracker =>
+      'علِّم صلواتك، وزر «صلّيت» في الإشعار يفعل ذلك أيضًا. وفي أيام العذر اضغط مطوّلًا على اسم اليوم.';
+
+  @override
+  String get guideKaza =>
+      'احفظ عدّادات القضاء، و«حاسبة القضاء» تقدّرها من المدة التي فاتتك.';
+
+  @override
+  String get guideQibla => 'أمسك الهاتف مستويًا، وسيهتز عندما تتجه إلى القبلة.';
+
+  @override
+  String get guideZikir =>
+      'المس الشاشة للعدّ واسحب البطاقة لتغيير الذكر. والعدّ بأزرار الصوت تجده في إعدادات الذكر.';
+
+  @override
+  String get guideQuran =>
+      'اختر من «طريقة العرض» صفحات المصحف أو آية آية، والمس أي آية لحفظ علامة أو مشاركتها. ويُحفظ موضع قراءتك تلقائيًا.';
+
+  @override
+  String get guideWidgets =>
+      'المواقيت والعدّ التنازلي وحلقة الصلاة ورمضان ومتابعة الصلوات (المس الصلاة لتعليمها). ويمكنك إضافتها أيضًا بالضغط مطوّلًا على مكان فارغ في الشاشة الرئيسية ثم اختيار «الأدوات».';
+
+  @override
+  String get refreshLocation => 'تحديث الموقع';
+
+  @override
+  String get countryTurkey => 'تركيا';
+
+  @override
+  String get locationEuropeKktc => 'أوروبا / شمال قبرص';
+
+  @override
+  String get countryGermany => 'ألمانيا';
+
+  @override
+  String get countryNetherlands => 'هولندا';
+
+  @override
+  String get countryBelgium => 'بلجيكا';
+
+  @override
+  String get countryFrance => 'فرنسا';
+
+  @override
+  String get countryAustria => 'النمسا';
+
+  @override
+  String get countrySwitzerland => 'سويسرا';
+
+  @override
+  String get countryUnitedKingdom => 'المملكة المتحدة';
+
+  @override
+  String get countryDenmark => 'الدنمارك';
+
+  @override
+  String get countrySweden => 'السويد';
+
+  @override
+  String get countryNorway => 'النرويج';
+
+  @override
+  String get countryNorthernCyprus => 'شمال قبرص';
+
+  @override
+  String get provinceCenter => 'مركز الولاية';
+
+  @override
+  String get searchOnline => 'البحث عبر الإنترنت';
+
+  @override
+  String get timesFollowPhoneClock =>
+      'هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.';
+
+  @override
+  String get whatsNewSilenceDesc =>
+      'يكتم الهاتف تلقائيًا أثناء الصلوات وصلاة الجمعة ثم يعيده كما كان بعد انتهاء المدة.';
+
+  @override
+  String get whatsNewCityClockTitle => 'التوقيت المحلي للمدينة المختارة';
+
+  @override
+  String get whatsNewCityClockDesc =>
+      'تُعرض المواقيت حسب المنطقة الزمنية للمدينة المختارة مع تحسين وقت العشاء بعد منتصف الليل.';
+
+  @override
+  String get whatsNewKazaEstTitle => 'تقدير إنهاء الفوائت';
+
+  @override
+  String get whatsNewKazaEstDesc =>
+      'اطّلع على المدة التقديرية لإنهاء صلوات القضاء حسب وتيرتك اليومية.';
+
+  @override
+  String get whatsNewOfflineHadithTitle => 'أحاديث دون إنترنت ومناسبات دينية';
+
+  @override
+  String get whatsNewOfflineHadithDesc =>
+      'مجموعة أحاديث موسّعة تعمل دون إنترنت وفتح مباشر من إشعارات المناسبات الدينية.';
+
+  @override
+  String get prayerSilenceTitle => 'أثناء الصلاة (صامت تلقائي)';
+
+  @override
+  String get prayerSilenceSub =>
+      'يكتم الهاتف تلقائيًا عند دخول الوقت ويعيده كما كان بعد انتهاء المدة.';
+
+  @override
+  String prayerSilenceActiveSub(int minutes) {
+    return 'مفعّل · $minutes د (اضغط للتعديل)';
+  }
+
+  @override
+  String get prayerSilencePermissionNeeded =>
+      'يلزم إذن عدم الإزعاج · اضغط للمنح';
+
+  @override
+  String get prayerSilencePermissionBanner =>
+      'يلزم منح إذن «عدم الإزعاج» في أندرويد لتمكين الوضع الصامت التلقائي أثناء الصلاة.';
+
+  @override
+  String get prayerSilenceGrantAccess => 'منح إذن عدم الإزعاج';
+
+  @override
+  String get prayerSilenceDuration => 'مدة الوضع الصامت';
+
+  @override
+  String prayerSilenceMinutes(int minutes) {
+    return '$minutes د';
+  }
+
+  @override
+  String get prayerSilencePrayers => 'الصلوات';
+
+  @override
+  String get prayerSilenceFridayTitle => 'نافذة صلاة الجمعة';
+
+  @override
+  String get prayerSilenceFridaySub =>
+      'تبدأ يوم الجمعة قبل الظهر بـ 15 دقيقة وتنتهي بعده بـ 45 دقيقة.';
+
+  @override
+  String get prayerSilenceNote =>
+      'لا يغيّر الوضع إذا كان الهاتف في وضع عدم الإزعاج أصلًا. يبدأ بعد دقيقة من الأذان الصوتي حتى لا يقطعه.';
+
+  @override
+  String get timesFollowCityClock =>
+      'تُعرض المواقيت حسب التوقيت المحلي للمدينة المختارة.';
+
+  @override
+  String cityLocalTime(String time) {
+    return 'التوقيت المحلي: $time';
+  }
+
+  @override
+  String get navTools => 'الأدوات';
+
+  @override
+  String a11yHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ساعة',
+      many: '$count ساعة',
+      few: '$count ساعات',
+      two: 'ساعتان',
+      one: 'ساعة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دقيقة',
+      many: '$count دقيقة',
+      few: '$count دقائق',
+      two: 'دقيقتان',
+      one: 'دقيقة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yHoursMinutes(String hours, String minutes) {
+    return '$hours و$minutes';
+  }
+
+  @override
+  String a11yTimeUntil(String vakit, String duration) {
+    return 'الوقت المتبقي حتى $vakit: $duration';
+  }
+
+  @override
+  String get a11yPrayerPassed => 'انقضى الوقت';
+
+  @override
+  String a11yTrackerCell(String day, String prayer, String state) {
+    return '$day، $prayer: $state';
+  }
+
+  @override
+  String get a11yNotPrayed => 'لم تُؤدَّ';
+
+  @override
+  String get a11yNotDue => 'لم يدخل وقتها بعد';
+
+  @override
+  String get a11yExcusedDay => 'يوم عذر';
+
+  @override
+  String a11yQiblaTurnRight(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'استدر $deg درجة إلى اليمين لمواجهة القبلة',
+      few: 'استدر $deg درجات إلى اليمين لمواجهة القبلة',
+      two: 'استدر درجتين إلى اليمين لمواجهة القبلة',
+      one: 'استدر درجة واحدة إلى اليمين لمواجهة القبلة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yQiblaTurnLeft(int deg) {
+    String _temp0 = intl.Intl.pluralLogic(
+      deg,
+      locale: localeName,
+      other: 'استدر $deg درجة إلى اليسار لمواجهة القبلة',
+      few: 'استدر $deg درجات إلى اليسار لمواجهة القبلة',
+      two: 'استدر درجتين إلى اليسار لمواجهة القبلة',
+      one: 'استدر درجة واحدة إلى اليسار لمواجهة القبلة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get a11yQiblaAligned => 'أنت متجه نحو القبلة';
+
+  @override
+  String get a11yDecrease => 'إنقاص';
+
+  @override
+  String get a11yIncrease => 'زيادة';
+
+  @override
+  String a11yPlaySound(String sound) {
+    return 'تشغيل $sound';
+  }
+
+  @override
+  String get a11yStopSound => 'إيقاف';
+
+  @override
+  String get hadithNotFound => 'تعذّر العثور على نص الحديث.';
+
+  @override
+  String get timesLoadError =>
+      'تعذّر تحميل مواقيت الصلاة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get sunriseNotPrayer => 'شروق الشمس، ليس وقت صلاة';
+
+  @override
+  String get currentPrayer => 'الصلاة الحالية';
+
+  @override
+  String get textCopied => 'تم نسخ النص';
+
+  @override
+  String get updateDownloaded => 'تم تنزيل إصدار جديد.';
+
+  @override
+  String get restartAction => 'إعادة التشغيل';
+
+  @override
+  String get qiblaTurnRight => 'استدر يميناً';
+
+  @override
+  String get qiblaTurnSlightRight => 'استدر قليلاً إلى اليمين';
+
+  @override
+  String get qiblaTurnLeft => 'استدر يساراً';
+
+  @override
+  String get qiblaTurnSlightLeft => 'استدر قليلاً إلى اليسار';
+
+  @override
+  String phoneHeading(String deg) {
+    return 'اتجاه الهاتف: $deg°';
+  }
+
+  @override
+  String get usingSavedLocation => 'يتم استخدام الموقع المحفوظ.';
+
+  @override
+  String exampleHint(int n) {
+    return 'مثال: $n';
+  }
+
+  @override
+  String get noCustomDhikr => 'لم تُضف أي ذكر مخصص بعد.';
+
+  @override
+  String get messagesShuffled => 'تم ترتيب الرسائل عشوائيًا';
+
+  @override
+  String get shareAsImage => 'مشاركة كصورة';
+
+  @override
+  String get shareAsText => 'مشاركة النص';
+
+  @override
+  String get shareCardFooter => 'Vaktinde على Google Play';
+
+  @override
+  String get fridayGreeting => 'جمعة مباركة';
+
+  @override
+  String get sendGreeting => 'إرسال تهنئة';
+
+  @override
+  String get greetingsTitle => 'رسائل التهنئة';
+
+  @override
+  String get shuffle => 'ترتيب عشوائي';
+
+  @override
+  String get copy => 'نسخ';
+
+  @override
+  String get messageCopied => 'تم نسخ الرسالة';
+
+  @override
+  String versionLabel(String v) {
+    return 'الإصدار $v';
+  }
+
+  @override
+  String get supportMailSubject => 'Vaktinde - الدعم';
+
+  @override
+  String get madeBy => 'صُنع بـ ❤️ بواسطة mmdigital';
+
+  @override
+  String get permissionPrimingTitle => 'لا تفوّت وقت الصلاة';
+
+  @override
+  String get permissionPrimingBody =>
+      'نحتاج إلى إذن الإشعارات لتنبيهات الأذان، وإذن الموقع لحساب مواقيت الصلاة حسب مكانك.';
+
+  @override
+  String get continueAction => 'متابعة';
+
+  @override
+  String get nextPrayer => 'الوقت التالي';
 
   @override
   String get hadithTitle => 'حديث اليوم';
-
-  @override
-  String get readMore => 'اقرأ المزيد...';
 
   @override
   String get share => 'مشاركة';
@@ -27,10 +548,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get close => 'إغلاق';
 
   @override
-  String get loading => 'جاري حساب الأوقات...';
-
-  @override
-  String get error => 'خطأ';
+  String get loading => 'جارٍ حساب الأوقات...';
 
   @override
   String get retry => 'حاول مرة أخرى';
@@ -58,6 +576,277 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exactAlarm => 'إشعار في الوقت المحدد';
+
+  @override
+  String get reminderTitleAt => 'تذكير بوقت الصلاة';
+
+  @override
+  String notifBodyUpcomingAt(String vakit, String time) {
+    return 'دخول وقت $vakit: $time';
+  }
+
+  @override
+  String get endReminderTitleAt => 'خروج وقت الصلاة';
+
+  @override
+  String endReminderNotifBodyAt(String vakit, String time) {
+    return 'خروج وقت $vakit: $time';
+  }
+
+  @override
+  String ramadanImsakBodyAt(String time) {
+    return 'انتهى وقت السحور الساعة $time. صومًا مقبولًا!';
+  }
+
+  @override
+  String get alarmHealthExactOff =>
+      'إذن المنبّه معطّل: قد يتأخر الأذان والتذكيرات حتى ساعة تقريبًا (بما في ذلك الإمساك والسحور).';
+
+  @override
+  String get healthTitle => 'فحص الإشعارات';
+
+  @override
+  String get healthSub => 'إذا لم يعمل الأذان، افحص الإعدادات خطوة بخطوة';
+
+  @override
+  String get healthSectionStatus => 'الحالة';
+
+  @override
+  String get healthEzansTitle => 'منبّهات الأذان';
+
+  @override
+  String healthEzansOn(String names) {
+    return 'مفعّلة: $names';
+  }
+
+  @override
+  String get healthEzansNone => 'الأذان غير مفعّل لأي صلاة.';
+
+  @override
+  String get healthNextTitle => 'الأذان التالي';
+
+  @override
+  String get healthNextNone => 'لم يُعثر على أذان مجدول.';
+
+  @override
+  String get healthReschedule => 'إعادة الجدولة';
+
+  @override
+  String get healthNotificationsTitle => 'الإشعارات';
+
+  @override
+  String get healthNotificationsOk => 'مفعّلة.';
+
+  @override
+  String get healthOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get healthExactTitle => 'المنبّهات والتذكيرات';
+
+  @override
+  String get healthExactOk => 'مسموح: يُرفع الأذان في وقته تمامًا.';
+
+  @override
+  String get healthVolumeTitle => 'الصوت';
+
+  @override
+  String get healthVolumeOk => 'صوت الإشعارات مفعّل.';
+
+  @override
+  String get healthVolumeAlarmOk => 'صوت المنبّه مفعّل.';
+
+  @override
+  String get healthVolumeSilent =>
+      'هاتفك في الوضع الصامت أو وضع الاهتزاز: لن يُسمع صوت الأذان.';
+
+  @override
+  String get healthVolumeNotificationMuted =>
+      'صوت الإشعارات مكتوم: لن يُسمع صوت الأذان.';
+
+  @override
+  String get healthVolumeAlarmMuted =>
+      'صوت المنبّه مكتوم: لن يُسمع صوت الأذان.';
+
+  @override
+  String healthAlarmStreamTip(String setting) {
+    return 'عند تفعيل «$setting» يُرفع الأذان بمستوى صوت المنبّه.';
+  }
+
+  @override
+  String get healthDndTitle => 'عدم الإزعاج';
+
+  @override
+  String get healthDndOff => 'غير مفعّل.';
+
+  @override
+  String get healthDndOn => 'مفعّل: قد لا يُسمع صوت الأذان.';
+
+  @override
+  String healthDndAlarm(String setting) {
+    return 'مفعّل، لكن بفضل «$setting» يُرفع الأذان بمستوى صوت المنبّه.';
+  }
+
+  @override
+  String get healthBatteryTitle => 'استخدام البطارية';
+
+  @override
+  String get healthBatteryOk => 'تحسين البطارية غير مفعّل لتطبيق Vaktinde.';
+
+  @override
+  String get healthBatteryOptimized =>
+      'تحسين البطارية مفعّل: قد يوقف هاتفك تطبيق Vaktinde في الخلفية. افتح إعدادات التطبيق ثم البطارية واختر الاستخدام غير المقيّد (قد يختلف اسم الخيار حسب الهاتف).';
+
+  @override
+  String get healthBackgroundTitle => 'العمل في الخلفية';
+
+  @override
+  String healthBackgroundToday(String time) {
+    return 'آخر تشغيل: اليوم الساعة $time';
+  }
+
+  @override
+  String healthBackgroundYesterday(String time) {
+    return 'آخر تشغيل: أمس الساعة $time';
+  }
+
+  @override
+  String get healthBackgroundStale =>
+      'لم يعمل Vaktinde في الخلفية خلال آخر 48 ساعة: ربما يوقفه هاتفك.';
+
+  @override
+  String get healthWidgetTitle => 'الأدوات والإشعار الدائم';
+
+  @override
+  String healthWidgetLate(int minutes) {
+    return 'خلال الأيام السبعة الماضية تأخر تحديث العدّ التنازلي $minutes دقيقة عند دخول الوقت: هاتفك يؤخّر Vaktinde في الخلفية. اجعل استخدام البطارية غير مقيّد واتبع الخطوات أدناه.';
+  }
+
+  @override
+  String get healthShowSteps => 'عرض الخطوات';
+
+  @override
+  String healthGuideTitle(String brand) {
+    return 'إعدادات هواتف $brand';
+  }
+
+  @override
+  String get healthGuideTitleGeneric => 'إعدادات هاتفك';
+
+  @override
+  String get healthGuideStale =>
+      'يبدو أن العمل في الخلفية متوقف. لكي لا يتأخر الأذان، غيّر هذه الإعدادات:';
+
+  @override
+  String get healthGuideMore => 'شرح مفصّل حسب طراز هاتفك (بالإنجليزية)';
+
+  @override
+  String get healthTestTitle => 'أذان تجريبي';
+
+  @override
+  String get healthTestInfo =>
+      'يصلك إشعار تجريبي بعد دقيقة واحدة بالصوت والإعدادات نفسها التي يستخدمها الأذان الحقيقي.';
+
+  @override
+  String get healthTestButton => 'أذان تجريبي بعد دقيقة';
+
+  @override
+  String get healthTestScheduled =>
+      'سيُرفع الأذان التجريبي بعد دقيقة واحدة. يمكنك إغلاق التطبيق.';
+
+  @override
+  String get healthTestNotifBody =>
+      'إذا ظهر لك هذا الإشعار فإشعارات الأذان تعمل.';
+
+  @override
+  String get testEzanOfferTitle => 'هل يعمل الأذان على هاتفك؟';
+
+  @override
+  String get notNow => 'ليس الآن';
+
+  @override
+  String get tipVendorGuide =>
+      'يحتاج هذا الهاتف إلى بعض الإعدادات حتى لا يتأخر الأذان.';
+
+  @override
+  String get tipVendorGuideAction => 'عرض الإعدادات';
+
+  @override
+  String get weeklySummaryTitle => 'ملخص الصلوات الأسبوعي';
+
+  @override
+  String get weeklySummarySub =>
+      'كل يوم اثنين ملخص الأسبوع الماضي إن كنت تستخدم متابعة الصلوات';
+
+  @override
+  String weeklySummaryBody(int done, int total) {
+    return 'الأسبوع الماضي: $done من $total صلاة.';
+  }
+
+  @override
+  String weeklySummaryFull(int total) {
+    return 'الأسبوع الماضي: أدّيت الصلوات كلها ($total). تقبّل الله.';
+  }
+
+  @override
+  String get healthStepXiaomiAutostart =>
+      'فعّل التشغيل التلقائي من إعدادات التطبيق.';
+
+  @override
+  String get healthStepXiaomiBattery =>
+      'من الشاشة نفسها، افتح موفّر البطارية (أو البطارية) وألغِ كل القيود.';
+
+  @override
+  String get healthStepHuaweiLaunch =>
+      'افتح إدارة تشغيل التطبيقات في الإعدادات (ضمن البطارية أو التطبيقات)، وأوقف الإدارة التلقائية لتطبيق Vaktinde، واترك كل الخيارات مفعّلة في النافذة التي تظهر.';
+
+  @override
+  String get healthStepOppoBackground =>
+      'من إعدادات التطبيق > استخدام البطارية، اسمح بالنشاط في الخلفية وبالتشغيل التلقائي.';
+
+  @override
+  String get healthStepVivoBackground =>
+      'من الإعدادات > البطارية، اسمح لتطبيق Vaktinde باستهلاك طاقة مرتفع في الخلفية.';
+
+  @override
+  String healthStepAutostartIn(String app) {
+    return 'فعّل التشغيل التلقائي لتطبيق Vaktinde من الإعدادات أو من تطبيق $app.';
+  }
+
+  @override
+  String get healthStepAppBattery =>
+      'من إعدادات التطبيق > البطارية، اختر الاستخدام غير المقيّد.';
+
+  @override
+  String get healthStepSamsungSleeping =>
+      'من الإعدادات > البطارية > حدود الاستخدام في الخلفية، أضف Vaktinde إلى التطبيقات التي لا تدخل وضع السكون أبدًا.';
+
+  @override
+  String get healthStepLockRecents =>
+      'اقفل Vaktinde في شاشة التطبيقات المستخدمة مؤخرًا (إن كان هاتفك يتيح ذلك).';
+
+  @override
+  String get healthDetails => 'التفاصيل';
+
+  @override
+  String get alarmHealthExactAction => 'سماح';
+
+  @override
+  String get alarmHealthNotificationsOff => 'الإشعارات معطّلة، لن يعمل الأذان.';
+
+  @override
+  String get alarmHealthNotificationsAction => 'تفعيل';
+
+  @override
+  String get ezanAlarmStreamTitle => 'التشغيل في الوضع الصامت أيضاً';
+
+  @override
+  String get ezanAlarmStreamSub =>
+      'يُرفع الأذان بمستوى صوت المنبّه حتى عندما يكون الهاتف صامتاً.';
+
+  @override
+  String channelAlarmSound(String soundName) {
+    return 'الصوت: $soundName (حتى في الوضع الصامت)';
+  }
 
   @override
   String get exactAlarmSub => 'يرسل إشعاراً.';
@@ -120,7 +909,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String notifBodyUpcoming(String vakit, int minute) {
-    return 'تبقى $minute دقيقة لوقت $vakit.';
+    return 'تبقّى $minute دقيقة على دخول وقت $vakit.';
   }
 
   @override
@@ -130,10 +919,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navQibla => 'القبلة';
 
   @override
-  String get navMenu => 'القائمة';
+  String get menuTitle => 'الإعدادات';
 
   @override
-  String get menuTitle => 'الإعدادات';
+  String get aboutAds => 'حول الإعلانات';
+
+  @override
+  String get adInfoTitle => 'لماذا يعرض Vaktinde إعلانات؟';
+
+  @override
+  String get adInfoBody =>
+      'لكي نتمكن من تقديم Vaktinde مجانًا ودون الحاجة إلى التسجيل، نعرض عددًا محدودًا من الإعلانات في التطبيق. وتساعدنا عائدات الإعلانات على تغطية تكاليف تطوير التطبيق وصيانته.\n\nلا تُعرض إعلانات بملء الشاشة عند فتح القرآن والقبلة والمسبحة الإلكترونية والأدعية وتعليم الصلاة، ونحرص أيضًا على أن تكون الإعلانات قليلة في الشاشات الأخرى.\n\nشكرًا لتفهمكم.';
+
+  @override
+  String get adInfoGotIt => 'فهمت';
 
   @override
   String get sectionLocation => 'الموقع والأوقات';
@@ -145,30 +944,386 @@ class AppLocalizationsAr extends AppLocalizations {
   String get citySelect => 'اختر المدينة';
 
   @override
-  String get districtSelect => 'اختر المنطقة';
-
-  @override
   String get save => 'حفظ';
 
   @override
   String get cancel => 'إلغاء';
 
   @override
-  String get locationWarning =>
-      'اختيار المنطقة مهم للحصول على أوقات دقيقة للصلاة.';
+  String get timeAdjustTitle => 'ضبط أوقات الصلاة';
 
   @override
-  String get menuNotifications => 'أذونات الإشعارات';
+  String get tapToCount => 'انقر للعدّ';
 
   @override
-  String get menuNotificationsSub => 'تحقق هنا إذا لم تسمع أصواتًا.';
+  String get timeAdjustSub => 'تعديل الأوقات بالدقيقة';
 
   @override
-  String get menuTroubleshoot => 'لا تصلك الإشعارات؟';
+  String get timeAdjustInfo =>
+      'تُحسب الأوقات حسب موقعك وفق طريقة رئاسة الشؤون الدينية التركية (ديانت). إذا كانت تختلف قليلاً عن أوقات المسجد في منطقتك، يمكنك تقديم كل وقت أو تأخيره بالدقائق. يُطبَّق التعديل على الشاشة الرئيسية والودجت وإشعارات الصلاة.';
 
   @override
-  String get menuTroubleshootSub =>
-      'قم بضبط إعدادات البطارية لأجهزة Samsung/Xiaomi.';
+  String get timeAdjustReset => 'إعادة تعيين';
+
+  @override
+  String timeAdjustMinutes(String value) {
+    return '$value د';
+  }
+
+  @override
+  String get timeAdjustSaved => 'تم تحديث أوقات الصلاة';
+
+  @override
+  String get trackerTitle => 'متابعة الصلوات';
+
+  @override
+  String get trackerExcusedTitle => 'أيام العذر (الحيض والنفاس)';
+
+  @override
+  String get trackerExcusedInfo =>
+      'لا يجب قضاء الصلوات التي فاتت في أيام الحيض والنفاس. الأيام المعلَّمة كأيام عذر لا تقطع الأيام المتتالية، ولا تدخل في النسبة ولا في الصلوات المضافة إلى القضاء. أما ما فات في هذه الأيام من صيام رمضان فيجب قضاؤه. بتعليم اليوم تبدأ فترة العذر وتُعلَّم الأيام التالية تلقائيًا (10 أيام على الأكثر)؛ وعند انتهائها أزل علامة اليوم. لتعليم يوم سابق أو إزالة علامته: ضغطة مطوّلة على اسم اليوم.';
+
+  @override
+  String get trackerExcusedToday => 'تعليم اليوم كيوم عذر';
+
+  @override
+  String get trackerExcusedMark => 'تعليم كيوم عذر';
+
+  @override
+  String get trackerExcusedUnmark => 'إزالة علامة يوم العذر';
+
+  @override
+  String get trackerExcusedMarked => 'عُلِّم كيوم عذر.';
+
+  @override
+  String get notifStopAction => 'إيقاف';
+
+  @override
+  String get trackerExcusedPeriodStarted =>
+      'بدأت فترة العذر؛ تُعلَّم الأيام التالية تلقائيًا (10 أيام على الأكثر). عند انتهائها اضغط مطوّلًا على «اليوم» مرة أخرى.';
+
+  @override
+  String get trackerExcusedPeriodEnded => 'انتهت فترة العذر.';
+
+  @override
+  String get excusedSilentEzanTitle => 'أذان صامت في أيام العذر';
+
+  @override
+  String get excusedSilentEzanSub =>
+      'في أيام العذر يصل إشعار وقت الصلاة بلا صوت، ولا تُضبط التذكيرات.';
+
+  @override
+  String get trackerExcusedUnmarked => 'أُزيلت علامة يوم العذر.';
+
+  @override
+  String get trackerExcusedCellSnack =>
+      'هذا اليوم معلَّم كيوم عذر، فلا تُحتسب صلواته. لإزالة العلامة: ضغطة مطوّلة على اسم اليوم.';
+
+  @override
+  String trackerExcusedKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'ستُطرح من عدادات القضاء $count صلاة من هذا اليوم أُضيفت إلى القضاء.',
+      few:
+          'ستُطرح من عدادات القضاء $count صلوات من هذا اليوم أُضيفت إلى القضاء.',
+      two: 'ستُطرح من عدادات القضاء صلاتان من هذا اليوم أُضيفتا إلى القضاء.',
+      one: 'ستُطرح من عدادات القضاء صلاة واحدة من هذا اليوم أُضيفت إلى القضاء.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerLegendExcused => 'يوم عذر (ضغطة مطوّلة على اليوم)';
+
+  @override
+  String get fastLegendExcused => 'يوم عذر (يُقضى)';
+
+  @override
+  String get trackerToday => 'اليوم';
+
+  @override
+  String get trackerYesterday => 'أمس';
+
+  @override
+  String get trackerPrayedAction => 'صلّيت';
+
+  @override
+  String get trackerLast7Days => 'آخر 7 أيام';
+
+  @override
+  String get trackerCompletion => 'نسبة 30 يومًا';
+
+  @override
+  String get trackerStreak => 'أيام متتالية';
+
+  @override
+  String trackerStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      many: '$count يومًا',
+      few: '$count أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+      zero: '0 يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerNotYet => 'لم يدخل وقت هذه الصلاة بعد.';
+
+  @override
+  String get trackerKazaButton => 'إضافة الصلوات غير المؤدّاة إلى القضاء';
+
+  @override
+  String get trackerKazaInfo =>
+      'تُضاف الصلوات غير المعلَّمة خلال آخر 30 يومًا (منذ بدء المتابعة) إلى عدادات القضاء. تُضاف كل صلاة مرة واحدة فقط. إذا أدّيت صلاةً أُضيفت إلى القضاء، فاضغط عليها لتُعلَّم على أنها مؤداة وتُطرح من عداد القضاء.';
+
+  @override
+  String trackerKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'ستُضاف $count صلاة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟',
+      few:
+          'ستُضاف $count صلوات غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟',
+      two: 'ستُضاف صلاتان غير معلَّمتين إلى عدادات القضاء. هل تريد المتابعة؟',
+      one: 'ستُضاف صلاة واحدة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaAdd => 'إضافة';
+
+  @override
+  String trackerKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'أُضيفت $count صلاة إلى القضاء.',
+      few: 'أُضيفت $count صلوات إلى القضاء.',
+      two: 'أُضيفت صلاتان إلى القضاء.',
+      one: 'أُضيفت صلاة واحدة إلى القضاء.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaNone => 'لا توجد صلوات لإضافتها إلى القضاء.';
+
+  @override
+  String get trackerKazaRemoveTitle => 'إزالتها من القضاء؟';
+
+  @override
+  String trackerKazaRemoveConfirm(String name, int from, int to) {
+    return 'ستُعلَّم هذه الصلاة على أنها مؤداة، وسيتغيّر عدد قضاء $name من $from إلى $to.';
+  }
+
+  @override
+  String get addWidgetTitle => 'إضافة أداة إلى الشاشة الرئيسية';
+
+  @override
+  String get addWidgetSub => 'اطّلع على المواقيت دون فتح التطبيق';
+
+  @override
+  String get addWidgetHint =>
+      'اختر واحدة، وستطلب منك الشاشة الرئيسية تأكيد الإضافة.';
+
+  @override
+  String get widgetRingName => 'حلقة الصلاة';
+
+  @override
+  String get widgetRingDesc =>
+      'مربع: الوقت المتبقي حتى الصلاة القادمة، وتُظهر الحلقة الوقت المنقضي منذ السابقة';
+
+  @override
+  String get widgetTrackerName => 'متابعة الصلوات';
+
+  @override
+  String get widgetTrackerDesc =>
+      'شريط عريض: صلوات اليوم الخمس؛ المس صلاةً لتعليمها كمؤداة';
+
+  @override
+  String get widgetLargeName => 'مواقيت اليوم';
+
+  @override
+  String get widgetLargeDesc =>
+      'حجم كبير: الموقع والتاريخ الهجري ومواقيت اليوم والوقت المتبقي';
+
+  @override
+  String get widgetWideName => 'الصلاة القادمة';
+
+  @override
+  String get widgetWideDesc =>
+      'شريط عريض: الموقع والتاريخ الهجري والوقت المتبقي حتى الصلاة القادمة';
+
+  @override
+  String get widgetSmallName => 'العد التنازلي للصلاة';
+
+  @override
+  String get widgetSmallDesc => 'مربع صغير: الوقت المتبقي حتى الصلاة القادمة';
+
+  @override
+  String get trackerLegendPrayed => 'مؤداة';
+
+  @override
+  String get trackerLegendKaza => 'أُضيفت إلى القضاء';
+
+  @override
+  String kerahatActive(String range) {
+    return 'وقت كراهة الآن: $range';
+  }
+
+  @override
+  String kerahatUpcoming(String range) {
+    return 'وقت الكراهة يقترب: $range';
+  }
+
+  @override
+  String get endReminderTitle => 'التذكير قبل خروج الوقت';
+
+  @override
+  String get dailyContentNotifTitle => 'إشعارات آية اليوم وحديث اليوم';
+
+  @override
+  String get persistentNotifTitle => 'إشعار دائم';
+
+  @override
+  String get persistentNotifSub =>
+      'يعرض في شريط الإشعارات الوقت المتبقي حتى الصلاة القادمة ومواقيت اليوم.';
+
+  @override
+  String get dailyContentNotifSub => 'يرسل آية كل صباح وحديثًا كل مساء.';
+
+  @override
+  String get religiousDaysNotifTitle =>
+      'إشعارات المناسبات الدينية والليالي المباركة';
+
+  @override
+  String get religiousDaysNotifSub =>
+      'يذكّرك صباحًا بالليالي المباركة والأعياد وسائر المناسبات الدينية.';
+
+  @override
+  String get fridayNotifTitle => 'إشعار الجمعة';
+
+  @override
+  String get fridayNotifSub =>
+      'يذكّرك صباح كل جمعة بقراءة سورة الكهف وإرسال رسائل الجمعة.';
+
+  @override
+  String get fridayNotifBody =>
+      'لا تنسَ قراءة سورة الكهف وإرسال رسالة الجمعة إلى أحبّائك.';
+
+  @override
+  String get fridayKehfAction => 'سورة الكهف';
+
+  @override
+  String get religiousDaysChannel => 'المناسبات الدينية والليالي المباركة';
+
+  @override
+  String get ucAylarBaslangici => 'بداية الأشهر الثلاثة المباركة';
+
+  @override
+  String get ramazanArefesi => 'آخر يوم من رمضان';
+
+  @override
+  String get kurbanArefesi => 'يوم عرفة';
+
+  @override
+  String get ucAylarNotifBody =>
+      'تبدأ اليوم الأشهر الثلاثة المباركة: رجب وشعبان ورمضان. اللهم بارك لنا في رجب وشعبان وبلّغنا رمضان.';
+
+  @override
+  String get ucAylarRegaipTitle => 'الأشهر الثلاثة وليلة الرغائب';
+
+  @override
+  String get ucAylarRegaipNotifBody =>
+      'تبدأ اليوم الأشهر الثلاثة المباركة، والليلة ليلة الرغائب. اللهم بارك لنا في رجب وشعبان وبلّغنا رمضان.';
+
+  @override
+  String get regaipKandiliNotifBody =>
+      'الليلة ليلة الرغائب. ليلة مباركة عليكم.';
+
+  @override
+  String get miracKandiliNotifBody =>
+      'الليلة ذكرى الإسراء والمعراج. ليلة مباركة عليكم.';
+
+  @override
+  String get beratKandiliNotifBody =>
+      'الليلة ليلة النصف من شعبان. ليلة مباركة عليكم.';
+
+  @override
+  String get mevlidKandiliNotifBody =>
+      'الليلة ذكرى المولد النبوي الشريف. ليلة مباركة عليكم.';
+
+  @override
+  String get kadirGecesiNotifBody =>
+      'الليلة ليلة القدر. تقبّل الله منا ومنكم صالح الأعمال.';
+
+  @override
+  String get ramazanBaslangiciNotifBody =>
+      'يبدأ شهر رمضان غدًا، والليلة أول صلاة تراويح وأول سحور. رمضان مبارك!';
+
+  @override
+  String get ramazanArefesiNotifBody =>
+      'غدًا عيد الفطر. تقبّل الله صيامكم وقيامكم، وكل عام وأنتم بخير.';
+
+  @override
+  String get ramazanBayramiNotifBody => 'عيد فطر مبارك! تقبّل الله منا ومنكم.';
+
+  @override
+  String get kurbanArefesiNotifBody =>
+      'غدًا عيد الأضحى المبارك. كل عام وأنتم بخير.';
+
+  @override
+  String get kurbanBayramiNotifBody =>
+      'عيد أضحى مبارك! تقبّل الله منا ومنكم صالح الأعمال.';
+
+  @override
+  String get hicriYilbasiNotifBody =>
+      'اليوم رأس السنة الهجرية. كل عام وأنتم بخير.';
+
+  @override
+  String get asureGunuNotifBody =>
+      'اليوم يوم عاشوراء. جعله الله يوم خير وبركة عليكم.';
+
+  @override
+  String get privacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get endReminderSub =>
+      'يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.';
+
+  @override
+  String get endReminderNotifTitle => 'الوقت يوشك على الخروج';
+
+  @override
+  String endReminderNotifBody(String vakit, int minute) {
+    return 'تبقّى $minute دقيقة على خروج وقت $vakit.';
+  }
+
+  @override
+  String get endReminderChannel => 'تذكيرات خروج الوقت';
+
+  @override
+  String get ramadanIftarTitle => 'حان وقت الإفطار';
+
+  @override
+  String ramadanIftarBody(String vakit) {
+    return 'دخل وقت $vakit. إفطارًا هنيئًا!';
+  }
+
+  @override
+  String get ramadanImsakTitle => 'حان وقت الإمساك';
+
+  @override
+  String get ramadanImsakBody => 'انتهى وقت السحور. صومًا مقبولًا!';
 
   @override
   String get sectionSupport => 'الدعم';
@@ -177,10 +1332,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shareApp => 'شارك مع صديق';
 
   @override
-  String get rateApp => 'قيمنا';
+  String get rateApp => 'قيّمنا';
 
   @override
-  String get contactUs => 'اتصل بنا والإبلاغ عن خطأ';
+  String get contactUs => 'اتصل بنا وأبلغ عن خطأ';
 
   @override
   String shareText(String link) {
@@ -188,22 +1343,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get batteryDialogTitle => 'حل مشكلة الإشعارات';
-
-  @override
-  String get batteryDialogBody =>
-      'قد يقوم هاتفك بإغلاق التطبيق لتوفير البطارية. لمنع ذلك:\n\n1. افتح شاشة التطبيقات الحديثة.\n2. اضغط مطولاً على تطبيق \'Vaktinde\' أو انقر على شعاره.\n3. اضغط على أيقونة القفل 🔒 لقفله.\n\nأيضاً، اذهب إلى الإعدادات > التطبيقات > Vaktinde > البطارية > اختر غير مقيد.';
-
-  @override
   String get okUnderstood => 'حسناً، فهمت';
 
   @override
-  String get religiousDaysTitle => 'الأيام الدينية';
-
-  @override
-  String errorOccurred(String error) {
-    return 'حدث خطأ: $error';
-  }
+  String get religiousDaysTitle => 'المناسبات الدينية';
 
   @override
   String get noDataFound => 'لم يتم العثور على بيانات.';
@@ -215,11 +1358,115 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String religiousDaysListTitle(int year) {
-    return 'قائمة الأيام الدينية لعام $year';
+    return 'قائمة المناسبات الدينية لعام $year';
   }
 
   @override
   String get missedPrayersTitle => 'تتبع الصلوات الفائتة';
+
+  @override
+  String get kazaCalcTitle => 'حاسبة القضاء';
+
+  @override
+  String get kazaCalcSubtitle =>
+      'قدِّر عدد الفوائت من المدة التي لم تُصلِّ فيها';
+
+  @override
+  String get kazaCalcPeriod => 'مدة ترك الصلاة';
+
+  @override
+  String get kazaCalcYears => 'السنوات';
+
+  @override
+  String get kazaCalcMonths => 'الأشهر';
+
+  @override
+  String get kazaCalcOptional => 'اختياري';
+
+  @override
+  String get kazaCalcExcused => 'متوسط أيام الحيض في الشهر';
+
+  @override
+  String get kazaCalcRamadans => 'عدد أشهر رمضان التي لم تُصَم';
+
+  @override
+  String get kazaCalcFastDays => 'أيام الصيام الفائتة';
+
+  @override
+  String get kazaCalcAddRamadan => '+1 رمضان (+30 يومًا)';
+
+  @override
+  String get kazaCalcOptionalInfo =>
+      'للا يجب قضاء الصلوات التي فاتت في أيام الحيض، لذا تُطرح الأيام التي تُدخلها من الصلوات. ولا تُطرح من الصيام: فما فات من الصيام بسبب الحيض يجب قضاؤه أيضًا. يمكنك إدخال أيام الصيام الفائتة يومًا بيوم أو إضافة 30 يومًا عن شهر رمضان كامل.';
+
+  @override
+  String get kazaCalcResult => 'القضاء التقديري';
+
+  @override
+  String get kazaCalcEachPrayer => 'كل صلاة والوتر';
+
+  @override
+  String get kazaCalcNote =>
+      'هذه نتيجة تقديرية (تُحسب السنة 365 يومًا والشهر 30 يومًا). وللحكم الدقيق استشر إمامًا أو عالمًا موثوقًا.';
+
+  @override
+  String get kazaCalcAdd => 'إضافة إلى عدادات القضاء';
+
+  @override
+  String get kazaCalcConfirmTitle => 'هل تريد الإضافة إلى عدادات القضاء؟';
+
+  @override
+  String kazaCalcConfirm(int prayers, int fasts) {
+    return 'كل صلاة والوتر: $prayers\nالصيام: $fasts\n\nتُضاف هذه الأعداد إلى العدادات الحالية ولا يُستبدل شيء.';
+  }
+
+  @override
+  String get kazaCalcAdded => 'أُضيف القضاء التقديري إلى عدادات القضاء.';
+
+  @override
+  String kazaDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سنة',
+      few: '$count سنوات',
+      two: 'سنتين',
+      one: 'سنة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count شهرًا',
+      few: '$count أشهر',
+      two: 'شهرين',
+      one: 'شهر واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      many: '$count يومًا',
+      few: '$count أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaCompletionEstimate(String duration) {
+    return 'إذا قضيت صلوات يوم واحد كل يوم، تنتهي فوائتك خلال $duration تقريبًا.';
+  }
 
   @override
   String get missedPrayersInfo =>
@@ -227,7 +1474,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String editMissedTitle(String title) {
-    return 'تعديل فائتة $title';
+    return 'تعديل قضاء $title';
   }
 
   @override
@@ -247,7 +1494,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String timeLeftFor(String vakit) {
-    return 'الوقت المتبقي لـ $vakit';
+    return 'الوقت المتبقي حتى $vakit';
   }
 
   @override
@@ -260,23 +1507,141 @@ class AppLocalizationsAr extends AppLocalizations {
   String get esmaulHusnaTitle => 'أسماء الله الحسنى';
 
   @override
-  String get closeCaps => 'إغلاق';
+  String get zakatTitle => 'حاسبة الزكاة';
 
   @override
-  String get zakatTitle => 'حاسبة الزكاة';
+  String get fitreTitle => 'زكاة الفطر والفدية';
+
+  @override
+  String get toolFitreDesc => 'حساب زكاة الفطر والفدية';
+
+  @override
+  String get trackerTabTrack => 'المتابعة';
+
+  @override
+  String get trackerTabKaza => 'القضاء';
+
+  @override
+  String get trackerBadgesTitle => 'الأهداف';
+
+  @override
+  String trackerBadgeEarned(String date) {
+    return 'تحقّق في $date';
+  }
+
+  @override
+  String trackerBadgeSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تهانينا! بلغتَ هدف $count يومًا متتاليًا.',
+      few: 'تهانينا! بلغتَ هدف $count أيام متتالية.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fitreInfo =>
+      'المبلغ للشخص الواحد هو الحد الأدنى لزكاة الفطر الذي حددته رئاسة الشؤون الدينية التركية (ديانت)، ويجوز إخراجها نقدًا أو طعامًا. أما الفدية فيدفعها من لا يستطيع الصيام بسبب الكِبَر أو مرض لا يُرجى شفاؤه: مقدار زكاة الفطر عن كل يوم. إذا كنت تقيم خارج تركيا، يمكنك إدخال المبلغ المعتمد في بلدك.';
+
+  @override
+  String get fitreAmountLabel => 'المبلغ للشخص الواحد';
+
+  @override
+  String fitreSource(String source, String year) {
+    return 'المصدر: $source، $year';
+  }
+
+  @override
+  String get fitreResetAmount => 'الرجوع إلى المبلغ الافتراضي';
+
+  @override
+  String get fitreSectionTitle => 'زكاة الفطر';
+
+  @override
+  String get fitrePeopleLabel => 'عدد الأشخاص';
+
+  @override
+  String get fidyeSectionTitle => 'الفدية';
+
+  @override
+  String get fidyeDaysLabel => 'عدد الأيام';
+
+  @override
+  String get fitreTotal => 'المجموع';
+
+  @override
+  String get fastTitle => 'صيام رمضان';
+
+  @override
+  String fastCount(int done, int total) {
+    return '$done/$total يومًا';
+  }
+
+  @override
+  String get fastInfo =>
+      'اضغط على الأيام التي صمتها. تُضاف الأيام الفائتة إلى عداد قضاء الصيام مرة واحدة؛ وإذا كنت قد صمت يومًا أُضيف إلى القضاء، فاضغط عليه ليُطرح من العداد.';
+
+  @override
+  String get fastLegendFasted => 'تم صيامه';
+
+  @override
+  String get fastLegendKaza => 'أُضيف إلى القضاء';
+
+  @override
+  String get fastKazaButton => 'إضافة أيام الصيام الفائتة إلى القضاء';
+
+  @override
+  String fastKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'سيُضاف $count يومًا غير معلَّم إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+      few:
+          'ستُضاف $count أيام غير معلَّمة إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+      two: 'سيُضاف يومان غير معلَّمين إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+      one: 'سيُضاف يوم واحد غير معلَّم إلى عداد قضاء الصيام. هل تريد المتابعة؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fastKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'أُضيف $count يومًا إلى القضاء.',
+      few: 'أُضيفت $count أيام إلى القضاء.',
+      two: 'أُضيف يومان إلى القضاء.',
+      one: 'أُضيف يوم واحد إلى القضاء.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fastKazaNone => 'لا توجد أيام لإضافتها إلى القضاء.';
+
+  @override
+  String get fastKazaRemoveTitle => 'إزالته من القضاء؟';
+
+  @override
+  String fastKazaRemoveConfirm(int from, int to) {
+    return 'سيُعلَّم هذا اليوم على أنه تم صيامه، وسيتغيّر عدد أيام قضاء الصيام من $from إلى $to.';
+  }
+
+  @override
+  String get fastFastedAction => 'صُمتُه';
 
   @override
   String get zakatCalculatorTitle => 'حاسبة الزكاة الذكية';
 
   @override
-  String get liveRatesLoading => 'جاري جلب أسعار الصرف الحالية...';
+  String get liveRatesLoading => 'جارٍ جلب أسعار الصرف الحالية...';
 
   @override
   String get liveRatesInfo =>
-      'يمكنك تعديل الأسعار المجلبة تلقائياً يدوياً إذا رغبت.';
-
-  @override
-  String get sectionGold => 'أصول الذهب';
+      'جُلبت الأسعار تلقائيًا، ويمكنك تعديلها يدويًا إذا رغبت.';
 
   @override
   String get goldType => 'نوع الذهب';
@@ -288,25 +1653,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goldUnitPrice => 'سعر الوحدة';
 
   @override
-  String get sectionCurrency => 'الأصول النقدية والعملات';
-
-  @override
   String get currencyType => 'نوع العملة';
 
   @override
   String get currencyAmount => 'المبلغ';
 
   @override
-  String get currencyRate => 'السعر الحالي';
-
-  @override
-  String get sectionCashDebt => 'النقد والديون';
-
-  @override
-  String get cashAmount => 'النقد المتوفر وفي البنك';
-
-  @override
-  String get debtAmount => 'إجمالي الديون (للخصم)';
+  String get currencyRate => 'سعر الصرف الحالي';
 
   @override
   String get calculateButton => 'احسب';
@@ -327,15 +1680,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get locationPermissionDenied => 'تم رفض إذن الموقع.';
 
   @override
-  String get locationPermissionForever =>
-      'تم رفض إذن الموقع بشكل دائم. يرجى تفعيله من الإعدادات.';
-
-  @override
-  String compassError(String error) {
-    return 'خطأ في المستشعر: $error';
-  }
-
-  @override
   String get noCompass => 'لا توجد بوصلة في هذا الجهاز.';
 
   @override
@@ -347,7 +1691,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get keepAwayMetal => 'ابعده عن الأشياء المعدنية.';
+  String get keepAwayMetal => 'أبعِد الهاتف عن الأشياء المعدنية.';
 
   @override
   String get goldGram => 'جرام ذهب (عيار 24)';
@@ -377,7 +1721,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appearanceSettings => 'إعدادات المظهر';
 
   @override
-  String get appearanceSub => 'السمة والخلفية';
+  String get appearanceSub => 'السمة والخلفية وحجم الخط';
+
+  @override
+  String get textSizeTitle => 'حجم الخط';
+
+  @override
+  String get textSizeNormal => 'عادي';
+
+  @override
+  String get textSizeLarge => 'كبير';
+
+  @override
+  String get textSizeExtraLarge => 'كبير جدًا';
+
+  @override
+  String get whatsNewTextSizeDesc => 'يمكنكم تكبير النص من داخل التطبيق.';
+
+  @override
+  String get sectionNotifications => 'الإشعارات';
+
+  @override
+  String get notificationSettingsTitle => 'إعدادات الإشعارات';
+
+  @override
+  String get notificationSettingsSub =>
+      'التذكيرات وآية اليوم والليالي المباركة والجمعة والإشعار الدائم';
+
+  @override
+  String get ezanAlarmsTitle => 'منبّهات الأذان';
+
+  @override
+  String get ezanAlarmsSub => 'صوت الأذان والتذكير المسبق لكل صلاة';
+
+  @override
+  String get privacyAdsTitle => 'الخصوصية والإعلانات';
+
+  @override
+  String get privacyAdsSub => 'سياسة الخصوصية ومعلومات حول الإعلانات';
+
+  @override
+  String get privacyAdsConsentSub => 'إعدادات خصوصية الإعلانات وسياسة الخصوصية';
 
   @override
   String get themeMode => 'وضع السمة';
@@ -398,16 +1782,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bgDefault => 'الافتراضي';
 
   @override
+  String get bgPlain => 'بسيط';
+
+  @override
   String get bgMosque => 'مسجد';
 
   @override
   String get bgKaaba => 'الكعبة';
-
-  @override
-  String get bgQuran => 'القرآن';
-
-  @override
-  String get none => 'لا شيء';
 
   @override
   String get zakatEligible => 'تجب الزكاة';
@@ -454,20 +1835,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tickerEzan => 'وقت الصلاة';
 
   @override
-  String get stickyChannelName => 'عداد دائم';
-
-  @override
-  String get stickyChannelDesc => 'يعرض الوقت المتبقي';
-
-  @override
-  String get timeLeftTo => 'الوقت المتبقي لانتهاء الوقت: ';
-
-  @override
-  String get locationFallbackMessage =>
-      'تعذر الحصول على الموقع، يتم استخدام القيم الافتراضية.';
-
-  @override
-  String get fetchingLocation => 'جاري الحصول على الموقع...';
+  String get fetchingLocation => 'جارٍ الحصول على الموقع...';
 
   @override
   String get directionNorth => 'ش';
@@ -482,17 +1850,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get directionWest => 'غ';
 
   @override
-  String get calibrationInstruction => '(ارسم رقم \'8\' للمعايرة)';
-
-  @override
   String get zakatDescription =>
-      'احسب زكاتك بالتفصيل وفقاً للفتاوى وأسعار السوق الحالية.';
+      'احسب زكاتك بالتفصيل وفقًا لفتاوى رئاسة الشؤون الدينية التركية وأسعار السوق الحالية.';
 
   @override
   String get cashAndCurrencyTitle => 'النقد والعملات';
-
-  @override
-  String get cashTurkishLira => 'النقد (بالعملة المحلية)';
 
   @override
   String get goldAndSilverTitle => 'الذهب والفضة';
@@ -513,10 +1875,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commercialGoodsValue => 'قيمة البضاعة';
 
   @override
-  String get exchangeRateValue => 'قيمة الصرف';
+  String get exchangeRateValue => 'سعر الصرف';
 
   @override
-  String get receivablesTitle => 'الديون المستحقة (القابلة للتحصيل)';
+  String get receivablesTitle => 'الديون المستحقة لك (القابلة للتحصيل)';
 
   @override
   String get receivableType => 'نوع الدين (نقد، عملة أجنبية، ذهب)';
@@ -541,10 +1903,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get agriDiyanetNote =>
-      'نظراً لعدم اشتراط النصاب في المنتجات الزراعية، يتم إضافة المبلغ المصرح به مباشرة إلى إجمالي الزكاة.';
+      'نظرًا لعدم اشتراط النصاب في زكاة المنتجات الزراعية، يُضاف المبلغ الذي تُدخله مباشرةً إلى إجمالي الزكاة.';
 
   @override
-  String get harvestedProductValue => 'قيمة المحصول (بالعملة المحلية)';
+  String get harvestedProductValue => 'قيمة المحصول (₺)';
 
   @override
   String get irrigationMethod => 'طريقة الري';
@@ -556,7 +1918,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get debtType => 'نوع الدين (نقد، عملة، ذهب)';
 
   @override
-  String get zakatAgriIncluded => 'يتضمن زكاة المنتجات الزراعية (العشر)';
+  String get zakatAgriIncluded => 'منها زكاة المنتجات الزراعية (العُشر)';
 
   @override
   String get assetCheck => 'شيك';
@@ -614,21 +1976,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get zikirmatikTitle => 'مسبحة إلكترونية';
 
   @override
-  String get dhikrSubhanallah => 'سبحان الله';
-
-  @override
-  String get dhikrElhamdulillah => 'الحمد لله';
-
-  @override
-  String get dhikrAllahuEkber => 'الله أكبر';
-
-  @override
-  String get dhikrKalima => 'كلمة التوحيد';
-
-  @override
-  String get dhikrSalavat => 'صلوات';
-
-  @override
   String get targetReached => 'لقد وصلت إلى الهدف!';
 
   @override
@@ -644,9 +1991,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dhikrOther => 'أخرى (ذكر مخصص)';
-
-  @override
-  String get customDhikrTitle => 'إضافة ذكر مخصص';
 
   @override
   String get customDhikrHint => 'اكتب الذكر الخاص بك';
@@ -673,36 +2017,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get themeClassic => 'مسبحة كلاسيكية';
 
   @override
-  String get introTitle1 => 'مرحباً بك في Vaktinde';
-
-  @override
-  String get introDesc1 =>
-      'تتبع أوقات الصلاة، الأذكار، والأيام الدينية بسهولة مع واجهتنا الحديثة والأنيقة.';
-
-  @override
-  String get introTitle2 => 'إشعارات ذكية';
-
-  @override
-  String get introDesc2 =>
-      'احصل على تنبيهات بصوت الإشعار الذي تختاره في أوقات الصلاة. لا تفوت عباداتك أبداً.';
-
-  @override
-  String get introTitle3 => 'أدوات متقدمة';
-
-  @override
-  String get introDesc3 =>
-      'عزز روحانيتك مع المسبحة المتحركة، متتبع الصلوات الفائتة، أسماء الله الحسنى، وحاسبة الزكاة.';
-
-  @override
-  String get introSkip => 'تخطي';
-
-  @override
-  String get introNext => 'التالي';
-
-  @override
-  String get introStart => 'ابدأ الآن';
-
-  @override
   String get dhikrListTitle => 'قائمة الأذكار';
 
   @override
@@ -719,7 +2033,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteDhikr => 'حذف';
 
   @override
+  String get dhikrInfo => 'المعنى والمصدر';
+
+  @override
   String get statisticsTitle => 'الإحصائيات';
+
+  @override
+  String zikirTodayCount(int count) {
+    return 'اليوم: $count';
+  }
 
   @override
   String get monthly => 'شهرياً';
@@ -735,21 +2057,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statsEmpty => 'لا توجد بيانات للأذكار بعد.';
-
-  @override
-  String get dhikrEstagfirullah => 'أستغفر الله';
-
-  @override
-  String get dhikrLaHavle => 'لا حول ولا قوة إلا بالله';
-
-  @override
-  String get dhikrHasbunallah => 'حسبنا الله';
-
-  @override
-  String get dhikrSubhanallahi => 'سبحان الله وبحمده';
-
-  @override
-  String get dhikrYunus => 'دعاء نبي الله يونس';
 
   @override
   String get dhikrYaAllah => 'يا الله (جل جلاله)';
@@ -822,9 +2129,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailyAyahTitle => 'آية اليوم';
 
   @override
-  String get remainingTime => 'المتبقي';
-
-  @override
   String get onboardingWelcome => 'Hoş Geldiniz / مرحباً بكم';
 
   @override
@@ -832,19 +2136,45 @@ class AppLocalizationsAr extends AppLocalizations {
       'Lütfen kullanmak istediğiniz dili seçin.\nيرجى تحديد لغتك المفضلة.';
 
   @override
-  String get turnRight => 'انعطف يميناً ➔';
-
-  @override
-  String get turnSlightRight => 'انعطف يميناً قليلاً ➔';
-
-  @override
-  String get turnLeft => '⬅ انعطف يساراً';
-
-  @override
-  String get turnSlightLeft => '⬅ انعطف يساراً قليلاً';
-
-  @override
   String get calibrationRequired => 'المعايرة مطلوبة';
+
+  @override
+  String get qiblaAccuracyNote =>
+      'تُظهر البوصلة اتجاهًا تقريبيًا؛ وقد تُسبّب المعادن والمغناطيس والأجهزة الإلكترونية انحراف الاتجاه.';
+
+  @override
+  String get qiblaTipsTitle => 'للحصول على نتيجة دقيقة';
+
+  @override
+  String get qiblaTipFlat => 'أمسك الهاتف موازيًا للأرض.';
+
+  @override
+  String get qiblaTipCalibrate =>
+      'عايِر البوصلة برسم رقم \'8\' في الهواء بهاتفك.';
+
+  @override
+  String get qiblaTipMagneticCase => 'انزع غطاء الهاتف المغناطيسي إن وُجد.';
+
+  @override
+  String get qiblaTipMetal => 'ابتعد عن الأشياء المعدنية والأجهزة الإلكترونية.';
+
+  @override
+  String get qiblaTipMosque =>
+      'قارن الاتجاه إن أمكن باتجاه القبلة في أحد المساجد.';
+
+  @override
+  String qiblaAngleTrueNorth(String angle) {
+    return 'زاوية القبلة: $angle° (من الشمال الجغرافي)';
+  }
+
+  @override
+  String qiblaDeclination(String deg) {
+    return 'الانحراف المغناطيسي: $deg° (يُصحَّح تلقائيًا)';
+  }
+
+  @override
+  String get qiblaInterferenceWarning =>
+      'تم رصد تشويش مغناطيسي: أبعِد الهاتف عن الأشياء المعدنية والأغطية المغناطيسية والأجهزة الإلكترونية.';
 
   @override
   String get gold22kGram => 'جرام ذهب عيار 22';
@@ -853,7 +2183,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goldAtaToptan => 'آتا بالجملة';
 
   @override
-  String get goldAtaCumhuriyet => 'آتا جمهوريات';
+  String get goldAtaCumhuriyet => 'آتا جمهوريت';
 
   @override
   String get gold22kBracelet => 'سوار عيار 22';
@@ -874,10 +2204,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goldAtaBesli => 'آتا بيشلي';
 
   @override
-  String get goldResat => 'ذهب رشاد';
+  String get goldResat => 'ليرة رشادية';
 
   @override
-  String get goldHamit => 'ذهب حامد';
+  String get goldHamit => 'ليرة حميدية';
 
   @override
   String get currencyChf => 'فرنك سويسري';
@@ -919,20 +2249,683 @@ class AppLocalizationsAr extends AppLocalizations {
   String get currencyTry => 'ليرة تركية';
 
   @override
-  String get holdToEdit => '(اضغط مطولاً للتعديل)';
-
-  @override
   String get editCounterTitle => 'تعديل العداد';
-
-  @override
-  String get editCounterHint => 'مثال: 2000';
-
-  @override
-  String get editTargetHint => 'مثال: 99';
 
   @override
   String get resetCounterConfirm => 'هل أنت متأكد أنك تريد إعادة تعيين العداد؟';
 
   @override
-  String get dhikrTarget => 'الهدف:';
+  String get imsakiyeTitle => 'جدول المواقيت';
+
+  @override
+  String get widgetRamadanName => 'العد التنازلي لرمضان';
+
+  @override
+  String get widgetRamadanDesc =>
+      'مربع: الوقت المتبقي للإفطار ولانتهاء السحور، وخارج رمضان الأيام المتبقية حتى بدايته';
+
+  @override
+  String widgetRamadanDay(String day) {
+    return 'رمضان · اليوم $day';
+  }
+
+  @override
+  String get widgetRamadanUntil => 'الأيام المتبقية حتى رمضان';
+
+  @override
+  String get toolsGroupPrayer => 'الصلاة';
+
+  @override
+  String get toolsGroupInfo => 'معلومات';
+
+  @override
+  String get toolsGroupCalc => 'الحاسبات';
+
+  @override
+  String get toolImsakiyeDesc => 'مواقيت الشهر ورمضان';
+
+  @override
+  String get toolTrackerDesc => 'الصلوات المؤدّاة وعدّادات القضاء';
+
+  @override
+  String get toolReligiousDaysDesc => 'الليالي المباركة والأعياد';
+
+  @override
+  String get nearbyMosquesTitle => 'المساجد القريبة';
+
+  @override
+  String get toolNearbyMosquesDesc => 'ابحث عن أقرب المساجد على الخريطة';
+
+  @override
+  String get nearbyMosquesQuery => 'مسجد';
+
+  @override
+  String get nearbyMosquesError => 'تعذّر فتح الخريطة.';
+
+  @override
+  String get toolEsmaDesc => 'الأسماء الحسنى ومعانيها';
+
+  @override
+  String get duasTitle => 'الأدعية';
+
+  @override
+  String get duaSearchHint => 'ابحث عن دعاء';
+
+  @override
+  String get duaNoResults => 'لا يوجد دعاء يطابق البحث';
+
+  @override
+  String duaCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دعاء',
+      many: '$count دعاءً',
+      few: '$count أدعية',
+      two: 'دعاءان',
+      one: 'دعاء واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get storiesTitle => 'القصص';
+
+  @override
+  String get toolStoriesDesc => 'الأنبياء والسيرة والصحابة والعلماء';
+
+  @override
+  String get storiesNote =>
+      'تعتمد هذه الملخصات على القرآن الكريم ومصادر الحديث والسيرة والتراجم، وللتفصيل في المسائل الدينية راجع أهل العلم.';
+
+  @override
+  String storyCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count قصة',
+      many: '$count قصة',
+      few: '$count قصص',
+      two: 'قصتان',
+      one: 'قصة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get storyLesson => 'العبرة';
+
+  @override
+  String get prayerGuideTitle => 'تعليم الصلاة';
+
+  @override
+  String get toolPrayerGuideDesc => 'الوضوء وكيفية الصلاة خطوة بخطوة';
+
+  @override
+  String get prayerGuideTabWudu => 'الوضوء';
+
+  @override
+  String get prayerGuideTabFards => 'الفرائض';
+
+  @override
+  String get prayerGuideTabRakats => 'الركعات';
+
+  @override
+  String get prayerGuideTabSteps => 'كيفية الصلاة';
+
+  @override
+  String prayerGuideTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مرة',
+      few: '$count مرات',
+      two: 'مرتين',
+      one: 'مرة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get toolDuasDesc => 'التسبيح وأذكار الصباح والمساء والأدعية اليومية';
+
+  @override
+  String get duaTransliteration => 'النطق';
+
+  @override
+  String get duaMeaning => 'المعنى';
+
+  @override
+  String get tesbihatTitle => 'التسبيح بعد الصلاة';
+
+  @override
+  String get tesbihatDesc => 'آية الكرسي والتسبيح ثلاثًا وثلاثين والدعاء';
+
+  @override
+  String tesbihatStep(int current, int total) {
+    return 'الخطوة $current من $total';
+  }
+
+  @override
+  String get tesbihatTapWhenRead => 'انقر بعد القراءة';
+
+  @override
+  String get tesbihatRestart => 'البدء من جديد';
+
+  @override
+  String ramadanShareTitle(int day) {
+    return 'رمضان · اليوم $day';
+  }
+
+  @override
+  String ramadanShareIftarIn(String time) {
+    return 'الإفطار بعد $time';
+  }
+
+  @override
+  String ramadanShareSahurIn(String time) {
+    return 'ينتهي السحور بعد $time';
+  }
+
+  @override
+  String ramadanShareIftarAt(String time) {
+    return 'الإفطار $time';
+  }
+
+  @override
+  String ramadanShareImsakAt(String time) {
+    return 'الإمساك $time';
+  }
+
+  @override
+  String ramadanShareHoursMinutes(int hours, int minutes) {
+    return '$hours س $minutes د';
+  }
+
+  @override
+  String ramadanShareHours(int hours) {
+    return '$hours س';
+  }
+
+  @override
+  String ramadanShareMinutes(int minutes) {
+    return '$minutes د';
+  }
+
+  @override
+  String get toolFridayDesc => 'رسائل جاهزة للمشاركة';
+
+  @override
+  String get quranTitle => 'القرآن الكريم';
+
+  @override
+  String get quranTabSurahs => 'السور';
+
+  @override
+  String get quranTabJuz => 'الأجزاء';
+
+  @override
+  String get quranSearchHint => 'ابحث عن سورة بالاسم أو الرقم';
+
+  @override
+  String get quranNoResults => 'لا توجد سورة تطابق البحث';
+
+  @override
+  String quranJuz(int juz) {
+    return 'الجزء $juz';
+  }
+
+  @override
+  String quranPage(int page) {
+    return 'الصفحة $page';
+  }
+
+  @override
+  String quranAyahRange(int from, int to) {
+    return 'الآيات من $from إلى $to';
+  }
+
+  @override
+  String get quranBookmark => 'العلامة المرجعية';
+
+  @override
+  String get quranViewSettings => 'طريقة العرض';
+
+  @override
+  String get quranModePage => 'صفحات المصحف';
+
+  @override
+  String get quranModePageDesc => 'نص متصل كما في المصحف';
+
+  @override
+  String get quranModeAyah => 'آية آية';
+
+  @override
+  String get quranModeAyahDesc => 'كل آية في بطاقة مستقلة';
+
+  @override
+  String get quranModeTranslation => 'الترجمة';
+
+  @override
+  String get quranModeTranslationDesc => 'الترجمة فقط، لقراءة متصلة';
+
+  @override
+  String get quranArabicSize => 'حجم خط الآيات';
+
+  @override
+  String get quranTranslationSize => 'حجم خط الترجمة';
+
+  @override
+  String get quranTranslationSmaller => 'تصغير خط الترجمة';
+
+  @override
+  String get quranTranslationLarger => 'تكبير خط الترجمة';
+
+  @override
+  String get quranGoToAyah => 'الانتقال إلى آية';
+
+  @override
+  String quranAyahNumberLabel(int count) {
+    return 'رقم الآية (من 1 إلى $count)';
+  }
+
+  @override
+  String get quranGo => 'انتقال';
+
+  @override
+  String get quranPreviousSurah => 'السورة السابقة';
+
+  @override
+  String get quranNextSurah => 'السورة التالية';
+
+  @override
+  String get quranSwipeNextHint => 'اسحب لأعلى للانتقال إلى السورة التالية';
+
+  @override
+  String get toolQuranDesc => 'سور القرآن الكريم بالرسم العثماني';
+
+  @override
+  String get quranContinue => 'متابعة القراءة من حيث توقفت';
+
+  @override
+  String quranAyahRef(String surah, int ayah) {
+    return '$surah، الآية $ayah';
+  }
+
+  @override
+  String quranAyahCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count آية',
+      many: '$count آية',
+      few: '$count آيات',
+      two: 'آيتان',
+      one: 'آية واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quranMeccan => 'مكية';
+
+  @override
+  String get quranMedinan => 'مدنية';
+
+  @override
+  String get quranLoadError =>
+      'تعذّر تحميل السورة. تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.';
+
+  @override
+  String get quranBookmarkSave => 'إضافة علامة مرجعية';
+
+  @override
+  String get quranBookmarkRemove => 'إزالة العلامة المرجعية';
+
+  @override
+  String get quranBookmarkSaved => 'تمت إضافة العلامة المرجعية';
+
+  @override
+  String get quranBookmarkRemoved => 'تمت إزالة العلامة المرجعية';
+
+  @override
+  String get quranShareAyah => 'مشاركة الآية';
+
+  @override
+  String get quranFontSmaller => 'تصغير خط الآيات';
+
+  @override
+  String get quranFontLarger => 'تكبير خط الآيات';
+
+  @override
+  String get quranTextSource => 'النص القرآني: مشروع تنزيل (tanzil.net)';
+
+  @override
+  String get hatimTitle => 'الختمة';
+
+  @override
+  String get hatimIntro => 'اقرأ القرآن الكريم كاملًا بخطة يومية.';
+
+  @override
+  String get hatimStart => 'بدء ختمة';
+
+  @override
+  String hatimPagesPerDay(int pages) {
+    String _temp0 = intl.Intl.pluralLogic(
+      pages,
+      locale: localeName,
+      other: '$pages صفحة يوميًا',
+      few: '$pages صفحات يوميًا',
+      two: 'صفحتان يوميًا',
+      one: 'صفحة واحدة يوميًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hatimDuration(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: 'في $months شهرًا',
+      few: 'في $months أشهر',
+      two: 'في شهرين',
+      one: 'في 30 يومًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hatimRamadan => 'ختمة في رمضان';
+
+  @override
+  String hatimProgress(int page, int total, String percent) {
+    return 'الصفحة $page من $total · $percent';
+  }
+
+  @override
+  String hatimToday(int read, int goal) {
+    return 'صفحات اليوم: $read / $goal';
+  }
+
+  @override
+  String get hatimContinue => 'متابعة القراءة';
+
+  @override
+  String get hatimEnterPage => 'إدخال الصفحة';
+
+  @override
+  String hatimPageLabel(int total) {
+    return 'آخر صفحة قرأتها (1–$total)';
+  }
+
+  @override
+  String get hatimReminder => 'التذكير';
+
+  @override
+  String get hatimReminderDaily => 'ذكّرني كل يوم';
+
+  @override
+  String get hatimReminderTime => 'الوقت';
+
+  @override
+  String get hatimChangePlan => 'تغيير الخطة';
+
+  @override
+  String get hatimDelete => 'حذف الختمة';
+
+  @override
+  String get hatimDeleteConfirm =>
+      'هل تريد حذف خطة الختمة وتقدّمك فيها؟ يبقى عدد الختمات المكتملة محفوظًا.';
+
+  @override
+  String get hatimDone => 'اكتملت الختمة';
+
+  @override
+  String get hatimNew => 'بدء ختمة جديدة';
+
+  @override
+  String hatimCount(int count) {
+    return 'الختمات المكتملة: $count';
+  }
+
+  @override
+  String get hatimCompleted => 'اكتملت ختمتك، تقبّل الله منك!';
+
+  @override
+  String get hatimReminderChannel => 'تذكير الختمة';
+
+  @override
+  String get hatimReminderBody => 'لا تنسَ وِردك اليومي من الختمة.';
+
+  @override
+  String hatimTodayRange(int from, int to) {
+    return 'ورد اليوم: الصفحات $from–$to';
+  }
+
+  @override
+  String get hatimMarkRead => 'قرأتُه';
+
+  @override
+  String get hatimGoalMet => 'اكتمل ورد اليوم';
+
+  @override
+  String get hatimDetails => 'تفاصيل الختمة';
+
+  @override
+  String hatimTargetLine(String date) {
+    return 'الموعد: $date';
+  }
+
+  @override
+  String get hatimJuzHint =>
+      'اضغط على الجزء الذي قرأته من المصحف الورقي لتعليمه.';
+
+  @override
+  String hatimJuzMarkRead(int juz) {
+    return 'هل تريد تعليم القراءة حتى نهاية الجزء $juz؟';
+  }
+
+  @override
+  String hatimJuzMarkUnread(int juz) {
+    return 'هل تريد تعليم الجزء $juz وما بعده كغير مقروء؟';
+  }
+
+  @override
+  String get hatimMark => 'تعليم';
+
+  @override
+  String get hatimUnmark => 'إزالة التعليم';
+
+  @override
+  String get hatimJuzDone => 'مقروء';
+
+  @override
+  String get hatimJuzCurrent => 'قيد القراءة';
+
+  @override
+  String get hatimJuzPending => 'غير مقروء';
+
+  @override
+  String get hatimNote => 'النية';
+
+  @override
+  String get hatimNoteHint => 'مثال: لروح والدتي';
+
+  @override
+  String get hatimNoteAdd => 'أضف نية (اختياري)';
+
+  @override
+  String get hatimGroup => 'ختمة جماعية';
+
+  @override
+  String get hatimGroupDesc => 'وزّع الأجزاء الثلاثين وأرسل القائمة';
+
+  @override
+  String get hatimGroupPeople => 'عدد الأشخاص';
+
+  @override
+  String hatimGroupLine(int person, String juz) {
+    return 'الشخص $person: $juz';
+  }
+
+  @override
+  String hatimGroupRange(int from, int to) {
+    return 'الأجزاء $from–$to';
+  }
+
+  @override
+  String get hatimGroupFooter => 'أخبرونا عند إتمام أجزائكم. تقبّل الله.';
+
+  @override
+  String get hatimGroupShare => 'مشاركة القائمة';
+
+  @override
+  String get hatimDuaHeader => 'دعاء بعد الختم';
+
+  @override
+  String quranTranslationSource(String name) {
+    return 'الترجمة: $name';
+  }
+
+  @override
+  String get toolZakatDesc => 'حساب الزكاة والعُشر';
+
+  @override
+  String get toolSettingsDesc => 'الموقع والإشعارات والمظهر';
+
+  @override
+  String get sectionBackup => 'النسخ الاحتياطي';
+
+  @override
+  String get backupExportTitle => 'نسخ البيانات احتياطيًا';
+
+  @override
+  String get backupExportSub =>
+      'متابعة الصلوات والقضاء والأذكار والإعدادات (بما فيها الموقع) في ملف واحد';
+
+  @override
+  String get backupImportTitle => 'استعادة نسخة احتياطية';
+
+  @override
+  String get backupImportSub => 'اختر ملف نسخة احتياطية حفظته من قبل';
+
+  @override
+  String get backupShareSubject => 'نسخة Vaktinde الاحتياطية';
+
+  @override
+  String get backupRestoreConfirmTitle => 'استعادة النسخة الاحتياطية؟';
+
+  @override
+  String backupRestoreConfirmMessage(String date) {
+    return 'سيتم تحميل النسخة الاحتياطية المؤرخة في $date. ستُستبدل بياناتك الحالية ببيانات النسخة الاحتياطية: متابعة الصلاة والصيام، وعدّادات القضاء، والأذكار، وإعدادات الأذان والإشعارات، والموقع والمظهر. لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String get backupRestoreConfirm => 'استعادة';
+
+  @override
+  String get backupRestored => 'تمت استعادة النسخة الاحتياطية.';
+
+  @override
+  String get backupInvalidFile =>
+      'هذا الملف ليس نسخة احتياطية صالحة من Vaktinde.';
+
+  @override
+  String get backupNewerVersion =>
+      'أُنشئت هذه النسخة الاحتياطية بإصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.';
+
+  @override
+  String daysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'بعد $count يوم',
+      many: 'بعد $count يومًا',
+      few: 'بعد $count أيام',
+      two: 'بعد يومين',
+      one: 'غدًا',
+      zero: 'اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previousYear => 'السنة السابقة';
+
+  @override
+  String get nextYear => 'السنة التالية';
+
+  @override
+  String get previousItem => 'السابق';
+
+  @override
+  String get nextItem => 'التالي';
+
+  @override
+  String missedChangeConfirm(String name, int from, int to) {
+    return 'سيتغيّر عدد قضاء $name من $from إلى $to. هل تريد الحفظ؟';
+  }
+
+  @override
+  String get shareFailed => 'تعذّر إتمام العملية. يُرجى المحاولة مرة أخرى.';
+
+  @override
+  String get zakatCurrencyNote => 'جميع المبالغ بالليرة التركية (₺).';
+
+  @override
+  String get zakatCashTry => 'النقد (₺)';
+
+  @override
+  String get zakatRatesUnavailable =>
+      'تعذّر جلب أسعار الذهب وأسعار الصرف الحالية. يُرجى إدخال الأسعار يدويًا.';
+
+  @override
+  String get zakatGoldGramPrice => 'سعر جرام الذهب عيار 24 (₺)';
+
+  @override
+  String get zakatGoldGramPriceHelp => 'يُستخدم لحساب حدّ النصاب.';
+
+  @override
+  String get zakatNisabUnknown =>
+      'لا يمكن حساب حدّ النصاب بدون سعر الذهب. أدخل سعر الذهب للحصول على نتيجة صحيحة.';
+
+  @override
+  String get imsakiyeRamadan => 'رمضان';
+
+  @override
+  String imsakiyeRamadanTitle(int year) {
+    return 'إمساكية رمضان $year';
+  }
+
+  @override
+  String get imsakiyeDay => 'اليوم';
+
+  @override
+  String get imsakiyeSunriseShort => 'الشروق';
+
+  @override
+  String get imsakiyePrevMonth => 'الشهر السابق';
+
+  @override
+  String get imsakiyeNextMonth => 'الشهر التالي';
+
+  @override
+  String get imsakiyeNoLocation =>
+      'يرجى تحديد موقعك أولاً لعرض جدول المواقيت. يمكنك تحديده من الشاشة الرئيسية أو من الإعدادات.';
+
+  @override
+  String get imsakiyeShareError =>
+      'تعذّرت مشاركة الجدول. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get ramadanSahurLeft => 'الوقت المتبقي للسحور';
+
+  @override
+  String get ramadanIftarLeft => 'الوقت المتبقي للإفطار';
+
+  @override
+  String ramadanDayLabel(int day) {
+    return 'اليوم $day من رمضان';
+  }
 }

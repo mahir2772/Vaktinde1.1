@@ -1,0 +1,1776 @@
+// ignore_for_file: empty_catches
+
+import 'dart:convert';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show AndroidScheduleMode;
+import 'package:hijri/hijri_calendar.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ezan_saati/core/notification_routes.dart';
+import 'package:ezan_saati/core/ui/app_format.dart';
+import 'package:ezan_saati/features/imsakiye/imsakiye_logic.dart';
+import 'package:ezan_saati/features/imsakiye/ramadan_calendar_loader.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../models/prayer_times_model.dart';
+import 'ayah_service.dart';
+import 'dini_gunler_service.dart';
+import 'error_reporter.dart';
+import 'hadith_service.dart';
+import 'notification_service.dart';
+import 'prayer_time_service.dart';
+import 'prayer_silence.dart';
+import 'prayer_timezone.dart';
+import 'prayer_tracker.dart';
+import 'prayer_tracker_service.dart';
+import 'serial_queue.dart';
+import 'storage_service.dart';
+import 'tracker_widget_service.dart';
+import 'widget_service.dart';
+
+typedef _TimeMap = Map<String, String>;
+
+/// Kurulacak tek bir ezan / hatırlatma bildirimi
+class PlannedAlarm {
+  final int id;
+  final NotificationKind kind; // zamanlama kipi buna göre
+  final String title;
+  final String body;
+  final DateTime time;
+  final String? sound; // null: sessiz (sadece yazılı) bildirim
+  final String channelName;
+  final String? payload; // "Kıldım" aksiyonu için tarih + vakit
+  final String? actionLabel; // null: aksiyon butonu yok
+  final String? stopLabel; // "Durdur" (sadece sesli ezan); null: yok
+  final bool alarmStream; // "sessiz modda da çal" (sadece sesli ezan)
+
+  const PlannedAlarm({
+    required this.id,
+    required this.kind,
+    required this.title,
+    required this.body,
+    required this.time,
+    required this.sound,
+    required this.channelName,
+    this.payload,
+    this.actionLabel,
+    this.stopLabel,
+    this.alarmStream = false,
+  });
+}
+
+/// Kurulu bir ezan: vakit anahtarı ([PrayerRefreshService.vakitKeys]) ve saati
+typedef ScheduledEzan = ({String key, DateTime time});
+
+/// Vakitleri ekran dışına taşır: ana ekran widget'ları, kalıcı bildirim, ezan alarmları.
+/// BuildContext gerektirmez; HomeViewModel ve WorkManager arka plan görevi ortak kullanır.
+class PrayerRefreshService {
+  PrayerRefreshService(this._notifications, {DateTime Function()? clock})
+    : _clock = clock ?? DateTime.now;
+
+  final NotificationService _notifications;
+  // Alarm planının "şimdi"si (testte sabit saat verilebilir)
+  final DateTime Function() _clock;
+  final PrayerTimeService _prayerTimeService = PrayerTimeService();
+  final StorageService _storageService = StorageService();
+
+  static const List<String> vakitKeys = [
+    "İmsak",
+    "Güneş",
+    "Öğle",
+    "İkindi",
+    "Akşam",
+    "Yatsı",
+  ];
+  static const int alarmDays = 5;
+  // ID vaktin tarihine bağlı: 6 günlük döngü (plan + dünün geç kalan ezanı) x 12 → 0-71
+  static const int _idDays = alarmDays + 1;
+  static const int alarmIdCount = _idDays * 12;
+  static const String _alarmsDateKey = 'alarms_scheduled_date';
+
+  /// Kurulan farz ezanlarının ID → [alarmFingerprint] kaydı (eklentinin bekleyen
+  /// listesi saat/ayar vermez; geç ezanı korumadan önce karşılaştırılır)
+  static const String planMetaKey = 'alarm_plan_meta';
+
+  /// Kip kuralına ([NotificationService.scheduleModeFor]) geçiş. 1.1.0 her bildirimi
+  /// alarmClock ile kurdu: ezanlar kapalıyken bile günlük ayet/hadis yüzünden durum
+  /// çubuğunda alarm simgesi. Kayıt yokken her kurulum turu ([rescheduleAlarms],
+  /// arka planda da her koşuda) bekleyen bütün bildirimlerin üzerine yeni kiple yazar
+  /// (aynı ID yeniden kurulunca eski AlarmManager alarmının yerini alır).
+  static const String scheduleModeMigratedKey = 'schedule_mode_v2';
+
+  /// Günün ayeti (10:00) ve hadisi (19:00) bildirimleri
+  static const int ayahNotificationId = 1000;
+  static const int hadithNotificationId = 1900;
+  static const List<int> dailyContentIds = [
+    ayahNotificationId,
+    hadithNotificationId,
+  ];
+
+  static int _dailyContentHour(int id) => id == ayahNotificationId ? 10 : 19;
+
+  /// Günlük içerik bildiriminin çalacağı gün (NotificationService gibi: saati
+  /// geçtiyse yarın). İçerik bu günün içeriğidir: bugün çalacaksa ana
+  /// ekrandakiyle aynı, yarın çalacaksa yarının.
+  static DateTime dailyContentDay(int id, DateTime now) {
+    final today = PrayerTracker.day(now);
+    final time = DateTime(now.year, now.month, now.day, _dailyContentHour(id));
+    return time.isBefore(now) ? PrayerTracker.addDays(today, 1) : today;
+  }
+
+  /// Dini gün ve kandil bildirimleri: o gün 10:00, [religiousDayDays] gün
+  /// ilerisine kadar. ID bildirim gününe bağlı (400 günlük döngü: pencerede
+  /// tekrar etmez) → 2000-2399
+  static const int religiousDayBaseId = 2000;
+  static const int religiousDayIdCount = 400;
+  static const int religiousDayDays = 60;
+  static const int religiousDayHour = 10;
+
+  static int religiousDayId(DateTime day) =>
+      religiousDayBaseId + PrayerTracker.epochDay(day) % religiousDayIdCount;
+
+  static bool isReligiousDayId(int id) =>
+      id >= religiousDayBaseId && id < religiousDayBaseId + religiousDayIdCount;
+
+  /// Cuma bildirimi: her Cuma 09:00, bugünden itibaren [fridayWeeks] hafta.
+  /// ID Cuma'nın haftasına bağlı (4 haftalık döngü: pencerede tekrar etmez,
+  /// bugünün geciken bildirimi 4 hafta sonrasınınkiyle ezilmez) → 2400-2403
+  static const int fridayBaseId = 2400;
+  static const int fridayWeeks = 4;
+  static const int fridayHour = 9;
+
+  static int fridayId(DateTime friday) =>
+      fridayBaseId + (PrayerTracker.epochDay(friday) ~/ 7) % fridayWeeks;
+
+  static bool isFridayId(int id) =>
+      id >= fridayBaseId && id < fridayBaseId + fridayWeeks;
+
+  /// Cuma bildirimindeki "Kehf Suresi" düğmesi: Kur'an okuyucusunda 18. sure
+  static final String fridayKehfRoute = NotificationRoutes.route(
+    '${NotificationRoutes.surah}:18',
+  );
+
+  /// Bildirim Kontrolü "test ezanı". Plan temizliği (ezan 0-71, vakit çıkış 100-124,
+  /// günlük içerik 1000/1900) bu ID'ye dokunmaz; vakit sayılmaz, yükü yok.
+  static const int testEzanId = 1999;
+
+  /// WorkManager görevinin son başarılı koşusu (ms). Bildirim Kontrolü telefonun
+  /// uygulamayı arka planda durdurup durdurmadığını buradan anlar. Cihaza özgü
+  /// (InstallGuard.deviceKeys).
+  static const String lastHeadlessRunKey = 'last_headless_run';
+
+  /// Tam zamanlı izin yokken (Android 12) gecikmeli ezan vaktinden sonra bu süre
+  /// bekleyebilir: pencere 1 saate kadar + Doze'da uygulamanın diğer gecikmeli
+  /// alarmlarıyla 9 dk arayla sıra
+  static const Duration lateWindow = Duration(minutes: 90);
+
+  /// [day] günündeki vaktin ([vakitIndex], [vakitKeys] sırası) ezan (çift) ya da
+  /// hatırlatma (tek) ID'si. Farklı günlerde kurulan planlar aynı vakte aynı ID'yi verir.
+  static int alarmId(DateTime day, int vakitIndex, {bool reminder = false}) =>
+      (PrayerTracker.epochDay(day) % _idDays) * 12 +
+      vakitIndex * 2 +
+      (reminder ? 1 : 0);
+
+  static Map<String, String> timesMap(PrayerTimesModel t) => {
+    "İmsak": t.imsak!,
+    "Güneş": t.gunes!,
+    "Öğle": t.ogle!,
+    "İkindi": t.ikindi!,
+    "Akşam": t.aksam!,
+    "Yatsı": t.yatsi!,
+  };
+
+  /// Ezan kanalının adı ([NotificationService.prayerChannel] ile aynı ayrım): sessiz,
+  /// alarm sesiyle ("sessiz modda da çal") ya da bildirim sesiyle
+  static String ezanChannelName(
+    AppLocalizations loc,
+    String? sound, {
+    bool alarmStream = false,
+  }) => sound == null
+      ? loc.channelSilentPrayers
+      : (alarmStream
+            ? loc.channelAlarmSound(sound)
+            : loc.channelSoundPrefix(sound));
+
+  static Map<String, String> vakitNames(AppLocalizations loc) => {
+    "İmsak": loc.imsak,
+    "Güneş": loc.gunes,
+    "Öğle": loc.ogle,
+    "İkindi": loc.ikindi,
+    "Akşam": loc.aksam,
+    "Yatsı": loc.yatsi,
+  };
+
+  /// Hicri tarih metni (örn. 7 Safer 1448). hijri paketinde sadece tr/en/ar var,
+  /// diğer dillerde setLocal hata fırlattığı için İngilizce ay adları kullanılır.
+  /// [date] verilmezse bugün.
+  static String hijriDateText(String langCode, {DateTime? date}) {
+    final code = HijriCalendar.supportedLocales.contains(langCode)
+        ? langCode
+        : 'en';
+    // Ay adı dönüştürme anında seçili dilden alınır: setLocal önce
+    HijriCalendar.setLocal(code);
+    final hijri = date == null
+        ? HijriCalendar.now()
+        : HijriCalendar.fromDate(date);
+    return hijri.toFormat("dd MMMM yyyy");
+  }
+
+  // Widget yazımları sırayla: üst üste gelen çağrılar anahtarları karıştırmasın
+  static final SerialQueue _widgetQueue = SerialQueue();
+
+  /// Ana ekran widget'ları ve kalıcı bildirim (NotificationUpdater aynı veriyi okur).
+  /// [times] bugünün vakitleri. Gece yarısı ve yatsı sonrası için setin günü,
+  /// seçilen şehrin saat dilimi ve (koordinat varsa) yarının vakitleri + hicri
+  /// tarihi de yazılır. Hata fırlatmaz.
+  Future<void> updateHomeWidget({
+    required PrayerTimesModel times,
+    required AppLocalizations? loc,
+    required String? city,
+    required String? district,
+    required String hijriDateText,
+  }) => _widgetQueue.run(() async {
+    try {
+      final zone = times.timeZone;
+      final cityNow = PrayerTimeZone.nowIn(zone, _clock());
+      Map<String, String> vakitler = timesMap(times);
+      final tomorrow = DateTime(cityNow.year, cityNow.month, cityNow.day + 1);
+      final yarinVakitler = await _tomorrowTimes(tomorrow, timeZone: zone);
+      String? yarinHijri;
+      if (yarinVakitler != null && loc != null) {
+        try {
+          yarinHijri = PrayerRefreshService.hijriDateText(
+            loc.localeName.substring(0, 2),
+            date: tomorrow,
+          );
+        } catch (e) {}
+      }
+      Map<String, String> vakitIsimleri = {
+        "İmsak": loc?.imsak ?? "İmsak",
+        "Güneş": loc?.gunes ?? "Güneş",
+        "Öğle": loc?.ogle ?? "Öğle",
+        "İkindi": loc?.ikindi ?? "İkindi",
+        "Akşam": loc?.aksam ?? "Akşam",
+        "Yatsı": loc?.yatsi ?? "Yatsı",
+      };
+      // Vakte kalan başlıkları ("Öğleye"): Kotlin vakit geçince uygulamayı
+      // beklemeden sıradakini bunlardan seçer
+      Map<String, String> vakitBasliklari = {
+        "İmsak": loc?.toImsak ?? "İmsaka",
+        "Güneş": loc?.toGunes ?? "Güneşe",
+        "Öğle": loc?.toOgle ?? "Öğleye",
+        "İkindi": loc?.toIkindi ?? "İkindiye",
+        "Akşam": loc?.toAksam ?? "Akşama",
+        "Yatsı": loc?.toYatsi ?? "Yatsıya",
+      };
+
+      final afterMidnightYatsi = PrayerTimeZone.isYatsiAfterMidnight(times);
+      String sonrakiVakitIsmi = "İmsak";
+      DateTime? sonrakiVakitTarihi;
+
+      void consider(String key, DateTime? candidate) {
+        if (candidate == null || !candidate.isAfter(cityNow)) return;
+        if (sonrakiVakitTarihi == null ||
+            candidate.isBefore(sonrakiVakitTarihi!)) {
+          sonrakiVakitIsmi = key;
+          sonrakiVakitTarihi = candidate;
+        }
+      }
+
+      for (var entry in vakitler.entries) {
+        if (entry.key == "Güneş") continue;
+        if (entry.key == "Yatsı" && afterMidnightYatsi) {
+          consider(
+            entry.key,
+            PrayerTimeZone.parseAt(zone, cityNow, entry.value),
+          );
+          consider(
+            entry.key,
+            PrayerTimeZone.parseAt(zone, tomorrow, entry.value),
+          );
+        } else {
+          consider(
+            entry.key,
+            PrayerTimeZone.parseAt(zone, cityNow, entry.value),
+          );
+        }
+      }
+
+      if (sonrakiVakitTarihi == null) {
+        sonrakiVakitIsmi = "İmsak";
+        // Yatsıdan sonra yarının imsakı (yoksa bugünkü saat, yarın)
+        sonrakiVakitTarihi = PrayerTimeZone.parseAt(
+          zone,
+          tomorrow,
+          yarinVakitler?["İmsak"] ?? vakitler["İmsak"]!,
+        );
+      }
+
+      String dinamikBaslik = vakitBasliklari[sonrakiVakitIsmi] ?? "Kalan";
+
+      String guncelKonum = city ?? "Konum Bekleniyor";
+      if (city != null && district != null && district.isNotEmpty) {
+        guncelKonum = "$city, $district";
+      }
+
+      // Ramazan widget'ı: içinde bulunulan / sıradaki Ramazan. Tarih metni seçili
+      // dilde: arka plan görevinde (WorkManager) intl tarih verisi yüklü değil
+      Map<String, String>? ramazan;
+      try {
+        await initializeDateFormatting();
+        ramazan = WidgetService.ramadanData(
+          now: DateTime(cityNow.year, cityNow.month, cityNow.day),
+          calendar: await _ramadanCalendar(),
+          loc: loc,
+        );
+      } catch (e) {}
+
+      // Takip widget'ı: dil (adlar) ve kayıt (başka isolate'in işareti dahil);
+      // aşağıda diğer widget'larla birlikte yenilenir
+      await TrackerWidgetService.write(loc: loc);
+      await WidgetService.widgetiGuncelle(
+        baslik: dinamikBaslik,
+        hedefZamanMs: sonrakiVakitTarihi!.millisecondsSinceEpoch,
+        vakitler: vakitler,
+        konum: guncelKonum,
+        vakitIsimleri: vakitIsimleri,
+        vakitBasliklari: vakitBasliklari,
+        hijriDateText: hijriDateText,
+        tarih: PrayerTimeZone.dateKey(cityNow),
+        saatDilimi: zone,
+        yarinVakitler: yarinVakitler,
+        yarinHijriDateText: yarinHijri,
+        ramazan: ramazan,
+        dil: loc?.localeName,
+      );
+    } catch (e) {}
+  });
+
+  // Yarının vakitleri (kayıtlı koordinat + saat dilimi + ince ayar); koordinat yoksa null
+  Future<_TimeMap?> _tomorrowTimes(
+    DateTime tomorrow, {
+    String? timeZone,
+  }) async {
+    try {
+      final times = await _prayerTimeService.forDate(
+        tomorrow,
+        timeZone: timeZone,
+      );
+      return times == null ? null : timesMap(times);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Ezan (çift ID) ve hatırlatma (tek ID) planı; ID vaktin tarihine bağlı ([alarmId]).
+  /// [days] bugünden başlayan günlerin vakitleri. Tek gün varsa geçmiş vakit yarına kayar.
+  /// [ramadan] verilirse Ramazan günlerinde imsak/akşam ezanı sahur/iftar metniyle gelir.
+  /// [alarmStream] ("sessiz modda da çal") sadece sesli ezanı alarm kanalına alır;
+  /// hatırlatmalar ve sessiz (yazılı) bildirimler değişmez.
+  /// [exact] false (tam zamanlı izin yok, alarm bir saate kadar gecikebilir): geç
+  /// okunduğunda yanıltmasın diye "X dakika kaldı" yerine vaktin saati yazılır
+  /// (hatırlatma ve Ramazan'da sahur bitişi).
+  /// [silentDays] ("özel günde ezanı sessiz bildir" açıkken özel günler): o
+  /// günlerin vakit bildirimi sessiz ("Kıldım"/"Durdur" yok), hatırlatması kurulmaz.
+  /// Yüksek enlem yazında gece yarısını geçen Yatsı ve seçilen şehrin saat dilimini
+  /// destekler.
+  static List<PlannedAlarm> buildAlarmPlan({
+    required List<PrayerTimesModel> days,
+    required DateTime now,
+    required AppLocalizations loc,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, bool> reminderAlarms,
+    required Map<String, String> selectedSounds,
+    required Map<String, String> selectedReminderSounds,
+    required Map<String, bool> silentModeSettings,
+    RamadanCalendar? ramadan,
+    bool alarmStream = false,
+    bool exact = true,
+    Set<String> silentDays = const {},
+  }) {
+    final vakitDisplayNames = vakitNames(loc);
+    final plan = <PlannedAlarm>[];
+    final baseZone = days.isEmpty ? null : days.first.timeZone;
+    final cityNow = PrayerTimeZone.nowIn(baseZone, now);
+
+    void addForPrayer({
+      required String vakitLogicKey,
+      required int vakitIndex,
+      required String vakitDisplayName,
+      required DateTime vakitDate,
+      required DateTime prayerDay,
+    }) {
+      final silentDay = PrayerTracker.isExcused(silentDays, prayerDay);
+
+      if (onTimeAlarms[vakitLogicKey] == true && !vakitDate.isBefore(cityNow)) {
+        bool isSilent =
+            silentDay || (silentModeSettings[vakitLogicKey] ?? false);
+        String? soundToSend = isSilent
+            ? null
+            : (selectedSounds[vakitLogicKey] ?? "ezan1");
+        // Farz vakitlerde "Kıldım" butonu (Güneş ve özel gün hariç)
+        final tracked =
+            !silentDay && PrayerTracker.prayerKeys.contains(vakitLogicKey);
+        String title = loc.notifTitleTime;
+        String body = loc.notifBodyTime(vakitDisplayName);
+        // Ramazan günü (vaktin kendi gününe göre): imsak = sahur bitti, akşam = iftar
+        if ((vakitLogicKey == "İmsak" || vakitLogicKey == "Akşam") &&
+            _isRamadanDay(ramadan, prayerDay)) {
+          if (vakitLogicKey == "İmsak") {
+            title = loc.ramadanImsakTitle;
+            body = exact
+                ? loc.ramadanImsakBody
+                : loc.ramadanImsakBodyAt(
+                    formatClockTime(vakitDate, loc.localeName),
+                  );
+          } else {
+            title = loc.ramadanIftarTitle;
+            body = loc.ramadanIftarBody(vakitDisplayName);
+          }
+        }
+        final onAlarmStream = alarmStream && soundToSend != null;
+        plan.add(
+          PlannedAlarm(
+            id: alarmId(vakitDate, vakitIndex),
+            kind: NotificationKind.prayer,
+            title: title,
+            body: body,
+            time: vakitDate,
+            sound: soundToSend,
+            channelName: ezanChannelName(
+              loc,
+              soundToSend,
+              alarmStream: onAlarmStream,
+            ),
+            payload: tracked
+                ? PrayerTracker.payload(prayerDay, vakitLogicKey)
+                : null,
+            actionLabel: tracked ? loc.trackerPrayedAction : null,
+            // Sesli ezanda (Güneş dahil) "Durdur"; yazılı bildirimde yok
+            stopLabel: soundToSend != null ? loc.notifStopAction : null,
+            alarmStream: onAlarmStream,
+          ),
+        );
+      }
+      if (reminderAlarms[vakitLogicKey] == true && !silentDay) {
+        int dakikaOnce = (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş")
+            ? 30
+            : 15;
+        DateTime hatirlatmaZamani = vakitDate.subtract(
+          Duration(minutes: dakikaOnce),
+        );
+        if (hatirlatmaZamani.isAfter(cityNow)) {
+          String reminderSound =
+              selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
+          plan.add(
+            PlannedAlarm(
+              id: alarmId(vakitDate, vakitIndex, reminder: true),
+              kind: NotificationKind.reminder,
+              title: exact ? loc.notifTitleUpcoming : loc.reminderTitleAt,
+              body: exact
+                  ? loc.notifBodyUpcoming(vakitDisplayName, dakikaOnce)
+                  : loc.notifBodyUpcomingAt(
+                      vakitDisplayName,
+                      formatClockTime(vakitDate, loc.localeName),
+                    ),
+              time: hatirlatmaZamani,
+              sound: reminderSound,
+              channelName: loc.channelSoundPrefix(reminderSound),
+            ),
+          );
+        }
+      }
+    }
+
+    for (int day = 0; day < days.length; day++) {
+      final dayTimes = days[day];
+      final zone = dayTimes.timeZone;
+      final dayDate = DateTime(cityNow.year, cityNow.month, cityNow.day + day);
+      final afterMidnightYatsi = PrayerTimeZone.isYatsiAfterMidnight(dayTimes);
+
+      for (var entry in timesMap(dayTimes).entries) {
+        String vakitLogicKey = entry.key;
+        final vakitIndex = vakitKeys.indexOf(vakitLogicKey);
+        String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
+
+        if (vakitLogicKey == 'Yatsı' && afterMidnightYatsi) {
+          // Gece yarısı sonrası henüz çalmamış dünün Yatsı'sı (örn. 00:05 → 00:15)
+          if (day == 0) {
+            final earlyYatsi = PrayerTimeZone.parseAt(
+              zone,
+              dayDate,
+              entry.value,
+            );
+            if (earlyYatsi != null && !earlyYatsi.isBefore(cityNow)) {
+              addForPrayer(
+                vakitLogicKey: vakitLogicKey,
+                vakitIndex: vakitIndex,
+                vakitDisplayName: vakitDisplayName,
+                vakitDate: earlyYatsi,
+                prayerDay: DateTime(
+                  dayDate.year,
+                  dayDate.month,
+                  dayDate.day - 1,
+                ),
+              );
+            }
+          }
+          // Bu günün Yatsı'sı ertesi günün 00:xx saatine sarkar
+          final nextCalDay = DateTime(
+            dayDate.year,
+            dayDate.month,
+            dayDate.day + 1,
+          );
+          final shiftedYatsi = PrayerTimeZone.parseAt(
+            zone,
+            nextCalDay,
+            entry.value,
+          );
+          if (shiftedYatsi != null) {
+            addForPrayer(
+              vakitLogicKey: vakitLogicKey,
+              vakitIndex: vakitIndex,
+              vakitDisplayName: vakitDisplayName,
+              vakitDate: shiftedYatsi,
+              prayerDay: dayDate,
+            );
+          }
+          continue;
+        }
+
+        DateTime? vakitDate = PrayerTimeZone.parseAt(
+          zone,
+          dayDate,
+          entry.value,
+        );
+        if (vakitDate == null) continue;
+        DateTime prayerDay = dayDate;
+        // Tek günlük modda geçmiş vakit yarına kayar; çok günlükte zaten yarın da kurulu
+        if (days.length == 1 && vakitDate.isBefore(cityNow)) {
+          prayerDay = DateTime(dayDate.year, dayDate.month, dayDate.day + 1);
+          vakitDate = PrayerTimeZone.parseAt(zone, prayerDay, entry.value)!;
+        }
+        addForPrayer(
+          vakitLogicKey: vakitLogicKey,
+          vakitIndex: vakitIndex,
+          vakitDisplayName: vakitDisplayName,
+          vakitDate: vakitDate,
+          prayerDay: prayerDay,
+        );
+      }
+    }
+    return plan;
+  }
+
+  /// Vakti son [lateWindow] içinde girmiş, açık farz ezanları (dün ve bugün): ID →
+  /// bugünkü ayarlarla kurulacak hali. Gecikmeli kurulmuş ezan bu sürede henüz
+  /// çalmamış olabilir; aynı yükle bekliyor ve kaydı ([alarmFingerprint]) aynıysa
+  /// yeniden kurulumda iptal edilmez. Güneş, hatırlatmalar ve özel günün sessiz
+  /// ezanı ([silentDays]) korunmaz (yükleri yok; geç gelen hatırlatma da yanıltır).
+  static Map<int, PlannedAlarm> recentlyDueEzans({
+    required PrayerTimesModel previous,
+    required PrayerTimesModel today,
+    required DateTime now,
+    required AppLocalizations loc,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, String> selectedSounds,
+    required Map<String, bool> silentModeSettings,
+    RamadanCalendar? ramadan,
+    bool alarmStream = false,
+    Set<String> silentDays = const {},
+  }) {
+    final zone = today.timeZone;
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
+    final from = cityNow.subtract(lateWindow);
+    final yesterdayStart = PrayerTimeZone.at(
+      zone,
+      PrayerTracker.addDays(cityNow, -1),
+      0,
+      0,
+    );
+    // Dünün başından itibaren iki günün tüm ezanları (geçmiş olsalar da)
+    final ezans = buildAlarmPlan(
+      days: [previous, today],
+      now: yesterdayStart,
+      loc: loc,
+      onTimeAlarms: onTimeAlarms,
+      reminderAlarms: const {},
+      selectedSounds: selectedSounds,
+      selectedReminderSounds: const {},
+      silentModeSettings: silentModeSettings,
+      ramadan: ramadan,
+      alarmStream: alarmStream,
+      silentDays: silentDays,
+    );
+    return {
+      for (final a in ezans)
+        if (a.payload != null &&
+            a.time.isBefore(cityNow) &&
+            !a.time.isBefore(from))
+          a.id: a,
+    };
+  }
+
+  /// Kurulan ezanın kaydı: saat + ayarlar (ses, sessiz, alarm akışı, dil, gün).
+  /// Gövde yok: tam zamanlı/gecikmeli kip sadece metni değiştirir, ezan aynıdır.
+  /// Zamanlama kipi (alarmClock vb.) de yok: kip kuralı değişse de (1.1.0 kayıtları,
+  /// bildirim izni) aynı ezan aynı kayıttır, geç kalanı korunur.
+  static String alarmFingerprint(PlannedAlarm a) => [
+    a.time.millisecondsSinceEpoch,
+    a.title,
+    a.sound,
+    a.channelName,
+    a.alarmStream,
+    a.payload,
+  ].join('|');
+
+  // Okunamazsa boş: hiçbir geç ezan korunmaz (eski davranış, çift çalma olmaz)
+  static Map<int, String> _loadPlanMeta(SharedPreferences prefs) {
+    try {
+      final raw = prefs.getString(planMetaKey);
+      if (raw == null) return {};
+      return Map<String, dynamic>.from(
+        jsonDecode(raw),
+      ).map((k, v) => MapEntry(int.parse(k), v as String));
+    } catch (e) {
+      return {};
+    }
+  }
+
+  static bool _isRamadanDay(RamadanCalendar? ramadan, DateTime date) {
+    if (ramadan == null) return false;
+    try {
+      return ramadan.dayOf(date) != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Diyanet Ramazan takvimi (bir kez okunur); okunamazsa hijri hesabı
+  static Future<RamadanCalendar> _ramadanCalendar() async {
+    try {
+      return await loadRamadanCalendar().timeout(const Duration(seconds: 5));
+    } catch (e) {
+      return RamadanCalendar.hijriOnly;
+    }
+  }
+
+  /// "Vakit çıkmadan hatırlat" planı (ID 100-124). [days][0] bugün, [previous] dünün
+  /// vakitleri (dünkü yatsının süresi için). Hatırlatma günü d: dünkü yatsı (d'nin
+  /// imsakında biter), sabah (güneşte), öğle (ikindide), ikindi (akşamda), akşam (yatsıda).
+  /// Geçmiş, [minutes] >= vakit süresi, kılındı işaretli ve namazın günü
+  /// [silentDays] (özel günde ezan sessiz) içinde olan vakitler atlanır.
+  /// [exact] false: "çıkmasına X dakika kaldı" yerine çıkış saati ([buildAlarmPlan]).
+  /// Yüksek enlemde gece yarısını geçen Yatsı ve seçilen şehrin saat dilimini destekler.
+  static List<PlannedAlarm> buildEndReminderPlan({
+    required PrayerTimesModel previous,
+    required List<PrayerTimesModel> days,
+    required DateTime now,
+    required AppLocalizations loc,
+    required int minutes,
+    required Map<String, int> prayerLog,
+    bool exact = true,
+    Set<String> silentDays = const {},
+  }) {
+    final names = {
+      "İmsak": loc.sabah,
+      "Öğle": loc.ogle,
+      "İkindi": loc.ikindi,
+      "Akşam": loc.aksam,
+      "Yatsı": loc.yatsi,
+    };
+    final zone = days.isNotEmpty ? days.first.timeZone : previous.timeZone;
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
+
+    DateTime at(DateTime date, String hhmm) =>
+        PrayerTimeZone.parseAt(zone, date, hhmm)!;
+
+    DateTime yatsiAt(DateTime date, PrayerTimesModel model) =>
+        PrayerTimeZone.isYatsiAfterMidnight(model)
+        ? at(PrayerTracker.addDays(date, 1), model.yatsi!)
+        : at(date, model.yatsi!);
+
+    final plan = <PlannedAlarm>[];
+    for (int d = 0; d < days.length && d < PrayerTracker.endReminderDays; d++) {
+      final date = PrayerTracker.addDays(cityNow, d);
+      final prevDate = PrayerTracker.addDays(cityNow, d - 1);
+      final t = days[d];
+      final prev = d == 0 ? previous : days[d - 1];
+      // (vakit, namazın günü, başlangıç, bitiş)
+      final windows = [
+        ("Yatsı", prevDate, yatsiAt(prevDate, prev), at(date, t.imsak!)),
+        ("İmsak", date, at(date, t.imsak!), at(date, t.gunes!)),
+        ("Öğle", date, at(date, t.ogle!), at(date, t.ikindi!)),
+        ("İkindi", date, at(date, t.ikindi!), at(date, t.aksam!)),
+        ("Akşam", date, at(date, t.aksam!), yatsiAt(date, t)),
+      ];
+      for (final (key, prayerDate, start, end) in windows) {
+        if (minutes >= end.difference(start).inMinutes) continue;
+        final remindAt = end.subtract(Duration(minutes: minutes));
+        if (!remindAt.isAfter(cityNow)) continue;
+        if (PrayerTracker.isPrayed(prayerLog, prayerDate, key)) continue;
+        if (PrayerTracker.isExcused(silentDays, prayerDate)) continue;
+        plan.add(
+          PlannedAlarm(
+            id: PrayerTracker.endReminderId(date, key),
+            kind: NotificationKind.endReminder,
+            title: exact ? loc.endReminderNotifTitle : loc.endReminderTitleAt,
+            body: exact
+                ? loc.endReminderNotifBody(names[key]!, minutes)
+                : loc.endReminderNotifBodyAt(
+                    names[key]!,
+                    formatClockTime(end, loc.localeName),
+                  ),
+            time: remindAt,
+            sound: null,
+            channelName: loc.endReminderChannel,
+            payload: PrayerTracker.payload(prayerDate, key),
+            actionLabel: loc.trackerPrayedAction,
+          ),
+        );
+      }
+    }
+    return plan;
+  }
+
+  /// Dini gün ve kandil bildirimi planı ([days]: religious_days.json,
+  /// [DiniGunlerService.parseBildirimGunleri]). O gün 10:00'da; Ramazan
+  /// başlangıcı bir gün önce. Aynı güne düşenler tek bildirim (Üç Aylar +
+  /// Regaib ortak metinle). Vakti geçmiş ve [religiousDayDays] günden ötesi yok.
+  /// Gövdeye dokunuş Dini Günler ekranını (tebrik paylaşımı) açar.
+  static List<PlannedAlarm> buildReligiousDayPlan({
+    required List<ResmiDiniGun> days,
+    required DateTime now,
+    required AppLocalizations loc,
+  }) {
+    final byDay = <DateTime, List<DiniGunTuru>>{};
+    for (final d in days) {
+      final day = PrayerTracker.addDays(
+        d.tarih,
+        d.tur == DiniGunTuru.ramazanBaslangici ? -1 : 0,
+      );
+      (byDay[day] ??= []).add(d.tur);
+    }
+    final plan = <PlannedAlarm>[];
+    for (final MapEntry(key: day, value: turler) in byDay.entries) {
+      final time = DateTime(day.year, day.month, day.day, religiousDayHour);
+      if (!time.isAfter(now) ||
+          PrayerTracker.daysBetween(now, day) > religiousDayDays) {
+        continue;
+      }
+      final ucAylarRegaip =
+          turler.contains(DiniGunTuru.ucAylar) &&
+          turler.contains(DiniGunTuru.regaipKandili);
+      plan.add(
+        PlannedAlarm(
+          id: religiousDayId(day),
+          kind: NotificationKind.religiousDay,
+          title: ucAylarRegaip
+              ? loc.ucAylarRegaipTitle
+              : DiniGunlerService.isimOf(turler.first, loc),
+          body: ucAylarRegaip
+              ? loc.ucAylarRegaipNotifBody
+              : DiniGunlerService.bildirimMetniOf(turler.first, loc),
+          time: time,
+          sound: null, // kanalın varsayılan sesi
+          channelName: loc.religiousDaysChannel,
+          payload: NotificationRoutes.route(NotificationRoutes.religiousDays),
+        ),
+      );
+    }
+    plan.sort((a, b) => a.time.compareTo(b.time));
+    return plan;
+  }
+
+  /// Cuma bildirimi planı: bugünden itibaren [fridayWeeks] haftanın Cumaları
+  /// 09:00'da (bugün Cuma ise bugün dahil; vakti geçmiş olan yok). Dini gün
+  /// bildirimi olan gün ([religiousDays], gece yarısı) atlanır: günde tek
+  /// bildirim. Gövdeye dokunuş Cuma mesajlarını, "Kehf Suresi" düğmesi
+  /// ([fridayKehfRoute]) Kehf Suresi'ni açar.
+  static List<PlannedAlarm> buildFridayPlan({
+    required DateTime now,
+    required AppLocalizations loc,
+    Set<DateTime> religiousDays = const {},
+  }) {
+    final first = PrayerTracker.addDays(
+      now,
+      (DateTime.friday - now.weekday) % 7,
+    );
+    final plan = <PlannedAlarm>[];
+    for (int week = 0; week < fridayWeeks; week++) {
+      final day = PrayerTracker.addDays(first, week * 7);
+      final time = DateTime(day.year, day.month, day.day, fridayHour);
+      if (!time.isAfter(now) || religiousDays.contains(day)) continue;
+      plan.add(
+        PlannedAlarm(
+          id: fridayId(day),
+          kind: NotificationKind.religiousDay,
+          title: loc.fridayGreeting,
+          body: loc.fridayNotifBody,
+          time: time,
+          sound: null, // kanalın varsayılan sesi
+          channelName: loc.religiousDaysChannel,
+          payload: NotificationRoutes.route(NotificationRoutes.friday),
+          actionLabel: loc.fridayKehfAction,
+        ),
+      );
+    }
+    return plan;
+  }
+
+  /// Alarm planı için günlerin vakitleri. Koordinat varsa bugün + 4 gün ve dün yeniden
+  /// hesaplanır ([todayTimes] gece yarısından kalma olabilir); yoksa sadece [todayTimes]
+  /// (dün/yarın yerine bugünkü vakitler yaklaşık kullanılır).
+  Future<
+    ({
+      List<PrayerTimesModel> days,
+      PrayerTimesModel previous,
+      List<PrayerTimesModel> reminderDays,
+    })
+  >
+  _planDays(PrayerTimesModel todayTimes, DateTime now) async {
+    final coords = await _storageService.loadCoordinates();
+    if (coords == null) {
+      return (
+        days: [todayTimes],
+        previous: todayTimes,
+        reminderDays: [todayTimes, todayTimes],
+      );
+    }
+    final zone = todayTimes.timeZone ?? await _storageService.loadTimeZone();
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
+    final offsets = await _storageService.loadTimeOffsets();
+    final days = <PrayerTimesModel>[];
+    for (int day = 0; day < alarmDays; day++) {
+      days.add(
+        _prayerTimeService.calculate(
+          coords.lat,
+          coords.lng,
+          date: DateTime(cityNow.year, cityNow.month, cityNow.day + day),
+          offsets: offsets,
+          timeZone: zone,
+        ),
+      );
+    }
+    final previous = _prayerTimeService.calculate(
+      coords.lat,
+      coords.lng,
+      date: DateTime(cityNow.year, cityNow.month, cityNow.day - 1),
+      offsets: offsets,
+      timeZone: zone,
+    );
+    return (days: days, previous: previous, reminderDays: days);
+  }
+
+  /// "Vakit çıkıyor" hatırlatmalarını ayara ve takip kaydına göre eşitler (sadece
+  /// 100-124): plandan çıkan bekleyenler iptal, plandakiler aynı ID'nin üzerine kurulur.
+  /// Ayar kapalıysa hepsi iptal edilir. Hata fırlatmaz (Crashlytics'e bildirilir).
+  Future<void> syncEndReminders({
+    required PrayerTimesModel todayTimes,
+    required AppLocalizations loc,
+  }) => _serializeAlarms(() async {
+    final now = _clock();
+    try {
+      final exact = await _exactMode();
+      final planDays = await _planDays(todayTimes, now);
+      await _syncEndReminders(
+        previous: planDays.previous,
+        days: planDays.reminderDays,
+        now: now,
+        loc: loc,
+        exact: exact,
+      );
+    } catch (e, st) {
+      await reportNonFatal(
+        e,
+        st,
+        reason: 'vakit çıkış hatırlatmaları eşitlenemedi',
+      );
+    }
+  });
+
+  /// Plan boşsa ya da en az bir hatırlatma kurulduysa (ve iptaller yapılabildiyse) true
+  Future<bool> _syncEndReminders({
+    required PrayerTimesModel previous,
+    required List<PrayerTimesModel> days,
+    required DateTime now,
+    required AppLocalizations loc,
+    required bool exact,
+  }) => PrayerTrackerService.runExclusive(() async {
+    List<PlannedAlarm> plan = const [];
+    try {
+      // Plan çıkarılamazsa (okuma hatası) kurulu hatırlatmalara dokunulmaz
+      final settings = await _storageService.loadEndReminderSettings();
+      if (settings.enabled) {
+        plan = buildEndReminderPlan(
+          previous: previous,
+          days: days,
+          now: now,
+          loc: loc,
+          minutes: settings.minutes,
+          prayerLog: await _storageService.loadPrayerLog(),
+          exact: exact,
+          silentDays: await _silentDays(now),
+        );
+      }
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'vakit çıkış planı okunamadı');
+      return false;
+    }
+    final failures = _AlarmFailures();
+    final cleanupOk = await _cancelUnplanned(
+      PrayerTracker.isEndReminderId,
+      plan.map((a) => a.id).toSet(),
+      failures,
+    );
+    int succeeded = 0;
+    for (final alarm in plan) {
+      try {
+        await _notifications.scheduleEndReminder(
+          id: alarm.id,
+          title: alarm.title,
+          body: alarm.body,
+          scheduledTime: alarm.time,
+          localizedChannelName: alarm.channelName,
+          actionLabel: alarm.actionLabel!,
+          payload: alarm.payload!,
+        );
+        succeeded++;
+      } catch (e, st) {
+        failures.add(e, st);
+      }
+    }
+    // Bu arada bildirimden "Kıldım" denmiş olabilir (ayrı isolate): o vaktin
+    // yeniden kurulan hatırlatması iptal edilir
+    var recheckOk = true;
+    if (plan.isNotEmpty) {
+      try {
+        final fresh = await _storageService.loadPrayerLog();
+        for (final alarm in plan) {
+          final target = PrayerTracker.parsePayload(alarm.payload);
+          if (target != null &&
+              PrayerTracker.isPrayed(fresh, target.date, target.key)) {
+            await _notifications.cancel(alarm.id);
+          }
+        }
+      } catch (e, st) {
+        recheckOk = false;
+        failures.add(e, st);
+      }
+    }
+    await failures.report('vakit çıkış hatırlatması', plan.length);
+    return cleanupOk && recheckOk && (plan.isEmpty || succeeded > 0);
+  });
+
+  static Set<String> _audibleEzans(
+    Map<String, bool> onTimeAlarms,
+    Map<String, bool> silentModeSettings,
+  ) => {
+    for (final key in PrayerSilence.defaultPrayers)
+      if (onTimeAlarms[key] == true && silentModeSettings[key] != true) key,
+  };
+
+  /// "Namazdayım" otomatik sessiz modunu Android DND zamanlayıcısına eşitler.
+  /// Hata fırlatmaz; izin yoksa veya arka plan isolate'inde kanal kapalıysa atlar.
+  Future<void> syncPrayerSilence({
+    PrayerTimesModel? todayTimes,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, bool> silentModeSettings,
+  }) => _serializeAlarms(() async {
+    try {
+      final settings = await _storageService.loadPrayerSilenceSettings();
+      if (!settings.enabled) {
+        await PrayerSilence.syncToPlatform(enabled: false, windows: const []);
+        return;
+      }
+      if (todayTimes == null) return;
+      final now = _clock();
+      final planDays = await _planDays(todayTimes, now);
+      await _syncPrayerSilence(
+        days: planDays.days,
+        now: now,
+        onTimeAlarms: onTimeAlarms,
+        silentModeSettings: silentModeSettings,
+      );
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'otomatik sessiz modu eşitlenemedi');
+    }
+  });
+
+  Future<void> _syncPrayerSilence({
+    required List<PrayerTimesModel> days,
+    required DateTime now,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, bool> silentModeSettings,
+  }) async {
+    try {
+      final settings = await _storageService.loadPrayerSilenceSettings();
+      if (!settings.enabled) {
+        await PrayerSilence.syncToPlatform(enabled: false, windows: const []);
+        return;
+      }
+      final windows = PrayerSilence.buildPlan(
+        days: days,
+        now: now,
+        settings: settings,
+        audibleEzans: _audibleEzans(onTimeAlarms, silentModeSettings),
+      );
+      await PrayerSilence.syncToPlatform(enabled: true, windows: windows);
+    } catch (_) {}
+  }
+
+  // Dini gün ve Cuma kurma/iptal işleri sırayla: kapatılınca iptal, süren bir
+  // kurulumun ardından çalışır (kapalı ayarla kurulu kalmaz)
+  static final SerialQueue _religiousQueue = SerialQueue();
+
+  /// Dini gün ve kandil bildirimlerini ayara göre eşitler (sadece 2000-2399):
+  /// plandakiler aynı ID'nin üzerine kurulur, plandan çıkan bekleyenler iptal;
+  /// ayar kapalıysa hepsi iptal. Bugünün bildirimi gecikmeli kipte vaktinden
+  /// sonra da bekliyor olabilir: ayar açıkken iptal edilmez. Hata fırlatmaz;
+  /// plan boşsa ya da en az biri kurulduysa (ve iptaller yapılabildiyse) true.
+  Future<bool> syncReligiousDays(AppLocalizations loc) =>
+      _religiousQueue.run(() async {
+        final now = _clock();
+        final bool enabled;
+        List<PlannedAlarm> plan = const [];
+        try {
+          // Plan çıkarılamazsa (okuma hatası) kurulu bildirimlere dokunulmaz
+          enabled = await _storageService.loadReligiousDaysEnabled();
+          if (enabled) {
+            plan = buildReligiousDayPlan(
+              days: await DiniGunlerService.loadBildirimGunleri(),
+              now: now,
+              loc: loc,
+            );
+          }
+        } catch (e, st) {
+          await reportNonFatal(e, st, reason: 'dini gün planı okunamadı');
+          return false;
+        }
+        final today = religiousDayId(now);
+        final failures = _AlarmFailures();
+        final cleanupOk = await _cancelUnplanned(
+          (id) => isReligiousDayId(id) && !(enabled && id == today),
+          plan.map((a) => a.id).toSet(),
+          failures,
+        );
+        int succeeded = 0;
+        for (final day in plan) {
+          try {
+            await _notifications.scheduleReligiousDay(
+              id: day.id,
+              title: day.title,
+              body: day.body,
+              scheduledTime: day.time,
+              localizedChannelName: day.channelName,
+              payload: day.payload,
+            );
+            succeeded++;
+          } catch (e, st) {
+            failures.add(e, st);
+          }
+        }
+        await failures.report('dini gün bildirimi', plan.length);
+        return cleanupOk && (plan.isEmpty || succeeded > 0);
+      });
+
+  /// Cuma bildirimlerini ayara göre eşitler (sadece 2400-2403): plandakiler
+  /// aynı ID'nin üzerine kurulur, plandan çıkan bekleyenler iptal; ayar
+  /// kapalıysa hepsi iptal. Dini gün bildirimleri açıksa onların gününe denk
+  /// gelen Cuma atlanır. Bugünün bildirimi gecikmeli kipte vaktinden sonra da
+  /// bekliyor olabilir: ayar açıkken (bugün dini gün bildirimi yoksa) iptal
+  /// edilmez. Hata fırlatmaz; plan boşsa ya da en az biri kurulduysa (ve
+  /// iptaller yapılabildiyse) true.
+  Future<bool> syncFridayNotifications(AppLocalizations loc) =>
+      _religiousQueue.run(() async {
+        final now = _clock();
+        final bool enabled;
+        List<PlannedAlarm> plan = const [];
+        Set<DateTime> religiousDays = const {};
+        try {
+          // Plan çıkarılamazsa (okuma hatası) kurulu bildirimlere dokunulmaz
+          enabled = await _storageService.loadFridayNotifEnabled();
+          if (enabled) {
+            if (await _storageService.loadReligiousDaysEnabled()) {
+              religiousDays = {
+                for (final a in buildReligiousDayPlan(
+                  days: await DiniGunlerService.loadBildirimGunleri(),
+                  now: now,
+                  loc: loc,
+                ))
+                  PrayerTracker.day(a.time),
+              };
+            }
+            plan = buildFridayPlan(
+              now: now,
+              loc: loc,
+              religiousDays: religiousDays,
+            );
+          }
+        } catch (e, st) {
+          await reportNonFatal(e, st, reason: 'Cuma bildirimi planı okunamadı');
+          return false;
+        }
+        // Bugün dini gün bildirimi varsa (dini günler sonradan açıldı) bugünün
+        // bekleyen Cuma bildirimi de iptal edilir: günde tek bildirim
+        final today =
+            now.weekday == DateTime.friday &&
+                !religiousDays.contains(PrayerTracker.day(now))
+            ? fridayId(now)
+            : null;
+        final failures = _AlarmFailures();
+        final cleanupOk = await _cancelUnplanned(
+          (id) => isFridayId(id) && !(enabled && id == today),
+          plan.map((a) => a.id).toSet(),
+          failures,
+        );
+        int succeeded = 0;
+        for (final friday in plan) {
+          try {
+            await _notifications.scheduleReligiousDay(
+              id: friday.id,
+              title: friday.title,
+              body: friday.body,
+              scheduledTime: friday.time,
+              localizedChannelName: friday.channelName,
+              payload: friday.payload,
+              action: (route: fridayKehfRoute, label: friday.actionLabel!),
+            );
+            succeeded++;
+          } catch (e, st) {
+            failures.add(e, st);
+          }
+        }
+        await failures.report('Cuma bildirimi', plan.length);
+        return cleanupOk && (plan.isEmpty || succeeded > 0);
+      });
+
+  // Plandan çıkan bekleyen (henüz çalmamış) bildirimler iptal edilir; çekmecedekilere
+  // dokunulmaz. [keep]: aynı yükle bekleyen geç ezan (ID → yük) iptal edilmez.
+  // false: temizlik tamamlanamadı (gün kaydedilmez, yeniden denenir).
+  // Okuma hatası kurulumu engellemez.
+  Future<bool> _cancelUnplanned(
+    bool Function(int id) inRange,
+    Set<int> plannedIds,
+    _AlarmFailures failures, {
+    Map<int, String> keep = const {},
+  }) async {
+    final Map<int, String?> pending;
+    try {
+      pending = await _notifications.pendingPayloads();
+    } catch (e, st) {
+      failures.add(e, st);
+      return false;
+    }
+    var ok = true;
+    for (final MapEntry(key: id, value: payload) in pending.entries) {
+      if (!inRange(id) || plannedIds.contains(id)) continue;
+      if (keep[id] != null && keep[id] == payload) continue;
+      try {
+        await _notifications.cancel(id);
+      } catch (e, st) {
+        ok = false;
+        failures.add(e, st);
+      }
+    }
+    return ok;
+  }
+
+  // "Özel günde ezanı sessiz bildir" açıksa özel günler: kayıtlı küme + açık
+  // dönemin plan sonuna kadarki günleri (dönem sınırına kadar). Sadece okur
+  // (tamamlayıp kaydetmek takip servisinin işi). Okunamazsa boş: ezan eskisi gibi
+  Future<Set<String>> _silentDays(DateTime now) async {
+    try {
+      if (!await _storageService.loadExcusedSilentEzan()) return const {};
+      return PrayerTracker.excusedThrough(
+        await _storageService.loadTrackerExcused(),
+        await _storageService.loadExcusedOpen(),
+        PrayerTracker.addDays(now, alarmDays),
+      );
+    } catch (e) {
+      return const {};
+    }
+  }
+
+  // Kurulumdan önce izinler okunur (kip bunlara göre: bildirimler kapalıyken ezan
+  // alarmClock kurulmaz). Tam zamanlı izin okunamazsa son bilinen; false değilse
+  // tam zamanlı kabul edilir (metinler göreli kalır)
+  Future<bool> _exactMode() async {
+    await _notifications.refreshNotificationsEnabled();
+    return (await _notifications.refreshExactAlarmPermission() ??
+            await NotificationService.lastKnownExactAllowed()) !=
+        false;
+  }
+
+  // Uygulama içinde alarm kurma işleri üst üste binmez (iptal/kur sırası karışmasın).
+  // Arka plan görevi ayrı isolate'tedir.
+  static final SerialQueue _alarmQueue = SerialQueue();
+
+  static Future<T> _serializeAlarms<T>(Future<T> Function() action) =>
+      _alarmQueue.run(action);
+
+  /// Ezan/hatırlatma alarmlarını kurar. Koordinat varsa 5 gün (uygulama açılmasa da ezan gelir),
+  /// yoksa sadece [todayTimes] ile 1 gün.
+  /// Toplu iptal yok: aynı ID'nin üzerine yazılır, sadece plandan çıkan bekleyen (henüz
+  /// çalmamış) alarmlar iptal edilir → ekrandaki ezan bildirimi ve "Kıldım" butonu silinmez,
+  /// alarmda boşluk olmaz. Tam zamanlı alarm izni yoksa gecikmeli kiple kurulur; vakti
+  /// geçip henüz çalmamış (gecikmiş) ezan korunur ([recentlyDueEzans]).
+  /// Kurulamayan alarm diğerlerini durdurmaz; tur sonunda Crashlytics'e bildirilir.
+  /// "Özel günde ezanı sessiz bildir" açıksa özel günlerin ezanı sessiz, hatırlatması
+  /// yok (açık dönemin gelecek günleri dahil; uygulama da arka plan görevi de).
+  /// Vakit çıkış hatırlatmaları, dini gün ([syncReligiousDays]) ve Cuma
+  /// bildirimleri ([syncFridayNotifications]) de eşitlenir. Kip geçişi
+  /// ([scheduleModeMigratedKey]) bitmediyse bekleyen günlük içerik de yeni
+  /// kiple yeniden yazılır.
+  Future<void> rescheduleAlarms({
+    required PrayerTimesModel todayTimes,
+    required AppLocalizations loc,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, bool> reminderAlarms,
+    required Map<String, String> selectedSounds,
+    required Map<String, String> selectedReminderSounds,
+    required Map<String, bool> silentModeSettings,
+    bool alarmStream = false,
+  }) => _serializeAlarms(() async {
+    final now = _clock();
+    final exact = await _exactMode();
+    final planDays = await _planDays(todayTimes, now);
+    final ramadan = await _ramadanCalendar();
+    final silentDays = await _silentDays(now);
+    final plan = buildAlarmPlan(
+      days: planDays.days,
+      now: now,
+      loc: loc,
+      onTimeAlarms: onTimeAlarms,
+      reminderAlarms: reminderAlarms,
+      selectedSounds: selectedSounds,
+      selectedReminderSounds: selectedReminderSounds,
+      silentModeSettings: silentModeSettings,
+      ramadan: ramadan,
+      alarmStream: alarmStream,
+      exact: exact,
+      silentDays: silentDays,
+    );
+
+    // Geç ezan sadece kurulduğu saat ve ayarlar bugün de aynıysa korunur (ince ayar,
+    // konum, ses, dil değiştiyse eskisi geç çalmasın; kayıt yoksa korunmaz)
+    final prefs = await SharedPreferences.getInstance();
+    final migrating = prefs.getBool(scheduleModeMigratedKey) != true;
+    final savedMeta = _loadPlanMeta(prefs);
+    final keep = <int, String>{
+      for (final MapEntry(key: id, value: alarm) in recentlyDueEzans(
+        previous: planDays.previous,
+        today: planDays.days.first,
+        now: now,
+        loc: loc,
+        onTimeAlarms: onTimeAlarms,
+        selectedSounds: selectedSounds,
+        silentModeSettings: silentModeSettings,
+        ramadan: ramadan,
+        alarmStream: alarmStream,
+        silentDays: silentDays,
+      ).entries)
+        if (savedMeta[id] == alarmFingerprint(alarm)) id: alarm.payload!,
+    };
+
+    final failures = _AlarmFailures();
+    final cleanupOk = await _cancelUnplanned(
+      (id) => id >= 0 && id < alarmIdCount,
+      plan.map((a) => a.id).toSet(),
+      failures,
+      keep: keep,
+    );
+
+    final meta = {for (final id in keep.keys) '$id': savedMeta[id]!};
+    final alarmClockTimes = <DateTime>[];
+    int succeeded = 0;
+    for (final alarm in plan) {
+      try {
+        final mode = await _notifications.schedulePrayerNotification(
+          id: alarm.id,
+          title: alarm.title,
+          body: alarm.body,
+          scheduledTime: alarm.time,
+          soundName: alarm.sound,
+          localizedChannelName: alarm.channelName,
+          localizedTicker: loc.tickerEzan,
+          kind: alarm.kind,
+          payload: alarm.payload,
+          actionLabel: alarm.actionLabel,
+          stopLabel: alarm.stopLabel,
+          alarmStream: alarm.alarmStream,
+        );
+        succeeded++;
+        if (mode == AndroidScheduleMode.alarmClock) {
+          alarmClockTimes.add(alarm.time);
+        }
+        if (alarm.payload != null) {
+          meta['${alarm.id}'] = alarmFingerprint(alarm);
+        }
+      } catch (e, st) {
+        failures.add(e, st);
+      }
+    }
+    try {
+      await prefs.setString(planMetaKey, jsonEncode(meta));
+    } catch (e, st) {
+      failures.add(e, st);
+    }
+    await failures.report('ezan alarmı', plan.length);
+    try {
+      await WidgetService.saveAlarmClockTimes(alarmClockTimes);
+    } catch (e) {}
+
+    final remindersOk = await _syncEndReminders(
+      previous: planDays.previous,
+      days: planDays.reminderDays,
+      now: now,
+      loc: loc,
+      exact: exact,
+    );
+    final religiousOk = await syncReligiousDays(loc);
+    final fridayOk = await syncFridayNotifications(loc);
+    await _syncPrayerSilence(
+      days: planDays.days,
+      now: now,
+      onTimeAlarms: onTimeAlarms,
+      silentModeSettings: silentModeSettings,
+    );
+
+    // Kip geçişi: plan ve vakit çıkış hatırlatmaları her turda zaten üzerine yazılır
+    // (plandan çıkan bekleyenler iptal); kalan günlük içerik de yeni kiple yazılır
+    final dailyOk = !migrating || await _rewriteDailyContent();
+
+    // Hiçbiri kurulamadıysa (ya da iptaller yapılamadıysa) tarih yazılmaz: arka plan
+    // görevi aynı gün yeniden dener. Geçiş de ancak o zaman (ve günlük içerik
+    // yazılabildiyse) tamamlanmış sayılır.
+    if ((plan.isEmpty || succeeded > 0) &&
+        remindersOk &&
+        religiousOk &&
+        fridayOk &&
+        cleanupOk) {
+      await prefs.setString(_alarmsDateKey, _dateKey(now));
+      if (migrating && dailyOk) {
+        await prefs.setBool(scheduleModeMigratedKey, true);
+      }
+    }
+  });
+
+  /// Bildirim Kontrolü "test ezanı" ([testEzanId]), [delay] sonra: ilk açık vaktin
+  /// ezanıyla aynı ses, kanal ve "sessiz modda da çal" ayarı (hiç açık vakit yoksa
+  /// ezan1), aynı kip (izin varsa alarmClock). "Kıldım" butonu ve yükü yok;
+  /// sesliyse "Durdur" var.
+  Future<void> scheduleTestEzan({
+    required AppLocalizations loc,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, String> selectedSounds,
+    required Map<String, bool> silentModeSettings,
+    bool alarmStream = false,
+    Duration delay = const Duration(minutes: 1),
+  }) async {
+    // Kip izinlere göre (bildirimler kapalıyken ezan alarmClock kurulmaz)
+    await _exactMode();
+    final enabled = vakitKeys.where((k) => onTimeAlarms[k] == true);
+    final key = enabled.isEmpty ? null : enabled.first;
+    final String? sound = key == null
+        ? "ezan1"
+        : (silentModeSettings[key] == true
+              ? null
+              : (selectedSounds[key] ?? "ezan1"));
+    final onAlarmStream = alarmStream && sound != null;
+    await _notifications.schedulePrayerNotification(
+      id: testEzanId,
+      title: loc.healthTestTitle,
+      body: loc.healthTestNotifBody,
+      scheduledTime: _clock().add(delay),
+      soundName: sound,
+      localizedChannelName: ezanChannelName(
+        loc,
+        sound,
+        alarmStream: onAlarmStream,
+      ),
+      localizedTicker: loc.tickerEzan,
+      kind: NotificationKind.prayer,
+      stopLabel: sound != null ? loc.notifStopAction : null,
+      alarmStream: onAlarmStream,
+    );
+  }
+
+  /// Kurulu ezanlardan (bekleyen çift ID'ler, 0-71) vakti en yakın olanı. Saat kurulum
+  /// kaydından ([planMetaKey]; farz ezanlar), yoksa ID'nin gününün kayıtlı konumla
+  /// hesabından. Bekleyen ezan yoksa null; bekleyenler okunamazsa hata fırlatır.
+  Future<ScheduledEzan?> nextScheduledEzan() async {
+    final now = _clock();
+    final pending = await _notifications.pendingIds();
+    final meta = _loadPlanMeta(await SharedPreferences.getInstance());
+    ScheduledEzan? next;
+    for (final id in pending) {
+      if (id < 0 || id >= alarmIdCount || id.isOdd) continue;
+      final key = vakitKeys[id % 12 ~/ 2];
+      final time = _fingerprintTime(meta[id]) ?? await _slotTime(id, key, now);
+      if (time == null || !time.isAfter(now)) continue;
+      if (next == null || time.isBefore(next.time)) {
+        next = (key: key, time: time);
+      }
+    }
+    return next;
+  }
+
+  // [alarmFingerprint]'in ilk alanı vaktin zamanı (ms)
+  static DateTime? _fingerprintTime(String? fingerprint) {
+    final ms = int.tryParse(fingerprint?.split('|').first ?? '');
+    return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
+  }
+
+  // [alarmId]'nin günü: dünden başlayan 6 günden gün sırası (mod 6) ID'ninkiyle aynı olanı
+  Future<DateTime?> _slotTime(int id, String key, DateTime now) async {
+    final zone = await _storageService.loadTimeZone();
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
+    for (int d = -1; d < alarmDays; d++) {
+      final day = PrayerTracker.addDays(cityNow, d);
+      if (PrayerTracker.epochDay(day) % _idDays != id ~/ 12) continue;
+      final times = await _prayerTimeService.forDate(day, timeZone: zone);
+      if (times == null) return null;
+      return PrayerTimeZone.parseAt(zone, day, timesMap(times)[key]);
+    }
+    return null;
+  }
+
+  // Günlük içerik kurma/iptal işleri sırayla: kapatılınca iptal, süren bir
+  // kurulumun ardından çalışır (kapalı ayarla kurulu kalmaz)
+  static final SerialQueue _dailyQueue = SerialQueue();
+
+  // "Günün ayeti ve hadisi" ayarı; okunamazsa açık (varsayılan)
+  Future<bool> _dailyContentEnabled() async {
+    try {
+      return await _storageService.loadDailyContentEnabled();
+    } catch (e) {
+      return true;
+    }
+  }
+
+  // Saat ve kanal ID'ye göre (1000: 10:00 ayet, 1900: 19:00 hadis)
+  Future<void> _scheduleDaily(int id, String title, String body) {
+    final ayah = id == ayahNotificationId;
+    return _notifications.scheduleDailyContent(
+      id: id,
+      title: title,
+      body: body,
+      hour: _dailyContentHour(id),
+      minute: 0,
+      channelId: ayah ? 'daily_ayah_channel' : 'daily_hadith_channel',
+      channelName: ayah ? 'Günlük Ayet' : 'Günlük Hadis',
+    );
+  }
+
+  /// Günlük ayet (10:00, ID 1000) ve hadis (19:00, ID 1900) bildirimi ([ayah] /
+  /// [hadith]: kurulacaklar); ayar ("Günün ayeti ve hadisi") kapalıysa kurulmaz.
+  /// İçerik çalacağı günün içeriğidir ([dailyContentDay]; servisler gün + dil
+  /// başına önbellekler): bugün çalacaksa ana ekrandakiyle aynı. Alınamayan kurulmaz.
+  /// Biri kurulamazsa diğeri yine kurulur; hata Crashlytics'e bildirilir.
+  Future<void> scheduleDailyContent({
+    required String localeName,
+    bool ayah = true,
+    bool hadith = true,
+  }) async {
+    if (!await _dailyContentEnabled()) return;
+    // İçerik sıradan önce alınır (ağ beklenirken iptal bekletilmez)
+    final langCode = localeName.substring(0, 2);
+    final ayahDay = dailyContentDay(ayahNotificationId, _clock());
+    final hadithDay = dailyContentDay(hadithNotificationId, _clock());
+    final dayAyah = ayah
+        ? await AyahService().getDailyAyah(langCode, day: ayahDay)
+        : null;
+    final dayHadith = hadith
+        ? await HadithService().getDailyHadith(
+            Locale(langCode),
+            day: hadithDay,
+            useFallback: false,
+          )
+        : null;
+    // Beklerken saati geçtiyse içerik başka güne kurulmaz (sonraki tur kurar)
+    bool stillFor(int id, DateTime day) => dailyContentDay(id, _clock()) == day;
+    await _dailyQueue.run(() async {
+      if (!await _dailyContentEnabled()) return;
+      if (dayAyah != null && stillFor(ayahNotificationId, ayahDay)) {
+        final title = localizationsFor(langCode).dailyAyahTitle;
+        String content = "${dayAyah.arabicText}\n\n${dayAyah.translatedText}";
+        try {
+          await _scheduleDaily(ayahNotificationId, title, content);
+        } catch (e, st) {
+          await reportNonFatal(
+            e,
+            st,
+            reason: 'günün ayeti bildirimi kurulamadı',
+          );
+        }
+      }
+      final hadithText = dayHadith?.content;
+      if (hadithText != null && stillFor(hadithNotificationId, hadithDay)) {
+        final title = localizationsFor(langCode).hadithTitle;
+        try {
+          await _scheduleDaily(hadithNotificationId, title, hadithText);
+        } catch (e, st) {
+          await reportNonFatal(
+            e,
+            st,
+            reason: 'günün hadisi bildirimi kurulamadı',
+          );
+        }
+      }
+    });
+  }
+
+  /// "Günün ayeti ve hadisi" kapatılınca kurulu bildirimler hemen iptal edilir
+  Future<void> cancelDailyContent() => _dailyQueue.run(() async {
+    for (final id in dailyContentIds) {
+      try {
+        await _notifications.cancel(id);
+      } catch (e, st) {
+        await reportNonFatal(e, st, reason: 'günlük içerik iptal edilemedi');
+      }
+    }
+  });
+
+  // Kip geçişi: bekleyen ayet/hadis aynı metinle yeniden kurulur (ağ gerekmez).
+  // Ayar kapalıysa ya da metni okunamazsa iptal edilir (açıksa yenisi tamamlanır).
+  // false: bekleyenler okunamadı ya da yazılamadı (geçiş yeniden denenir).
+  Future<bool> _rewriteDailyContent() => _dailyQueue.run(() async {
+    try {
+      final pending = await _notifications.pendingTexts();
+      final enabled = await _dailyContentEnabled();
+      for (final id in dailyContentIds) {
+        final texts = pending[id];
+        if (texts == null) continue;
+        final title = texts.title ?? '';
+        final body = texts.body ?? '';
+        if (enabled && title.isNotEmpty && body.isNotEmpty) {
+          await _scheduleDaily(id, title, body);
+        } else {
+          await _notifications.cancel(id);
+        }
+      }
+      return true;
+    } catch (e, st) {
+      await reportNonFatal(
+        e,
+        st,
+        reason: 'günlük içerik yeni kiple kurulamadı',
+      );
+      return false;
+    }
+  });
+
+  // Günlük içerik tek seferlik kurulur; uygulama açılmazsa çalmış olanın yerine yenisi.
+  // Ayar kapalıysa kurulmaz; kalmış olan (ör. başka isolate'te kurulmuş) iptal edilir.
+  Future<void> _topUpDailyContent(AppLocalizations loc) async {
+    try {
+      final pending = await _notifications.pendingIds();
+      if (!await _dailyContentEnabled()) {
+        for (final id in dailyContentIds) {
+          if (pending.contains(id)) await _notifications.cancel(id);
+        }
+        return;
+      }
+      await scheduleDailyContent(
+        localeName: loc.localeName,
+        ayah: !pending.contains(ayahNotificationId),
+        hadith: !pending.contains(hadithNotificationId),
+      );
+    } catch (e) {}
+  }
+
+  static String _dateKey(DateTime d) => d.toIso8601String().split('T')[0];
+
+  /// Kayıtlı dilin metinleri; dil desteklenmiyorsa Türkçe
+  static AppLocalizations localizationsFor(String? languageCode) {
+    try {
+      return lookupAppLocalizations(Locale(languageCode ?? 'tr'));
+    } catch (e) {
+      return lookupAppLocalizations(const Locale('tr'));
+    }
+  }
+
+  static const int weeklySummaryId = 2500;
+  // Gösterilen haftanın Pazartesisi (yyyy-MM-dd)
+  static const String weeklySummaryShownKey = 'weekly_summary_shown';
+
+  /// Haftalık namaz özeti: Pazartesi–Salı 09:00–21:00 arasındaki ilk koşuda
+  /// (uygulama açılışı / arka plan görevi) geçen haftanın (Pzt–Paz) takibi bir
+  /// kez bildirilir. Takip kullanılmadıysa ya da ayar kapalıysa gösterilmez.
+  /// Hata fırlatmaz.
+  Future<void> showWeeklySummaryIfDue(AppLocalizations loc) async {
+    try {
+      final now = _clock();
+      if (now.weekday > DateTime.tuesday || now.hour < 9 || now.hour >= 21) {
+        return;
+      }
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.reload(); // diğer isolate'in işaretleri ve kaydı
+      if (!(prefs.getBool(StorageService.weeklySummaryEnabledKey) ?? true)) {
+        return;
+      }
+      final weekStart = PrayerTracker.addDays(
+        PrayerTracker.day(now),
+        -(now.weekday - 1) - 7,
+      );
+      final week = PrayerTracker.dateKey(weekStart);
+      if (prefs.getString(weeklySummaryShownKey) == week) return;
+      await prefs.setString(weeklySummaryShownKey, week);
+      // Sadece okur (özel gün dönemini tamamlayıp kaydetmek takip servisinin işi)
+      final since = await _storageService.loadTrackerSince();
+      final summary = PrayerTracker.weekSummary(
+        await _storageService.loadPrayerLog(),
+        weekStart,
+        since: since == null ? null : PrayerTracker.parseDateKey(since),
+        excused: PrayerTracker.excusedThrough(
+          await _storageService.loadTrackerExcused(),
+          await _storageService.loadExcusedOpen(),
+          now,
+        ),
+      );
+      if (summary == null) return;
+      await _notifications.showInfo(
+        id: weeklySummaryId,
+        title: loc.weeklySummaryTitle,
+        body: summary.done >= summary.total
+            ? loc.weeklySummaryFull(summary.total)
+            : loc.weeklySummaryBody(summary.done, summary.total),
+        channelId: 'weekly_summary_channel',
+        localizedChannelName: loc.weeklySummaryTitle,
+        payload: NotificationRoutes.route(NotificationRoutes.tracker),
+      );
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'haftalık özet gösterilemedi');
+    }
+  }
+
+  /// WorkManager görevi (uygulama kapalıyken de): bugünün vakitleri → cache, widget'lar,
+  /// kalıcı bildirim; alarmlar günde bir kez 5 gün ileriye uzatılır. Hata fırlatmaz,
+  /// beklenmeyen hatada false döner (WorkManager yeniden dener). [clock] sadece testte.
+  static Future<bool> runHeadless({DateTime Function()? clock}) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs
+          .reload(); // uygulama süreci açıksa diğer isolate'in yazdıkları
+
+      final service = PrayerRefreshService(NotificationService(), clock: clock);
+      final now = service._clock();
+      final zone = await service._storageService.loadTimeZone();
+      final cityNow = PrayerTimeZone.nowIn(zone, now);
+      final times = await service._prayerTimeService.forDate(
+        cityNow,
+        timeZone: zone,
+      );
+      // Koordinat yoksa cihazda hesaplanamaz; uygulama açılınca çözülür
+      if (times == null) return await _headlessDone(prefs, now);
+      await service._storageService.savePrayerTimesData(times);
+
+      final loc = localizationsFor(prefs.getString('language_code'));
+      String hijri = "";
+      try {
+        hijri = hijriDateText(loc.localeName.substring(0, 2), date: cityNow);
+      } catch (e) {}
+
+      final district = await service._storageService.loadDistrict();
+      await service.updateHomeWidget(
+        times: times,
+        loc: loc,
+        city: await service._storageService.loadLocation(),
+        district: district,
+        hijriDateText: hijri,
+      );
+
+      await service._notifications.init();
+      // Tam zamanlı alarm izni ya da bildirim izni değiştiyse (açıldı/kapatıldı)
+      // alarmlar aynı gün de yeni kiple yeniden kurulur (izin kapatılınca sistem
+      // kurulu alarmları siler; bildirimler kapalıyken ezan alarmClock kurulmaz)
+      bool changed(bool? before, bool? after) =>
+          before != null && after != null && before != after;
+      final exactBefore = prefs.getBool(
+        NotificationService.exactAlarmsAllowedKey,
+      );
+      final notificationsBefore = prefs.getBool(
+        NotificationService.notificationsEnabledKey,
+      );
+      final exactNow = await service._notifications
+          .refreshExactAlarmPermission();
+      final notificationsNow = await service._notifications
+          .refreshNotificationsEnabled();
+      final permissionChanged =
+          changed(exactBefore, exactNow) ||
+          changed(notificationsBefore, notificationsNow);
+      // Kip geçişi bitene kadar aynı gün de kurulur (1.1.0'ın alarmClock kayıtları)
+      final migrating = prefs.getBool(scheduleModeMigratedKey) != true;
+      if (prefs.getString(_alarmsDateKey) != _dateKey(now) ||
+          permissionChanged ||
+          migrating) {
+        final settings = await service._storageService.loadSettings();
+        await service.rescheduleAlarms(
+          todayTimes: times,
+          loc: loc,
+          onTimeAlarms: settings['onTime'],
+          reminderAlarms: settings['reminder'],
+          selectedSounds: settings['sounds'],
+          selectedReminderSounds: settings['reminderSounds'],
+          silentModeSettings: settings['silentMode'],
+          alarmStream: settings['alarmStream'] == true,
+        );
+      }
+      await service._topUpDailyContent(loc);
+      await service.showWeeklySummaryIfDue(loc);
+      return await _headlessDone(prefs, now);
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'arka plan yenilemesi başarısız');
+      return false;
+    }
+  }
+
+  // Görev başarıyla bitti: zamanı yazılır (Bildirim Kontrolü); yazılamazsa da başarılı
+  static Future<bool> _headlessDone(
+    SharedPreferences prefs,
+    DateTime now,
+  ) async {
+    try {
+      await prefs.setInt(lastHeadlessRunKey, now.millisecondsSinceEpoch);
+    } catch (e) {}
+    return true;
+  }
+
+  /// Arka plan görevinin son başarılı koşusu; hiç yoksa ya da okunamazsa null.
+  /// Görev ayrı isolate'te yazar: önce yeniden okunur.
+  static Future<DateTime?> lastHeadlessRun() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
+      final ms = prefs.getInt(lastHeadlessRunKey);
+      return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
+/// Bir kurulum turundaki hatalar: tek tek yutulmaz, tur sonunda tek kayıtla
+/// Crashlytics'e bildirilir (her alarm için ayrı kayıt gürültü olur)
+class _AlarmFailures {
+  int count = 0;
+  Object? _first;
+  StackTrace? _firstStack;
+
+  void add(Object error, StackTrace stack) {
+    count++;
+    _first ??= error;
+    _firstStack ??= stack;
+  }
+
+  Future<void> report(String what, int planned) async {
+    final first = _first;
+    if (first == null) return;
+    await reportNonFatal(
+      first,
+      _firstStack,
+      reason: '$what kurulumu: $count hata, $planned planlı',
+    );
+  }
+}

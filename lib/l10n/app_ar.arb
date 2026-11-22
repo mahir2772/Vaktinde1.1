@@ -1,12 +1,257 @@
 {
     "appTitle": "Vaktinde",
-    "nextPrayer": "الصلاة القادمة",
+    "navZikir": "الذكر",
+    "todayHubTitle": "لهذا اليوم",
+    "todayQuranOpen": "قراءة القرآن الكريم",
+    "todayFridayMessage": "إرسال رسالة الجمعة",
+    "a11yAlarmSettingsHint": "فتح إعدادات المنبه",
+    "navQuran": "القرآن",
+    "showcaseQuran": "اقرأ القرآن الكريم هنا وتابع من حيث توقفت.",
+    "zikirRound": "الدورة {round}",
+    "@zikirRound": {
+        "placeholders": {
+            "round": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirProgress": "{count} / {target}",
+    "@zikirProgress": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirPrevious": "الذكر السابق",
+    "zikirNext": "الذكر التالي",
+    "zikirCountingSection": "العدّ",
+    "zikirRoundMode": "البدء من الصفر عند بلوغ الهدف (عدّ الدورات)",
+    "zikirVolumeKeys": "العدّ بأزرار الصوت",
+    "zikirVolumeKeysDesc": "رفع الصوت +1، خفض الصوت −1. فقط أثناء فتح شاشة الذكر، ولا يتغير صوت النظام.",
+    "adPrivacySettings": "إعدادات خصوصية الإعلانات",
+    "adPrivacySettingsSub": "غيّر موافقتك على الإعلانات المخصصة",
+    "showcaseLanguage": "يمكنك تغيير لغة التطبيق والإعدادات الأخرى من هنا.",
+    "showcaseStory": "اقرأ آية اليوم وحديث اليوم من هنا.",
+    "showcaseAlarms": "اضبط منبهات الأذان والتذكير لكل صلاة من هنا.",
+    "showcaseQibla": "اعثر على اتجاه القبلة باستخدام البوصلة.",
+    "showcaseZikir": "تابع أذكارك من هنا.",
+    "showcaseTracker": "علِّم هنا الصلوات التي أدّيتها. وفي أيام العذر اضغط مطوّلًا على «اليوم».",
+    "showcaseTools": "جدول المواقيت وتعليم الصلاة وحاسبة القضاء والمزيد هنا.",
+    "tipGotIt": "فهمت",
+    "tipTracker": "في أيام العذر اضغط مطوّلًا على اسم اليوم أو المس رمز الزهرة في زاوية البطاقة، فلا تنقطع سلسلتك. ومن «إضافة الصلوات غير المؤدّاة إلى القضاء» في الأسفل تنقل ما فاتك إلى عدّادات القضاء.",
+    "tipZikir": "اسحب البطاقة في الأعلى يمينًا أو يسارًا لتغيير الذكر. وفعّل «العدّ بأزرار الصوت» من الإعدادات لتعدّ دون النظر إلى الشاشة.",
+    "tipQuranReader": "اختر من زر «طريقة العرض» في الأعلى: صفحات المصحف أو آية آية. والمس أي آية في الصفحة لحفظ علامة أو نسخها أو مشاركتها.",
+    "tipAlarmsSilent": "ولتسمعه والهاتف صامت فعّل «التشغيل في الوضع الصامت أيضاً».",
+    "tipWidget": "أضف أداة Vaktinde إلى الشاشة الرئيسية لترى المواقيت دون فتح التطبيق.",
+    "tipWidgetAction": "إضافة أداة",
+    "whatsNewTitle": "ما الجديد",
+    "whatsNewStopTitle": "أوقف الأذان بلمسة واحدة",
+    "whatsNewStopDesc": "أثناء الأذان يوقف زر «إيقاف» في الإشعار الصوت فورًا.",
+    "whatsNewStoriesDesc": "قصص قصيرة عن الأنبياء وسيرة النبي محمد والصحابة وكبار علماء الإسلام.",
+    "whatsNewDuasDesc": "87 دعاءً في 10 أقسام مع النص العربي والمعنى والمصدر، مع إمكانية البحث.",
+    "whatsNewDhikrsTitle": "أذكار جديدة",
+    "whatsNewDhikrsDesc": "35 ذكرًا جاهزًا مع معانيها في قائمة الأذكار.",
+    "whatsNewHatimDesc": "شاشة جديدة للختمة: «قرأتُه» بلمسة واحدة، والتقدم جزءًا جزءًا، والنية، والختمة الجماعية.",
+    "appGuideTitle": "تعرّف على التطبيق",
+    "appGuideSub": "كل الميزات وطريقة استخدامها",
+    "appGuideReplayTour": "إعادة الجولة التعريفية",
+    "appGuideReplayTourSub": "أعد تشغيل الجولة القصيرة في الشاشة الرئيسية",
+    "guideGroupTimes": "المواقيت والمنبهات",
+    "guideGroupPrayer": "الصلاة",
+    "guideGroupQuran": "القرآن والأدعية",
+    "guideGroupWidgets": "أدوات الشاشة الرئيسية",
+    "guideLocation": "المس اسم المدينة في الشاشة الرئيسية؛ قائمة المدن تعمل دون إنترنت أيضًا.",
+    "guideAlarms": "الأذان أو إشعار صامت وتذكير مسبق لكل صلاة. ولمس وقت الصلاة في الشاشة الرئيسية يفتح هذه الإعدادات أيضًا.",
+    "guideTracker": "علِّم صلواتك، وزر «صلّيت» في الإشعار يفعل ذلك أيضًا. وفي أيام العذر اضغط مطوّلًا على اسم اليوم.",
+    "guideKaza": "احفظ عدّادات القضاء، و«حاسبة القضاء» تقدّرها من المدة التي فاتتك.",
+    "guideQibla": "أمسك الهاتف مستويًا، وسيهتز عندما تتجه إلى القبلة.",
+    "guideZikir": "المس الشاشة للعدّ واسحب البطاقة لتغيير الذكر. والعدّ بأزرار الصوت تجده في إعدادات الذكر.",
+    "guideQuran": "اختر من «طريقة العرض» صفحات المصحف أو آية آية، والمس أي آية لحفظ علامة أو مشاركتها. ويُحفظ موضع قراءتك تلقائيًا.",
+    "guideWidgets": "المواقيت والعدّ التنازلي وحلقة الصلاة ورمضان ومتابعة الصلوات (المس الصلاة لتعليمها). ويمكنك إضافتها أيضًا بالضغط مطوّلًا على مكان فارغ في الشاشة الرئيسية ثم اختيار «الأدوات».",
+    "refreshLocation": "تحديث الموقع",
+    "countryTurkey": "تركيا",
+    "locationEuropeKktc": "أوروبا / شمال قبرص",
+    "countryGermany": "ألمانيا",
+    "countryNetherlands": "هولندا",
+    "countryBelgium": "بلجيكا",
+    "countryFrance": "فرنسا",
+    "countryAustria": "النمسا",
+    "countrySwitzerland": "سويسرا",
+    "countryUnitedKingdom": "المملكة المتحدة",
+    "countryDenmark": "الدنمارك",
+    "countrySweden": "السويد",
+    "countryNorway": "النرويج",
+    "countryNorthernCyprus": "شمال قبرص",
+    "provinceCenter": "مركز الولاية",
+    "searchOnline": "البحث عبر الإنترنت",
+    "timesFollowPhoneClock": "هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.",
+    "whatsNewSilenceDesc": "يكتم الهاتف تلقائيًا أثناء الصلوات وصلاة الجمعة ثم يعيده كما كان بعد انتهاء المدة.",
+    "whatsNewCityClockTitle": "التوقيت المحلي للمدينة المختارة",
+    "whatsNewCityClockDesc": "تُعرض المواقيت حسب المنطقة الزمنية للمدينة المختارة مع تحسين وقت العشاء بعد منتصف الليل.",
+    "whatsNewKazaEstTitle": "تقدير إنهاء الفوائت",
+    "whatsNewKazaEstDesc": "اطّلع على المدة التقديرية لإنهاء صلوات القضاء حسب وتيرتك اليومية.",
+    "whatsNewOfflineHadithTitle": "أحاديث دون إنترنت ومناسبات دينية",
+    "whatsNewOfflineHadithDesc": "مجموعة أحاديث موسّعة تعمل دون إنترنت وفتح مباشر من إشعارات المناسبات الدينية.",
+    "prayerSilenceTitle": "أثناء الصلاة (صامت تلقائي)",
+    "prayerSilenceSub": "يكتم الهاتف تلقائيًا عند دخول الوقت ويعيده كما كان بعد انتهاء المدة.",
+    "prayerSilenceActiveSub": "مفعّل · {minutes} د (اضغط للتعديل)",
+    "@prayerSilenceActiveSub": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePermissionNeeded": "يلزم إذن عدم الإزعاج · اضغط للمنح",
+    "prayerSilencePermissionBanner": "يلزم منح إذن «عدم الإزعاج» في أندرويد لتمكين الوضع الصامت التلقائي أثناء الصلاة.",
+    "prayerSilenceGrantAccess": "منح إذن عدم الإزعاج",
+    "prayerSilenceDuration": "مدة الوضع الصامت",
+    "prayerSilenceMinutes": "{minutes} د",
+    "@prayerSilenceMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePrayers": "الصلوات",
+    "prayerSilenceFridayTitle": "نافذة صلاة الجمعة",
+    "prayerSilenceFridaySub": "تبدأ يوم الجمعة قبل الظهر بـ 15 دقيقة وتنتهي بعده بـ 45 دقيقة.",
+    "prayerSilenceNote": "لا يغيّر الوضع إذا كان الهاتف في وضع عدم الإزعاج أصلًا. يبدأ بعد دقيقة من الأذان الصوتي حتى لا يقطعه.",
+    "timesFollowCityClock": "تُعرض المواقيت حسب التوقيت المحلي للمدينة المختارة.",
+    "cityLocalTime": "التوقيت المحلي: {time}",
+    "@cityLocalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "navTools": "الأدوات",
+    "a11yHours": "{count, plural, =1{ساعة واحدة} =2{ساعتان} few{{count} ساعات} many{{count} ساعة} other{{count} ساعة}}",
+    "@a11yHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yMinutes": "{count, plural, =1{دقيقة واحدة} =2{دقيقتان} few{{count} دقائق} many{{count} دقيقة} other{{count} دقيقة}}",
+    "@a11yMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yHoursMinutes": "{hours} و{minutes}",
+    "@a11yHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "String"
+            },
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yTimeUntil": "الوقت المتبقي حتى {vakit}: {duration}",
+    "@a11yTimeUntil": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yPrayerPassed": "انقضى الوقت",
+    "a11yTrackerCell": "{day}، {prayer}: {state}",
+    "@a11yTrackerCell": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            },
+            "prayer": {
+                "type": "String"
+            },
+            "state": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yNotPrayed": "لم تُؤدَّ",
+    "a11yNotDue": "لم يدخل وقتها بعد",
+    "a11yExcusedDay": "يوم عذر",
+    "a11yQiblaTurnRight": "{deg, plural, =1{استدر درجة واحدة إلى اليمين لمواجهة القبلة} =2{استدر درجتين إلى اليمين لمواجهة القبلة} few{استدر {deg} درجات إلى اليمين لمواجهة القبلة} other{استدر {deg} درجة إلى اليمين لمواجهة القبلة}}",
+    "@a11yQiblaTurnRight": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaTurnLeft": "{deg, plural, =1{استدر درجة واحدة إلى اليسار لمواجهة القبلة} =2{استدر درجتين إلى اليسار لمواجهة القبلة} few{استدر {deg} درجات إلى اليسار لمواجهة القبلة} other{استدر {deg} درجة إلى اليسار لمواجهة القبلة}}",
+    "@a11yQiblaTurnLeft": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaAligned": "أنت متجه نحو القبلة",
+    "a11yDecrease": "إنقاص",
+    "a11yIncrease": "زيادة",
+    "a11yPlaySound": "تشغيل {sound}",
+    "@a11yPlaySound": {
+        "placeholders": {
+            "sound": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yStopSound": "إيقاف",
+    "hadithNotFound": "تعذّر العثور على نص الحديث.",
+    "timesLoadError": "تعذّر تحميل مواقيت الصلاة. يرجى المحاولة مرة أخرى.",
+    "sunriseNotPrayer": "شروق الشمس، ليس وقت صلاة",
+    "currentPrayer": "الصلاة الحالية",
+    "textCopied": "تم نسخ النص",
+    "updateDownloaded": "تم تنزيل إصدار جديد.",
+    "restartAction": "إعادة التشغيل",
+    "qiblaTurnRight": "استدر يميناً",
+    "qiblaTurnSlightRight": "استدر قليلاً إلى اليمين",
+    "qiblaTurnLeft": "استدر يساراً",
+    "qiblaTurnSlightLeft": "استدر قليلاً إلى اليسار",
+    "phoneHeading": "اتجاه الهاتف: {deg}°",
+    "usingSavedLocation": "يتم استخدام الموقع المحفوظ.",
+    "exampleHint": "مثال: {n}",
+    "noCustomDhikr": "لم تُضف أي ذكر مخصص بعد.",
+    "messagesShuffled": "تم ترتيب الرسائل عشوائيًا",
+    "shareAsImage": "مشاركة كصورة",
+    "shareAsText": "مشاركة النص",
+    "shareCardFooter": "Vaktinde على Google Play",
+    "fridayGreeting": "جمعة مباركة",
+    "sendGreeting": "إرسال تهنئة",
+    "greetingsTitle": "رسائل التهنئة",
+    "shuffle": "ترتيب عشوائي",
+    "copy": "نسخ",
+    "messageCopied": "تم نسخ الرسالة",
+    "versionLabel": "الإصدار {v}",
+    "supportMailSubject": "Vaktinde - الدعم",
+    "madeBy": "صُنع بـ ❤️ بواسطة mmdigital",
+    "permissionPrimingTitle": "لا تفوّت وقت الصلاة",
+    "permissionPrimingBody": "نحتاج إلى إذن الإشعارات لتنبيهات الأذان، وإذن الموقع لحساب مواقيت الصلاة حسب مكانك.",
+    "continueAction": "متابعة",
+    "nextPrayer": "الوقت التالي",
     "hadithTitle": "حديث اليوم",
-    "readMore": "اقرأ المزيد...",
     "share": "مشاركة",
     "close": "إغلاق",
-    "loading": "جاري حساب الأوقات...",
-    "error": "خطأ",
+    "loading": "جارٍ حساب الأوقات...",
     "retry": "حاول مرة أخرى",
     "noData": "لا توجد بيانات.",
     "imsak": "الإمساك",
@@ -16,6 +261,187 @@
     "aksam": "المغرب",
     "yatsi": "العشاء",
     "exactAlarm": "إشعار في الوقت المحدد",
+    "reminderTitleAt": "تذكير بوقت الصلاة",
+    "notifBodyUpcomingAt": "دخول وقت {vakit}: {time}",
+    "@notifBodyUpcomingAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitleAt": "خروج وقت الصلاة",
+    "endReminderNotifBodyAt": "خروج وقت {vakit}: {time}",
+    "@endReminderNotifBodyAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakBodyAt": "انتهى وقت السحور الساعة {time}. صومًا مقبولًا!",
+    "@ramadanImsakBodyAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "alarmHealthExactOff": "إذن المنبّه معطّل: قد يتأخر الأذان والتذكيرات حتى ساعة تقريبًا (بما في ذلك الإمساك والسحور).",
+    "healthTitle": "فحص الإشعارات",
+    "healthSub": "إذا لم يعمل الأذان، افحص الإعدادات خطوة بخطوة",
+    "healthSectionStatus": "الحالة",
+    "healthEzansTitle": "منبّهات الأذان",
+    "healthEzansOn": "مفعّلة: {names}",
+    "@healthEzansOn": {
+        "placeholders": {
+            "names": {
+                "type": "String"
+            }
+        }
+    },
+    "healthEzansNone": "الأذان غير مفعّل لأي صلاة.",
+    "healthNextTitle": "الأذان التالي",
+    "healthNextNone": "لم يُعثر على أذان مجدول.",
+    "healthReschedule": "إعادة الجدولة",
+    "healthNotificationsTitle": "الإشعارات",
+    "healthNotificationsOk": "مفعّلة.",
+    "healthOpenSettings": "فتح الإعدادات",
+    "healthExactTitle": "المنبّهات والتذكيرات",
+    "healthExactOk": "مسموح: يُرفع الأذان في وقته تمامًا.",
+    "healthVolumeTitle": "الصوت",
+    "healthVolumeOk": "صوت الإشعارات مفعّل.",
+    "healthVolumeAlarmOk": "صوت المنبّه مفعّل.",
+    "healthVolumeSilent": "هاتفك في الوضع الصامت أو وضع الاهتزاز: لن يُسمع صوت الأذان.",
+    "healthVolumeNotificationMuted": "صوت الإشعارات مكتوم: لن يُسمع صوت الأذان.",
+    "healthVolumeAlarmMuted": "صوت المنبّه مكتوم: لن يُسمع صوت الأذان.",
+    "healthAlarmStreamTip": "عند تفعيل «{setting}» يُرفع الأذان بمستوى صوت المنبّه.",
+    "@healthAlarmStreamTip": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthDndTitle": "عدم الإزعاج",
+    "healthDndOff": "غير مفعّل.",
+    "healthDndOn": "مفعّل: قد لا يُسمع صوت الأذان.",
+    "healthDndAlarm": "مفعّل، لكن بفضل «{setting}» يُرفع الأذان بمستوى صوت المنبّه.",
+    "@healthDndAlarm": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBatteryTitle": "استخدام البطارية",
+    "healthBatteryOk": "تحسين البطارية غير مفعّل لتطبيق Vaktinde.",
+    "healthBatteryOptimized": "تحسين البطارية مفعّل: قد يوقف هاتفك تطبيق Vaktinde في الخلفية. افتح إعدادات التطبيق ثم البطارية واختر الاستخدام غير المقيّد (قد يختلف اسم الخيار حسب الهاتف).",
+    "healthBackgroundTitle": "العمل في الخلفية",
+    "healthBackgroundToday": "آخر تشغيل: اليوم الساعة {time}",
+    "@healthBackgroundToday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundYesterday": "آخر تشغيل: أمس الساعة {time}",
+    "@healthBackgroundYesterday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundStale": "لم يعمل Vaktinde في الخلفية خلال آخر 48 ساعة: ربما يوقفه هاتفك.",
+    "healthWidgetTitle": "الأدوات والإشعار الدائم",
+    "healthWidgetLate": "خلال الأيام السبعة الماضية تأخر تحديث العدّ التنازلي {minutes} دقيقة عند دخول الوقت: هاتفك يؤخّر Vaktinde في الخلفية. اجعل استخدام البطارية غير مقيّد واتبع الخطوات أدناه.",
+    "@healthWidgetLate": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "healthShowSteps": "عرض الخطوات",
+    "healthGuideTitle": "إعدادات هواتف {brand}",
+    "@healthGuideTitle": {
+        "placeholders": {
+            "brand": {
+                "type": "String"
+            }
+        }
+    },
+    "healthGuideTitleGeneric": "إعدادات هاتفك",
+    "healthGuideStale": "يبدو أن العمل في الخلفية متوقف. لكي لا يتأخر الأذان، غيّر هذه الإعدادات:",
+    "healthGuideMore": "شرح مفصّل حسب طراز هاتفك (بالإنجليزية)",
+    "healthTestTitle": "أذان تجريبي",
+    "healthTestInfo": "يصلك إشعار تجريبي بعد دقيقة واحدة بالصوت والإعدادات نفسها التي يستخدمها الأذان الحقيقي.",
+    "healthTestButton": "أذان تجريبي بعد دقيقة",
+    "healthTestScheduled": "سيُرفع الأذان التجريبي بعد دقيقة واحدة. يمكنك إغلاق التطبيق.",
+    "healthTestNotifBody": "إذا ظهر لك هذا الإشعار فإشعارات الأذان تعمل.",
+    "testEzanOfferTitle": "هل يعمل الأذان على هاتفك؟",
+    "notNow": "ليس الآن",
+    "tipVendorGuide": "يحتاج هذا الهاتف إلى بعض الإعدادات حتى لا يتأخر الأذان.",
+    "tipVendorGuideAction": "عرض الإعدادات",
+    "weeklySummaryTitle": "ملخص الصلوات الأسبوعي",
+    "weeklySummarySub": "كل يوم اثنين ملخص الأسبوع الماضي إن كنت تستخدم متابعة الصلوات",
+    "weeklySummaryBody": "الأسبوع الماضي: {done} من {total} صلاة.",
+    "@weeklySummaryBody": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "weeklySummaryFull": "الأسبوع الماضي: أدّيت الصلوات كلها ({total}). تقبّل الله.",
+    "@weeklySummaryFull": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "healthStepXiaomiAutostart": "فعّل التشغيل التلقائي من إعدادات التطبيق.",
+    "healthStepXiaomiBattery": "من الشاشة نفسها، افتح موفّر البطارية (أو البطارية) وألغِ كل القيود.",
+    "healthStepHuaweiLaunch": "افتح إدارة تشغيل التطبيقات في الإعدادات (ضمن البطارية أو التطبيقات)، وأوقف الإدارة التلقائية لتطبيق Vaktinde، واترك كل الخيارات مفعّلة في النافذة التي تظهر.",
+    "healthStepOppoBackground": "من إعدادات التطبيق > استخدام البطارية، اسمح بالنشاط في الخلفية وبالتشغيل التلقائي.",
+    "healthStepVivoBackground": "من الإعدادات > البطارية، اسمح لتطبيق Vaktinde باستهلاك طاقة مرتفع في الخلفية.",
+    "healthStepAutostartIn": "فعّل التشغيل التلقائي لتطبيق Vaktinde من الإعدادات أو من تطبيق {app}.",
+    "@healthStepAutostartIn": {
+        "placeholders": {
+            "app": {
+                "type": "String"
+            }
+        }
+    },
+    "healthStepAppBattery": "من إعدادات التطبيق > البطارية، اختر الاستخدام غير المقيّد.",
+    "healthStepSamsungSleeping": "من الإعدادات > البطارية > حدود الاستخدام في الخلفية، أضف Vaktinde إلى التطبيقات التي لا تدخل وضع السكون أبدًا.",
+    "healthStepLockRecents": "اقفل Vaktinde في شاشة التطبيقات المستخدمة مؤخرًا (إن كان هاتفك يتيح ذلك).",
+    "healthDetails": "التفاصيل",
+    "alarmHealthExactAction": "سماح",
+    "alarmHealthNotificationsOff": "الإشعارات معطّلة، لن يعمل الأذان.",
+    "alarmHealthNotificationsAction": "تفعيل",
+    "ezanAlarmStreamTitle": "التشغيل في الوضع الصامت أيضاً",
+    "ezanAlarmStreamSub": "يُرفع الأذان بمستوى صوت المنبّه حتى عندما يكون الهاتف صامتاً.",
+    "channelAlarmSound": "الصوت: {soundName} (حتى في الوضع الصامت)",
+    "@channelAlarmSound": {
+        "placeholders": {
+            "soundName": {
+                "type": "String"
+            }
+        }
+    },
     "exactAlarmSub": "يرسل إشعاراً.",
     "silentNotif": "إشعار نصي فقط",
     "silentNotifSub": "بدون أذان/صوت، تنبيه مرئي فقط.",
@@ -48,7 +474,7 @@
         }
     },
     "notifTitleUpcoming": "اقترب الوقت",
-    "notifBodyUpcoming": "تبقى {minute} دقيقة لوقت {vakit}.",
+    "notifBodyUpcoming": "تبقّى {minute} دقيقة على دخول وقت {vakit}.",
     "@notifBodyUpcoming": {
         "placeholders": {
             "vakit": {
@@ -61,23 +487,195 @@
     },
     "navPrayer": "الرئيسية",
     "navQibla": "القبلة",
-    "navMenu": "القائمة",
     "menuTitle": "الإعدادات",
+    "aboutAds": "حول الإعلانات",
+    "adInfoTitle": "لماذا يعرض Vaktinde إعلانات؟",
+    "adInfoBody": "لكي نتمكن من تقديم Vaktinde مجانًا ودون الحاجة إلى التسجيل، نعرض عددًا محدودًا من الإعلانات في التطبيق. وتساعدنا عائدات الإعلانات على تغطية تكاليف تطوير التطبيق وصيانته.\n\nلا تُعرض إعلانات بملء الشاشة عند فتح القرآن والقبلة والمسبحة الإلكترونية والأدعية وتعليم الصلاة، ونحرص أيضًا على أن تكون الإعلانات قليلة في الشاشات الأخرى.\n\nشكرًا لتفهمكم.",
+    "adInfoGotIt": "فهمت",
     "sectionLocation": "الموقع والأوقات",
     "changeLocation": "تغيير الموقع",
     "citySelect": "اختر المدينة",
-    "districtSelect": "اختر المنطقة",
     "save": "حفظ",
     "cancel": "إلغاء",
-    "locationWarning": "اختيار المنطقة مهم للحصول على أوقات دقيقة للصلاة.",
-    "menuNotifications": "أذونات الإشعارات",
-    "menuNotificationsSub": "تحقق هنا إذا لم تسمع أصواتًا.",
-    "menuTroubleshoot": "لا تصلك الإشعارات؟",
-    "menuTroubleshootSub": "قم بضبط إعدادات البطارية لأجهزة Samsung/Xiaomi.",
+    "timeAdjustTitle": "ضبط أوقات الصلاة",
+    "tapToCount": "انقر للعدّ",
+    "timeAdjustSub": "تعديل الأوقات بالدقيقة",
+    "timeAdjustInfo": "تُحسب الأوقات حسب موقعك وفق طريقة رئاسة الشؤون الدينية التركية (ديانت). إذا كانت تختلف قليلاً عن أوقات المسجد في منطقتك، يمكنك تقديم كل وقت أو تأخيره بالدقائق. يُطبَّق التعديل على الشاشة الرئيسية والودجت وإشعارات الصلاة.",
+    "timeAdjustReset": "إعادة تعيين",
+    "timeAdjustMinutes": "{value} د",
+    "@timeAdjustMinutes": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "timeAdjustSaved": "تم تحديث أوقات الصلاة",
+    "trackerTitle": "متابعة الصلوات",
+    "trackerExcusedTitle": "أيام العذر (الحيض والنفاس)",
+    "trackerExcusedInfo": "لا يجب قضاء الصلوات التي فاتت في أيام الحيض والنفاس. الأيام المعلَّمة كأيام عذر لا تقطع الأيام المتتالية، ولا تدخل في النسبة ولا في الصلوات المضافة إلى القضاء. أما ما فات في هذه الأيام من صيام رمضان فيجب قضاؤه. بتعليم اليوم تبدأ فترة العذر وتُعلَّم الأيام التالية تلقائيًا (10 أيام على الأكثر)؛ وعند انتهائها أزل علامة اليوم. لتعليم يوم سابق أو إزالة علامته: ضغطة مطوّلة على اسم اليوم.",
+    "trackerExcusedToday": "تعليم اليوم كيوم عذر",
+    "trackerExcusedMark": "تعليم كيوم عذر",
+    "trackerExcusedUnmark": "إزالة علامة يوم العذر",
+    "trackerExcusedMarked": "عُلِّم كيوم عذر.",
+    "notifStopAction": "إيقاف",
+    "trackerExcusedPeriodStarted": "بدأت فترة العذر؛ تُعلَّم الأيام التالية تلقائيًا (10 أيام على الأكثر). عند انتهائها اضغط مطوّلًا على «اليوم» مرة أخرى.",
+    "trackerExcusedPeriodEnded": "انتهت فترة العذر.",
+    "excusedSilentEzanTitle": "أذان صامت في أيام العذر",
+    "excusedSilentEzanSub": "في أيام العذر يصل إشعار وقت الصلاة بلا صوت، ولا تُضبط التذكيرات.",
+    "trackerExcusedUnmarked": "أُزيلت علامة يوم العذر.",
+    "trackerExcusedCellSnack": "هذا اليوم معلَّم كيوم عذر، فلا تُحتسب صلواته. لإزالة العلامة: ضغطة مطوّلة على اسم اليوم.",
+    "trackerExcusedKazaConfirm": "{count, plural, =1{ستُطرح من عدادات القضاء صلاة واحدة من هذا اليوم أُضيفت إلى القضاء.} =2{ستُطرح من عدادات القضاء صلاتان من هذا اليوم أُضيفتا إلى القضاء.} few{ستُطرح من عدادات القضاء {count} صلوات من هذا اليوم أُضيفت إلى القضاء.} other{ستُطرح من عدادات القضاء {count} صلاة من هذا اليوم أُضيفت إلى القضاء.}}",
+    "@trackerExcusedKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerLegendExcused": "يوم عذر (ضغطة مطوّلة على اليوم)",
+    "fastLegendExcused": "يوم عذر (يُقضى)",
+    "trackerToday": "اليوم",
+    "trackerYesterday": "أمس",
+    "trackerPrayedAction": "صلّيت",
+    "trackerLast7Days": "آخر 7 أيام",
+    "trackerCompletion": "نسبة 30 يومًا",
+    "trackerStreak": "أيام متتالية",
+    "trackerStreakDays": "{count, plural, =0{0 يوم} =1{يوم واحد} =2{يومان} few{{count} أيام} many{{count} يومًا} other{{count} يوم}}",
+    "@trackerStreakDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerNotYet": "لم يدخل وقت هذه الصلاة بعد.",
+    "trackerKazaButton": "إضافة الصلوات غير المؤدّاة إلى القضاء",
+    "trackerKazaInfo": "تُضاف الصلوات غير المعلَّمة خلال آخر 30 يومًا (منذ بدء المتابعة) إلى عدادات القضاء. تُضاف كل صلاة مرة واحدة فقط. إذا أدّيت صلاةً أُضيفت إلى القضاء، فاضغط عليها لتُعلَّم على أنها مؤداة وتُطرح من عداد القضاء.",
+    "trackerKazaConfirm": "{count, plural, =1{ستُضاف صلاة واحدة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟} =2{ستُضاف صلاتان غير معلَّمتين إلى عدادات القضاء. هل تريد المتابعة؟} few{ستُضاف {count} صلوات غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟} other{ستُضاف {count} صلاة غير معلَّمة إلى عدادات القضاء. هل تريد المتابعة؟}}",
+    "@trackerKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaAdd": "إضافة",
+    "trackerKazaDone": "{count, plural, =1{أُضيفت صلاة واحدة إلى القضاء.} =2{أُضيفت صلاتان إلى القضاء.} few{أُضيفت {count} صلوات إلى القضاء.} other{أُضيفت {count} صلاة إلى القضاء.}}",
+    "@trackerKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaNone": "لا توجد صلوات لإضافتها إلى القضاء.",
+    "trackerKazaRemoveTitle": "إزالتها من القضاء؟",
+    "trackerKazaRemoveConfirm": "ستُعلَّم هذه الصلاة على أنها مؤداة، وسيتغيّر عدد قضاء {name} من {from} إلى {to}.",
+    "@trackerKazaRemoveConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "addWidgetTitle": "إضافة أداة إلى الشاشة الرئيسية",
+    "addWidgetSub": "اطّلع على المواقيت دون فتح التطبيق",
+    "addWidgetHint": "اختر واحدة، وستطلب منك الشاشة الرئيسية تأكيد الإضافة.",
+    "widgetRingName": "حلقة الصلاة",
+    "widgetRingDesc": "مربع: الوقت المتبقي حتى الصلاة القادمة، وتُظهر الحلقة الوقت المنقضي منذ السابقة",
+    "widgetTrackerName": "متابعة الصلوات",
+    "widgetTrackerDesc": "شريط عريض: صلوات اليوم الخمس؛ المس صلاةً لتعليمها كمؤداة",
+    "widgetLargeName": "مواقيت اليوم",
+    "widgetLargeDesc": "حجم كبير: الموقع والتاريخ الهجري ومواقيت اليوم والوقت المتبقي",
+    "widgetWideName": "الصلاة القادمة",
+    "widgetWideDesc": "شريط عريض: الموقع والتاريخ الهجري والوقت المتبقي حتى الصلاة القادمة",
+    "widgetSmallName": "العد التنازلي للصلاة",
+    "widgetSmallDesc": "مربع صغير: الوقت المتبقي حتى الصلاة القادمة",
+    "trackerLegendPrayed": "مؤداة",
+    "trackerLegendKaza": "أُضيفت إلى القضاء",
+    "kerahatActive": "وقت كراهة الآن: {range}",
+    "@kerahatActive": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "kerahatUpcoming": "وقت الكراهة يقترب: {range}",
+    "@kerahatUpcoming": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitle": "التذكير قبل خروج الوقت",
+    "dailyContentNotifTitle": "إشعارات آية اليوم وحديث اليوم",
+    "persistentNotifTitle": "إشعار دائم",
+    "persistentNotifSub": "يعرض في شريط الإشعارات الوقت المتبقي حتى الصلاة القادمة ومواقيت اليوم.",
+    "dailyContentNotifSub": "يرسل آية كل صباح وحديثًا كل مساء.",
+    "religiousDaysNotifTitle": "إشعارات المناسبات الدينية والليالي المباركة",
+    "religiousDaysNotifSub": "يذكّرك صباحًا بالليالي المباركة والأعياد وسائر المناسبات الدينية.",
+    "fridayNotifTitle": "إشعار الجمعة",
+    "fridayNotifSub": "يذكّرك صباح كل جمعة بقراءة سورة الكهف وإرسال رسائل الجمعة.",
+    "fridayNotifBody": "لا تنسَ قراءة سورة الكهف وإرسال رسالة الجمعة إلى أحبّائك.",
+    "fridayKehfAction": "سورة الكهف",
+    "religiousDaysChannel": "المناسبات الدينية والليالي المباركة",
+    "ucAylarBaslangici": "بداية الأشهر الثلاثة المباركة",
+    "ramazanArefesi": "آخر يوم من رمضان",
+    "kurbanArefesi": "يوم عرفة",
+    "ucAylarNotifBody": "تبدأ اليوم الأشهر الثلاثة المباركة: رجب وشعبان ورمضان. اللهم بارك لنا في رجب وشعبان وبلّغنا رمضان.",
+    "ucAylarRegaipTitle": "الأشهر الثلاثة وليلة الرغائب",
+    "ucAylarRegaipNotifBody": "تبدأ اليوم الأشهر الثلاثة المباركة، والليلة ليلة الرغائب. اللهم بارك لنا في رجب وشعبان وبلّغنا رمضان.",
+    "regaipKandiliNotifBody": "الليلة ليلة الرغائب. ليلة مباركة عليكم.",
+    "miracKandiliNotifBody": "الليلة ذكرى الإسراء والمعراج. ليلة مباركة عليكم.",
+    "beratKandiliNotifBody": "الليلة ليلة النصف من شعبان. ليلة مباركة عليكم.",
+    "mevlidKandiliNotifBody": "الليلة ذكرى المولد النبوي الشريف. ليلة مباركة عليكم.",
+    "kadirGecesiNotifBody": "الليلة ليلة القدر. تقبّل الله منا ومنكم صالح الأعمال.",
+    "ramazanBaslangiciNotifBody": "يبدأ شهر رمضان غدًا، والليلة أول صلاة تراويح وأول سحور. رمضان مبارك!",
+    "ramazanArefesiNotifBody": "غدًا عيد الفطر. تقبّل الله صيامكم وقيامكم، وكل عام وأنتم بخير.",
+    "ramazanBayramiNotifBody": "عيد فطر مبارك! تقبّل الله منا ومنكم.",
+    "kurbanArefesiNotifBody": "غدًا عيد الأضحى المبارك. كل عام وأنتم بخير.",
+    "kurbanBayramiNotifBody": "عيد أضحى مبارك! تقبّل الله منا ومنكم صالح الأعمال.",
+    "hicriYilbasiNotifBody": "اليوم رأس السنة الهجرية. كل عام وأنتم بخير.",
+    "asureGunuNotifBody": "اليوم يوم عاشوراء. جعله الله يوم خير وبركة عليكم.",
+    "privacyPolicy": "سياسة الخصوصية",
+    "endReminderSub": "يرسل تنبيهًا قبل خروج وقت صلاة لم تُعلَّم كمؤداة.",
+    "endReminderNotifTitle": "الوقت يوشك على الخروج",
+    "endReminderNotifBody": "تبقّى {minute} دقيقة على خروج وقت {vakit}.",
+    "@endReminderNotifBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "endReminderChannel": "تذكيرات خروج الوقت",
+    "ramadanIftarTitle": "حان وقت الإفطار",
+    "ramadanIftarBody": "دخل وقت {vakit}. إفطارًا هنيئًا!",
+    "@ramadanIftarBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakTitle": "حان وقت الإمساك",
+    "ramadanImsakBody": "انتهى وقت السحور. صومًا مقبولًا!",
     "sectionSupport": "الدعم",
     "shareApp": "شارك مع صديق",
-    "rateApp": "قيمنا",
-    "contactUs": "اتصل بنا والإبلاغ عن خطأ",
+    "rateApp": "قيّمنا",
+    "contactUs": "اتصل بنا وأبلغ عن خطأ",
     "shareText": "وجدت تطبيقاً رائعاً لأوقات الصلاة! حمله من هنا: {link}",
     "@shareText": {
         "placeholders": {
@@ -86,18 +684,8 @@
             }
         }
     },
-    "batteryDialogTitle": "حل مشكلة الإشعارات",
-    "batteryDialogBody": "قد يقوم هاتفك بإغلاق التطبيق لتوفير البطارية. لمنع ذلك:\n\n1. افتح شاشة التطبيقات الحديثة.\n2. اضغط مطولاً على تطبيق 'Vaktinde' أو انقر على شعاره.\n3. اضغط على أيقونة القفل 🔒 لقفله.\n\nأيضاً، اذهب إلى الإعدادات > التطبيقات > Vaktinde > البطارية > اختر غير مقيد.",
     "okUnderstood": "حسناً، فهمت",
-    "religiousDaysTitle": "الأيام الدينية",
-    "errorOccurred": "حدث خطأ: {error}",
-    "@errorOccurred": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
+    "religiousDaysTitle": "المناسبات الدينية",
     "noDataFound": "لم يتم العثور على بيانات.",
     "noDataForYear": "لم يتم العثور على بيانات لعام {year}.",
     "@noDataForYear": {
@@ -107,7 +695,7 @@
             }
         }
     },
-    "religiousDaysListTitle": "قائمة الأيام الدينية لعام {year}",
+    "religiousDaysListTitle": "قائمة المناسبات الدينية لعام {year}",
     "@religiousDaysListTitle": {
         "placeholders": {
             "year": {
@@ -116,8 +704,69 @@
         }
     },
     "missedPrayersTitle": "تتبع الصلوات الفائتة",
+    "kazaCalcTitle": "حاسبة القضاء",
+    "kazaCalcSubtitle": "قدِّر عدد الفوائت من المدة التي لم تُصلِّ فيها",
+    "kazaCalcPeriod": "مدة ترك الصلاة",
+    "kazaCalcYears": "السنوات",
+    "kazaCalcMonths": "الأشهر",
+    "kazaCalcOptional": "اختياري",
+    "kazaCalcExcused": "متوسط أيام الحيض في الشهر",
+    "kazaCalcRamadans": "عدد أشهر رمضان التي لم تُصَم",
+    "kazaCalcFastDays": "أيام الصيام الفائتة",
+    "kazaCalcAddRamadan": "+1 رمضان (+30 يومًا)",
+    "kazaCalcOptionalInfo": "للا يجب قضاء الصلوات التي فاتت في أيام الحيض، لذا تُطرح الأيام التي تُدخلها من الصلوات. ولا تُطرح من الصيام: فما فات من الصيام بسبب الحيض يجب قضاؤه أيضًا. يمكنك إدخال أيام الصيام الفائتة يومًا بيوم أو إضافة 30 يومًا عن شهر رمضان كامل.",
+    "kazaCalcResult": "القضاء التقديري",
+    "kazaCalcEachPrayer": "كل صلاة والوتر",
+    "kazaCalcNote": "هذه نتيجة تقديرية (تُحسب السنة 365 يومًا والشهر 30 يومًا). وللحكم الدقيق استشر إمامًا أو عالمًا موثوقًا.",
+    "kazaCalcAdd": "إضافة إلى عدادات القضاء",
+    "kazaCalcConfirmTitle": "هل تريد الإضافة إلى عدادات القضاء؟",
+    "kazaCalcConfirm": "كل صلاة والوتر: {prayers}\nالصيام: {fasts}\n\nتُضاف هذه الأعداد إلى العدادات الحالية ولا يُستبدل شيء.",
+    "@kazaCalcConfirm": {
+        "placeholders": {
+            "prayers": {
+                "type": "int"
+            },
+            "fasts": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCalcAdded": "أُضيف القضاء التقديري إلى عدادات القضاء.",
+    "kazaDurationYears": "{count, plural, =1{سنة واحدة} =2{سنتين} few{{count} سنوات} other{{count} سنة}}",
+    "@kazaDurationYears": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationMonths": "{count, plural, =1{شهر واحد} =2{شهرين} few{{count} أشهر} other{{count} شهرًا}}",
+    "@kazaDurationMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationDays": "{count, plural, =1{يوم واحد} =2{يومين} few{{count} أيام} many{{count} يومًا} other{{count} يوم}}",
+    "@kazaDurationDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCompletionEstimate": "إذا قضيت صلوات يوم واحد كل يوم، تنتهي فوائتك خلال {duration} تقريبًا.",
+    "@kazaCompletionEstimate": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+
     "missedPrayersInfo": "سجل صلواتك الفائتة هنا واطرحها عند قضائها.\n(اضغط على الرقم للإدخال يدوياً)",
-    "editMissedTitle": "تعديل فائتة {title}",
+    "editMissedTitle": "تعديل قضاء {title}",
     "@editMissedTitle": {
         "placeholders": {
             "title": {
@@ -128,13 +777,9 @@
     "missedCountLabel": "عدد الفوائت",
     "missedCountHint": "مثال: 150",
     "sabah": "الفجر",
-    "ogle": "الظهر",
-    "ikindi": "العصر",
-    "aksam": "المغرب",
-    "yatsi": "العشاء",
     "vitir": "الوتر",
     "oruc": "الصيام",
-    "timeLeftFor": "الوقت المتبقي لـ {vakit}",
+    "timeLeftFor": "الوقت المتبقي حتى {vakit}",
     "@timeLeftFor": {
         "placeholders": {
             "vakit": {
@@ -145,37 +790,50 @@
     "tomorrow": "(غداً)",
     "fridayMessagesTitle": "رسائل الجمعة",
     "esmaulHusnaTitle": "أسماء الله الحسنى",
-    "closeCaps": "إغلاق",
     "zakatTitle": "حاسبة الزكاة",
+    "fitreTitle": "زكاة الفطر والفدية",
+    "toolFitreDesc": "حساب زكاة الفطر والفدية",
+    "trackerTabTrack": "المتابعة",
+    "trackerTabKaza": "القضاء",
+    "trackerBadgesTitle": "الأهداف",
+    "trackerBadgeEarned": "تحقّق في {date}",
+    "trackerBadgeSnack": "{count, plural, few{تهانينا! بلغتَ هدف {count} أيام متتالية.} other{تهانينا! بلغتَ هدف {count} يومًا متتاليًا.}}",
+    "fitreInfo": "المبلغ للشخص الواحد هو الحد الأدنى لزكاة الفطر الذي حددته رئاسة الشؤون الدينية التركية (ديانت)، ويجوز إخراجها نقدًا أو طعامًا. أما الفدية فيدفعها من لا يستطيع الصيام بسبب الكِبَر أو مرض لا يُرجى شفاؤه: مقدار زكاة الفطر عن كل يوم. إذا كنت تقيم خارج تركيا، يمكنك إدخال المبلغ المعتمد في بلدك.",
+    "fitreAmountLabel": "المبلغ للشخص الواحد",
+    "fitreSource": "المصدر: {source}، {year}",
+    "fitreResetAmount": "الرجوع إلى المبلغ الافتراضي",
+    "fitreSectionTitle": "زكاة الفطر",
+    "fitrePeopleLabel": "عدد الأشخاص",
+    "fidyeSectionTitle": "الفدية",
+    "fidyeDaysLabel": "عدد الأيام",
+    "fitreTotal": "المجموع",
+    "fastTitle": "صيام رمضان",
+    "fastCount": "{done}/{total} يومًا",
+    "fastInfo": "اضغط على الأيام التي صمتها. تُضاف الأيام الفائتة إلى عداد قضاء الصيام مرة واحدة؛ وإذا كنت قد صمت يومًا أُضيف إلى القضاء، فاضغط عليه ليُطرح من العداد.",
+    "fastLegendFasted": "تم صيامه",
+    "fastLegendKaza": "أُضيف إلى القضاء",
+    "fastKazaButton": "إضافة أيام الصيام الفائتة إلى القضاء",
+    "fastKazaConfirm": "{count, plural, =1{سيُضاف يوم واحد غير معلَّم إلى عداد قضاء الصيام. هل تريد المتابعة؟} =2{سيُضاف يومان غير معلَّمين إلى عداد قضاء الصيام. هل تريد المتابعة؟} few{ستُضاف {count} أيام غير معلَّمة إلى عداد قضاء الصيام. هل تريد المتابعة؟} other{سيُضاف {count} يومًا غير معلَّم إلى عداد قضاء الصيام. هل تريد المتابعة؟}}",
+    "fastKazaDone": "{count, plural, =1{أُضيف يوم واحد إلى القضاء.} =2{أُضيف يومان إلى القضاء.} few{أُضيفت {count} أيام إلى القضاء.} other{أُضيف {count} يومًا إلى القضاء.}}",
+    "fastKazaNone": "لا توجد أيام لإضافتها إلى القضاء.",
+    "fastKazaRemoveTitle": "إزالته من القضاء؟",
+    "fastKazaRemoveConfirm": "سيُعلَّم هذا اليوم على أنه تم صيامه، وسيتغيّر عدد أيام قضاء الصيام من {from} إلى {to}.",
+    "fastFastedAction": "صُمتُه",
     "zakatCalculatorTitle": "حاسبة الزكاة الذكية",
-    "liveRatesLoading": "جاري جلب أسعار الصرف الحالية...",
-    "liveRatesInfo": "يمكنك تعديل الأسعار المجلبة تلقائياً يدوياً إذا رغبت.",
-    "sectionGold": "أصول الذهب",
+    "liveRatesLoading": "جارٍ جلب أسعار الصرف الحالية...",
+    "liveRatesInfo": "جُلبت الأسعار تلقائيًا، ويمكنك تعديلها يدويًا إذا رغبت.",
     "goldType": "نوع الذهب",
     "goldAmount": "الكمية / الجرامات",
     "goldUnitPrice": "سعر الوحدة",
-    "sectionCurrency": "الأصول النقدية والعملات",
     "currencyType": "نوع العملة",
     "currencyAmount": "المبلغ",
-    "currencyRate": "السعر الحالي",
-    "sectionCashDebt": "النقد والديون",
-    "cashAmount": "النقد المتوفر وفي البنك",
-    "debtAmount": "إجمالي الديون (للخصم)",
+    "currencyRate": "سعر الصرف الحالي",
     "calculateButton": "احسب",
     "zakatResultTitle": "الزكاة المستحقة عليك",
     "netAssets": "صافي الأصول:",
     "qiblaTitle": "بوصلة القبلة",
     "locationServiceOff": "خدمة الموقع مغلقة. يرجى تفعيل الموقع.",
     "locationPermissionDenied": "تم رفض إذن الموقع.",
-    "locationPermissionForever": "تم رفض إذن الموقع بشكل دائم. يرجى تفعيله من الإعدادات.",
-    "compassError": "خطأ في المستشعر: {error}",
-    "@compassError": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
     "noCompass": "لا توجد بوصلة في هذا الجهاز.",
     "qiblaFound": "لقد وجدت القبلة!",
     "qiblaAngle": "زاوية القبلة: {angle}°",
@@ -186,7 +844,7 @@
             }
         }
     },
-    "keepAwayMetal": "ابعده عن الأشياء المعدنية.",
+    "keepAwayMetal": "أبعِد الهاتف عن الأشياء المعدنية.",
     "goldGram": "جرام ذهب (عيار 24)",
     "goldQuarter": "ربع ليرة ذهب",
     "goldFull": "ليرة ذهب كاملة",
@@ -196,17 +854,29 @@
     "gbp": "جنيه إسترليني (GBP)",
     "sectionAppearance": "المظهر واللغة",
     "appearanceSettings": "إعدادات المظهر",
-    "appearanceSub": "السمة والخلفية",
+    "appearanceSub": "السمة والخلفية وحجم الخط",
+    "textSizeTitle": "حجم الخط",
+    "textSizeNormal": "عادي",
+    "textSizeLarge": "كبير",
+    "textSizeExtraLarge": "كبير جدًا",
+    "whatsNewTextSizeDesc": "يمكنكم تكبير النص من داخل التطبيق.",
+    "sectionNotifications": "الإشعارات",
+    "notificationSettingsTitle": "إعدادات الإشعارات",
+    "notificationSettingsSub": "التذكيرات وآية اليوم والليالي المباركة والجمعة والإشعار الدائم",
+    "ezanAlarmsTitle": "منبّهات الأذان",
+    "ezanAlarmsSub": "صوت الأذان والتذكير المسبق لكل صلاة",
+    "privacyAdsTitle": "الخصوصية والإعلانات",
+    "privacyAdsSub": "سياسة الخصوصية ومعلومات حول الإعلانات",
+    "privacyAdsConsentSub": "إعدادات خصوصية الإعلانات وسياسة الخصوصية",
     "themeMode": "وضع السمة",
     "themeSystem": "النظام",
     "themeLight": "فاتح",
     "themeDark": "داكن",
     "bgImage": "صورة الخلفية",
     "bgDefault": "الافتراضي",
+    "bgPlain": "بسيط",
     "bgMosque": "مسجد",
     "bgKaaba": "الكعبة",
-    "bgQuran": "القرآن",
-    "none": "لا شيء",
     "zakatEligible": "تجب الزكاة",
     "zakatNotEligible": "لا تجب الزكاة",
     "nisabLimit": "حد النصاب (80.18 جم ذهب)",
@@ -232,27 +902,21 @@
     },
     "channelSilentPrayers": "إشعارات الأذان الصامتة",
     "tickerEzan": "وقت الصلاة",
-    "stickyChannelName": "عداد دائم",
-    "stickyChannelDesc": "يعرض الوقت المتبقي",
-    "timeLeftTo": "الوقت المتبقي لانتهاء الوقت: ",
-    "locationFallbackMessage": "تعذر الحصول على الموقع، يتم استخدام القيم الافتراضية.",
-    "fetchingLocation": "جاري الحصول على الموقع...",
+    "fetchingLocation": "جارٍ الحصول على الموقع...",
     "directionNorth": "ش",
     "directionSouth": "ج",
     "directionEast": "ق",
     "directionWest": "غ",
-    "calibrationInstruction": "(ارسم رقم '8' للمعايرة)",
-    "zakatDescription": "احسب زكاتك بالتفصيل وفقاً للفتاوى وأسعار السوق الحالية.",
+    "zakatDescription": "احسب زكاتك بالتفصيل وفقًا لفتاوى رئاسة الشؤون الدينية التركية وأسعار السوق الحالية.",
     "cashAndCurrencyTitle": "النقد والعملات",
-    "cashTurkishLira": "النقد (بالعملة المحلية)",
     "goldAndSilverTitle": "الذهب والفضة",
     "silverGram": "فضة (جرام)",
     "unitPrice": "سعر الوحدة",
     "commercialGoodsTitle": "عروض التجارة",
     "commercialEvalCurrency": "عملة التقييم",
     "commercialGoodsValue": "قيمة البضاعة",
-    "exchangeRateValue": "قيمة الصرف",
-    "receivablesTitle": "الديون المستحقة (القابلة للتحصيل)",
+    "exchangeRateValue": "سعر الصرف",
+    "receivablesTitle": "الديون المستحقة لك (القابلة للتحصيل)",
     "receivableType": "نوع الدين (نقد، عملة أجنبية، ذهب)",
     "amountOrCount": "المبلغ / الكمية",
     "otherAssetsTitle": "أصول أخرى",
@@ -260,12 +924,12 @@
     "currencyLabel": "العملة",
     "valueOrAmount": "القيمة / المبلغ",
     "agriProductsTitle": "المنتجات الزراعية (العشر)",
-    "agriDiyanetNote": "نظراً لعدم اشتراط النصاب في المنتجات الزراعية، يتم إضافة المبلغ المصرح به مباشرة إلى إجمالي الزكاة.",
-    "harvestedProductValue": "قيمة المحصول (بالعملة المحلية)",
+    "agriDiyanetNote": "نظرًا لعدم اشتراط النصاب في زكاة المنتجات الزراعية، يُضاف المبلغ الذي تُدخله مباشرةً إلى إجمالي الزكاة.",
+    "harvestedProductValue": "قيمة المحصول (₺)",
     "irrigationMethod": "طريقة الري",
     "debtsTitle": "الديون (للخصم)",
     "debtType": "نوع الدين (نقد، عملة، ذهب)",
-    "zakatAgriIncluded": "يتضمن زكاة المنتجات الزراعية (العشر)",
+    "zakatAgriIncluded": "منها زكاة المنتجات الزراعية (العُشر)",
     "assetCheck": "شيك",
     "assetBond": "كمبيالة",
     "assetSukuk": "صكوك",
@@ -284,11 +948,6 @@
     "lowAccuracyWarning": "معايرة البوصلة ضعيفة. يرجى رسم رقم '8' في الهواء بهاتفك.",
     "qiblaDirection": "اتجاه القبلة",
     "zikirmatikTitle": "مسبحة إلكترونية",
-    "dhikrSubhanallah": "سبحان الله",
-    "dhikrElhamdulillah": "الحمد لله",
-    "dhikrAllahuEkber": "الله أكبر",
-    "dhikrKalima": "كلمة التوحيد",
-    "dhikrSalavat": "صلوات",
     "targetReached": "لقد وصلت إلى الهدف!",
     "resetCounter": "إعادة تعيين",
     "targetCount": "الهدف: {target}",
@@ -299,10 +958,7 @@
     },
     "setTarget": "تحديد الهدف",
     "dhikrOther": "أخرى (ذكر مخصص)",
-    "customDhikrTitle": "إضافة ذكر مخصص",
     "customDhikrHint": "اكتب الذكر الخاص بك",
-    "save": "حفظ",
-    "cancel": "إلغاء",
     "zikirSettings": "الإعدادات",
     "vibration": "اهتزاز",
     "sound": "تأثير صوتي",
@@ -310,31 +966,24 @@
     "appearance": "المظهر",
     "themeModern": "زر حديث",
     "themeClassic": "مسبحة كلاسيكية",
-    "introTitle1": "مرحباً بك في Vaktinde",
-    "introDesc1": "تتبع أوقات الصلاة، الأذكار، والأيام الدينية بسهولة مع واجهتنا الحديثة والأنيقة.",
-    "introTitle2": "إشعارات ذكية",
-    "introDesc2": "احصل على تنبيهات بصوت الإشعار الذي تختاره في أوقات الصلاة. لا تفوت عباداتك أبداً.",
-    "introTitle3": "أدوات متقدمة",
-    "introDesc3": "عزز روحانيتك مع المسبحة المتحركة، متتبع الصلوات الفائتة، أسماء الله الحسنى، وحاسبة الزكاة.",
-    "introSkip": "تخطي",
-    "introNext": "التالي",
-    "introStart": "ابدأ الآن",
     "dhikrListTitle": "قائمة الأذكار",
     "addCustomDhikr": "إضافة ذكر مخصص جديد",
     "customDhikrAdded": "تمت إضافة الذكر بنجاح.",
     "customDhikrLimit": "يمكنك إضافة ما يصل إلى 20 ذكراً مخصصاً كحد أقصى!",
     "deleteDhikr": "حذف",
+    "dhikrInfo": "المعنى والمصدر",
     "statisticsTitle": "الإحصائيات",
+    "zikirTodayCount": "اليوم: {count}",
+    "@zikirTodayCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "monthly": "شهرياً",
     "yearly": "سنوياً",
     "totalDhikr": "إجمالي الأذكار",
     "today": "اليوم",
     "statsEmpty": "لا توجد بيانات للأذكار بعد.",
-    "dhikrEstagfirullah": "أستغفر الله",
-    "dhikrLaHavle": "لا حول ولا قوة إلا بالله",
-    "dhikrHasbunallah": "حسبنا الله",
-    "dhikrSubhanallahi": "سبحان الله وبحمده",
-    "dhikrYunus": "دعاء نبي الله يونس",
     "dhikrYaAllah": "يا الله (جل جلاله)",
     "dhikrYaRahman": "يا رحمن (جل جلاله)",
     "dhikrYaRahim": "يا رحيم (جل جلاله)",
@@ -358,25 +1007,44 @@
     "tabAlarms": "المنبهات",
     "locationFoundNoName": "تم العثور على الموقع ولكن بدون اسم.",
     "dailyAyahTitle": "آية اليوم",
-    "remainingTime": "المتبقي",
     "onboardingWelcome": "Hoş Geldiniz / مرحباً بكم",
     "onboardingSelectLanguage": "Lütfen kullanmak istediğiniz dili seçin.\nيرجى تحديد لغتك المفضلة.",
-    "turnRight": "انعطف يميناً ➔",
-    "turnSlightRight": "انعطف يميناً قليلاً ➔",
-    "turnLeft": "⬅ انعطف يساراً",
-    "turnSlightLeft": "⬅ انعطف يساراً قليلاً",
     "calibrationRequired": "المعايرة مطلوبة",
+    "qiblaAccuracyNote": "تُظهر البوصلة اتجاهًا تقريبيًا؛ وقد تُسبّب المعادن والمغناطيس والأجهزة الإلكترونية انحراف الاتجاه.",
+    "qiblaTipsTitle": "للحصول على نتيجة دقيقة",
+    "qiblaTipFlat": "أمسك الهاتف موازيًا للأرض.",
+    "qiblaTipCalibrate": "عايِر البوصلة برسم رقم '8' في الهواء بهاتفك.",
+    "qiblaTipMagneticCase": "انزع غطاء الهاتف المغناطيسي إن وُجد.",
+    "qiblaTipMetal": "ابتعد عن الأشياء المعدنية والأجهزة الإلكترونية.",
+    "qiblaTipMosque": "قارن الاتجاه إن أمكن باتجاه القبلة في أحد المساجد.",
+    "qiblaAngleTrueNorth": "زاوية القبلة: {angle}° (من الشمال الجغرافي)",
+    "@qiblaAngleTrueNorth": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaDeclination": "الانحراف المغناطيسي: {deg}° (يُصحَّح تلقائيًا)",
+    "@qiblaDeclination": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaInterferenceWarning": "تم رصد تشويش مغناطيسي: أبعِد الهاتف عن الأشياء المعدنية والأغطية المغناطيسية والأجهزة الإلكترونية.",
     "gold22kGram": "جرام ذهب عيار 22",
     "goldAtaToptan": "آتا بالجملة",
-    "goldAtaCumhuriyet": "آتا جمهوريات",
+    "goldAtaCumhuriyet": "آتا جمهوريت",
     "gold22kBracelet": "سوار عيار 22",
     "gold18k": "ذهب عيار 18",
     "gold14k": "ذهب عيار 14",
     "goldHalf": "نصف ليرة ذهب",
     "goldGremse": "ذهب غريمسة",
     "goldAtaBesli": "آتا بيشلي",
-    "goldResat": "ذهب رشاد",
-    "goldHamit": "ذهب حامد",
+    "goldResat": "ليرة رشادية",
+    "goldHamit": "ليرة حميدية",
     "currencyChf": "فرنك سويسري",
     "currencyJpy": "ين ياباني",
     "currencySar": "ريال سعودي",
@@ -390,10 +1058,470 @@
     "currencyBgn": "ليف بلغاري",
     "currencyKwd": "دينار كويتي",
     "currencyTry": "ليرة تركية",
-    "holdToEdit": "(اضغط مطولاً للتعديل)",
     "editCounterTitle": "تعديل العداد",
-    "editCounterHint": "مثال: 2000",
-    "editTargetHint": "مثال: 99",
     "resetCounterConfirm": "هل أنت متأكد أنك تريد إعادة تعيين العداد؟",
-    "dhikrTarget": "الهدف:"
+    "imsakiyeTitle": "جدول المواقيت",
+    "widgetRamadanName": "العد التنازلي لرمضان",
+    "widgetRamadanDesc": "مربع: الوقت المتبقي للإفطار ولانتهاء السحور، وخارج رمضان الأيام المتبقية حتى بدايته",
+    "widgetRamadanDay": "رمضان · اليوم {day}",
+    "@widgetRamadanDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "widgetRamadanUntil": "الأيام المتبقية حتى رمضان",
+    "toolsGroupPrayer": "الصلاة",
+    "toolsGroupInfo": "معلومات",
+    "toolsGroupCalc": "الحاسبات",
+    "toolImsakiyeDesc": "مواقيت الشهر ورمضان",
+    "toolTrackerDesc": "الصلوات المؤدّاة وعدّادات القضاء",
+    "toolReligiousDaysDesc": "الليالي المباركة والأعياد",
+    "nearbyMosquesTitle": "المساجد القريبة",
+    "toolNearbyMosquesDesc": "ابحث عن أقرب المساجد على الخريطة",
+    "nearbyMosquesQuery": "مسجد",
+    "nearbyMosquesError": "تعذّر فتح الخريطة.",
+    "toolEsmaDesc": "الأسماء الحسنى ومعانيها",
+    "duasTitle": "الأدعية",
+    "duaSearchHint": "ابحث عن دعاء",
+    "duaNoResults": "لا يوجد دعاء يطابق البحث",
+    "duaCount": "{count, plural, =1{دعاء واحد} =2{دعاءان} few{{count} أدعية} many{{count} دعاءً} other{{count} دعاء}}",
+    "@duaCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storiesTitle": "القصص",
+    "toolStoriesDesc": "الأنبياء والسيرة والصحابة والعلماء",
+    "storiesNote": "تعتمد هذه الملخصات على القرآن الكريم ومصادر الحديث والسيرة والتراجم، وللتفصيل في المسائل الدينية راجع أهل العلم.",
+    "storyCount": "{count, plural, =1{قصة واحدة} =2{قصتان} few{{count} قصص} many{{count} قصة} other{{count} قصة}}",
+    "@storyCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storyLesson": "العبرة",
+    "prayerGuideTitle": "تعليم الصلاة",
+    "toolPrayerGuideDesc": "الوضوء وكيفية الصلاة خطوة بخطوة",
+    "prayerGuideTabWudu": "الوضوء",
+    "prayerGuideTabFards": "الفرائض",
+    "prayerGuideTabRakats": "الركعات",
+    "prayerGuideTabSteps": "كيفية الصلاة",
+    "prayerGuideTimes": "{count, plural, =1{مرة واحدة} =2{مرتين} few{{count} مرات} other{{count} مرة}}",
+    "toolDuasDesc": "التسبيح وأذكار الصباح والمساء والأدعية اليومية",
+    "duaTransliteration": "النطق",
+    "duaMeaning": "المعنى",
+    "tesbihatTitle": "التسبيح بعد الصلاة",
+    "tesbihatDesc": "آية الكرسي والتسبيح ثلاثًا وثلاثين والدعاء",
+    "tesbihatStep": "الخطوة {current} من {total}",
+    "@tesbihatStep": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "tesbihatTapWhenRead": "انقر بعد القراءة",
+    "tesbihatRestart": "البدء من جديد",
+    "ramadanShareTitle": "رمضان · اليوم {day}",
+    "@ramadanShareTitle": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareIftarIn": "الإفطار بعد {time}",
+    "@ramadanShareIftarIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareSahurIn": "ينتهي السحور بعد {time}",
+    "@ramadanShareSahurIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareIftarAt": "الإفطار {time}",
+    "@ramadanShareIftarAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareImsakAt": "الإمساك {time}",
+    "@ramadanShareImsakAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareHoursMinutes": "{hours} س {minutes} د",
+    "@ramadanShareHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareHours": "{hours} س",
+    "@ramadanShareHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareMinutes": "{minutes} د",
+    "@ramadanShareMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "toolFridayDesc": "رسائل جاهزة للمشاركة",
+    "quranTitle": "القرآن الكريم",
+    "quranTabSurahs": "السور",
+    "quranTabJuz": "الأجزاء",
+    "quranSearchHint": "ابحث عن سورة بالاسم أو الرقم",
+    "quranNoResults": "لا توجد سورة تطابق البحث",
+    "quranJuz": "الجزء {juz}",
+    "@quranJuz": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "quranPage": "الصفحة {page}",
+    "@quranPage": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahRange": "الآيات من {from} إلى {to}",
+    "@quranAyahRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "quranBookmark": "العلامة المرجعية",
+    "quranViewSettings": "طريقة العرض",
+    "quranModePage": "صفحات المصحف",
+    "quranModePageDesc": "نص متصل كما في المصحف",
+    "quranModeAyah": "آية آية",
+    "quranModeAyahDesc": "كل آية في بطاقة مستقلة",
+    "quranModeTranslation": "الترجمة",
+    "quranModeTranslationDesc": "الترجمة فقط، لقراءة متصلة",
+    "quranArabicSize": "حجم خط الآيات",
+    "quranTranslationSize": "حجم خط الترجمة",
+    "quranTranslationSmaller": "تصغير خط الترجمة",
+    "quranTranslationLarger": "تكبير خط الترجمة",
+    "quranGoToAyah": "الانتقال إلى آية",
+    "quranAyahNumberLabel": "رقم الآية (من 1 إلى {count})",
+    "@quranAyahNumberLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranGo": "انتقال",
+    "quranPreviousSurah": "السورة السابقة",
+    "quranNextSurah": "السورة التالية",
+    "quranSwipeNextHint": "اسحب لأعلى للانتقال إلى السورة التالية",
+    "toolQuranDesc": "سور القرآن الكريم بالرسم العثماني",
+    "quranContinue": "متابعة القراءة من حيث توقفت",
+    "quranAyahRef": "{surah}، الآية {ayah}",
+    "@quranAyahRef": {
+        "placeholders": {
+            "surah": {
+                "type": "String"
+            },
+            "ayah": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahCount": "{count, plural, =1{آية واحدة} =2{آيتان} few{{count} آيات} many{{count} آية} other{{count} آية}}",
+    "@quranAyahCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranMeccan": "مكية",
+    "quranMedinan": "مدنية",
+    "quranLoadError": "تعذّر تحميل السورة. تحقّق من اتصالك بالإنترنت ثم أعد المحاولة.",
+    "quranBookmarkSave": "إضافة علامة مرجعية",
+    "quranBookmarkRemove": "إزالة العلامة المرجعية",
+    "quranBookmarkSaved": "تمت إضافة العلامة المرجعية",
+    "quranBookmarkRemoved": "تمت إزالة العلامة المرجعية",
+    "quranShareAyah": "مشاركة الآية",
+    "quranFontSmaller": "تصغير خط الآيات",
+    "quranFontLarger": "تكبير خط الآيات",
+    "quranTextSource": "النص القرآني: مشروع تنزيل (tanzil.net)",
+    "hatimTitle": "الختمة",
+    "hatimIntro": "اقرأ القرآن الكريم كاملًا بخطة يومية.",
+    "hatimStart": "بدء ختمة",
+    "hatimPagesPerDay": "{pages, plural, =1{صفحة واحدة يوميًا} =2{صفحتان يوميًا} few{{pages} صفحات يوميًا} other{{pages} صفحة يوميًا}}",
+    "@hatimPagesPerDay": {
+        "placeholders": {
+            "pages": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimDuration": "{months, plural, =1{في 30 يومًا} =2{في شهرين} few{في {months} أشهر} other{في {months} شهرًا}}",
+    "@hatimDuration": {
+        "placeholders": {
+            "months": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimRamadan": "ختمة في رمضان",
+    "hatimProgress": "الصفحة {page} من {total} · {percent}",
+    "@hatimProgress": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            },
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimToday": "صفحات اليوم: {read} / {goal}",
+    "@hatimToday": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "goal": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimContinue": "متابعة القراءة",
+    "hatimEnterPage": "إدخال الصفحة",
+    "hatimPageLabel": "آخر صفحة قرأتها (1–{total})",
+    "@hatimPageLabel": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimReminder": "التذكير",
+    "hatimReminderDaily": "ذكّرني كل يوم",
+    "hatimReminderTime": "الوقت",
+    "hatimChangePlan": "تغيير الخطة",
+    "hatimDelete": "حذف الختمة",
+    "hatimDeleteConfirm": "هل تريد حذف خطة الختمة وتقدّمك فيها؟ يبقى عدد الختمات المكتملة محفوظًا.",
+    "hatimDone": "اكتملت الختمة",
+    "hatimNew": "بدء ختمة جديدة",
+    "hatimCount": "الختمات المكتملة: {count}",
+    "@hatimCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimCompleted": "اكتملت ختمتك، تقبّل الله منك!",
+    "hatimReminderChannel": "تذكير الختمة",
+    "hatimReminderBody": "لا تنسَ وِردك اليومي من الختمة.",
+    "hatimTodayRange": "ورد اليوم: الصفحات {from}–{to}",
+    "@hatimTodayRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMarkRead": "قرأتُه",
+    "hatimGoalMet": "اكتمل ورد اليوم",
+    "hatimDetails": "تفاصيل الختمة",
+    "hatimTargetLine": "الموعد: {date}",
+    "@hatimTargetLine": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimJuzHint": "اضغط على الجزء الذي قرأته من المصحف الورقي لتعليمه.",
+    "hatimJuzMarkRead": "هل تريد تعليم القراءة حتى نهاية الجزء {juz}؟",
+    "@hatimJuzMarkRead": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimJuzMarkUnread": "هل تريد تعليم الجزء {juz} وما بعده كغير مقروء؟",
+    "@hatimJuzMarkUnread": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMark": "تعليم",
+    "hatimUnmark": "إزالة التعليم",
+    "hatimJuzDone": "مقروء",
+    "hatimJuzCurrent": "قيد القراءة",
+    "hatimJuzPending": "غير مقروء",
+    "hatimNote": "النية",
+    "hatimNoteHint": "مثال: لروح والدتي",
+    "hatimNoteAdd": "أضف نية (اختياري)",
+    "hatimGroup": "ختمة جماعية",
+    "hatimGroupDesc": "وزّع الأجزاء الثلاثين وأرسل القائمة",
+    "hatimGroupPeople": "عدد الأشخاص",
+    "hatimGroupLine": "الشخص {person}: {juz}",
+    "@hatimGroupLine": {
+        "placeholders": {
+            "person": {
+                "type": "int"
+            },
+            "juz": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimGroupRange": "الأجزاء {from}–{to}",
+    "@hatimGroupRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimGroupFooter": "أخبرونا عند إتمام أجزائكم. تقبّل الله.",
+    "hatimGroupShare": "مشاركة القائمة",
+    "hatimDuaHeader": "دعاء بعد الختم",
+    "quranTranslationSource": "الترجمة: {name}",
+    "@quranTranslationSource": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "toolZakatDesc": "حساب الزكاة والعُشر",
+    "toolSettingsDesc": "الموقع والإشعارات والمظهر",
+    "sectionBackup": "النسخ الاحتياطي",
+    "backupExportTitle": "نسخ البيانات احتياطيًا",
+    "backupExportSub": "متابعة الصلوات والقضاء والأذكار والإعدادات (بما فيها الموقع) في ملف واحد",
+    "backupImportTitle": "استعادة نسخة احتياطية",
+    "backupImportSub": "اختر ملف نسخة احتياطية حفظته من قبل",
+    "backupShareSubject": "نسخة Vaktinde الاحتياطية",
+    "backupRestoreConfirmTitle": "استعادة النسخة الاحتياطية؟",
+    "backupRestoreConfirmMessage": "سيتم تحميل النسخة الاحتياطية المؤرخة في {date}. ستُستبدل بياناتك الحالية ببيانات النسخة الاحتياطية: متابعة الصلاة والصيام، وعدّادات القضاء، والأذكار، وإعدادات الأذان والإشعارات، والموقع والمظهر. لا يمكن التراجع عن هذا الإجراء.",
+    "@backupRestoreConfirmMessage": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "backupRestoreConfirm": "استعادة",
+    "backupRestored": "تمت استعادة النسخة الاحتياطية.",
+    "backupInvalidFile": "هذا الملف ليس نسخة احتياطية صالحة من Vaktinde.",
+    "backupNewerVersion": "أُنشئت هذه النسخة الاحتياطية بإصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.",
+    "daysLeft": "{count, plural, =0{اليوم} =1{غدًا} =2{بعد يومين} few{بعد {count} أيام} many{بعد {count} يومًا} other{بعد {count} يوم}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "previousYear": "السنة السابقة",
+    "nextYear": "السنة التالية",
+    "previousItem": "السابق",
+    "nextItem": "التالي",
+    "missedChangeConfirm": "سيتغيّر عدد قضاء {name} من {from} إلى {to}. هل تريد الحفظ؟",
+    "@missedChangeConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "shareFailed": "تعذّر إتمام العملية. يُرجى المحاولة مرة أخرى.",
+    "zakatCurrencyNote": "جميع المبالغ بالليرة التركية (₺).",
+    "zakatCashTry": "النقد (₺)",
+    "zakatRatesUnavailable": "تعذّر جلب أسعار الذهب وأسعار الصرف الحالية. يُرجى إدخال الأسعار يدويًا.",
+    "zakatGoldGramPrice": "سعر جرام الذهب عيار 24 (₺)",
+    "zakatGoldGramPriceHelp": "يُستخدم لحساب حدّ النصاب.",
+    "zakatNisabUnknown": "لا يمكن حساب حدّ النصاب بدون سعر الذهب. أدخل سعر الذهب للحصول على نتيجة صحيحة.",
+    "imsakiyeRamadan": "رمضان",
+    "imsakiyeRamadanTitle": "إمساكية رمضان {year}",
+    "@imsakiyeRamadanTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "imsakiyeDay": "اليوم",
+    "imsakiyeSunriseShort": "الشروق",
+    "imsakiyePrevMonth": "الشهر السابق",
+    "imsakiyeNextMonth": "الشهر التالي",
+    "imsakiyeNoLocation": "يرجى تحديد موقعك أولاً لعرض جدول المواقيت. يمكنك تحديده من الشاشة الرئيسية أو من الإعدادات.",
+    "imsakiyeShareError": "تعذّرت مشاركة الجدول. يرجى المحاولة مرة أخرى.",
+    "ramadanSahurLeft": "الوقت المتبقي للسحور",
+    "ramadanIftarLeft": "الوقت المتبقي للإفطار",
+    "ramadanDayLabel": "اليوم {day} من رمضان",
+    "@ramadanDayLabel": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    }
 }

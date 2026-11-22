@@ -39,7 +39,7 @@
                 android:layout_marginStart="4dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Konum"
+                android:text="@string/vaktinde_widget_location"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -53,7 +53,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="25 Zilhicce"
+            android:text="@string/vaktinde_widget_hijri_sample"
             android:textColor="#FFCA28"
             android:textSize="12sp" />
 
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="İkindiye"
+            android:text="@string/vaktinde_widget_next_sample"
             android:textColor="#00E5A8"
             android:textSize="14sp"
             android:textStyle="bold" />

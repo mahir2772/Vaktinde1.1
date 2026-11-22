@@ -12,13 +12,513 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appTitle => 'Vaktinde';
 
   @override
+  String get navZikir => 'Zikir';
+
+  @override
+  String get todayHubTitle => 'Bugün için';
+
+  @override
+  String get todayQuranOpen => 'Kur\'an-ı Kerim\'i aç';
+
+  @override
+  String get todayFridayMessage => 'Cuma mesajı gönder';
+
+  @override
+  String get a11yAlarmSettingsHint => 'Alarm ayarları';
+
+  @override
+  String get navQuran => 'Kur\'an';
+
+  @override
+  String get showcaseQuran =>
+      'Kur\'an-ı Kerim\'i buradan okuyabilir, kaldığınız yerden devam edebilirsiniz.';
+
+  @override
+  String zikirRound(int round) {
+    return 'Tur $round';
+  }
+
+  @override
+  String zikirProgress(int count, int target) {
+    return '$count / $target';
+  }
+
+  @override
+  String get zikirPrevious => 'Önceki zikir';
+
+  @override
+  String get zikirNext => 'Sonraki zikir';
+
+  @override
+  String get zikirCountingSection => 'Sayma';
+
+  @override
+  String get zikirRoundMode => 'Hedefte sıfırdan devam et (tur say)';
+
+  @override
+  String get zikirVolumeKeys => 'Ses tuşlarıyla say';
+
+  @override
+  String get zikirVolumeKeysDesc =>
+      'Ses açma +1, ses kısma −1. Sadece Zikir ekranı açıkken; sistem sesi değişmez.';
+
+  @override
+  String get adPrivacySettings => 'Reklam Gizlilik Ayarları';
+
+  @override
+  String get adPrivacySettingsSub =>
+      'Kişiselleştirilmiş reklam iznini değiştirin';
+
+  @override
+  String get showcaseLanguage =>
+      'Uygulama dilini ve diğer ayarları buradan değiştirebilirsiniz.';
+
+  @override
+  String get showcaseStory =>
+      'Günün ayetini ve hadisini buradan okuyabilirsiniz.';
+
+  @override
+  String get showcaseAlarms =>
+      'Her vakit için ezan ve hatırlatma alarmlarını buradan ayarlayabilirsiniz.';
+
+  @override
+  String get showcaseQibla => 'Kıble yönünü pusula ile bulabilirsiniz.';
+
+  @override
+  String get showcaseZikir => 'Zikirlerinizi buradan takip edebilirsiniz.';
+
+  @override
+  String get showcaseTracker =>
+      'Kıldığınız vakitleri buradan işaretleyebilirsiniz. Özel gününüzde “Bugün”e basılı tutun.';
+
+  @override
+  String get showcaseTools =>
+      'İmsakiye, Namaz Hocası, kaza hesaplama ve daha fazlası burada.';
+
+  @override
+  String get tipGotIt => 'Anladım';
+
+  @override
+  String get tipTracker =>
+      'Özel gününüzde gün adına basılı tutun ya da kartın köşesindeki çiçek simgesine dokunun; bu günler serinizi bozmaz. Kılamadığınız vakitleri en alttaki “Kılınmayanları kazaya ekle” ile kaza sayacına aktarabilirsiniz.';
+
+  @override
+  String get tipZikir =>
+      'Zikri değiştirmek için üstteki kartı sağa ya da sola kaydırın. Ayarlar\'dan “Ses tuşlarıyla say”ı açarsanız ekrana bakmadan sayabilirsiniz.';
+
+  @override
+  String get tipQuranReader =>
+      'Üstteki Görünüm düğmesinden Sayfa, Ayet ayet ya da Meal okumayı seçin. Sayfada bir ayete dokununca meal, yer imi ve paylaşma seçenekleri açılır.';
+
+  @override
+  String get tipAlarmsSilent =>
+      'Telefon sessizdeyken de duymak için “Sessiz modda da çal”ı açın.';
+
+  @override
+  String get tipWidget =>
+      'Vakitleri uygulamayı açmadan görmek için ana ekranınıza bir Vaktinde widget\'ı ekleyin.';
+
+  @override
+  String get tipWidgetAction => 'Widget ekle';
+
+  @override
+  String get whatsNewTitle => 'Yenilikler';
+
+  @override
+  String get whatsNewStopTitle => 'Ezanı tek dokunuşla durdur';
+
+  @override
+  String get whatsNewStopDesc =>
+      'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.';
+
+  @override
+  String get whatsNewStoriesDesc =>
+      'Peygamberler, Peygamberimizin hayatı, sahabe ve İslam âlimlerinden kısa kıssalar.';
+
+  @override
+  String get whatsNewDuasDesc =>
+      '10 başlıkta 87 dua: Arapçası, okunuşu, anlamı ve kaynağıyla; arama da var.';
+
+  @override
+  String get whatsNewDhikrsTitle => 'Yeni zikirler';
+
+  @override
+  String get whatsNewDhikrsDesc =>
+      'Zikir listesinde anlamlarıyla 35 hazır zikir.';
+
+  @override
+  String get whatsNewHatimDesc =>
+      'Yeni Hatim ekranı: tek dokunuşla “Okudum”, cüz cüz ilerleme, niyet ve toplu hatim.';
+
+  @override
+  String get appGuideTitle => 'Uygulamayı Tanı';
+
+  @override
+  String get appGuideSub => 'Tüm özellikler ve nasıl kullanılacakları';
+
+  @override
+  String get appGuideReplayTour => 'Tanıtım turunu tekrar izle';
+
+  @override
+  String get appGuideReplayTourSub =>
+      'Ana ekrandaki kısa turu yeniden başlatın';
+
+  @override
+  String get guideGroupTimes => 'Vakitler & Alarmlar';
+
+  @override
+  String get guideGroupPrayer => 'Namaz';
+
+  @override
+  String get guideGroupQuran => 'Kur\'an & Dualar';
+
+  @override
+  String get guideGroupWidgets => 'Widget\'lar';
+
+  @override
+  String get guideLocation =>
+      'Ana ekranda şehir adına dokunun; il, ilçe ve şehir listesi internetsiz de çalışır.';
+
+  @override
+  String get guideAlarms =>
+      'Her vakit için ezan, sessiz bildirim ve önceden hatırlatma. Ana ekranda bir vakte dokunmak da burayı açar.';
+
+  @override
+  String get guideTracker =>
+      'Kıldığınız vakitleri işaretleyin; bildirimdeki “Kıldım” da işaretler. Özel gününüzde gün adına basılı tutun.';
+
+  @override
+  String get guideKaza =>
+      'Kaza sayaçlarınızı tutun; “Kaza hesapla” ile kılınmayan süreden tahmini sayıyı bulun.';
+
+  @override
+  String get guideQibla => 'Telefonu düz tutun; kıbleye dönünce titrer.';
+
+  @override
+  String get guideZikir =>
+      'Saymak için ekrana dokunun, zikri değiştirmek için kartı kaydırın. Ses tuşlarıyla sayma zikir ayarlarında.';
+
+  @override
+  String get guideQuran =>
+      'Görünüm\'den Sayfa, Ayet ayet ya da Meal seçin; ayete dokununca meal, yer imi ve paylaşma açılır. Kaldığınız yer kendiliğinden saklanır.';
+
+  @override
+  String get guideWidgets =>
+      'Vakitler, geri sayım, vakit halkası, Ramazan ve namaz takibi (vakte dokunarak işaretleyin). Ana ekranda boş bir yere basılı tutup Widget\'lar\'dan da ekleyebilirsiniz.';
+
+  @override
+  String get refreshLocation => 'Konumu yenile';
+
+  @override
+  String get countryTurkey => 'Türkiye';
+
+  @override
+  String get locationEuropeKktc => 'Avrupa / KKTC';
+
+  @override
+  String get countryGermany => 'Almanya';
+
+  @override
+  String get countryNetherlands => 'Hollanda';
+
+  @override
+  String get countryBelgium => 'Belçika';
+
+  @override
+  String get countryFrance => 'Fransa';
+
+  @override
+  String get countryAustria => 'Avusturya';
+
+  @override
+  String get countrySwitzerland => 'İsviçre';
+
+  @override
+  String get countryUnitedKingdom => 'Birleşik Krallık';
+
+  @override
+  String get countryDenmark => 'Danimarka';
+
+  @override
+  String get countrySweden => 'İsveç';
+
+  @override
+  String get countryNorway => 'Norveç';
+
+  @override
+  String get countryNorthernCyprus => 'KKTC';
+
+  @override
+  String get provinceCenter => 'İl merkezi';
+
+  @override
+  String get searchOnline => 'İnternette ara';
+
+  @override
+  String get timesFollowPhoneClock =>
+      'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.';
+
+  @override
+  String get whatsNewSilenceDesc =>
+      'Vakitlerde ve Cuma namazında telefonu otomatik sessize alır, süre bitince eski hâline döndürür.';
+
+  @override
+  String get whatsNewCityClockTitle => 'Seçilen şehrin yerel saati';
+
+  @override
+  String get whatsNewCityClockDesc =>
+      'Farklı saat dilimindeki şehirlerde vakitler şehrin kendi saatinde gösterilir; Avrupa yaz yatsısı düzeltildi.';
+
+  @override
+  String get whatsNewKazaEstTitle => 'Kaza bitiş tahmini';
+
+  @override
+  String get whatsNewKazaEstDesc =>
+      'Günlük kaza hedefiyle borcunuzun tahmini bitiş süresini Kaza sekmesinde görün.';
+
+  @override
+  String get whatsNewOfflineHadithTitle => 'Çevrimdışı hadisler ve dini günler';
+
+  @override
+  String get whatsNewOfflineHadithDesc =>
+      'İnternetsiz zenginleştirilmiş hadis havuzu ve dini gün bildirimlerinden doğrudan ilgili ekrana geçiş.';
+
+  @override
+  String get prayerSilenceTitle => 'Namazdayım (otomatik sessiz)';
+
+  @override
+  String get prayerSilenceSub =>
+      'Vakit girince telefonu kısa süreliğine sessize alır, süre bitince eski hâline döndürür.';
+
+  @override
+  String prayerSilenceActiveSub(int minutes) {
+    return 'Açık · $minutes dk (düzenlemek için dokunun)';
+  }
+
+  @override
+  String get prayerSilencePermissionNeeded =>
+      'Rahatsız Etmeyin izni gerekli · İzin vermek için dokunun';
+
+  @override
+  String get prayerSilencePermissionBanner =>
+      'Otomatik sessiz modu için Android Rahatsız Etmeyin erişimine izin vermeniz gerekir.';
+
+  @override
+  String get prayerSilenceGrantAccess => 'Rahatsız Etmeyin izni ver';
+
+  @override
+  String get prayerSilenceDuration => 'Sessiz kalma süresi';
+
+  @override
+  String prayerSilenceMinutes(int minutes) {
+    return '$minutes dk';
+  }
+
+  @override
+  String get prayerSilencePrayers => 'Hangi vakitlerde';
+
+  @override
+  String get prayerSilenceFridayTitle => 'Cuma namazı penceresi';
+
+  @override
+  String get prayerSilenceFridaySub =>
+      'Cuma günü öğleden 15 dk önce başlayıp 45 dk sonra biter.';
+
+  @override
+  String get prayerSilenceNote =>
+      'Telefon zaten sessizdeyse dokunulmaz. Sesli ezan açıksa ezan duyulsun diye 1 dk sonra başlar.';
+
+  @override
+  String get timesFollowCityClock =>
+      'Vakitler seçilen şehrin yerel saatine göre gösterilir.';
+
+  @override
+  String cityLocalTime(String time) {
+    return 'Şehir saati: $time';
+  }
+
+  @override
+  String get navTools => 'Araçlar';
+
+  @override
+  String a11yHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count saat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dakika',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String a11yHoursMinutes(String hours, String minutes) {
+    return '$hours $minutes';
+  }
+
+  @override
+  String a11yTimeUntil(String vakit, String duration) {
+    return '$vakit vaktine $duration kaldı';
+  }
+
+  @override
+  String get a11yPrayerPassed => 'geçti';
+
+  @override
+  String a11yTrackerCell(String day, String prayer, String state) {
+    return '$day, $prayer: $state';
+  }
+
+  @override
+  String get a11yNotPrayed => 'Kılınmadı';
+
+  @override
+  String get a11yNotDue => 'Vakti girmedi';
+
+  @override
+  String get a11yExcusedDay => 'Özel gün';
+
+  @override
+  String a11yQiblaTurnRight(int deg) {
+    return 'Kıbleye dönmek için $deg derece sağa dönün';
+  }
+
+  @override
+  String a11yQiblaTurnLeft(int deg) {
+    return 'Kıbleye dönmek için $deg derece sola dönün';
+  }
+
+  @override
+  String get a11yQiblaAligned => 'Kıble yönündesiniz';
+
+  @override
+  String get a11yDecrease => 'Azalt';
+
+  @override
+  String get a11yIncrease => 'Artır';
+
+  @override
+  String a11yPlaySound(String sound) {
+    return '$sound sesini dinle';
+  }
+
+  @override
+  String get a11yStopSound => 'Durdur';
+
+  @override
+  String get hadithNotFound => 'Hadis metni bulunamadı.';
+
+  @override
+  String get timesLoadError => 'Vakitler yüklenemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get sunriseNotPrayer => 'Güneşin doğuşu, namaz vakti değildir';
+
+  @override
+  String get currentPrayer => 'Şu anki vakit';
+
+  @override
+  String get textCopied => 'Metin kopyalandı';
+
+  @override
+  String get updateDownloaded => 'Yeni sürüm indirildi.';
+
+  @override
+  String get restartAction => 'Yeniden başlat';
+
+  @override
+  String get qiblaTurnRight => 'Sağa dönün';
+
+  @override
+  String get qiblaTurnSlightRight => 'Biraz sağa dönün';
+
+  @override
+  String get qiblaTurnLeft => 'Sola dönün';
+
+  @override
+  String get qiblaTurnSlightLeft => 'Biraz sola dönün';
+
+  @override
+  String phoneHeading(String deg) {
+    return 'Telefon yönü: $deg°';
+  }
+
+  @override
+  String get usingSavedLocation => 'Kayıtlı konum kullanılıyor.';
+
+  @override
+  String exampleHint(int n) {
+    return 'Örn: $n';
+  }
+
+  @override
+  String get noCustomDhikr => 'Henüz özel zikir eklemediniz.';
+
+  @override
+  String get messagesShuffled => 'Mesajlar karıştırıldı';
+
+  @override
+  String get shareAsImage => 'Resimli paylaş';
+
+  @override
+  String get shareAsText => 'Metni paylaş';
+
+  @override
+  String get shareCardFooter => 'Google Play\'de Vaktinde';
+
+  @override
+  String get fridayGreeting => 'Hayırlı Cumalar';
+
+  @override
+  String get sendGreeting => 'Tebrik gönder';
+
+  @override
+  String get greetingsTitle => 'Tebrik mesajları';
+
+  @override
+  String get shuffle => 'Karıştır';
+
+  @override
+  String get copy => 'Kopyala';
+
+  @override
+  String get messageCopied => 'Mesaj kopyalandı';
+
+  @override
+  String versionLabel(String v) {
+    return 'Sürüm $v';
+  }
+
+  @override
+  String get supportMailSubject => 'Vaktinde - Destek';
+
+  @override
+  String get madeBy => 'mmdigital tarafından ❤️ ile yapıldı';
+
+  @override
+  String get permissionPrimingTitle => 'Ezan vakitlerini kaçırmayın';
+
+  @override
+  String get permissionPrimingBody =>
+      'Ezan bildirimleri için bildirim iznine, vakitleri bulunduğunuz yere göre hesaplamak için konum iznine ihtiyacımız var.';
+
+  @override
+  String get continueAction => 'Devam';
+
+  @override
   String get nextPrayer => 'Sıradaki Vakit';
 
   @override
   String get hadithTitle => 'Günün Hadisi';
-
-  @override
-  String get readMore => 'Devamını Oku...';
 
   @override
   String get share => 'Paylaş';
@@ -28,9 +528,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get loading => 'Vakitler Hesaplanıyor...';
-
-  @override
-  String get error => 'Hata';
 
   @override
   String get retry => 'Tekrar Dene';
@@ -57,7 +554,278 @@ class AppLocalizationsTr extends AppLocalizations {
   String get yatsi => 'Yatsı';
 
   @override
-  String get exactAlarm => 'Tam Vaktinde Oku';
+  String get exactAlarm => 'Tam Vaktinde Bildir';
+
+  @override
+  String get reminderTitleAt => 'Vakit Hatırlatması';
+
+  @override
+  String notifBodyUpcomingAt(String vakit, String time) {
+    return '$vakit vakti: $time';
+  }
+
+  @override
+  String get endReminderTitleAt => 'Vakit Çıkışı';
+
+  @override
+  String endReminderNotifBodyAt(String vakit, String time) {
+    return '$vakit vaktinin çıkışı: $time';
+  }
+
+  @override
+  String ramadanImsakBodyAt(String time) {
+    return 'Sahur vakti $time itibarıyla sona erdi. Hayırlı oruçlar!';
+  }
+
+  @override
+  String get alarmHealthExactOff =>
+      'Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).';
+
+  @override
+  String get healthTitle => 'Bildirim Kontrolü';
+
+  @override
+  String get healthSub => 'Ezan gelmiyorsa ayarları adım adım kontrol edin';
+
+  @override
+  String get healthSectionStatus => 'Durum';
+
+  @override
+  String get healthEzansTitle => 'Ezan alarmları';
+
+  @override
+  String healthEzansOn(String names) {
+    return 'Açık: $names';
+  }
+
+  @override
+  String get healthEzansNone => 'Hiçbir vakit için ezan açık değil.';
+
+  @override
+  String get healthNextTitle => 'Sıradaki ezan';
+
+  @override
+  String get healthNextNone => 'Kurulu ezan bulunamadı.';
+
+  @override
+  String get healthReschedule => 'Yeniden kur';
+
+  @override
+  String get healthNotificationsTitle => 'Bildirimler';
+
+  @override
+  String get healthNotificationsOk => 'Açık.';
+
+  @override
+  String get healthOpenSettings => 'Ayarları aç';
+
+  @override
+  String get healthExactTitle => 'Alarmlar ve hatırlatıcılar';
+
+  @override
+  String get healthExactOk => 'İzin verildi: ezan tam vaktinde çalar.';
+
+  @override
+  String get healthVolumeTitle => 'Ses';
+
+  @override
+  String get healthVolumeOk => 'Bildirim sesi açık.';
+
+  @override
+  String get healthVolumeAlarmOk => 'Alarm sesi açık.';
+
+  @override
+  String get healthVolumeSilent =>
+      'Telefon sessiz ya da titreşim modunda: ezan sesi duyulmaz.';
+
+  @override
+  String get healthVolumeNotificationMuted =>
+      'Bildirim sesi kapalı: ezan sesi duyulmaz.';
+
+  @override
+  String get healthVolumeAlarmMuted => 'Alarm sesi kapalı: ezan sesi duyulmaz.';
+
+  @override
+  String healthAlarmStreamTip(String setting) {
+    return '“$setting” açıkken ezan alarm sesiyle çalar.';
+  }
+
+  @override
+  String get healthDndTitle => 'Rahatsız Etmeyin';
+
+  @override
+  String get healthDndOff => 'Kapalı.';
+
+  @override
+  String get healthDndOn => 'Açık: ezan sesi duyulmayabilir.';
+
+  @override
+  String healthDndAlarm(String setting) {
+    return 'Açık, ancak “$setting” sayesinde ezan alarm sesiyle çalar.';
+  }
+
+  @override
+  String get healthBatteryTitle => 'Pil kullanımı';
+
+  @override
+  String get healthBatteryOk => 'Pil optimizasyonu Vaktinde için kapalı.';
+
+  @override
+  String get healthBatteryOptimized =>
+      'Pil optimizasyonu açık: telefon Vaktinde\'yi arka planda durdurabilir. Uygulama ayarlarında Pil bölümünden “Kısıtlanmamış” seçeneğini işaretleyin (bazı telefonlarda “Sınırsız” ya da “Kısıtlama yok”).';
+
+  @override
+  String get healthBackgroundTitle => 'Arka planda çalışma';
+
+  @override
+  String healthBackgroundToday(String time) {
+    return 'Son çalışma: bugün $time';
+  }
+
+  @override
+  String healthBackgroundYesterday(String time) {
+    return 'Son çalışma: dün $time';
+  }
+
+  @override
+  String get healthBackgroundStale =>
+      'Vaktinde son 48 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.';
+
+  @override
+  String get healthWidgetTitle => 'Widget ve kalıcı bildirim';
+
+  @override
+  String healthWidgetLate(int minutes) {
+    return 'Son 7 günde sayaç, vakit girince $minutes dk geç yenilendi: telefon Vaktinde\'yi arka planda bekletiyor. Pil ayarını “Kısıtlanmamış” yapın ve aşağıdaki adımları uygulayın.';
+  }
+
+  @override
+  String get healthShowSteps => 'Adımları göster';
+
+  @override
+  String healthGuideTitle(String brand) {
+    return '$brand için ayarlar';
+  }
+
+  @override
+  String get healthGuideTitleGeneric => 'Telefonunuz için ayarlar';
+
+  @override
+  String get healthGuideStale =>
+      'Arka planda çalışma durmuş görünüyor. Ezanın gecikmemesi için şu ayarları yapın:';
+
+  @override
+  String get healthGuideMore =>
+      'Telefon modelinize göre ayrıntılı anlatım (İngilizce)';
+
+  @override
+  String get healthTestTitle => 'Test ezanı';
+
+  @override
+  String get healthTestInfo =>
+      'Gerçek ezanla aynı ses ve ayarlarla 1 dakika sonra bir test bildirimi gelir.';
+
+  @override
+  String get healthTestButton => '1 dk sonra test ezanı';
+
+  @override
+  String get healthTestScheduled =>
+      'Test ezanı 1 dakika sonra çalacak. Uygulamayı kapatabilirsiniz.';
+
+  @override
+  String get healthTestNotifBody =>
+      'Bu bildirim geldiyse ezan bildirimleri çalışıyor.';
+
+  @override
+  String get testEzanOfferTitle => 'Ezan telefonunuzda çalıyor mu?';
+
+  @override
+  String get notNow => 'Şimdi değil';
+
+  @override
+  String get tipVendorGuide =>
+      'Bu telefonda ezanın gecikmemesi için birkaç ayar yapmanız gerekiyor.';
+
+  @override
+  String get tipVendorGuideAction => 'Ayarları göster';
+
+  @override
+  String get weeklySummaryTitle => 'Haftalık namaz özeti';
+
+  @override
+  String get weeklySummarySub =>
+      'Pazartesi, namaz takibini kullanıyorsanız geçen haftanın özeti';
+
+  @override
+  String weeklySummaryBody(int done, int total) {
+    return 'Geçen hafta $total vakitten $done vakit kıldınız.';
+  }
+
+  @override
+  String weeklySummaryFull(int total) {
+    return 'Geçen hafta $total vaktin hepsini kıldınız. Allah kabul etsin.';
+  }
+
+  @override
+  String get healthStepXiaomiAutostart =>
+      'Uygulama ayarlarında “Otomatik başlatma” seçeneğini açın.';
+
+  @override
+  String get healthStepXiaomiBattery =>
+      'Aynı ekranda Pil tasarrufu (ya da Pil) bölümünden “Kısıtlama yok” seçeneğini işaretleyin.';
+
+  @override
+  String get healthStepHuaweiLaunch =>
+      'Ayarlar\'da “Uygulama başlatma” bölümünü açın (Pil ya da Uygulamalar altında). Vaktinde için otomatik yönetimi kapatın ve açılan penceredeki tüm seçenekleri açık bırakın.';
+
+  @override
+  String get healthStepOppoBackground =>
+      'Uygulama ayarları > Pil kullanımı bölümünde arka planda çalışmaya ve otomatik başlatmaya izin verin.';
+
+  @override
+  String get healthStepVivoBackground =>
+      'Ayarlar > Pil bölümünde Vaktinde\'nin arka planda yüksek güç tüketmesine izin verin.';
+
+  @override
+  String healthStepAutostartIn(String app) {
+    return 'Ayarlar\'da ya da $app uygulamasında Vaktinde için otomatik başlatmayı açın.';
+  }
+
+  @override
+  String get healthStepAppBattery =>
+      'Uygulama ayarları > Pil bölümünde “Kısıtlanmamış” seçeneğini işaretleyin.';
+
+  @override
+  String get healthStepSamsungSleeping =>
+      'Ayarlar > Pil > Arka plan kullanım sınırları bölümünde Vaktinde\'yi hiç uyku moduna alınmayan uygulamalara ekleyin.';
+
+  @override
+  String get healthStepLockRecents =>
+      'Son uygulamalar ekranında Vaktinde\'yi kilitleyin (telefonunuzda bu seçenek varsa).';
+
+  @override
+  String get healthDetails => 'Ayrıntılar';
+
+  @override
+  String get alarmHealthExactAction => 'İzin ver';
+
+  @override
+  String get alarmHealthNotificationsOff => 'Bildirimler kapalı, ezan çalmaz.';
+
+  @override
+  String get alarmHealthNotificationsAction => 'Aç';
+
+  @override
+  String get ezanAlarmStreamTitle => 'Sessiz modda da çal';
+
+  @override
+  String get ezanAlarmStreamSub =>
+      'Ezan, telefon sessizdeyken de alarm ses seviyesinde çalar.';
+
+  @override
+  String channelAlarmSound(String soundName) {
+    return 'Ses: $soundName (sessizde de çalar)';
+  }
 
   @override
   String get exactAlarmSub => 'Bildirim gönderir.';
@@ -66,7 +834,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get silentNotif => 'Sadece Yazılı Bildirim';
 
   @override
-  String get silentNotifSub => 'Ezan/Ses çalmaz, sadece uyarı gelir.';
+  String get silentNotifSub => 'Ezan/ses çalmaz, sadece uyarı gelir.';
 
   @override
   String warningAlarm(String minute) {
@@ -130,10 +898,20 @@ class AppLocalizationsTr extends AppLocalizations {
   String get navQibla => 'Kıble';
 
   @override
-  String get navMenu => 'Menü';
+  String get menuTitle => 'Ayarlar';
 
   @override
-  String get menuTitle => 'Ayarlar';
+  String get aboutAds => 'Reklamlar Hakkında';
+
+  @override
+  String get adInfoTitle => 'Vaktinde neden reklam gösteriyor?';
+
+  @override
+  String get adInfoBody =>
+      'Vaktinde\'yi ücretsiz ve üyelik gerektirmeden sunabilmek için uygulamada sınırlı sayıda reklam gösteriyoruz. Reklam gelirleri, uygulamanın geliştirilmesi ve bakımı için gereken masrafları karşılamamıza yardımcı oluyor.\n\nKur\'an, Kıble, Zikirmatik, Dualar ve Namaz Hocası açılırken tam ekran reklam gösterilmez; diğer ekranlarda da reklamları seyrek tutuyoruz.\n\nAnlayışınız için teşekkür ederiz.';
+
+  @override
+  String get adInfoGotIt => 'Anladım';
 
   @override
   String get sectionLocation => 'KONUM & VAKİTLER';
@@ -145,35 +923,376 @@ class AppLocalizationsTr extends AppLocalizations {
   String get citySelect => 'İl Seçiniz';
 
   @override
-  String get districtSelect => 'İlçe Seçiniz';
-
-  @override
   String get save => 'Kaydet';
 
   @override
   String get cancel => 'İptal';
 
   @override
-  String get locationWarning =>
-      'Doğru namaz vakitleri için İlçe seçimi önemlidir.';
+  String get timeAdjustTitle => 'Vakit İnce Ayarı';
 
   @override
-  String get menuNotifications => 'Bildirim İzinleri';
+  String get tapToCount => 'Saymak için dokunun';
 
   @override
-  String get menuNotificationsSub => 'Ses gelmiyorsa buradan kontrol et.';
+  String get timeAdjustSub => 'Vakitleri dakika dakika düzeltin';
 
   @override
-  String get menuTroubleshoot => 'Bildirim Gelmiyor mu?';
+  String get timeAdjustInfo =>
+      'Vakitler konumunuza göre Diyanet yöntemiyle hesaplanır. Bölgenizdeki caminin vakitleriyle küçük farklar varsa her vakti dakika olarak ileri veya geri alabilirsiniz. Ayar ana ekrana, widget\'lara ve ezan bildirimlerine uygulanır.';
 
   @override
-  String get menuTroubleshootSub => 'Samsung/Xiaomi için pil ayarı yapın.';
+  String get timeAdjustReset => 'Sıfırla';
+
+  @override
+  String timeAdjustMinutes(String value) {
+    return '$value dk';
+  }
+
+  @override
+  String get timeAdjustSaved => 'Vakitler güncellendi';
+
+  @override
+  String get trackerTitle => 'Namaz Takibi';
+
+  @override
+  String get trackerExcusedTitle => 'Özel gün';
+
+  @override
+  String get trackerExcusedInfo =>
+      'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Bugünü işaretleyince özel gün başlar ve sonraki günler kendiliğinden işaretlenir (en fazla 10 gün); bittiğinde bugünün işaretini kaldırın. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.';
+
+  @override
+  String get trackerExcusedToday => 'Bugünü özel gün olarak işaretle';
+
+  @override
+  String get trackerExcusedMark => 'Özel gün olarak işaretle';
+
+  @override
+  String get trackerExcusedUnmark => 'Özel gün işaretini kaldır';
+
+  @override
+  String get trackerExcusedMarked => 'Özel gün olarak işaretlendi.';
+
+  @override
+  String get notifStopAction => 'Durdur';
+
+  @override
+  String get trackerExcusedPeriodStarted =>
+      'Özel gün başladı; sonraki günler kendiliğinden işaretlenir (en fazla 10 gün). Bitince Bugün\'e yine basılı tutun.';
+
+  @override
+  String get trackerExcusedPeriodEnded => 'Özel gün bitti.';
+
+  @override
+  String get excusedSilentEzanTitle => 'Özel Günde Ezanı Sessiz Bildir';
+
+  @override
+  String get excusedSilentEzanSub =>
+      'Özel günlerde vakit bildirimi sessiz gelir; hatırlatmalar kurulmaz.';
+
+  @override
+  String get trackerExcusedUnmarked => 'Özel gün işareti kaldırıldı.';
+
+  @override
+  String get trackerExcusedCellSnack =>
+      'Bu gün özel gün olarak işaretli; vakitleri sayılmaz. İşareti kaldırmak için gün adına basılı tutun.';
+
+  @override
+  String trackerExcusedKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Bu günün kazaya eklenmiş $count vakti kaza sayaçlarından düşülecek.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerLegendExcused => 'Özel gün (gün adına basılı tutun)';
+
+  @override
+  String get fastLegendExcused => 'Özel gün (kazası tutulur)';
+
+  @override
+  String get trackerToday => 'Bugün';
+
+  @override
+  String get trackerYesterday => 'Dün';
+
+  @override
+  String get trackerPrayedAction => 'Kıldım';
+
+  @override
+  String get trackerLast7Days => 'Son 7 Gün';
+
+  @override
+  String get trackerCompletion => '30 günlük oran';
+
+  @override
+  String get trackerStreak => 'Seri';
+
+  @override
+  String trackerStreakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gün',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerNotYet => 'Bu vakit henüz girmedi.';
+
+  @override
+  String get trackerKazaButton => 'Kılınmayanları kazaya ekle';
+
+  @override
+  String get trackerKazaInfo =>
+      'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir. Kazaya eklenen bir vakti kıldıysanız üzerine dokunun; kılındı olarak işaretlenir ve kaza sayısından düşülür.';
+
+  @override
+  String trackerKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'İşaretlenmemiş $count vakit kaza sayaçlarına eklenecek. Devam edilsin mi?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaAdd => 'Ekle';
+
+  @override
+  String trackerKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count vakit kazaya eklendi.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trackerKazaNone => 'Kazaya eklenecek vakit yok.';
+
+  @override
+  String get trackerKazaRemoveTitle => 'Kazadan çıkarılsın mı?';
+
+  @override
+  String trackerKazaRemoveConfirm(String name, int from, int to) {
+    return 'Bu vakit kılındı olarak işaretlenecek ve $name kaza sayısı $from yerine $to olacak.';
+  }
+
+  @override
+  String get addWidgetTitle => 'Ana Ekrana Widget Ekle';
+
+  @override
+  String get addWidgetSub => 'Vakitleri uygulamayı açmadan görün';
+
+  @override
+  String get addWidgetHint =>
+      'Birini seçin; ana ekranınız eklemeden önce onay isteyecek.';
+
+  @override
+  String get widgetRingName => 'Vakit Halkası';
+
+  @override
+  String get widgetRingDesc =>
+      'Kare: sıradaki vakte kalan süre; halka önceki vakitten bu yana geçeni gösterir';
+
+  @override
+  String get widgetTrackerName => 'Namaz Takibi';
+
+  @override
+  String get widgetTrackerDesc =>
+      'Yatay şerit: bugünün beş vakti; vakte dokunup kılındı işaretleyin';
+
+  @override
+  String get widgetLargeName => 'Günün Vakitleri';
+
+  @override
+  String get widgetLargeDesc =>
+      'Büyük boy: konum, hicri tarih, günün vakitleri ve kalan süre';
+
+  @override
+  String get widgetWideName => 'Sıradaki Vakit';
+
+  @override
+  String get widgetWideDesc =>
+      'Yatay şerit: konum, hicri tarih ve sıradaki vakte kalan süre';
+
+  @override
+  String get widgetSmallName => 'Vakit Sayacı';
+
+  @override
+  String get widgetSmallDesc => 'Küçük kare: sıradaki vakte kalan süre';
+
+  @override
+  String get trackerLegendPrayed => 'Kılındı';
+
+  @override
+  String get trackerLegendKaza => 'Kazaya eklendi';
+
+  @override
+  String kerahatActive(String range) {
+    return 'Şu an kerahat vakti: $range';
+  }
+
+  @override
+  String kerahatUpcoming(String range) {
+    return 'Kerahat vakti yaklaşıyor: $range';
+  }
+
+  @override
+  String get endReminderTitle => 'Vakit Çıkmadan Hatırlat';
+
+  @override
+  String get dailyContentNotifTitle => 'Günün Ayeti ve Hadisi Bildirimleri';
+
+  @override
+  String get persistentNotifTitle => 'Kalıcı Bildirim';
+
+  @override
+  String get persistentNotifSub =>
+      'Bildirim çubuğunda sıradaki vakte kalan süreyi ve günün vakitlerini gösterir.';
+
+  @override
+  String get dailyContentNotifSub =>
+      'Her gün sabah bir ayet, akşam bir hadis gönderir.';
+
+  @override
+  String get religiousDaysNotifTitle => 'Dini Gün ve Kandil Bildirimleri';
+
+  @override
+  String get religiousDaysNotifSub =>
+      'Kandil, bayram ve diğer dini günlerde sabah bildirim gönderir.';
+
+  @override
+  String get fridayNotifTitle => 'Cuma Bildirimi';
+
+  @override
+  String get fridayNotifSub =>
+      'Cuma sabahı Kehf Suresi\'ni ve Cuma mesajlarını hatırlatır.';
+
+  @override
+  String get fridayNotifBody =>
+      'Kehf Suresi\'ni okumayı ve sevdiklerinize Cuma mesajı göndermeyi unutmayın.';
+
+  @override
+  String get fridayKehfAction => 'Kehf Suresi';
+
+  @override
+  String get religiousDaysChannel => 'Dini Günler ve Kandiller';
+
+  @override
+  String get ucAylarBaslangici => 'Üç Ayların Başlangıcı';
+
+  @override
+  String get ramazanArefesi => 'Ramazan Bayramı Arefesi';
+
+  @override
+  String get kurbanArefesi => 'Kurban Bayramı Arefesi';
+
+  @override
+  String get ucAylarNotifBody =>
+      'Recep, Şaban ve Ramazan aylarından oluşan üç aylar bugün başladı. Üç aylarınız mübarek olsun.';
+
+  @override
+  String get ucAylarRegaipTitle => 'Üç Aylar ve Regaib Kandili';
+
+  @override
+  String get ucAylarRegaipNotifBody =>
+      'Üç aylar bugün başladı, bu gece de Regaib Kandili. Üç aylarınız ve kandiliniz mübarek olsun.';
+
+  @override
+  String get regaipKandiliNotifBody =>
+      'Bu gece Regaib Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get miracKandiliNotifBody =>
+      'Bu gece Miraç Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get beratKandiliNotifBody =>
+      'Bu gece Berat Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get mevlidKandiliNotifBody =>
+      'Bu gece Mevlid Kandili. Kandiliniz mübarek olsun.';
+
+  @override
+  String get kadirGecesiNotifBody =>
+      'Bu gece Kadir Gecesi. Kadir Geceniz mübarek olsun.';
+
+  @override
+  String get ramazanBaslangiciNotifBody =>
+      'Ramazan yarın başlıyor; ilk teravih ve sahur bu gece. Hayırlı Ramazanlar!';
+
+  @override
+  String get ramazanArefesiNotifBody =>
+      'Bugün arefe, yarın Ramazan Bayramı. Bayramınız şimdiden mübarek olsun.';
+
+  @override
+  String get ramazanBayramiNotifBody =>
+      'Ramazan Bayramınız mübarek olsun. Nice bayramlara!';
+
+  @override
+  String get kurbanArefesiNotifBody =>
+      'Bugün arefe, yarın Kurban Bayramı. Bayramınız şimdiden mübarek olsun.';
+
+  @override
+  String get kurbanBayramiNotifBody =>
+      'Kurban Bayramınız mübarek, kurbanlarınız kabul olsun.';
+
+  @override
+  String get hicriYilbasiNotifBody =>
+      'Bugün Hicri Yılbaşı. Yeni yılınız hayırlara vesile olsun.';
+
+  @override
+  String get asureGunuNotifBody => 'Bugün Aşure Günü. Hayırlara vesile olsun.';
+
+  @override
+  String get privacyPolicy => 'Gizlilik Politikası';
+
+  @override
+  String get endReminderSub =>
+      'Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.';
+
+  @override
+  String get endReminderNotifTitle => 'Vakit Çıkıyor';
+
+  @override
+  String endReminderNotifBody(String vakit, int minute) {
+    return '$vakit vaktinin çıkmasına $minute dakika kaldı.';
+  }
+
+  @override
+  String get endReminderChannel => 'Vakit Çıkış Hatırlatmaları';
+
+  @override
+  String get ramadanIftarTitle => 'İftar Vakti';
+
+  @override
+  String ramadanIftarBody(String vakit) {
+    return '$vakit vakti girdi. Hayırlı iftarlar!';
+  }
+
+  @override
+  String get ramadanImsakTitle => 'İmsak Vakti';
+
+  @override
+  String get ramadanImsakBody => 'Sahur vakti sona erdi. Hayırlı oruçlar!';
 
   @override
   String get sectionSupport => 'DESTEK';
 
   @override
-  String get shareApp => 'Arkadaşınla Paylaş';
+  String get shareApp => 'Arkadaşlarınızla Paylaş';
 
   @override
   String get rateApp => 'Bize Puan Ver';
@@ -183,26 +1302,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String shareText(String link) {
-    return 'Harika bir Ezan Vakti uygulaması buldum! İndir: $link';
+    return 'Harika bir ezan vakti uygulaması buldum! İndir: $link';
   }
-
-  @override
-  String get batteryDialogTitle => 'Bildirim Sorunu Çözümü';
-
-  @override
-  String get batteryDialogBody =>
-      'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (Kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya logoya tıklayın.\n3. Kilit Simgesine 🔒 basarak kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil > Kısıtlanmamış seçeneğini seçin.';
 
   @override
   String get okUnderstood => 'Tamam, Anladım';
 
   @override
   String get religiousDaysTitle => 'Dini Günler';
-
-  @override
-  String errorOccurred(String error) {
-    return 'Hata oluştu: $error';
-  }
 
   @override
   String get noDataFound => 'Veri bulunamadı.';
@@ -221,8 +1328,86 @@ class AppLocalizationsTr extends AppLocalizations {
   String get missedPrayersTitle => 'Kaza Takibi';
 
   @override
+  String get kazaCalcTitle => 'Kaza hesapla';
+
+  @override
+  String get kazaCalcSubtitle => 'Namaz kılınmayan süreden tahmini kaza sayısı';
+
+  @override
+  String get kazaCalcPeriod => 'Namaz kılınmayan süre';
+
+  @override
+  String get kazaCalcYears => 'Yıl';
+
+  @override
+  String get kazaCalcMonths => 'Ay';
+
+  @override
+  String get kazaCalcOptional => 'İsteğe bağlı';
+
+  @override
+  String get kazaCalcExcused => 'Ayda ortalama özel gün (hayız)';
+
+  @override
+  String get kazaCalcRamadans => 'Tutulmayan Ramazan sayısı';
+
+  @override
+  String get kazaCalcFastDays => 'Tutulmayan oruç (gün)';
+
+  @override
+  String get kazaCalcAddRamadan => '+1 Ramazan (+30 gün)';
+
+  @override
+  String get kazaCalcOptionalInfo =>
+      'Hayız günlerinde kılınamayan namazların kazası gerekmez; girdiğiniz gün sayısı namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan oruçların da kazası gerekir. Tutulmayan oruçları gün gün girebilir ya da tam bir Ramazan için +30 gün ekleyebilirsiniz.';
+
+  @override
+  String get kazaCalcResult => 'Tahmini kaza';
+
+  @override
+  String get kazaCalcEachPrayer => 'Her vakit ve vitir';
+
+  @override
+  String get kazaCalcNote =>
+      'Tahmini sonuçtur (yıl 365, ay 30 gün sayılır). Kesin bilgi için bir din görevlisine danışın.';
+
+  @override
+  String get kazaCalcAdd => 'Kaza Takibi\'ne ekle';
+
+  @override
+  String get kazaCalcConfirmTitle => 'Kaza Takibi\'ne eklensin mi?';
+
+  @override
+  String kazaCalcConfirm(int prayers, int fasts) {
+    return 'Her vakit ve vitir: +$prayers\nOruç: +$fasts\n\nSayılar mevcut kazaların üzerine eklenir, hiçbiri silinmez.';
+  }
+
+  @override
+  String get kazaCalcAdded => 'Tahmini kaza, Kaza Takibi\'ne eklendi.';
+
+  @override
+  String kazaDurationYears(int count) {
+    return '$count yıl';
+  }
+
+  @override
+  String kazaDurationMonths(int count) {
+    return '$count ay';
+  }
+
+  @override
+  String kazaDurationDays(int count) {
+    return '$count gün';
+  }
+
+  @override
+  String kazaCompletionEstimate(String duration) {
+    return 'Günde 1 günlük kaza kılarsanız namaz kazalarınız yaklaşık $duration içinde biter.';
+  }
+
+  @override
   String get missedPrayersInfo =>
-      'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya tıklayarak elle girebilirsiniz)';
+      'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)';
 
   @override
   String editMissedTitle(String title) {
@@ -259,13 +1444,126 @@ class AppLocalizationsTr extends AppLocalizations {
   String get esmaulHusnaTitle => 'Esmaül Hüsna';
 
   @override
-  String get closeCaps => 'KAPAT';
-
-  @override
   String get zakatTitle => 'Zekat Hesapla';
 
   @override
-  String get zakatCalculatorTitle => 'Akıllı Zekat Hesapla';
+  String get fitreTitle => 'Fitre ve Fidye';
+
+  @override
+  String get toolFitreDesc => 'Fitre ve fidye tutarı hesabı';
+
+  @override
+  String get trackerTabTrack => 'Takip';
+
+  @override
+  String get trackerTabKaza => 'Kaza';
+
+  @override
+  String get trackerBadgesTitle => 'Hedefler';
+
+  @override
+  String trackerBadgeEarned(String date) {
+    return 'Kazanıldı · $date';
+  }
+
+  @override
+  String trackerBadgeSnack(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tebrikler! $count günlük seri hedefinize ulaştınız.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fitreInfo =>
+      'Kişi başı tutar, Diyanet\'in belirlediği en az fitre (fıtır sadakası) miktarıdır; fitre para ya da gıda olarak verilebilir. Fidye, yaşlılık ya da iyileşme umudu olmayan bir hastalık nedeniyle oruç tutamayanların her gün için verdiği bir fitre tutarıdır. Türkiye dışındaysanız bulunduğunuz yerdeki tutarı yazabilirsiniz.';
+
+  @override
+  String get fitreAmountLabel => 'Kişi başı tutar';
+
+  @override
+  String fitreSource(String source, String year) {
+    return 'Kaynak: $source, $year';
+  }
+
+  @override
+  String get fitreResetAmount => 'Varsayılan tutara dön';
+
+  @override
+  String get fitreSectionTitle => 'Fitre';
+
+  @override
+  String get fitrePeopleLabel => 'Kişi sayısı';
+
+  @override
+  String get fidyeSectionTitle => 'Fidye';
+
+  @override
+  String get fidyeDaysLabel => 'Gün sayısı';
+
+  @override
+  String get fitreTotal => 'Toplam';
+
+  @override
+  String get fastTitle => 'Ramazan Orucu';
+
+  @override
+  String fastCount(int done, int total) {
+    return '$done/$total gün';
+  }
+
+  @override
+  String get fastInfo =>
+      'Tuttuğunuz günlere dokunun. Tutulmayan günler kaza orucu sayacına bir kez eklenir; kazaya eklenen bir günü tuttuysanız üzerine dokunun, sayaçtan düşülür.';
+
+  @override
+  String get fastLegendFasted => 'Tutuldu';
+
+  @override
+  String get fastLegendKaza => 'Kazaya eklendi';
+
+  @override
+  String get fastKazaButton => 'Tutulmayanları kaza orucuna ekle';
+
+  @override
+  String fastKazaConfirm(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'İşaretlenmemiş $count gün kaza orucu sayacına eklenecek. Devam edilsin mi?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String fastKazaDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gün kaza orucuna eklendi.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fastKazaNone => 'Kazaya eklenecek gün yok.';
+
+  @override
+  String get fastKazaRemoveTitle => 'Kazadan çıkarılsın mı?';
+
+  @override
+  String fastKazaRemoveConfirm(int from, int to) {
+    return 'Bu gün tutuldu olarak işaretlenecek ve kaza orucu sayısı $from yerine $to olacak.';
+  }
+
+  @override
+  String get fastFastedAction => 'Tuttum';
+
+  @override
+  String get zakatCalculatorTitle => 'Akıllı Zekat Hesaplama';
 
   @override
   String get liveRatesLoading => 'Güncel kurlar çekiliyor...';
@@ -275,19 +1573,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Otomatik çekilen kurları isterseniz el ile düzeltebilirsiniz.';
 
   @override
-  String get sectionGold => 'Altın Varlığı';
-
-  @override
   String get goldType => 'Altın Türü';
 
   @override
   String get goldAmount => 'Adet / Gram';
 
   @override
-  String get goldUnitPrice => 'Birim Fiyatı (TL)';
-
-  @override
-  String get sectionCurrency => 'Döviz Varlığı';
+  String get goldUnitPrice => 'Birim Fiyatı';
 
   @override
   String get currencyType => 'Döviz Türü';
@@ -297,15 +1589,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get currencyRate => 'Güncel Kur (TL)';
-
-  @override
-  String get sectionCashDebt => 'Nakit & Borçlar';
-
-  @override
-  String get cashAmount => 'Eldeki & Bankadaki Nakit (TL)';
-
-  @override
-  String get debtAmount => 'Toplam Borçlar (Düşülecek)';
 
   @override
   String get calculateButton => 'HESAPLA';
@@ -324,15 +1607,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get locationPermissionDenied => 'Konum izni reddedildi.';
-
-  @override
-  String get locationPermissionForever =>
-      'Konum izni kalıcı olarak engellendi. Ayarlardan açmalısınız.';
-
-  @override
-  String compassError(String error) {
-    return 'Sensör hatası: $error';
-  }
 
   @override
   String get noCompass => 'Cihazda pusula yok.';
@@ -376,7 +1650,49 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appearanceSettings => 'Görünüm Ayarları';
 
   @override
-  String get appearanceSub => 'Tema ve Arka Plan';
+  String get appearanceSub => 'Tema, arka plan ve yazı boyutu';
+
+  @override
+  String get textSizeTitle => 'Yazı Boyutu';
+
+  @override
+  String get textSizeNormal => 'Normal';
+
+  @override
+  String get textSizeLarge => 'Büyük';
+
+  @override
+  String get textSizeExtraLarge => 'Çok büyük';
+
+  @override
+  String get whatsNewTextSizeDesc =>
+      'Yazıları uygulamanın içinden büyütebilirsiniz.';
+
+  @override
+  String get sectionNotifications => 'BİLDİRİMLER';
+
+  @override
+  String get notificationSettingsTitle => 'Bildirim Ayarları';
+
+  @override
+  String get notificationSettingsSub =>
+      'Hatırlatmalar, günün ayeti, kandil, Cuma, kalıcı bildirim';
+
+  @override
+  String get ezanAlarmsTitle => 'Ezan Alarmları';
+
+  @override
+  String get ezanAlarmsSub => 'Her vakit için ezan sesi ve önceden hatırlatma';
+
+  @override
+  String get privacyAdsTitle => 'Gizlilik ve Reklamlar';
+
+  @override
+  String get privacyAdsSub => 'Gizlilik politikası ve reklamlar hakkında bilgi';
+
+  @override
+  String get privacyAdsConsentSub =>
+      'Reklam gizlilik ayarları ve gizlilik politikası';
 
   @override
   String get themeMode => 'Tema Modu';
@@ -397,16 +1713,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get bgDefault => 'Varsayılan';
 
   @override
+  String get bgPlain => 'Sade';
+
+  @override
   String get bgMosque => 'Cami';
 
   @override
   String get bgKaaba => 'Kabe';
-
-  @override
-  String get bgQuran => 'Kur\'an';
-
-  @override
-  String get none => 'Yok';
 
   @override
   String get zakatEligible => 'Zekat Verilmesi Gerekir';
@@ -415,11 +1728,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get zakatNotEligible => 'Zekat Gerekmiyor';
 
   @override
-  String get nisabLimit => 'Nisab Sınırı (80.18 gr Altın)';
+  String get nisabLimit => 'Nisap Sınırı (80,18 gr Altın)';
 
   @override
   String get belowNisabMessage =>
-      'Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.';
+      'Net varlığınız nisap miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.';
 
   @override
   String get searchLocationTitle => 'Konum Ara (Tüm Dünya)';
@@ -453,19 +1766,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tickerEzan => 'Ezan Vakti';
 
   @override
-  String get stickyChannelName => 'Kalıcı Sayaç';
-
-  @override
-  String get stickyChannelDesc => 'Vakte kalan süreyi gösterir';
-
-  @override
-  String get timeLeftTo => 'Vaktin Çıkmasına: ';
-
-  @override
-  String get locationFallbackMessage =>
-      'Konum alınamadı, varsayılan değer kullanılıyor.';
-
-  @override
   String get fetchingLocation => 'Konum alınıyor...';
 
   @override
@@ -481,17 +1781,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get directionWest => 'B';
 
   @override
-  String get calibrationInstruction => '(Kalibrasyon için \'8\' çizin)';
-
-  @override
   String get zakatDescription =>
-      'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre detaylı zekatınızı hesaplayın.';
+      'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre zekatınızı detaylı olarak hesaplayın.';
 
   @override
-  String get cashAndCurrencyTitle => 'Nakit ve Döviz Varlıklar';
-
-  @override
-  String get cashTurkishLira => 'Nakit Türk Lirası (TL)';
+  String get cashAndCurrencyTitle => 'Nakit ve Döviz Varlıkları';
 
   @override
   String get goldAndSilverTitle => 'Altın ve Gümüş';
@@ -506,7 +1800,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get commercialGoodsTitle => 'Ticari Mallar';
 
   @override
-  String get commercialEvalCurrency => 'Değerlendirme Döviz Türü';
+  String get commercialEvalCurrency => 'Değerleme Para Birimi';
 
   @override
   String get commercialGoodsValue => 'Malın Değeri';
@@ -540,7 +1834,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get agriDiyanetNote =>
-      'Zirai ürünlerin zekât hesaplamasında nisap miktarı aranmadığı için, beyan ettiğiniz tutar doğrudan zekât sepetine eklenir.';
+      'Zirai ürünlerin zekat hesaplamasında nisap miktarı aranmadığı için, ürün değerinden hesaplanan öşür doğrudan toplam zekata eklenir.';
 
   @override
   String get harvestedProductValue => 'Hasat Edilen Ürün Değeri (TL)';
@@ -555,7 +1849,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get debtType => 'Borcun Cinsi (TL, Döviz, Altın)';
 
   @override
-  String get zakatAgriIncluded => 'İçindeki Zirai Ürün (Öşür) Zekatı';
+  String get zakatAgriIncluded => 'Dahil Edilen Öşür (Zirai Ürün Zekatı)';
 
   @override
   String get assetCheck => 'Çek';
@@ -585,7 +1879,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get agriRateCostly => 'Masraflı (Motor/Taşıma) - %5';
 
   @override
-  String get toImsak => 'Sabaha';
+  String get toImsak => 'İmsaka';
 
   @override
   String get toGunes => 'Güneşe';
@@ -613,21 +1907,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get zikirmatikTitle => 'Zikirmatik';
 
   @override
-  String get dhikrSubhanallah => 'Sübhanallah';
-
-  @override
-  String get dhikrElhamdulillah => 'Elhamdülillah';
-
-  @override
-  String get dhikrAllahuEkber => 'Allahu Ekber';
-
-  @override
-  String get dhikrKalima => 'Kelime-i Tevhid';
-
-  @override
-  String get dhikrSalavat => 'Salavat';
-
-  @override
   String get targetReached => 'Hedefe Ulaştınız!';
 
   @override
@@ -643,9 +1922,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dhikrOther => 'Diğer (Özel Zikir)';
-
-  @override
-  String get customDhikrTitle => 'Özel Zikir Ekle';
 
   @override
   String get customDhikrHint => 'Çekeceğiniz zikri yazın';
@@ -672,36 +1948,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get themeClassic => 'Klasik Tesbih';
 
   @override
-  String get introTitle1 => 'Vaktinde\'ye Hoş Geldiniz';
-
-  @override
-  String get introDesc1 =>
-      'Namaz vakitlerini, zikirlerinizi ve dini günleri en modern ve şık arayüzle kolayca takip edin.';
-
-  @override
-  String get introTitle2 => 'Akıllı Bildirimler';
-
-  @override
-  String get introDesc2 =>
-      'Ezan vakitlerinde dilediğiniz bildirim sesiyle uyarı alın. İbadetlerinizi asla kaçırmayın.';
-
-  @override
-  String get introTitle3 => 'Gelişmiş Araçlar';
-
-  @override
-  String get introDesc3 =>
-      'Animasyonlu Zikirmatik, Kaza Takibi, Esmaül Hüsna ve Zekat hesaplama ile maneviyatınızı güçlendirin.';
-
-  @override
-  String get introSkip => 'Geç';
-
-  @override
-  String get introNext => 'İleri';
-
-  @override
-  String get introStart => 'Hemen Başla';
-
-  @override
   String get dhikrListTitle => 'Zikir Listesi';
 
   @override
@@ -718,7 +1964,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get deleteDhikr => 'Sil';
 
   @override
+  String get dhikrInfo => 'Anlamı ve kaynağı';
+
+  @override
   String get statisticsTitle => 'İstatistikler';
+
+  @override
+  String zikirTodayCount(int count) {
+    return 'Bugün: $count';
+  }
 
   @override
   String get monthly => 'Aylık';
@@ -734,21 +1988,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get statsEmpty => 'Henüz zikir verisi yok.';
-
-  @override
-  String get dhikrEstagfirullah => 'Estağfirullah';
-
-  @override
-  String get dhikrLaHavle => 'La Havle Vela Kuvvete';
-
-  @override
-  String get dhikrHasbunallah => 'Hasbünallah';
-
-  @override
-  String get dhikrSubhanallahi => 'Subhanallahi ve bihamdihi';
-
-  @override
-  String get dhikrYunus => 'Hz. Yunus\'un Duası';
 
   @override
   String get dhikrYaAllah => 'Ya Allah (C.C.)';
@@ -806,7 +2045,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get kurbanBayrami => 'Kurban Bayramı';
 
   @override
-  String get regaipKandili => 'Regaip Kandili';
+  String get regaipKandili => 'Regaib Kandili';
 
   @override
   String get tabTimes => 'Vakitler';
@@ -815,13 +2054,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tabAlarms => 'Alarmlar';
 
   @override
-  String get locationFoundNoName => 'Konum bulundu ama isim yok.';
+  String get locationFoundNoName => 'Konum bulundu ancak yer adı alınamadı.';
 
   @override
   String get dailyAyahTitle => 'Günün Ayeti';
-
-  @override
-  String get remainingTime => 'Kalan';
 
   @override
   String get onboardingWelcome => 'Hoş Geldiniz / Welcome';
@@ -831,19 +2067,47 @@ class AppLocalizationsTr extends AppLocalizations {
       'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.';
 
   @override
-  String get turnRight => 'Sağa dön ➔';
-
-  @override
-  String get turnSlightRight => 'Hafif sağa dön ➔';
-
-  @override
-  String get turnLeft => '⬅ Sola dön';
-
-  @override
-  String get turnSlightLeft => '⬅ Hafif sola dön';
-
-  @override
   String get calibrationRequired => 'Kalibrasyon Gerekli';
+
+  @override
+  String get qiblaAccuracyNote =>
+      'Pusula yaklaşık yön gösterir; metal, mıknatıs ve elektronik cihazlar yönü saptırabilir.';
+
+  @override
+  String get qiblaTipsTitle => 'Doğru sonuç için';
+
+  @override
+  String get qiblaTipFlat => 'Telefonu yere paralel tutun.';
+
+  @override
+  String get qiblaTipCalibrate =>
+      'Telefonunuzla havada \'8\' çizerek kalibre edin.';
+
+  @override
+  String get qiblaTipMagneticCase =>
+      'Mıknatıslı kılıf kullanıyorsanız çıkarın.';
+
+  @override
+  String get qiblaTipMetal =>
+      'Metal eşyalardan ve elektronik cihazlardan uzak durun.';
+
+  @override
+  String get qiblaTipMosque =>
+      'Mümkünse bir caminin kıble yönüyle karşılaştırın.';
+
+  @override
+  String qiblaAngleTrueNorth(String angle) {
+    return 'Kıble açısı: $angle° (coğrafi kuzeyden)';
+  }
+
+  @override
+  String qiblaDeclination(String deg) {
+    return 'Manyetik sapma: $deg° (otomatik düzeltildi)';
+  }
+
+  @override
+  String get qiblaInterferenceWarning =>
+      'Manyetik parazit algılandı: telefonu metal eşyalardan, mıknatıslı kılıftan ve elektronik cihazlardan uzaklaştırın.';
 
   @override
   String get gold22kGram => '22 Ayar Gram Altın';
@@ -918,21 +2182,637 @@ class AppLocalizationsTr extends AppLocalizations {
   String get currencyTry => 'Türk Lirası';
 
   @override
-  String get holdToEdit => '(Düzenlemek için basılı tutun)';
-
-  @override
   String get editCounterTitle => 'Sayacı Düzenle';
-
-  @override
-  String get editCounterHint => 'Örn: 2000';
-
-  @override
-  String get editTargetHint => 'Örn: 99';
 
   @override
   String get resetCounterConfirm =>
       'Sayacı sıfırlamak istediğinize emin misiniz?';
 
   @override
-  String get dhikrTarget => 'Hedef:';
+  String get imsakiyeTitle => 'İmsakiye';
+
+  @override
+  String get widgetRamadanName => 'Ramazan Sayacı';
+
+  @override
+  String get widgetRamadanDesc =>
+      'Kare: iftara ve sahura kalan süre; Ramazan dışında Ramazan\'a kalan gün';
+
+  @override
+  String widgetRamadanDay(String day) {
+    return 'Ramazan · $day. gün';
+  }
+
+  @override
+  String get widgetRamadanUntil => 'Ramazan\'a Kalan Gün';
+
+  @override
+  String get toolsGroupPrayer => 'Namaz';
+
+  @override
+  String get toolsGroupInfo => 'Bilgi';
+
+  @override
+  String get toolsGroupCalc => 'Hesaplama';
+
+  @override
+  String get toolImsakiyeDesc => 'Aylık ve Ramazan vakitleri';
+
+  @override
+  String get toolTrackerDesc => 'Kıldığınız vakitler ve kaza sayacı';
+
+  @override
+  String get toolReligiousDaysDesc => 'Kandiller ve bayramlar';
+
+  @override
+  String get nearbyMosquesTitle => 'Yakındaki Camiler';
+
+  @override
+  String get toolNearbyMosquesDesc => 'Size en yakın camileri haritada bulun';
+
+  @override
+  String get nearbyMosquesQuery => 'cami';
+
+  @override
+  String get nearbyMosquesError => 'Harita açılamadı.';
+
+  @override
+  String get toolEsmaDesc => 'Allah\'ın 99 ismi ve anlamları';
+
+  @override
+  String get duasTitle => 'Dualar';
+
+  @override
+  String get duaSearchHint => 'Dua ara';
+
+  @override
+  String get duaNoResults => 'Aramanıza uyan dua bulunamadı';
+
+  @override
+  String duaCount(int count) {
+    return '$count dua';
+  }
+
+  @override
+  String get storiesTitle => 'Kıssalar';
+
+  @override
+  String get toolStoriesDesc => 'Peygamberler, siyer, sahabe ve âlimler';
+
+  @override
+  String get storiesNote =>
+      'Özetler Kur\'an-ı Kerim\'e ve hadis, siyer ve biyografi kaynaklarına dayanır. Dinî konularda ayrıntı için bir din görevlisine danışın.';
+
+  @override
+  String storyCount(int count) {
+    return '$count kıssa';
+  }
+
+  @override
+  String get storyLesson => 'İbret';
+
+  @override
+  String get prayerGuideTitle => 'Namaz Hocası';
+
+  @override
+  String get toolPrayerGuideDesc => 'Abdest ve namazın kılınışı, adım adım';
+
+  @override
+  String get prayerGuideTabWudu => 'Abdest';
+
+  @override
+  String get prayerGuideTabFards => 'Farzlar';
+
+  @override
+  String get prayerGuideTabRakats => 'Rekâtlar';
+
+  @override
+  String get prayerGuideTabSteps => 'Kılınış';
+
+  @override
+  String prayerGuideTimes(int count) {
+    return '$count kez';
+  }
+
+  @override
+  String get toolDuasDesc => 'Tesbihat, sabah-akşam ve günlük dualar';
+
+  @override
+  String get duaTransliteration => 'Okunuşu';
+
+  @override
+  String get duaMeaning => 'Anlamı';
+
+  @override
+  String get tesbihatTitle => 'Namaz Sonrası Tesbihat';
+
+  @override
+  String get tesbihatDesc => 'Âyetü\'l-Kürsî, 33\'er tesbih ve dua';
+
+  @override
+  String tesbihatStep(int current, int total) {
+    return 'Adım $current/$total';
+  }
+
+  @override
+  String get tesbihatTapWhenRead => 'Okuduktan sonra dokunun';
+
+  @override
+  String get tesbihatRestart => 'Baştan Başla';
+
+  @override
+  String ramadanShareTitle(int day) {
+    return 'Ramazan · $day. gün';
+  }
+
+  @override
+  String ramadanShareIftarIn(String time) {
+    return 'İftara $time';
+  }
+
+  @override
+  String ramadanShareSahurIn(String time) {
+    return 'Sahura $time';
+  }
+
+  @override
+  String ramadanShareIftarAt(String time) {
+    return 'İftar $time';
+  }
+
+  @override
+  String ramadanShareImsakAt(String time) {
+    return 'İmsak $time';
+  }
+
+  @override
+  String ramadanShareHoursMinutes(int hours, int minutes) {
+    return '$hours sa $minutes dk';
+  }
+
+  @override
+  String ramadanShareHours(int hours) {
+    return '$hours sa';
+  }
+
+  @override
+  String ramadanShareMinutes(int minutes) {
+    return '$minutes dk';
+  }
+
+  @override
+  String get toolFridayDesc => 'Paylaşmaya hazır mesajlar';
+
+  @override
+  String get quranTitle => 'Kur\'an-ı Kerim';
+
+  @override
+  String get quranTabSurahs => 'Sureler';
+
+  @override
+  String get quranTabJuz => 'Cüzler';
+
+  @override
+  String get quranSearchHint => 'Sure ara (ad ya da numara)';
+
+  @override
+  String get quranNoResults => 'Aramanıza uyan sure bulunamadı';
+
+  @override
+  String quranJuz(int juz) {
+    return 'Cüz $juz';
+  }
+
+  @override
+  String quranPage(int page) {
+    return 'Sayfa $page';
+  }
+
+  @override
+  String quranAyahRange(int from, int to) {
+    return '$from–$to. ayetler';
+  }
+
+  @override
+  String get quranBookmark => 'Yer imi';
+
+  @override
+  String get quranViewSettings => 'Görünüm';
+
+  @override
+  String get quranModePage => 'Sayfa';
+
+  @override
+  String get quranModePageDesc => 'Mushaf düzeninde, kesintisiz Arapça metin';
+
+  @override
+  String get quranModeAyah => 'Ayet ayet';
+
+  @override
+  String get quranModeAyahDesc => 'Her ayet, Arapçası ve mealiyle ayrı kartta';
+
+  @override
+  String get quranModeTranslation => 'Meal';
+
+  @override
+  String get quranModeTranslationDesc => 'Yalnızca meal, kesintisiz okuma';
+
+  @override
+  String get quranArabicSize => 'Arapça yazı';
+
+  @override
+  String get quranTranslationSize => 'Meal yazısı';
+
+  @override
+  String get quranTranslationSmaller => 'Meal yazısını küçült';
+
+  @override
+  String get quranTranslationLarger => 'Meal yazısını büyüt';
+
+  @override
+  String get quranGoToAyah => 'Ayete git';
+
+  @override
+  String quranAyahNumberLabel(int count) {
+    return 'Ayet numarası (1–$count)';
+  }
+
+  @override
+  String get quranGo => 'Git';
+
+  @override
+  String get quranPreviousSurah => 'Önceki sure';
+
+  @override
+  String get quranNextSurah => 'Sonraki sure';
+
+  @override
+  String get quranSwipeNextHint => 'Sonraki sureye geçmek için yukarı kaydırın';
+
+  @override
+  String get toolQuranDesc => 'Sureler, Arapça metin ve meal';
+
+  @override
+  String get quranContinue => 'Kaldığın yerden devam et';
+
+  @override
+  String quranAyahRef(String surah, int ayah) {
+    return '$surah $ayah. ayet';
+  }
+
+  @override
+  String quranAyahCount(int count) {
+    return '$count ayet';
+  }
+
+  @override
+  String get quranMeccan => 'Mekke';
+
+  @override
+  String get quranMedinan => 'Medine';
+
+  @override
+  String get quranLoadError =>
+      'Sure yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';
+
+  @override
+  String get quranBookmarkSave => 'Yer imi ekle';
+
+  @override
+  String get quranBookmarkRemove => 'Yer imini kaldır';
+
+  @override
+  String get quranBookmarkSaved => 'Yer imi eklendi';
+
+  @override
+  String get quranBookmarkRemoved => 'Yer imi kaldırıldı';
+
+  @override
+  String get quranShareAyah => 'Ayeti paylaş';
+
+  @override
+  String get quranFontSmaller => 'Arapça yazıyı küçült';
+
+  @override
+  String get quranFontLarger => 'Arapça yazıyı büyüt';
+
+  @override
+  String get quranTextSource => 'Arapça metin: Tanzil Projesi (tanzil.net)';
+
+  @override
+  String get hatimTitle => 'Hatim';
+
+  @override
+  String get hatimIntro =>
+      'Günlük bir planla Kur\'an-ı Kerim\'i baştan sona okuyun.';
+
+  @override
+  String get hatimStart => 'Hatim Başlat';
+
+  @override
+  String hatimPagesPerDay(int pages) {
+    return 'Günde $pages sayfa';
+  }
+
+  @override
+  String hatimDuration(int months) {
+    String _temp0 = intl.Intl.pluralLogic(
+      months,
+      locale: localeName,
+      other: '$months ayda',
+      one: '30 günde',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hatimRamadan => 'Ramazan\'da hatim';
+
+  @override
+  String hatimProgress(int page, int total, String percent) {
+    return 'Sayfa $page / $total · $percent';
+  }
+
+  @override
+  String hatimToday(int read, int goal) {
+    return 'Bugün $read / $goal sayfa';
+  }
+
+  @override
+  String get hatimContinue => 'Devam Et';
+
+  @override
+  String get hatimEnterPage => 'Sayfa Gir';
+
+  @override
+  String hatimPageLabel(int total) {
+    return 'Son okuduğunuz sayfa (1–$total)';
+  }
+
+  @override
+  String get hatimReminder => 'Hatırlatma';
+
+  @override
+  String get hatimReminderDaily => 'Her gün hatırlat';
+
+  @override
+  String get hatimReminderTime => 'Saat';
+
+  @override
+  String get hatimChangePlan => 'Planı Değiştir';
+
+  @override
+  String get hatimDelete => 'Hatmi Sil';
+
+  @override
+  String get hatimDeleteConfirm =>
+      'Hatim planınız ve ilerlemeniz silinsin mi? Tamamlanan hatim sayısı korunur.';
+
+  @override
+  String get hatimDone => 'Hatim tamamlandı';
+
+  @override
+  String get hatimNew => 'Yeni Hatim Başlat';
+
+  @override
+  String hatimCount(int count) {
+    return 'Tamamlanan hatim: $count';
+  }
+
+  @override
+  String get hatimCompleted => 'Hatminiz tamamlandı. Allah kabul etsin!';
+
+  @override
+  String get hatimReminderChannel => 'Hatim hatırlatması';
+
+  @override
+  String get hatimReminderBody => 'Bugünkü hatim okumanızı unutmayın.';
+
+  @override
+  String hatimTodayRange(int from, int to) {
+    return 'Bugünkü okuma: Sayfa $from–$to';
+  }
+
+  @override
+  String get hatimMarkRead => 'Okudum';
+
+  @override
+  String get hatimGoalMet => 'Bugünkü okuma tamam';
+
+  @override
+  String get hatimDetails => 'Hatim ayrıntıları';
+
+  @override
+  String hatimTargetLine(String date) {
+    return 'Hedef: $date';
+  }
+
+  @override
+  String get hatimJuzHint =>
+      'Mushaftan okuduğunuz cüze dokunarak işaretleyebilirsiniz.';
+
+  @override
+  String hatimJuzMarkRead(int juz) {
+    return '$juz. cüzün sonuna kadar okundu olarak işaretlensin mi?';
+  }
+
+  @override
+  String hatimJuzMarkUnread(int juz) {
+    return '$juz. cüz ve sonrası okunmadı olarak işaretlensin mi?';
+  }
+
+  @override
+  String get hatimMark => 'İşaretle';
+
+  @override
+  String get hatimUnmark => 'İşareti kaldır';
+
+  @override
+  String get hatimJuzDone => 'okundu';
+
+  @override
+  String get hatimJuzCurrent => 'okunuyor';
+
+  @override
+  String get hatimJuzPending => 'okunmadı';
+
+  @override
+  String get hatimNote => 'Niyet';
+
+  @override
+  String get hatimNoteHint => 'Örn: Annemin ruhu için';
+
+  @override
+  String get hatimNoteAdd => 'Niyet ekleyin (isteğe bağlı)';
+
+  @override
+  String get hatimGroup => 'Toplu Hatim';
+
+  @override
+  String get hatimGroupDesc => '30 cüzü kişilere paylaştırın, listeyi gönderin';
+
+  @override
+  String get hatimGroupPeople => 'Kişi sayısı';
+
+  @override
+  String hatimGroupLine(int person, String juz) {
+    return '$person. kişi: $juz';
+  }
+
+  @override
+  String hatimGroupRange(int from, int to) {
+    return 'Cüz $from–$to';
+  }
+
+  @override
+  String get hatimGroupFooter =>
+      'Cüzünüzü bitirince haber verin. Allah kabul etsin.';
+
+  @override
+  String get hatimGroupShare => 'Listeyi Paylaş';
+
+  @override
+  String get hatimDuaHeader => 'Hatim sonrası dua';
+
+  @override
+  String quranTranslationSource(String name) {
+    return 'Meal: $name';
+  }
+
+  @override
+  String get toolZakatDesc => 'Zekat ve öşür hesabı';
+
+  @override
+  String get toolSettingsDesc => 'Konum, bildirimler, görünüm';
+
+  @override
+  String get sectionBackup => 'YEDEKLEME';
+
+  @override
+  String get backupExportTitle => 'Verileri Yedekle';
+
+  @override
+  String get backupExportSub =>
+      'Namaz takibi, kaza, zikir ve ayarlar (konum dahil) tek dosyada';
+
+  @override
+  String get backupImportTitle => 'Yedeği Geri Yükle';
+
+  @override
+  String get backupImportSub => 'Daha önce aldığınız yedek dosyasını seçin';
+
+  @override
+  String get backupShareSubject => 'Vaktinde yedeği';
+
+  @override
+  String get backupRestoreConfirmTitle => 'Yedek geri yüklensin mi?';
+
+  @override
+  String backupRestoreConfirmMessage(String date) {
+    return '$date tarihli yedek yüklenecek. Mevcut veriler yedektekilerle değiştirilecek: namaz ve oruç takibi, kaza sayaçları, zikirler, ezan ve bildirim ayarları, konum ve görünüm. Bu işlem geri alınamaz.';
+  }
+
+  @override
+  String get backupRestoreConfirm => 'Geri Yükle';
+
+  @override
+  String get backupRestored => 'Yedek geri yüklendi.';
+
+  @override
+  String get backupInvalidFile => 'Bu dosya geçerli bir Vaktinde yedeği değil.';
+
+  @override
+  String get backupNewerVersion =>
+      'Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyip tekrar deneyin.';
+
+  @override
+  String daysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gün kaldı',
+      one: 'Yarın',
+      zero: 'Bugün',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previousYear => 'Önceki yıl';
+
+  @override
+  String get nextYear => 'Sonraki yıl';
+
+  @override
+  String get previousItem => 'Önceki';
+
+  @override
+  String get nextItem => 'Sonraki';
+
+  @override
+  String missedChangeConfirm(String name, int from, int to) {
+    return '$name kaza sayısı $from yerine $to olacak. Kaydedilsin mi?';
+  }
+
+  @override
+  String get shareFailed => 'İşlem yapılamadı. Lütfen tekrar deneyin.';
+
+  @override
+  String get zakatCurrencyNote => 'Tüm tutarlar Türk lirası (₺) cinsindendir.';
+
+  @override
+  String get zakatCashTry => 'Nakit (₺)';
+
+  @override
+  String get zakatRatesUnavailable =>
+      'Güncel altın fiyatı ve kurlar alınamadı. Lütfen fiyatları elle girin.';
+
+  @override
+  String get zakatGoldGramPrice => '24 Ayar Gram Altın Fiyatı (₺)';
+
+  @override
+  String get zakatGoldGramPriceHelp => 'Nisap sınırı bu fiyatla hesaplanır.';
+
+  @override
+  String get zakatNisabUnknown =>
+      'Gram altın fiyatı olmadan nisap sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.';
+
+  @override
+  String get imsakiyeRamadan => 'Ramazan';
+
+  @override
+  String imsakiyeRamadanTitle(int year) {
+    return 'Ramazan $year İmsakiyesi';
+  }
+
+  @override
+  String get imsakiyeDay => 'Gün';
+
+  @override
+  String get imsakiyeSunriseShort => 'Güneş';
+
+  @override
+  String get imsakiyePrevMonth => 'Önceki ay';
+
+  @override
+  String get imsakiyeNextMonth => 'Sonraki ay';
+
+  @override
+  String get imsakiyeNoLocation =>
+      'İmsakiyeyi görmek için önce konumunuzu seçin. Konumu ana ekrandan veya Ayarlar\'dan belirleyebilirsiniz.';
+
+  @override
+  String get imsakiyeShareError =>
+      'İmsakiye paylaşılamadı. Lütfen tekrar deneyin.';
+
+  @override
+  String get ramadanSahurLeft => 'Sahura Kalan';
+
+  @override
+  String get ramadanIftarLeft => 'İftara Kalan';
+
+  @override
+  String ramadanDayLabel(int day) {
+    return 'Ramazan\'ın $day. günü';
+  }
 }

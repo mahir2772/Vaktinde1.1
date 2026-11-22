@@ -1,0 +1,35 @@
+<tr-TR>
+• Günün ayeti kendi başına anlaşılan orta uzunlukta ayetlerden seçiliyor; ayet ve hadis artık tekrar etmiyor, güncellemede başa sarmıyor
+• Kaza hesaplama: oruçlar gün gün (+1 Ramazan kısayoluyla), aylık özel gün elle girilebiliyor
+• Pazartesi haftalık namaz özeti (Bildirim Ayarları'ndan kapatılabilir)
+• İlk kurulumda "1 dk sonra test ezanı" önerisi; Xiaomi, Huawei, OPPO, vivo, Samsung ve Tecno için ayar rehberi
+• Hata düzeltmeleri ve iyileştirmeler
+</tr-TR>
+<en-US>
+• Daily verse picks standalone medium-length verses; daily verse and hadith no longer repeat or reset after updates
+• Qada calculator: enter missed fasts day by day (with a +1 Ramadan shortcut) and type menstruation days manually
+• Weekly prayer summary on Mondays (can be turned off in Notification Settings)
+• Test adhan in 1 min on first install; settings guide for Xiaomi, Huawei, OPPO, vivo, Samsung and Tecno
+• Bug fixes and improvements
+</en-US>
+<de-DE>
+• Vers des Tages wählt mittellange, für sich verständliche Verse; Vers und Hadith wiederholen sich nicht mehr und starten nach Updates nicht neu
+• Qada-Rechner: versäumte Fastentage einzeln (+1 Ramadan) und Menstruationstage manuell eingeben
+• Wöchentliche Gebetsübersicht am Montag (in Benachrichtigungen abschaltbar)
+• Test-Adhan in 1 Min. beim Erststart; Hilfe für Xiaomi, Huawei, OPPO, vivo, Samsung und Tecno
+• Fehlerbehebungen und Verbesserungen
+</de-DE>
+<fr-FR>
+• Le verset du jour choisit des versets autonomes ; verset et hadith ne se répètent plus ni ne repartent à zéro après mise à jour
+• Calculateur de qada : jeûnes manqués jour par jour (+1 Ramadan) et jours de menstrues saisis manuellement
+• Bilan hebdomadaire des prières le lundi (désactivable dans les réglages)
+• Adhan de test dans 1 min à l'installation ; guide Xiaomi, Huawei, OPPO, vivo, Samsung et Tecno
+• Corrections et améliorations
+</fr-FR>
+<ar>
+• آية اليوم تُختار من آيات متوسطة مفهومة بذاتها؛ ولم تعد الآية والحديث يتكرران أو يعودان للبداية بعد التحديث
+• حاسبة القضاء: إدخال أيام الصيام الفائتة يومًا بيوم (مع اختصار +1 رمضان) وإدخال أيام الحيض يدويًا
+• ملخص أسبوعي للصلوات يوم الاثنين (يمكن إيقافه من إعدادات الإشعارات)
+• أذان تجريبي بعد دقيقة عند التثبيت الأول؛ ودليل إعدادات لهواتف Xiaomi وHuawei وOPPO وvivo وSamsung وTecno
+• إصلاحات وتحسينات
+</ar>

@@ -1,12 +1,257 @@
 {
     "appTitle": "Vaktinde",
+    "navZikir": "Dhikr",
+    "todayHubTitle": "For today",
+    "todayQuranOpen": "Open the Holy Quran",
+    "todayFridayMessage": "Send a Friday message",
+    "a11yAlarmSettingsHint": "Open alarm settings",
+    "navQuran": "Quran",
+    "showcaseQuran": "Read the Holy Quran here and continue where you left off.",
+    "zikirRound": "Round {round}",
+    "@zikirRound": {
+        "placeholders": {
+            "round": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirProgress": "{count} / {target}",
+    "@zikirProgress": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "target": {
+                "type": "int"
+            }
+        }
+    },
+    "zikirPrevious": "Previous dhikr",
+    "zikirNext": "Next dhikr",
+    "zikirCountingSection": "Counting",
+    "zikirRoundMode": "Restart at the target (count rounds)",
+    "zikirVolumeKeys": "Count with volume keys",
+    "zikirVolumeKeysDesc": "Volume up +1, volume down −1. Only while the Dhikr screen is open; the system volume does not change.",
+    "adPrivacySettings": "Ad Privacy Settings",
+    "adPrivacySettingsSub": "Change your consent for personalised ads",
+    "showcaseLanguage": "You can change the app language and other settings here.",
+    "showcaseStory": "Read the ayah and hadith of the day here.",
+    "showcaseAlarms": "Set adhan and reminder alarms for each prayer here.",
+    "showcaseQibla": "Find the Qibla direction with the compass.",
+    "showcaseZikir": "Keep track of your dhikr here.",
+    "showcaseTracker": "Mark the prayers you have prayed here. On excused days, press and hold “Today”.",
+    "showcaseTools": "Prayer timetable, Prayer Guide, qada calculator and more.",
+    "tipGotIt": "Got it",
+    "tipTracker": "On excused days, press and hold the day's name or tap the flower icon in the card's corner; those days won't break your streak. Use “Add missed prayers to qada” at the bottom to move missed prayers to your qada counters.",
+    "tipZikir": "Swipe the card above left or right to change the dhikr. Turn on “Count with volume keys” in Settings to count without looking at the screen.",
+    "tipQuranReader": "Use the View button at the top to choose Page, Verse by verse or Translation. On a page, tap a verse for its translation, a bookmark or sharing.",
+    "tipAlarmsSilent": "To hear it even when your phone is on silent, turn on “Play in silent mode too”.",
+    "tipWidget": "Add a Vaktinde widget to your home screen to see prayer times without opening the app.",
+    "tipWidgetAction": "Add widget",
+    "whatsNewTitle": "What's new",
+    "whatsNewStopTitle": "Stop the adhan with one tap",
+    "whatsNewStopDesc": "While the adhan plays, “Stop” in the notification silences it at once.",
+    "whatsNewStoriesDesc": "Short stories of the prophets, the life of Prophet Muhammad, the Companions and great Islamic scholars.",
+    "whatsNewDuasDesc": "87 duas in 10 categories with Arabic text, transliteration, meaning and source, now searchable.",
+    "whatsNewDhikrsTitle": "More dhikr",
+    "whatsNewDhikrsDesc": "35 ready-made dhikr with their meanings in the dhikr list.",
+    "whatsNewHatimDesc": "New Khatm screen: “I've read it” with one tap, juz-by-juz progress, intention and group khatm.",
+    "appGuideTitle": "Get to know the app",
+    "appGuideSub": "All features and how to use them",
+    "appGuideReplayTour": "Replay the welcome tour",
+    "appGuideReplayTourSub": "Restart the short tour of the home screen",
+    "guideGroupTimes": "Prayer times & alarms",
+    "guideGroupPrayer": "Prayer",
+    "guideGroupQuran": "Quran & duas",
+    "guideGroupWidgets": "Widgets",
+    "guideLocation": "Tap the city name on the home screen; the list of cities works offline too.",
+    "guideAlarms": "Adhan, silent notification and early reminder for each prayer. Tapping a prayer time on the home screen opens this too.",
+    "guideTracker": "Mark your prayers; “Prayed” in the notification does it too. On excused days, press and hold the day's name.",
+    "guideKaza": "Keep your qada counters; the “Qada calculator” estimates them from the time you missed.",
+    "guideQibla": "Hold your phone flat; it vibrates when you face the Qibla.",
+    "guideZikir": "Tap the screen to count and swipe the card to change the dhikr. Counting with volume keys is in the dhikr settings.",
+    "guideQuran": "Choose Page, Verse by verse or Translation under View; tap a verse for its translation, a bookmark or sharing. Your place is saved automatically.",
+    "guideWidgets": "Prayer times, countdown, prayer ring, Ramadan and prayer tracker (tap a prayer to mark it). You can also add them by pressing and holding an empty spot on your home screen and choosing Widgets.",
+    "refreshLocation": "Refresh location",
+    "countryTurkey": "Türkiye",
+    "locationEuropeKktc": "Europe / Northern Cyprus",
+    "countryGermany": "Germany",
+    "countryNetherlands": "Netherlands",
+    "countryBelgium": "Belgium",
+    "countryFrance": "France",
+    "countryAustria": "Austria",
+    "countrySwitzerland": "Switzerland",
+    "countryUnitedKingdom": "United Kingdom",
+    "countryDenmark": "Denmark",
+    "countrySweden": "Sweden",
+    "countryNorway": "Norway",
+    "countryNorthernCyprus": "Northern Cyprus",
+    "provinceCenter": "Provincial capital",
+    "searchOnline": "Search online",
+    "timesFollowPhoneClock": "This place is in a different time zone: times are shown in your phone's time.",
+    "whatsNewSilenceDesc": "Automatically silences your phone during prayers and Jumu'ah, then restores it afterward.",
+    "whatsNewCityClockTitle": "Selected city local time",
+    "whatsNewCityClockDesc": "Prayer times follow the selected city's own time zone, with improved late-night Isha handling.",
+    "whatsNewKazaEstTitle": "Qada completion estimate",
+    "whatsNewKazaEstDesc": "See your estimated completion time based on your daily qada pace.",
+    "whatsNewOfflineHadithTitle": "Offline hadiths & religious days",
+    "whatsNewOfflineHadithDesc": "Expanded offline hadith collection and direct navigation from religious day notifications.",
+    "prayerSilenceTitle": "Prayer silence (auto DND)",
+    "prayerSilenceSub": "Automatically silences your phone during prayer times and restores it afterward.",
+    "prayerSilenceActiveSub": "On · {minutes} min (tap to edit)",
+    "@prayerSilenceActiveSub": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePermissionNeeded": "Do Not Disturb access needed · Tap to grant",
+    "prayerSilencePermissionBanner": "Grant Android Do Not Disturb access so Vaktinde can silence your phone during prayer.",
+    "prayerSilenceGrantAccess": "Grant Do Not Disturb access",
+    "prayerSilenceDuration": "Silence duration",
+    "prayerSilenceMinutes": "{minutes} min",
+    "@prayerSilenceMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePrayers": "Prayers",
+    "prayerSilenceFridayTitle": "Jumu'ah prayer window",
+    "prayerSilenceFridaySub": "Starts 15 min before Dhuhr on Fridays and ends 45 min after.",
+    "prayerSilenceNote": "Leaves your phone untouched if already in Do Not Disturb. Starts 1 min after audible adhan so it isn't cut off.",
+    "timesFollowCityClock": "Prayer times are shown in the selected city's local time.",
+    "cityLocalTime": "City time: {time}",
+    "@cityLocalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "navTools": "Tools",
+    "a11yHours": "{count, plural, =1{1 hour} other{{count} hours}}",
+    "@a11yHours": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yMinutes": "{count, plural, =1{1 minute} other{{count} minutes}}",
+    "@a11yMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yHoursMinutes": "{hours} {minutes}",
+    "@a11yHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "String"
+            },
+            "minutes": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yTimeUntil": "{duration} left until {vakit}",
+    "@a11yTimeUntil": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yPrayerPassed": "passed",
+    "a11yTrackerCell": "{day}, {prayer}: {state}",
+    "@a11yTrackerCell": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            },
+            "prayer": {
+                "type": "String"
+            },
+            "state": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yNotPrayed": "Not prayed",
+    "a11yNotDue": "Not yet time",
+    "a11yExcusedDay": "Excused day",
+    "a11yQiblaTurnRight": "{deg, plural, =1{Turn 1 degree to the right to face the qibla} other{Turn {deg} degrees to the right to face the qibla}}",
+    "@a11yQiblaTurnRight": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaTurnLeft": "{deg, plural, =1{Turn 1 degree to the left to face the qibla} other{Turn {deg} degrees to the left to face the qibla}}",
+    "@a11yQiblaTurnLeft": {
+        "placeholders": {
+            "deg": {
+                "type": "int"
+            }
+        }
+    },
+    "a11yQiblaAligned": "You are facing the qibla",
+    "a11yDecrease": "Decrease",
+    "a11yIncrease": "Increase",
+    "a11yPlaySound": "Play {sound}",
+    "@a11yPlaySound": {
+        "placeholders": {
+            "sound": {
+                "type": "String"
+            }
+        }
+    },
+    "a11yStopSound": "Stop",
+    "hadithNotFound": "Hadith text not found.",
+    "timesLoadError": "Prayer times could not be loaded. Please try again.",
+    "sunriseNotPrayer": "Sunrise, not a prayer time",
+    "currentPrayer": "Current prayer",
+    "textCopied": "Text copied",
+    "updateDownloaded": "A new version has been downloaded.",
+    "restartAction": "Restart",
+    "qiblaTurnRight": "Turn right",
+    "qiblaTurnSlightRight": "Turn slightly right",
+    "qiblaTurnLeft": "Turn left",
+    "qiblaTurnSlightLeft": "Turn slightly left",
+    "phoneHeading": "Phone heading: {deg}°",
+    "usingSavedLocation": "Using your saved location.",
+    "exampleHint": "E.g. {n}",
+    "noCustomDhikr": "You haven't added a custom dhikr yet.",
+    "messagesShuffled": "Messages shuffled",
+    "shareAsImage": "Share as image",
+    "shareAsText": "Share text",
+    "shareCardFooter": "Vaktinde on Google Play",
+    "fridayGreeting": "Jumu'ah Mubarak",
+    "sendGreeting": "Send greetings",
+    "greetingsTitle": "Greeting messages",
+    "shuffle": "Shuffle",
+    "copy": "Copy",
+    "messageCopied": "Message copied",
+    "versionLabel": "Version {v}",
+    "supportMailSubject": "Vaktinde - Support",
+    "madeBy": "Made with ❤️ by mmdigital",
+    "permissionPrimingTitle": "Never miss a prayer time",
+    "permissionPrimingBody": "We need notification permission for adhan alerts and location permission to calculate prayer times where you are.",
+    "continueAction": "Continue",
     "nextPrayer": "Next Prayer",
     "hadithTitle": "Hadith of the Day",
-    "readMore": "Read More...",
     "share": "Share",
     "close": "Close",
     "loading": "Calculating Times...",
-    "error": "Error",
     "retry": "Retry",
     "noData": "No data.",
     "imsak": "Imsak",
@@ -15,11 +260,192 @@
     "ikindi": "Asr",
     "aksam": "Maghrib",
     "yatsi": "Isha",
-    "exactAlarm": "Read Exactly on Time",
+    "exactAlarm": "Alert at Prayer Time",
+    "reminderTitleAt": "Prayer Time Reminder",
+    "notifBodyUpcomingAt": "{vakit} time: {time}",
+    "@notifBodyUpcomingAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitleAt": "End of Prayer Time",
+    "endReminderNotifBodyAt": "End of {vakit} time: {time}",
+    "@endReminderNotifBodyAt": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakBodyAt": "Suhoor time ended at {time}. Have a blessed fast!",
+    "@ramadanImsakBodyAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "alarmHealthExactOff": "Alarm permission is off: the adhan and reminders can be up to about an hour late (including imsak and suhoor).",
+    "healthTitle": "Notification Check",
+    "healthSub": "If the adhan doesn't play, check your settings step by step",
+    "healthSectionStatus": "Status",
+    "healthEzansTitle": "Adhan alarms",
+    "healthEzansOn": "On: {names}",
+    "@healthEzansOn": {
+        "placeholders": {
+            "names": {
+                "type": "String"
+            }
+        }
+    },
+    "healthEzansNone": "The adhan isn't turned on for any prayer.",
+    "healthNextTitle": "Next adhan",
+    "healthNextNone": "No scheduled adhan found.",
+    "healthReschedule": "Reschedule",
+    "healthNotificationsTitle": "Notifications",
+    "healthNotificationsOk": "On.",
+    "healthOpenSettings": "Open settings",
+    "healthExactTitle": "Alarms & reminders",
+    "healthExactOk": "Allowed: the adhan plays right on time.",
+    "healthVolumeTitle": "Sound",
+    "healthVolumeOk": "Notification sound is on.",
+    "healthVolumeAlarmOk": "Alarm sound is on.",
+    "healthVolumeSilent": "Your phone is on silent or vibrate: you won't hear the adhan.",
+    "healthVolumeNotificationMuted": "Notification sound is off: you won't hear the adhan.",
+    "healthVolumeAlarmMuted": "Alarm sound is off: you won't hear the adhan.",
+    "healthAlarmStreamTip": "With “{setting}” on, the adhan plays at alarm volume.",
+    "@healthAlarmStreamTip": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthDndTitle": "Do Not Disturb",
+    "healthDndOff": "Off.",
+    "healthDndOn": "On: you may not hear the adhan.",
+    "healthDndAlarm": "On, but thanks to “{setting}”, the adhan plays at alarm volume.",
+    "@healthDndAlarm": {
+        "placeholders": {
+            "setting": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBatteryTitle": "Battery usage",
+    "healthBatteryOk": "Battery optimization is off for Vaktinde.",
+    "healthBatteryOptimized": "Battery optimization is on: your phone may stop Vaktinde in the background. In the app settings, open Battery and choose “Unrestricted” (on some phones “No restrictions”).",
+    "healthBackgroundTitle": "Background activity",
+    "healthBackgroundToday": "Last run: today at {time}",
+    "@healthBackgroundToday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundYesterday": "Last run: yesterday at {time}",
+    "@healthBackgroundYesterday": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "healthBackgroundStale": "Vaktinde hasn't run in the background in the last 48 hours: your phone may be stopping it.",
+    "healthWidgetTitle": "Widgets and persistent notification",
+    "healthWidgetLate": "In the last 7 days the countdown was updated {minutes} min late at prayer time: your phone is holding Vaktinde back in the background. Set battery to “Unrestricted” and follow the steps below.",
+    "@healthWidgetLate": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "healthShowSteps": "Show steps",
+    "healthGuideTitle": "Settings for {brand}",
+    "@healthGuideTitle": {
+        "placeholders": {
+            "brand": {
+                "type": "String"
+            }
+        }
+    },
+    "healthGuideTitleGeneric": "Settings for your phone",
+    "healthGuideStale": "Background activity seems to have stopped. To keep the adhan on time, change these settings:",
+    "healthGuideMore": "Detailed guides for your phone model",
+    "healthTestTitle": "Test adhan",
+    "healthTestInfo": "You'll get a test notification in 1 minute, with the same sound and settings as the real adhan.",
+    "healthTestButton": "Test adhan in 1 min",
+    "healthTestScheduled": "The test adhan will play in 1 minute. You can close the app.",
+    "healthTestNotifBody": "If you see this notification, adhan notifications are working.",
+    "testEzanOfferTitle": "Does the adhan play on your phone?",
+    "notNow": "Not now",
+    "tipVendorGuide": "This phone needs a few settings so the adhan isn't delayed.",
+    "tipVendorGuideAction": "Show settings",
+    "weeklySummaryTitle": "Weekly prayer summary",
+    "weeklySummarySub": "On Mondays, last week's summary if you use the prayer tracker",
+    "weeklySummaryBody": "Last week you prayed {done} of {total} prayers.",
+    "@weeklySummaryBody": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "weeklySummaryFull": "Last week you prayed all {total} prayers. May Allah accept them.",
+    "@weeklySummaryFull": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "healthStepXiaomiAutostart": "In the app settings, turn on “Autostart”.",
+    "healthStepXiaomiBattery": "On the same screen, under Battery saver (or Battery), choose “No restrictions”.",
+    "healthStepHuaweiLaunch": "Open “App launch” in Settings (under Battery or Apps). Turn off automatic management for Vaktinde and leave all options on in the window that appears.",
+    "healthStepOppoBackground": "In the app settings, under Battery usage, allow background activity and auto launch.",
+    "healthStepVivoBackground": "In Settings > Battery, allow high background power consumption for Vaktinde.",
+    "healthStepAutostartIn": "Turn on autostart for Vaktinde in Settings or in the {app} app.",
+    "@healthStepAutostartIn": {
+        "placeholders": {
+            "app": {
+                "type": "String"
+            }
+        }
+    },
+    "healthStepAppBattery": "In the app settings, under Battery, choose “Unrestricted”.",
+    "healthStepSamsungSleeping": "In Settings > Battery > Background usage limits, add Vaktinde to “Never sleeping apps”.",
+    "healthStepLockRecents": "Lock Vaktinde on the recent apps screen (if your phone has this option).",
+    "healthDetails": "Details",
+    "alarmHealthExactAction": "Allow",
+    "alarmHealthNotificationsOff": "Notifications are off, the adhan won't play.",
+    "alarmHealthNotificationsAction": "Turn on",
+    "ezanAlarmStreamTitle": "Play in silent mode too",
+    "ezanAlarmStreamSub": "The adhan plays at alarm volume even when the phone is on silent.",
+    "channelAlarmSound": "Sound: {soundName} (plays on silent)",
+    "@channelAlarmSound": {
+        "placeholders": {
+            "soundName": {
+                "type": "String"
+            }
+        }
+    },
     "exactAlarmSub": "Sends a notification.",
     "silentNotif": "Text Notification Only",
     "silentNotifSub": "No Adhan/Sound, only visual alert.",
-    "warningAlarm": "Warn {minute} mins Before",
+    "warningAlarm": "Reminder {minute} Minutes Before",
     "@warningAlarm": {
         "placeholders": {
             "minute": {
@@ -47,7 +473,7 @@
             }
         }
     },
-    "notifTitleUpcoming": "Time is Approaching",
+    "notifTitleUpcoming": "Prayer Time Approaching",
     "notifBodyUpcoming": "{minute} minutes left until {vakit}.",
     "@notifBodyUpcoming": {
         "placeholders": {
@@ -61,23 +487,195 @@
     },
     "navPrayer": "Home",
     "navQibla": "Qibla",
-    "navMenu": "Menu",
     "menuTitle": "Settings",
+    "aboutAds": "About Ads",
+    "adInfoTitle": "Why does Vaktinde show ads?",
+    "adInfoBody": "To offer Vaktinde free of charge and with no sign-up required, we show a limited number of ads in the app. Ad revenue helps us cover the costs of developing and maintaining the app.\n\nNo full-screen ads are shown when you open the Quran, Qibla, Dhikr Counter, Duas or Prayer Guide, and we keep ads infrequent on other screens as well.\n\nThank you for your understanding.",
+    "adInfoGotIt": "Got it",
     "sectionLocation": "LOCATION & TIMES",
     "changeLocation": "Change Location",
     "citySelect": "Select City",
-    "districtSelect": "Select District",
     "save": "Save",
     "cancel": "Cancel",
-    "locationWarning": "Selecting a district is important for accurate prayer times.",
-    "menuNotifications": "Notification Permissions",
-    "menuNotificationsSub": "Check here if you don't hear sounds.",
-    "menuTroubleshoot": "Not Getting Notifications?",
-    "menuTroubleshootSub": "Set battery settings for Samsung/Xiaomi.",
+    "timeAdjustTitle": "Prayer Time Adjustment",
+    "tapToCount": "Tap to count",
+    "timeAdjustSub": "Fine-tune times by the minute",
+    "timeAdjustInfo": "Times are calculated for your location using the Diyanet method. If they differ slightly from your local mosque, you can move each time forward or back by minutes. The adjustment applies to the home screen, widgets and prayer notifications.",
+    "timeAdjustReset": "Reset",
+    "timeAdjustMinutes": "{value} min",
+    "@timeAdjustMinutes": {
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "timeAdjustSaved": "Prayer times updated",
+    "trackerTitle": "Prayer Tracker",
+    "trackerExcusedTitle": "Excused days (menstruation)",
+    "trackerExcusedInfo": "Prayers missed during menstruation or postpartum bleeding don't need to be made up. Days marked as excused don't break your streak and are left out of the rate and of the prayers added to qada. Ramadan fasts missed on these days must still be made up. Marking today starts an excused period: the following days are marked automatically (up to 10 days); remove today's mark when it ends. To mark a past day or remove the mark, press and hold the day's name.",
+    "trackerExcusedToday": "Mark today as excused",
+    "trackerExcusedMark": "Mark as excused",
+    "trackerExcusedUnmark": "Remove excused mark",
+    "trackerExcusedMarked": "Marked as excused.",
+    "notifStopAction": "Stop",
+    "trackerExcusedPeriodStarted": "Excused period started; the following days are marked automatically (up to 10 days). When it ends, press and hold Today again.",
+    "trackerExcusedPeriodEnded": "Excused period ended.",
+    "excusedSilentEzanTitle": "Silent Adhan on Excused Days",
+    "excusedSilentEzanSub": "On excused days, prayer time notifications arrive silently and reminders are skipped.",
+    "trackerExcusedUnmarked": "Excused mark removed.",
+    "trackerExcusedCellSnack": "This day is marked as excused, so its prayers aren't counted. To remove the mark, press and hold the day's name.",
+    "trackerExcusedKazaConfirm": "{count, plural, =1{1 prayer of this day that was added to qada will be subtracted from your qada counters.} other{{count} prayers of this day that were added to qada will be subtracted from your qada counters.}}",
+    "@trackerExcusedKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerLegendExcused": "Excused (press and hold the day)",
+    "fastLegendExcused": "Excused (to be made up)",
+    "trackerToday": "Today",
+    "trackerYesterday": "Yesterday",
+    "trackerPrayedAction": "Prayed",
+    "trackerLast7Days": "Last 7 Days",
+    "trackerCompletion": "30-day rate",
+    "trackerStreak": "Streak",
+    "trackerStreakDays": "{count, plural, =1{1 day} other{{count} days}}",
+    "@trackerStreakDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerNotYet": "This prayer time has not started yet.",
+    "trackerKazaButton": "Add missed prayers to qada",
+    "trackerKazaInfo": "Unmarked prayers from the last 30 days (since you started tracking) are added to your qada counters. Each prayer is added only once. If you have performed a prayer that was added to qada, tap it: it will be marked as prayed and subtracted from your qada count.",
+    "trackerKazaConfirm": "{count, plural, =1{1 unmarked prayer will be added to your qada counters. Continue?} other{{count} unmarked prayers will be added to your qada counters. Continue?}}",
+    "@trackerKazaConfirm": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaAdd": "Add",
+    "trackerKazaDone": "{count, plural, =1{1 prayer added to qada.} other{{count} prayers added to qada.}}",
+    "@trackerKazaDone": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "trackerKazaNone": "No prayers to add to qada.",
+    "trackerKazaRemoveTitle": "Remove from qada?",
+    "trackerKazaRemoveConfirm": "This prayer will be marked as prayed and your {name} qada count will change from {from} to {to}.",
+    "@trackerKazaRemoveConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "addWidgetTitle": "Add Home Screen Widget",
+    "addWidgetSub": "See prayer times without opening the app",
+    "addWidgetHint": "Pick one; your home screen will ask you to confirm.",
+    "widgetRingName": "Prayer Ring",
+    "widgetRingDesc": "Square: time left until the next prayer; the ring shows the time passed since the previous one",
+    "widgetTrackerName": "Prayer Tracker",
+    "widgetTrackerDesc": "Wide strip: today's five prayers; tap one to mark it as prayed",
+    "widgetLargeName": "Today's Prayer Times",
+    "widgetLargeDesc": "Large: location, Hijri date, today's prayer times and time left",
+    "widgetWideName": "Next Prayer",
+    "widgetWideDesc": "Wide strip: location, Hijri date and time left until the next prayer",
+    "widgetSmallName": "Prayer Countdown",
+    "widgetSmallDesc": "Small square: time left until the next prayer",
+    "trackerLegendPrayed": "Prayed",
+    "trackerLegendKaza": "Added to qada",
+    "kerahatActive": "Makruh time now: {range}",
+    "@kerahatActive": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "kerahatUpcoming": "Makruh time soon: {range}",
+    "@kerahatUpcoming": {
+        "placeholders": {
+            "range": {
+                "type": "String"
+            }
+        }
+    },
+    "endReminderTitle": "Remind Before Prayer Time Ends",
+    "dailyContentNotifTitle": "Daily Ayah & Hadith Notifications",
+    "persistentNotifTitle": "Persistent Notification",
+    "persistentNotifSub": "Shows the time left until the next prayer and today's prayer times in the notification bar.",
+    "dailyContentNotifSub": "Sends an ayah every morning and a hadith every evening.",
+    "religiousDaysNotifTitle": "Religious Day & Holy Night Notifications",
+    "religiousDaysNotifSub": "Sends a morning reminder for holy nights, Eids and other religious days.",
+    "fridayNotifTitle": "Friday Notification",
+    "fridayNotifSub": "Reminds you on Friday mornings to read Surah Al-Kahf and send Friday messages.",
+    "fridayNotifBody": "Don't forget to read Surah Al-Kahf and send a Friday message to your loved ones.",
+    "fridayKehfAction": "Surah Al-Kahf",
+    "religiousDaysChannel": "Religious Days & Holy Nights",
+    "ucAylarBaslangici": "Start of the Three Holy Months",
+    "ramazanArefesi": "Last Day of Ramadan",
+    "kurbanArefesi": "Day of Arafah",
+    "ucAylarNotifBody": "The three holy months of Rajab, Sha'ban and Ramadan begin today. May they bring you many blessings.",
+    "ucAylarRegaipTitle": "Three Holy Months & Laylat al-Raghaib",
+    "ucAylarRegaipNotifBody": "The three holy months begin today, and tonight is Laylat al-Raghaib. Wishing you a blessed night and blessed months ahead.",
+    "regaipKandiliNotifBody": "Tonight is Laylat al-Raghaib. Have a blessed night!",
+    "miracKandiliNotifBody": "Tonight is the Night of Isra and Mi'raj. Have a blessed night!",
+    "beratKandiliNotifBody": "Tonight is the Night of Mid-Sha'ban (Bara'at). Have a blessed night!",
+    "mevlidKandiliNotifBody": "Tonight is Mawlid al-Nabi. Have a blessed night!",
+    "kadirGecesiNotifBody": "Tonight is Laylat al-Qadr. Have a blessed night!",
+    "ramazanBaslangiciNotifBody": "Ramadan begins tomorrow: the first tarawih and suhoor are tonight. Have a blessed Ramadan!",
+    "ramazanArefesiNotifBody": "Eid al-Fitr is tomorrow. Wishing you a blessed Eid in advance!",
+    "ramazanBayramiNotifBody": "Eid Mubarak! May Allah accept from us and from you.",
+    "kurbanArefesiNotifBody": "Eid al-Adha is tomorrow. Wishing you a blessed Eid in advance!",
+    "kurbanBayramiNotifBody": "Eid Mubarak! May Allah accept your sacrifices and good deeds.",
+    "hicriYilbasiNotifBody": "Today is the Islamic New Year. May it bring you goodness and blessings.",
+    "asureGunuNotifBody": "Today is the Day of Ashura. May it bring you goodness and blessings.",
+    "privacyPolicy": "Privacy Policy",
+    "endReminderSub": "Notifies you before a prayer's time ends if it isn't marked as prayed.",
+    "endReminderNotifTitle": "Prayer Time Ending",
+    "endReminderNotifBody": "{minute} minutes left until {vakit} time ends.",
+    "@endReminderNotifBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            },
+            "minute": {
+                "type": "int"
+            }
+        }
+    },
+    "endReminderChannel": "Prayer End Reminders",
+    "ramadanIftarTitle": "Iftar Time",
+    "ramadanIftarBody": "{vakit} time has begun. Have a blessed iftar!",
+    "@ramadanIftarBody": {
+        "placeholders": {
+            "vakit": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanImsakTitle": "Imsak Time",
+    "ramadanImsakBody": "Suhoor time has ended. Have a blessed fast!",
     "sectionSupport": "SUPPORT",
     "shareApp": "Share with a Friend",
     "rateApp": "Rate Us",
-    "contactUs": "Contact & Report Bug",
+    "contactUs": "Contact Us & Report a Bug",
     "shareText": "I found a great Prayer Time app! Download it here: {link}",
     "@shareText": {
         "placeholders": {
@@ -86,18 +684,8 @@
             }
         }
     },
-    "batteryDialogTitle": "Notification Issue Solution",
-    "batteryDialogBody": "Your phone might be closing the app to save battery. To prevent this:\n\n1. Open the Recent Apps screen.\n2. Long press the 'Vaktinde' app or tap its logo.\n3. Tap the Lock Icon 🔒 to lock it.\n\nAlso, go to Settings > Apps > Vaktinde > Battery > Select Unrestricted.",
     "okUnderstood": "OK, I Understand",
     "religiousDaysTitle": "Religious Days",
-    "errorOccurred": "An error occurred: {error}",
-    "@errorOccurred": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
     "noDataFound": "No data found.",
     "noDataForYear": "No data found for the year {year}.",
     "@noDataForYear": {
@@ -107,7 +695,7 @@
             }
         }
     },
-    "religiousDaysListTitle": "Religious Days List for {year}",
+    "religiousDaysListTitle": "Religious Days in {year}",
     "@religiousDaysListTitle": {
         "placeholders": {
             "year": {
@@ -116,7 +704,67 @@
         }
     },
     "missedPrayersTitle": "Missed Prayers Tracker",
-    "missedPrayersInfo": "Note your missed prayers here and subtract as you pray them.\n(Tap the number to enter manually)",
+    "kazaCalcTitle": "Qada calculator",
+    "kazaCalcSubtitle": "Estimate your qada from the time you didn't pray",
+    "kazaCalcPeriod": "Time without praying",
+    "kazaCalcYears": "Years",
+    "kazaCalcMonths": "Months",
+    "kazaCalcOptional": "Optional",
+    "kazaCalcExcused": "Average menstruation days per month",
+    "kazaCalcRamadans": "Ramadans not fasted",
+    "kazaCalcFastDays": "Missed fasting (days)",
+    "kazaCalcAddRamadan": "+1 Ramadan (+30 days)",
+    "kazaCalcOptionalInfo": "Prayers missed during menstruation don't need to be made up, so the days you enter are subtracted from the prayers. They are not subtracted from fasting: fasts missed during menstruation must be made up too. You can enter missed fasts day by day or add +30 days for a full Ramadan.",
+    "kazaCalcResult": "Estimated qada",
+    "kazaCalcEachPrayer": "Each prayer and witr",
+    "kazaCalcNote": "This is an estimate (a year counts as 365 days, a month as 30). For a definitive answer, consult an imam or religious scholar.",
+    "kazaCalcAdd": "Add to qada counters",
+    "kazaCalcConfirmTitle": "Add to qada counters?",
+    "kazaCalcConfirm": "Each prayer and witr: +{prayers}\nFasting: +{fasts}\n\nThese are added to your current counts; nothing is overwritten.",
+    "@kazaCalcConfirm": {
+        "placeholders": {
+            "prayers": {
+                "type": "int"
+            },
+            "fasts": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCalcAdded": "Estimate added to your qada counters.",
+    "kazaDurationYears": "{count, plural, =1{1 year} other{{count} years}}",
+    "@kazaDurationYears": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationMonths": "{count, plural, =1{1 month} other{{count} months}}",
+    "@kazaDurationMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationDays": "{count, plural, =1{1 day} other{{count} days}}",
+    "@kazaDurationDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCompletionEstimate": "If you make up 1 day of prayers per day, your missed prayers will take about {duration}.",
+    "@kazaCompletionEstimate": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "missedPrayersInfo": "Note your missed prayers here and subtract them as you make them up.\n(Tap a number to enter it manually)",
     "editMissedTitle": "Edit Missed {title}",
     "@editMissedTitle": {
         "placeholders": {
@@ -126,12 +774,8 @@
         }
     },
     "missedCountLabel": "Missed Count",
-    "missedCountHint": "E.g.: 150",
+    "missedCountHint": "E.g. 150",
     "sabah": "Fajr",
-    "ogle": "Dhuhr",
-    "ikindi": "Asr",
-    "aksam": "Maghrib",
-    "yatsi": "Isha",
     "vitir": "Witr",
     "oruc": "Fasting",
     "timeLeftFor": "Time Left for {vakit}",
@@ -145,37 +789,50 @@
     "tomorrow": "(Tomorrow)",
     "fridayMessagesTitle": "Friday Messages",
     "esmaulHusnaTitle": "Names of Allah",
-    "closeCaps": "CLOSE",
     "zakatTitle": "Zakat Calculator",
+    "fitreTitle": "Fitra & Fidya",
+    "toolFitreDesc": "Fitra and fidya amounts",
+    "trackerTabTrack": "Tracking",
+    "trackerTabKaza": "Qada",
+    "trackerBadgesTitle": "Goals",
+    "trackerBadgeEarned": "Earned · {date}",
+    "trackerBadgeSnack": "{count, plural, other{Congratulations! You reached your {count}-day streak goal.}}",
+    "fitreInfo": "The amount per person is the minimum fitra (sadaqat al-fitr) set by Diyanet, Turkey's religious authority; fitra can be given in cash or as food. Fidya is paid by those who cannot fast because of old age or an illness with no hope of recovery: one fitra for each day. If you live outside Turkey, you can enter the amount set where you live.",
+    "fitreAmountLabel": "Amount per person",
+    "fitreSource": "Source: {source}, {year}",
+    "fitreResetAmount": "Reset to default amount",
+    "fitreSectionTitle": "Fitra",
+    "fitrePeopleLabel": "Number of people",
+    "fidyeSectionTitle": "Fidya",
+    "fidyeDaysLabel": "Number of days",
+    "fitreTotal": "Total",
+    "fastTitle": "Ramadan Fasting",
+    "fastCount": "{done}/{total} days",
+    "fastInfo": "Tap the days you fasted. Missed days are added to your qada fasting counter once; if you did fast a day that was added to qada, tap it and it will be subtracted from the counter.",
+    "fastLegendFasted": "Fasted",
+    "fastLegendKaza": "Added to qada",
+    "fastKazaButton": "Add missed fasts to qada",
+    "fastKazaConfirm": "{count, plural, =1{1 unmarked day will be added to your qada fasting counter. Continue?} other{{count} unmarked days will be added to your qada fasting counter. Continue?}}",
+    "fastKazaDone": "{count, plural, =1{1 day added to qada.} other{{count} days added to qada.}}",
+    "fastKazaNone": "No days to add to qada.",
+    "fastKazaRemoveTitle": "Remove from qada?",
+    "fastKazaRemoveConfirm": "This day will be marked as fasted and your qada fasting count will change from {from} to {to}.",
+    "fastFastedAction": "I fasted",
     "zakatCalculatorTitle": "Smart Zakat Calculator",
     "liveRatesLoading": "Fetching current exchange rates...",
     "liveRatesInfo": "You can manually edit the automatically fetched rates if you wish.",
-    "sectionGold": "Gold Assets",
     "goldType": "Gold Type",
     "goldAmount": "Quantity / Grams",
     "goldUnitPrice": "Unit Price",
-    "sectionCurrency": "Currency Assets",
     "currencyType": "Currency Type",
     "currencyAmount": "Amount",
     "currencyRate": "Current Rate",
-    "sectionCashDebt": "Cash & Debts",
-    "cashAmount": "Cash on Hand & in Bank",
-    "debtAmount": "Total Debts (To be deducted)",
     "calculateButton": "CALCULATE",
-    "zakatResultTitle": "Your Payable Zakat",
+    "zakatResultTitle": "Zakat Due",
     "netAssets": "Net Assets:",
     "qiblaTitle": "Qibla Compass",
     "locationServiceOff": "Location service is off. Please enable location.",
     "locationPermissionDenied": "Location permission denied.",
-    "locationPermissionForever": "Location permission is permanently denied. Please enable it in settings.",
-    "compassError": "Sensor error: {error}",
-    "@compassError": {
-        "placeholders": {
-            "error": {
-                "type": "String"
-            }
-        }
-    },
     "noCompass": "No compass on this device.",
     "qiblaFound": "YOU FOUND THE QIBLA!",
     "qiblaAngle": "Qibla Angle: {angle}°",
@@ -196,23 +853,35 @@
     "gbp": "British Pound (GBP)",
     "sectionAppearance": "APPEARANCE & LANGUAGE",
     "appearanceSettings": "Appearance Settings",
-    "appearanceSub": "Theme and Background",
+    "appearanceSub": "Theme, background and text size",
+    "textSizeTitle": "Text Size",
+    "textSizeNormal": "Normal",
+    "textSizeLarge": "Large",
+    "textSizeExtraLarge": "Extra large",
+    "whatsNewTextSizeDesc": "Make text larger right inside the app.",
+    "sectionNotifications": "NOTIFICATIONS",
+    "notificationSettingsTitle": "Notification Settings",
+    "notificationSettingsSub": "Reminders, daily ayah, holy nights, Friday, persistent notification",
+    "ezanAlarmsTitle": "Adhan Alarms",
+    "ezanAlarmsSub": "Adhan sound and early reminder for each prayer",
+    "privacyAdsTitle": "Privacy & Ads",
+    "privacyAdsSub": "Privacy policy and information about ads",
+    "privacyAdsConsentSub": "Ad privacy settings and privacy policy",
     "themeMode": "Theme Mode",
     "themeSystem": "System",
     "themeLight": "Light",
     "themeDark": "Dark",
     "bgImage": "Background Image",
     "bgDefault": "Default",
+    "bgPlain": "Plain",
     "bgMosque": "Mosque",
     "bgKaaba": "Kaaba",
-    "bgQuran": "Quran",
-    "none": "None",
     "zakatEligible": "Zakat is Required",
     "zakatNotEligible": "Zakat is Not Required",
-    "nisabLimit": "Nisab Limit (80.18 g Gold)",
-    "belowNisabMessage": "Since your net assets are below the Nisab amount (wealth limit), Zakat is not obligatory.",
+    "nisabLimit": "Nisab Threshold (80.18 g Gold)",
+    "belowNisabMessage": "Since your net assets are below the nisab threshold (the minimum wealth on which zakat is due), zakat is not obligatory.",
     "searchLocationTitle": "Search Location (Worldwide)",
-    "searchLocationHint": "City or Country (E.g.: Paris)",
+    "searchLocationHint": "City or country (e.g. Paris)",
     "searchInitial": "Type the place you want to search...",
     "searchNotFound": "Location not found.",
     "searchError": "No results found. Please try again.",
@@ -232,19 +901,13 @@
     },
     "channelSilentPrayers": "Silent Adhan Notifications",
     "tickerEzan": "Prayer Time",
-    "stickyChannelName": "Persistent Counter",
-    "stickyChannelDesc": "Shows the remaining time",
-    "timeLeftTo": "Time Left Until: ",
-    "locationFallbackMessage": "Could not get location, using default values.",
     "fetchingLocation": "Fetching location...",
     "directionNorth": "N",
     "directionSouth": "S",
     "directionEast": "E",
     "directionWest": "W",
-    "calibrationInstruction": "(Draw an '8' for calibration)",
-    "zakatDescription": "Calculate your Zakat in detail according to religious guidelines and current market rates.",
+    "zakatDescription": "Calculate your zakat in detail based on the fatwas of Diyanet (Turkey's Presidency of Religious Affairs) and current market rates.",
     "cashAndCurrencyTitle": "Cash and Currency Assets",
-    "cashTurkishLira": "Cash (Local Currency)",
     "goldAndSilverTitle": "Gold and Silver",
     "silverGram": "Silver (Grams)",
     "unitPrice": "Unit Price",
@@ -260,13 +923,13 @@
     "currencyLabel": "Currency",
     "valueOrAmount": "Value / Amount",
     "agriProductsTitle": "Agricultural Products (Ushr)",
-    "agriDiyanetNote": "Since Nisab is not required for agricultural products, the amount you declare is directly added to your Zakat total.",
+    "agriDiyanetNote": "Since no nisab threshold applies to agricultural products, the amount you declare is added directly to your zakat total.",
     "harvestedProductValue": "Harvested Product Value",
     "irrigationMethod": "Irrigation Method",
     "debtsTitle": "Debts (To be deducted)",
     "debtType": "Debt Type (Cash, Currency, Gold)",
     "zakatAgriIncluded": "Included Agricultural Zakat (Ushr)",
-    "assetCheck": "Check",
+    "assetCheck": "Cheque",
     "assetBond": "Promissory Note",
     "assetSukuk": "Sukuk",
     "assetLeaseCert": "Lease Certificate",
@@ -274,7 +937,7 @@
     "agriSoil": "Agriculture (Soil)",
     "agriSoilless": "Agriculture (Soilless)",
     "agriRateNoCost": "No Cost (Rain/River) - 10%",
-    "agriRateCostly": "Costly (Motor/Transport) - 5%",
+    "agriRateCostly": "With Cost (Pump/Transport) - 5%",
     "toImsak": "To Imsak",
     "toGunes": "To Sunrise",
     "toOgle": "To Dhuhr",
@@ -284,11 +947,6 @@
     "lowAccuracyWarning": "Compass calibration is weak. Please draw an '8' in the air with your phone.",
     "qiblaDirection": "Qibla Direction",
     "zikirmatikTitle": "Dhikr Counter",
-    "dhikrSubhanallah": "Subhanallah",
-    "dhikrElhamdulillah": "Alhamdulillah",
-    "dhikrAllahuEkber": "Allahu Akbar",
-    "dhikrKalima": "Kalima Tayyibah",
-    "dhikrSalavat": "Salawat",
     "targetReached": "Target Reached!",
     "resetCounter": "Reset",
     "targetCount": "Target: {target}",
@@ -299,10 +957,7 @@
     },
     "setTarget": "Set Target",
     "dhikrOther": "Other (Custom Dhikr)",
-    "customDhikrTitle": "Add Custom Dhikr",
     "customDhikrHint": "Type your dhikr",
-    "save": "Save",
-    "cancel": "Cancel",
     "zikirSettings": "Settings",
     "vibration": "Vibration",
     "sound": "Sound Effect",
@@ -310,37 +965,30 @@
     "appearance": "Appearance",
     "themeModern": "Modern Button",
     "themeClassic": "Classic Tasbih",
-    "introTitle1": "Welcome to Vaktinde",
-    "introDesc1": "Easily track prayer times, dhikrs, and religious days with our modern and elegant interface.",
-    "introTitle2": "Smart Notifications",
-    "introDesc2": "Get alerts with the notification sound of your choice at prayer times. Never miss your worship.",
-    "introTitle3": "Advanced Tools",
-    "introDesc3": "Strengthen your spirituality with the Animated Dhikr Counter, Missed Prayers Tracker, Names of Allah, and Zakat Calculator.",
-    "introSkip": "Skip",
-    "introNext": "Next",
-    "introStart": "Start Now",
     "dhikrListTitle": "Dhikr List",
     "addCustomDhikr": "Add New Custom Dhikr",
     "customDhikrAdded": "Dhikr added successfully.",
     "customDhikrLimit": "You can add up to 20 custom dhikrs!",
     "deleteDhikr": "Delete",
+    "dhikrInfo": "Meaning and source",
     "statisticsTitle": "Statistics",
+    "zikirTodayCount": "Today: {count}",
+    "@zikirTodayCount": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
     "monthly": "Monthly",
     "yearly": "Yearly",
     "totalDhikr": "Total Dhikr Count",
     "today": "Today",
     "statsEmpty": "No dhikr data yet.",
-    "dhikrEstagfirullah": "Astaghfirullah",
-    "dhikrLaHavle": "La Hawla wa la Quwwata",
-    "dhikrHasbunallah": "Hasbunallah",
-    "dhikrSubhanallahi": "Subhanallahi wa bihamdihi",
-    "dhikrYunus": "Prayer of Prophet Yunus",
-    "dhikrYaAllah": "Ya Allah (J.J.)",
-    "dhikrYaRahman": "Ya Rahman (J.J.)",
-    "dhikrYaRahim": "Ya Rahim (J.J.)",
-    "dhikrYaSafi": "Ya Shafi (J.J.)",
-    "dhikrYaRezzak": "Ya Razzaq (J.J.)",
-    "dhikrYaFettah": "Ya Fattah (J.J.)",
+    "dhikrYaAllah": "Ya Allah (SWT)",
+    "dhikrYaRahman": "Ya Rahman (SWT)",
+    "dhikrYaRahim": "Ya Rahim (SWT)",
+    "dhikrYaSafi": "Ya Shafi (SWT)",
+    "dhikrYaRezzak": "Ya Razzaq (SWT)",
+    "dhikrYaFettah": "Ya Fattah (SWT)",
     "mainDhikrs": "Basic Dhikrs",
     "esmaulHusnaTab": "Names of Allah",
     "qiblaCalibration": "For the compass to work accurately, please draw an '8' in the air with your phone.",
@@ -356,16 +1004,35 @@
     "regaipKandili": "Laylat al-Raghaib",
     "tabTimes": "Times",
     "tabAlarms": "Alarms",
-    "locationFoundNoName": "Location found but no name.",
+    "locationFoundNoName": "Location found, but its name is unavailable.",
     "dailyAyahTitle": "Ayah of the Day",
-    "remainingTime": "Remaining",
     "onboardingWelcome": "Hoş Geldiniz / Welcome",
     "onboardingSelectLanguage": "Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.",
-    "turnRight": "Turn right ➔",
-    "turnSlightRight": "Turn slight right ➔",
-    "turnLeft": "⬅ Turn left",
-    "turnSlightLeft": "⬅ Turn slight left",
     "calibrationRequired": "Calibration Required",
+    "qiblaAccuracyNote": "The compass shows an approximate direction; metal, magnets and electronic devices can throw it off.",
+    "qiblaTipsTitle": "For accurate results",
+    "qiblaTipFlat": "Hold the phone flat, parallel to the ground.",
+    "qiblaTipCalibrate": "Calibrate the compass by drawing an '8' in the air with your phone.",
+    "qiblaTipMagneticCase": "Remove any magnetic phone case.",
+    "qiblaTipMetal": "Stay away from metal objects and electronic devices.",
+    "qiblaTipMosque": "If possible, compare with the Qibla direction of a mosque.",
+    "qiblaAngleTrueNorth": "Qibla angle: {angle}° (from true north)",
+    "@qiblaAngleTrueNorth": {
+        "placeholders": {
+            "angle": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaDeclination": "Magnetic declination: {deg}° (corrected automatically)",
+    "@qiblaDeclination": {
+        "placeholders": {
+            "deg": {
+                "type": "String"
+            }
+        }
+    },
+    "qiblaInterferenceWarning": "Magnetic interference detected: move the phone away from metal objects, magnetic cases and electronic devices.",
     "gold22kGram": "22 Carat Gram Gold",
     "goldAtaToptan": "Ata Wholesale",
     "goldAtaCumhuriyet": "Ata Cumhuriyet",
@@ -390,10 +1057,470 @@
     "currencyBgn": "Bulgarian Lev",
     "currencyKwd": "Kuwaiti Dinar",
     "currencyTry": "Turkish Lira",
-    "holdToEdit": "(Hold to edit)",
     "editCounterTitle": "Edit Counter",
-    "editCounterHint": "E.g.: 2000",
-    "editTargetHint": "E.g.: 99",
     "resetCounterConfirm": "Are you sure you want to reset the counter?",
-    "dhikrTarget": "Target:"
+    "imsakiyeTitle": "Prayer Timetable",
+    "widgetRamadanName": "Ramadan Countdown",
+    "widgetRamadanDesc": "Square: time left until iftar and until suhoor ends; outside Ramadan, the days until it begins",
+    "widgetRamadanDay": "Ramadan · day {day}",
+    "@widgetRamadanDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "widgetRamadanUntil": "Days until Ramadan",
+    "toolsGroupPrayer": "Prayer",
+    "toolsGroupInfo": "Knowledge",
+    "toolsGroupCalc": "Calculators",
+    "toolImsakiyeDesc": "Monthly and Ramadan times",
+    "toolTrackerDesc": "Your prayers and qada counters",
+    "toolReligiousDaysDesc": "Holy nights and Eids",
+    "nearbyMosquesTitle": "Nearby Mosques",
+    "toolNearbyMosquesDesc": "Find the nearest mosques on the map",
+    "nearbyMosquesQuery": "mosque",
+    "nearbyMosquesError": "Could not open the map.",
+    "toolEsmaDesc": "The 99 names and their meanings",
+    "duasTitle": "Duas",
+    "duaSearchHint": "Search duas",
+    "duaNoResults": "No dua matches your search",
+    "duaCount": "{count, plural, =1{1 dua} other{{count} duas}}",
+    "@duaCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storiesTitle": "Stories",
+    "toolStoriesDesc": "Prophets, the Prophet's life, Companions and scholars",
+    "storiesNote": "The summaries are based on the Holy Quran and on hadith, sira and biography sources. Consult a religious scholar for details on religious matters.",
+    "storyCount": "{count, plural, =1{1 story} other{{count} stories}}",
+    "@storyCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "storyLesson": "Lesson",
+    "prayerGuideTitle": "Prayer Guide",
+    "toolPrayerGuideDesc": "Wudu and how to pray, step by step",
+    "prayerGuideTabWudu": "Wudu",
+    "prayerGuideTabFards": "Obligations",
+    "prayerGuideTabRakats": "Rak'ahs",
+    "prayerGuideTabSteps": "How to Pray",
+    "prayerGuideTimes": "{count, plural, =1{once} other{{count} times}}",
+    "toolDuasDesc": "Tasbih, morning-evening and daily duas",
+    "duaTransliteration": "Transliteration",
+    "duaMeaning": "Meaning",
+    "tesbihatTitle": "Tasbih After Prayer",
+    "tesbihatDesc": "Ayat al-Kursi, 33 × 3 tasbih and dua",
+    "tesbihatStep": "Step {current} of {total}",
+    "@tesbihatStep": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "tesbihatTapWhenRead": "Tap after reciting",
+    "tesbihatRestart": "Start Over",
+    "ramadanShareTitle": "Ramadan · Day {day}",
+    "@ramadanShareTitle": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareIftarIn": "Iftar in {time}",
+    "@ramadanShareIftarIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareSahurIn": "Suhoor ends in {time}",
+    "@ramadanShareSahurIn": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareIftarAt": "Iftar {time}",
+    "@ramadanShareIftarAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareImsakAt": "Imsak {time}",
+    "@ramadanShareImsakAt": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
+    "ramadanShareHoursMinutes": "{hours} h {minutes} min",
+    "@ramadanShareHoursMinutes": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareHours": "{hours} h",
+    "@ramadanShareHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "ramadanShareMinutes": "{minutes} min",
+    "@ramadanShareMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "toolFridayDesc": "Messages ready to share",
+    "quranTitle": "Holy Quran",
+    "quranTabSurahs": "Surahs",
+    "quranTabJuz": "Juz",
+    "quranSearchHint": "Search surah by name or number",
+    "quranNoResults": "No surah matches your search",
+    "quranJuz": "Juz {juz}",
+    "@quranJuz": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "quranPage": "Page {page}",
+    "@quranPage": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahRange": "Verses {from}–{to}",
+    "@quranAyahRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "quranBookmark": "Bookmark",
+    "quranViewSettings": "View",
+    "quranModePage": "Page",
+    "quranModePageDesc": "Continuous Arabic text, laid out like the Mushaf",
+    "quranModeAyah": "Verse by verse",
+    "quranModeAyahDesc": "Each verse on its own card, with its translation",
+    "quranModeTranslation": "Translation",
+    "quranModeTranslationDesc": "Translation only, for continuous reading",
+    "quranArabicSize": "Arabic text",
+    "quranTranslationSize": "Translation text",
+    "quranTranslationSmaller": "Smaller translation text",
+    "quranTranslationLarger": "Larger translation text",
+    "quranGoToAyah": "Go to verse",
+    "quranAyahNumberLabel": "Verse number (1–{count})",
+    "@quranAyahNumberLabel": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranGo": "Go",
+    "quranPreviousSurah": "Previous surah",
+    "quranNextSurah": "Next surah",
+    "quranSwipeNextHint": "Swipe up to continue to the next surah",
+    "toolQuranDesc": "Surahs with Arabic text and translation",
+    "quranContinue": "Continue where you left off",
+    "quranAyahRef": "{surah}, verse {ayah}",
+    "@quranAyahRef": {
+        "placeholders": {
+            "surah": {
+                "type": "String"
+            },
+            "ayah": {
+                "type": "int"
+            }
+        }
+    },
+    "quranAyahCount": "{count, plural, =1{1 verse} other{{count} verses}}",
+    "@quranAyahCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "quranMeccan": "Meccan",
+    "quranMedinan": "Medinan",
+    "quranLoadError": "Couldn't load the surah. Check your internet connection and try again.",
+    "quranBookmarkSave": "Add bookmark",
+    "quranBookmarkRemove": "Remove bookmark",
+    "quranBookmarkSaved": "Bookmark added",
+    "quranBookmarkRemoved": "Bookmark removed",
+    "quranShareAyah": "Share verse",
+    "quranFontSmaller": "Smaller Arabic text",
+    "quranFontLarger": "Larger Arabic text",
+    "quranTextSource": "Arabic text: Tanzil Project (tanzil.net)",
+    "hatimTitle": "Khatm",
+    "hatimIntro": "Read the whole Quran with a daily plan.",
+    "hatimStart": "Start Khatm",
+    "hatimPagesPerDay": "{pages, plural, =1{1 page a day} other{{pages} pages a day}}",
+    "@hatimPagesPerDay": {
+        "placeholders": {
+            "pages": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimDuration": "{months, plural, =1{in 30 days} other{in {months} months}}",
+    "@hatimDuration": {
+        "placeholders": {
+            "months": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimRamadan": "Khatm in Ramadan",
+    "hatimProgress": "Page {page} of {total} · {percent}",
+    "@hatimProgress": {
+        "placeholders": {
+            "page": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            },
+            "percent": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimToday": "Today {read} / {goal} pages",
+    "@hatimToday": {
+        "placeholders": {
+            "read": {
+                "type": "int"
+            },
+            "goal": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimContinue": "Continue",
+    "hatimEnterPage": "Enter Page",
+    "hatimPageLabel": "Last page you read (1–{total})",
+    "@hatimPageLabel": {
+        "placeholders": {
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimReminder": "Reminder",
+    "hatimReminderDaily": "Remind me every day",
+    "hatimReminderTime": "Time",
+    "hatimChangePlan": "Change Plan",
+    "hatimDelete": "Delete Khatm",
+    "hatimDeleteConfirm": "Delete your Khatm plan and progress? Your number of completed Khatms is kept.",
+    "hatimDone": "Khatm completed",
+    "hatimNew": "Start New Khatm",
+    "hatimCount": "Completed Khatms: {count}",
+    "@hatimCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimCompleted": "Your Khatm is complete. May Allah accept it!",
+    "hatimReminderChannel": "Khatm reminder",
+    "hatimReminderBody": "Don't forget today's Khatm reading.",
+    "hatimTodayRange": "Today's reading: pages {from}–{to}",
+    "@hatimTodayRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMarkRead": "I've read it",
+    "hatimGoalMet": "Today's reading is done",
+    "hatimDetails": "Khatm details",
+    "hatimTargetLine": "Target: {date}",
+    "@hatimTargetLine": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimJuzHint": "Tap a juz you read from a printed mushaf to mark it.",
+    "hatimJuzMarkRead": "Mark everything up to the end of juz {juz} as read?",
+    "@hatimJuzMarkRead": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimJuzMarkUnread": "Mark juz {juz} and the rest as unread?",
+    "@hatimJuzMarkUnread": {
+        "placeholders": {
+            "juz": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimMark": "Mark",
+    "hatimUnmark": "Unmark",
+    "hatimJuzDone": "read",
+    "hatimJuzCurrent": "in progress",
+    "hatimJuzPending": "not read",
+    "hatimNote": "Intention",
+    "hatimNoteHint": "E.g. for my late mother",
+    "hatimNoteAdd": "Add an intention (optional)",
+    "hatimGroup": "Group Khatm",
+    "hatimGroupDesc": "Share out the 30 juz and send the list",
+    "hatimGroupPeople": "Number of people",
+    "hatimGroupLine": "Person {person}: {juz}",
+    "@hatimGroupLine": {
+        "placeholders": {
+            "person": {
+                "type": "int"
+            },
+            "juz": {
+                "type": "String"
+            }
+        }
+    },
+    "hatimGroupRange": "Juz {from}–{to}",
+    "@hatimGroupRange": {
+        "placeholders": {
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "hatimGroupFooter": "Please let us know when you finish your part. May Allah accept it.",
+    "hatimGroupShare": "Share List",
+    "hatimDuaHeader": "Dua after completing the Quran",
+    "quranTranslationSource": "Translation: {name}",
+    "@quranTranslationSource": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "toolZakatDesc": "Zakat and harvest (ushr) calculation",
+    "toolSettingsDesc": "Location, notifications, appearance",
+    "sectionBackup": "BACKUP",
+    "backupExportTitle": "Back Up Data",
+    "backupExportSub": "Prayer tracking, missed prayers, dhikr and settings (location included) in one file",
+    "backupImportTitle": "Restore Backup",
+    "backupImportSub": "Choose a backup file you saved earlier",
+    "backupShareSubject": "Vaktinde backup",
+    "backupRestoreConfirmTitle": "Restore this backup?",
+    "backupRestoreConfirmMessage": "The backup from {date} will be loaded. Your current data will be replaced with the data in the backup: prayer and fasting tracking, missed prayer counts, dhikr, adhan and notification settings, location and appearance. This cannot be undone.",
+    "@backupRestoreConfirmMessage": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "backupRestoreConfirm": "Restore",
+    "backupRestored": "Backup restored.",
+    "backupInvalidFile": "This file is not a valid Vaktinde backup.",
+    "backupNewerVersion": "This backup was made with a newer version of the app. Update the app and try again.",
+    "daysLeft": "{count, plural, =0{Today} =1{Tomorrow} other{{count} days left}}",
+    "@daysLeft": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "previousItem": "Previous",
+    "nextItem": "Next",
+    "missedChangeConfirm": "The {name} count will change from {from} to {to}. Save it?",
+    "@missedChangeConfirm": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "from": {
+                "type": "int"
+            },
+            "to": {
+                "type": "int"
+            }
+        }
+    },
+    "shareFailed": "That did not work. Please try again.",
+    "zakatCurrencyNote": "All amounts are in Turkish lira (₺).",
+    "zakatCashTry": "Cash (₺)",
+    "zakatRatesUnavailable": "Live gold prices and exchange rates are unavailable. Please enter the prices manually.",
+    "zakatGoldGramPrice": "Price of 1 g 24-carat gold (₺)",
+    "zakatGoldGramPriceHelp": "Used to calculate the nisab threshold.",
+    "zakatNisabUnknown": "Without a gold price the nisab threshold cannot be calculated. Enter the gold price for a correct result.",
+    "imsakiyeRamadan": "Ramadan",
+    "imsakiyeRamadanTitle": "Ramadan {year} Timetable",
+    "@imsakiyeRamadanTitle": {
+        "placeholders": {
+            "year": {
+                "type": "int"
+            }
+        }
+    },
+    "imsakiyeDay": "Day",
+    "imsakiyeSunriseShort": "Sunrise",
+    "imsakiyePrevMonth": "Previous month",
+    "imsakiyeNextMonth": "Next month",
+    "imsakiyeNoLocation": "Please select your location first to see the timetable. You can set it on the home screen or in Settings.",
+    "imsakiyeShareError": "Could not share the timetable. Please try again.",
+    "ramadanSahurLeft": "Suhoor ends in",
+    "ramadanIftarLeft": "Iftar in",
+    "ramadanDayLabel": "Ramadan, day {day}",
+    "@ramadanDayLabel": {
+        "placeholders": {
+            "day": {
+                "type": "int"
+            }
+        }
+    }
 }

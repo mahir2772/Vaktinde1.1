@@ -1,38 +1,91 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:geolocator/geolocator.dart'; // YENİ EKLENDİ
-import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // YENİ EKLENDİ
+import 'package:workmanager/workmanager.dart';
 
 import 'features/main_wrapper/main_wrapper.dart';
 import 'features/home/view_model/home_view_model.dart';
 import 'features/common/language_provider.dart';
 import 'data/services/notification_service.dart';
 import 'data/services/background_manager.dart';
+import 'data/services/error_reporter.dart';
+import 'data/services/prayer_refresh_service.dart';
+import 'data/services/tracker_widget_service.dart';
 import 'features/onboarding/view/onboarding_language_view.dart';
+import 'features/onboarding/install_guard.dart';
 import 'features/common/theme_provider.dart';
 import 'features/zikirmatik/view_model/zikir_view_model.dart';
 import 'features/common/ad_helper.dart';
+import 'features/common/ad_consent.dart';
+import 'core/ui/app_theme.dart';
 
 final NotificationService notificationService = NotificationService();
+
+const String _refreshTaskName = 'vaktinde_daily_refresh';
+
+// WorkManager arka plan görevi: uygulama günlerce açılmasa da widget'lar,
+// kalıcı bildirim ve 5 günlük ezan alarmları güncel kalır
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  DartPluginRegistrant.ensureInitialized();
+  Workmanager().executeTask((taskName, inputData) async {
+    return PrayerRefreshService.runHeadless();
+  });
+}
+
+Future<void> _registerBackgroundRefresh() async {
+  if (!Platform.isAndroid) return;
+  try {
+    await Workmanager().initialize(callbackDispatcher);
+    // keep: her açılışta yeniden kaydetmek periyodu sıfırlamaz; ilk kayıtta hemen bir kez çalışır
+    await Workmanager().registerPeriodicTask(
+      _refreshTaskName,
+      _refreshTaskName,
+      frequency: const Duration(hours: 6),
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+    );
+  } catch (e) {
+    debugPrint("Workmanager başlatılamadı: $e");
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
     await Firebase.initializeApp();
+    // Sahadaki hatalar Crashlytics'e raporlanır (debug'da kapalı)
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+      !kDebugMode,
+    );
+    installCrashlyticsHandlers(FirebaseCrashlytics.instance);
   } catch (e) {
     debugPrint("Firebase hatası: $e");
   }
 
-  MobileAds.instance.initialize();
+  // Yedekten / başka telefondan gelen kayıtlarda cihaza özgü bayraklar (izin
+  // akışı, pil sorusu, alarm günü) silinir; bayrakları okuyan her şeyden önce
+  await InstallGuard.run().timeout(
+    const Duration(seconds: 3),
+    onTimeout: () => InstallCheck.skipped,
+  );
+
+  // Yeni kullanıcıya ilk 24 saat geçiş reklamı yok (kurulum zamanı
+  // okunamadıysa kısıt yok)
+  AdHelper.instance.installTime = InstallGuard.firstInstallTime;
+
+  // Reklamlar AdMob rızası (UMP) alındıktan sonra başlar; açılışı bekletmez
   AdHelper.instance.loadInterstitialAd();
 
   try {
@@ -41,7 +94,29 @@ void main() async {
     debugPrint("Background Service Başlatılamadı: $e");
   }
 
-  GoogleFonts.config.allowRuntimeFetching = true;
+  await _registerBackgroundRefresh();
+
+  // Takip widget'ına dokunuş uygulama açılmadan işlenir (ayrı isolate)
+  if (Platform.isAndroid) unawaited(TrackerWidgetService.registerCallback());
+
+  // Poppins ve Amiri pubspec'te gömülü (internetsiz ilk açılış)
+  LicenseRegistry.addLicense(() async* {
+    final poppins = await rootBundle.loadString('assets/google_fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['Poppins'], poppins);
+    final amiri = await rootBundle.loadString('assets/fonts/amiri/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['Amiri'], amiri);
+    // Gömülü konum listesi: GeoNames (CC BY 4.0) + dr5hn (ODbL 1.0) atfı
+    final places = await rootBundle.loadString(
+      'assets/data/locations_LICENSE.txt',
+    );
+    yield LicenseEntryWithLineBreaks([
+      'GeoNames',
+      'Countries States Cities Database',
+    ], places);
+    yield LicenseEntryWithLineBreaks([
+      'quran-meta',
+    ], await rootBundle.loadString('assets/data/quran_pages_LICENSE.txt'));
+  });
 
   runApp(
     MultiProvider(
@@ -54,6 +129,9 @@ void main() async {
       child: const MyApp(),
     ),
   );
+
+  // AB'de rıza formu gerekiyorsa ilk kare çizildikten sonra gösterilir
+  unawaited(AdConsent.gatherAndStartAds());
 }
 
 class MyApp extends StatefulWidget {
@@ -64,66 +142,86 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<ScaffoldMessengerState> _messengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
     _checkForUpdate();
   }
 
+  // Play esnek güncelleme: arka planda iner, uygulama ancak kullanıcı
+  // "Yeniden başlat" deyince yeniden başlar
   Future<void> _checkForUpdate() async {
+    if (!Platform.isAndroid) return;
     try {
-      AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.startFlexibleUpdate();
-        await InAppUpdate.completeFlexibleUpdate();
+      final info = await InAppUpdate.checkForUpdate();
+      if (info.installStatus == InstallStatus.downloaded) {
+        _showUpdateReady();
+        return;
+      }
+      if (info.updateAvailability == UpdateAvailability.updateAvailable &&
+          info.flexibleUpdateAllowed) {
+        final result = await InAppUpdate.startFlexibleUpdate();
+        if (result == AppUpdateResult.success) _showUpdateReady();
       }
     } catch (e) {
       debugPrint("Güncelleme kontrol hatası: $e");
     }
   }
 
-  // --- YENİ: TANITIM TURU BİTER BİTMEZ İZİNLERİ İSTEYEN ZEKİ FONKSİYON ---
-  Future<void> _requestPermissionsAfterTutorial() async {
-    // 1. Önce Bildirim İznini İster
+  void _showUpdateReady() {
+    if (!mounted) return;
+    final AppLocalizations loc;
     try {
-      final notificationsPlugin = FlutterLocalNotificationsPlugin();
-      if (Platform.isAndroid) {
-        await notificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >()
-            ?.requestNotificationsPermission();
-      } else if (Platform.isIOS) {
-        await notificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin
-            >()
-            ?.requestPermissions(alert: true, badge: true, sound: true);
-      }
+      loc = lookupAppLocalizations(context.read<LanguageProvider>().locale);
     } catch (e) {
-      debugPrint("Bildirim izni hatası: $e");
+      return;
     }
-
-    // 2. Kullanıcı bildirim iznini geçer geçmez Konum İznini İster
-    try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        await Geolocator.requestPermission();
-      }
-    } catch (e) {
-      debugPrint("Konum izni hatası: $e");
-    }
+    _messengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(loc.updateDownloaded),
+        duration: const Duration(minutes: 1),
+        action: SnackBarAction(
+          label: loc.restartAction,
+          onPressed: () {
+            InAppUpdate.completeFlexibleUpdate().catchError((Object e) {
+              debugPrint("Güncelleme kurulamadı: $e");
+            });
+          },
+        ),
+      ),
+    );
   }
-  // -----------------------------------------------------------------------
+
+  // Tanıtım turu bitince: kısa açıklama penceresi, sonra bildirim ve konum izni
+  // (yeni kullanıcı akışıyla aynı; MaterialApp altındaki bağlam navigator anahtarından).
+  // Tur Uygulamayı Tanı'dan yeniden izlendiyse tamamlanmış izin akışı tekrarlanmaz.
+  Future<void> _requestPermissionsAfterTutorial() async {
+    final context = _navigatorKey.currentContext;
+    if (context == null) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool(permissionsPrimedKey) ?? false) return;
+    } catch (e) {
+      debugPrint("İzin kaydı okunamadı: $e");
+    }
+    if (!context.mounted) return;
+    await requestPermissionsWithPriming(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final hasBackground = themeProvider.backgroundImage != null;
 
     return MaterialApp(
       title: 'Vaktinde',
+      scaffoldMessengerKey: _messengerKey,
+      navigatorKey: _navigatorKey,
       debugShowCheckedModeBanner: false,
       locale: languageProvider.locale,
       localizationsDelegates: const [
@@ -140,54 +238,24 @@ class _MyAppState extends State<MyApp> {
         Locale('ar'),
       ],
       themeMode: themeProvider.themeMode,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.teal,
-        useMaterial3: true,
-        scaffoldBackgroundColor: themeProvider.backgroundImage != null
-            ? Colors.transparent
-            : Colors.grey[100],
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.teal,
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
-        cardTheme: CardThemeData(
-          color: Colors.white.withOpacity(0.9),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.teal,
-        useMaterial3: true,
-        scaffoldBackgroundColor: themeProvider.backgroundImage != null
-            ? Colors.transparent
-            : const Color(0xFF121212),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1F1F1F),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
-        cardTheme: CardThemeData(
-          color: const Color(0xFF1E1E1E).withOpacity(0.9),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF1F1F1F),
-          selectedItemColor: Colors.tealAccent,
-          unselectedItemColor: Colors.grey,
-        ),
-      ),
+      theme: AppTheme.light(hasBackgroundImage: hasBackground),
+      darkTheme: AppTheme.dark(hasBackgroundImage: hasBackground),
       builder: (context, child) {
+        // Uygulama içi yazı boyutu: Normal'de sistem ölçeği aynen kalır (Android
+        // 14 doğrusal olmayan ölçek); diğerlerinde sistem × seçim, toplam en çok
+        // %200. Paylaşılan resimler kendi ölçeğini sıfırlar.
+        final system = MediaQuery.textScalerOf(context).scale(1);
+        if (themeProvider.textScale != 1.0 &&
+            system < ThemeProvider.maxTextScale) {
+          child = MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.linear(
+                system * themeProvider.textScale,
+              ).clamp(maxScaleFactor: ThemeProvider.maxTextScale),
+            ),
+            child: child!,
+          );
+        }
         return Stack(
           children: [
             if (themeProvider.backgroundImage != null)
@@ -195,6 +263,9 @@ class _MyAppState extends State<MyApp> {
                 child: Image.asset(
                   "assets/images/backgrounds/${themeProvider.backgroundImage}",
                   fit: BoxFit.cover,
+                  // Yüklenemezse arka plansız görünüm; hata bildirilmez
+                  errorBuilder: (context, _, _) =>
+                      ColoredBox(color: Theme.of(context).colorScheme.surface),
                 ),
               ),
             Positioned.fill(
@@ -210,8 +281,7 @@ class _MyAppState extends State<MyApp> {
       },
       home: languageProvider.isLanguageSelected
           ? ShowCaseWidget(
-              onFinish:
-                  _requestPermissionsAfterTutorial, // TUR BİTİNCE İZİNLERİ TETİKLER
+              onFinish: _requestPermissionsAfterTutorial,
               builder: (context) => const MainWrapper(),
             )
           : const OnboardingLanguageView(),

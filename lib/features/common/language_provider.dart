@@ -30,6 +30,9 @@ class LanguageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Yedekten geri yüklemeden sonra kayıttan yeniden okunur
+  Future<void> reload() => _loadLanguage();
+
   // Dili değiştir ve hafızaya kaydet
   Future<void> setLanguage(Locale locale) async {
     _locale = locale;

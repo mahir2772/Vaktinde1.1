@@ -1,0 +1,17 @@
+# Cloudflare Worker: Vaktinde Kur'an sesi ara sunucusu (kurulum: README.md)
+name = "vaktinde-quran-audio"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+[vars]
+# QF onayından önce "prelive" (sadece Fâtiha ve Bakara), onaydan sonra "production"
+QF_ENV = "prelive"
+# "1" dışında bir değer: uygulama dinlemeyi "şu an kullanılamıyor" der
+ENABLED = "1"
+
+# IP başına dakikada en çok 20 istek (uygulama sure başına ~1-2 istek atar; ücretsiz planın
+# günlük istek kotasını tek kişinin tüketmesine karşı)
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }

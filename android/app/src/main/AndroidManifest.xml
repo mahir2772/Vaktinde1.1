@@ -7,32 +7,43 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Android 13+ USE_EXACT_ALARM (otomatik verilir), 12 ve altı SCHEDULE_EXACT_ALARM -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- "Namazdayım" otomatik sessiz modu (kullanıcı ayardan açıkça izin verirse) -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- workmanager eklentisinin eklediği FGS izinleri: uzun süreli worker kullanılmıyor -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" tools:node="remove" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" tools:node="remove" />
     
     
-    <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
 
+    <!-- showWhenLocked/turnScreenOn yok: uygulama kilit ekranı üstünde açılmaz (tam ekran ezan
+         ekranı kullanılmıyor); kilit ekranındaki bildirime dokununca önce kilit açılır.
+         VaktindeApplication: Flutter'ın applicationName yer tutucusu (android.app.Application)
+         yerine; vakti geçmiş widget/bildirim sayaçlarını onarır (WidgetRefresher) -->
     <application
         android:label="Vaktinde"
-        android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
-        android:showWhenLocked="true"
-        android:turnScreenOn="true">
-        
+        android:name=".VaktindeApplication"
+        android:icon="@mipmap/launcher_icon">
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-4975388193054410~3263720480"/>
+
+        <!-- Consent Mode v2 varsayılanı: ilk açılışta UMP sonucu gelene kadar Analytics
+             izinleri kapalı (AB'de rızadan önce veri toplanmaz). AdConsent sonucu uygular:
+             GDPR dışı bölgede (UMP güncellenince) hepsi açılır (AnalyticsConsent.fromTcf). -->
+        <meta-data android:name="google_analytics_default_allow_analytics_storage" android:value="false"/>
+        <meta-data android:name="google_analytics_default_allow_ad_storage" android:value="false"/>
+        <meta-data android:name="google_analytics_default_allow_ad_user_data" android:value="false"/>
+        <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false"/>
 
         <activity
             android:name=".MainActivity"
@@ -42,9 +53,7 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true">
+            android:windowSoftInputMode="adjustResize">
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
@@ -58,21 +67,15 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        
-        <service
-            android:name="id.flutter.flutter_background_service.BackgroundService"
-            android:foregroundServiceType="dataSync|specialUse"
-            android:exported="true"
-            tools:replace="android:foregroundServiceType"
-            android:permission="android.permission.FOREGROUND_SERVICE">
-            <property 
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" 
-                android:value="Prayer times continuous countdown" />
-        </service>
-            
-        <receiver 
+
+        <receiver
             android:exported="false"
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+
+        <!-- Bildirimdeki "Kıldım" butonu için (eklenti bu alıcıyı kendisi tanımlamıyor) -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
             
         <receiver 
             android:exported="true"
@@ -85,33 +88,137 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".VaktindeWidgetSmallProvider" android:exported="true">
+        <!-- "Namazdayım" otomatik sessiz modu: başlangıç/bitiş dışa kapalı; yeniden
+             başlatma ve saat değişimi alıcısı kayıtlı pencereleri yeniler -->
+        <receiver
+            android:name=".PrayerSilenceReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".PrayerSilenceBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- android:label: widget seçicide her widget'ın kendi adı.
+             TIME_SET / TIMEZONE_CHANGED (manifest alıcısına izinli örtük yayınlar): saat
+             değişince sayaç hemen yeniden kurulur -->
+        <receiver android:name=".VaktindeWidgetSmallProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_small_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small" />
         </receiver>
 
-        <receiver android:name=".VaktindeWidgetLargeProvider" android:exported="true">
+        <receiver android:name=".VaktindeWidgetLargeProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_large_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_large" />
         </receiver>
 
-        <receiver android:name=".VaktindeWidgetSmall2Provider" android:exported="true">
+        <receiver android:name=".VaktindeWidgetSmall2Provider" android:exported="true"
+            android:label="@string/vaktinde_widget_small2_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small2" />
         </receiver>
 
+        <!-- Ramazan: iftar/sahur sayacı, Ramazan dışında Ramazan'a kalan gün -->
+        <receiver android:name=".VaktindeWidgetRamadanProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_ramadan_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_ramadan" />
+        </receiver>
+
+        <!-- Vakit halkası: önceki vakitten bu yana geçen süre + sıradaki vakte sayaç -->
+        <receiver android:name=".VaktindeWidgetRingProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_ring_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_ring" />
+        </receiver>
+
+        <!-- Namaz takibi (bugün): vakte dokunuş uygulama açılmadan işaretler (aşağıdaki home_widget
+             alıcısı + servisi → Dart TrackerWidgetService) -->
+        <receiver android:name=".VaktindeWidgetTrackerProvider" android:exported="true"
+            android:label="@string/vaktinde_widget_tracker_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_tracker" />
+        </receiver>
+
+        <!-- home_widget etkileşimi (eklenti tanımlamıyor): widget'taki açık PendingIntent
+             (HomeWidgetBackgroundIntent) → alıcı → JobIntentService Flutter motorunda Dart geri
+             çağrısını çalıştırır. Dışa kapalı: başka uygulama işaret değiştiremez -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            android:exported="false" />
+        <service
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
+        <!-- Kalıcı bildirim (888): telefon açılınca ve güncellemeden sonra da yeniden çizilir -->
         <receiver android:name=".NotificationUpdater" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
         </receiver>
-        
+
+        <!-- Süreç yokken vakti geçmiş widget/bildirim sayaçlarını onaran periyodik iş (WidgetHealJobService) -->
+        <service
+            android:name=".WidgetHealJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+
+        <!-- WorkManager'ın dataSync tipli ön plan servisi kullanılmıyor (Play FGS beyanı gerekmesin) -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            tools:node="remove" />
     </application>
 
     <queries>

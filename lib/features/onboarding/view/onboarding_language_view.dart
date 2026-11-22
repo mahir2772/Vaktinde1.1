@@ -1,162 +1,330 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../common/language_provider.dart';
-import '../../main_wrapper/main_wrapper.dart';
-import '../../home/view_model/home_view_model.dart'; // GERÇEK KONUM İÇİN EKLENDİ
-
-import 'package:showcaseview/showcaseview.dart';
+import 'dart:async';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
+import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
+import '../../../data/services/error_reporter.dart';
+import '../../common/app_analytics.dart';
+import '../../common/language_provider.dart';
+import '../../home/view_model/home_view_model.dart';
+import '../../main_wrapper/main_wrapper.dart';
+import '../../settings/view/language_sheet.dart';
+
+/// İlk açılış: dil seçimi. Seçimden sonra ana ekran + tanıtım turu açılır;
+/// tur bitince kısa bir açıklama ve ardından bildirim/konum izinleri istenir.
 class OnboardingLanguageView extends StatelessWidget {
   const OnboardingLanguageView({super.key});
 
+  void _select(BuildContext context, String code) {
+    context.read<LanguageProvider>().setLanguage(Locale(code));
+    // İlk açılış hunisi (bu ekran kurulum başına bir kez); dil kodu huni için
+    // gerekmez, cihaz dilini Firebase zaten toplar
+    AppAnalytics.logEvent(name: 'dil_secildi');
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute<void>(
+        builder: (context) => ShowCaseWidget(
+          onFinish: () => requestPermissionsWithPriming(context),
+          builder: (context) => const MainWrapper(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
-              Center(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            AppSpacing.xxl,
+            AppSpacing.xl,
+            AppSpacing.xl,
+          ),
+          children: [
+            Center(
+              child: Container(
+                width: 88,
+                height: 88,
+                decoration: BoxDecoration(
+                  color: scheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(
                   Icons.language,
-                  size: 80,
-                  color: Colors.teal.shade300,
+                  size: 48,
+                  color: scheme.onPrimaryContainer,
                 ),
-              ),
-              const SizedBox(height: 40),
-              const Text(
-                "Hoş Geldiniz / Welcome",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(height: 40),
-
-              // DİL LİSTESİ
-              Expanded(
-                child: ListView(
-                  children: [
-                    _buildLanguageCard(context, "Türkçe", "tr", "🇹🇷"),
-                    _buildLanguageCard(context, "English", "en", "🇬🇧"),
-                    _buildLanguageCard(context, "Deutsch", "de", "🇩🇪"),
-                    _buildLanguageCard(context, "Français", "fr", "🇫🇷"),
-                    _buildLanguageCard(context, "العربية", "ar", "🇸🇦"),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLanguageCard(
-    BuildContext context,
-    String name,
-    String code,
-    String flag,
-  ) {
-    return Card(
-      elevation: 2,
-      margin: const EdgeInsets.only(bottom: 15),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(15),
-        onTap: () {
-          context.read<LanguageProvider>().setLanguage(Locale(code));
-
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => ShowCaseWidget(
-                onFinish: () async {
-                  // TUR BİTİNCE ZARİFÇE İZİNLERİ İSTER
-                  // 1. Önce Bildirim İzni
-                  try {
-                    final notificationsPlugin =
-                        FlutterLocalNotificationsPlugin();
-                    if (Platform.isAndroid) {
-                      await notificationsPlugin
-                          .resolvePlatformSpecificImplementation<
-                            AndroidFlutterLocalNotificationsPlugin
-                          >()
-                          ?.requestNotificationsPermission();
-                    } else if (Platform.isIOS) {
-                      await notificationsPlugin
-                          .resolvePlatformSpecificImplementation<
-                            IOSFlutterLocalNotificationsPlugin
-                          >()
-                          ?.requestPermissions(
-                            alert: true,
-                            badge: true,
-                            sound: true,
-                          );
-                    }
-                  } catch (e) {
-                    // Hata bilerek yoksayıldı
-                  }
-
-                  // 2. Sonra Konum İzni
-                  try {
-                    LocationPermission permission =
-                        await Geolocator.checkPermission();
-                    if (permission == LocationPermission.denied ||
-                        permission == LocationPermission.deniedForever) {
-                      // YALNIZCA BURADA İZİN İSTENİR!
-                      permission = await Geolocator.requestPermission();
-                    }
-
-                    // 3. EĞER İZİN VERİLDİYSE İSTANBUL'U SİL VE GERÇEK KONUMU ÇEK!
-                    if (permission == LocationPermission.whileInUse ||
-                        permission == LocationPermission.always) {
-                      if (context.mounted) {
-                        context.read<HomeViewModel>().refreshLocationAndTimes(
-                          context,
-                        );
-                      }
-                    }
-                  } catch (e) {
-                    // Hata bilerek yoksayıldı
-                  }
-                },
-                builder: (context) => const MainWrapper(),
               ),
             ),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Row(
-            children: [
-              Text(flag, style: const TextStyle(fontSize: 30)),
-              const SizedBox(width: 20),
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+            const SizedBox(height: AppSpacing.xl),
+            Semantics(
+              header: true,
+              child: Text(
+                loc.onboardingWelcome,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineSmall,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              loc.onboardingSelectLanguage,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyLarge!.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            for (final language in appLanguages)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: AppCard(
+                  onTap: () => _select(context, language.code),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xl,
+                    vertical: AppSpacing.lg,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          language.name,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
+                      Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+                    ],
+                  ),
                 ),
               ),
-              const Spacer(),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
+}
+
+/// İzin akışı (açıklama + bildirim + konum) bir kez tamamlandı mı
+const String permissionsPrimedKey = 'permissions_primed';
+
+bool _primingRunning = false;
+bool _primedThisSession = false;
+
+/// İzin akışı (açıklama + sistem pencereleri) şu an sürüyor mu
+bool get permissionPrimingActive => _primingRunning;
+
+@visibleForTesting
+void debugResetPermissionPriming() {
+  _primingRunning = false;
+  _primedThisSession = false;
+}
+
+/// Sonraki açılışlarda (tanıtım turu çalışmıyorken): izin akışı hiç
+/// tamamlanmadıysa (ör. uygulama tur sırasında kapatıldı) bir kez çalıştırılır.
+/// İzinler zaten verilmişse pencere göstermeden tamamlandı sayılır.
+Future<void> primePermissionsIfNeeded(BuildContext context) async {
+  if (_primingRunning || _primedThisSession) return;
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(permissionsPrimedKey) ?? false) return;
+    if (await _permissionsAlreadyGranted()) {
+      _primedThisSession = true;
+      await prefs.setBool(permissionsPrimedKey, true);
+      return;
+    }
+  } catch (e) {
+    debugPrint("İzin durumu okunamadı: $e");
+  }
+  if (!context.mounted) return;
+  await requestPermissionsWithPriming(context, onlyDefaultLocation: true);
+}
+
+Future<bool> _permissionsAlreadyGranted() async {
+  try {
+    var notifications = true;
+    if (Platform.isAndroid) {
+      notifications =
+          await FlutterLocalNotificationsPlugin()
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >()
+              ?.areNotificationsEnabled() ??
+          false;
+    }
+    final location = await Geolocator.checkPermission();
+    return notifications &&
+        (location == LocationPermission.whileInUse ||
+            location == LocationPermission.always);
+  } catch (e) {
+    return false;
+  }
+}
+
+/// Sistem izin pencerelerinden önce neden gerektiklerini anlatan kısa pencere,
+/// sonra önce bildirim, ardından konum izni. Konum izni verilirse vakitler
+/// gerçek konumla yenilenir ([onlyDefaultLocation]: sadece konum hâlâ
+/// varsayılan İstanbul ise; elle seçilen şehir ezilmez). Bir oturumda bir kez
+/// çalışır; bitince [permissionsPrimedKey] kaydedilir.
+Future<void> requestPermissionsWithPriming(
+  BuildContext context, {
+  bool onlyDefaultLocation = false,
+}) async {
+  if (_primingRunning || _primedThisSession) return;
+  _primingRunning = true;
+  try {
+    await _runPermissionPriming(context, onlyDefaultLocation);
+    _primedThisSession = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(permissionsPrimedKey, true);
+    } catch (e) {
+      debugPrint("İzin kaydı yazılamadı: $e");
+    }
+  } finally {
+    _primingRunning = false;
+  }
+}
+
+Future<void> _runPermissionPriming(
+  BuildContext context,
+  bool onlyDefaultLocation,
+) async {
+  if (context.mounted) {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        final loc = AppLocalizations.of(dialogContext)!;
+        return AlertDialog(
+          icon: const Icon(Icons.notifications_active_outlined, size: 36),
+          title: Text(loc.permissionPrimingTitle, textAlign: TextAlign.center),
+          content: SingleChildScrollView(
+            child: Text(loc.permissionPrimingBody, textAlign: TextAlign.center),
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(loc.continueAction),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 1. Bildirim izni
+  bool? notificationsGranted;
+  try {
+    final notificationsPlugin = FlutterLocalNotificationsPlugin();
+    if (Platform.isAndroid) {
+      notificationsGranted = await notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.requestNotificationsPermission();
+    } else if (Platform.isIOS) {
+      notificationsGranted = await notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
+    }
+  } catch (e) {
+    debugPrint("Bildirim izni hatası: $e");
+  }
+  if (notificationsGranted != null) {
+    _logPermissionResult('bildirim_izni', notificationsGranted);
+  }
+
+  // 2. Konum izni; verilirse varsayılan konum yerine gerçek konum alınır
+  try {
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    }
+    final granted =
+        permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always;
+    _logPermissionResult('konum_izni', granted);
+    if (granted && context.mounted) {
+      final viewModel = context.read<HomeViewModel>();
+      final isDefault =
+          viewModel.city == null ||
+          (viewModel.city == 'İstanbul' && (viewModel.district ?? '').isEmpty);
+      if (!onlyDefaultLocation || isDefault) {
+        viewModel.refreshLocationAndTimes(context);
+      }
+    }
+  } catch (e) {
+    debugPrint("Konum izni hatası: $e");
+  }
+
+  // 3. Bildirim izni verildiyse ezanın bu telefonda çaldığını hemen görsün
+  if (notificationsGranted == true && context.mounted) {
+    await offerTestEzan(context);
+  }
+}
+
+/// İlk açılışta bir kez: "1 dk sonra test ezanı" önerisi (Bildirim Kontrolü'ndeki
+/// testin aynısı). Ezanın gelmediğini fark edip uygulamayı silenlere erken uyarı.
+@visibleForTesting
+Future<void> offerTestEzan(BuildContext context) async {
+  final yes = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      final loc = AppLocalizations.of(dialogContext)!;
+      return AlertDialog(
+        icon: const Icon(Icons.volume_up_outlined, size: 36),
+        title: Text(loc.testEzanOfferTitle, textAlign: TextAlign.center),
+        content: SingleChildScrollView(
+          child: Text(loc.healthTestInfo, textAlign: TextAlign.center),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(loc.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(loc.healthTestButton),
+          ),
+        ],
+      );
+    },
+  );
+  AppAnalytics.logEvent(
+    name: 'test_ezani',
+    parameters: {'sonuc': yes == true ? 'istendi' : 'istenmedi'},
+  );
+  if (yes != true || !context.mounted) return;
+  final loc = AppLocalizations.of(context)!;
+  final messenger = ScaffoldMessenger.maybeOf(context);
+  try {
+    await context.read<HomeViewModel>().scheduleTestEzan(loc);
+    messenger?.showSnackBar(SnackBar(content: Text(loc.healthTestScheduled)));
+  } catch (e, st) {
+    unawaited(
+      reportNonFatal(e, st, reason: 'ilk açılış test ezanı kurulamadı'),
+    );
+  }
+}
+
+/// İlk açılış hunisi: izin sonucu (izin akışı kurulum başına bir kez
+/// tamamlanır). Konum ya da vakit gönderilmez, sadece verildi / reddedildi.
+void _logPermissionResult(String event, bool granted) {
+  AppAnalytics.logEvent(
+    name: event,
+    parameters: {'sonuc': granted ? 'verildi' : 'reddedildi'},
+  );
 }

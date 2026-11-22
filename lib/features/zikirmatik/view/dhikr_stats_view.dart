@@ -1,351 +1,408 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../view_model/zikir_view_model.dart';
-import '../../common/widgets/ad_banner_widget.dart';
 
+/// Zikir istatistikleri: bu ayın günleri / bu yılın ayları (çubuk grafik)
 class DhikrStatsView extends StatelessWidget {
   const DhikrStatsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black87;
-    const primaryColor = Colors.teal;
-
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          title: Text(loc.statisticsTitle),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          foregroundColor: textColor,
-          bottom: TabBar(
-            labelColor: primaryColor,
-            unselectedLabelColor: textColor.withOpacity(0.5),
-            indicatorColor: primaryColor,
-            tabs: [
-              Tab(text: loc.monthly),
-              Tab(text: loc.yearly),
-            ],
-          ),
+      child: AppScaffold(
+        title: loc.statisticsTitle,
+        bottom: TabBar(
+          tabs: [
+            Tab(text: loc.monthly),
+            Tab(text: loc.yearly),
+          ],
         ),
         body: Consumer<ZikirViewModel>(
           builder: (context, viewModel, child) {
             return TabBarView(
               children: [
-                // AYLIK GRAFİK (Günler)
-                _buildProfessionalChart(
-                  context,
-                  viewModel.dailyStats,
-                  true,
-                  textColor,
-                ),
-                // YILLIK GRAFİK (Aylar)
-                _buildProfessionalChart(
-                  context,
-                  viewModel.dailyStats,
-                  false,
-                  textColor,
-                ),
+                _StatsTab(stats: viewModel.dailyStats, monthly: true),
+                _StatsTab(stats: viewModel.dailyStats, monthly: false),
               ],
             );
           },
         ),
-        bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
       ),
     );
   }
+}
 
-  // GRAFİK EKSENİNİ (Y-Axis) HESAPLAMA MANTIĞI
-  int _calculateNiceTopMax(int maxVal) {
-    int topMax = 10;
-    while (topMax < maxVal) {
-      if (topMax < 50)
-        topMax += 10;
-      else if (topMax < 500)
-        topMax += 50;
-      else if (topMax < 5000)
-        topMax += 500;
-      else if (topMax < 50000)
-        topMax += 5000;
-      else
-        topMax += 50000;
+String _two(int n) => n.toString().padLeft(2, '0');
+
+class _StatsTab extends StatelessWidget {
+  final Map<String, int> stats;
+  final bool monthly;
+
+  const _StatsTab({required this.stats, required this.monthly});
+
+  String _monthName(String locale, int year, int month) {
+    try {
+      return DateFormat.MMM(locale).format(DateTime(year, month));
+    } catch (_) {
+      return '$month';
     }
-    return topMax;
   }
 
-  // PROFESYONEL BAR GRAFİĞİ TASARIMI
-  Widget _buildProfessionalChart(
-    BuildContext context,
-    Map<String, int> stats,
-    bool isMonthly,
-    Color textColor,
-  ) {
+  String _periodTitle(String locale, DateTime now) {
+    if (!monthly) return '${now.year}';
+    try {
+      return DateFormat.yMMMM(locale).format(now);
+    } catch (_) {
+      return '${_two(now.month)}.${now.year}';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final now = DateTime.now();
-    List<int> values = [];
-    List<String> labels = [];
-    int totalSum = 0;
+    final values = <int>[];
+    final labels = <String>[];
 
-    // Görseldeki gibi döngülü şık renkler
-    final List<Color> barColors = [
-      const Color(0xFFD84B79), // Pembe
-      const Color(0xFFF28F1B), // Turuncu
-      const Color(0xFFF5E05E), // Sarı
-      const Color(0xFF6A9D7E), // Yeşil
-      const Color(0xFF35B2C6), // Cam Göbeği
-    ];
-
-    if (isMonthly) {
-      int daysInMonth = DateUtils.getDaysInMonth(now.year, now.month);
-      for (int i = 1; i <= daysInMonth; i++) {
-        String key =
-            "${now.year}-${now.month.toString().padLeft(2, '0')}-${i.toString().padLeft(2, '0')}";
-        int val = stats[key] ?? 0;
-        values.add(val);
-        totalSum += val;
-        labels.add(i.toString());
+    if (monthly) {
+      final days = DateUtils.getDaysInMonth(now.year, now.month);
+      for (var day = 1; day <= days; day++) {
+        values.add(stats['${now.year}-${_two(now.month)}-${_two(day)}'] ?? 0);
+        labels.add('$day');
       }
     } else {
-      final monthNames = [
-        "Oca",
-        "Şub",
-        "Mar",
-        "Nis",
-        "May",
-        "Haz",
-        "Tem",
-        "Ağu",
-        "Eyl",
-        "Eki",
-        "Kas",
-        "Ara",
-      ];
-      for (int i = 1; i <= 12; i++) {
-        int monthSum = 0;
+      for (var month = 1; month <= 12; month++) {
+        final prefix = '${now.year}-${_two(month)}-';
+        var sum = 0;
         stats.forEach((key, value) {
-          if (key.startsWith("${now.year}-${i.toString().padLeft(2, '0')}-"))
-            monthSum += value;
+          if (key.startsWith(prefix)) sum += value;
         });
-        values.add(monthSum);
-        totalSum += monthSum;
-        labels.add(monthNames[i - 1]);
+        values.add(sum);
+        labels.add(_monthName(loc.localeName, now.year, month));
       }
     }
+    final total = values.fold<int>(0, (a, b) => a + b);
+    final today = stats['${now.year}-${_two(now.month)}-${_two(now.day)}'] ?? 0;
 
-    int maxVal = values.isEmpty
-        ? 10
-        : values.reduce((curr, next) => curr > next ? curr : next);
-    if (maxVal == 0) maxVal = 10;
-
-    int topMax = _calculateNiceTopMax(maxVal);
-    int step = topMax ~/ 5; // 5 Satırlık Izgara
-
-    return Column(
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.all(20),
-            padding: const EdgeInsets.only(top: 20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
+        Row(
+          children: [
+            Expanded(
+              child: StatTile(
+                value: '$total',
+                label: loc.totalDhikr,
+                icon: Icons.functions,
+              ),
             ),
-            child: Stack(
-              children: [
-                // 1. ARKA PLAN IZGARALARI VE Y EKSENİ ETİKETLERİ
-                Positioned(
-                  top: 0,
-                  bottom: 30,
-                  left: 10,
-                  right: 10, // Alt etikete 30px boşluk bıraktık
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(6, (index) {
-                      int val = topMax - (index * step);
-                      return Row(
-                        children: [
-                          SizedBox(
-                            width: 35,
-                            child: Text(
-                              val.toString(),
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.grey.shade300,
-                              height: 1,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 35,
-                            child: Text(
-                              val.toString(),
-                              textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ),
-                ),
-
-                // 2. ÇUBUKLAR VE X EKSENİ ETİKETLERİ (KAYDIRILABİLİR ALAN)
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 45,
-                      right: 45,
-                    ), // Y Ekseninin üstüne binmemesi için padding
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: values.length,
-                      itemBuilder: (context, index) {
-                        double heightRatio = values[index] / topMax;
-                        return Container(
-                          width: isMonthly ? 30 : 40,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              // Çubuğun üstündeki değer
-                              if (values[index] > 0)
-                                Text(
-                                  values[index].toString(),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: textColor,
-                                  ),
-                                ),
-                              const SizedBox(height: 2),
-                              // Çubuğun Kendisi (Arka Plan Çizgilerinin sadece 30px üstüne kadar iner)
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: 30,
-                                  ), // Alt etiketlere yer ayır
-                                  child: FractionallySizedBox(
-                                    heightFactor: heightRatio,
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color:
-                                            barColors[index % barColors.length],
-                                        borderRadius:
-                                            const BorderRadius.vertical(
-                                              top: Radius.circular(3),
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-
-                // 3. ALT ETİKETLER (Aylar veya Günler)
-                Positioned(
-                  bottom: 5,
-                  left: 45,
-                  right: 45,
-                  height: 20,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    physics:
-                        const NeverScrollableScrollPhysics(), // Çubuklarla beraber kayması için iptal edilebilir ama şık dursun diye bıraktık
-                    itemCount: labels.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        width: isMonthly ? 30 : 40,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        alignment: Alignment.center,
-                        child: Text(
-                          labels[index],
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: textColor.withOpacity(0.6),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: StatTile(
+                value: '$today',
+                label: loc.today,
+                icon: Icons.today_outlined,
+              ),
             ),
-          ),
+          ],
         ),
-
-        // --- GÖRSELDEKİ ALT BİLGİ PANELİ ---
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        const SizedBox(height: AppSpacing.lg),
+        AppCard(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.sm,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Yıl Seçici Görünümü
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      now.year.toString(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Icon(Icons.keyboard_arrow_down, color: textColor),
-                  ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                child: Text(
+                  _periodTitle(loc.localeName, now),
+                  style: theme.textTheme.titleMedium,
                 ),
               ),
-              // Toplam Zikir Sayısı
-              Text(
-                "Toplam zikir sayısı $totalSum",
-                style: const TextStyle(
-                  color: Color(0xFFB57A2A),
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
+              const SizedBox(height: AppSpacing.md),
+              SizedBox(
+                height: 260,
+                child: _BarChart(
+                  values: values,
+                  labels: labels,
+                  highlight: monthly ? now.day - 1 : now.month - 1,
+                  itemWidth: monthly ? 36 : 52,
                 ),
               ),
             ],
           ),
         ),
+        if (total == 0)
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.lg),
+            child: Text(
+              loc.statsEmpty,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium!.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
       ],
     );
   }
+}
+
+/// Kaydırılabilir çubuk grafik; etiketler çubuklarla birlikte kayar.
+/// Bugün/bu ay koyu, diğerleri açık marka tonunda; açılışta görünür kaydırılır.
+class _BarChart extends StatefulWidget {
+  final List<int> values;
+  final List<String> labels;
+  final int highlight;
+  final double itemWidth;
+
+  const _BarChart({
+    required this.values,
+    required this.labels,
+    required this.highlight,
+    required this.itemWidth,
+  });
+
+  @override
+  State<_BarChart> createState() => _BarChartState();
+}
+
+class _BarChartState extends State<_BarChart> {
+  static const double _valueHeight = 22;
+  static const double _labelHeight = 28;
+  static const int _gridLines = 5;
+
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _revealHighlight());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _revealHighlight() {
+    if (!mounted || !_controller.hasClients) return;
+    final position = _controller.position;
+    final end = (widget.highlight + 1) * widget.itemWidth;
+    final offset = end - position.viewportDimension + widget.itemWidth;
+    if (offset > 0) {
+      _controller.jumpTo(offset.clamp(0.0, position.maxScrollExtent));
+    }
+  }
+
+  /// Y ekseni üst sınırı: 10, 20 … 50, 100 … 500, 1000 … şeklinde yuvarlak
+  static int _niceTopMax(int maxValue) {
+    var top = 10;
+    while (top < maxValue) {
+      if (top < 50) {
+        top += 10;
+      } else if (top < 500) {
+        top += 50;
+      } else if (top < 5000) {
+        top += 500;
+      } else if (top < 50000) {
+        top += 5000;
+      } else {
+        top += 50000;
+      }
+    }
+    return top;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final values = widget.values;
+    final maxValue = values.isEmpty ? 0 : values.reduce(math.max);
+    final topMax = _niceTopMax(maxValue);
+    final step = topMax / _gridLines;
+    final axisStyle = theme.textTheme.bodySmall!.copyWith(
+      color: scheme.onSurfaceVariant,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final plotHeight = math.max(
+          0.0,
+          constraints.maxHeight - _valueHeight - _labelHeight,
+        );
+        return Row(
+          children: [
+            // Y ekseni
+            SizedBox(
+              width: 44,
+              child: Stack(
+                children: [
+                  for (var i = 0; i <= _gridLines; i++)
+                    PositionedDirectional(
+                      top: _valueHeight + plotHeight * i / _gridLines - 10,
+                      height: 20,
+                      start: 0,
+                      end: 0,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: Text(
+                          '${(topMax - step * i).round()}',
+                          style: axisStyle,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: _GridPainter(
+                        top: _valueHeight,
+                        height: plotHeight,
+                        lines: _gridLines,
+                        color: scheme.outlineVariant,
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                    controller: _controller,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: values.length,
+                    itemExtent: widget.itemWidth,
+                    itemBuilder: (context, index) =>
+                        _bar(context, index, plotHeight, topMax),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _bar(BuildContext context, int index, double plotHeight, int topMax) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final value = widget.values[index];
+    final label = widget.labels[index];
+    final highlighted = index == widget.highlight;
+    final color = highlighted
+        ? scheme.primary
+        : scheme.primary.withValues(alpha: 0.5);
+    return Semantics(
+      label: '$label: $value',
+      excludeSemantics: true,
+      child: Column(
+        children: [
+          SizedBox(
+            height: _valueHeight,
+            child: value > 0
+                ? Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '$value',
+                        style: theme.textTheme.labelSmall!.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: scheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  )
+                : null,
+          ),
+          SizedBox(
+            height: plotHeight,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: FractionallySizedBox(
+                heightFactor: topMax == 0 ? 0 : value / topMax,
+                widthFactor: 0.66,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: _labelHeight,
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: theme.textTheme.bodySmall!.copyWith(
+                    color: highlighted
+                        ? scheme.primary
+                        : scheme.onSurfaceVariant,
+                    fontWeight: highlighted ? FontWeight.w700 : null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GridPainter extends CustomPainter {
+  final double top;
+  final double height;
+  final int lines;
+  final Color color;
+
+  _GridPainter({
+    required this.top,
+    required this.height,
+    required this.lines,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1;
+    for (var i = 0; i <= lines; i++) {
+      final y = top + height * i / lines;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_GridPainter old) =>
+      old.top != top ||
+      old.height != height ||
+      old.lines != lines ||
+      old.color != color;
 }

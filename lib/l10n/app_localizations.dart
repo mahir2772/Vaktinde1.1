@@ -110,6 +110,852 @@ abstract class AppLocalizations {
   /// **'Vaktinde'**
   String get appTitle;
 
+  /// No description provided for @navZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir'**
+  String get navZikir;
+
+  /// No description provided for @todayHubTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün için'**
+  String get todayHubTitle;
+
+  /// No description provided for @todayQuranOpen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an-ı Kerim\'i aç'**
+  String get todayQuranOpen;
+
+  /// No description provided for @todayFridayMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma mesajı gönder'**
+  String get todayFridayMessage;
+
+  /// No description provided for @a11yAlarmSettingsHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm ayarları'**
+  String get a11yAlarmSettingsHint;
+
+  /// No description provided for @navQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an'**
+  String get navQuran;
+
+  /// No description provided for @showcaseQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an-ı Kerim\'i buradan okuyabilir, kaldığınız yerden devam edebilirsiniz.'**
+  String get showcaseQuran;
+
+  /// No description provided for @zikirRound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tur {round}'**
+  String zikirRound(int round);
+
+  /// No description provided for @zikirProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} / {target}'**
+  String zikirProgress(int count, int target);
+
+  /// No description provided for @zikirPrevious.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki zikir'**
+  String get zikirPrevious;
+
+  /// No description provided for @zikirNext.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki zikir'**
+  String get zikirNext;
+
+  /// No description provided for @zikirCountingSection.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayma'**
+  String get zikirCountingSection;
+
+  /// No description provided for @zikirRoundMode.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefte sıfırdan devam et (tur say)'**
+  String get zikirRoundMode;
+
+  /// No description provided for @zikirVolumeKeys.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses tuşlarıyla say'**
+  String get zikirVolumeKeys;
+
+  /// No description provided for @zikirVolumeKeysDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses açma +1, ses kısma −1. Sadece Zikir ekranı açıkken; sistem sesi değişmez.'**
+  String get zikirVolumeKeysDesc;
+
+  /// No description provided for @adPrivacySettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklam Gizlilik Ayarları'**
+  String get adPrivacySettings;
+
+  /// No description provided for @adPrivacySettingsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişiselleştirilmiş reklam iznini değiştirin'**
+  String get adPrivacySettingsSub;
+
+  /// No description provided for @showcaseLanguage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama dilini ve diğer ayarları buradan değiştirebilirsiniz.'**
+  String get showcaseLanguage;
+
+  /// No description provided for @showcaseStory.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günün ayetini ve hadisini buradan okuyabilirsiniz.'**
+  String get showcaseStory;
+
+  /// No description provided for @showcaseAlarms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit için ezan ve hatırlatma alarmlarını buradan ayarlayabilirsiniz.'**
+  String get showcaseAlarms;
+
+  /// No description provided for @showcaseQibla.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble yönünü pusula ile bulabilirsiniz.'**
+  String get showcaseQibla;
+
+  /// No description provided for @showcaseZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikirlerinizi buradan takip edebilirsiniz.'**
+  String get showcaseZikir;
+
+  /// No description provided for @showcaseTracker.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldığınız vakitleri buradan işaretleyebilirsiniz. Özel gününüzde “Bugün”e basılı tutun.'**
+  String get showcaseTracker;
+
+  /// No description provided for @showcaseTools.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsakiye, Namaz Hocası, kaza hesaplama ve daha fazlası burada.'**
+  String get showcaseTools;
+
+  /// No description provided for @tipGotIt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anladım'**
+  String get tipGotIt;
+
+  /// No description provided for @tipTracker.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gününüzde gün adına basılı tutun ya da kartın köşesindeki çiçek simgesine dokunun; bu günler serinizi bozmaz. Kılamadığınız vakitleri en alttaki “Kılınmayanları kazaya ekle” ile kaza sayacına aktarabilirsiniz.'**
+  String get tipTracker;
+
+  /// No description provided for @tipZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikri değiştirmek için üstteki kartı sağa ya da sola kaydırın. Ayarlar\'dan “Ses tuşlarıyla say”ı açarsanız ekrana bakmadan sayabilirsiniz.'**
+  String get tipZikir;
+
+  /// No description provided for @tipQuranReader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üstteki Görünüm düğmesinden Sayfa, Ayet ayet ya da Meal okumayı seçin. Sayfada bir ayete dokununca meal, yer imi ve paylaşma seçenekleri açılır.'**
+  String get tipQuranReader;
+
+  /// No description provided for @tipAlarmsSilent.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon sessizdeyken de duymak için “Sessiz modda da çal”ı açın.'**
+  String get tipAlarmsSilent;
+
+  /// No description provided for @tipWidget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitleri uygulamayı açmadan görmek için ana ekranınıza bir Vaktinde widget\'ı ekleyin.'**
+  String get tipWidget;
+
+  /// No description provided for @tipWidgetAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Widget ekle'**
+  String get tipWidgetAction;
+
+  /// No description provided for @whatsNewTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yenilikler'**
+  String get whatsNewTitle;
+
+  /// No description provided for @whatsNewStopTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezanı tek dokunuşla durdur'**
+  String get whatsNewStopTitle;
+
+  /// No description provided for @whatsNewStopDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan çalarken bildirimdeki “Durdur” sesi hemen keser.'**
+  String get whatsNewStopDesc;
+
+  /// No description provided for @whatsNewStoriesDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Peygamberler, Peygamberimizin hayatı, sahabe ve İslam âlimlerinden kısa kıssalar.'**
+  String get whatsNewStoriesDesc;
+
+  /// No description provided for @whatsNewDuasDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'10 başlıkta 87 dua: Arapçası, okunuşu, anlamı ve kaynağıyla; arama da var.'**
+  String get whatsNewDuasDesc;
+
+  /// No description provided for @whatsNewDhikrsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni zikirler'**
+  String get whatsNewDhikrsTitle;
+
+  /// No description provided for @whatsNewDhikrsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zikir listesinde anlamlarıyla 35 hazır zikir.'**
+  String get whatsNewDhikrsDesc;
+
+  /// No description provided for @whatsNewHatimDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Hatim ekranı: tek dokunuşla “Okudum”, cüz cüz ilerleme, niyet ve toplu hatim.'**
+  String get whatsNewHatimDesc;
+
+  /// No description provided for @appGuideTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulamayı Tanı'**
+  String get appGuideTitle;
+
+  /// No description provided for @appGuideSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm özellikler ve nasıl kullanılacakları'**
+  String get appGuideSub;
+
+  /// No description provided for @appGuideReplayTour.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tanıtım turunu tekrar izle'**
+  String get appGuideReplayTour;
+
+  /// No description provided for @appGuideReplayTourSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana ekrandaki kısa turu yeniden başlatın'**
+  String get appGuideReplayTourSub;
+
+  /// No description provided for @guideGroupTimes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler & Alarmlar'**
+  String get guideGroupTimes;
+
+  /// No description provided for @guideGroupPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz'**
+  String get guideGroupPrayer;
+
+  /// No description provided for @guideGroupQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an & Dualar'**
+  String get guideGroupQuran;
+
+  /// No description provided for @guideGroupWidgets.
+  ///
+  /// In tr, this message translates to:
+  /// **'Widget\'lar'**
+  String get guideGroupWidgets;
+
+  /// No description provided for @guideLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana ekranda şehir adına dokunun; il, ilçe ve şehir listesi internetsiz de çalışır.'**
+  String get guideLocation;
+
+  /// No description provided for @guideAlarms.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit için ezan, sessiz bildirim ve önceden hatırlatma. Ana ekranda bir vakte dokunmak da burayı açar.'**
+  String get guideAlarms;
+
+  /// No description provided for @guideTracker.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldığınız vakitleri işaretleyin; bildirimdeki “Kıldım” da işaretler. Özel gününüzde gün adına basılı tutun.'**
+  String get guideTracker;
+
+  /// No description provided for @guideKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza sayaçlarınızı tutun; “Kaza hesapla” ile kılınmayan süreden tahmini sayıyı bulun.'**
+  String get guideKaza;
+
+  /// No description provided for @guideQibla.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonu düz tutun; kıbleye dönünce titrer.'**
+  String get guideQibla;
+
+  /// No description provided for @guideZikir.
+  ///
+  /// In tr, this message translates to:
+  /// **'Saymak için ekrana dokunun, zikri değiştirmek için kartı kaydırın. Ses tuşlarıyla sayma zikir ayarlarında.'**
+  String get guideZikir;
+
+  /// No description provided for @guideQuran.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görünüm\'den Sayfa, Ayet ayet ya da Meal seçin; ayete dokununca meal, yer imi ve paylaşma açılır. Kaldığınız yer kendiliğinden saklanır.'**
+  String get guideQuran;
+
+  /// No description provided for @guideWidgets.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler, geri sayım, vakit halkası, Ramazan ve namaz takibi (vakte dokunarak işaretleyin). Ana ekranda boş bir yere basılı tutup Widget\'lar\'dan da ekleyebilirsiniz.'**
+  String get guideWidgets;
+
+  /// No description provided for @refreshLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konumu yenile'**
+  String get refreshLocation;
+
+  /// No description provided for @countryTurkey.
+  ///
+  /// In tr, this message translates to:
+  /// **'Türkiye'**
+  String get countryTurkey;
+
+  /// No description provided for @locationEuropeKktc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Avrupa / KKTC'**
+  String get locationEuropeKktc;
+
+  /// No description provided for @countryGermany.
+  ///
+  /// In tr, this message translates to:
+  /// **'Almanya'**
+  String get countryGermany;
+
+  /// No description provided for @countryNetherlands.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hollanda'**
+  String get countryNetherlands;
+
+  /// No description provided for @countryBelgium.
+  ///
+  /// In tr, this message translates to:
+  /// **'Belçika'**
+  String get countryBelgium;
+
+  /// No description provided for @countryFrance.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fransa'**
+  String get countryFrance;
+
+  /// No description provided for @countryAustria.
+  ///
+  /// In tr, this message translates to:
+  /// **'Avusturya'**
+  String get countryAustria;
+
+  /// No description provided for @countrySwitzerland.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsviçre'**
+  String get countrySwitzerland;
+
+  /// No description provided for @countryUnitedKingdom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Birleşik Krallık'**
+  String get countryUnitedKingdom;
+
+  /// No description provided for @countryDenmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Danimarka'**
+  String get countryDenmark;
+
+  /// No description provided for @countrySweden.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsveç'**
+  String get countrySweden;
+
+  /// No description provided for @countryNorway.
+  ///
+  /// In tr, this message translates to:
+  /// **'Norveç'**
+  String get countryNorway;
+
+  /// No description provided for @countryNorthernCyprus.
+  ///
+  /// In tr, this message translates to:
+  /// **'KKTC'**
+  String get countryNorthernCyprus;
+
+  /// No description provided for @provinceCenter.
+  ///
+  /// In tr, this message translates to:
+  /// **'İl merkezi'**
+  String get provinceCenter;
+
+  /// No description provided for @searchOnline.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternette ara'**
+  String get searchOnline;
+
+  /// No description provided for @timesFollowPhoneClock.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.'**
+  String get timesFollowPhoneClock;
+
+  /// No description provided for @whatsNewSilenceDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitlerde ve Cuma namazında telefonu otomatik sessize alır, süre bitince eski hâline döndürür.'**
+  String get whatsNewSilenceDesc;
+
+  /// No description provided for @whatsNewCityClockTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçilen şehrin yerel saati'**
+  String get whatsNewCityClockTitle;
+
+  /// No description provided for @whatsNewCityClockDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farklı saat dilimindeki şehirlerde vakitler şehrin kendi saatinde gösterilir; Avrupa yaz yatsısı düzeltildi.'**
+  String get whatsNewCityClockDesc;
+
+  /// No description provided for @whatsNewKazaEstTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza bitiş tahmini'**
+  String get whatsNewKazaEstTitle;
+
+  /// No description provided for @whatsNewKazaEstDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük kaza hedefiyle borcunuzun tahmini bitiş süresini Kaza sekmesinde görün.'**
+  String get whatsNewKazaEstDesc;
+
+  /// No description provided for @whatsNewOfflineHadithTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çevrimdışı hadisler ve dini günler'**
+  String get whatsNewOfflineHadithTitle;
+
+  /// No description provided for @whatsNewOfflineHadithDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternetsiz zenginleştirilmiş hadis havuzu ve dini gün bildirimlerinden doğrudan ilgili ekrana geçiş.'**
+  String get whatsNewOfflineHadithDesc;
+
+  /// No description provided for @prayerSilenceTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namazdayım (otomatik sessiz)'**
+  String get prayerSilenceTitle;
+
+  /// No description provided for @prayerSilenceSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit girince telefonu kısa süreliğine sessize alır, süre bitince eski hâline döndürür.'**
+  String get prayerSilenceSub;
+
+  /// No description provided for @prayerSilenceActiveSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık · {minutes} dk (düzenlemek için dokunun)'**
+  String prayerSilenceActiveSub(int minutes);
+
+  /// No description provided for @prayerSilencePermissionNeeded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahatsız Etmeyin izni gerekli · İzin vermek için dokunun'**
+  String get prayerSilencePermissionNeeded;
+
+  /// No description provided for @prayerSilencePermissionBanner.
+  ///
+  /// In tr, this message translates to:
+  /// **'Otomatik sessiz modu için Android Rahatsız Etmeyin erişimine izin vermeniz gerekir.'**
+  String get prayerSilencePermissionBanner;
+
+  /// No description provided for @prayerSilenceGrantAccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahatsız Etmeyin izni ver'**
+  String get prayerSilenceGrantAccess;
+
+  /// No description provided for @prayerSilenceDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sessiz kalma süresi'**
+  String get prayerSilenceDuration;
+
+  /// No description provided for @prayerSilenceMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{minutes} dk'**
+  String prayerSilenceMinutes(int minutes);
+
+  /// No description provided for @prayerSilencePrayers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hangi vakitlerde'**
+  String get prayerSilencePrayers;
+
+  /// No description provided for @prayerSilenceFridayTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma namazı penceresi'**
+  String get prayerSilenceFridayTitle;
+
+  /// No description provided for @prayerSilenceFridaySub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma günü öğleden 15 dk önce başlayıp 45 dk sonra biter.'**
+  String get prayerSilenceFridaySub;
+
+  /// No description provided for @prayerSilenceNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon zaten sessizdeyse dokunulmaz. Sesli ezan açıksa ezan duyulsun diye 1 dk sonra başlar.'**
+  String get prayerSilenceNote;
+
+  /// No description provided for @timesFollowCityClock.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler seçilen şehrin yerel saatine göre gösterilir.'**
+  String get timesFollowCityClock;
+
+  /// No description provided for @cityLocalTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şehir saati: {time}'**
+  String cityLocalTime(String time);
+
+  /// No description provided for @navTools.
+  ///
+  /// In tr, this message translates to:
+  /// **'Araçlar'**
+  String get navTools;
+
+  /// No description provided for @a11yHours.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} saat}}'**
+  String a11yHours(int count);
+
+  /// No description provided for @a11yMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} dakika}}'**
+  String a11yMinutes(int count);
+
+  /// No description provided for @a11yHoursMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{hours} {minutes}'**
+  String a11yHoursMinutes(String hours, String minutes);
+
+  /// No description provided for @a11yTimeUntil.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vaktine {duration} kaldı'**
+  String a11yTimeUntil(String vakit, String duration);
+
+  /// No description provided for @a11yPrayerPassed.
+  ///
+  /// In tr, this message translates to:
+  /// **'geçti'**
+  String get a11yPrayerPassed;
+
+  /// No description provided for @a11yTrackerCell.
+  ///
+  /// In tr, this message translates to:
+  /// **'{day}, {prayer}: {state}'**
+  String a11yTrackerCell(String day, String prayer, String state);
+
+  /// No description provided for @a11yNotPrayed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılınmadı'**
+  String get a11yNotPrayed;
+
+  /// No description provided for @a11yNotDue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakti girmedi'**
+  String get a11yNotDue;
+
+  /// No description provided for @a11yExcusedDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün'**
+  String get a11yExcusedDay;
+
+  /// No description provided for @a11yQiblaTurnRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıbleye dönmek için {deg} derece sağa dönün'**
+  String a11yQiblaTurnRight(int deg);
+
+  /// No description provided for @a11yQiblaTurnLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıbleye dönmek için {deg} derece sola dönün'**
+  String a11yQiblaTurnLeft(int deg);
+
+  /// No description provided for @a11yQiblaAligned.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble yönündesiniz'**
+  String get a11yQiblaAligned;
+
+  /// No description provided for @a11yDecrease.
+  ///
+  /// In tr, this message translates to:
+  /// **'Azalt'**
+  String get a11yDecrease;
+
+  /// No description provided for @a11yIncrease.
+  ///
+  /// In tr, this message translates to:
+  /// **'Artır'**
+  String get a11yIncrease;
+
+  /// No description provided for @a11yPlaySound.
+  ///
+  /// In tr, this message translates to:
+  /// **'{sound} sesini dinle'**
+  String a11yPlaySound(String sound);
+
+  /// No description provided for @a11yStopSound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durdur'**
+  String get a11yStopSound;
+
+  /// No description provided for @hadithNotFound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hadis metni bulunamadı.'**
+  String get hadithNotFound;
+
+  /// No description provided for @timesLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler yüklenemedi. Lütfen tekrar deneyin.'**
+  String get timesLoadError;
+
+  /// No description provided for @sunriseNotPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güneşin doğuşu, namaz vakti değildir'**
+  String get sunriseNotPrayer;
+
+  /// No description provided for @currentPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şu anki vakit'**
+  String get currentPrayer;
+
+  /// No description provided for @textCopied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metin kopyalandı'**
+  String get textCopied;
+
+  /// No description provided for @updateDownloaded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni sürüm indirildi.'**
+  String get updateDownloaded;
+
+  /// No description provided for @restartAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeniden başlat'**
+  String get restartAction;
+
+  /// No description provided for @qiblaTurnRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sağa dönün'**
+  String get qiblaTurnRight;
+
+  /// No description provided for @qiblaTurnSlightRight.
+  ///
+  /// In tr, this message translates to:
+  /// **'Biraz sağa dönün'**
+  String get qiblaTurnSlightRight;
+
+  /// No description provided for @qiblaTurnLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sola dönün'**
+  String get qiblaTurnLeft;
+
+  /// No description provided for @qiblaTurnSlightLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Biraz sola dönün'**
+  String get qiblaTurnSlightLeft;
+
+  /// No description provided for @phoneHeading.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon yönü: {deg}°'**
+  String phoneHeading(String deg);
+
+  /// No description provided for @usingSavedLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kayıtlı konum kullanılıyor.'**
+  String get usingSavedLocation;
+
+  /// No description provided for @exampleHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: {n}'**
+  String exampleHint(int n);
+
+  /// No description provided for @noCustomDhikr.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz özel zikir eklemediniz.'**
+  String get noCustomDhikr;
+
+  /// No description provided for @messagesShuffled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mesajlar karıştırıldı'**
+  String get messagesShuffled;
+
+  /// No description provided for @shareAsImage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Resimli paylaş'**
+  String get shareAsImage;
+
+  /// No description provided for @shareAsText.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metni paylaş'**
+  String get shareAsText;
+
+  /// No description provided for @shareCardFooter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Google Play\'de Vaktinde'**
+  String get shareCardFooter;
+
+  /// No description provided for @fridayGreeting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hayırlı Cumalar'**
+  String get fridayGreeting;
+
+  /// No description provided for @sendGreeting.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tebrik gönder'**
+  String get sendGreeting;
+
+  /// No description provided for @greetingsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tebrik mesajları'**
+  String get greetingsTitle;
+
+  /// No description provided for @shuffle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Karıştır'**
+  String get shuffle;
+
+  /// No description provided for @copy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kopyala'**
+  String get copy;
+
+  /// No description provided for @messageCopied.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mesaj kopyalandı'**
+  String get messageCopied;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürüm {v}'**
+  String versionLabel(String v);
+
+  /// No description provided for @supportMailSubject.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde - Destek'**
+  String get supportMailSubject;
+
+  /// No description provided for @madeBy.
+  ///
+  /// In tr, this message translates to:
+  /// **'mmdigital tarafından ❤️ ile yapıldı'**
+  String get madeBy;
+
+  /// No description provided for @permissionPrimingTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan vakitlerini kaçırmayın'**
+  String get permissionPrimingTitle;
+
+  /// No description provided for @permissionPrimingBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan bildirimleri için bildirim iznine, vakitleri bulunduğunuz yere göre hesaplamak için konum iznine ihtiyacımız var.'**
+  String get permissionPrimingBody;
+
+  /// No description provided for @continueAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam'**
+  String get continueAction;
+
   /// No description provided for @nextPrayer.
   ///
   /// In tr, this message translates to:
@@ -121,12 +967,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Günün Hadisi'**
   String get hadithTitle;
-
-  /// No description provided for @readMore.
-  ///
-  /// In tr, this message translates to:
-  /// **'Devamını Oku...'**
-  String get readMore;
 
   /// No description provided for @share.
   ///
@@ -145,12 +985,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Vakitler Hesaplanıyor...'**
   String get loading;
-
-  /// No description provided for @error.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hata'**
-  String get error;
 
   /// No description provided for @retry.
   ///
@@ -203,8 +1037,452 @@ abstract class AppLocalizations {
   /// No description provided for @exactAlarm.
   ///
   /// In tr, this message translates to:
-  /// **'Tam Vaktinde Oku'**
+  /// **'Tam Vaktinde Bildir'**
   String get exactAlarm;
+
+  /// No description provided for @reminderTitleAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Hatırlatması'**
+  String get reminderTitleAt;
+
+  /// No description provided for @notifBodyUpcomingAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vakti: {time}'**
+  String notifBodyUpcomingAt(String vakit, String time);
+
+  /// No description provided for @endReminderTitleAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Çıkışı'**
+  String get endReminderTitleAt;
+
+  /// No description provided for @endReminderNotifBodyAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vaktinin çıkışı: {time}'**
+  String endReminderNotifBodyAt(String vakit, String time);
+
+  /// No description provided for @ramadanImsakBodyAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahur vakti {time} itibarıyla sona erdi. Hayırlı oruçlar!'**
+  String ramadanImsakBodyAt(String time);
+
+  /// No description provided for @alarmHealthExactOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm izni kapalı: ezan ve hatırlatmalar yaklaşık bir saate kadar gecikebilir (imsak ve sahur dahil).'**
+  String get alarmHealthExactOff;
+
+  /// No description provided for @healthTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Kontrolü'**
+  String get healthTitle;
+
+  /// No description provided for @healthSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan gelmiyorsa ayarları adım adım kontrol edin'**
+  String get healthSub;
+
+  /// No description provided for @healthSectionStatus.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum'**
+  String get healthSectionStatus;
+
+  /// No description provided for @healthEzansTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan alarmları'**
+  String get healthEzansTitle;
+
+  /// No description provided for @healthEzansOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık: {names}'**
+  String healthEzansOn(String names);
+
+  /// No description provided for @healthEzansNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hiçbir vakit için ezan açık değil.'**
+  String get healthEzansNone;
+
+  /// No description provided for @healthNextTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıradaki ezan'**
+  String get healthNextTitle;
+
+  /// No description provided for @healthNextNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurulu ezan bulunamadı.'**
+  String get healthNextNone;
+
+  /// No description provided for @healthReschedule.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeniden kur'**
+  String get healthReschedule;
+
+  /// No description provided for @healthNotificationsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler'**
+  String get healthNotificationsTitle;
+
+  /// No description provided for @healthNotificationsOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık.'**
+  String get healthNotificationsOk;
+
+  /// No description provided for @healthOpenSettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarları aç'**
+  String get healthOpenSettings;
+
+  /// No description provided for @healthExactTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarmlar ve hatırlatıcılar'**
+  String get healthExactTitle;
+
+  /// No description provided for @healthExactOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzin verildi: ezan tam vaktinde çalar.'**
+  String get healthExactOk;
+
+  /// No description provided for @healthVolumeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses'**
+  String get healthVolumeTitle;
+
+  /// No description provided for @healthVolumeOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim sesi açık.'**
+  String get healthVolumeOk;
+
+  /// No description provided for @healthVolumeAlarmOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm sesi açık.'**
+  String get healthVolumeAlarmOk;
+
+  /// No description provided for @healthVolumeSilent.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon sessiz ya da titreşim modunda: ezan sesi duyulmaz.'**
+  String get healthVolumeSilent;
+
+  /// No description provided for @healthVolumeNotificationMuted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim sesi kapalı: ezan sesi duyulmaz.'**
+  String get healthVolumeNotificationMuted;
+
+  /// No description provided for @healthVolumeAlarmMuted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alarm sesi kapalı: ezan sesi duyulmaz.'**
+  String get healthVolumeAlarmMuted;
+
+  /// No description provided for @healthAlarmStreamTip.
+  ///
+  /// In tr, this message translates to:
+  /// **'“{setting}” açıkken ezan alarm sesiyle çalar.'**
+  String healthAlarmStreamTip(String setting);
+
+  /// No description provided for @healthDndTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahatsız Etmeyin'**
+  String get healthDndTitle;
+
+  /// No description provided for @healthDndOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapalı.'**
+  String get healthDndOff;
+
+  /// No description provided for @healthDndOn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık: ezan sesi duyulmayabilir.'**
+  String get healthDndOn;
+
+  /// No description provided for @healthDndAlarm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık, ancak “{setting}” sayesinde ezan alarm sesiyle çalar.'**
+  String healthDndAlarm(String setting);
+
+  /// No description provided for @healthBatteryTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pil kullanımı'**
+  String get healthBatteryTitle;
+
+  /// No description provided for @healthBatteryOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pil optimizasyonu Vaktinde için kapalı.'**
+  String get healthBatteryOk;
+
+  /// No description provided for @healthBatteryOptimized.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pil optimizasyonu açık: telefon Vaktinde\'yi arka planda durdurabilir. Uygulama ayarlarında Pil bölümünden “Kısıtlanmamış” seçeneğini işaretleyin (bazı telefonlarda “Sınırsız” ya da “Kısıtlama yok”).'**
+  String get healthBatteryOptimized;
+
+  /// No description provided for @healthBackgroundTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka planda çalışma'**
+  String get healthBackgroundTitle;
+
+  /// No description provided for @healthBackgroundToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son çalışma: bugün {time}'**
+  String healthBackgroundToday(String time);
+
+  /// No description provided for @healthBackgroundYesterday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son çalışma: dün {time}'**
+  String healthBackgroundYesterday(String time);
+
+  /// No description provided for @healthBackgroundStale.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde son 48 saatte arka planda hiç çalışmadı: telefon uygulamayı durduruyor olabilir.'**
+  String get healthBackgroundStale;
+
+  /// No description provided for @healthWidgetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Widget ve kalıcı bildirim'**
+  String get healthWidgetTitle;
+
+  /// No description provided for @healthWidgetLate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 7 günde sayaç, vakit girince {minutes} dk geç yenilendi: telefon Vaktinde\'yi arka planda bekletiyor. Pil ayarını “Kısıtlanmamış” yapın ve aşağıdaki adımları uygulayın.'**
+  String healthWidgetLate(int minutes);
+
+  /// No description provided for @healthShowSteps.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adımları göster'**
+  String get healthShowSteps;
+
+  /// No description provided for @healthGuideTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{brand} için ayarlar'**
+  String healthGuideTitle(String brand);
+
+  /// No description provided for @healthGuideTitleGeneric.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonunuz için ayarlar'**
+  String get healthGuideTitleGeneric;
+
+  /// No description provided for @healthGuideStale.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka planda çalışma durmuş görünüyor. Ezanın gecikmemesi için şu ayarları yapın:'**
+  String get healthGuideStale;
+
+  /// No description provided for @healthGuideMore.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon modelinize göre ayrıntılı anlatım (İngilizce)'**
+  String get healthGuideMore;
+
+  /// No description provided for @healthTestTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Test ezanı'**
+  String get healthTestTitle;
+
+  /// No description provided for @healthTestInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gerçek ezanla aynı ses ve ayarlarla 1 dakika sonra bir test bildirimi gelir.'**
+  String get healthTestInfo;
+
+  /// No description provided for @healthTestButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'1 dk sonra test ezanı'**
+  String get healthTestButton;
+
+  /// No description provided for @healthTestScheduled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Test ezanı 1 dakika sonra çalacak. Uygulamayı kapatabilirsiniz.'**
+  String get healthTestScheduled;
+
+  /// No description provided for @healthTestNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu bildirim geldiyse ezan bildirimleri çalışıyor.'**
+  String get healthTestNotifBody;
+
+  /// No description provided for @testEzanOfferTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan telefonunuzda çalıyor mu?'**
+  String get testEzanOfferTitle;
+
+  /// No description provided for @notNow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şimdi değil'**
+  String get notNow;
+
+  /// No description provided for @tipVendorGuide.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu telefonda ezanın gecikmemesi için birkaç ayar yapmanız gerekiyor.'**
+  String get tipVendorGuide;
+
+  /// No description provided for @tipVendorGuideAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarları göster'**
+  String get tipVendorGuideAction;
+
+  /// No description provided for @weeklySummaryTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haftalık namaz özeti'**
+  String get weeklySummaryTitle;
+
+  /// No description provided for @weeklySummarySub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pazartesi, namaz takibini kullanıyorsanız geçen haftanın özeti'**
+  String get weeklySummarySub;
+
+  /// No description provided for @weeklySummaryBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçen hafta {total} vakitten {done} vakit kıldınız.'**
+  String weeklySummaryBody(int done, int total);
+
+  /// No description provided for @weeklySummaryFull.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçen hafta {total} vaktin hepsini kıldınız. Allah kabul etsin.'**
+  String weeklySummaryFull(int total);
+
+  /// No description provided for @healthStepXiaomiAutostart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama ayarlarında “Otomatik başlatma” seçeneğini açın.'**
+  String get healthStepXiaomiAutostart;
+
+  /// No description provided for @healthStepXiaomiBattery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aynı ekranda Pil tasarrufu (ya da Pil) bölümünden “Kısıtlama yok” seçeneğini işaretleyin.'**
+  String get healthStepXiaomiBattery;
+
+  /// No description provided for @healthStepHuaweiLaunch.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar\'da “Uygulama başlatma” bölümünü açın (Pil ya da Uygulamalar altında). Vaktinde için otomatik yönetimi kapatın ve açılan penceredeki tüm seçenekleri açık bırakın.'**
+  String get healthStepHuaweiLaunch;
+
+  /// No description provided for @healthStepOppoBackground.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama ayarları > Pil kullanımı bölümünde arka planda çalışmaya ve otomatik başlatmaya izin verin.'**
+  String get healthStepOppoBackground;
+
+  /// No description provided for @healthStepVivoBackground.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar > Pil bölümünde Vaktinde\'nin arka planda yüksek güç tüketmesine izin verin.'**
+  String get healthStepVivoBackground;
+
+  /// No description provided for @healthStepAutostartIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar\'da ya da {app} uygulamasında Vaktinde için otomatik başlatmayı açın.'**
+  String healthStepAutostartIn(String app);
+
+  /// No description provided for @healthStepAppBattery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulama ayarları > Pil bölümünde “Kısıtlanmamış” seçeneğini işaretleyin.'**
+  String get healthStepAppBattery;
+
+  /// No description provided for @healthStepSamsungSleeping.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayarlar > Pil > Arka plan kullanım sınırları bölümünde Vaktinde\'yi hiç uyku moduna alınmayan uygulamalara ekleyin.'**
+  String get healthStepSamsungSleeping;
+
+  /// No description provided for @healthStepLockRecents.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son uygulamalar ekranında Vaktinde\'yi kilitleyin (telefonunuzda bu seçenek varsa).'**
+  String get healthStepLockRecents;
+
+  /// No description provided for @healthDetails.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayrıntılar'**
+  String get healthDetails;
+
+  /// No description provided for @alarmHealthExactAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzin ver'**
+  String get alarmHealthExactAction;
+
+  /// No description provided for @alarmHealthNotificationsOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirimler kapalı, ezan çalmaz.'**
+  String get alarmHealthNotificationsOff;
+
+  /// No description provided for @alarmHealthNotificationsAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aç'**
+  String get alarmHealthNotificationsAction;
+
+  /// No description provided for @ezanAlarmStreamTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sessiz modda da çal'**
+  String get ezanAlarmStreamTitle;
+
+  /// No description provided for @ezanAlarmStreamSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan, telefon sessizdeyken de alarm ses seviyesinde çalar.'**
+  String get ezanAlarmStreamSub;
+
+  /// No description provided for @channelAlarmSound.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ses: {soundName} (sessizde de çalar)'**
+  String channelAlarmSound(String soundName);
 
   /// No description provided for @exactAlarmSub.
   ///
@@ -221,7 +1499,7 @@ abstract class AppLocalizations {
   /// No description provided for @silentNotifSub.
   ///
   /// In tr, this message translates to:
-  /// **'Ezan/Ses çalmaz, sadece uyarı gelir.'**
+  /// **'Ezan/ses çalmaz, sadece uyarı gelir.'**
   String get silentNotifSub;
 
   /// No description provided for @warningAlarm.
@@ -332,17 +1610,35 @@ abstract class AppLocalizations {
   /// **'Kıble'**
   String get navQibla;
 
-  /// No description provided for @navMenu.
-  ///
-  /// In tr, this message translates to:
-  /// **'Menü'**
-  String get navMenu;
-
   /// No description provided for @menuTitle.
   ///
   /// In tr, this message translates to:
   /// **'Ayarlar'**
   String get menuTitle;
+
+  /// No description provided for @aboutAds.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklamlar Hakkında'**
+  String get aboutAds;
+
+  /// No description provided for @adInfoTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde neden reklam gösteriyor?'**
+  String get adInfoTitle;
+
+  /// No description provided for @adInfoBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde\'yi ücretsiz ve üyelik gerektirmeden sunabilmek için uygulamada sınırlı sayıda reklam gösteriyoruz. Reklam gelirleri, uygulamanın geliştirilmesi ve bakımı için gereken masrafları karşılamamıza yardımcı oluyor.\n\nKur\'an, Kıble, Zikirmatik, Dualar ve Namaz Hocası açılırken tam ekran reklam gösterilmez; diğer ekranlarda da reklamları seyrek tutuyoruz.\n\nAnlayışınız için teşekkür ederiz.'**
+  String get adInfoBody;
+
+  /// No description provided for @adInfoGotIt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anladım'**
+  String get adInfoGotIt;
 
   /// No description provided for @sectionLocation.
   ///
@@ -362,12 +1658,6 @@ abstract class AppLocalizations {
   /// **'İl Seçiniz'**
   String get citySelect;
 
-  /// No description provided for @districtSelect.
-  ///
-  /// In tr, this message translates to:
-  /// **'İlçe Seçiniz'**
-  String get districtSelect;
-
   /// No description provided for @save.
   ///
   /// In tr, this message translates to:
@@ -380,35 +1670,581 @@ abstract class AppLocalizations {
   /// **'İptal'**
   String get cancel;
 
-  /// No description provided for @locationWarning.
+  /// No description provided for @timeAdjustTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Doğru namaz vakitleri için İlçe seçimi önemlidir.'**
-  String get locationWarning;
+  /// **'Vakit İnce Ayarı'**
+  String get timeAdjustTitle;
 
-  /// No description provided for @menuNotifications.
+  /// No description provided for @tapToCount.
   ///
   /// In tr, this message translates to:
-  /// **'Bildirim İzinleri'**
-  String get menuNotifications;
+  /// **'Saymak için dokunun'**
+  String get tapToCount;
 
-  /// No description provided for @menuNotificationsSub.
+  /// No description provided for @timeAdjustSub.
   ///
   /// In tr, this message translates to:
-  /// **'Ses gelmiyorsa buradan kontrol et.'**
-  String get menuNotificationsSub;
+  /// **'Vakitleri dakika dakika düzeltin'**
+  String get timeAdjustSub;
 
-  /// No description provided for @menuTroubleshoot.
+  /// No description provided for @timeAdjustInfo.
   ///
   /// In tr, this message translates to:
-  /// **'Bildirim Gelmiyor mu?'**
-  String get menuTroubleshoot;
+  /// **'Vakitler konumunuza göre Diyanet yöntemiyle hesaplanır. Bölgenizdeki caminin vakitleriyle küçük farklar varsa her vakti dakika olarak ileri veya geri alabilirsiniz. Ayar ana ekrana, widget\'lara ve ezan bildirimlerine uygulanır.'**
+  String get timeAdjustInfo;
 
-  /// No description provided for @menuTroubleshootSub.
+  /// No description provided for @timeAdjustReset.
   ///
   /// In tr, this message translates to:
-  /// **'Samsung/Xiaomi için pil ayarı yapın.'**
-  String get menuTroubleshootSub;
+  /// **'Sıfırla'**
+  String get timeAdjustReset;
+
+  /// No description provided for @timeAdjustMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{value} dk'**
+  String timeAdjustMinutes(String value);
+
+  /// No description provided for @timeAdjustSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler güncellendi'**
+  String get timeAdjustSaved;
+
+  /// No description provided for @trackerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Takibi'**
+  String get trackerTitle;
+
+  /// No description provided for @trackerExcusedTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün'**
+  String get trackerExcusedTitle;
+
+  /// No description provided for @trackerExcusedInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hayız ve nifas (özel hal) günlerinde kılınamayan namazların kazası gerekmez. Özel gün olarak işaretlenen günler seriyi bozmaz; orana ve kazaya eklenecek vakitlere katılmaz. Bu günlerde tutulamayan Ramazan oruçlarının ise kazası gerekir. Bugünü işaretleyince özel gün başlar ve sonraki günler kendiliğinden işaretlenir (en fazla 10 gün); bittiğinde bugünün işaretini kaldırın. Geçmiş bir günü işaretlemek ya da işareti kaldırmak için gün adına basılı tutun.'**
+  String get trackerExcusedInfo;
+
+  /// No description provided for @trackerExcusedToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünü özel gün olarak işaretle'**
+  String get trackerExcusedToday;
+
+  /// No description provided for @trackerExcusedMark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün olarak işaretle'**
+  String get trackerExcusedMark;
+
+  /// No description provided for @trackerExcusedUnmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün işaretini kaldır'**
+  String get trackerExcusedUnmark;
+
+  /// No description provided for @trackerExcusedMarked.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün olarak işaretlendi.'**
+  String get trackerExcusedMarked;
+
+  /// No description provided for @notifStopAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durdur'**
+  String get notifStopAction;
+
+  /// No description provided for @trackerExcusedPeriodStarted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün başladı; sonraki günler kendiliğinden işaretlenir (en fazla 10 gün). Bitince Bugün\'e yine basılı tutun.'**
+  String get trackerExcusedPeriodStarted;
+
+  /// No description provided for @trackerExcusedPeriodEnded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün bitti.'**
+  String get trackerExcusedPeriodEnded;
+
+  /// No description provided for @excusedSilentEzanTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Günde Ezanı Sessiz Bildir'**
+  String get excusedSilentEzanTitle;
+
+  /// No description provided for @excusedSilentEzanSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel günlerde vakit bildirimi sessiz gelir; hatırlatmalar kurulmaz.'**
+  String get excusedSilentEzanSub;
+
+  /// No description provided for @trackerExcusedUnmarked.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün işareti kaldırıldı.'**
+  String get trackerExcusedUnmarked;
+
+  /// No description provided for @trackerExcusedCellSnack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gün özel gün olarak işaretli; vakitleri sayılmaz. İşareti kaldırmak için gün adına basılı tutun.'**
+  String get trackerExcusedCellSnack;
+
+  /// No description provided for @trackerExcusedKazaConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{Bu günün kazaya eklenmiş {count} vakti kaza sayaçlarından düşülecek.}}'**
+  String trackerExcusedKazaConfirm(int count);
+
+  /// No description provided for @trackerLegendExcused.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün (gün adına basılı tutun)'**
+  String get trackerLegendExcused;
+
+  /// No description provided for @fastLegendExcused.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel gün (kazası tutulur)'**
+  String get fastLegendExcused;
+
+  /// No description provided for @trackerToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün'**
+  String get trackerToday;
+
+  /// No description provided for @trackerYesterday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dün'**
+  String get trackerYesterday;
+
+  /// No description provided for @trackerPrayedAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldım'**
+  String get trackerPrayedAction;
+
+  /// No description provided for @trackerLast7Days.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 7 Gün'**
+  String get trackerLast7Days;
+
+  /// No description provided for @trackerCompletion.
+  ///
+  /// In tr, this message translates to:
+  /// **'30 günlük oran'**
+  String get trackerCompletion;
+
+  /// No description provided for @trackerStreak.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seri'**
+  String get trackerStreak;
+
+  /// No description provided for @trackerStreakDays.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} gün}}'**
+  String trackerStreakDays(int count);
+
+  /// No description provided for @trackerNotYet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu vakit henüz girmedi.'**
+  String get trackerNotYet;
+
+  /// No description provided for @trackerKazaButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılınmayanları kazaya ekle'**
+  String get trackerKazaButton;
+
+  /// No description provided for @trackerKazaInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 30 gün içinde (takibe başladığınız günden itibaren) işaretlenmemiş vakitler kaza sayaçlarına eklenir. Her vakit yalnızca bir kez eklenir. Kazaya eklenen bir vakti kıldıysanız üzerine dokunun; kılındı olarak işaretlenir ve kaza sayısından düşülür.'**
+  String get trackerKazaInfo;
+
+  /// No description provided for @trackerKazaConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{İşaretlenmemiş {count} vakit kaza sayaçlarına eklenecek. Devam edilsin mi?}}'**
+  String trackerKazaConfirm(int count);
+
+  /// No description provided for @trackerKazaAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekle'**
+  String get trackerKazaAdd;
+
+  /// No description provided for @trackerKazaDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} vakit kazaya eklendi.}}'**
+  String trackerKazaDone(int count);
+
+  /// No description provided for @trackerKazaNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklenecek vakit yok.'**
+  String get trackerKazaNone;
+
+  /// No description provided for @trackerKazaRemoveTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazadan çıkarılsın mı?'**
+  String get trackerKazaRemoveTitle;
+
+  /// No description provided for @trackerKazaRemoveConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu vakit kılındı olarak işaretlenecek ve {name} kaza sayısı {from} yerine {to} olacak.'**
+  String trackerKazaRemoveConfirm(String name, int from, int to);
+
+  /// No description provided for @addWidgetTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ana Ekrana Widget Ekle'**
+  String get addWidgetTitle;
+
+  /// No description provided for @addWidgetSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitleri uygulamayı açmadan görün'**
+  String get addWidgetSub;
+
+  /// No description provided for @addWidgetHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Birini seçin; ana ekranınız eklemeden önce onay isteyecek.'**
+  String get addWidgetHint;
+
+  /// No description provided for @widgetRingName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Halkası'**
+  String get widgetRingName;
+
+  /// No description provided for @widgetRingDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kare: sıradaki vakte kalan süre; halka önceki vakitten bu yana geçeni gösterir'**
+  String get widgetRingDesc;
+
+  /// No description provided for @widgetTrackerName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Takibi'**
+  String get widgetTrackerName;
+
+  /// No description provided for @widgetTrackerDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatay şerit: bugünün beş vakti; vakte dokunup kılındı işaretleyin'**
+  String get widgetTrackerDesc;
+
+  /// No description provided for @widgetLargeName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günün Vakitleri'**
+  String get widgetLargeName;
+
+  /// No description provided for @widgetLargeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Büyük boy: konum, hicri tarih, günün vakitleri ve kalan süre'**
+  String get widgetLargeDesc;
+
+  /// No description provided for @widgetWideName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sıradaki Vakit'**
+  String get widgetWideName;
+
+  /// No description provided for @widgetWideDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yatay şerit: konum, hicri tarih ve sıradaki vakte kalan süre'**
+  String get widgetWideDesc;
+
+  /// No description provided for @widgetSmallName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Sayacı'**
+  String get widgetSmallName;
+
+  /// No description provided for @widgetSmallDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Küçük kare: sıradaki vakte kalan süre'**
+  String get widgetSmallDesc;
+
+  /// No description provided for @trackerLegendPrayed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılındı'**
+  String get trackerLegendPrayed;
+
+  /// No description provided for @trackerLegendKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklendi'**
+  String get trackerLegendKaza;
+
+  /// No description provided for @kerahatActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şu an kerahat vakti: {range}'**
+  String kerahatActive(String range);
+
+  /// No description provided for @kerahatUpcoming.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kerahat vakti yaklaşıyor: {range}'**
+  String kerahatUpcoming(String range);
+
+  /// No description provided for @endReminderTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Çıkmadan Hatırlat'**
+  String get endReminderTitle;
+
+  /// No description provided for @dailyContentNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günün Ayeti ve Hadisi Bildirimleri'**
+  String get dailyContentNotifTitle;
+
+  /// No description provided for @persistentNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kalıcı Bildirim'**
+  String get persistentNotifTitle;
+
+  /// No description provided for @persistentNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim çubuğunda sıradaki vakte kalan süreyi ve günün vakitlerini gösterir.'**
+  String get persistentNotifSub;
+
+  /// No description provided for @dailyContentNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her gün sabah bir ayet, akşam bir hadis gönderir.'**
+  String get dailyContentNotifSub;
+
+  /// No description provided for @religiousDaysNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dini Gün ve Kandil Bildirimleri'**
+  String get religiousDaysNotifTitle;
+
+  /// No description provided for @religiousDaysNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kandil, bayram ve diğer dini günlerde sabah bildirim gönderir.'**
+  String get religiousDaysNotifSub;
+
+  /// No description provided for @fridayNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma Bildirimi'**
+  String get fridayNotifTitle;
+
+  /// No description provided for @fridayNotifSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma sabahı Kehf Suresi\'ni ve Cuma mesajlarını hatırlatır.'**
+  String get fridayNotifSub;
+
+  /// No description provided for @fridayNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kehf Suresi\'ni okumayı ve sevdiklerinize Cuma mesajı göndermeyi unutmayın.'**
+  String get fridayNotifBody;
+
+  /// No description provided for @fridayKehfAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kehf Suresi'**
+  String get fridayKehfAction;
+
+  /// No description provided for @religiousDaysChannel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dini Günler ve Kandiller'**
+  String get religiousDaysChannel;
+
+  /// No description provided for @ucAylarBaslangici.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üç Ayların Başlangıcı'**
+  String get ucAylarBaslangici;
+
+  /// No description provided for @ramazanArefesi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Bayramı Arefesi'**
+  String get ramazanArefesi;
+
+  /// No description provided for @kurbanArefesi.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurban Bayramı Arefesi'**
+  String get kurbanArefesi;
+
+  /// No description provided for @ucAylarNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Recep, Şaban ve Ramazan aylarından oluşan üç aylar bugün başladı. Üç aylarınız mübarek olsun.'**
+  String get ucAylarNotifBody;
+
+  /// No description provided for @ucAylarRegaipTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üç Aylar ve Regaib Kandili'**
+  String get ucAylarRegaipTitle;
+
+  /// No description provided for @ucAylarRegaipNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üç aylar bugün başladı, bu gece de Regaib Kandili. Üç aylarınız ve kandiliniz mübarek olsun.'**
+  String get ucAylarRegaipNotifBody;
+
+  /// No description provided for @regaipKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Regaib Kandili. Kandiliniz mübarek olsun.'**
+  String get regaipKandiliNotifBody;
+
+  /// No description provided for @miracKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Miraç Kandili. Kandiliniz mübarek olsun.'**
+  String get miracKandiliNotifBody;
+
+  /// No description provided for @beratKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Berat Kandili. Kandiliniz mübarek olsun.'**
+  String get beratKandiliNotifBody;
+
+  /// No description provided for @mevlidKandiliNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Mevlid Kandili. Kandiliniz mübarek olsun.'**
+  String get mevlidKandiliNotifBody;
+
+  /// No description provided for @kadirGecesiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gece Kadir Gecesi. Kadir Geceniz mübarek olsun.'**
+  String get kadirGecesiNotifBody;
+
+  /// No description provided for @ramazanBaslangiciNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan yarın başlıyor; ilk teravih ve sahur bu gece. Hayırlı Ramazanlar!'**
+  String get ramazanBaslangiciNotifBody;
+
+  /// No description provided for @ramazanArefesiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün arefe, yarın Ramazan Bayramı. Bayramınız şimdiden mübarek olsun.'**
+  String get ramazanArefesiNotifBody;
+
+  /// No description provided for @ramazanBayramiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Bayramınız mübarek olsun. Nice bayramlara!'**
+  String get ramazanBayramiNotifBody;
+
+  /// No description provided for @kurbanArefesiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün arefe, yarın Kurban Bayramı. Bayramınız şimdiden mübarek olsun.'**
+  String get kurbanArefesiNotifBody;
+
+  /// No description provided for @kurbanBayramiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurban Bayramınız mübarek, kurbanlarınız kabul olsun.'**
+  String get kurbanBayramiNotifBody;
+
+  /// No description provided for @hicriYilbasiNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün Hicri Yılbaşı. Yeni yılınız hayırlara vesile olsun.'**
+  String get hicriYilbasiNotifBody;
+
+  /// No description provided for @asureGunuNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün Aşure Günü. Hayırlara vesile olsun.'**
+  String get asureGunuNotifBody;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik Politikası'**
+  String get privacyPolicy;
+
+  /// No description provided for @endReminderSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılındı olarak işaretlenmemiş namazlar için vakit çıkmadan bildirim gönderir.'**
+  String get endReminderSub;
+
+  /// No description provided for @endReminderNotifTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Çıkıyor'**
+  String get endReminderNotifTitle;
+
+  /// No description provided for @endReminderNotifBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vaktinin çıkmasına {minute} dakika kaldı.'**
+  String endReminderNotifBody(String vakit, int minute);
+
+  /// No description provided for @endReminderChannel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit Çıkış Hatırlatmaları'**
+  String get endReminderChannel;
+
+  /// No description provided for @ramadanIftarTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftar Vakti'**
+  String get ramadanIftarTitle;
+
+  /// No description provided for @ramadanIftarBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'{vakit} vakti girdi. Hayırlı iftarlar!'**
+  String ramadanIftarBody(String vakit);
+
+  /// No description provided for @ramadanImsakTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsak Vakti'**
+  String get ramadanImsakTitle;
+
+  /// No description provided for @ramadanImsakBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahur vakti sona erdi. Hayırlı oruçlar!'**
+  String get ramadanImsakBody;
 
   /// No description provided for @sectionSupport.
   ///
@@ -419,7 +2255,7 @@ abstract class AppLocalizations {
   /// No description provided for @shareApp.
   ///
   /// In tr, this message translates to:
-  /// **'Arkadaşınla Paylaş'**
+  /// **'Arkadaşlarınızla Paylaş'**
   String get shareApp;
 
   /// No description provided for @rateApp.
@@ -437,20 +2273,8 @@ abstract class AppLocalizations {
   /// No description provided for @shareText.
   ///
   /// In tr, this message translates to:
-  /// **'Harika bir Ezan Vakti uygulaması buldum! İndir: {link}'**
+  /// **'Harika bir ezan vakti uygulaması buldum! İndir: {link}'**
   String shareText(String link);
-
-  /// No description provided for @batteryDialogTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Bildirim Sorunu Çözümü'**
-  String get batteryDialogTitle;
-
-  /// No description provided for @batteryDialogBody.
-  ///
-  /// In tr, this message translates to:
-  /// **'Telefonunuz pil tasarrufu için uygulamayı kapatıyor olabilir. Bunu önlemek için:\n\n1. Son Uygulamalar (Kare tuşu) ekranını açın.\n2. \'Vaktinde\' uygulamasının üzerine basılı tutun veya logoya tıklayın.\n3. Kilit Simgesine 🔒 basarak kilitleyin.\n\nAyrıca Ayarlar > Uygulamalar > Vaktinde > Pil > Kısıtlanmamış seçeneğini seçin.'**
-  String get batteryDialogBody;
 
   /// No description provided for @okUnderstood.
   ///
@@ -463,12 +2287,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Dini Günler'**
   String get religiousDaysTitle;
-
-  /// No description provided for @errorOccurred.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hata oluştu: {error}'**
-  String errorOccurred(String error);
 
   /// No description provided for @noDataFound.
   ///
@@ -494,10 +2312,142 @@ abstract class AppLocalizations {
   /// **'Kaza Takibi'**
   String get missedPrayersTitle;
 
+  /// No description provided for @kazaCalcTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza hesapla'**
+  String get kazaCalcTitle;
+
+  /// No description provided for @kazaCalcSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz kılınmayan süreden tahmini kaza sayısı'**
+  String get kazaCalcSubtitle;
+
+  /// No description provided for @kazaCalcPeriod.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz kılınmayan süre'**
+  String get kazaCalcPeriod;
+
+  /// No description provided for @kazaCalcYears.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yıl'**
+  String get kazaCalcYears;
+
+  /// No description provided for @kazaCalcMonths.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ay'**
+  String get kazaCalcMonths;
+
+  /// No description provided for @kazaCalcOptional.
+  ///
+  /// In tr, this message translates to:
+  /// **'İsteğe bağlı'**
+  String get kazaCalcOptional;
+
+  /// No description provided for @kazaCalcExcused.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayda ortalama özel gün (hayız)'**
+  String get kazaCalcExcused;
+
+  /// No description provided for @kazaCalcRamadans.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutulmayan Ramazan sayısı'**
+  String get kazaCalcRamadans;
+
+  /// No description provided for @kazaCalcFastDays.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutulmayan oruç (gün)'**
+  String get kazaCalcFastDays;
+
+  /// No description provided for @kazaCalcAddRamadan.
+  ///
+  /// In tr, this message translates to:
+  /// **'+1 Ramazan (+30 gün)'**
+  String get kazaCalcAddRamadan;
+
+  /// No description provided for @kazaCalcOptionalInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hayız günlerinde kılınamayan namazların kazası gerekmez; girdiğiniz gün sayısı namaz kazasından düşülür. Oruçtan düşülmez: hayız sebebiyle tutulamayan oruçların da kazası gerekir. Tutulmayan oruçları gün gün girebilir ya da tam bir Ramazan için +30 gün ekleyebilirsiniz.'**
+  String get kazaCalcOptionalInfo;
+
+  /// No description provided for @kazaCalcResult.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tahmini kaza'**
+  String get kazaCalcResult;
+
+  /// No description provided for @kazaCalcEachPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit ve vitir'**
+  String get kazaCalcEachPrayer;
+
+  /// No description provided for @kazaCalcNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tahmini sonuçtur (yıl 365, ay 30 gün sayılır). Kesin bilgi için bir din görevlisine danışın.'**
+  String get kazaCalcNote;
+
+  /// No description provided for @kazaCalcAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza Takibi\'ne ekle'**
+  String get kazaCalcAdd;
+
+  /// No description provided for @kazaCalcConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza Takibi\'ne eklensin mi?'**
+  String get kazaCalcConfirmTitle;
+
+  /// No description provided for @kazaCalcConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit ve vitir: +{prayers}\nOruç: +{fasts}\n\nSayılar mevcut kazaların üzerine eklenir, hiçbiri silinmez.'**
+  String kazaCalcConfirm(int prayers, int fasts);
+
+  /// No description provided for @kazaCalcAdded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tahmini kaza, Kaza Takibi\'ne eklendi.'**
+  String get kazaCalcAdded;
+
+  /// No description provided for @kazaDurationYears.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} yıl'**
+  String kazaDurationYears(int count);
+
+  /// No description provided for @kazaDurationMonths.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ay'**
+  String kazaDurationMonths(int count);
+
+  /// No description provided for @kazaDurationDays.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} gün'**
+  String kazaDurationDays(int count);
+
+  /// No description provided for @kazaCompletionEstimate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günde 1 günlük kaza kılarsanız namaz kazalarınız yaklaşık {duration} içinde biter.'**
+  String kazaCompletionEstimate(String duration);
+
   /// No description provided for @missedPrayersInfo.
   ///
   /// In tr, this message translates to:
-  /// **'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya tıklayarak elle girebilirsiniz)'**
+  /// **'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)'**
   String get missedPrayersInfo;
 
   /// No description provided for @editMissedTitle.
@@ -560,22 +2510,184 @@ abstract class AppLocalizations {
   /// **'Esmaül Hüsna'**
   String get esmaulHusnaTitle;
 
-  /// No description provided for @closeCaps.
-  ///
-  /// In tr, this message translates to:
-  /// **'KAPAT'**
-  String get closeCaps;
-
   /// No description provided for @zakatTitle.
   ///
   /// In tr, this message translates to:
   /// **'Zekat Hesapla'**
   String get zakatTitle;
 
+  /// No description provided for @fitreTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fitre ve Fidye'**
+  String get fitreTitle;
+
+  /// No description provided for @toolFitreDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fitre ve fidye tutarı hesabı'**
+  String get toolFitreDesc;
+
+  /// No description provided for @trackerTabTrack.
+  ///
+  /// In tr, this message translates to:
+  /// **'Takip'**
+  String get trackerTabTrack;
+
+  /// No description provided for @trackerTabKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza'**
+  String get trackerTabKaza;
+
+  /// No description provided for @trackerBadgesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefler'**
+  String get trackerBadgesTitle;
+
+  /// No description provided for @trackerBadgeEarned.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazanıldı · {date}'**
+  String trackerBadgeEarned(String date);
+
+  /// No description provided for @trackerBadgeSnack.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{Tebrikler! {count} günlük seri hedefinize ulaştınız.}}'**
+  String trackerBadgeSnack(int count);
+
+  /// No description provided for @fitreInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi başı tutar, Diyanet\'in belirlediği en az fitre (fıtır sadakası) miktarıdır; fitre para ya da gıda olarak verilebilir. Fidye, yaşlılık ya da iyileşme umudu olmayan bir hastalık nedeniyle oruç tutamayanların her gün için verdiği bir fitre tutarıdır. Türkiye dışındaysanız bulunduğunuz yerdeki tutarı yazabilirsiniz.'**
+  String get fitreInfo;
+
+  /// No description provided for @fitreAmountLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi başı tutar'**
+  String get fitreAmountLabel;
+
+  /// No description provided for @fitreSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaynak: {source}, {year}'**
+  String fitreSource(String source, String year);
+
+  /// No description provided for @fitreResetAmount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Varsayılan tutara dön'**
+  String get fitreResetAmount;
+
+  /// No description provided for @fitreSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fitre'**
+  String get fitreSectionTitle;
+
+  /// No description provided for @fitrePeopleLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi sayısı'**
+  String get fitrePeopleLabel;
+
+  /// No description provided for @fidyeSectionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fidye'**
+  String get fidyeSectionTitle;
+
+  /// No description provided for @fidyeDaysLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gün sayısı'**
+  String get fidyeDaysLabel;
+
+  /// No description provided for @fitreTotal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam'**
+  String get fitreTotal;
+
+  /// No description provided for @fastTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Orucu'**
+  String get fastTitle;
+
+  /// No description provided for @fastCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{done}/{total} gün'**
+  String fastCount(int done, int total);
+
+  /// No description provided for @fastInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tuttuğunuz günlere dokunun. Tutulmayan günler kaza orucu sayacına bir kez eklenir; kazaya eklenen bir günü tuttuysanız üzerine dokunun, sayaçtan düşülür.'**
+  String get fastInfo;
+
+  /// No description provided for @fastLegendFasted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutuldu'**
+  String get fastLegendFasted;
+
+  /// No description provided for @fastLegendKaza.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklendi'**
+  String get fastLegendKaza;
+
+  /// No description provided for @fastKazaButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tutulmayanları kaza orucuna ekle'**
+  String get fastKazaButton;
+
+  /// No description provided for @fastKazaConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{İşaretlenmemiş {count} gün kaza orucu sayacına eklenecek. Devam edilsin mi?}}'**
+  String fastKazaConfirm(int count);
+
+  /// No description provided for @fastKazaDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, other{{count} gün kaza orucuna eklendi.}}'**
+  String fastKazaDone(int count);
+
+  /// No description provided for @fastKazaNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazaya eklenecek gün yok.'**
+  String get fastKazaNone;
+
+  /// No description provided for @fastKazaRemoveTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazadan çıkarılsın mı?'**
+  String get fastKazaRemoveTitle;
+
+  /// No description provided for @fastKazaRemoveConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu gün tutuldu olarak işaretlenecek ve kaza orucu sayısı {from} yerine {to} olacak.'**
+  String fastKazaRemoveConfirm(int from, int to);
+
+  /// No description provided for @fastFastedAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tuttum'**
+  String get fastFastedAction;
+
   /// No description provided for @zakatCalculatorTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Akıllı Zekat Hesapla'**
+  /// **'Akıllı Zekat Hesaplama'**
   String get zakatCalculatorTitle;
 
   /// No description provided for @liveRatesLoading.
@@ -589,12 +2701,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Otomatik çekilen kurları isterseniz el ile düzeltebilirsiniz.'**
   String get liveRatesInfo;
-
-  /// No description provided for @sectionGold.
-  ///
-  /// In tr, this message translates to:
-  /// **'Altın Varlığı'**
-  String get sectionGold;
 
   /// No description provided for @goldType.
   ///
@@ -611,14 +2717,8 @@ abstract class AppLocalizations {
   /// No description provided for @goldUnitPrice.
   ///
   /// In tr, this message translates to:
-  /// **'Birim Fiyatı (TL)'**
+  /// **'Birim Fiyatı'**
   String get goldUnitPrice;
-
-  /// No description provided for @sectionCurrency.
-  ///
-  /// In tr, this message translates to:
-  /// **'Döviz Varlığı'**
-  String get sectionCurrency;
 
   /// No description provided for @currencyType.
   ///
@@ -637,24 +2737,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Güncel Kur (TL)'**
   String get currencyRate;
-
-  /// No description provided for @sectionCashDebt.
-  ///
-  /// In tr, this message translates to:
-  /// **'Nakit & Borçlar'**
-  String get sectionCashDebt;
-
-  /// No description provided for @cashAmount.
-  ///
-  /// In tr, this message translates to:
-  /// **'Eldeki & Bankadaki Nakit (TL)'**
-  String get cashAmount;
-
-  /// No description provided for @debtAmount.
-  ///
-  /// In tr, this message translates to:
-  /// **'Toplam Borçlar (Düşülecek)'**
-  String get debtAmount;
 
   /// No description provided for @calculateButton.
   ///
@@ -691,18 +2773,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Konum izni reddedildi.'**
   String get locationPermissionDenied;
-
-  /// No description provided for @locationPermissionForever.
-  ///
-  /// In tr, this message translates to:
-  /// **'Konum izni kalıcı olarak engellendi. Ayarlardan açmalısınız.'**
-  String get locationPermissionForever;
-
-  /// No description provided for @compassError.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sensör hatası: {error}'**
-  String compassError(String error);
 
   /// No description provided for @noCompass.
   ///
@@ -785,8 +2855,86 @@ abstract class AppLocalizations {
   /// No description provided for @appearanceSub.
   ///
   /// In tr, this message translates to:
-  /// **'Tema ve Arka Plan'**
+  /// **'Tema, arka plan ve yazı boyutu'**
   String get appearanceSub;
+
+  /// No description provided for @textSizeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazı Boyutu'**
+  String get textSizeTitle;
+
+  /// No description provided for @textSizeNormal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Normal'**
+  String get textSizeNormal;
+
+  /// No description provided for @textSizeLarge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Büyük'**
+  String get textSizeLarge;
+
+  /// No description provided for @textSizeExtraLarge.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çok büyük'**
+  String get textSizeExtraLarge;
+
+  /// No description provided for @whatsNewTextSizeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yazıları uygulamanın içinden büyütebilirsiniz.'**
+  String get whatsNewTextSizeDesc;
+
+  /// No description provided for @sectionNotifications.
+  ///
+  /// In tr, this message translates to:
+  /// **'BİLDİRİMLER'**
+  String get sectionNotifications;
+
+  /// No description provided for @notificationSettingsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Ayarları'**
+  String get notificationSettingsTitle;
+
+  /// No description provided for @notificationSettingsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatırlatmalar, günün ayeti, kandil, Cuma, kalıcı bildirim'**
+  String get notificationSettingsSub;
+
+  /// No description provided for @ezanAlarmsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ezan Alarmları'**
+  String get ezanAlarmsTitle;
+
+  /// No description provided for @ezanAlarmsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her vakit için ezan sesi ve önceden hatırlatma'**
+  String get ezanAlarmsSub;
+
+  /// No description provided for @privacyAdsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik ve Reklamlar'**
+  String get privacyAdsTitle;
+
+  /// No description provided for @privacyAdsSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik politikası ve reklamlar hakkında bilgi'**
+  String get privacyAdsSub;
+
+  /// No description provided for @privacyAdsConsentSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Reklam gizlilik ayarları ve gizlilik politikası'**
+  String get privacyAdsConsentSub;
 
   /// No description provided for @themeMode.
   ///
@@ -824,6 +2972,12 @@ abstract class AppLocalizations {
   /// **'Varsayılan'**
   String get bgDefault;
 
+  /// No description provided for @bgPlain.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sade'**
+  String get bgPlain;
+
   /// No description provided for @bgMosque.
   ///
   /// In tr, this message translates to:
@@ -835,18 +2989,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Kabe'**
   String get bgKaaba;
-
-  /// No description provided for @bgQuran.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kur\'an'**
-  String get bgQuran;
-
-  /// No description provided for @none.
-  ///
-  /// In tr, this message translates to:
-  /// **'Yok'**
-  String get none;
 
   /// No description provided for @zakatEligible.
   ///
@@ -863,13 +3005,13 @@ abstract class AppLocalizations {
   /// No description provided for @nisabLimit.
   ///
   /// In tr, this message translates to:
-  /// **'Nisab Sınırı (80.18 gr Altın)'**
+  /// **'Nisap Sınırı (80,18 gr Altın)'**
   String get nisabLimit;
 
   /// No description provided for @belowNisabMessage.
   ///
   /// In tr, this message translates to:
-  /// **'Net varlığınız Nisab miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.'**
+  /// **'Net varlığınız nisap miktarının (zenginlik sınırı) altında olduğu için zekat farz değildir.'**
   String get belowNisabMessage;
 
   /// No description provided for @searchLocationTitle.
@@ -926,30 +3068,6 @@ abstract class AppLocalizations {
   /// **'Ezan Vakti'**
   String get tickerEzan;
 
-  /// No description provided for @stickyChannelName.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kalıcı Sayaç'**
-  String get stickyChannelName;
-
-  /// No description provided for @stickyChannelDesc.
-  ///
-  /// In tr, this message translates to:
-  /// **'Vakte kalan süreyi gösterir'**
-  String get stickyChannelDesc;
-
-  /// No description provided for @timeLeftTo.
-  ///
-  /// In tr, this message translates to:
-  /// **'Vaktin Çıkmasına: '**
-  String get timeLeftTo;
-
-  /// No description provided for @locationFallbackMessage.
-  ///
-  /// In tr, this message translates to:
-  /// **'Konum alınamadı, varsayılan değer kullanılıyor.'**
-  String get locationFallbackMessage;
-
   /// No description provided for @fetchingLocation.
   ///
   /// In tr, this message translates to:
@@ -980,29 +3098,17 @@ abstract class AppLocalizations {
   /// **'B'**
   String get directionWest;
 
-  /// No description provided for @calibrationInstruction.
-  ///
-  /// In tr, this message translates to:
-  /// **'(Kalibrasyon için \'8\' çizin)'**
-  String get calibrationInstruction;
-
   /// No description provided for @zakatDescription.
   ///
   /// In tr, this message translates to:
-  /// **'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre detaylı zekatınızı hesaplayın.'**
+  /// **'Diyanet İşleri Başkanlığı fetvalarına ve güncel piyasa alış/satış kurlarına göre zekatınızı detaylı olarak hesaplayın.'**
   String get zakatDescription;
 
   /// No description provided for @cashAndCurrencyTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Nakit ve Döviz Varlıklar'**
+  /// **'Nakit ve Döviz Varlıkları'**
   String get cashAndCurrencyTitle;
-
-  /// No description provided for @cashTurkishLira.
-  ///
-  /// In tr, this message translates to:
-  /// **'Nakit Türk Lirası (TL)'**
-  String get cashTurkishLira;
 
   /// No description provided for @goldAndSilverTitle.
   ///
@@ -1031,7 +3137,7 @@ abstract class AppLocalizations {
   /// No description provided for @commercialEvalCurrency.
   ///
   /// In tr, this message translates to:
-  /// **'Değerlendirme Döviz Türü'**
+  /// **'Değerleme Para Birimi'**
   String get commercialEvalCurrency;
 
   /// No description provided for @commercialGoodsValue.
@@ -1097,7 +3203,7 @@ abstract class AppLocalizations {
   /// No description provided for @agriDiyanetNote.
   ///
   /// In tr, this message translates to:
-  /// **'Zirai ürünlerin zekât hesaplamasında nisap miktarı aranmadığı için, beyan ettiğiniz tutar doğrudan zekât sepetine eklenir.'**
+  /// **'Zirai ürünlerin zekat hesaplamasında nisap miktarı aranmadığı için, ürün değerinden hesaplanan öşür doğrudan toplam zekata eklenir.'**
   String get agriDiyanetNote;
 
   /// No description provided for @harvestedProductValue.
@@ -1127,7 +3233,7 @@ abstract class AppLocalizations {
   /// No description provided for @zakatAgriIncluded.
   ///
   /// In tr, this message translates to:
-  /// **'İçindeki Zirai Ürün (Öşür) Zekatı'**
+  /// **'Dahil Edilen Öşür (Zirai Ürün Zekatı)'**
   String get zakatAgriIncluded;
 
   /// No description provided for @assetCheck.
@@ -1187,7 +3293,7 @@ abstract class AppLocalizations {
   /// No description provided for @toImsak.
   ///
   /// In tr, this message translates to:
-  /// **'Sabaha'**
+  /// **'İmsaka'**
   String get toImsak;
 
   /// No description provided for @toGunes.
@@ -1238,36 +3344,6 @@ abstract class AppLocalizations {
   /// **'Zikirmatik'**
   String get zikirmatikTitle;
 
-  /// No description provided for @dhikrSubhanallah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sübhanallah'**
-  String get dhikrSubhanallah;
-
-  /// No description provided for @dhikrElhamdulillah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Elhamdülillah'**
-  String get dhikrElhamdulillah;
-
-  /// No description provided for @dhikrAllahuEkber.
-  ///
-  /// In tr, this message translates to:
-  /// **'Allahu Ekber'**
-  String get dhikrAllahuEkber;
-
-  /// No description provided for @dhikrKalima.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kelime-i Tevhid'**
-  String get dhikrKalima;
-
-  /// No description provided for @dhikrSalavat.
-  ///
-  /// In tr, this message translates to:
-  /// **'Salavat'**
-  String get dhikrSalavat;
-
   /// No description provided for @targetReached.
   ///
   /// In tr, this message translates to:
@@ -1297,12 +3373,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Diğer (Özel Zikir)'**
   String get dhikrOther;
-
-  /// No description provided for @customDhikrTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Özel Zikir Ekle'**
-  String get customDhikrTitle;
 
   /// No description provided for @customDhikrHint.
   ///
@@ -1352,60 +3422,6 @@ abstract class AppLocalizations {
   /// **'Klasik Tesbih'**
   String get themeClassic;
 
-  /// No description provided for @introTitle1.
-  ///
-  /// In tr, this message translates to:
-  /// **'Vaktinde\'ye Hoş Geldiniz'**
-  String get introTitle1;
-
-  /// No description provided for @introDesc1.
-  ///
-  /// In tr, this message translates to:
-  /// **'Namaz vakitlerini, zikirlerinizi ve dini günleri en modern ve şık arayüzle kolayca takip edin.'**
-  String get introDesc1;
-
-  /// No description provided for @introTitle2.
-  ///
-  /// In tr, this message translates to:
-  /// **'Akıllı Bildirimler'**
-  String get introTitle2;
-
-  /// No description provided for @introDesc2.
-  ///
-  /// In tr, this message translates to:
-  /// **'Ezan vakitlerinde dilediğiniz bildirim sesiyle uyarı alın. İbadetlerinizi asla kaçırmayın.'**
-  String get introDesc2;
-
-  /// No description provided for @introTitle3.
-  ///
-  /// In tr, this message translates to:
-  /// **'Gelişmiş Araçlar'**
-  String get introTitle3;
-
-  /// No description provided for @introDesc3.
-  ///
-  /// In tr, this message translates to:
-  /// **'Animasyonlu Zikirmatik, Kaza Takibi, Esmaül Hüsna ve Zekat hesaplama ile maneviyatınızı güçlendirin.'**
-  String get introDesc3;
-
-  /// No description provided for @introSkip.
-  ///
-  /// In tr, this message translates to:
-  /// **'Geç'**
-  String get introSkip;
-
-  /// No description provided for @introNext.
-  ///
-  /// In tr, this message translates to:
-  /// **'İleri'**
-  String get introNext;
-
-  /// No description provided for @introStart.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hemen Başla'**
-  String get introStart;
-
   /// No description provided for @dhikrListTitle.
   ///
   /// In tr, this message translates to:
@@ -1436,11 +3452,23 @@ abstract class AppLocalizations {
   /// **'Sil'**
   String get deleteDhikr;
 
+  /// No description provided for @dhikrInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anlamı ve kaynağı'**
+  String get dhikrInfo;
+
   /// No description provided for @statisticsTitle.
   ///
   /// In tr, this message translates to:
   /// **'İstatistikler'**
   String get statisticsTitle;
+
+  /// No description provided for @zikirTodayCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün: {count}'**
+  String zikirTodayCount(int count);
 
   /// No description provided for @monthly.
   ///
@@ -1471,36 +3499,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Henüz zikir verisi yok.'**
   String get statsEmpty;
-
-  /// No description provided for @dhikrEstagfirullah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Estağfirullah'**
-  String get dhikrEstagfirullah;
-
-  /// No description provided for @dhikrLaHavle.
-  ///
-  /// In tr, this message translates to:
-  /// **'La Havle Vela Kuvvete'**
-  String get dhikrLaHavle;
-
-  /// No description provided for @dhikrHasbunallah.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hasbünallah'**
-  String get dhikrHasbunallah;
-
-  /// No description provided for @dhikrSubhanallahi.
-  ///
-  /// In tr, this message translates to:
-  /// **'Subhanallahi ve bihamdihi'**
-  String get dhikrSubhanallahi;
-
-  /// No description provided for @dhikrYunus.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hz. Yunus\'un Duası'**
-  String get dhikrYunus;
 
   /// No description provided for @dhikrYaAllah.
   ///
@@ -1613,7 +3611,7 @@ abstract class AppLocalizations {
   /// No description provided for @regaipKandili.
   ///
   /// In tr, this message translates to:
-  /// **'Regaip Kandili'**
+  /// **'Regaib Kandili'**
   String get regaipKandili;
 
   /// No description provided for @tabTimes.
@@ -1631,7 +3629,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationFoundNoName.
   ///
   /// In tr, this message translates to:
-  /// **'Konum bulundu ama isim yok.'**
+  /// **'Konum bulundu ancak yer adı alınamadı.'**
   String get locationFoundNoName;
 
   /// No description provided for @dailyAyahTitle.
@@ -1639,12 +3637,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Günün Ayeti'**
   String get dailyAyahTitle;
-
-  /// No description provided for @remainingTime.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kalan'**
-  String get remainingTime;
 
   /// No description provided for @onboardingWelcome.
   ///
@@ -1658,35 +3650,71 @@ abstract class AppLocalizations {
   /// **'Lütfen kullanmak istediğiniz dili seçin.\nPlease select your preferred language.'**
   String get onboardingSelectLanguage;
 
-  /// No description provided for @turnRight.
-  ///
-  /// In tr, this message translates to:
-  /// **'Sağa dön ➔'**
-  String get turnRight;
-
-  /// No description provided for @turnSlightRight.
-  ///
-  /// In tr, this message translates to:
-  /// **'Hafif sağa dön ➔'**
-  String get turnSlightRight;
-
-  /// No description provided for @turnLeft.
-  ///
-  /// In tr, this message translates to:
-  /// **'⬅ Sola dön'**
-  String get turnLeft;
-
-  /// No description provided for @turnSlightLeft.
-  ///
-  /// In tr, this message translates to:
-  /// **'⬅ Hafif sola dön'**
-  String get turnSlightLeft;
-
   /// No description provided for @calibrationRequired.
   ///
   /// In tr, this message translates to:
   /// **'Kalibrasyon Gerekli'**
   String get calibrationRequired;
+
+  /// No description provided for @qiblaAccuracyNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pusula yaklaşık yön gösterir; metal, mıknatıs ve elektronik cihazlar yönü saptırabilir.'**
+  String get qiblaAccuracyNote;
+
+  /// No description provided for @qiblaTipsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Doğru sonuç için'**
+  String get qiblaTipsTitle;
+
+  /// No description provided for @qiblaTipFlat.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonu yere paralel tutun.'**
+  String get qiblaTipFlat;
+
+  /// No description provided for @qiblaTipCalibrate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefonunuzla havada \'8\' çizerek kalibre edin.'**
+  String get qiblaTipCalibrate;
+
+  /// No description provided for @qiblaTipMagneticCase.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mıknatıslı kılıf kullanıyorsanız çıkarın.'**
+  String get qiblaTipMagneticCase;
+
+  /// No description provided for @qiblaTipMetal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metal eşyalardan ve elektronik cihazlardan uzak durun.'**
+  String get qiblaTipMetal;
+
+  /// No description provided for @qiblaTipMosque.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mümkünse bir caminin kıble yönüyle karşılaştırın.'**
+  String get qiblaTipMosque;
+
+  /// No description provided for @qiblaAngleTrueNorth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıble açısı: {angle}° (coğrafi kuzeyden)'**
+  String qiblaAngleTrueNorth(String angle);
+
+  /// No description provided for @qiblaDeclination.
+  ///
+  /// In tr, this message translates to:
+  /// **'Manyetik sapma: {deg}° (otomatik düzeltildi)'**
+  String qiblaDeclination(String deg);
+
+  /// No description provided for @qiblaInterferenceWarning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Manyetik parazit algılandı: telefonu metal eşyalardan, mıknatıslı kılıftan ve elektronik cihazlardan uzaklaştırın.'**
+  String get qiblaInterferenceWarning;
 
   /// No description provided for @gold22kGram.
   ///
@@ -1832,29 +3860,11 @@ abstract class AppLocalizations {
   /// **'Türk Lirası'**
   String get currencyTry;
 
-  /// No description provided for @holdToEdit.
-  ///
-  /// In tr, this message translates to:
-  /// **'(Düzenlemek için basılı tutun)'**
-  String get holdToEdit;
-
   /// No description provided for @editCounterTitle.
   ///
   /// In tr, this message translates to:
   /// **'Sayacı Düzenle'**
   String get editCounterTitle;
-
-  /// No description provided for @editCounterHint.
-  ///
-  /// In tr, this message translates to:
-  /// **'Örn: 2000'**
-  String get editCounterHint;
-
-  /// No description provided for @editTargetHint.
-  ///
-  /// In tr, this message translates to:
-  /// **'Örn: 99'**
-  String get editTargetHint;
 
   /// No description provided for @resetCounterConfirm.
   ///
@@ -1862,11 +3872,1061 @@ abstract class AppLocalizations {
   /// **'Sayacı sıfırlamak istediğinize emin misiniz?'**
   String get resetCounterConfirm;
 
-  /// No description provided for @dhikrTarget.
+  /// No description provided for @imsakiyeTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Hedef:'**
-  String get dhikrTarget;
+  /// **'İmsakiye'**
+  String get imsakiyeTitle;
+
+  /// No description provided for @widgetRamadanName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan Sayacı'**
+  String get widgetRamadanName;
+
+  /// No description provided for @widgetRamadanDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kare: iftara ve sahura kalan süre; Ramazan dışında Ramazan\'a kalan gün'**
+  String get widgetRamadanDesc;
+
+  /// No description provided for @widgetRamadanDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan · {day}. gün'**
+  String widgetRamadanDay(String day);
+
+  /// No description provided for @widgetRamadanUntil.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan\'a Kalan Gün'**
+  String get widgetRamadanUntil;
+
+  /// No description provided for @toolsGroupPrayer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz'**
+  String get toolsGroupPrayer;
+
+  /// No description provided for @toolsGroupInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bilgi'**
+  String get toolsGroupInfo;
+
+  /// No description provided for @toolsGroupCalc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesaplama'**
+  String get toolsGroupCalc;
+
+  /// No description provided for @toolImsakiyeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aylık ve Ramazan vakitleri'**
+  String get toolImsakiyeDesc;
+
+  /// No description provided for @toolTrackerDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıldığınız vakitler ve kaza sayacı'**
+  String get toolTrackerDesc;
+
+  /// No description provided for @toolReligiousDaysDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kandiller ve bayramlar'**
+  String get toolReligiousDaysDesc;
+
+  /// No description provided for @nearbyMosquesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yakındaki Camiler'**
+  String get nearbyMosquesTitle;
+
+  /// No description provided for @toolNearbyMosquesDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Size en yakın camileri haritada bulun'**
+  String get toolNearbyMosquesDesc;
+
+  /// No description provided for @nearbyMosquesQuery.
+  ///
+  /// In tr, this message translates to:
+  /// **'cami'**
+  String get nearbyMosquesQuery;
+
+  /// No description provided for @nearbyMosquesError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Harita açılamadı.'**
+  String get nearbyMosquesError;
+
+  /// No description provided for @toolEsmaDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Allah\'ın 99 ismi ve anlamları'**
+  String get toolEsmaDesc;
+
+  /// No description provided for @duasTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dualar'**
+  String get duasTitle;
+
+  /// No description provided for @duaSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dua ara'**
+  String get duaSearchHint;
+
+  /// No description provided for @duaNoResults.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aramanıza uyan dua bulunamadı'**
+  String get duaNoResults;
+
+  /// No description provided for @duaCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} dua'**
+  String duaCount(int count);
+
+  /// No description provided for @storiesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kıssalar'**
+  String get storiesTitle;
+
+  /// No description provided for @toolStoriesDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Peygamberler, siyer, sahabe ve âlimler'**
+  String get toolStoriesDesc;
+
+  /// No description provided for @storiesNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özetler Kur\'an-ı Kerim\'e ve hadis, siyer ve biyografi kaynaklarına dayanır. Dinî konularda ayrıntı için bir din görevlisine danışın.'**
+  String get storiesNote;
+
+  /// No description provided for @storyCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} kıssa'**
+  String storyCount(int count);
+
+  /// No description provided for @storyLesson.
+  ///
+  /// In tr, this message translates to:
+  /// **'İbret'**
+  String get storyLesson;
+
+  /// No description provided for @prayerGuideTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Hocası'**
+  String get prayerGuideTitle;
+
+  /// No description provided for @toolPrayerGuideDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Abdest ve namazın kılınışı, adım adım'**
+  String get toolPrayerGuideDesc;
+
+  /// No description provided for @prayerGuideTabWudu.
+  ///
+  /// In tr, this message translates to:
+  /// **'Abdest'**
+  String get prayerGuideTabWudu;
+
+  /// No description provided for @prayerGuideTabFards.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farzlar'**
+  String get prayerGuideTabFards;
+
+  /// No description provided for @prayerGuideTabRakats.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rekâtlar'**
+  String get prayerGuideTabRakats;
+
+  /// No description provided for @prayerGuideTabSteps.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kılınış'**
+  String get prayerGuideTabSteps;
+
+  /// No description provided for @prayerGuideTimes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} kez'**
+  String prayerGuideTimes(int count);
+
+  /// No description provided for @toolDuasDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tesbihat, sabah-akşam ve günlük dualar'**
+  String get toolDuasDesc;
+
+  /// No description provided for @duaTransliteration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okunuşu'**
+  String get duaTransliteration;
+
+  /// No description provided for @duaMeaning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anlamı'**
+  String get duaMeaning;
+
+  /// No description provided for @tesbihatTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz Sonrası Tesbihat'**
+  String get tesbihatTitle;
+
+  /// No description provided for @tesbihatDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Âyetü\'l-Kürsî, 33\'er tesbih ve dua'**
+  String get tesbihatDesc;
+
+  /// No description provided for @tesbihatStep.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adım {current}/{total}'**
+  String tesbihatStep(int current, int total);
+
+  /// No description provided for @tesbihatTapWhenRead.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okuduktan sonra dokunun'**
+  String get tesbihatTapWhenRead;
+
+  /// No description provided for @tesbihatRestart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Baştan Başla'**
+  String get tesbihatRestart;
+
+  /// No description provided for @ramadanShareTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan · {day}. gün'**
+  String ramadanShareTitle(int day);
+
+  /// No description provided for @ramadanShareIftarIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftara {time}'**
+  String ramadanShareIftarIn(String time);
+
+  /// No description provided for @ramadanShareSahurIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahura {time}'**
+  String ramadanShareSahurIn(String time);
+
+  /// No description provided for @ramadanShareIftarAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftar {time}'**
+  String ramadanShareIftarAt(String time);
+
+  /// No description provided for @ramadanShareImsakAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsak {time}'**
+  String ramadanShareImsakAt(String time);
+
+  /// No description provided for @ramadanShareHoursMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{hours} sa {minutes} dk'**
+  String ramadanShareHoursMinutes(int hours, int minutes);
+
+  /// No description provided for @ramadanShareHours.
+  ///
+  /// In tr, this message translates to:
+  /// **'{hours} sa'**
+  String ramadanShareHours(int hours);
+
+  /// No description provided for @ramadanShareMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{minutes} dk'**
+  String ramadanShareMinutes(int minutes);
+
+  /// No description provided for @toolFridayDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Paylaşmaya hazır mesajlar'**
+  String get toolFridayDesc;
+
+  /// No description provided for @quranTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kur\'an-ı Kerim'**
+  String get quranTitle;
+
+  /// No description provided for @quranTabSurahs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sureler'**
+  String get quranTabSurahs;
+
+  /// No description provided for @quranTabJuz.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüzler'**
+  String get quranTabJuz;
+
+  /// No description provided for @quranSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sure ara (ad ya da numara)'**
+  String get quranSearchHint;
+
+  /// No description provided for @quranNoResults.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aramanıza uyan sure bulunamadı'**
+  String get quranNoResults;
+
+  /// No description provided for @quranJuz.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüz {juz}'**
+  String quranJuz(int juz);
+
+  /// No description provided for @quranPage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa {page}'**
+  String quranPage(int page);
+
+  /// No description provided for @quranAyahRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'{from}–{to}. ayetler'**
+  String quranAyahRange(int from, int to);
+
+  /// No description provided for @quranBookmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer imi'**
+  String get quranBookmark;
+
+  /// No description provided for @quranViewSettings.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görünüm'**
+  String get quranViewSettings;
+
+  /// No description provided for @quranModePage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa'**
+  String get quranModePage;
+
+  /// No description provided for @quranModePageDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mushaf düzeninde, kesintisiz Arapça metin'**
+  String get quranModePageDesc;
+
+  /// No description provided for @quranModeAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayet ayet'**
+  String get quranModeAyah;
+
+  /// No description provided for @quranModeAyahDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her ayet, Arapçası ve mealiyle ayrı kartta'**
+  String get quranModeAyahDesc;
+
+  /// No description provided for @quranModeTranslation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal'**
+  String get quranModeTranslation;
+
+  /// No description provided for @quranModeTranslationDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yalnızca meal, kesintisiz okuma'**
+  String get quranModeTranslationDesc;
+
+  /// No description provided for @quranArabicSize.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça yazı'**
+  String get quranArabicSize;
+
+  /// No description provided for @quranTranslationSize.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal yazısı'**
+  String get quranTranslationSize;
+
+  /// No description provided for @quranTranslationSmaller.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal yazısını küçült'**
+  String get quranTranslationSmaller;
+
+  /// No description provided for @quranTranslationLarger.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal yazısını büyüt'**
+  String get quranTranslationLarger;
+
+  /// No description provided for @quranGoToAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayete git'**
+  String get quranGoToAyah;
+
+  /// No description provided for @quranAyahNumberLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayet numarası (1–{count})'**
+  String quranAyahNumberLabel(int count);
+
+  /// No description provided for @quranGo.
+  ///
+  /// In tr, this message translates to:
+  /// **'Git'**
+  String get quranGo;
+
+  /// No description provided for @quranPreviousSurah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki sure'**
+  String get quranPreviousSurah;
+
+  /// No description provided for @quranNextSurah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki sure'**
+  String get quranNextSurah;
+
+  /// No description provided for @quranSwipeNextHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki sureye geçmek için yukarı kaydırın'**
+  String get quranSwipeNextHint;
+
+  /// No description provided for @toolQuranDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sureler, Arapça metin ve meal'**
+  String get toolQuranDesc;
+
+  /// No description provided for @quranContinue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaldığın yerden devam et'**
+  String get quranContinue;
+
+  /// No description provided for @quranAyahRef.
+  ///
+  /// In tr, this message translates to:
+  /// **'{surah} {ayah}. ayet'**
+  String quranAyahRef(String surah, int ayah);
+
+  /// No description provided for @quranAyahCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ayet'**
+  String quranAyahCount(int count);
+
+  /// No description provided for @quranMeccan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mekke'**
+  String get quranMeccan;
+
+  /// No description provided for @quranMedinan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Medine'**
+  String get quranMedinan;
+
+  /// No description provided for @quranLoadError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sure yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.'**
+  String get quranLoadError;
+
+  /// No description provided for @quranBookmarkSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer imi ekle'**
+  String get quranBookmarkSave;
+
+  /// No description provided for @quranBookmarkRemove.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer imini kaldır'**
+  String get quranBookmarkRemove;
+
+  /// No description provided for @quranBookmarkSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer imi eklendi'**
+  String get quranBookmarkSaved;
+
+  /// No description provided for @quranBookmarkRemoved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yer imi kaldırıldı'**
+  String get quranBookmarkRemoved;
+
+  /// No description provided for @quranShareAyah.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ayeti paylaş'**
+  String get quranShareAyah;
+
+  /// No description provided for @quranFontSmaller.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça yazıyı küçült'**
+  String get quranFontSmaller;
+
+  /// No description provided for @quranFontLarger.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça yazıyı büyüt'**
+  String get quranFontLarger;
+
+  /// No description provided for @quranTextSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arapça metin: Tanzil Projesi (tanzil.net)'**
+  String get quranTextSource;
+
+  /// No description provided for @hatimTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim'**
+  String get hatimTitle;
+
+  /// No description provided for @hatimIntro.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük bir planla Kur\'an-ı Kerim\'i baştan sona okuyun.'**
+  String get hatimIntro;
+
+  /// No description provided for @hatimStart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim Başlat'**
+  String get hatimStart;
+
+  /// No description provided for @hatimPagesPerDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günde {pages} sayfa'**
+  String hatimPagesPerDay(int pages);
+
+  /// No description provided for @hatimDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'{months, plural, =1{30 günde} other{{months} ayda}}'**
+  String hatimDuration(int months);
+
+  /// No description provided for @hatimRamadan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan\'da hatim'**
+  String get hatimRamadan;
+
+  /// No description provided for @hatimProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa {page} / {total} · {percent}'**
+  String hatimProgress(int page, int total, String percent);
+
+  /// No description provided for @hatimToday.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugün {read} / {goal} sayfa'**
+  String hatimToday(int read, int goal);
+
+  /// No description provided for @hatimContinue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam Et'**
+  String get hatimContinue;
+
+  /// No description provided for @hatimEnterPage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa Gir'**
+  String get hatimEnterPage;
+
+  /// No description provided for @hatimPageLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son okuduğunuz sayfa (1–{total})'**
+  String hatimPageLabel(int total);
+
+  /// No description provided for @hatimReminder.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatırlatma'**
+  String get hatimReminder;
+
+  /// No description provided for @hatimReminderDaily.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her gün hatırlat'**
+  String get hatimReminderDaily;
+
+  /// No description provided for @hatimReminderTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Saat'**
+  String get hatimReminderTime;
+
+  /// No description provided for @hatimChangePlan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Planı Değiştir'**
+  String get hatimChangePlan;
+
+  /// No description provided for @hatimDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatmi Sil'**
+  String get hatimDelete;
+
+  /// No description provided for @hatimDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim planınız ve ilerlemeniz silinsin mi? Tamamlanan hatim sayısı korunur.'**
+  String get hatimDeleteConfirm;
+
+  /// No description provided for @hatimDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim tamamlandı'**
+  String get hatimDone;
+
+  /// No description provided for @hatimNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Hatim Başlat'**
+  String get hatimNew;
+
+  /// No description provided for @hatimCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamamlanan hatim: {count}'**
+  String hatimCount(int count);
+
+  /// No description provided for @hatimCompleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatminiz tamamlandı. Allah kabul etsin!'**
+  String get hatimCompleted;
+
+  /// No description provided for @hatimReminderChannel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim hatırlatması'**
+  String get hatimReminderChannel;
+
+  /// No description provided for @hatimReminderBody.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünkü hatim okumanızı unutmayın.'**
+  String get hatimReminderBody;
+
+  /// No description provided for @hatimTodayRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünkü okuma: Sayfa {from}–{to}'**
+  String hatimTodayRange(int from, int to);
+
+  /// No description provided for @hatimMarkRead.
+  ///
+  /// In tr, this message translates to:
+  /// **'Okudum'**
+  String get hatimMarkRead;
+
+  /// No description provided for @hatimGoalMet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bugünkü okuma tamam'**
+  String get hatimGoalMet;
+
+  /// No description provided for @hatimDetails.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim ayrıntıları'**
+  String get hatimDetails;
+
+  /// No description provided for @hatimTargetLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef: {date}'**
+  String hatimTargetLine(String date);
+
+  /// No description provided for @hatimJuzHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mushaftan okuduğunuz cüze dokunarak işaretleyebilirsiniz.'**
+  String get hatimJuzHint;
+
+  /// No description provided for @hatimJuzMarkRead.
+  ///
+  /// In tr, this message translates to:
+  /// **'{juz}. cüzün sonuna kadar okundu olarak işaretlensin mi?'**
+  String hatimJuzMarkRead(int juz);
+
+  /// No description provided for @hatimJuzMarkUnread.
+  ///
+  /// In tr, this message translates to:
+  /// **'{juz}. cüz ve sonrası okunmadı olarak işaretlensin mi?'**
+  String hatimJuzMarkUnread(int juz);
+
+  /// No description provided for @hatimMark.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşaretle'**
+  String get hatimMark;
+
+  /// No description provided for @hatimUnmark.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşareti kaldır'**
+  String get hatimUnmark;
+
+  /// No description provided for @hatimJuzDone.
+  ///
+  /// In tr, this message translates to:
+  /// **'okundu'**
+  String get hatimJuzDone;
+
+  /// No description provided for @hatimJuzCurrent.
+  ///
+  /// In tr, this message translates to:
+  /// **'okunuyor'**
+  String get hatimJuzCurrent;
+
+  /// No description provided for @hatimJuzPending.
+  ///
+  /// In tr, this message translates to:
+  /// **'okunmadı'**
+  String get hatimJuzPending;
+
+  /// No description provided for @hatimNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Niyet'**
+  String get hatimNote;
+
+  /// No description provided for @hatimNoteHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: Annemin ruhu için'**
+  String get hatimNoteHint;
+
+  /// No description provided for @hatimNoteAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Niyet ekleyin (isteğe bağlı)'**
+  String get hatimNoteAdd;
+
+  /// No description provided for @hatimGroup.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplu Hatim'**
+  String get hatimGroup;
+
+  /// No description provided for @hatimGroupDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'30 cüzü kişilere paylaştırın, listeyi gönderin'**
+  String get hatimGroupDesc;
+
+  /// No description provided for @hatimGroupPeople.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kişi sayısı'**
+  String get hatimGroupPeople;
+
+  /// No description provided for @hatimGroupLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'{person}. kişi: {juz}'**
+  String hatimGroupLine(int person, String juz);
+
+  /// No description provided for @hatimGroupRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüz {from}–{to}'**
+  String hatimGroupRange(int from, int to);
+
+  /// No description provided for @hatimGroupFooter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cüzünüzü bitirince haber verin. Allah kabul etsin.'**
+  String get hatimGroupFooter;
+
+  /// No description provided for @hatimGroupShare.
+  ///
+  /// In tr, this message translates to:
+  /// **'Listeyi Paylaş'**
+  String get hatimGroupShare;
+
+  /// No description provided for @hatimDuaHeader.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatim sonrası dua'**
+  String get hatimDuaHeader;
+
+  /// No description provided for @quranTranslationSource.
+  ///
+  /// In tr, this message translates to:
+  /// **'Meal: {name}'**
+  String quranTranslationSource(String name);
+
+  /// No description provided for @toolZakatDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zekat ve öşür hesabı'**
+  String get toolZakatDesc;
+
+  /// No description provided for @toolSettingsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum, bildirimler, görünüm'**
+  String get toolSettingsDesc;
+
+  /// No description provided for @sectionBackup.
+  ///
+  /// In tr, this message translates to:
+  /// **'YEDEKLEME'**
+  String get sectionBackup;
+
+  /// No description provided for @backupExportTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Verileri Yedekle'**
+  String get backupExportTitle;
+
+  /// No description provided for @backupExportSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namaz takibi, kaza, zikir ve ayarlar (konum dahil) tek dosyada'**
+  String get backupExportSub;
+
+  /// No description provided for @backupImportTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedeği Geri Yükle'**
+  String get backupImportTitle;
+
+  /// No description provided for @backupImportSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Daha önce aldığınız yedek dosyasını seçin'**
+  String get backupImportSub;
+
+  /// No description provided for @backupShareSubject.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vaktinde yedeği'**
+  String get backupShareSubject;
+
+  /// No description provided for @backupRestoreConfirmTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek geri yüklensin mi?'**
+  String get backupRestoreConfirmTitle;
+
+  /// No description provided for @backupRestoreConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'{date} tarihli yedek yüklenecek. Mevcut veriler yedektekilerle değiştirilecek: namaz ve oruç takibi, kaza sayaçları, zikirler, ezan ve bildirim ayarları, konum ve görünüm. Bu işlem geri alınamaz.'**
+  String backupRestoreConfirmMessage(String date);
+
+  /// No description provided for @backupRestoreConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geri Yükle'**
+  String get backupRestoreConfirm;
+
+  /// No description provided for @backupRestored.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek geri yüklendi.'**
+  String get backupRestored;
+
+  /// No description provided for @backupInvalidFile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu dosya geçerli bir Vaktinde yedeği değil.'**
+  String get backupInvalidFile;
+
+  /// No description provided for @backupNewerVersion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu yedek uygulamanın daha yeni bir sürümüyle alınmış. Uygulamayı güncelleyip tekrar deneyin.'**
+  String get backupNewerVersion;
+
+  /// No description provided for @daysLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count, plural, =0{Bugün} =1{Yarın} other{{count} gün kaldı}}'**
+  String daysLeft(int count);
+
+  /// No description provided for @previousYear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki yıl'**
+  String get previousYear;
+
+  /// No description provided for @nextYear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki yıl'**
+  String get nextYear;
+
+  /// No description provided for @previousItem.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki'**
+  String get previousItem;
+
+  /// No description provided for @nextItem.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki'**
+  String get nextItem;
+
+  /// No description provided for @missedChangeConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'{name} kaza sayısı {from} yerine {to} olacak. Kaydedilsin mi?'**
+  String missedChangeConfirm(String name, int from, int to);
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem yapılamadı. Lütfen tekrar deneyin.'**
+  String get shareFailed;
+
+  /// No description provided for @zakatCurrencyNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm tutarlar Türk lirası (₺) cinsindendir.'**
+  String get zakatCurrencyNote;
+
+  /// No description provided for @zakatCashTry.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nakit (₺)'**
+  String get zakatCashTry;
+
+  /// No description provided for @zakatRatesUnavailable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güncel altın fiyatı ve kurlar alınamadı. Lütfen fiyatları elle girin.'**
+  String get zakatRatesUnavailable;
+
+  /// No description provided for @zakatGoldGramPrice.
+  ///
+  /// In tr, this message translates to:
+  /// **'24 Ayar Gram Altın Fiyatı (₺)'**
+  String get zakatGoldGramPrice;
+
+  /// No description provided for @zakatGoldGramPriceHelp.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nisap sınırı bu fiyatla hesaplanır.'**
+  String get zakatGoldGramPriceHelp;
+
+  /// No description provided for @zakatNisabUnknown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gram altın fiyatı olmadan nisap sınırı hesaplanamaz. Sonucun doğru olması için altın fiyatını girin.'**
+  String get zakatNisabUnknown;
+
+  /// No description provided for @imsakiyeRamadan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan'**
+  String get imsakiyeRamadan;
+
+  /// No description provided for @imsakiyeRamadanTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan {year} İmsakiyesi'**
+  String imsakiyeRamadanTitle(int year);
+
+  /// No description provided for @imsakiyeDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gün'**
+  String get imsakiyeDay;
+
+  /// No description provided for @imsakiyeSunriseShort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güneş'**
+  String get imsakiyeSunriseShort;
+
+  /// No description provided for @imsakiyePrevMonth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki ay'**
+  String get imsakiyePrevMonth;
+
+  /// No description provided for @imsakiyeNextMonth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki ay'**
+  String get imsakiyeNextMonth;
+
+  /// No description provided for @imsakiyeNoLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsakiyeyi görmek için önce konumunuzu seçin. Konumu ana ekrandan veya Ayarlar\'dan belirleyebilirsiniz.'**
+  String get imsakiyeNoLocation;
+
+  /// No description provided for @imsakiyeShareError.
+  ///
+  /// In tr, this message translates to:
+  /// **'İmsakiye paylaşılamadı. Lütfen tekrar deneyin.'**
+  String get imsakiyeShareError;
+
+  /// No description provided for @ramadanSahurLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sahura Kalan'**
+  String get ramadanSahurLeft;
+
+  /// No description provided for @ramadanIftarLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'İftara Kalan'**
+  String get ramadanIftarLeft;
+
+  /// No description provided for @ramadanDayLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ramazan\'ın {day}. günü'**
+  String ramadanDayLabel(int day);
 }
 
 class _AppLocalizationsDelegate

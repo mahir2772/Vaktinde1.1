@@ -11,7 +11,7 @@
         android:id="@+id/tv_title_small"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content" 
-        android:text="Kalan" 
+        android:text="@string/vaktinde_widget_remaining" 
         android:textColor="#CCFFFFFF" 
         android:textSize="11sp"
         android:maxLines="1"/>

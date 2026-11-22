@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prayer_times_model.dart';
-import '../models/hadith_model.dart';
+import 'prayer_silence.dart';
+import 'prayer_timezone.dart';
+import 'prayer_tracker.dart';
 
 class StorageService {
   Future<void> saveSettings({
@@ -61,7 +63,19 @@ class StorageService {
       'sounds': sounds,
       'reminderSounds': reminderSounds,
       'silentMode': silentMode,
+      'alarmStream': prefs.getBool(ezanAlarmStreamKey) ?? false,
     };
+  }
+
+  /// "Sessiz modda da çal": ezan alarm ses akışında çalar (varsayılan kapalı)
+  static const String ezanAlarmStreamKey = 'ezan_alarm_stream';
+
+  /// Seçilen şehrin IANA saat dilimi (örn. 'Europe/Istanbul'); yoksa cihazınki
+  static const String timeZoneKey = 'saved_timezone';
+
+  Future<void> saveEzanAlarmStream(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(ezanAlarmStreamKey, enabled);
   }
 
   Future<void> saveLocation(String city) async {
@@ -84,12 +98,67 @@ class StorageService {
     return prefs.getString('saved_district');
   }
 
+  Future<void> saveCoordinates(double lat, double lng) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('saved_lat', lat);
+    await prefs.setDouble('saved_lng', lng);
+  }
+
+  Future<void> clearCoordinates() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('saved_lat');
+    await prefs.remove('saved_lng');
+  }
+
+  Future<({double lat, double lng})?> loadCoordinates() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lat = prefs.getDouble('saved_lat');
+    final lng = prefs.getDouble('saved_lng');
+    if (lat == null || lng == null) return null;
+    return (lat: lat, lng: lng);
+  }
+
+  Future<void> saveTimeZone(String? zoneId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final trimmed = zoneId?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      await prefs.remove(timeZoneKey);
+    } else {
+      await prefs.setString(timeZoneKey, trimmed);
+    }
+  }
+
+  Future<String?> loadTimeZone() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(timeZoneKey)?.trim();
+    return (value == null || value.isEmpty) ? null : value;
+  }
+
+  /// Vakit ince ayarı (dakika). Anahtarlar: İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı
+  Future<void> saveTimeOffsets(Map<String, int> offsets) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('time_offsets', jsonEncode(offsets));
+  }
+
+  Future<Map<String, int>> loadTimeOffsets() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('time_offsets');
+    if (raw == null) return {};
+    try {
+      return Map<String, dynamic>.from(
+        jsonDecode(raw),
+      ).map((k, v) => MapEntry(k, (v as num).toInt()));
+    } catch (e) {
+      return {};
+    }
+  }
+
   Future<void> savePrayerTimesData(PrayerTimesModel data) async {
     final prefs = await SharedPreferences.getInstance();
     String jsonString = jsonEncode(data.toJson());
     await prefs.setString('cached_prayer_times', jsonString);
 
-    String today = DateTime.now().toIso8601String().split('T')[0];
+    String today = PrayerTimeZone.dateKey(PrayerTimeZone.nowIn(data.timeZone));
     await prefs.setString('cached_prayer_date', today);
   }
 
@@ -97,7 +166,8 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
 
     String? savedDate = prefs.getString('cached_prayer_date');
-    String today = DateTime.now().toIso8601String().split('T')[0];
+    String? savedZone = prefs.getString(timeZoneKey);
+    String today = PrayerTimeZone.dateKey(PrayerTimeZone.nowIn(savedZone));
 
     if (savedDate != today) return null;
 
@@ -131,32 +201,335 @@ class StorageService {
     await prefs.setInt('kaza_$key', value);
   }
 
-  Future<void> saveDailyHadith(HadithModel hadith, String languageCode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('daily_hadith_content', hadith.content ?? "");
-    await prefs.setString('daily_hadith_source', hadith.source ?? "");
+  // --- Namaz takibi: tarih (yyyy-MM-dd) → vakit bit maskesi (PrayerTracker) ---
+  // Bildirim aksiyonu ayrı isolate'te yazar; okumadan önce reload şart.
 
-    String today = DateTime.now().toIso8601String().split('T')[0];
-    await prefs.setString('daily_hadith_date', today);
-    await prefs.setString('daily_hadith_lang', languageCode);
+  Future<Map<String, int>> loadPrayerLog() => _loadMaskMap('prayer_log');
+
+  Future<void> savePrayerLog(Map<String, int> log) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_log', jsonEncode(log));
   }
 
-  Future<HadithModel?> loadDailyHadith(String languageCode) async {
+  /// Kazaya eklenmiş (tarih, vakit) çiftleri; aynı vakit iki kez eklenmez
+  Future<Map<String, int>> loadKazaAdded() => _loadMaskMap('prayer_kaza_added');
+
+  Future<void> saveKazaAdded(Map<String, int> added) async {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_kaza_added', jsonEncode(added));
+  }
 
-    String? savedDate = prefs.getString('daily_hadith_date');
-    String? savedLang = prefs.getString('daily_hadith_lang');
-    String today = DateTime.now().toIso8601String().split('T')[0];
+  /// Takibin başladığı gün (ilk işaretlenen en eski tarih)
+  Future<String?> loadTrackerSince() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('prayer_log_since');
+  }
 
-    if (savedDate != today || savedLang != languageCode) return null;
+  Future<void> saveTrackerSince(String dateKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('prayer_log_since', dateKey);
+  }
 
-    String? content = prefs.getString('daily_hadith_content');
-    String? source = prefs.getString('daily_hadith_source');
+  /// Özel gün (hayız/nifas) olarak işaretlenen günler (yyyy-MM-dd); sadece
+  /// uygulama yazar (PrayerTrackerService.setExcused)
+  Future<Set<String>> loadTrackerExcused() => _loadDaySet('tracker_excused');
 
-    if (content != null && content.isNotEmpty) {
-      return HadithModel(content: content, source: source);
+  Future<void> saveTrackerExcused(Set<String> days) =>
+      _saveDaySet('tracker_excused', days);
+
+  /// Açık özel gün döneminin başlangıç günü (yyyy-MM-dd; PrayerTracker.
+  /// excusedPeriodDays); dönem yoksa null
+  Future<String?> loadExcusedOpen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('tracker_excused_open');
+  }
+
+  Future<void> saveExcusedOpen(String? start) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (start == null) {
+      await prefs.remove('tracker_excused_open');
+    } else {
+      await prefs.setString('tracker_excused_open', start);
     }
+  }
 
-    return null;
+  /// Kazanılan seri hedefleri (PrayerTracker.badgeGoals): gün → kazanıldığı gün
+  /// (yyyy-MM-dd). Bildirim/widget isolate'i de yazar; geçersiz kayıt atlanır.
+  Future<Map<int, String>> loadTrackerBadges() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final raw = prefs.getString('tracker_badges');
+    if (raw == null) return {};
+    try {
+      final result = <int, String>{};
+      Map<String, dynamic>.from(jsonDecode(raw)).forEach((k, v) {
+        final goal = int.tryParse(k);
+        if (goal != null &&
+            v is String &&
+            PrayerTracker.parseDateKey(v) != null) {
+          result[goal] = v;
+        }
+      });
+      return result;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  Future<void> saveTrackerBadges(Map<int, String> badges) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      'tracker_badges',
+      jsonEncode({for (final e in badges.entries) '${e.key}': e.value}),
+    );
+  }
+
+  // --- Ramazan orucu takibi: tutulan / kaza orucuna eklenen günler (yyyy-MM-dd) ---
+
+  Future<Set<String>> loadFastLog() => _loadDaySet('fast_log');
+
+  Future<void> saveFastLog(Set<String> days) => _saveDaySet('fast_log', days);
+
+  Future<Set<String>> loadFastKazaAdded() => _loadDaySet('fast_kaza_added');
+
+  Future<void> saveFastKazaAdded(Set<String> days) =>
+      _saveDaySet('fast_kaza_added', days);
+
+  Future<Set<String>> _loadDaySet(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      return {...?prefs.getStringList(key)};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  Future<void> _saveDaySet(String key, Set<String> days) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(key, days.toList()..sort());
+  }
+
+  Future<Map<String, int>> _loadMaskMap(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final raw = prefs.getString(key);
+    if (raw == null) return {};
+    try {
+      final result = <String, int>{};
+      Map<String, dynamic>.from(jsonDecode(raw)).forEach((k, v) {
+        if (v is num) result[k] = v.toInt();
+      });
+      return result;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  // --- "Namazdayım" otomatik sessiz modu ---
+  static const String prayerSilenceEnabledKey = 'prayer_silence_enabled';
+  static const String prayerSilenceMinutesKey = 'prayer_silence_minutes';
+  static const String prayerSilencePrayersKey = 'prayer_silence_prayers';
+  static const String prayerSilenceFridayKey = 'prayer_silence_friday';
+
+  Future<PrayerSilenceSettings> loadPrayerSilenceSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final minutes = prefs.getInt(prayerSilenceMinutesKey);
+    final savedPrayers = prefs.getStringList(prayerSilencePrayersKey);
+    final prayers = savedPrayers == null
+        ? PrayerSilence.defaultPrayers
+        : savedPrayers
+            .where(PrayerSilence.defaultPrayers.contains)
+            .toSet();
+    return PrayerSilenceSettings(
+      enabled: prefs.getBool(prayerSilenceEnabledKey) ?? false,
+      durationMinutes: PrayerSilence.durationOptions.contains(minutes)
+          ? minutes!
+          : PrayerSilence.defaultDurationMinutes,
+      prayers: prayers,
+      fridayEnabled: prefs.getBool(prayerSilenceFridayKey) ?? true,
+    );
+  }
+
+  Future<void> savePrayerSilenceSettings(PrayerSilenceSettings settings) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(prayerSilenceEnabledKey, settings.enabled);
+    await prefs.setInt(prayerSilenceMinutesKey, settings.durationMinutes);
+    await prefs.setStringList(
+      prayerSilencePrayersKey,
+      settings.prayers
+          .where(PrayerSilence.defaultPrayers.contains)
+          .toList()
+        ..sort(),
+    );
+    await prefs.setBool(prayerSilenceFridayKey, settings.fridayEnabled);
+  }
+
+  // --- "Vakit çıkmadan hatırlat" ayarı (varsayılan kapalı, 30 dk) ---
+
+  Future<({bool enabled, int minutes})> loadEndReminderSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final minutes = prefs.getInt('end_reminder_minutes');
+    return (
+      enabled: prefs.getBool('end_reminder_enabled') ?? false,
+      minutes: PrayerTracker.endReminderMinuteOptions.contains(minutes)
+          ? minutes!
+          : PrayerTracker.defaultEndReminderMinutes,
+    );
+  }
+
+  Future<void> saveEndReminderSettings({
+    required bool enabled,
+    required int minutes,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('end_reminder_enabled', enabled);
+    await prefs.setInt('end_reminder_minutes', minutes);
+  }
+
+  /// "Günün ayeti ve hadisi" bildirimi (ID 1000/1900; varsayılan açık)
+  static const String dailyContentEnabledKey = 'daily_content_enabled';
+
+  Future<bool> loadDailyContentEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(dailyContentEnabledKey) ?? true;
+  }
+
+  Future<void> saveDailyContentEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(dailyContentEnabledKey, enabled);
+  }
+
+  /// Dini gün ve kandil bildirimleri (ID 2000-2399; varsayılan açık)
+  static const String religiousDaysEnabledKey = 'religious_days_enabled';
+
+  Future<bool> loadReligiousDaysEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(religiousDaysEnabledKey) ?? true;
+  }
+
+  Future<void> saveReligiousDaysEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(religiousDaysEnabledKey, enabled);
+  }
+
+  /// Cuma bildirimi (her Cuma 09:00, ID 2400-2403; varsayılan açık)
+  static const String fridayNotifEnabledKey = 'friday_notif_enabled';
+
+  Future<bool> loadFridayNotifEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(fridayNotifEnabledKey) ?? true;
+  }
+
+  Future<void> saveFridayNotifEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(fridayNotifEnabledKey, enabled);
+  }
+
+  /// Pazartesi haftalık namaz özeti (varsayılan açık)
+  static const String weeklySummaryEnabledKey = 'weekly_summary_enabled';
+
+  Future<bool> loadWeeklySummaryEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(weeklySummaryEnabledKey) ?? true;
+  }
+
+  Future<void> saveWeeklySummaryEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(weeklySummaryEnabledKey, enabled);
+  }
+
+  /// "Özel günde ezanı sessiz bildir" (varsayılan açık): özel günde vakit
+  /// bildirimi sessiz, hatırlatmalar kurulmaz
+  static const String excusedSilentEzanKey = 'excused_silent_ezan';
+
+  Future<bool> loadExcusedSilentEzan() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(excusedSilentEzanKey) ?? true;
+  }
+
+  Future<void> saveExcusedSilentEzan(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(excusedSilentEzanKey, enabled);
+  }
+
+  /// "Kalıcı bildirim" (888, sıradaki vakte kalan süre) ve onu taşıyan ön
+  /// plan servisi. Yeni kurulumda kapalı; ayardan önceki sürümü kullanmış
+  /// kullanıcıda açık (davranışı değişmez)
+  static const String persistentNotificationKey =
+      'persistent_notification_enabled';
+
+  // Ayardan önceki sürümlerin de yazdığı kullanım izleri (dil, konum). Cihaza
+  // özgü değil: InstallGuard silmez, yedekten dönen eski kullanıcı da açık başlar
+  static const List<String> _usedBeforeKeys = [
+    'is_language_selected',
+    'language_code',
+    'saved_city',
+    'saved_lat',
+    'cached_prayer_times',
+  ];
+
+  /// Kayıt yoksa: uygulama daha önce kullanılmışsa açık
+  static bool persistentNotificationOf(SharedPreferences prefs) =>
+      prefs.getBool(persistentNotificationKey) ??
+      _usedBeforeKeys.any(prefs.containsKey);
+
+  /// Açılışta, dil ve konum yazılmadan önce (BackgroundManager): kayıt yoksa
+  /// karar yazılır, sonradan değişmez (yeni kullanıcı dil seçince açılmaz)
+  static Future<bool> ensurePersistentNotification(
+    SharedPreferences prefs,
+  ) async {
+    final enabled = persistentNotificationOf(prefs);
+    if (!prefs.containsKey(persistentNotificationKey)) {
+      await prefs.setBool(persistentNotificationKey, enabled);
+    }
+    return enabled;
+  }
+
+  Future<bool> loadPersistentNotification() async =>
+      persistentNotificationOf(await SharedPreferences.getInstance());
+
+  Future<void> savePersistentNotification(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(persistentNotificationKey, enabled);
+  }
+
+  // --- Günün ayeti / hadisi önbelleği (sadece önbellek; yedeğe girmez) ---
+  // [key] altında "yyyy-MM-dd|dil" → içerik. Bildirim yarının içeriğini de
+  // alır: gün başına ayrı kayıt; yazarken önceki günden eskiler silinir.
+
+  Future<Object?> loadDailyCache(String key, DateTime day, String lang) async {
+    final prefs = await SharedPreferences.getInstance();
+    return _dailyCache(prefs.getString(key))[_dailyCacheEntry(day, lang)];
+  }
+
+  Future<void> saveDailyCache(
+    String key,
+    DateTime day,
+    String lang,
+    Object value,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    // Dünden eskiler silinir; ileri günün kaydı (önceden alma) bugünü silmez
+    final now = DateTime.now();
+    final oldest = PrayerTracker.dateKey(
+      PrayerTracker.addDays(day.isBefore(now) ? day : now, -1),
+    );
+    final entries = _dailyCache(prefs.getString(key))
+      ..removeWhere((entry, _) => entry.compareTo(oldest) < 0)
+      ..[_dailyCacheEntry(day, lang)] = value;
+    await prefs.setString(key, jsonEncode(entries));
+  }
+
+  static String _dailyCacheEntry(DateTime day, String lang) =>
+      '${PrayerTracker.dateKey(day)}|$lang';
+
+  static Map<String, dynamic> _dailyCache(String? raw) {
+    if (raw == null) return {};
+    try {
+      final data = jsonDecode(raw);
+      return data is Map<String, dynamic> ? data : {};
+    } catch (e) {
+      return {};
+    }
   }
 }

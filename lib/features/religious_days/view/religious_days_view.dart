@@ -1,10 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
-import 'package:intl/intl.dart'; // Tarih ve gün formatlaması için
-import '../../common/widgets/ad_banner_widget.dart';
-// KENDİ PROJENE GÖRE DINI GUNLER SERVISININ YOLUNU BURAYA EKLE:
-import '../../../data/services/dini_gunler_service.dart';
 
+import '../../../data/services/dini_gunler_service.dart';
+import '../../../data/services/json_service.dart';
+import '../../../data/services/prayer_tracker.dart';
+import '../../common/share_card.dart';
+
+/// Bir dini günün tebrik mesajları (sayfada tür başlığıyla)
+typedef GreetingGroup = ({DiniGunTuru tur, List<String> messages});
+
+/// Günün tebrikleri ([greetings]: tür adı → mesajlar; yüklenemediyse null).
+/// Regaib üç ayların ilk haftasında olduğundan üç aylar tebrikleri de sunulur.
+List<GreetingGroup> greetingGroupsFor(
+  Map<String, List<String>>? greetings,
+  DiniGunTuru? tur,
+) {
+  if (greetings == null || tur == null) return const [];
+  return [
+    for (final t in [
+      tur,
+      if (tur == DiniGunTuru.regaipKandili) DiniGunTuru.ucAylar,
+    ])
+      if (greetings[t.name]?.isNotEmpty ?? false)
+        (tur: t, messages: greetings[t.name]!),
+  ];
+}
+
+/// "Tebrik gönder" alt sayfası (Dini Günler ve ana ekrandaki "Bugün için")
+Future<void> showGreetingsSheet(
+  BuildContext context,
+  List<GreetingGroup> groups,
+) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    showDragHandle: true,
+    builder: (_) => DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.75,
+      minChildSize: 0.4,
+      maxChildSize: 0.95,
+      builder: (_, controller) => SheetMessenger(
+        child: _GreetingSheet(controller: controller, groups: groups),
+      ),
+    ),
+  );
+}
+
+/// Dini günler: yıl seçici + liste. Tarihler Diyanet listesinden
+/// (religious_days.json), listede olmayan yıl/günler hicri hesaptan.
+/// Sıradaki gün "x gün kaldı" ile vurgulanır (açılışta ona kaydırılır),
+/// geçmiş günler soluk gösterilir. Tebrik mesajı olan günlerde "Tebrik gönder"
+/// (greetings_<dil>.json; kopyala / metin / resimli paylaş).
 class ReligiousDaysView extends StatefulWidget {
   const ReligiousDaysView({super.key});
 
@@ -14,158 +64,419 @@ class ReligiousDaysView extends StatefulWidget {
 
 class _ReligiousDaysViewState extends State<ReligiousDaysView> {
   late int _selectedYear;
-  late List<int> _years;
+  late int _minYear;
+  late int _maxYear;
+  final GlobalKey _nextKey = GlobalKey();
+  bool _scrolledToNext = false;
+  // Diyanet tarihleri yüklenene kadar null (yükleniyor)
+  List<ResmiDiniGun>? _resmi;
+  // Tebrik mesajları (tür adı → mesajlar); yüklenemezse null, düğme çıkmaz
+  Map<String, List<String>>? _greetings;
+  String? _language;
 
   @override
   void initState() {
     super.initState();
-    _selectedYear = DateTime.now().year;
+    final year = DateTime.now().year;
+    _selectedYear = year;
+    _minYear = year - 1;
+    _maxYear = year + 4;
+    DiniGunlerService.loadResmiGunler().then((resmi) {
+      if (mounted) setState(() => _resmi = resmi);
+    });
+  }
 
-    _years = [2025, 2026, 2027, 2028, 2029, 2030];
-
-    if (!_years.contains(_selectedYear)) {
-      _years.add(_selectedYear);
-      _years.sort();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final language = Localizations.localeOf(context).languageCode;
+    if (language != _language) {
+      _language = language;
+      _loadGreetings(language);
     }
+  }
+
+  Future<void> _loadGreetings(String language) async {
+    try {
+      final greetings = await JsonService().getGreetings(language);
+      if (mounted && language == _language) {
+        setState(() => _greetings = greetings);
+      }
+    } catch (_) {}
+  }
+
+  List<GreetingGroup> _greetingGroups(DiniGunTuru? tur) =>
+      greetingGroupsFor(_greetings, tur);
+
+  void _showGreetings(List<GreetingGroup> groups) =>
+      showGreetingsSheet(context, groups);
+
+  void _changeYear(int delta) {
+    final year = _selectedYear + delta;
+    if (year < _minYear || year > _maxYear) return;
+    setState(() => _selectedYear = year);
+  }
+
+  /// Bugün ya da sonrasındaki ilk dini gün (yılın kalanı boşsa gelecek yıl)
+  DiniGunModel? _nextDay(
+    AppLocalizations loc,
+    DateTime today,
+    List<ResmiDiniGun> resmi,
+  ) {
+    for (final year in [today.year, today.year + 1]) {
+      for (final day in DiniGunlerService.getYilinDiniGunleri(
+        loc,
+        year,
+        resmi: resmi,
+      )) {
+        if (PrayerTracker.daysBetween(today, day.tarih) >= 0) return day;
+      }
+    }
+    return null;
+  }
+
+  void _scrollToNextOnce() {
+    if (_scrolledToNext) return;
+    _scrolledToNext = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _nextKey.currentContext;
+      if (!mounted || ctx == null) return;
+      Scrollable.ensureVisible(
+        ctx,
+        alignment: 0.3,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    // Cihazın geçerli dil kodunu alır (örn: 'tr', 'en', 'de')
     final localeCode = Localizations.localeOf(context).languageCode;
+    final today = DateTime.now();
+    final resmi = _resmi;
 
-    // Seçili yıla göre dini günleri servisten dinamik olarak alıyoruz
-    final yilinGunleri = DiniGunlerService.getYilinDiniGunleri(
-      loc,
-      _selectedYear,
+    final switcher = Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.sm,
+      ),
+      child: _YearSwitcher(
+        title: loc.religiousDaysListTitle(_selectedYear),
+        onPrevious: _selectedYear > _minYear ? () => _changeYear(-1) : null,
+        onNext: _selectedYear < _maxYear ? () => _changeYear(1) : null,
+        previousTooltip: loc.previousYear,
+        nextTooltip: loc.nextYear,
+      ),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(loc.religiousDaysTitle),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-        actions: [
-          Theme(
-            data: Theme.of(context).copyWith(canvasColor: Colors.teal),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<int>(
-                value: _selectedYear,
-                icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                onChanged: (int? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      _selectedYear = newValue;
-                    });
-                  }
-                },
-                items: _years.map<DropdownMenuItem<int>>((int year) {
-                  return DropdownMenuItem<int>(
-                    value: year,
-                    child: Text(
-                      year.toString(),
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  );
-                }).toList(),
+    final days = resmi == null
+        ? const <DiniGunModel>[]
+        : DiniGunlerService.getYilinDiniGunleri(
+            loc,
+            _selectedYear,
+            resmi: resmi,
+          );
+    final next = resmi == null ? null : _nextDay(loc, today, resmi);
+
+    final Widget list;
+    if (resmi == null) {
+      list = const LoadingState();
+    } else if (days.isEmpty) {
+      list = EmptyState(
+        icon: Icons.event_busy,
+        title: loc.noDataForYear(_selectedYear),
+      );
+    } else {
+      final children = <Widget>[];
+      var hasNext = false;
+      for (final day in days) {
+        final diff = PrayerTracker.daysBetween(today, day.tarih);
+        final isNext =
+            next != null &&
+            day.isim == next.isim &&
+            PrayerTracker.daysBetween(next.tarih, day.tarih) == 0;
+        hasNext |= isNext;
+        // Bayram birkaç gün sürer: geçen günün tebriği 3 gün daha gönderilebilir
+        final greetings = diff >= -3
+            ? _greetingGroups(day.tur)
+            : const <GreetingGroup>[];
+        children.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: _DayCard(
+              key: isNext ? _nextKey : null,
+              name: day.isim,
+              // Dile uygun tam tarih ("10 Aralık 2026 Perşembe",
+              // "Thursday, December 10, 2026", "الخميس، ١٠ ديسمبر ٢٠٢٦")
+              date: DateFormat.yMMMMEEEEd(localeCode).format(day.tarih),
+              state: isNext
+                  ? _DayState.next
+                  : (diff < 0 ? _DayState.past : _DayState.upcoming),
+              countdown: isNext ? loc.daysLeft(diff) : null,
+              onGreeting: greetings.isEmpty
+                  ? null
+                  : () => _showGreetings(greetings),
+            ),
+          ),
+        );
+      }
+      if (hasNext) _scrollToNextOnce();
+      // Hepsi çizilir (yılda ~12 gün): yılın sonlarında da sıradaki güne
+      // kaydırılabilsin (tembel listede henüz çizilmemiş kart bulunamıyordu)
+      list = SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.xs,
+          AppSpacing.lg,
+          AppSpacing.lg,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
+      );
+    }
+
+    // Yıl seçici sabit; sıradaki güne kaydırınca da görünür kalır
+    return AppScaffold(
+      title: loc.religiousDaysTitle,
+      body: Column(
+        children: [
+          switcher,
+          Expanded(child: list),
+        ],
+      ),
+    );
+  }
+}
+
+class _YearSwitcher extends StatelessWidget {
+  final String title;
+  final VoidCallback? onPrevious;
+  final VoidCallback? onNext;
+  final String previousTooltip;
+  final String nextTooltip;
+
+  const _YearSwitcher({
+    required this.title,
+    required this.onPrevious,
+    required this.onNext,
+    required this.previousTooltip,
+    required this.nextTooltip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return AppCard(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            tooltip: previousTooltip,
+            color: scheme.primary,
+            onPressed: onPrevious,
+          ),
+          Expanded(
+            child: Semantics(
+              header: true,
+              liveRegion: true,
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium,
               ),
             ),
           ),
-          const SizedBox(width: 15),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            tooltip: nextTooltip,
+            color: scheme.primary,
+            onPressed: onNext,
+          ),
         ],
       ),
-      bottomNavigationBar: const SafeArea(child: AdBannerWidget()),
-      body: yilinGunleri.isEmpty
-          ? Center(child: Text(loc.noDataForYear(_selectedYear)))
-          : Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  color: Colors.teal.shade50,
-                  child: Center(
-                    child: Text(
-                      loc.religiousDaysListTitle(_selectedYear),
-                      style: TextStyle(
-                        color: Colors.teal.shade800,
-                        fontWeight: FontWeight.bold,
-                      ),
+    );
+  }
+}
+
+enum _DayState { past, next, upcoming }
+
+class _DayCard extends StatelessWidget {
+  final String name;
+  final String date;
+  final _DayState state;
+  final String? countdown;
+  final VoidCallback? onGreeting;
+
+  const _DayCard({
+    super.key,
+    required this.name,
+    required this.date,
+    required this.state,
+    this.countdown,
+    this.onGreeting,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final colors = PrayerColors.of(context);
+    final isNext = state == _DayState.next;
+    final isPast = state == _DayState.past;
+
+    final Color titleColor = isNext
+        ? colors.onNextContainer
+        : (isPast ? colors.past : scheme.onSurface);
+    final Color subColor = isNext
+        ? colors.onNextContainer
+        : (isPast ? colors.past : scheme.onSurfaceVariant);
+    final Color iconBackground = isNext
+        ? colors.onNextContainer.withValues(alpha: 0.18)
+        : (isPast ? scheme.surfaceContainerHigh : scheme.primaryContainer);
+    final Color iconColor = isNext
+        ? colors.onNextContainer
+        : (isPast ? colors.past : scheme.onPrimaryContainer);
+
+    return Semantics(
+      selected: isNext,
+      child: AppCard(
+        color: isNext ? colors.nextContainer : null,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: AppSizes.iconBox,
+              height: AppSizes.iconBox,
+              decoration: BoxDecoration(
+                color: iconBackground,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: Icon(
+                isPast ? Icons.event_available : Icons.event,
+                size: 22,
+                color: iconColor,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    name,
+                    style: theme.textTheme.titleMedium!.copyWith(
+                      color: titleColor,
+                      fontWeight: isPast ? FontWeight.w500 : FontWeight.w600,
                     ),
                   ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(10),
-                    itemCount: yilinGunleri.length,
-                    itemBuilder: (context, index) {
-                      final day = yilinGunleri[index];
-
-                      // Tarihi "15 Mart 2025" gibi formatlar
-                      final dateStr = DateFormat(
-                        'dd MMMM yyyy',
-                        localeCode,
-                      ).format(day.tarih);
-                      // Günü "Cumartesi" gibi formatlar
-                      final dayStr = DateFormat(
-                        'EEEE',
-                        localeCode,
-                      ).format(day.tarih);
-
-                      return Card(
-                        elevation: 3,
-                        margin: const EdgeInsets.only(bottom: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  day.isim,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.teal,
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    dateStr,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    dayStr,
-                                    style: TextStyle(
-                                      color: Colors.grey.shade700,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                  const SizedBox(height: 2),
+                  Text(
+                    date,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      color: subColor,
+                    ),
                   ),
-                ),
-              ],
+                  if (countdown != null) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.onNextContainer,
+                        borderRadius: BorderRadius.circular(AppRadius.xl),
+                      ),
+                      child: Text(
+                        countdown!,
+                        style: theme.textTheme.labelLarge!.copyWith(
+                          color: colors.nextContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (onGreeting != null) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    TextButton.icon(
+                      onPressed: onGreeting,
+                      style: isNext
+                          ? TextButton.styleFrom(
+                              foregroundColor: colors.onNextContainer,
+                            )
+                          : null,
+                      icon: const Icon(Icons.send_rounded, size: 20),
+                      label: Text(AppLocalizations.of(context)!.sendGreeting),
+                    ),
+                  ],
+                ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Tebrik mesajları: tür başına başlık + mesaj kartları (Cuma mesajlarıyla
+/// aynı kart: kopyala / metni paylaş / resimli paylaş)
+class _GreetingSheet extends StatelessWidget {
+  final ScrollController controller;
+  final List<GreetingGroup> groups;
+
+  const _GreetingSheet({required this.controller, required this.groups});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    return ListView(
+      controller: controller,
+      // + gezinme çubuğu (uçtan uca): son kart altında kalmasın
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.xl + MediaQuery.paddingOf(context).bottom,
+      ),
+      children: [
+        Semantics(
+          header: true,
+          child: Text(
+            loc.greetingsTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        for (final group in groups) ...[
+          SectionHeader(
+            DiniGunlerService.isimOf(group.tur, loc),
+            onImage: false,
+            padding: const EdgeInsetsDirectional.only(
+              top: AppSpacing.lg,
+              bottom: AppSpacing.sm,
+            ),
+          ),
+          for (final message in group.messages)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
+              child: MessageCard(
+                message: message,
+                title: DiniGunlerService.isimOf(group.tur, loc),
+                campaign: 'greeting',
+              ),
+            ),
+        ],
+      ],
     );
   }
 }

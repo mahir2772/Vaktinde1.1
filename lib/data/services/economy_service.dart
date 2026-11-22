@@ -1,18 +1,22 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'http_client.dart';
 
 class EconomyService {
-  final String _apiKey = "apikey 7LiBL1SnVHNhH3cHfzg6sM:3QO6gRHqAEPMA4KS0lcbcu";
+  // Anahtar koda yazılmaz; build sırasında verilir:
+  // flutter build appbundle --dart-define=COLLECT_API_KEY=xxx
+  static const String _key = String.fromEnvironment('COLLECT_API_KEY');
+  final String _apiKey = "apikey $_key";
 
   Future<Map<String, double>> getLiveRates() async {
     Map<String, double> rates = {};
 
+    if (_key.isEmpty) return rates; // Anahtar yoksa canlı kur yok
     try {
       print("💰 Ekonomi verileri çekiliyor (Diyanet Fetva Algoritması)...");
 
       // 1. ALTIN VERİLERİ
       final goldUrl = Uri.parse("https://api.collectapi.com/economy/goldPrice");
-      final goldResponse = await http.get(
+      final goldResponse = await httpGet(
         goldUrl,
         headers: {"content-type": "application/json", "authorization": _apiKey},
       );
@@ -54,7 +58,7 @@ class EconomyService {
       final currencyUrl = Uri.parse(
         "https://api.collectapi.com/economy/allCurrency",
       );
-      final currencyResponse = await http.get(
+      final currencyResponse = await httpGet(
         currencyUrl,
         headers: {"content-type": "application/json", "authorization": _apiKey},
       );

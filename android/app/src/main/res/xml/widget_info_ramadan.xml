@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- description ve previewLayout Android 12+ seçicide; eski sürümler yok sayar -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/vaktinde_widget_ramadan"
+    android:previewLayout="@layout/vaktinde_widget_ramadan"
+    android:description="@string/vaktinde_widget_ramadan_description"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen" />

@@ -1,6 +1,6 @@
 [
+  { "year": 2025, "date": "01 Ocak 2025", "day": "Çarşamba", "name": "Üç Ayların Başlangıcı" },
   { "year": 2025, "date": "02 Ocak 2025", "day": "Perşembe", "name": "Regaib Kandili" },
-  { "year": 2025, "date": "12 Ocak 2025", "day": "Pazar", "name": "Üç Ayların Başlangıcı" },
   { "year": 2025, "date": "26 Ocak 2025", "day": "Pazar", "name": "Miraç Kandili" },
   { "year": 2025, "date": "13 Şubat 2025", "day": "Perşembe", "name": "Berat Kandili" },
   { "year": 2025, "date": "01 Mart 2025", "day": "Cumartesi", "name": "Ramazan Başlangıcı" },
@@ -60,7 +60,7 @@
 
   { "year": 2028, "date": "11 Ocak 2028", "day": "Salı", "name": "Berat Kandili" },
   { "year": 2028, "date": "28 Ocak 2028", "day": "Cuma", "name": "Ramazan Başlangıcı" },
-  { "year": 2028, "date": "23 Şubat 2028", "day": "Çarşamba", "name": "Kadir Gecesi" },
+  { "year": 2028, "date": "22 Şubat 2028", "day": "Salı", "name": "Kadir Gecesi" },
   { "year": 2028, "date": "25 Şubat 2028", "day": "Cuma", "name": "Arefe (Ramazan)" },
   { "year": 2028, "date": "26 Şubat 2028", "day": "Cumartesi", "name": "Ramazan Bayramı 1. Gün" },
   { "year": 2028, "date": "27 Şubat 2028", "day": "Pazar", "name": "Ramazan Bayramı 2. Gün" },

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- description ve previewLayout Android 12+ seçicide; eski sürümler yok sayar -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="260dp"
     android:minHeight="50dp"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/vaktinde_widget_small2"
+    android:previewLayout="@layout/vaktinde_widget_small2"
+    android:description="@string/vaktinde_widget_small2_description"
     android:resizeMode="horizontal"
     android:widgetCategory="home_screen" />

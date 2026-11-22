@@ -27,6 +27,32 @@ class LocationService {
     return await Geolocator.getCurrentPosition();
   }
 
+  /// Manuel seçilen il/ilçenin koordinatı (cihaz geocoder'ı, internet ister).
+  Future<({double lat, double lng})?> getCoordinatesFromAddress(
+    String city,
+    String? district,
+  ) async {
+    final queries = [
+      if (district != null && district.trim().isNotEmpty)
+        '${district.trim()}, ${city.trim()}, Türkiye',
+      '${city.trim()}, Türkiye',
+    ];
+    for (final query in queries) {
+      try {
+        final locations = await locationFromAddress(query);
+        if (locations.isNotEmpty) {
+          return (
+            lat: locations.first.latitude,
+            lng: locations.first.longitude,
+          );
+        }
+      } catch (e) {
+        // Sonraki sorguyu dene
+      }
+    }
+    return null;
+  }
+
   // --- İŞTE EKSİK OLAN FONKSİYON BU ---
   Future<Map<String, String>?> getCityAndDistrictFromCoordinates(
     double lat,

@@ -1,17 +1,21 @@
 class HadithModel {
-  final String? content; // Hadisin metni
+  final String?
+  content; // Hadisin metni (yoksa null; arayüz çevirili mesaj gösterir)
   final String? source; // Kaynak (Buhari vb.)
 
   HadithModel({this.content, this.source});
 
   factory HadithModel.fromJson(Map<String, dynamic> json) {
+    String? text(Object? value) {
+      if (value is! String) return null;
+      final trimmed = value.trim();
+      return trimmed.isEmpty ? null : trimmed;
+    }
+
     return HadithModel(
       content:
-          json['hadeeth'] ??
-          json['text'] ??
-          json['content'] ??
-          "Hadis metni bulunamadı.",
-      source: json['attribution'] ?? json['source'] ?? "Kaynak Bilinmiyor",
+          text(json['hadeeth']) ?? text(json['text']) ?? text(json['content']),
+      source: text(json['attribution']) ?? text(json['source']),
     );
   }
 

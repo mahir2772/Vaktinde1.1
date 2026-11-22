@@ -1,0 +1,256 @@
+// Reklam: içerik sınırı (PG) reklam SDK'sı başlamadan verilir, hata açılışı
+// bozmaz; Araçlar'dan Ayarlar, Dualar, Namaz Hocası ve Yakındaki Camiler
+// (harita) geçiş reklamsız açılır; uygulama açılış reklamı sıklık ve kısıtları.
+import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/features/common/ad_consent.dart';
+import 'package:ezan_saati/features/common/ad_helper.dart';
+import 'package:ezan_saati/features/common/language_provider.dart';
+import 'package:ezan_saati/features/common/theme_provider.dart';
+import 'package:ezan_saati/features/duas/dua_data.dart';
+import 'package:ezan_saati/features/duas/view/duas_view.dart';
+import 'package:ezan_saati/features/home/view_model/home_view_model.dart';
+import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
+import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
+import 'package:ezan_saati/features/settings/view/settings_view.dart';
+import 'package:ezan_saati/features/tools/view/tools_view.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const _umpChannel = 'plugins.flutter.io/google_mobile_ads/ump';
+const _adsChannel = 'plugins.flutter.io/google_mobile_ads';
+const _urlLauncher = MethodChannel('plugins.flutter.io/url_launcher');
+
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+
+  var canRequestAds = true;
+  var failConfig = false;
+  final adCalls = <MethodCall>[];
+
+  setUp(() {
+    canRequestAds = true;
+    failConfig = false;
+    adCalls.clear();
+    AdConsent.debugReset();
+    AdConsent.isSupported = () => true;
+    // UMP kanalı özel codec kullanır: sadece yöntem adı okunur
+    messenger.setMockMessageHandler(_umpChannel, (message) async {
+      final method =
+          const StandardMessageCodec().readValue(ReadBuffer(message!))
+              as String;
+      return const StandardMethodCodec().encodeSuccessEnvelope(switch (method) {
+        'ConsentInformation#canRequestAds' => canRequestAds,
+        'ConsentInformation#getPrivacyOptionsRequirementStatus' => 0,
+        _ => null,
+      });
+    });
+    messenger.setMockMessageHandler(_adsChannel, (message) async {
+      const codec = StandardMethodCodec();
+      final call = codec.decodeMethodCall(message);
+      adCalls.add(call);
+      if (failConfig && call.method == 'MobileAds#updateRequestConfiguration') {
+        return codec.encodeErrorEnvelope(code: 'error');
+      }
+      return codec.encodeSuccessEnvelope(null);
+    });
+  });
+
+  tearDown(() {
+    AdConsent.isSupported = () => false;
+    messenger.setMockMessageHandler(_umpChannel, null);
+    messenger.setMockMessageHandler(_adsChannel, null);
+  });
+
+  List<String> methods() => [for (final c in adCalls) c.method];
+
+  test('içerik sınırı PG, reklam SDK\'sı başlamadan önce verilir', () async {
+    final run = AdConsent.gatherAndStartAds();
+    expect(AdConsent.isGatheringConsent, isTrue);
+    await run;
+    expect(AdConsent.isGatheringConsent, isFalse);
+    expect(AdConsent.canRequestAds.value, isTrue);
+
+    final config = methods().indexOf('MobileAds#updateRequestConfiguration');
+    expect(config, isNonNegative);
+    expect(config, lessThan(methods().indexOf('MobileAds#initialize')));
+    expect((adCalls[config].arguments as Map)['maxAdContentRating'], 'PG');
+    // Bir kez: rıza güncellemesinden sonraki ikinci deneme yinelemez
+    expect(
+      methods().where((m) => m == 'MobileAds#updateRequestConfiguration'),
+      hasLength(1),
+    );
+  });
+
+  test('içerik sınırı ayarlanamazsa reklamlar yine başlar', () async {
+    failConfig = true;
+    await AdConsent.gatherAndStartAds();
+    expect(methods(), contains('MobileAds#initialize'));
+    expect(AdConsent.canRequestAds.value, isTrue);
+  });
+
+  test('rıza yoksa reklam SDK\'sına dokunulmaz', () async {
+    canRequestAds = false;
+    await AdConsent.gatherAndStartAds();
+    expect(methods().where((m) => m.startsWith('MobileAds#')), isEmpty);
+    expect(AdConsent.canRequestAds.value, isFalse);
+  });
+
+  test('uygulama açılış reklamı: ilk 24 saat yok, günde en fazla 2, 4 saat '
+      'aralık ve ibadet/açılış kısıtlarına uyar', () async {
+    final ads = AdHelper.instance..debugReset();
+    addTearDown(ads.debugReset);
+    SharedPreferences.setMockInitialValues({});
+
+    final installed = DateTime(2026, 11, 20, 10);
+    ads.installTime = installed;
+    expect(
+      ads.canShowAppOpen(installed.add(const Duration(hours: 23))),
+      isFalse,
+    );
+
+    final day1 = installed.add(const Duration(hours: 25));
+    expect(ads.canShowAppOpen(day1), isTrue);
+
+    // Açılış penceresi ya da ibadet ekranı açıksa gösterilmez
+    ads.startupWindowOpen = () => true;
+    expect(ads.canShowAppOpen(day1), isFalse);
+    ads.startupWindowOpen = () => false;
+    ads.appOpenSuppressed = () => true;
+    expect(ads.canShowAppOpen(day1), isFalse);
+    ads.appOpenSuppressed = () => false;
+
+    // Geçiş reklamından hemen sonra (4 dk içinde) gösterilmez
+    ads.markInterstitialShown(day1);
+    expect(ads.canShowAppOpen(day1.add(const Duration(minutes: 2))), isFalse);
+    final t1 = day1.add(const Duration(minutes: 5));
+    expect(ads.canShowAppOpen(t1), isTrue);
+
+    // 1. gösterim → 4 saat soğuma
+    ads.markAppOpenShown(t1);
+    expect(ads.canShowAppOpen(t1.add(const Duration(hours: 3))), isFalse);
+    final t2 = t1.add(const Duration(hours: 4));
+    expect(ads.canShowAppOpen(t2), isTrue);
+
+    // 2. gösterim → günlük sınır (2) doldu, ertesi güne kadar yok
+    ads.markAppOpenShown(t2);
+    expect(ads.canShowAppOpen(t2.add(const Duration(hours: 5))), isFalse);
+
+    // Süreç yeniden başlayınca da günlük sınır korunur
+    await Future<void>.delayed(Duration.zero);
+    ads.debugReset();
+    ads.installTime = installed;
+    await ads.restoreLog();
+    expect(ads.canShowAppOpen(t2.add(const Duration(hours: 5))), isFalse);
+
+    // Ertesi gün yeniden açılır
+    expect(ads.canShowAppOpen(DateTime(2026, 11, 22, 10)), isTrue);
+  });
+
+  testWidgets('Araçlar: Ayarlar, Dualar, Namaz Hocası ve Yakındaki Camiler '
+      'reklamsız, araçlar geçiş reklamıyla açılır', (tester) async {
+    // Dualar / Namaz Hocası varlıkları gerçek bölgede yüklenir (önbellekli
+    // Future sahte zamanda asılı kalmasın)
+    await tester.runAsync(DuaLibrary.load);
+    await tester.runAsync(PrayerGuide.load);
+    final launches = <String>[];
+    messenger.setMockMethodCallHandler(_urlLauncher, (call) async {
+      launches.add((call.arguments as Map)['url'] as String);
+      return true;
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(_urlLauncher, null));
+    SharedPreferences.setMockInitialValues({
+      'language_code': 'tr',
+      'is_language_selected': true,
+    });
+    PackageInfo.setMockInitialValues(
+      appName: 'Vaktinde',
+      packageName: 'com.mmdigital.vaktinde',
+      version: '1.1.0',
+      buildNumber: '15',
+      buildSignature: '',
+    );
+    tester.view.physicalSize = const Size(411 * 3, 891 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<HomeViewModel>(create: (_) => HomeViewModel()),
+          ChangeNotifierProvider(create: (_) => LanguageProvider()),
+          ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light(),
+          locale: const Locale('tr'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const ToolsView(),
+        ),
+      ),
+    );
+    await tester.pump();
+    final loc = lookupAppLocalizations(const Locale('tr'));
+    final ads = AdHelper.instance;
+    final before = ads.debugShowRequests;
+
+    Future<void> settle() async {
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    // scrollUntilVisible son kaydırmayı çizmez: dokunmadan önce bir kare
+    await tester.scrollUntilVisible(find.text(loc.menuTitle), 200);
+    await tester.pump();
+    await tester.tap(find.text(loc.menuTitle));
+    await settle();
+    expect(find.byType(SettingsView), findsOneWidget);
+    expect(ads.debugShowRequests, before);
+
+    Navigator.of(tester.element(find.byType(SettingsView))).pop();
+    await settle();
+    // Uygulamadan çıkıp haritayı açar: reklam yok
+    await tester.scrollUntilVisible(find.text(loc.nearbyMosquesTitle), -200);
+    await tester.pump();
+    await tester.tap(find.text(loc.nearbyMosquesTitle));
+    await settle();
+    expect(launches, hasLength(1));
+    expect(ads.debugShowRequests, before);
+
+    // İbadet ekranı: reklamsız
+    await tester.scrollUntilVisible(find.text(loc.duasTitle), -200);
+    await tester.pump();
+    await tester.tap(find.text(loc.duasTitle));
+    await settle();
+    expect(find.byType(DuasView), findsOneWidget);
+    expect(ads.debugShowRequests, before);
+    Navigator.of(tester.element(find.byType(DuasView))).pop();
+    await settle();
+    await tester.scrollUntilVisible(find.text(loc.prayerGuideTitle), -200);
+    await tester.pump();
+    await tester.tap(find.text(loc.prayerGuideTitle));
+    await settle();
+    expect(find.byType(PrayerGuideView), findsOneWidget);
+    expect(ads.debugShowRequests, before);
+    Navigator.of(tester.element(find.byType(PrayerGuideView))).pop();
+    await settle();
+
+    await tester.scrollUntilVisible(find.text(loc.trackerTitle), -200);
+    // Kaydırma sonrası yerleşim: satır AppBar altında kalmasın
+    await tester.pump();
+    await tester.tap(find.text(loc.trackerTitle));
+    await tester.pump();
+    expect(ads.debugShowRequests, before + 1);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 1));
+  });
+}

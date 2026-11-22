@@ -1,0 +1,4 @@
+# Yerel gizli değişkenler ve wrangler çıktıları repoya girmez
+.dev.vars
+.wrangler/
+node_modules/

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Namaz takibi widget'ı (VaktindeWidgetTrackerProvider): başlık + kılınan sayısı (özel günde
+     "Özel gün"), beş vakit hücresi (sabah…yatsı; durum çizimi widget_cell_* + ad). Başlık
+     uygulamayı açar; vakti girmiş hücreye dokunuş işareti uygulama açılmadan değiştirir, diğer
+     hücreler pasif. Tek satır yüksekliğine (%130 yazıda da) sığar; metinler önizleme / ilk çizim
+     yer tutucusu -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:baselineAligned="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="10dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="6dp"
+    android:paddingBottom="4dp">
+
+    <!-- Başlık hücre genişliğinde; uzun metin (fr "Aujourd'hui", özel gün) küçülür (Android 8+) -->
+    <LinearLayout
+        android:id="@+id/tracker_header"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingEnd="4dp">
+
+        <TextView
+            android:id="@+id/tv_tracker_title"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeMinTextSize="9sp"
+            android:autoSizeTextType="uniform"
+            android:ellipsize="end"
+            android:gravity="start|center_vertical"
+            android:maxLines="1"
+            android:text="@string/vaktinde_widget_today"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_tracker_count"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:autoSizeMaxTextSize="13sp"
+            android:autoSizeMinTextSize="8sp"
+            android:autoSizeTextType="uniform"
+            android:ellipsize="end"
+            android:gravity="start|center_vertical"
+            android:maxLines="1"
+            android:text="2/5"
+            android:textColor="#FFCA28"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tracker_cell_0"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/widget_cell_prayed"
+        android:drawablePadding="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/vaktinde_widget_sabah"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tracker_cell_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/widget_cell_prayed"
+        android:drawablePadding="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/vaktinde_widget_ogle"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tracker_cell_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/widget_cell_open"
+        android:drawablePadding="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/vaktinde_widget_ikindi"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tracker_cell_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/widget_cell_pending"
+        android:drawablePadding="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/vaktinde_widget_aksam"
+        android:textColor="#B3FFFFFF"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tracker_cell_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableTop="@drawable/widget_cell_pending"
+        android:drawablePadding="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/vaktinde_widget_yatsi"
+        android:textColor="#B3FFFFFF"
+        android:textSize="12sp" />
+
+</LinearLayout>

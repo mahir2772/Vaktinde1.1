@@ -12,6 +12,7 @@ plugins {
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -45,9 +46,15 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
-            isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            // R8: Kotlin/Java kodu küçültülür, optimize edilir ve karartılır (Play "DEX kodu
+            // optimizasyonu" ölçütü). Eşleme dosyası AAB'ye girer, Crashlytics'e de yüklenir.
+            // Kurallar: proguard-rules.pro (bildirim eklentisinin Gson kayıtları)
+            isMinifyEnabled = true
+            // Kaynak küçültme (Play "kullanılmayan kaynaklar"; varsayılan güvenli kip): Dart'tan
+            // adla çağrılan kaynaklar (res/raw ezan/bildirim sesleri, '@mipmap/launcher_icon'
+            // bildirim simgesi) küçültücüye görünmez, res/raw/keep.xml (tools:keep) ile korunur
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }

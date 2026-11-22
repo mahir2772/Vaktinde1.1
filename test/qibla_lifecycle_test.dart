@@ -1,0 +1,560 @@
+// Kıble pusulası pil kuralları: pusula (ve manyetometre) aboneliği sadece sekme
+// görünür ve uygulama ön plandayken açık (tek abonelik); kalibrasyon uyarısı
+// 2 sn süren zayıf doğrulukta açılır, iyi okumada kapanır; küçük titreşim
+// çizdirmez; kıble yönüne girişte tek kısa titreşim (histerezisli).
+import 'dart:async';
+
+import 'package:ezan_saati/core/ui/ui.dart';
+import 'package:ezan_saati/features/qibla/qibla_math.dart';
+import 'package:ezan_saati/features/qibla/view/qibla_view.dart';
+import 'package:ezan_saati/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_compass/flutter_compass.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const _geolocator = MethodChannel('flutter.baseflow.com/geolocator');
+const _compassChannel = EventChannel('hemanthraj/flutter_compass');
+const _magneticChannel = EventChannel('vaktinde/magnetic');
+
+TestDefaultBinaryMessenger get _messenger =>
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+
+/// Her dinlemeyi ayrı abonelik sayan sahte pusula
+class _FakeCompass {
+  final List<MultiStreamController<CompassEvent>> _listeners = [];
+  int listens = 0;
+  int maxConcurrent = 0;
+
+  int get active => _listeners.length;
+
+  late final Stream<CompassEvent> stream = Stream<CompassEvent>.multi((c) {
+    listens++;
+    _listeners.add(c);
+    if (_listeners.length > maxConcurrent) maxConcurrent = _listeners.length;
+    c.onCancel = () {
+      _listeners.remove(c);
+    };
+  });
+
+  /// Android eklentisindeki gibi [yön, kamera yönü, doğruluk]; -1 = bilinmiyor
+  void emit(double heading, {double accuracy = 15}) {
+    final event = CompassEvent.fromList([heading, heading, accuracy]);
+    for (final c in List.of(_listeners)) {
+      c.addSync(event);
+    }
+  }
+}
+
+/// Abonelikleri sayan sahte manyetometre (olay göndermez)
+class _FakeMagnetometer {
+  final List<MultiStreamController<MagneticReading>> _listeners = [];
+  int listens = 0;
+
+  int get active => _listeners.length;
+
+  late final Stream<MagneticReading> stream = Stream<MagneticReading>.multi((
+    c,
+  ) {
+    listens++;
+    _listeners.add(c);
+    c.onCancel = () {
+      _listeners.remove(c);
+    };
+  });
+}
+
+/// Motorun gönderdiği gibi (ara durumlar dahil: resumed → inactive → hidden → paused)
+Future<void> _lifecycle(AppLifecycleState state) =>
+    _messenger.handlePlatformMessage(
+      SystemChannels.lifecycle.name,
+      SystemChannels.lifecycle.codec.encodeMessage(state.toString()),
+      (_) {},
+    );
+
+/// Alt menüdeki gibi IndexedStack: 0 = Kıble, 1 = başka sekme.
+/// [compass] yoksa gerçek eklenti akışları (FlutterCompass.events,
+/// 'vaktinde/magnetic') kullanılır.
+Future<ValueNotifier<int>> _pumpQibla(
+  WidgetTester tester, {
+  _FakeCompass? compass,
+  _FakeMagnetometer? magnetometer,
+  Map<String, Object> prefs = const {},
+}) async {
+  final magnetic = magnetometer ?? _FakeMagnetometer();
+  SharedPreferences.setMockInitialValues({
+    'saved_lat': 41.0082,
+    'saved_lng': 28.9784,
+    'qibla_calibration_dialog_seen': true,
+    ...prefs,
+  });
+  final tab = ValueNotifier<int>(0);
+  addTearDown(tab.dispose);
+  await tester.pumpWidget(
+    MaterialApp(
+      locale: const Locale('tr'),
+      theme: AppTheme.light(),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: ValueListenableBuilder<int>(
+          valueListenable: tab,
+          builder: (context, index, _) => IndexedStack(
+            index: index,
+            children: [
+              compass == null
+                  ? const QiblaView()
+                  : QiblaView(
+                      compassEvents: () => compass.stream,
+                      magneticEvents: () => magnetic.stream,
+                    ),
+              const Center(child: Text('diğer sekme')),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+  // Konum (sahte kanal) → kıble açısı → pusula aboneliği
+  for (var i = 0; i < 5; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  return tab;
+}
+
+AppLocalizations get _loc => lookupAppLocalizations(const Locale('tr'));
+
+void main() {
+  setUp(() {
+    _messenger.setMockMethodCallHandler(_geolocator, (call) async {
+      switch (call.method) {
+        case 'isLocationServiceEnabled':
+          return true;
+        case 'checkPermission':
+          return 2; // whileInUse
+        case 'getLastKnownPosition':
+        case 'getCurrentPosition':
+          return {
+            'latitude': 41.0082,
+            'longitude': 28.9784,
+            'timestamp': DateTime(2026).millisecondsSinceEpoch,
+            'accuracy': 10.0,
+            'altitude': 0.0,
+            'heading': 0.0,
+            'speed': 0.0,
+            'speed_accuracy': 0.0,
+          };
+        default:
+          return null;
+      }
+    });
+    // Kıble hizasında titreşim
+    _messenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async => null,
+    );
+  });
+
+  tearDown(() {
+    _messenger.setMockMethodCallHandler(_geolocator, null);
+    _messenger.setMockMethodCallHandler(SystemChannels.platform, null);
+  });
+
+  group('Pusula aboneliği', () {
+    testWidgets('görünür + ön planda tek abonelik; olaylar yönü günceller', (
+      tester,
+    ) async {
+      final compass = _FakeCompass();
+      final magnetometer = _FakeMagnetometer();
+      await _pumpQibla(tester, compass: compass, magnetometer: magnetometer);
+      expect(compass.active, 1);
+      expect(compass.listens, 1);
+      expect(magnetometer.active, 1);
+
+      compass.emit(120);
+      await tester.pump();
+      expect(find.textContaining('120°'), findsOneWidget);
+      expect(find.text(_loc.qiblaTurnRight), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox());
+      expect(compass.active, 0, reason: 'dispose aboneliği kapatır');
+      expect(magnetometer.active, 0);
+      expect(compass.maxConcurrent, 1);
+    });
+
+    testWidgets('inactive/hidden/paused kapatır, resumed yeniden açar', (
+      tester,
+    ) async {
+      final compass = _FakeCompass();
+      final magnetometer = _FakeMagnetometer();
+      await _pumpQibla(tester, compass: compass, magnetometer: magnetometer);
+      await _lifecycle(AppLifecycleState.resumed);
+      expect(compass.active, 1);
+
+      // Tam ekran reklam / bildirim perdesi
+      await _lifecycle(AppLifecycleState.inactive);
+      await tester.pump();
+      expect(compass.active, 0);
+      expect(magnetometer.active, 0);
+      await _lifecycle(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(compass.active, 1);
+      expect(compass.listens, 2);
+      expect(magnetometer.active, 1);
+      expect(magnetometer.listens, 2);
+
+      // Arka plan: resumed → inactive → hidden → paused
+      await _lifecycle(AppLifecycleState.paused);
+      await tester.pump(const Duration(seconds: 10));
+      expect(compass.active, 0);
+      compass.emit(10); // dinleyen yok
+      await _lifecycle(AppLifecycleState.hidden);
+      expect(compass.active, 0);
+      await _lifecycle(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(compass.active, 1);
+      expect(compass.listens, 3);
+
+      compass.emit(200);
+      await tester.pump();
+      expect(find.textContaining('200°'), findsOneWidget);
+
+      await _lifecycle(AppLifecycleState.detached);
+      expect(compass.active, 0);
+      await _lifecycle(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(compass.active, 1);
+      expect(compass.maxConcurrent, 1);
+      await tester.pumpWidget(const SizedBox());
+      expect(compass.active, 0);
+    });
+
+    testWidgets('sekme gizlenince/üstüne sayfa açılınca kapanır; arka planda '
+        'sekmeye dönmek açmaz', (tester) async {
+      final compass = _FakeCompass();
+      final magnetometer = _FakeMagnetometer();
+      final tab = await _pumpQibla(
+        tester,
+        compass: compass,
+        magnetometer: magnetometer,
+      );
+      expect(compass.active, 1);
+      compass.emit(120);
+      await tester.pump();
+
+      tab.value = 1;
+      await tester.pump();
+      expect(compass.active, 0);
+      expect(magnetometer.active, 0);
+      tab.value = 0;
+      await tester.pump();
+      expect(compass.active, 1);
+      expect(compass.listens, 2);
+      expect(magnetometer.active, 1);
+
+      // Ön planda değilken sekmeye dönülse de açılmaz (inactive'de kareler
+      // çizilmeye devam eder, sekme görünür olur)
+      tab.value = 1;
+      await tester.pump();
+      await _lifecycle(AppLifecycleState.inactive);
+      tab.value = 0;
+      await tester.pump();
+      expect(find.byType(QiblaView).hitTestable(), findsOneWidget);
+      expect(compass.active, 0);
+      await _lifecycle(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(compass.active, 1);
+
+      // Gizli sekmedeyken ön plana dönmek de açmaz
+      tab.value = 1;
+      await tester.pump();
+      await _lifecycle(AppLifecycleState.paused);
+      await _lifecycle(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(compass.active, 0);
+      tab.value = 0;
+      await tester.pump();
+      expect(compass.active, 1);
+
+      // Üstüne tam sayfa açılınca (TickerMode kapalı) durur, kapanınca döner
+      final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+      navigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => const Scaffold(body: Text('ayarlar')),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(compass.active, 0);
+      expect(magnetometer.active, 0);
+      navigator.pop();
+      await tester.pumpAndSettle();
+      expect(compass.active, 1);
+      expect(magnetometer.active, 1);
+      expect(compass.maxConcurrent, 1);
+      expect(magnetometer.listens, compass.listens);
+      await tester.pumpWidget(const SizedBox());
+      expect(compass.active, 0);
+      expect(magnetometer.active, 0);
+    });
+
+    testWidgets('hızlı geçişlerde hiçbir an iki abonelik olmaz', (
+      tester,
+    ) async {
+      final compass = _FakeCompass();
+      final tab = await _pumpQibla(tester, compass: compass);
+      await _lifecycle(AppLifecycleState.resumed);
+      for (var i = 0; i < 3; i++) {
+        await _lifecycle(AppLifecycleState.inactive);
+        await _lifecycle(AppLifecycleState.resumed);
+        await _lifecycle(AppLifecycleState.resumed);
+        tab.value = 1;
+        await tester.pump();
+        tab.value = 0;
+        await tester.pump();
+        compass.emit(100.0 + i * 10);
+      }
+      await tester.pump();
+      expect(compass.active, 1);
+      expect(compass.maxConcurrent, 1);
+      expect(compass.listens, 7);
+      await tester.pumpWidget(const SizedBox());
+      expect(compass.active, 0);
+    });
+
+    testWidgets(
+      'gerçek eklenti kanalları: arka planda "cancel", dönüşte "listen"',
+      (tester) async {
+        // Android eklentisi (ve MainActivity manyetometresi) onCancel'da sensör
+        // dinleyicilerini kaldırır
+        final calls = <String>[];
+        final magneticCalls = <String>[];
+        _messenger.setMockStreamHandler(
+          _compassChannel,
+          MockStreamHandler.inline(
+            onListen: (args, sink) => calls.add('listen'),
+            onCancel: (args) => calls.add('cancel'),
+          ),
+        );
+        _messenger.setMockStreamHandler(
+          _magneticChannel,
+          MockStreamHandler.inline(
+            onListen: (args, sink) => magneticCalls.add('listen'),
+            onCancel: (args) => magneticCalls.add('cancel'),
+          ),
+        );
+        addTearDown(() {
+          _messenger.setMockStreamHandler(_compassChannel, null);
+          _messenger.setMockStreamHandler(_magneticChannel, null);
+        });
+        final tab = await _pumpQibla(tester);
+        expect(calls, ['listen']);
+
+        await _lifecycle(AppLifecycleState.paused);
+        await tester.pump();
+        expect(calls, ['listen', 'cancel']);
+        await _lifecycle(AppLifecycleState.resumed);
+        await tester.pump();
+        expect(calls, ['listen', 'cancel', 'listen']);
+
+        tab.value = 1;
+        await tester.pump();
+        expect(calls.last, 'cancel');
+        tab.value = 0;
+        await tester.pump();
+        expect(calls.last, 'listen');
+
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump();
+        expect(calls, [
+          'listen',
+          'cancel',
+          'listen',
+          'cancel',
+          'listen',
+          'cancel',
+        ]);
+        expect(magneticCalls, calls);
+      },
+    );
+  });
+
+  group('Kalibrasyon uyarısı', () {
+    test('doğruluk sınıfı: sadece yüksek (≤15°) yeterli', () {
+      expect(compassAccuracyPoor(15), isFalse); // Android: yüksek
+      expect(compassAccuracyPoor(5), isFalse); // iOS: ±5°
+      expect(compassAccuracyPoor(30), isTrue); // orta
+      expect(compassAccuracyPoor(45), isTrue); // düşük
+      expect(compassAccuracyPoor(null), isTrue); // güvenilmez/bilinmiyor
+      expect(compassAccuracyPoor(0), isTrue);
+    });
+
+    testWidgets('2 sn zayıf/bilinmiyorsa açılır, iyi okumada kapanır; kısa '
+        'düşüş yanıp söndürmez', (tester) async {
+      final compass = _FakeCompass();
+      await _pumpQibla(tester, compass: compass);
+      final warning = find.text(_loc.lowAccuracyWarning);
+      final tip = find.text('${_loc.qiblaCalibration} ${_loc.keepAwayMetal}');
+
+      compass.emit(120);
+      await tester.pump();
+      expect(tip, findsOneWidget);
+      expect(warning, findsNothing);
+
+      // Kısa düşüş: uyarı hiç görünmez
+      compass.emit(120, accuracy: -1);
+      await tester.pump(const Duration(milliseconds: 1500));
+      expect(warning, findsNothing);
+      compass.emit(120);
+      await tester.pump(const Duration(seconds: 3));
+      expect(warning, findsNothing);
+
+      // 2 sn'den uzun zayıf (orta → düşük): uyarı ipucunun yerine geçer
+      compass.emit(120, accuracy: 30);
+      await tester.pump(const Duration(seconds: 1));
+      compass.emit(121, accuracy: 45);
+      await tester.pump(const Duration(milliseconds: 900));
+      expect(warning, findsNothing);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(warning, findsOneWidget);
+      expect(tip, findsNothing);
+
+      // Zayıf olaylar sürerken sabit kalır
+      for (var i = 0; i < 5; i++) {
+        compass.emit(121, accuracy: -1);
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(warning, findsOneWidget);
+      }
+
+      // İyi okuma: hemen kapanır
+      compass.emit(121);
+      await tester.pump();
+      expect(warning, findsNothing);
+      expect(tip, findsOneWidget);
+
+      // Arka planda bekleyen sayaç düşmez; dönüşte yeniden 2 sn beklenir
+      compass.emit(121, accuracy: -1);
+      await tester.pump(const Duration(milliseconds: 1500));
+      await _lifecycle(AppLifecycleState.paused);
+      await tester.pump(const Duration(seconds: 5));
+      await _lifecycle(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(warning, findsNothing);
+      compass.emit(121, accuracy: -1);
+      await tester.pump(const Duration(milliseconds: 1900));
+      expect(warning, findsNothing);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(warning, findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox());
+    });
+  });
+
+  testWidgets('0,5°den küçük (süzülmüş) yön değişimi yeniden çizim istemez', (
+    tester,
+  ) async {
+    final compass = _FakeCompass();
+    await _pumpQibla(tester, compass: compass);
+    double dialTarget() => tester
+        .widget<TweenAnimationBuilder<double>>(
+          find.byType(TweenAnimationBuilder<double>),
+        )
+        .tween
+        .end!;
+
+    // İlk okuma süzülmeden gösterilir
+    compass.emit(100);
+    await tester.pumpAndSettle(); // kadran animasyonu biter
+    expect(tester.binding.hasScheduledFrame, isFalse);
+    expect(dialTarget(), 100);
+
+    // Titreşim süzgeçte küçülür; setState yoksa kare de istenmez
+    for (final heading in [100.3, 99.6, 100.49, 99.5, 100.4]) {
+      compass.emit(heading);
+    }
+    expect(tester.binding.hasScheduledFrame, isFalse);
+    await tester.pump();
+    expect(dialTarget(), 100);
+
+    // Kalıcı dönüş ilk okumada çizilir, ~0,5 sn'de (30 Hz'de 15 okuma) oturur
+    compass.emit(103);
+    expect(tester.binding.hasScheduledFrame, isTrue);
+    for (var i = 0; i < 14; i++) {
+      compass.emit(103);
+    }
+    await tester.pumpAndSettle();
+    expect(dialTarget(), closeTo(103, 0.5));
+
+    // 360/0 geçişi: kısa yoldan (350° → 10° = +20°) döner, kadran sarılmaz
+    for (var i = 0; i < 30; i++) {
+      compass.emit(350);
+    }
+    await tester.pumpAndSettle();
+    final before = dialTarget();
+    for (var i = 0; i < 30; i++) {
+      compass.emit(10);
+      await tester.pump(const Duration(milliseconds: 33));
+      expect(dialTarget(), inInclusiveRange(before - 0.5, before + 20.5));
+    }
+    await tester.pumpAndSettle();
+    expect(dialTarget(), closeTo(before + 20, 1));
+
+    // Yön aynı kalsa da kalibrasyon değişimi çizdirir
+    compass.emit(10, accuracy: -1);
+    await tester.pump(const Duration(seconds: 3));
+    expect(find.text(_loc.lowAccuracyWarning), findsOneWidget);
+    compass.emit(10);
+    expect(tester.binding.hasScheduledFrame, isTrue);
+    await tester.pump();
+    expect(find.text(_loc.lowAccuracyWarning), findsNothing);
+
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('kıble yönüne girişte tek kısa (orta) titreşim: eşikte salınım '
+      've hızlı tekrar titretmez', (tester) async {
+    final haptics = <Object?>[];
+    _messenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
+      if (call.method == 'HapticFeedback.vibrate') haptics.add(call.arguments);
+      return null;
+    });
+    final compass = _FakeCompass();
+    await _pumpQibla(tester, compass: compass);
+    // Kıble ≈ 151,6° (İstanbul); süzgeç her okumada farkın %25'ini alır:
+    // 40 okumada yöne oturur
+    Future<void> turnTo(double heading) async {
+      for (var i = 0; i < 40; i++) {
+        compass.emit(heading);
+      }
+      await tester.pump();
+    }
+
+    const medium = 'HapticFeedbackType.mediumImpact';
+    await turnTo(100);
+    expect(haptics, isEmpty);
+    await turnTo(151);
+    expect(haptics, [medium]);
+
+    // Eşikte salınım (hizadan 4°–8°): hizaya her dönüşte yeniden titremez
+    for (final heading in [157.0, 151.0, 158.5, 150.0, 157.5, 152.0]) {
+      await turnTo(heading);
+    }
+    expect(haptics, [medium]);
+
+    // Uzaklaşıp hemen (1,5 sn içinde) geri gelmek titretmez
+    await turnTo(120);
+    await turnTo(151);
+    expect(haptics, [medium]);
+    // Hizada beklemek de titretmez
+    await tester.pump(const Duration(seconds: 2));
+    await turnTo(151.5);
+    expect(haptics, [medium]);
+
+    // Uzaklaşıp yeniden girince bir kez daha
+    await turnTo(190);
+    await turnTo(151);
+    expect(haptics, [medium, medium]);
+
+    await tester.pumpWidget(const SizedBox());
+  });
+}

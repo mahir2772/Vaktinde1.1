@@ -1,0 +1,300 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import 'app_analytics.dart';
+
+/// AdMob UMP (AB/EEA rıza formu). Reklam SDK'sı ve reklam yüklemeleri ancak
+/// `canRequestAds` true olunca başlar. Hiçbir adım uygulamayı bekletmez ya da
+/// çökertmez: ağ yoksa/zaman aşımında önceki oturumun rızası geçerli kalır.
+/// Firebase Analytics izinleri (Consent Mode v2) de bu rızadan türetilir:
+/// UMP'nin yazdığı IAB TCF kaydı → [AnalyticsConsent.fromTcf].
+class AdConsent {
+  AdConsent._();
+
+  /// Reklam istenebilir mi (banner'lar bunu dinler)
+  static final ValueNotifier<bool> canRequestAds = ValueNotifier<bool>(false);
+
+  /// AB/EEA'da rızayı sonradan değiştirme girişi zorunlu mu (Ayarlar satırı)
+  static final ValueNotifier<bool> privacyOptionsRequired = ValueNotifier<bool>(
+    false,
+  );
+
+  static Future<void>? _run;
+  static bool _adsStarted = false;
+  static bool _gathering = false;
+  // Rıza bilgisi bu oturumda UMP'den güncellendi (yoksa önceki oturumun bilgisi)
+  static bool _infoUpdated = false;
+  static final List<VoidCallback> _onAdsStarted = [];
+
+  /// Açılıştaki rıza güncellemesi / formu sürüyor mu (başka pencere açılmasın)
+  static bool get isGatheringConsent => _gathering;
+
+  /// Reklam istenebilir olduğunda bir kez çalışır (şu an istenebiliyorsa hemen;
+  /// rıza geri çekildiyse yeniden verilene kadar bekler)
+  static void whenAdsStarted(VoidCallback callback) {
+    if (_adsStarted && canRequestAds.value) {
+      callback();
+    } else {
+      _onAdsStarted.add(callback);
+    }
+  }
+
+  static void _setCanRequestAds(bool value) {
+    canRequestAds.value = value;
+    if (!value) return;
+    final callbacks = List<VoidCallback>.of(_onAdsStarted);
+    _onAdsStarted.clear();
+    for (final callback in callbacks) {
+      try {
+        callback();
+      } catch (_) {}
+    }
+  }
+
+  /// Uygulama açılışında bir kez çağrılır (ikinci çağrı aynı işi döndürür)
+  static Future<void> gatherAndStartAds() => _run ??= _gather();
+
+  /// Testte platform kontrolünü aşmak için
+  @visibleForTesting
+  static bool Function() isSupported = () => Platform.isAndroid;
+
+  @visibleForTesting
+  static void debugReset() {
+    _run = null;
+    _adsStarted = false;
+    _gathering = false;
+    _infoUpdated = false;
+    _onAdsStarted.clear();
+    canRequestAds.value = false;
+    privacyOptionsRequired.value = false;
+  }
+
+  static Future<void> _gather() async {
+    if (!isSupported()) return;
+    _gathering = true;
+    try {
+      await _gatherConsent();
+    } finally {
+      _gathering = false;
+    }
+  }
+
+  static Future<void> _gatherConsent() async {
+    // Önceki oturumdan AB/EEA olduğu biliniyorsa Analytics, UMP sonucuna kadar
+    // izinsiz (Consent Mode v2 varsayılanı)
+    await _applyAnalyticsDefault();
+    // Önceki oturumda rıza alınmışsa reklamlar beklemeden başlar
+    await _startIfAllowed();
+    try {
+      final updated = Completer<bool>();
+      // Eklenti void çağrıda sadece PlatformException yakalar; diğer hatalar
+      // (ör. MissingPluginException) bölgeye düşer → burada yakalanır
+      runZonedGuarded(
+        () => ConsentInformation.instance.requestConsentInfoUpdate(
+          ConsentRequestParameters(),
+          () {
+            if (!updated.isCompleted) updated.complete(true);
+          },
+          (error) {
+            debugPrint('UMP güncellenemedi: ${error.message}');
+            if (!updated.isCompleted) updated.complete(false);
+          },
+        ),
+        (error, stack) {
+          debugPrint('UMP güncelleme hatası: $error');
+          if (!updated.isCompleted) updated.complete(false);
+        },
+      );
+      final ok = await updated.future.timeout(
+        const Duration(seconds: 10),
+        onTimeout: () => false,
+      );
+      if (ok) {
+        _infoUpdated = true;
+        // Bölge artık biliniyor: form açıkken AB/EEA'da Analytics izinsiz
+        await _applyAnalyticsConsent();
+        // Gerekirse form gösterilir (kullanıcı kapatınca döner)
+        await ConsentForm.loadAndShowConsentFormIfRequired((formError) {
+          if (formError != null) {
+            debugPrint('UMP formu: ${formError.message}');
+          }
+        });
+      }
+    } catch (e) {
+      debugPrint('UMP hatası: $e');
+    }
+    await _updatePrivacyOptionsStatus();
+    // Formdaki seçim (güncellenemediyse önceki oturumun kaydı) Analytics'e
+    await _applyAnalyticsConsent();
+    await _startIfAllowed();
+  }
+
+  static Future<void> _updatePrivacyOptionsStatus() async {
+    try {
+      final status = await ConsentInformation.instance
+          .getPrivacyOptionsRequirementStatus();
+      privacyOptionsRequired.value =
+          status == PrivacyOptionsRequirementStatus.required;
+    } catch (e) {
+      debugPrint('UMP gizlilik durumu okunamadı: $e');
+    }
+  }
+
+  /// Ayarlardaki "Reklam gizlilik ayarları": rıza formunu yeniden açar;
+  /// kapanınca reklam izni yeniden okunur (geri çekildiyse yeni reklam istenmez),
+  /// Analytics izinleri yeni seçimle verilir
+  static Future<void> showPrivacyOptions() async {
+    try {
+      final closed = Completer<void>();
+      await ConsentForm.showPrivacyOptionsForm((formError) {
+        if (formError != null) {
+          debugPrint('UMP gizlilik formu: ${formError.message}');
+        }
+        if (!closed.isCompleted) closed.complete();
+      });
+      await closed.future.timeout(
+        const Duration(minutes: 10),
+        onTimeout: () {},
+      );
+    } catch (e) {
+      debugPrint('UMP gizlilik formu açılamadı: $e');
+    }
+    try {
+      final allowed = await ConsentInformation.instance.canRequestAds();
+      if (!_adsStarted) {
+        await _startIfAllowed();
+      } else {
+        _setCanRequestAds(allowed);
+      }
+    } catch (e) {
+      debugPrint('UMP izin durumu okunamadı: $e');
+    }
+    await _updatePrivacyOptionsStatus();
+    await _applyAnalyticsConsent();
+  }
+
+  static const MethodChannel _device = MethodChannel('vaktinde/device');
+
+  /// UMP durumlarından rıza gerekliliği: rıza "gerekli" (alınmamış) ise
+  /// bekleniyor; "alındı" ya da gizlilik seçenekleri girişi zorunluysa gerekli;
+  /// "gerekmiyor" ise değil
+  static ConsentRequirement requirementOf({
+    required ConsentStatus? status,
+    required PrivacyOptionsRequirementStatus? privacyOptions,
+  }) {
+    if (status == ConsentStatus.required) return ConsentRequirement.pending;
+    if (privacyOptions == PrivacyOptionsRequirementStatus.required ||
+        status == ConsentStatus.obtained) {
+      return ConsentRequirement.required;
+    }
+    if (status == ConsentStatus.notRequired) {
+      return ConsentRequirement.notRequired;
+    }
+    return ConsentRequirement.unknown;
+  }
+
+  // UMP'nin son bildiği durum (oturumlar arası saklanır); okunamayan bilinmiyor
+  static Future<ConsentRequirement> _consentRequirement() async {
+    ConsentStatus? status;
+    PrivacyOptionsRequirementStatus? privacyOptions;
+    try {
+      status = await ConsentInformation.instance.getConsentStatus();
+    } catch (e) {
+      debugPrint('UMP rıza durumu okunamadı: $e');
+    }
+    try {
+      privacyOptions = await ConsentInformation.instance
+          .getPrivacyOptionsRequirementStatus();
+    } catch (e) {
+      debugPrint('UMP gizlilik durumu okunamadı: $e');
+    }
+    return requirementOf(status: status, privacyOptions: privacyOptions);
+  }
+
+  // UMP'nin yazdığı IAB TCF kaydı (MainActivity kanalı); okunamazsa boş
+  static Future<({int? gdprApplies, String? purposeConsents})>
+  _readTcf() async {
+    try {
+      final tcf = await _device.invokeMapMethod<String, Object?>('tcfConsent');
+      final gdprApplies = tcf?['gdprApplies'];
+      final purposeConsents = tcf?['purposeConsents'];
+      return (
+        gdprApplies: gdprApplies is int ? gdprApplies : null,
+        purposeConsents: purposeConsents is String ? purposeConsents : null,
+      );
+    } catch (e) {
+      debugPrint('TCF kaydı okunamadı: $e');
+      return (gdprApplies: null, purposeConsents: null);
+    }
+  }
+
+  /// Consent Mode v2 varsayılanı (UMP sonucu beklenmeden): önceki oturumdan
+  /// rıza gerektiği biliniyorsa (UMP durumu ya da TCF'de GDPR geçerli) tüm
+  /// Analytics izinleri kapanır. Bilinmiyorsa dokunulmaz (SDK son kararı saklar;
+  /// hiç karar yoksa manifest varsayılanı: kapalı).
+  static Future<void> _applyAnalyticsDefault() async {
+    final requirement = await _consentRequirement();
+    final tcf = await _readTcf();
+    if (requirement == ConsentRequirement.pending ||
+        requirement == ConsentRequirement.required ||
+        tcf.gdprApplies == 1) {
+      await AppAnalytics.applyConsent(AnalyticsConsent.denied);
+    }
+  }
+
+  /// Analytics izinleri UMP'nin TCF kaydından ([AnalyticsConsent.fromTcf]):
+  /// AB/EEA'da kayıt yoksa/okunamazsa kapalı; GDPR dışında açık (UMP
+  /// güncellenemediyse sadece TCF'de GDPR'ın geçmediği biliniyorsa)
+  static Future<void> _applyAnalyticsConsent() async {
+    final requirement = await _consentRequirement();
+    final tcf = await _readTcf();
+    await AppAnalytics.applyConsent(
+      AnalyticsConsent.fromTcf(
+        gdprApplies: tcf.gdprApplies,
+        purposeConsents: tcf.purposeConsents,
+        requirement: requirement,
+        updated: _infoUpdated,
+      ),
+    );
+  }
+
+  static Future<void> _startIfAllowed() async {
+    if (_adsStarted) return;
+    bool allowed;
+    try {
+      allowed = await ConsentInformation.instance.canRequestAds();
+    } catch (e) {
+      allowed = false;
+    }
+    if (!allowed || _adsStarted) return;
+    _adsStarted = true;
+    await _applyRequestConfiguration();
+    try {
+      await MobileAds.instance.initialize().timeout(
+        const Duration(seconds: 10),
+      );
+    } catch (e) {
+      debugPrint('MobileAds başlatılamadı: $e');
+    }
+    _setCanRequestAds(true);
+  }
+
+  /// Aile dostu içerik sınırı (en fazla PG): SDK başlamadan ve ilk reklam
+  /// isteğinden önce verilir. Ayarlanamazsa reklamlar yine başlar (AdMob
+  /// panelindeki sınır geçerli kalır).
+  static Future<void> _applyRequestConfiguration() async {
+    try {
+      await MobileAds.instance
+          .updateRequestConfiguration(
+            RequestConfiguration(maxAdContentRating: MaxAdContentRating.pg),
+          )
+          .timeout(const Duration(seconds: 5));
+    } catch (e) {
+      debugPrint('Reklam içerik sınırı ayarlanamadı: $e');
+    }
+  }
+}
