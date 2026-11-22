@@ -177,8 +177,8 @@ class HadithService {
 
   /// [day] (varsayılan bugün) gününün hadisi: seçim güne bağlı, görülen
   /// hadisler ([seenKey]) tekrar edilmez; gün + dil başına bir kez ağdan
-  /// alınır, sonra önbellekten. Alınamazsa yerel yedek; [useFallback] false
-  /// ise (bildirim) yedek yerine null: her gün aynı yedek hadis bildirime girmez.
+  /// alınır, sonra önbellekten. Alınamazsa yerel yedek havuzundan gün bazlı
+  /// seçilir; [useFallback] false ise (bildirim) yedek yerine null.
   Future<HadithModel?> getDailyHadith(
     Locale locale, {
     DateTime? day,
@@ -329,10 +329,9 @@ class HadithService {
 
     if (!useFallback) return null;
 
-    // Yukarıdaki işlemlerin hiçbirinden sağ çıkamazsak mecburen yedeği göster.
-    // Bugün gösterilen yedek gün boyu kalır (hafızaya yazılır); ileri bir günün
-    // (yarının bildirimi) yedeği yazılmaz, o gün ağdan yeniden denenir
-    final fallback = _getFallbackHadith(locale);
+    // Ağdan alınamazsa yerel yedek havuzundan gün bazlı seçilir.
+    // Bugün gösterilen yedek gün boyu kalır; ileri günün yedeği yazılmaz.
+    final fallback = _getFallbackHadith(locale, date);
     if (PrayerTracker.dateKey(date) == PrayerTracker.dateKey(now)) {
       try {
         await _storageService.saveDailyCache(
@@ -361,36 +360,176 @@ class HadithService {
     }
   }
 
-  /// Ağdan alınamayınca gösterilen yerel yedek mi
-  bool isFallback(HadithModel hadith, Locale locale) =>
-      hadith.content == _getFallbackHadith(locale).content;
-
-  HadithModel _getFallbackHadith(Locale locale) {
-    if (locale.languageCode == 'en') {
-      return HadithModel(
-        content: "Actions are judged by intentions.",
-        source: "Bukhari",
-      );
-    } else if (locale.languageCode == 'de') {
-      return HadithModel(
-        content: "Taten werden nach Absichten beurteilt.",
-        source: "Bukhari",
-      );
-    } else if (locale.languageCode == 'fr') {
-      return HadithModel(
-        content: "Les actes ne valent que par les intentions.",
-        source: "Bukhari",
-      );
-    } else if (locale.languageCode == 'ar') {
-      return HadithModel(
-        content: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ",
-        source: "Bukhari",
-      );
-    } else {
-      return HadithModel(
-        content: "Ameller niyetlere göredir.",
-        source: "Buhârî",
-      );
-    }
+  /// Ağdan alınamayınca gösterilen yerel yedek havuzundan mı
+  bool isFallback(HadithModel hadith, Locale locale) {
+    final content = hadith.content;
+    if (content == null) return false;
+    return _fallbackPool(locale).any((item) => item.$1 == content);
   }
+
+  HadithModel _getFallbackHadith(Locale locale, DateTime date) {
+    final pool = _fallbackPool(locale);
+    final index = PrayerTracker.epochDay(date) % pool.length;
+    final entry = pool[index < 0 ? index + pool.length : index];
+    return HadithModel(content: entry.$1, source: entry.$2);
+  }
+
+  static List<(String, String)> _fallbackPool(Locale locale) {
+    return switch (locale.languageCode) {
+      'en' => _fallbackEn,
+      'de' => _fallbackDe,
+      'fr' => _fallbackFr,
+      'ar' => _fallbackAr,
+      _ => _fallbackTr,
+    };
+  }
+
+  static const List<(String, String)> _fallbackTr = [
+    ("Ameller niyetlere göredir.", "Buhârî"),
+    ("Sizin en hayırlınız, Kur'an'ı öğrenen ve öğretendir.", "Buhârî"),
+    (
+      "Kolaylaştırınız, zorlaştırmayınız; müjdeleyiniz, nefret ettirmeyiniz.",
+      "Buhârî, Müslim",
+    ),
+    ("Temizlik imanın yarısıdır.", "Müslim"),
+    ("Güzel söz sadakadır.", "Buhârî, Müslim"),
+    (
+      "Hiçbiriniz kendisi için istediğini kardeşi için de istemedikçe tam iman etmiş olmaz.",
+      "Buhârî, Müslim",
+    ),
+    ("Kardeşinin yüzüne tebessüm etmen senin için sadakadır.", "Tirmizî"),
+    (
+      "Allah'a ve ahiret gününe iman eden ya hayır söylesin ya da sussun.",
+      "Buhârî, Müslim",
+    ),
+    ("Allah'a en sevimli amel, az da olsa devamlı olanıdır.", "Buhârî, Müslim"),
+    (
+      "Merhamet edenlere Rahmân da merhamet eder. Yeryüzündekilere merhamet edin ki göktekiler de size merhamet etsin.",
+      "Tirmizî",
+    ),
+  ];
+
+  static const List<(String, String)> _fallbackEn = [
+    ("Actions are judged by intentions.", "Bukhari"),
+    (
+      "The best among you are those who learn the Quran and teach it.",
+      "Bukhari",
+    ),
+    (
+      "Make things easy and do not make them difficult; give glad tidings and do not drive people away.",
+      "Bukhari, Muslim",
+    ),
+    ("Cleanliness is half of faith.", "Muslim"),
+    ("A good word is charity.", "Bukhari, Muslim"),
+    (
+      "None of you truly believes until he loves for his brother what he loves for himself.",
+      "Bukhari, Muslim",
+    ),
+    ("Smiling in the face of your brother is an act of charity.", "Tirmidhi"),
+    (
+      "Whoever believes in Allah and the Last Day should speak good or remain silent.",
+      "Bukhari, Muslim",
+    ),
+    (
+      "The most beloved deeds to Allah are those that are most consistent, even if they are small.",
+      "Bukhari, Muslim",
+    ),
+    (
+      "The Merciful shows mercy to those who are merciful. Show mercy to those on earth, and the One in the heavens will show mercy to you.",
+      "Tirmidhi",
+    ),
+  ];
+
+  static const List<(String, String)> _fallbackDe = [
+    ("Taten werden nach Absichten beurteilt.", "Bukhari"),
+    (
+      "Die Besten unter euch sind jene, die den Koran lernen und lehren.",
+      "Bukhari",
+    ),
+    (
+      "Macht es leicht und erschwert es nicht; verkündet frohe Botschaft und schreckt nicht ab.",
+      "Bukhari, Muslim",
+    ),
+    ("Reinheit ist die Hälfte des Glaubens.", "Muslim"),
+    ("Ein gutes Wort ist eine Spende (Sadaqa).", "Bukhari, Muslim"),
+    (
+      "Keiner von euch glaubt wahrhaftig, bis er für seinen Bruder liebt, was er für sich selbst liebt.",
+      "Bukhari, Muslim",
+    ),
+    (
+      "Das Lächeln im Gesicht deines Bruders ist für dich eine Spende (Sadaqa).",
+      "Tirmidhi",
+    ),
+    (
+      "Wer an Allah und den Jüngsten Tag glaubt, soll Gutes sprechen oder schweigen.",
+      "Bukhari, Muslim",
+    ),
+    (
+      "Die bei Allah beliebtesten Taten sind die beständigsten, auch wenn sie gering sind.",
+      "Bukhari, Muslim",
+    ),
+    (
+      "Den Barmherzigen erweist der Allerbarmer Barmherzigkeit. Seid barmherzig zu denen auf Erden, so wird der im Himmel euch barmherzig sein.",
+      "Tirmidhi",
+    ),
+  ];
+
+  static const List<(String, String)> _fallbackFr = [
+    ("Les actes ne valent que par les intentions.", "Bukhari"),
+    (
+      "Les meilleurs d'entre vous sont ceux qui apprennent le Coran et l'enseignent.",
+      "Bukhari",
+    ),
+    (
+      "Facilitez les choses et ne les rendez pas difficiles ; annoncez la bonne nouvelle et ne faites pas fuir.",
+      "Bukhari, Muslim",
+    ),
+    ("La pureté est la moitié de la foi.", "Muslim"),
+    ("Une bonne parole est une aumône.", "Bukhari, Muslim"),
+    (
+      "Aucun de vous ne sera véritablement croyant tant qu'il n'aimera pas pour son frère ce qu'il aime pour lui-même.",
+      "Bukhari, Muslim",
+    ),
+    ("Sourire au visage de ton frère est une aumône.", "Tirmidhi"),
+    (
+      "Que celui qui croit en Allah et au Jour dernier dise du bien ou se taise.",
+      "Bukhari, Muslim",
+    ),
+    (
+      "Les œuvres les plus aimées d'Allah sont les plus régulières, même si elles sont peu nombreuses.",
+      "Bukhari, Muslim",
+    ),
+    (
+      "Le Miséricordieux fait miséricorde aux miséricordieux. Soyez miséricordieux envers ceux qui sont sur terre, Celui qui est au ciel vous fera miséricorde.",
+      "Tirmidhi",
+    ),
+  ];
+
+  static const List<(String, String)> _fallbackAr = [
+    ("إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ.", "البخاري"),
+    ("خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ.", "البخاري"),
+    (
+      "يَسِّرُوا وَلَا تُعَسِّرُوا، وَبَشِّرُوا وَلَا تُنَفِّرُوا.",
+      "البخاري ومسلم",
+    ),
+    ("الطُّهُورُ شَطْرُ الْإِيمَانِ.", "مسلم"),
+    ("وَالْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ.", "البخاري ومسلم"),
+    (
+      "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ.",
+      "البخاري ومسلم",
+    ),
+    ("تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ.", "الترمذي"),
+    (
+      "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ.",
+      "البخاري ومسلم",
+    ),
+    (
+      "أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ.",
+      "البخاري ومسلم",
+    ),
+    (
+      "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ، ارْحَمُوا مَنْ فِي الْأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ.",
+      "الترمذي",
+    ),
+  ];
 }

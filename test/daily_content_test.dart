@@ -1,7 +1,7 @@
 // Günün ayeti ve hadisi: güne bağlı seçim (ayet dilden bağımsız), kalıcı
 // görülen geçmişi (tekrar ve güncellemede başa sarmama), gün + dil önbelleği
-// (aynı gün ağa çıkmaz, internetsiz önbellekten), gün boyu kalan yerel yedek
-// ve 10:00 / 19:00 bildiriminin çalacağı günün içeriğiyle kurulması.
+// (aynı gün ağa çıkmaz, internetsiz önbellekten), gün boyu kalan çoklu yerel
+// yedek ve 10:00 / 19:00 bildiriminin çalacağı günün içeriğiyle kurulması.
 import 'dart:convert';
 import 'dart:io';
 
@@ -256,40 +256,62 @@ void main() {
       expect(seenContents, hasLength(45));
     });
 
-    test('yerel yedek: bugün gösterilen gün boyu kalır (ağ gelse de); '
-        'ileri günün yedeği saklanmaz', () async {
-      SharedPreferences.setMockInitialValues({});
-      final now = DateTime.now();
-      final online = HadithService(fetch: (url) async => _hadithJson(url));
-      for (final offline in [
-        HadithService(fetch: (_) async => throw const SocketException('yok')),
-        HadithService(fetch: (_) async => null), // HTTP hatası
-        // Metinsiz hadis
-        HadithService(
-          fetch: (url) async => url.path.endsWith('/list/')
-              ? _hadithJson(url)
-              : jsonEncode({'hadeeth': ' '}),
-        ),
-      ]) {
+    test(
+      'yerel yedek: bugün gösterilen gün boyu kalır (ağ gelse de); '
+      'ileri günün yedeği saklanmaz; internetsiz ardışık günler farklı',
+      () async {
         SharedPreferences.setMockInitialValues({});
-        final fallback = await offline.getDailyHadith(tr);
-        expect(fallback!.content, 'Ameller niyetlere göredir.');
-        expect(
-          (await online.getDailyHadith(tr, day: now))!.content,
-          fallback.content,
-        );
+        final now = DateTime.now();
+        final online = HadithService(fetch: (url) async => _hadithJson(url));
+        for (final offline in [
+          HadithService(fetch: (_) async => throw const SocketException('yok')),
+          HadithService(fetch: (_) async => null), // HTTP hatası
+          // Metinsiz hadis
+          HadithService(
+            fetch: (url) async => url.path.endsWith('/list/')
+                ? _hadithJson(url)
+                : jsonEncode({'hadeeth': ' '}),
+          ),
+        ]) {
+          SharedPreferences.setMockInitialValues({});
+          final fallback = await offline.getDailyHadith(tr);
+          expect(fallback?.content, isNotNull);
+          expect(offline.isFallback(fallback!, tr), isTrue);
+          expect(
+            (await online.getDailyHadith(tr, day: now))!.content,
+            fallback.content,
+          );
 
-        final tomorrow = PrayerTracker.addDays(now, 1);
-        expect(
-          (await offline.getDailyHadith(tr, day: tomorrow))!.content,
-          fallback.content,
-        );
-        expect(
-          (await online.getDailyHadith(tr, day: tomorrow))!.content,
-          startsWith('tr hadis '),
-        );
-      }
-    });
+          final tomorrow = PrayerTracker.addDays(now, 1);
+          final nextFallback = await offline.getDailyHadith(tr, day: tomorrow);
+          expect(offline.isFallback(nextFallback!, tr), isTrue);
+          expect(nextFallback.content, isNot(fallback.content));
+          expect(
+            (await online.getDailyHadith(tr, day: tomorrow))!.content,
+            startsWith('tr hadis '),
+          );
+        }
+
+        // 5 dilin tamamında 10 farklı yerel yedek hadis
+        for (final code in ['tr', 'en', 'de', 'fr', 'ar']) {
+          SharedPreferences.setMockInitialValues({});
+          final locale = Locale(code);
+          final offline = HadithService(fetch: (_) async => null);
+          final unique = <String>{};
+          for (var i = 0; i < 10; i++) {
+            final h = await offline.getDailyHadith(
+              locale,
+              day: PrayerTracker.addDays(DateTime(2026, 11, 1), i),
+            );
+            expect(h?.content, isNotNull, reason: '$code $i');
+            expect(h?.source, isNotNull, reason: '$code $i');
+            expect(offline.isFallback(h!, locale), isTrue, reason: '$code $i');
+            unique.add(h.content!);
+          }
+          expect(unique, hasLength(10), reason: code);
+        }
+      },
+    );
   });
 
   group('Günün hadisi: önceden alma, bildirimde yedek yok', () {
