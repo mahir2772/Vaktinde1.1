@@ -1,6 +1,6 @@
 // Reklam: içerik sınırı (PG) reklam SDK'sı başlamadan verilir, hata açılışı
 // bozmaz; Araçlar'dan Ayarlar, Dualar, Namaz Hocası ve Yakındaki Camiler
-// (harita) geçiş reklamsız açılır.
+// (harita) geçiş reklamsız açılır; uygulama açılış reklamı sıklık ve kısıtları.
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/features/common/ad_consent.dart';
 import 'package:ezan_saati/features/common/ad_helper.dart';
@@ -100,6 +100,57 @@ void main() {
     await AdConsent.gatherAndStartAds();
     expect(methods().where((m) => m.startsWith('MobileAds#')), isEmpty);
     expect(AdConsent.canRequestAds.value, isFalse);
+  });
+
+  test('uygulama açılış reklamı: ilk 24 saat yok, günde en fazla 2, 4 saat '
+      'aralık ve ibadet/açılış kısıtlarına uyar', () async {
+    final ads = AdHelper.instance..debugReset();
+    addTearDown(ads.debugReset);
+    SharedPreferences.setMockInitialValues({});
+
+    final installed = DateTime(2026, 11, 20, 10);
+    ads.installTime = installed;
+    expect(
+      ads.canShowAppOpen(installed.add(const Duration(hours: 23))),
+      isFalse,
+    );
+
+    final day1 = installed.add(const Duration(hours: 25));
+    expect(ads.canShowAppOpen(day1), isTrue);
+
+    // Açılış penceresi ya da ibadet ekranı açıksa gösterilmez
+    ads.startupWindowOpen = () => true;
+    expect(ads.canShowAppOpen(day1), isFalse);
+    ads.startupWindowOpen = () => false;
+    ads.appOpenSuppressed = () => true;
+    expect(ads.canShowAppOpen(day1), isFalse);
+    ads.appOpenSuppressed = () => false;
+
+    // Geçiş reklamından hemen sonra (4 dk içinde) gösterilmez
+    ads.markInterstitialShown(day1);
+    expect(ads.canShowAppOpen(day1.add(const Duration(minutes: 2))), isFalse);
+    final t1 = day1.add(const Duration(minutes: 5));
+    expect(ads.canShowAppOpen(t1), isTrue);
+
+    // 1. gösterim → 4 saat soğuma
+    ads.markAppOpenShown(t1);
+    expect(ads.canShowAppOpen(t1.add(const Duration(hours: 3))), isFalse);
+    final t2 = t1.add(const Duration(hours: 4));
+    expect(ads.canShowAppOpen(t2), isTrue);
+
+    // 2. gösterim → günlük sınır (2) doldu, ertesi güne kadar yok
+    ads.markAppOpenShown(t2);
+    expect(ads.canShowAppOpen(t2.add(const Duration(hours: 5))), isFalse);
+
+    // Süreç yeniden başlayınca da günlük sınır korunur
+    await Future<void>.delayed(Duration.zero);
+    ads.debugReset();
+    ads.installTime = installed;
+    await ads.restoreLog();
+    expect(ads.canShowAppOpen(t2.add(const Duration(hours: 5))), isFalse);
+
+    // Ertesi gün yeniden açılır
+    expect(ads.canShowAppOpen(DateTime(2026, 11, 22, 10)), isTrue);
   });
 
   testWidgets('Araçlar: Ayarlar, Dualar, Namaz Hocası ve Yakındaki Camiler '

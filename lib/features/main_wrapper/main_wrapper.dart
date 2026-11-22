@@ -48,8 +48,8 @@ export 'app_showcase.dart'
 const String tourSeenKey = 'is_first_launch_showcase_v3';
 
 /// Alt menü (Ana Sayfa, Kur'an, Kıble, Zikir, Araçlar) + banner + tanıtım turu.
-/// Sekme değişiminde reklam yok; geçiş reklamı yerleri AdHelper'da. Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada
-/// başlatır.
+/// Sekme değişiminde reklam yok; geçiş ve açılış reklamı kuralları AdHelper'da.
+/// Uygulama verisini (HomeViewModel.initializeApp) tek yerden burada başlatır.
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
 
@@ -57,7 +57,7 @@ class MainWrapper extends StatefulWidget {
   State<MainWrapper> createState() => _MainWrapperState();
 }
 
-class _MainWrapperState extends State<MainWrapper> {
+class _MainWrapperState extends State<MainWrapper> with WidgetsBindingObserver {
   int _currentIndex = 0;
 
   // Sekmeler ilk ziyarette kurulur: pusula/konum ve Kur'an listesi açılışta
@@ -70,6 +70,9 @@ class _MainWrapperState extends State<MainWrapper> {
   // Açılış akışı (tur/izinler/Yenilikler) bitti: ipuçları ondan sonra
   bool _startupDone = false;
 
+  // Arka plana gidiş anı (uygulama açılış reklamı sadece ≥30 sn dönüşte)
+  DateTime? _pausedAt;
+
   // Bildirimden istenen ekran pencereler kapanana kadar bekler
   Timer? _routeRetry;
 
@@ -78,9 +81,23 @@ class _MainWrapperState extends State<MainWrapper> {
   late final StreakReviewPrompt _reviewPrompt;
   late final UsageReviewPrompt _usagePrompt;
 
+  // Kur'an, Kıble ve Zikir sekmelerinde ya da bildirim yönlendirmesinde açılış
+  // reklamı gösterilmez
+  bool _isAppOpenSuppressed() {
+    if (!_startupDone || NotificationRoutes.pending.value != null) return true;
+    final tab = MainTab.values[_currentIndex];
+    if (tab == MainTab.quran || tab == MainTab.qibla || tab == MainTab.zikir) {
+      return true;
+    }
+    // Alt sayfa (Dualar, Namaz Hocası, Kur'an okuyucu vb.) açıkken bölme
+    if (mounted && Navigator.of(context).canPop()) return true;
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     final viewModel = context.read<HomeViewModel>();
     _reviewPrompt = StreakReviewPrompt(
       todayTimes: () => viewModel.prayerTimes,
@@ -88,7 +105,9 @@ class _MainWrapperState extends State<MainWrapper> {
     );
     _usagePrompt = UsageReviewPrompt(canPrompt: _canPromptReview);
     AdHelper.instance.loadInterstitialAd();
+    AdHelper.instance.loadAppOpenAd();
     AdHelper.instance.startupWindowOpen = () => !_canPromptReview();
+    AdHelper.instance.appOpenSuppressed = _isAppOpenSuppressed;
     HomeView.alarmsTabRequests.addListener(_showHomeTab);
     MainTabRequests.attach(_showTab);
     TourRequests.replays.addListener(_replayTour);
@@ -102,6 +121,21 @@ class _MainWrapperState extends State<MainWrapper> {
         context.read<HomeViewModel>().initializeApp(loc);
       }
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _pausedAt = DateTime.now();
+    } else if (state == AppLifecycleState.resumed) {
+      final pausedAt = _pausedAt;
+      _pausedAt = null;
+      if (pausedAt != null &&
+          DateTime.now().difference(pausedAt) >=
+              AdHelper.appOpenMinBackground) {
+        AdHelper.instance.showAppOpenAdIfAvailable();
+      }
+    }
   }
 
   /// Açılış sırası: ilk kez → tanıtım turu (izinler turun sonunda); sonraki
@@ -195,6 +229,7 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     HomeView.alarmsTabRequests.removeListener(_showHomeTab);
     MainTabRequests.detach(_showTab);
     TourRequests.replays.removeListener(_replayTour);
