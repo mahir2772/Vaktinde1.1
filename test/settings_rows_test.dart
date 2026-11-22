@@ -223,6 +223,7 @@ void main() {
     expect(find.byType(Switch), findsNothing);
     for (final moved in [
       loc.endReminderTitle,
+      loc.prayerSilenceTitle,
       loc.dailyContentNotifTitle,
       loc.religiousDaysNotifTitle,
       loc.excusedSilentEzanTitle,
@@ -248,6 +249,7 @@ void main() {
     final tops = topsOf(tester, [
       loc.ezanAlarmsTitle,
       loc.endReminderTitle,
+      loc.prayerSilenceTitle,
       loc.dailyContentNotifTitle,
       loc.religiousDaysNotifTitle,
       loc.fridayNotifTitle,
@@ -256,7 +258,7 @@ void main() {
       loc.persistentNotifTitle,
     ]);
     expect(tops, [...tops]..sort());
-    expect(find.byType(Switch), findsNWidgets(7));
+    expect(find.byType(Switch), findsNWidgets(8));
 
     // Haftalık özet: varsayılan açık, satıra dokununca kapanır
     await tester.tap(find.text(loc.weeklySummaryTitle));
