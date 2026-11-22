@@ -255,6 +255,51 @@ class AppLocalizationsAr extends AppLocalizations {
       'هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.';
 
   @override
+  String get prayerSilenceTitle => 'أثناء الصلاة (صامت تلقائي)';
+
+  @override
+  String get prayerSilenceSub =>
+      'يكتم الهاتف تلقائيًا عند دخول الوقت ويعيده كما كان بعد انتهاء المدة.';
+
+  @override
+  String prayerSilenceActiveSub(int minutes) {
+    return 'مفعّل · $minutes د (اضغط للتعديل)';
+  }
+
+  @override
+  String get prayerSilencePermissionNeeded =>
+      'يلزم إذن عدم الإزعاج · اضغط للمنح';
+
+  @override
+  String get prayerSilencePermissionBanner =>
+      'يلزم منح إذن «عدم الإزعاج» في أندرويد لتمكين الوضع الصامت التلقائي أثناء الصلاة.';
+
+  @override
+  String get prayerSilenceGrantAccess => 'منح إذن عدم الإزعاج';
+
+  @override
+  String get prayerSilenceDuration => 'مدة الوضع الصامت';
+
+  @override
+  String prayerSilenceMinutes(int minutes) {
+    return '$minutes د';
+  }
+
+  @override
+  String get prayerSilencePrayers => 'الصلوات';
+
+  @override
+  String get prayerSilenceFridayTitle => 'نافذة صلاة الجمعة';
+
+  @override
+  String get prayerSilenceFridaySub =>
+      'تبدأ يوم الجمعة قبل الظهر بـ 15 دقيقة وتنتهي بعده بـ 45 دقيقة.';
+
+  @override
+  String get prayerSilenceNote =>
+      'لا يغيّر الوضع إذا كان الهاتف في وضع عدم الإزعاج أصلًا. يبدأ بعد دقيقة من الأذان الصوتي حتى لا يقطعه.';
+
+  @override
   String get timesFollowCityClock =>
       'تُعرض المواقيت حسب التوقيت المحلي للمدينة المختارة.';
 

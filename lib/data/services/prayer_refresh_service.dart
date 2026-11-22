@@ -19,6 +19,7 @@ import 'error_reporter.dart';
 import 'hadith_service.dart';
 import 'notification_service.dart';
 import 'prayer_time_service.dart';
+import 'prayer_silence.dart';
 import 'prayer_timezone.dart';
 import 'prayer_tracker.dart';
 import 'prayer_tracker_service.dart';
@@ -961,6 +962,63 @@ class PrayerRefreshService {
     return cleanupOk && recheckOk && (plan.isEmpty || succeeded > 0);
   });
 
+  static Set<String> _audibleEzans(
+    Map<String, bool> onTimeAlarms,
+    Map<String, bool> silentModeSettings,
+  ) => {
+    for (final key in PrayerSilence.defaultPrayers)
+      if (onTimeAlarms[key] == true && silentModeSettings[key] != true) key,
+  };
+
+  /// "Namazdayım" otomatik sessiz modunu Android DND zamanlayıcısına eşitler.
+  /// Hata fırlatmaz; izin yoksa veya arka plan isolate'inde kanal kapalıysa atlar.
+  Future<void> syncPrayerSilence({
+    PrayerTimesModel? todayTimes,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, bool> silentModeSettings,
+  }) => _serializeAlarms(() async {
+    try {
+      final settings = await _storageService.loadPrayerSilenceSettings();
+      if (!settings.enabled) {
+        await PrayerSilence.syncToPlatform(enabled: false, windows: const []);
+        return;
+      }
+      if (todayTimes == null) return;
+      final now = _clock();
+      final planDays = await _planDays(todayTimes, now);
+      await _syncPrayerSilence(
+        days: planDays.days,
+        now: now,
+        onTimeAlarms: onTimeAlarms,
+        silentModeSettings: silentModeSettings,
+      );
+    } catch (e, st) {
+      await reportNonFatal(e, st, reason: 'otomatik sessiz modu eşitlenemedi');
+    }
+  });
+
+  Future<void> _syncPrayerSilence({
+    required List<PrayerTimesModel> days,
+    required DateTime now,
+    required Map<String, bool> onTimeAlarms,
+    required Map<String, bool> silentModeSettings,
+  }) async {
+    try {
+      final settings = await _storageService.loadPrayerSilenceSettings();
+      if (!settings.enabled) {
+        await PrayerSilence.syncToPlatform(enabled: false, windows: const []);
+        return;
+      }
+      final windows = PrayerSilence.buildPlan(
+        days: days,
+        now: now,
+        settings: settings,
+        audibleEzans: _audibleEzans(onTimeAlarms, silentModeSettings),
+      );
+      await PrayerSilence.syncToPlatform(enabled: true, windows: windows);
+    } catch (_) {}
+  }
+
   // Dini gün ve Cuma kurma/iptal işleri sırayla: kapatılınca iptal, süren bir
   // kurulumun ardından çalışır (kapalı ayarla kurulu kalmaz)
   static final SerialQueue _religiousQueue = SerialQueue();
@@ -1272,6 +1330,12 @@ class PrayerRefreshService {
     );
     final religiousOk = await syncReligiousDays(loc);
     final fridayOk = await syncFridayNotifications(loc);
+    await _syncPrayerSilence(
+      days: planDays.days,
+      now: now,
+      onTimeAlarms: onTimeAlarms,
+      silentModeSettings: silentModeSettings,
+    );
 
     // Kip geçişi: plan ve vakit çıkış hatırlatmaları her turda zaten üzerine yazılır
     // (plandan çıkan bekleyenler iptal); kalan günlük içerik de yeni kiple yazılır

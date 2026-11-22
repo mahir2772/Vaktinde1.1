@@ -11,6 +11,7 @@ import 'ayah_service.dart';
 import 'hadith_service.dart';
 import 'hatim.dart';
 import 'hatim_service.dart';
+import 'prayer_silence.dart';
 import 'prayer_timezone.dart';
 import 'quran_service.dart';
 import 'storage_service.dart';
@@ -143,6 +144,10 @@ abstract final class BackupService {
     StorageService.weeklySummaryEnabledKey: const _Field(_Kind.boolean),
     StorageService.excusedSilentEzanKey: const _Field(_Kind.boolean),
     StorageService.persistentNotificationKey: const _Field(_Kind.boolean),
+    StorageService.prayerSilenceEnabledKey: const _Field(_Kind.boolean),
+    StorageService.prayerSilenceMinutesKey: const _Field(_Kind.integer, _isSilenceMinutes),
+    StorageService.prayerSilencePrayersKey: const _Field(_Kind.textList, _isSilencePrayers),
+    StorageService.prayerSilenceFridayKey: const _Field(_Kind.boolean),
     // Namaz takibi, kaza sayaçları, Ramazan orucu
     'prayer_log': const _Field(_Kind.text, _isMaskMap),
     'prayer_log_since': const _Field(_Kind.text),
@@ -379,6 +384,10 @@ bool _isLatitude(Object v) => v is double && v.isFinite && v.abs() <= 90;
 bool _isLongitude(Object v) => v is double && v.isFinite && v.abs() <= 180;
 
 bool _isTimeZone(Object v) => v is String && PrayerTimeZone.resolve(v) != null;
+
+bool _isSilenceMinutes(Object v) => v is int && PrayerSilence.durationOptions.contains(v);
+
+bool _isSilencePrayers(Object v) => v is List<String> && v.every(PrayerSilence.defaultPrayers.contains);
 
 bool _isFinite(Object v) => v is double && v.isFinite;
 

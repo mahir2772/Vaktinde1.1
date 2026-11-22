@@ -89,6 +89,32 @@
     "provinceCenter": "Provincial capital",
     "searchOnline": "Search online",
     "timesFollowPhoneClock": "This place is in a different time zone: times are shown in your phone's time.",
+    "prayerSilenceTitle": "Prayer silence (auto DND)",
+    "prayerSilenceSub": "Automatically silences your phone during prayer times and restores it afterward.",
+    "prayerSilenceActiveSub": "On · {minutes} min (tap to edit)",
+    "@prayerSilenceActiveSub": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePermissionNeeded": "Do Not Disturb access needed · Tap to grant",
+    "prayerSilencePermissionBanner": "Grant Android Do Not Disturb access so Vaktinde can silence your phone during prayer.",
+    "prayerSilenceGrantAccess": "Grant Do Not Disturb access",
+    "prayerSilenceDuration": "Silence duration",
+    "prayerSilenceMinutes": "{minutes} min",
+    "@prayerSilenceMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePrayers": "Prayers",
+    "prayerSilenceFridayTitle": "Jumu'ah prayer window",
+    "prayerSilenceFridaySub": "Starts 15 min before Dhuhr on Fridays and ends 45 min after.",
+    "prayerSilenceNote": "Leaves your phone untouched if already in Do Not Disturb. Starts 1 min after audible adhan so it isn't cut off.",
     "timesFollowCityClock": "Prayer times are shown in the selected city's local time.",
     "cityLocalTime": "City time: {time}",
     "@cityLocalTime": {

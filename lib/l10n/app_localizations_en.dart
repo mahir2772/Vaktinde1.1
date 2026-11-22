@@ -258,6 +258,51 @@ class AppLocalizationsEn extends AppLocalizations {
       'This place is in a different time zone: times are shown in your phone\'s time.';
 
   @override
+  String get prayerSilenceTitle => 'Prayer silence (auto DND)';
+
+  @override
+  String get prayerSilenceSub =>
+      'Automatically silences your phone during prayer times and restores it afterward.';
+
+  @override
+  String prayerSilenceActiveSub(int minutes) {
+    return 'On · $minutes min (tap to edit)';
+  }
+
+  @override
+  String get prayerSilencePermissionNeeded =>
+      'Do Not Disturb access needed · Tap to grant';
+
+  @override
+  String get prayerSilencePermissionBanner =>
+      'Grant Android Do Not Disturb access so Vaktinde can silence your phone during prayer.';
+
+  @override
+  String get prayerSilenceGrantAccess => 'Grant Do Not Disturb access';
+
+  @override
+  String get prayerSilenceDuration => 'Silence duration';
+
+  @override
+  String prayerSilenceMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get prayerSilencePrayers => 'Prayers';
+
+  @override
+  String get prayerSilenceFridayTitle => 'Jumu\'ah prayer window';
+
+  @override
+  String get prayerSilenceFridaySub =>
+      'Starts 15 min before Dhuhr on Fridays and ends 45 min after.';
+
+  @override
+  String get prayerSilenceNote =>
+      'Leaves your phone untouched if already in Do Not Disturb. Starts 1 min after audible adhan so it isn\'t cut off.';
+
+  @override
   String get timesFollowCityClock =>
       'Prayer times are shown in the selected city\'s local time.';
 

@@ -89,6 +89,32 @@
     "provinceCenter": "Chef-lieu de la province",
     "searchOnline": "Rechercher en ligne",
     "timesFollowPhoneClock": "Ce lieu est dans un autre fuseau horaire : les horaires sont affichés à l'heure de votre téléphone.",
+    "prayerSilenceTitle": "En prière (silencieux auto)",
+    "prayerSilenceSub": "Met le téléphone en silencieux pendant la prière puis rétablit le son.",
+    "prayerSilenceActiveSub": "Activé · {minutes} min (appuyer pour modifier)",
+    "@prayerSilenceActiveSub": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePermissionNeeded": "Accès Ne pas déranger requis · Appuyer pour autoriser",
+    "prayerSilencePermissionBanner": "Autorisez l'accès « Ne pas déranger » d'Android pour activer le mode silencieux pendant la prière.",
+    "prayerSilenceGrantAccess": "Autoriser l'accès",
+    "prayerSilenceDuration": "Durée du silence",
+    "prayerSilenceMinutes": "{minutes} min",
+    "@prayerSilenceMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePrayers": "Prières",
+    "prayerSilenceFridayTitle": "Créneau de la prière du vendredi",
+    "prayerSilenceFridaySub": "Commence 15 min avant Dhuhr le vendredi et se termine 45 min après.",
+    "prayerSilenceNote": "Ne modifie rien si le mode Ne pas déranger est déjà actif. Démarre 1 min après un adhan sonore.",
     "timesFollowCityClock": "Les horaires sont affichés à l'heure locale de la ville choisie.",
     "cityLocalTime": "Heure locale : {time}",
     "@cityLocalTime": {

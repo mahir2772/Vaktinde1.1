@@ -261,6 +261,51 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce lieu est dans un autre fuseau horaire : les horaires sont affichés à l\'heure de votre téléphone.';
 
   @override
+  String get prayerSilenceTitle => 'En prière (silencieux auto)';
+
+  @override
+  String get prayerSilenceSub =>
+      'Met le téléphone en silencieux pendant la prière puis rétablit le son.';
+
+  @override
+  String prayerSilenceActiveSub(int minutes) {
+    return 'Activé · $minutes min (appuyer pour modifier)';
+  }
+
+  @override
+  String get prayerSilencePermissionNeeded =>
+      'Accès Ne pas déranger requis · Appuyer pour autoriser';
+
+  @override
+  String get prayerSilencePermissionBanner =>
+      'Autorisez l\'accès « Ne pas déranger » d\'Android pour activer le mode silencieux pendant la prière.';
+
+  @override
+  String get prayerSilenceGrantAccess => 'Autoriser l\'accès';
+
+  @override
+  String get prayerSilenceDuration => 'Durée du silence';
+
+  @override
+  String prayerSilenceMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get prayerSilencePrayers => 'Prières';
+
+  @override
+  String get prayerSilenceFridayTitle => 'Créneau de la prière du vendredi';
+
+  @override
+  String get prayerSilenceFridaySub =>
+      'Commence 15 min avant Dhuhr le vendredi et se termine 45 min après.';
+
+  @override
+  String get prayerSilenceNote =>
+      'Ne modifie rien si le mode Ne pas déranger est déjà actif. Démarre 1 min après un adhan sonore.';
+
+  @override
   String get timesFollowCityClock =>
       'Les horaires sont affichés à l\'heure locale de la ville choisie.';
 

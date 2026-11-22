@@ -88,6 +88,32 @@
     "countryNorthernCyprus": "Nordzypern",
     "provinceCenter": "Provinzhauptstadt",
     "searchOnline": "Online suchen",
+    "prayerSilenceTitle": "Gebetsruhe (Auto-Stumm)",
+    "prayerSilenceSub": "Schaltet das Telefon zur Gebetszeit automatisch stumm und stellt es danach wieder her.",
+    "prayerSilenceActiveSub": "Ein · {minutes} Min. (zum Bearbeiten tippen)",
+    "@prayerSilenceActiveSub": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePermissionNeeded": "Bitte-nicht-stören-Zugriff erforderlich · Tippen zum Erlauben",
+    "prayerSilencePermissionBanner": "Erteilen Sie den Android-Zugriff auf „Bitte nicht stören“, damit das Telefon im Gebet stummgeschaltet werden kann.",
+    "prayerSilenceGrantAccess": "Zugriff erlauben",
+    "prayerSilenceDuration": "Dauer der Stummschaltung",
+    "prayerSilenceMinutes": "{minutes} Min.",
+    "@prayerSilenceMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePrayers": "Gebetszeiten",
+    "prayerSilenceFridayTitle": "Freitagsgebet-Zeitfenster",
+    "prayerSilenceFridaySub": "Beginnt freitags 15 Min. vor Dhuhr und endet 45 Min. danach.",
+    "prayerSilenceNote": "Bleibt unverändert, wenn „Bitte nicht stören“ bereits aktiv ist. Beginnt 1 Min. nach hörbarem Adhan.",
     "timesFollowCityClock": "Die Gebetszeiten werden in der Ortszeit der gewählten Stadt angezeigt.",
     "cityLocalTime": "Ortszeit: {time}",
     "@cityLocalTime": {

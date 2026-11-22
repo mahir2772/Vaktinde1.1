@@ -89,6 +89,32 @@
     "provinceCenter": "İl merkezi",
     "searchOnline": "İnternette ara",
     "timesFollowPhoneClock": "Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.",
+    "prayerSilenceTitle": "Namazdayım (otomatik sessiz)",
+    "prayerSilenceSub": "Vakit girince telefonu kısa süreliğine sessize alır, süre bitince eski hâline döndürür.",
+    "prayerSilenceActiveSub": "Açık · {minutes} dk (düzenlemek için dokunun)",
+    "@prayerSilenceActiveSub": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePermissionNeeded": "Rahatsız Etmeyin izni gerekli · İzin vermek için dokunun",
+    "prayerSilencePermissionBanner": "Otomatik sessiz modu için Android Rahatsız Etmeyin erişimine izin vermeniz gerekir.",
+    "prayerSilenceGrantAccess": "Rahatsız Etmeyin izni ver",
+    "prayerSilenceDuration": "Sessiz kalma süresi",
+    "prayerSilenceMinutes": "{minutes} dk",
+    "@prayerSilenceMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePrayers": "Hangi vakitlerde",
+    "prayerSilenceFridayTitle": "Cuma namazı penceresi",
+    "prayerSilenceFridaySub": "Cuma günü öğleden 15 dk önce başlayıp 45 dk sonra biter.",
+    "prayerSilenceNote": "Telefon zaten sessizdeyse dokunulmaz. Sesli ezan açıksa ezan duyulsun diye 1 dk sonra başlar.",
     "timesFollowCityClock": "Vakitler seçilen şehrin yerel saatine göre gösterilir.",
     "cityLocalTime": "Şehir saati: {time}",
     "@cityLocalTime": {

@@ -67,6 +67,28 @@ object DeviceMethods {
                 SoundPreview.stop()
                 result.success(null)
             }
+            "hasDndAccess" -> {
+                val context = appContext ?: return result.success(false)
+                result.success(PrayerSilence.hasPolicyAccess(context))
+            }
+            "openDndAccessSettings" -> {
+                val context = appContext ?: return result.success(false)
+                result.success(PrayerSilence.openPolicyAccessSettings(context))
+            }
+            "syncPrayerSilence" -> {
+                val context = appContext ?: return result.success(false)
+                val args = call.arguments as? Map<*, *>
+                val enabled = args?.get("enabled") == true
+                val rawWindows = args?.get("windows") as? List<*> ?: emptyList<Any>()
+                val windows = rawWindows.mapNotNull { item ->
+                    val m = item as? Map<*, *> ?: return@mapNotNull null
+                    val start = (m["start"] as? Number)?.toLong() ?: return@mapNotNull null
+                    val end = (m["end"] as? Number)?.toLong() ?: return@mapNotNull null
+                    PrayerSilence.Window(start, end)
+                }
+                PrayerSilence.sync(context, enabled, windows)
+                result.success(true)
+            }
             else -> result.notImplemented()
         }
     }

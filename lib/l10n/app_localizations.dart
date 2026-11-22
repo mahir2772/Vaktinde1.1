@@ -542,6 +542,78 @@ abstract class AppLocalizations {
   /// **'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.'**
   String get timesFollowPhoneClock;
 
+  /// No description provided for @prayerSilenceTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Namazdayım (otomatik sessiz)'**
+  String get prayerSilenceTitle;
+
+  /// No description provided for @prayerSilenceSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakit girince telefonu kısa süreliğine sessize alır, süre bitince eski hâline döndürür.'**
+  String get prayerSilenceSub;
+
+  /// No description provided for @prayerSilenceActiveSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık · {minutes} dk (düzenlemek için dokunun)'**
+  String prayerSilenceActiveSub(int minutes);
+
+  /// No description provided for @prayerSilencePermissionNeeded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahatsız Etmeyin izni gerekli · İzin vermek için dokunun'**
+  String get prayerSilencePermissionNeeded;
+
+  /// No description provided for @prayerSilencePermissionBanner.
+  ///
+  /// In tr, this message translates to:
+  /// **'Otomatik sessiz modu için Android Rahatsız Etmeyin erişimine izin vermeniz gerekir.'**
+  String get prayerSilencePermissionBanner;
+
+  /// No description provided for @prayerSilenceGrantAccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rahatsız Etmeyin izni ver'**
+  String get prayerSilenceGrantAccess;
+
+  /// No description provided for @prayerSilenceDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sessiz kalma süresi'**
+  String get prayerSilenceDuration;
+
+  /// No description provided for @prayerSilenceMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'{minutes} dk'**
+  String prayerSilenceMinutes(int minutes);
+
+  /// No description provided for @prayerSilencePrayers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hangi vakitlerde'**
+  String get prayerSilencePrayers;
+
+  /// No description provided for @prayerSilenceFridayTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma namazı penceresi'**
+  String get prayerSilenceFridayTitle;
+
+  /// No description provided for @prayerSilenceFridaySub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cuma günü öğleden 15 dk önce başlayıp 45 dk sonra biter.'**
+  String get prayerSilenceFridaySub;
+
+  /// No description provided for @prayerSilenceNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Telefon zaten sessizdeyse dokunulmaz. Sesli ezan açıksa ezan duyulsun diye 1 dk sonra başlar.'**
+  String get prayerSilenceNote;
+
   /// No description provided for @timesFollowCityClock.
   ///
   /// In tr, this message translates to:

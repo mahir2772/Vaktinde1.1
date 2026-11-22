@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prayer_times_model.dart';
+import 'prayer_silence.dart';
 import 'prayer_timezone.dart';
 import 'prayer_tracker.dart';
 
@@ -322,6 +323,45 @@ class StorageService {
     } catch (e) {
       return {};
     }
+  }
+
+  // --- "Namazdayım" otomatik sessiz modu ---
+  static const String prayerSilenceEnabledKey = 'prayer_silence_enabled';
+  static const String prayerSilenceMinutesKey = 'prayer_silence_minutes';
+  static const String prayerSilencePrayersKey = 'prayer_silence_prayers';
+  static const String prayerSilenceFridayKey = 'prayer_silence_friday';
+
+  Future<PrayerSilenceSettings> loadPrayerSilenceSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final minutes = prefs.getInt(prayerSilenceMinutesKey);
+    final savedPrayers = prefs.getStringList(prayerSilencePrayersKey);
+    final prayers = savedPrayers == null
+        ? PrayerSilence.defaultPrayers
+        : savedPrayers
+            .where(PrayerSilence.defaultPrayers.contains)
+            .toSet();
+    return PrayerSilenceSettings(
+      enabled: prefs.getBool(prayerSilenceEnabledKey) ?? false,
+      durationMinutes: PrayerSilence.durationOptions.contains(minutes)
+          ? minutes!
+          : PrayerSilence.defaultDurationMinutes,
+      prayers: prayers,
+      fridayEnabled: prefs.getBool(prayerSilenceFridayKey) ?? true,
+    );
+  }
+
+  Future<void> savePrayerSilenceSettings(PrayerSilenceSettings settings) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(prayerSilenceEnabledKey, settings.enabled);
+    await prefs.setInt(prayerSilenceMinutesKey, settings.durationMinutes);
+    await prefs.setStringList(
+      prayerSilencePrayersKey,
+      settings.prayers
+          .where(PrayerSilence.defaultPrayers.contains)
+          .toList()
+        ..sort(),
+    );
+    await prefs.setBool(prayerSilenceFridayKey, settings.fridayEnabled);
   }
 
   // --- "Vakit çıkmadan hatırlat" ayarı (varsayılan kapalı, 30 dk) ---

@@ -259,6 +259,51 @@ class AppLocalizationsTr extends AppLocalizations {
       'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.';
 
   @override
+  String get prayerSilenceTitle => 'Namazdayım (otomatik sessiz)';
+
+  @override
+  String get prayerSilenceSub =>
+      'Vakit girince telefonu kısa süreliğine sessize alır, süre bitince eski hâline döndürür.';
+
+  @override
+  String prayerSilenceActiveSub(int minutes) {
+    return 'Açık · $minutes dk (düzenlemek için dokunun)';
+  }
+
+  @override
+  String get prayerSilencePermissionNeeded =>
+      'Rahatsız Etmeyin izni gerekli · İzin vermek için dokunun';
+
+  @override
+  String get prayerSilencePermissionBanner =>
+      'Otomatik sessiz modu için Android Rahatsız Etmeyin erişimine izin vermeniz gerekir.';
+
+  @override
+  String get prayerSilenceGrantAccess => 'Rahatsız Etmeyin izni ver';
+
+  @override
+  String get prayerSilenceDuration => 'Sessiz kalma süresi';
+
+  @override
+  String prayerSilenceMinutes(int minutes) {
+    return '$minutes dk';
+  }
+
+  @override
+  String get prayerSilencePrayers => 'Hangi vakitlerde';
+
+  @override
+  String get prayerSilenceFridayTitle => 'Cuma namazı penceresi';
+
+  @override
+  String get prayerSilenceFridaySub =>
+      'Cuma günü öğleden 15 dk önce başlayıp 45 dk sonra biter.';
+
+  @override
+  String get prayerSilenceNote =>
+      'Telefon zaten sessizdeyse dokunulmaz. Sesli ezan açıksa ezan duyulsun diye 1 dk sonra başlar.';
+
+  @override
   String get timesFollowCityClock =>
       'Vakitler seçilen şehrin yerel saatine göre gösterilir.';
 

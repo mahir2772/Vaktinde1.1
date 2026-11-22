@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/services/location_service.dart';
 import '../../../data/services/prayer_time_service.dart';
+import '../../../data/services/prayer_silence.dart';
 import '../../../data/services/prayer_timezone.dart';
 import '../../../data/services/storage_service.dart';
 import '../../../data/services/hadith_service.dart';
@@ -83,6 +84,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool weeklySummaryEnabled = true;
   // "Özel günde ezanı sessiz bildir" (varsayılan açık)
   bool excusedSilentEzan = true;
+  // "Namazdayım" otomatik sessiz modu (Android Rahatsız Etmeyin)
+  PrayerSilenceSettings prayerSilence = const PrayerSilenceSettings();
+  bool dndAccessGranted = false;
   // "Kalıcı bildirim" (yeni kurulumda kapalı, eski kullanıcıda açık)
   bool persistentNotificationEnabled = false;
 
@@ -172,6 +176,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       // Ayarlardan dönülmüş olabilir: izinler yeniden okunur (düzeldiyse uyarı kalkar)
       alarmHealth.refresh();
+      unawaited(refreshDndAccess(resyncIfChanged: true));
       if (_isDataLoaded) {
         _showWeeklySummary();
         _refreshTimesIfNewDay();
@@ -217,6 +222,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       timeZone = await _storageService.loadTimeZone();
       _armMidnightTimer();
       await checkAlarmStreamSupport();
+      await refreshDndAccess();
       await notificationService.init();
       alarmHealth.refresh();
 
@@ -590,6 +596,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     excusedSilentEzan = await _storageService.loadExcusedSilentEzan();
     persistentNotificationEnabled = await _storageService
         .loadPersistentNotification();
+    prayerSilence = await _storageService.loadPrayerSilenceSettings();
     notifyListeners();
   }
 
@@ -700,6 +707,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         await _refreshService.syncFridayNotifications(_currentLoc!);
       }
       await HatimService().syncReminder();
+      await _refreshService.syncPrayerSilence(
+        todayTimes: null,
+        onTimeAlarms: onTimeAlarms,
+        silentModeSettings: silentModeSettings,
+      );
     }
     if (dailyContentEnabled) {
       // Alınamamış içerik ağdan istenir (beklenmez; gelince kurulur)
@@ -767,6 +779,59 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       reportNonFatal(e, st, reason: 'özel gün ezan ayarı kaydedilemedi');
     }
     await rescheduleAlarms();
+  }
+
+  /// Android Rahatsız Etmeyin (DND) erişim iznini okur; ayarlardan dönünce
+  /// izin yeni verildiyse sessiz pencereleri hemen kurar.
+  Future<bool> refreshDndAccess({bool resyncIfChanged = false}) async {
+    final granted = await PrayerSilence.hasPolicyAccess();
+    final changed = granted != dndAccessGranted;
+    if (changed) {
+      dndAccessGranted = granted;
+      notifyListeners();
+    }
+    if (resyncIfChanged && changed && granted && prayerSilence.enabled) {
+      await _refreshService.syncPrayerSilence(
+        todayTimes: prayerTimes,
+        onTimeAlarms: onTimeAlarms,
+        silentModeSettings: silentModeSettings,
+      );
+    }
+    return granted;
+  }
+
+  /// Sistemin Rahatsız Etmeyin erişim ekranını açar
+  Future<bool> openDndAccessSettings() =>
+      PrayerSilence.openPolicyAccessSettings();
+
+  /// "Namazdayım" otomatik sessiz modu ayarını kaydeder ve pencereleri eşitler
+  Future<void> setPrayerSilence({
+    bool? enabled,
+    int? durationMinutes,
+    Set<String>? prayers,
+    bool? fridayEnabled,
+  }) async {
+    final updated = prayerSilence.copyWith(
+      enabled: enabled,
+      durationMinutes: durationMinutes,
+      prayers: prayers,
+      fridayEnabled: fridayEnabled,
+    );
+    prayerSilence = updated;
+    notifyListeners();
+    try {
+      await _storageService.savePrayerSilenceSettings(updated);
+    } catch (e, st) {
+      reportNonFatal(e, st, reason: 'otomatik sessiz ayarı kaydedilemedi');
+    }
+    if (updated.enabled) {
+      await refreshDndAccess();
+    }
+    await _refreshService.syncPrayerSilence(
+      todayTimes: prayerTimes,
+      onTimeAlarms: onTimeAlarms,
+      silentModeSettings: silentModeSettings,
+    );
   }
 
   /// Vakit çıkış hatırlatması ayarı; sadece bu hatırlatmalar (ID 100-124) yeniden kurulur

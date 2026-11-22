@@ -89,6 +89,32 @@
     "provinceCenter": "مركز الولاية",
     "searchOnline": "البحث عبر الإنترنت",
     "timesFollowPhoneClock": "هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.",
+    "prayerSilenceTitle": "أثناء الصلاة (صامت تلقائي)",
+    "prayerSilenceSub": "يكتم الهاتف تلقائيًا عند دخول الوقت ويعيده كما كان بعد انتهاء المدة.",
+    "prayerSilenceActiveSub": "مفعّل · {minutes} د (اضغط للتعديل)",
+    "@prayerSilenceActiveSub": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePermissionNeeded": "يلزم إذن عدم الإزعاج · اضغط للمنح",
+    "prayerSilencePermissionBanner": "يلزم منح إذن «عدم الإزعاج» في أندرويد لتمكين الوضع الصامت التلقائي أثناء الصلاة.",
+    "prayerSilenceGrantAccess": "منح إذن عدم الإزعاج",
+    "prayerSilenceDuration": "مدة الوضع الصامت",
+    "prayerSilenceMinutes": "{minutes} د",
+    "@prayerSilenceMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "prayerSilencePrayers": "الصلوات",
+    "prayerSilenceFridayTitle": "نافذة صلاة الجمعة",
+    "prayerSilenceFridaySub": "تبدأ يوم الجمعة قبل الظهر بـ 15 دقيقة وتنتهي بعده بـ 45 دقيقة.",
+    "prayerSilenceNote": "لا يغيّر الوضع إذا كان الهاتف في وضع عدم الإزعاج أصلًا. يبدأ بعد دقيقة من الأذان الصوتي حتى لا يقطعه.",
     "timesFollowCityClock": "تُعرض المواقيت حسب التوقيت المحلي للمدينة المختارة.",
     "cityLocalTime": "التوقيت المحلي: {time}",
     "@cityLocalTime": {

@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- "Namazdayım" otomatik sessiz modu (kullanıcı ayardan açıkça izin verirse) -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -83,6 +85,22 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- "Namazdayım" otomatik sessiz modu: başlangıç/bitiş dışa kapalı; yeniden
+             başlatma ve saat değişimi alıcısı kayıtlı pencereleri yeniler -->
+        <receiver
+            android:name=".PrayerSilenceReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".PrayerSilenceBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 

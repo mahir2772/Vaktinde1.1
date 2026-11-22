@@ -260,6 +260,51 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dieser Ort liegt in einer anderen Zeitzone: Die Zeiten werden nach der Uhrzeit Ihres Telefons angezeigt.';
 
   @override
+  String get prayerSilenceTitle => 'Gebetsruhe (Auto-Stumm)';
+
+  @override
+  String get prayerSilenceSub =>
+      'Schaltet das Telefon zur Gebetszeit automatisch stumm und stellt es danach wieder her.';
+
+  @override
+  String prayerSilenceActiveSub(int minutes) {
+    return 'Ein · $minutes Min. (zum Bearbeiten tippen)';
+  }
+
+  @override
+  String get prayerSilencePermissionNeeded =>
+      'Bitte-nicht-stören-Zugriff erforderlich · Tippen zum Erlauben';
+
+  @override
+  String get prayerSilencePermissionBanner =>
+      'Erteilen Sie den Android-Zugriff auf „Bitte nicht stören“, damit das Telefon im Gebet stummgeschaltet werden kann.';
+
+  @override
+  String get prayerSilenceGrantAccess => 'Zugriff erlauben';
+
+  @override
+  String get prayerSilenceDuration => 'Dauer der Stummschaltung';
+
+  @override
+  String prayerSilenceMinutes(int minutes) {
+    return '$minutes Min.';
+  }
+
+  @override
+  String get prayerSilencePrayers => 'Gebetszeiten';
+
+  @override
+  String get prayerSilenceFridayTitle => 'Freitagsgebet-Zeitfenster';
+
+  @override
+  String get prayerSilenceFridaySub =>
+      'Beginnt freitags 15 Min. vor Dhuhr und endet 45 Min. danach.';
+
+  @override
+  String get prayerSilenceNote =>
+      'Bleibt unverändert, wenn „Bitte nicht stören“ bereits aktiv ist. Beginnt 1 Min. nach hörbarem Adhan.';
+
+  @override
   String get timesFollowCityClock =>
       'Die Gebetszeiten werden in der Ortszeit der gewählten Stadt angezeigt.';
 
