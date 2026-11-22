@@ -1,4 +1,5 @@
 import '../../data/models/prayer_times_model.dart';
+import '../../data/services/prayer_timezone.dart';
 
 /// Diyanet: kerahat vakitleri yaklaşık 45 dakika
 const int kerahatMinutes = 45;
@@ -25,24 +26,20 @@ class KerahatInterval {
   String toString() => 'KerahatInterval($start – $end)';
 }
 
-DateTime _at(DateTime day, String hhmm) {
+DateTime _at(String? zone, DateTime day, String hhmm) {
   final parts = hhmm.split(':');
-  return DateTime(
-    day.year,
-    day.month,
-    day.day,
-    int.parse(parts[0]),
-    int.parse(parts[1]),
-  );
+  return PrayerTimeZone.at(zone, day, int.parse(parts[0]), int.parse(parts[1]));
 }
 
 /// [day] gününün kerahat vakitleri (sıralı): güneş doğduktan sonra, istiva (öğleden
 /// önce), güneş batmadan önce (akşamdan önce).
 List<KerahatInterval> kerahatIntervals(PrayerTimesModel times, DateTime day) {
   const span = Duration(minutes: kerahatMinutes);
-  final gunes = _at(day, times.gunes!);
-  final ogle = _at(day, times.ogle!);
-  final aksam = _at(day, times.aksam!);
+  final zone = times.timeZone;
+  final cityDay = PrayerTimeZone.nowIn(zone, day);
+  final gunes = _at(zone, cityDay, times.gunes!);
+  final ogle = _at(zone, cityDay, times.ogle!);
+  final aksam = _at(zone, cityDay, times.aksam!);
   return [
     KerahatInterval(gunes, gunes.add(span)),
     KerahatInterval(ogle.subtract(span), ogle),
@@ -54,10 +51,11 @@ List<KerahatInterval> kerahatIntervals(PrayerTimesModel times, DateTime day) {
 /// vakti; yoksa (veya vakitler okunamazsa) null. [times] bugünün vakitleri.
 KerahatInterval? relevantKerahat(PrayerTimesModel times, DateTime now) {
   try {
-    final limit = now.add(const Duration(minutes: kerahatLookaheadMinutes));
-    for (final interval in kerahatIntervals(times, now)) {
-      if (!now.isBefore(interval.end)) continue;
-      if (interval.isActiveAt(now) || !interval.start.isAfter(limit)) {
+    final cityNow = PrayerTimeZone.nowIn(times.timeZone, now);
+    final limit = cityNow.add(const Duration(minutes: kerahatLookaheadMinutes));
+    for (final interval in kerahatIntervals(times, cityNow)) {
+      if (!cityNow.isBefore(interval.end)) continue;
+      if (interval.isActiveAt(cityNow) || !interval.start.isAfter(limit)) {
         return interval;
       }
     }

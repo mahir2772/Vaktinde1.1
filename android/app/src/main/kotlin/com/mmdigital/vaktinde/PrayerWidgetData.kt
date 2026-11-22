@@ -20,11 +20,11 @@ import kotlin.math.abs
 
 /**
  * Widget'ların ve kalıcı bildirimin ortak vakit mantığı (HomeWidgetPreferences).
- * Dart bugünün vakitlerini ("HH:mm"), bu setin gününü (times_date, yyyy-MM-dd) ve koordinat
- * varsa yarının vakitlerini (tomorrow_*) yazar. Yeni anahtarlar yoksa (eski sürüm verisi)
- * eski davranış: yatsıdan sonra bugünün imsakı +1 gün.
- * Hesap hep "HH:mm" anahtarlarıyla; ekrana yazılan saat Dart'ın aynı anahtar + "_text" metni
- * (uygulama dilinde: en/ar 12 saat "4:08 PM", diğerleri 24 saat), yoksa "HH:mm".
+ * Dart bugünün vakitlerini ("HH:mm"), bu setin gününü (times_date, yyyy-MM-dd), seçilen şehrin
+ * IANA saat dilimini (location_timezone) ve koordinat varsa yarının vakitlerini (tomorrow_*) yazar.
+ * Yeni anahtarlar yoksa (eski sürüm verisi) eski davranış: cihaz saat dilimi ve yatsıdan sonra
+ * bugünün imsakı +1 gün. Yüksek enlem yazında gece yarısını geçen Yatsı (yatsi < aksam) da
+ * hem gece yarısı öncesinde hem hemen sonrasında doğru yakalanır.
  */
 object PrayerWidgetData {
     const val PREFS = "HomeWidgetPreferences"
@@ -35,6 +35,7 @@ object PrayerWidgetData {
     private val TITLE_KEYS = arrayOf("title_imsak", "title_gunes", "title_ogle", "title_ikindi", "title_aksam", "title_yatsi")
     private val DEFAULT_LABELS = arrayOf("İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı")
     private const val DATE_KEY = "times_date"
+    private const val TIMEZONE_KEY = "location_timezone"
     private const val TOMORROW_PREFIX = "tomorrow_"
     private const val HIJRI_KEY = "hijri_date_text"
     private const val TOMORROW_HIJRI_KEY = "tomorrow_hijri_date_text"
@@ -82,6 +83,18 @@ object PrayerWidgetData {
 
     fun hasTimes(data: SharedPreferences): Boolean = !data.getString(TIME_KEYS[0], "").isNullOrEmpty()
 
+    /** Seçili şehrin saat dilimi ('location_timezone'); yoksa/geçersizse cihazınki */
+    fun cityZone(data: SharedPreferences): TimeZone {
+        val id = data.getString(TIMEZONE_KEY, null)?.trim()
+        if (id.isNullOrEmpty()) return TimeZone.getDefault()
+        val zone = TimeZone.getTimeZone(id)
+        return if (zone.id == id || id == "GMT" || id == "UTC") zone else TimeZone.getDefault()
+    }
+
+    /** [now] anını seçili şehrin saat diliminde ifade eden takvim (aynı UTC anı) */
+    fun cityCalendar(data: SharedPreferences, now: Calendar): Calendar =
+        Calendar.getInstance(cityZone(data)).apply { timeInMillis = now.timeInMillis }
+
     /**
      * Kalıcı bildirim (888) açık mı. Dart her açılışta ve ayar değişince yazar; yeni kurulumda
      * vakitlerden önce (false). Yoksa ayardan önceki sürümün verisidir (güncelleme sonrası uygulama
@@ -94,15 +107,16 @@ object PrayerWidgetData {
     }
 
     fun today(data: SharedPreferences, now: Calendar): Day {
+        val cityNow = cityCalendar(data, now)
         val todaySet = TIME_KEYS.map { data.getString(it, "") ?: "" }
         val tomorrowSet = TIME_KEYS.map { data.getString(TOMORROW_PREFIX + it, "") ?: "" }
         val todayTexts = texts(data, "", todaySet)
         val stored = data.getString(DATE_KEY, null)
-        if (stored == null || !DATE_PATTERN.matches(stored) || tomorrowSet.any { timeMs(it, 0, now) == 0L }) {
+        if (stored == null || !DATE_PATTERN.matches(stored) || tomorrowSet.any { timeMs(it, 0, cityNow) == 0L }) {
             return Day(todaySet, todaySet[0], false, todayTexts, todayTexts[0])
         }
         val tomorrowTexts = texts(data, TOMORROW_PREFIX, tomorrowSet)
-        val current = dateKey(now)
+        val current = dateKey(cityNow)
         return when {
             stored == current -> Day(todaySet, tomorrowSet[0], false, todayTexts, tomorrowTexts[0])
             // Gece yarısı geçti, Dart henüz yazmadı: yarının seti bugünün (sonraki imsak yaklaşık)
@@ -160,11 +174,26 @@ object PrayerWidgetData {
     fun label(data: SharedPreferences, index: Int): String =
         data.getString(LABEL_KEYS[index], DEFAULT_LABELS[index]) ?: DEFAULT_LABELS[index]
 
-    /** Sıradaki vakit; veri yoksa null */
+    /** Sıradaki vakit (seçili şehrin saat diliminde ve gece yarısı sonrası Yatsı dahil); veri yoksa null */
     fun nextPrayer(data: SharedPreferences, day: Day, now: Calendar): NextPrayer? {
+        val cityNow = cityCalendar(data, now)
         val labels = LABEL_KEYS.indices.map { label(data, it) }
-        val candidates = day.times.mapIndexed { i, time -> NextPrayer(timeMs(time, 0, now), labels[i], i) } +
-            NextPrayer(timeMs(day.nextImsak, 1, now), labels[0], 0)
+        val aksamMs = timeMs(day.times[4], 0, cityNow)
+        val yatsiRawMs = timeMs(day.times[5], 0, cityNow)
+        val yatsiAfterMidnight = aksamMs > 0L && yatsiRawMs > 0L && yatsiRawMs < aksamMs
+
+        val candidates = mutableListOf<NextPrayer>()
+        for (i in day.times.indices) {
+            val ms = timeMs(day.times[i], 0, cityNow)
+            if (ms > 0L) candidates.add(NextPrayer(ms, labels[i], i))
+            if (i == 5 && yatsiAfterMidnight) {
+                val nextMs = timeMs(day.times[i], 1, cityNow)
+                if (nextMs > 0L) candidates.add(NextPrayer(nextMs, labels[i], i))
+            }
+        }
+        val nextImsakMs = timeMs(day.nextImsak, 1, cityNow)
+        if (nextImsakMs > 0L) candidates.add(NextPrayer(nextImsakMs, labels[0], 0))
+
         val nowMs = now.timeInMillis
         return candidates.filter { it.time > nowMs + 1000L }.minByOrNull { it.time }
     }

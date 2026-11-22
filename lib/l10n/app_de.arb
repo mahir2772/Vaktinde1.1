@@ -88,6 +88,15 @@
     "countryNorthernCyprus": "Nordzypern",
     "provinceCenter": "Provinzhauptstadt",
     "searchOnline": "Online suchen",
+    "timesFollowCityClock": "Die Gebetszeiten werden in der Ortszeit der gewählten Stadt angezeigt.",
+    "cityLocalTime": "Ortszeit: {time}",
+    "@cityLocalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
     "timesFollowPhoneClock": "Dieser Ort liegt in einer anderen Zeitzone: Die Zeiten werden nach der Uhrzeit Ihres Telefons angezeigt.",
     "navTools": "Werkzeuge",
     "a11yHours": "{count, plural, =1{1 Stunde} other{{count} Stunden}}",

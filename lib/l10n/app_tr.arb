@@ -89,6 +89,15 @@
     "provinceCenter": "İl merkezi",
     "searchOnline": "İnternette ara",
     "timesFollowPhoneClock": "Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.",
+    "timesFollowCityClock": "Vakitler seçilen şehrin yerel saatine göre gösterilir.",
+    "cityLocalTime": "Şehir saati: {time}",
+    "@cityLocalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
     "navTools": "Araçlar",
     "a11yHours": "{count, plural, other{{count} saat}}",
     "@a11yHours": {

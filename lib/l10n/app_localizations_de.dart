@@ -260,6 +260,15 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dieser Ort liegt in einer anderen Zeitzone: Die Zeiten werden nach der Uhrzeit Ihres Telefons angezeigt.';
 
   @override
+  String get timesFollowCityClock =>
+      'Die Gebetszeiten werden in der Ortszeit der gewählten Stadt angezeigt.';
+
+  @override
+  String cityLocalTime(String time) {
+    return 'Ortszeit: $time';
+  }
+
+  @override
   String get navTools => 'Werkzeuge';
 
   @override

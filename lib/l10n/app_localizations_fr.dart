@@ -261,6 +261,15 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce lieu est dans un autre fuseau horaire : les horaires sont affichés à l\'heure de votre téléphone.';
 
   @override
+  String get timesFollowCityClock =>
+      'Les horaires sont affichés à l\'heure locale de la ville choisie.';
+
+  @override
+  String cityLocalTime(String time) {
+    return 'Heure locale : $time';
+  }
+
+  @override
   String get navTools => 'Outils';
 
   @override

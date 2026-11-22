@@ -259,6 +259,15 @@ class AppLocalizationsTr extends AppLocalizations {
       'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.';
 
   @override
+  String get timesFollowCityClock =>
+      'Vakitler seçilen şehrin yerel saatine göre gösterilir.';
+
+  @override
+  String cityLocalTime(String time) {
+    return 'Şehir saati: $time';
+  }
+
+  @override
   String get navTools => 'Araçlar';
 
   @override

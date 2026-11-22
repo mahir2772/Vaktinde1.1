@@ -3,7 +3,8 @@ import 'package:ezan_saati/data/models/prayer_times_model.dart';
 import 'package:ezan_saati/features/home/prayer_schedule.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-// Ana ekran sayacı ve 2x3 ızgara: sıradaki / şu anki / geçmiş vakit
+// Ana ekran sayacı ve 2x3 ızgara: sıradaki / şu anki / geçmiş vakit,
+// yüksek enlem yazında gece yarısını geçen Yatsı ve farklı saat dilimi
 void main() {
   final times = PrayerTimesModel(
     imsak: '05:35',
@@ -119,6 +120,109 @@ void main() {
           lessThanOrEqualTo(1),
         );
       }
+    });
+  });
+
+  group('Avrupa yazı: gece yarısını geçen Yatsı', () {
+    // Örn. Amsterdam 21 Haziran: Akşam 22:05, Yatsı 00:15 (ertesi gün), İmsak 03:00
+    final summer = PrayerTimesModel(
+      imsak: '03:00',
+      gunes: '05:18',
+      ogle: '13:45',
+      ikindi: '18:05',
+      aksam: '22:05',
+      yatsi: '00:15',
+    );
+    DateTime june(int h, int m, [int s = 0]) => DateTime(2026, 6, 21, h, m, s);
+
+    test('22:30 (Akşam sonrası): Yatsı atlanmaz, yarın 00:15 sıradaki', () {
+      final next = upcomingPrayer(summer, june(22, 30))!;
+      expect(next.key, 'Yatsı');
+      expect(next.isTomorrow, isTrue);
+      expect(next.time, DateTime(2026, 6, 22, 0, 15));
+      expect(
+        next.time.difference(june(22, 30)),
+        const Duration(hours: 1, minutes: 45),
+      );
+
+      final s = prayerRowStates(summer, june(22, 30));
+      expect(s['Akşam'], PrayerRowState.current);
+      expect(s['Yatsı'], PrayerRowState.next);
+    });
+
+    test(
+      '00:05 (gece yarısından sonra, Yatsı öncesi): Yatsı 00:15 sıradaki',
+      () {
+        final next = upcomingPrayer(summer, june(0, 5))!;
+        expect(next.key, 'Yatsı');
+        expect(next.isTomorrow, isFalse);
+        expect(next.time, june(0, 15));
+
+        final s = prayerRowStates(summer, june(0, 5));
+        expect(s['Akşam'], PrayerRowState.current);
+        expect(s['Yatsı'], PrayerRowState.next);
+        expect(s['İmsak'], PrayerRowState.upcoming);
+      },
+    );
+
+    test(
+      '00:30 (Yatsı sonrası, İmsak öncesi): Yatsı şu an, İmsak sıradaki',
+      () {
+        final next = upcomingPrayer(summer, june(0, 30))!;
+        expect(next.key, 'İmsak');
+        expect(next.isTomorrow, isFalse);
+        expect(next.time, june(3, 0));
+
+        final s = prayerRowStates(summer, june(0, 30));
+        expect(s['Yatsı'], PrayerRowState.current);
+        expect(s['İmsak'], PrayerRowState.next);
+      },
+    );
+
+    test('14:00 (gündüz): Yatsı geçmiş değil, gelecek', () {
+      final s = prayerRowStates(summer, june(14, 0));
+      expect(s['Öğle'], PrayerRowState.current);
+      expect(s['İkindi'], PrayerRowState.next);
+      expect(s['Yatsı'], PrayerRowState.upcoming);
+    });
+
+    test('günün her dakikasında tek sıradaki ve en çok bir şu anki vakit', () {
+      for (var minute = 0; minute < 24 * 60; minute += 5) {
+        final s = prayerRowStates(summer, june(minute ~/ 60, minute % 60));
+        expect(
+          s.values.where((v) => v == PrayerRowState.next),
+          hasLength(1),
+          reason: '$minute',
+        );
+        expect(
+          s.values.where((v) => v == PrayerRowState.current).length,
+          lessThanOrEqualTo(1),
+          reason: '$minute',
+        );
+      }
+    });
+  });
+
+  group('Farklı saat dilimi (Memleket vakitleri)', () {
+    test('kalan süre ve vakit durumu seçilen şehrin saat dilimine göre', () {
+      // Kış: Europe/Istanbul = UTC+3. 09:00 UTC → İstanbul'da 12:00.
+      final istanbul = PrayerTimesModel(
+        imsak: '06:30',
+        gunes: '08:00',
+        ogle: '12:15',
+        ikindi: '15:00',
+        aksam: '17:30',
+        yatsi: '19:00',
+        timeZone: 'Europe/Istanbul',
+      );
+      final utcNow = DateTime.utc(2026, 1, 15, 9, 0);
+      final next = upcomingPrayer(istanbul, utcNow)!;
+      expect(next.key, 'Öğle');
+      expect(next.time.difference(utcNow), const Duration(minutes: 15));
+
+      final s = prayerRowStates(istanbul, utcNow);
+      expect(s['Öğle'], PrayerRowState.next);
+      expect(s['İmsak'], PrayerRowState.past);
     });
   });
 

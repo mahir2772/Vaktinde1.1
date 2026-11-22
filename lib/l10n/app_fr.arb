@@ -89,6 +89,15 @@
     "provinceCenter": "Chef-lieu de la province",
     "searchOnline": "Rechercher en ligne",
     "timesFollowPhoneClock": "Ce lieu est dans un autre fuseau horaire : les horaires sont affichés à l'heure de votre téléphone.",
+    "timesFollowCityClock": "Les horaires sont affichés à l'heure locale de la ville choisie.",
+    "cityLocalTime": "Heure locale : {time}",
+    "@cityLocalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
     "navTools": "Outils",
     "a11yHours": "{count, plural, one{{count} heure} other{{count} heures}}",
     "@a11yHours": {

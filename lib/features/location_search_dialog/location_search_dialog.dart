@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'package:ezan_saati/core/ui/ui.dart';
 import 'package:ezan_saati/data/services/location_catalog.dart';
+import 'package:ezan_saati/data/services/prayer_timezone.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../home/view_model/home_view_model.dart';
 
@@ -233,7 +234,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
     );
   }
 
-  /// Mevcut konum akışı: koordinat kaydı, vakitler, widget ve alarmlar
+  /// Mevcut konum akışı: koordinat + saat dilimi kaydı, vakitler, widget ve alarmlar
   void _save(
     AppLocalizations loc, {
     required String city,
@@ -245,19 +246,26 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
   }) {
     final viewModel = context.read<HomeViewModel>();
     final messenger = ScaffoldMessenger.of(context);
+    final zone = LocationCatalog.timeZoneForCountry(country);
     Navigator.pop(context);
-    viewModel.changeCityAndDistrict(city, district, lat: lat, lng: lng);
-    // Vakitler telefonun saatiyle gösterilir: yerin saati farklıysa söylenir
-    final otherZone =
-        country != null && LocationCatalog.timeZoneDiffers(country);
+    viewModel.changeCityAndDistrict(
+      city,
+      district,
+      lat: lat,
+      lng: lng,
+      timeZone: zone,
+    );
+    // Seçilen şehrin saat dilimi telefondan farklıysa vakitlerin şehrin kendi
+    // yerel saatinde gösterildiği bildirilir (memleket vakitleri)
+    final otherZone = zone != null && PrayerTimeZone.differsFromLocal(zone);
     messenger.showSnackBar(
       SnackBar(
         content: Text(
           otherZone
-              ? '${loc.locationSelected(title)}\n${loc.timesFollowPhoneClock}'
+              ? '${loc.locationSelected(title)}\n${loc.timesFollowCityClock}'
               : loc.locationSelected(title),
         ),
-        duration: Duration(seconds: otherZone ? 8 : 4),
+        duration: Duration(seconds: otherZone ? 6 : 4),
       ),
     );
   }

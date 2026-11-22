@@ -258,6 +258,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'This place is in a different time zone: times are shown in your phone\'s time.';
 
   @override
+  String get timesFollowCityClock =>
+      'Prayer times are shown in the selected city\'s local time.';
+
+  @override
+  String cityLocalTime(String time) {
+    return 'City time: $time';
+  }
+
+  @override
   String get navTools => 'Tools';
 
   @override

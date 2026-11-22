@@ -23,10 +23,11 @@ class WidgetService {
   /// yoksa (eski veri) "HH:mm".
   static String textKey(String timeKey) => '${timeKey}_text';
 
-  // Gün dönümü anahtarları (Kotlin: PrayerWidgetData.kt): bugünün setinin günü
-  // (yyyy-MM-dd) ve yarının vakitleri. Yarının verisi yoksa anahtarlar silinir;
-  // Kotlin eski davranışa (bugünün imsakı +1 gün) döner.
+  // Gün dönümü ve saat dilimi anahtarları (Kotlin: PrayerWidgetData.kt):
+  // bugünün setinin günü (yyyy-MM-dd), seçilen şehrin IANA saat dilimi ve
+  // koordinat varsa yarının vakitleri.
   static const String dateKey = 'times_date';
+  static const String timeZoneKey = 'location_timezone';
   static const Map<String, String> tomorrowKeys = {
     'İmsak': 'tomorrow_imsak_time',
     'Güneş': 'tomorrow_gunes_time',
@@ -105,8 +106,9 @@ class WidgetService {
     required String konum,
     required Map<String, String> vakitIsimleri,
     required Map<String, String> vakitBasliklari,
-    required String hijriDateText, // 🔥 YENİ
+    required String hijriDateText,
     String? tarih,
+    String? saatDilimi,
     Map<String, String>? yarinVakitler,
     String? yarinHijriDateText,
     Map<String, String>?
@@ -118,10 +120,8 @@ class WidgetService {
       await HomeWidget.saveWidgetData<String>('title_text', baslik);
       await HomeWidget.saveWidgetData<int>('target_time_ms', hedefZamanMs);
       await HomeWidget.saveWidgetData<String>('location_text', konum);
-      await HomeWidget.saveWidgetData<String>(
-        'hijri_date_text',
-        hijriDateText,
-      ); // 🔥 YENİ
+      await HomeWidget.saveWidgetData<String>('hijri_date_text', hijriDateText);
+      await HomeWidget.saveWidgetData<String>(timeZoneKey, saatDilimi);
 
       // Her vakit "HH:mm" + ekrandaki yazımı (dil değişince 24/12 saat de değişir)
       String yazim(String vakit) => formatPrayerTime(vakit, dil ?? 'tr');

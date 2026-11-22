@@ -19,12 +19,15 @@ import 'error_reporter.dart';
 import 'hadith_service.dart';
 import 'notification_service.dart';
 import 'prayer_time_service.dart';
+import 'prayer_timezone.dart';
 import 'prayer_tracker.dart';
 import 'prayer_tracker_service.dart';
 import 'serial_queue.dart';
 import 'storage_service.dart';
 import 'tracker_widget_service.dart';
 import 'widget_service.dart';
+
+typedef _TimeMap = Map<String, String>;
 
 /// Kurulacak tek bir ezan / hatırlatma bildirimi
 class PlannedAlarm {
@@ -216,8 +219,9 @@ class PrayerRefreshService {
   static final SerialQueue _widgetQueue = SerialQueue();
 
   /// Ana ekran widget'ları ve kalıcı bildirim (NotificationUpdater aynı veriyi okur).
-  /// [times] bugünün vakitleri. Gece yarısı ve yatsı sonrası için setin günü ve
-  /// (koordinat varsa) yarının vakitleri + hicri tarihi de yazılır. Hata fırlatmaz.
+  /// [times] bugünün vakitleri. Gece yarısı ve yatsı sonrası için setin günü,
+  /// seçilen şehrin saat dilimi ve (koordinat varsa) yarının vakitleri + hicri
+  /// tarihi de yazılır. Hata fırlatmaz.
   Future<void> updateHomeWidget({
     required PrayerTimesModel times,
     required AppLocalizations? loc,
@@ -226,10 +230,11 @@ class PrayerRefreshService {
     required String hijriDateText,
   }) => _widgetQueue.run(() async {
     try {
-      final now = DateTime.now();
+      final zone = times.timeZone;
+      final cityNow = PrayerTimeZone.nowIn(zone, _clock());
       Map<String, String> vakitler = timesMap(times);
-      final tomorrow = DateTime(now.year, now.month, now.day + 1);
-      final yarinVakitler = await _tomorrowTimes(tomorrow);
+      final tomorrow = DateTime(cityNow.year, cityNow.month, cityNow.day + 1);
+      final yarinVakitler = await _tomorrowTimes(tomorrow, timeZone: zone);
       String? yarinHijri;
       if (yarinVakitler != null && loc != null) {
         try {
@@ -257,38 +262,46 @@ class PrayerRefreshService {
         "Akşam": loc?.toAksam ?? "Akşama",
         "Yatsı": loc?.toYatsi ?? "Yatsıya",
       };
+
+      final afterMidnightYatsi = PrayerTimeZone.isYatsiAfterMidnight(times);
       String sonrakiVakitIsmi = "İmsak";
       DateTime? sonrakiVakitTarihi;
-      bool bulundu = false;
-      for (var entry in vakitler.entries) {
-        if (entry.key == "Güneş") continue;
-        List<String> parts = entry.value.split(':');
-        DateTime vakitDate = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          int.parse(parts[0]),
-          int.parse(parts[1]),
-        );
-        if (vakitDate.isAfter(now)) {
-          sonrakiVakitIsmi = entry.key;
-          sonrakiVakitTarihi = vakitDate;
-          bulundu = true;
-          break;
+
+      void consider(String key, DateTime? candidate) {
+        if (candidate == null || !candidate.isAfter(cityNow)) return;
+        if (sonrakiVakitTarihi == null ||
+            candidate.isBefore(sonrakiVakitTarihi!)) {
+          sonrakiVakitIsmi = key;
+          sonrakiVakitTarihi = candidate;
         }
       }
 
-      if (!bulundu) {
+      for (var entry in vakitler.entries) {
+        if (entry.key == "Güneş") continue;
+        if (entry.key == "Yatsı" && afterMidnightYatsi) {
+          consider(
+            entry.key,
+            PrayerTimeZone.parseAt(zone, cityNow, entry.value),
+          );
+          consider(
+            entry.key,
+            PrayerTimeZone.parseAt(zone, tomorrow, entry.value),
+          );
+        } else {
+          consider(
+            entry.key,
+            PrayerTimeZone.parseAt(zone, cityNow, entry.value),
+          );
+        }
+      }
+
+      if (sonrakiVakitTarihi == null) {
         sonrakiVakitIsmi = "İmsak";
         // Yatsıdan sonra yarının imsakı (yoksa bugünkü saat, yarın)
-        List<String> parts = (yarinVakitler?["İmsak"] ?? vakitler["İmsak"]!)
-            .split(':');
-        sonrakiVakitTarihi = DateTime(
-          tomorrow.year,
-          tomorrow.month,
-          tomorrow.day,
-          int.parse(parts[0]),
-          int.parse(parts[1]),
+        sonrakiVakitTarihi = PrayerTimeZone.parseAt(
+          zone,
+          tomorrow,
+          yarinVakitler?["İmsak"] ?? vakitler["İmsak"]!,
         );
       }
 
@@ -305,7 +318,7 @@ class PrayerRefreshService {
       try {
         await initializeDateFormatting();
         ramazan = WidgetService.ramadanData(
-          now: now,
+          now: DateTime(cityNow.year, cityNow.month, cityNow.day),
           calendar: await _ramadanCalendar(),
           loc: loc,
         );
@@ -322,7 +335,8 @@ class PrayerRefreshService {
         vakitIsimleri: vakitIsimleri,
         vakitBasliklari: vakitBasliklari,
         hijriDateText: hijriDateText,
-        tarih: _dateKey(now),
+        tarih: PrayerTimeZone.dateKey(cityNow),
+        saatDilimi: zone,
         yarinVakitler: yarinVakitler,
         yarinHijriDateText: yarinHijri,
         ramazan: ramazan,
@@ -331,10 +345,16 @@ class PrayerRefreshService {
     } catch (e) {}
   });
 
-  // Yarının vakitleri (kayıtlı koordinat + ince ayar); koordinat yoksa null
-  Future<Map<String, String>?> _tomorrowTimes(DateTime tomorrow) async {
+  // Yarının vakitleri (kayıtlı koordinat + saat dilimi + ince ayar); koordinat yoksa null
+  Future<_TimeMap?> _tomorrowTimes(
+    DateTime tomorrow, {
+    String? timeZone,
+  }) async {
     try {
-      final times = await _prayerTimeService.forDate(tomorrow);
+      final times = await _prayerTimeService.forDate(
+        tomorrow,
+        timeZone: timeZone,
+      );
       return times == null ? null : timesMap(times);
     } catch (e) {
       return null;
@@ -351,6 +371,8 @@ class PrayerRefreshService {
   /// (hatırlatma ve Ramazan'da sahur bitişi).
   /// [silentDays] ("özel günde ezanı sessiz bildir" açıkken özel günler): o
   /// günlerin vakit bildirimi sessiz ("Kıldım"/"Durdur" yok), hatırlatması kurulmaz.
+  /// Yüksek enlem yazında gece yarısını geçen Yatsı ve seçilen şehrin saat dilimini
+  /// destekler.
   static List<PlannedAlarm> buildAlarmPlan({
     required List<PrayerTimesModel> days,
     required DateTime now,
@@ -367,103 +389,173 @@ class PrayerRefreshService {
   }) {
     final vakitDisplayNames = vakitNames(loc);
     final plan = <PlannedAlarm>[];
-    for (int day = 0; day < days.length; day++) {
-      final dayDate = DateTime(now.year, now.month, now.day + day);
-      for (var entry in timesMap(days[day]).entries) {
-        String vakitLogicKey = entry.key;
-        final vakitIndex = vakitKeys.indexOf(vakitLogicKey);
-        String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
-        List<String> parts = entry.value.split(':');
-        DateTime vakitDate = DateTime(
-          dayDate.year,
-          dayDate.month,
-          dayDate.day,
-          int.parse(parts[0]),
-          int.parse(parts[1]),
-        );
-        // Tek günlük modda geçmiş vakit yarına kayar; çok günlükte zaten yarın da kurulu
-        if (days.length == 1 && vakitDate.isBefore(now)) {
-          vakitDate = vakitDate.add(const Duration(days: 1));
-        }
-        final silentDay = PrayerTracker.isExcused(silentDays, vakitDate);
+    final baseZone = days.isEmpty ? null : days.first.timeZone;
+    final cityNow = PrayerTimeZone.nowIn(baseZone, now);
 
-        if (onTimeAlarms[vakitLogicKey] == true && !vakitDate.isBefore(now)) {
-          bool isSilent =
-              silentDay || (silentModeSettings[vakitLogicKey] ?? false);
-          String? soundToSend = isSilent
-              ? null
-              : (selectedSounds[vakitLogicKey] ?? "ezan1");
-          // Farz vakitlerde "Kıldım" butonu (Güneş ve özel gün hariç)
-          final tracked =
-              !silentDay && PrayerTracker.prayerKeys.contains(vakitLogicKey);
-          String title = loc.notifTitleTime;
-          String body = loc.notifBodyTime(vakitDisplayName);
-          // Ramazan günü (vaktin kendi gününe göre): imsak = sahur bitti, akşam = iftar
-          if ((vakitLogicKey == "İmsak" || vakitLogicKey == "Akşam") &&
-              _isRamadanDay(ramadan, vakitDate)) {
-            if (vakitLogicKey == "İmsak") {
-              title = loc.ramadanImsakTitle;
-              body = exact
-                  ? loc.ramadanImsakBody
-                  : loc.ramadanImsakBodyAt(
-                      formatClockTime(vakitDate, loc.localeName),
-                    );
-            } else {
-              title = loc.ramadanIftarTitle;
-              body = loc.ramadanIftarBody(vakitDisplayName);
-            }
+    void addForPrayer({
+      required String vakitLogicKey,
+      required int vakitIndex,
+      required String vakitDisplayName,
+      required DateTime vakitDate,
+      required DateTime prayerDay,
+    }) {
+      final silentDay = PrayerTracker.isExcused(silentDays, prayerDay);
+
+      if (onTimeAlarms[vakitLogicKey] == true && !vakitDate.isBefore(cityNow)) {
+        bool isSilent =
+            silentDay || (silentModeSettings[vakitLogicKey] ?? false);
+        String? soundToSend = isSilent
+            ? null
+            : (selectedSounds[vakitLogicKey] ?? "ezan1");
+        // Farz vakitlerde "Kıldım" butonu (Güneş ve özel gün hariç)
+        final tracked =
+            !silentDay && PrayerTracker.prayerKeys.contains(vakitLogicKey);
+        String title = loc.notifTitleTime;
+        String body = loc.notifBodyTime(vakitDisplayName);
+        // Ramazan günü (vaktin kendi gününe göre): imsak = sahur bitti, akşam = iftar
+        if ((vakitLogicKey == "İmsak" || vakitLogicKey == "Akşam") &&
+            _isRamadanDay(ramadan, prayerDay)) {
+          if (vakitLogicKey == "İmsak") {
+            title = loc.ramadanImsakTitle;
+            body = exact
+                ? loc.ramadanImsakBody
+                : loc.ramadanImsakBodyAt(
+                    formatClockTime(vakitDate, loc.localeName),
+                  );
+          } else {
+            title = loc.ramadanIftarTitle;
+            body = loc.ramadanIftarBody(vakitDisplayName);
           }
-          final onAlarmStream = alarmStream && soundToSend != null;
+        }
+        final onAlarmStream = alarmStream && soundToSend != null;
+        plan.add(
+          PlannedAlarm(
+            id: alarmId(vakitDate, vakitIndex),
+            kind: NotificationKind.prayer,
+            title: title,
+            body: body,
+            time: vakitDate,
+            sound: soundToSend,
+            channelName: ezanChannelName(
+              loc,
+              soundToSend,
+              alarmStream: onAlarmStream,
+            ),
+            payload: tracked
+                ? PrayerTracker.payload(prayerDay, vakitLogicKey)
+                : null,
+            actionLabel: tracked ? loc.trackerPrayedAction : null,
+            // Sesli ezanda (Güneş dahil) "Durdur"; yazılı bildirimde yok
+            stopLabel: soundToSend != null ? loc.notifStopAction : null,
+            alarmStream: onAlarmStream,
+          ),
+        );
+      }
+      if (reminderAlarms[vakitLogicKey] == true && !silentDay) {
+        int dakikaOnce = (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş")
+            ? 30
+            : 15;
+        DateTime hatirlatmaZamani = vakitDate.subtract(
+          Duration(minutes: dakikaOnce),
+        );
+        if (hatirlatmaZamani.isAfter(cityNow)) {
+          String reminderSound =
+              selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
           plan.add(
             PlannedAlarm(
-              id: alarmId(vakitDate, vakitIndex),
-              kind: NotificationKind.prayer,
-              title: title,
-              body: body,
-              time: vakitDate,
-              sound: soundToSend,
-              channelName: ezanChannelName(
-                loc,
-                soundToSend,
-                alarmStream: onAlarmStream,
-              ),
-              payload: tracked
-                  ? PrayerTracker.payload(vakitDate, vakitLogicKey)
-                  : null,
-              actionLabel: tracked ? loc.trackerPrayedAction : null,
-              // Sesli ezanda (Güneş dahil) "Durdur"; yazılı bildirimde yok
-              stopLabel: soundToSend != null ? loc.notifStopAction : null,
-              alarmStream: onAlarmStream,
+              id: alarmId(vakitDate, vakitIndex, reminder: true),
+              kind: NotificationKind.reminder,
+              title: exact ? loc.notifTitleUpcoming : loc.reminderTitleAt,
+              body: exact
+                  ? loc.notifBodyUpcoming(vakitDisplayName, dakikaOnce)
+                  : loc.notifBodyUpcomingAt(
+                      vakitDisplayName,
+                      formatClockTime(vakitDate, loc.localeName),
+                    ),
+              time: hatirlatmaZamani,
+              sound: reminderSound,
+              channelName: loc.channelSoundPrefix(reminderSound),
             ),
           );
         }
-        if (reminderAlarms[vakitLogicKey] == true && !silentDay) {
-          int dakikaOnce =
-              (vakitLogicKey == "İmsak" || vakitLogicKey == "Güneş") ? 30 : 15;
-          DateTime hatirlatmaZamani = vakitDate.subtract(
-            Duration(minutes: dakikaOnce),
+      }
+    }
+
+    for (int day = 0; day < days.length; day++) {
+      final dayTimes = days[day];
+      final zone = dayTimes.timeZone;
+      final dayDate = DateTime(cityNow.year, cityNow.month, cityNow.day + day);
+      final afterMidnightYatsi = PrayerTimeZone.isYatsiAfterMidnight(dayTimes);
+
+      for (var entry in timesMap(dayTimes).entries) {
+        String vakitLogicKey = entry.key;
+        final vakitIndex = vakitKeys.indexOf(vakitLogicKey);
+        String vakitDisplayName = vakitDisplayNames[vakitLogicKey]!;
+
+        if (vakitLogicKey == 'Yatsı' && afterMidnightYatsi) {
+          // Gece yarısı sonrası henüz çalmamış dünün Yatsı'sı (örn. 00:05 → 00:15)
+          if (day == 0) {
+            final earlyYatsi = PrayerTimeZone.parseAt(
+              zone,
+              dayDate,
+              entry.value,
+            );
+            if (earlyYatsi != null && !earlyYatsi.isBefore(cityNow)) {
+              addForPrayer(
+                vakitLogicKey: vakitLogicKey,
+                vakitIndex: vakitIndex,
+                vakitDisplayName: vakitDisplayName,
+                vakitDate: earlyYatsi,
+                prayerDay: DateTime(
+                  dayDate.year,
+                  dayDate.month,
+                  dayDate.day - 1,
+                ),
+              );
+            }
+          }
+          // Bu günün Yatsı'sı ertesi günün 00:xx saatine sarkar
+          final nextCalDay = DateTime(
+            dayDate.year,
+            dayDate.month,
+            dayDate.day + 1,
           );
-          if (hatirlatmaZamani.isAfter(now)) {
-            String reminderSound =
-                selectedReminderSounds[vakitLogicKey] ?? "bildirim1";
-            plan.add(
-              PlannedAlarm(
-                id: alarmId(vakitDate, vakitIndex, reminder: true),
-                kind: NotificationKind.reminder,
-                title: exact ? loc.notifTitleUpcoming : loc.reminderTitleAt,
-                body: exact
-                    ? loc.notifBodyUpcoming(vakitDisplayName, dakikaOnce)
-                    : loc.notifBodyUpcomingAt(
-                        vakitDisplayName,
-                        formatClockTime(vakitDate, loc.localeName),
-                      ),
-                time: hatirlatmaZamani,
-                sound: reminderSound,
-                channelName: loc.channelSoundPrefix(reminderSound),
-              ),
+          final shiftedYatsi = PrayerTimeZone.parseAt(
+            zone,
+            nextCalDay,
+            entry.value,
+          );
+          if (shiftedYatsi != null) {
+            addForPrayer(
+              vakitLogicKey: vakitLogicKey,
+              vakitIndex: vakitIndex,
+              vakitDisplayName: vakitDisplayName,
+              vakitDate: shiftedYatsi,
+              prayerDay: dayDate,
             );
           }
+          continue;
         }
+
+        DateTime? vakitDate = PrayerTimeZone.parseAt(
+          zone,
+          dayDate,
+          entry.value,
+        );
+        if (vakitDate == null) continue;
+        DateTime prayerDay = dayDate;
+        // Tek günlük modda geçmiş vakit yarına kayar; çok günlükte zaten yarın da kurulu
+        if (days.length == 1 && vakitDate.isBefore(cityNow)) {
+          prayerDay = DateTime(dayDate.year, dayDate.month, dayDate.day + 1);
+          vakitDate = PrayerTimeZone.parseAt(zone, prayerDay, entry.value)!;
+        }
+        addForPrayer(
+          vakitLogicKey: vakitLogicKey,
+          vakitIndex: vakitIndex,
+          vakitDisplayName: vakitDisplayName,
+          vakitDate: vakitDate,
+          prayerDay: prayerDay,
+        );
       }
     }
     return plan;
@@ -486,11 +578,19 @@ class PrayerRefreshService {
     bool alarmStream = false,
     Set<String> silentDays = const {},
   }) {
-    final from = now.subtract(lateWindow);
+    final zone = today.timeZone;
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
+    final from = cityNow.subtract(lateWindow);
+    final yesterdayStart = PrayerTimeZone.at(
+      zone,
+      PrayerTracker.addDays(cityNow, -1),
+      0,
+      0,
+    );
     // Dünün başından itibaren iki günün tüm ezanları (geçmiş olsalar da)
     final ezans = buildAlarmPlan(
       days: [previous, today],
-      now: PrayerTracker.addDays(now, -1),
+      now: yesterdayStart,
       loc: loc,
       onTimeAlarms: onTimeAlarms,
       reminderAlarms: const {},
@@ -503,7 +603,9 @@ class PrayerRefreshService {
     );
     return {
       for (final a in ezans)
-        if (a.payload != null && a.time.isBefore(now) && !a.time.isBefore(from))
+        if (a.payload != null &&
+            a.time.isBefore(cityNow) &&
+            !a.time.isBefore(from))
           a.id: a,
     };
   }
@@ -558,6 +660,7 @@ class PrayerRefreshService {
   /// Geçmiş, [minutes] >= vakit süresi, kılındı işaretli ve namazın günü
   /// [silentDays] (özel günde ezan sessiz) içinde olan vakitler atlanır.
   /// [exact] false: "çıkmasına X dakika kaldı" yerine çıkış saati ([buildAlarmPlan]).
+  /// Yüksek enlemde gece yarısını geçen Yatsı ve seçilen şehrin saat dilimini destekler.
   static List<PlannedAlarm> buildEndReminderPlan({
     required PrayerTimesModel previous,
     required List<PrayerTimesModel> days,
@@ -575,35 +678,35 @@ class PrayerRefreshService {
       "Akşam": loc.aksam,
       "Yatsı": loc.yatsi,
     };
-    DateTime at(DateTime date, String hhmm) {
-      final parts = hhmm.split(':');
-      return DateTime(
-        date.year,
-        date.month,
-        date.day,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
-    }
+    final zone = days.isNotEmpty ? days.first.timeZone : previous.timeZone;
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
+
+    DateTime at(DateTime date, String hhmm) =>
+        PrayerTimeZone.parseAt(zone, date, hhmm)!;
+
+    DateTime yatsiAt(DateTime date, PrayerTimesModel model) =>
+        PrayerTimeZone.isYatsiAfterMidnight(model)
+        ? at(PrayerTracker.addDays(date, 1), model.yatsi!)
+        : at(date, model.yatsi!);
 
     final plan = <PlannedAlarm>[];
     for (int d = 0; d < days.length && d < PrayerTracker.endReminderDays; d++) {
-      final date = PrayerTracker.addDays(now, d);
-      final prevDate = PrayerTracker.addDays(now, d - 1);
+      final date = PrayerTracker.addDays(cityNow, d);
+      final prevDate = PrayerTracker.addDays(cityNow, d - 1);
       final t = days[d];
       final prev = d == 0 ? previous : days[d - 1];
       // (vakit, namazın günü, başlangıç, bitiş)
       final windows = [
-        ("Yatsı", prevDate, at(prevDate, prev.yatsi!), at(date, t.imsak!)),
+        ("Yatsı", prevDate, yatsiAt(prevDate, prev), at(date, t.imsak!)),
         ("İmsak", date, at(date, t.imsak!), at(date, t.gunes!)),
         ("Öğle", date, at(date, t.ogle!), at(date, t.ikindi!)),
         ("İkindi", date, at(date, t.ikindi!), at(date, t.aksam!)),
-        ("Akşam", date, at(date, t.aksam!), at(date, t.yatsi!)),
+        ("Akşam", date, at(date, t.aksam!), yatsiAt(date, t)),
       ];
       for (final (key, prayerDate, start, end) in windows) {
         if (minutes >= end.difference(start).inMinutes) continue;
         final remindAt = end.subtract(Duration(minutes: minutes));
-        if (!remindAt.isAfter(now)) continue;
+        if (!remindAt.isAfter(cityNow)) continue;
         if (PrayerTracker.isPrayed(prayerLog, prayerDate, key)) continue;
         if (PrayerTracker.isExcused(silentDays, prayerDate)) continue;
         plan.add(
@@ -633,6 +736,7 @@ class PrayerRefreshService {
   /// [DiniGunlerService.parseBildirimGunleri]). O gün 10:00'da; Ramazan
   /// başlangıcı bir gün önce. Aynı güne düşenler tek bildirim (Üç Aylar +
   /// Regaib ortak metinle). Vakti geçmiş ve [religiousDayDays] günden ötesi yok.
+  /// Gövdeye dokunuş Dini Günler ekranını (tebrik paylaşımı) açar.
   static List<PlannedAlarm> buildReligiousDayPlan({
     required List<ResmiDiniGun> days,
     required DateTime now,
@@ -732,6 +836,8 @@ class PrayerRefreshService {
         reminderDays: [todayTimes, todayTimes],
       );
     }
+    final zone = todayTimes.timeZone ?? await _storageService.loadTimeZone();
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
     final offsets = await _storageService.loadTimeOffsets();
     final days = <PrayerTimesModel>[];
     for (int day = 0; day < alarmDays; day++) {
@@ -739,16 +845,18 @@ class PrayerRefreshService {
         _prayerTimeService.calculate(
           coords.lat,
           coords.lng,
-          date: DateTime(now.year, now.month, now.day + day),
+          date: DateTime(cityNow.year, cityNow.month, cityNow.day + day),
           offsets: offsets,
+          timeZone: zone,
         ),
       );
     }
     final previous = _prayerTimeService.calculate(
       coords.lat,
       coords.lng,
-      date: DateTime(now.year, now.month, now.day - 1),
+      date: DateTime(cityNow.year, cityNow.month, cityNow.day - 1),
       offsets: offsets,
+      timeZone: zone,
     );
     return (days: days, previous: previous, reminderDays: days);
   }
@@ -1252,19 +1360,14 @@ class PrayerRefreshService {
 
   // [alarmId]'nin günü: dünden başlayan 6 günden gün sırası (mod 6) ID'ninkiyle aynı olanı
   Future<DateTime?> _slotTime(int id, String key, DateTime now) async {
+    final zone = await _storageService.loadTimeZone();
+    final cityNow = PrayerTimeZone.nowIn(zone, now);
     for (int d = -1; d < alarmDays; d++) {
-      final day = PrayerTracker.addDays(now, d);
+      final day = PrayerTracker.addDays(cityNow, d);
       if (PrayerTracker.epochDay(day) % _idDays != id ~/ 12) continue;
-      final times = await _prayerTimeService.forDate(day);
-      final parts = times == null ? null : timesMap(times)[key]!.split(':');
-      if (parts == null) return null;
-      return DateTime(
-        day.year,
-        day.month,
-        day.day,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
+      final times = await _prayerTimeService.forDate(day, timeZone: zone);
+      if (times == null) return null;
+      return PrayerTimeZone.parseAt(zone, day, timesMap(times)[key]);
     }
     return null;
   }
@@ -1489,7 +1592,12 @@ class PrayerRefreshService {
 
       final service = PrayerRefreshService(NotificationService(), clock: clock);
       final now = service._clock();
-      final times = await service._prayerTimeService.forDate(now);
+      final zone = await service._storageService.loadTimeZone();
+      final cityNow = PrayerTimeZone.nowIn(zone, now);
+      final times = await service._prayerTimeService.forDate(
+        cityNow,
+        timeZone: zone,
+      );
       // Koordinat yoksa cihazda hesaplanamaz; uygulama açılınca çözülür
       if (times == null) return await _headlessDone(prefs, now);
       await service._storageService.savePrayerTimesData(times);
@@ -1497,7 +1605,7 @@ class PrayerRefreshService {
       final loc = localizationsFor(prefs.getString('language_code'));
       String hijri = "";
       try {
-        hijri = hijriDateText(loc.localeName.substring(0, 2));
+        hijri = hijriDateText(loc.localeName.substring(0, 2), date: cityNow);
       } catch (e) {}
 
       final district = await service._storageService.loadDistrict();

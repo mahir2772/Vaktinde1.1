@@ -6,11 +6,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 
+import '../../../core/ui/app_format.dart';
 import '../../../core/ui/app_theme.dart';
 import '../../../core/ui/app_tokens.dart';
 import '../../../core/ui/feature_tip.dart';
 import '../../../core/ui/prayer_colors.dart';
 import '../../../core/ui/state_views.dart';
+import '../../../data/services/prayer_timezone.dart';
 import '../../common/theme_provider.dart';
 import '../../location_search_dialog/location_search_dialog.dart';
 import '../../main_wrapper/app_showcase.dart';
@@ -62,6 +64,9 @@ class _HomeViewState extends State<HomeView>
   late final TabController _tabController;
   Timer? _ticker;
   String? _nextKey;
+  int? _cityClockMinute;
+
+  DateTime _now() => (widget.clock ?? DateTime.now)();
 
   @override
   void initState() {
@@ -69,13 +74,25 @@ class _HomeViewState extends State<HomeView>
     _tabController = TabController(length: 2, vsync: this);
     HomeView.alarmsTabRequests.addListener(_showAlarmsTab);
     HomeView.timesTabRequests.addListener(_showTimesTab);
-    // Vakit girince arka plan rengi ve vurgu değişir
+    // Vakit girince arka plan rengi ve farklı saat diliminde şehir saati yenilenir
     _ticker = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted) return;
-      final next = _computeNextKey(context.read<HomeViewModel>());
-      if (next != _nextKey) setState(() => _nextKey = next);
+      final vm = context.read<HomeViewModel>();
+      final next = _computeNextKey(vm);
+      final zone = vm.prayerTimes?.timeZone;
+      final minute = PrayerTimeZone.differsFromLocal(zone)
+          ? _minuteOfDay(PrayerTimeZone.nowIn(zone, _now()))
+          : null;
+      if (next != _nextKey || minute != _cityClockMinute) {
+        setState(() {
+          _nextKey = next;
+          _cityClockMinute = minute;
+        });
+      }
     });
   }
+
+  static int _minuteOfDay(DateTime t) => t.hour * 60 + t.minute;
 
   @override
   void dispose() {
@@ -110,7 +127,7 @@ class _HomeViewState extends State<HomeView>
   String? _computeNextKey(HomeViewModel vm) {
     final times = vm.prayerTimes;
     if (times == null) return null;
-    return upcomingPrayer(times, DateTime.now())?.key;
+    return upcomingPrayer(times, _now())?.key;
   }
 
   void _openLocationSearch() {
@@ -406,11 +423,15 @@ class _HomeViewState extends State<HomeView>
   }
 
   String _dateText(HomeViewModel viewModel, AppLocalizations loc) {
+    final cityNow = PrayerTimeZone.nowIn(
+      viewModel.prayerTimes?.timeZone,
+      _now(),
+    );
     String gregorian;
     try {
-      gregorian = DateFormat('d MMMM y', loc.localeName).format(DateTime.now());
+      gregorian = DateFormat('d MMMM y', loc.localeName).format(cityNow);
     } catch (_) {
-      gregorian = DateFormat('dd.MM.yyyy').format(DateTime.now());
+      gregorian = DateFormat('dd.MM.yyyy').format(cityNow);
     }
     final hijri = viewModel.hijriDateText.trim();
     if (hijri.isEmpty) return gregorian;
@@ -424,6 +445,20 @@ class _HomeViewState extends State<HomeView>
     final colors = PrayerColors.of(context);
     final times = viewModel.prayerTimes!;
     final location = _locationText(viewModel, loc);
+    final now = _now();
+    final otherZone = PrayerTimeZone.differsFromLocal(times.timeZone, now: now);
+    final cityClock = otherZone
+        ? formatClockTime(
+            PrayerTimeZone.nowIn(times.timeZone, now),
+            loc.localeName,
+          )
+        : null;
+    if (otherZone) {
+      _cityClockMinute = _minuteOfDay(
+        PrayerTimeZone.nowIn(times.timeZone, now),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
@@ -507,10 +542,21 @@ class _HomeViewState extends State<HomeView>
               color: colors.onHeroMuted,
             ),
           ),
+          if (cityClock != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              loc.cityLocalTime(cityClock),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall!.copyWith(
+                color: colors.onHeroMuted,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
           const SizedBox(height: AppSpacing.lg),
-          CountdownWidget(prayerTimes: times),
+          CountdownWidget(prayerTimes: times, clock: widget.clock),
           KerahatCard(prayerTimes: times, onHero: true),
-          RamadanCard(prayerTimes: times),
+          RamadanCard(prayerTimes: times, clock: widget.clock),
         ],
       ),
     );

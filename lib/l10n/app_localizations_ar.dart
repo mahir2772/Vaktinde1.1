@@ -255,6 +255,15 @@ class AppLocalizationsAr extends AppLocalizations {
       'هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.';
 
   @override
+  String get timesFollowCityClock =>
+      'تُعرض المواقيت حسب التوقيت المحلي للمدينة المختارة.';
+
+  @override
+  String cityLocalTime(String time) {
+    return 'التوقيت المحلي: $time';
+  }
+
+  @override
   String get navTools => 'الأدوات';
 
   @override

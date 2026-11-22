@@ -66,7 +66,7 @@ class _FakeHomeViewModel extends HomeViewModel {
     String newCity,
     String? newDistrict, {
     double? lat,
-    double? lng,
+    double? lng, String? timeZone,
   }) async {
     changedCity = newDistrict == null ? newCity : '$newDistrict, $newCity';
     changedLat = lat;
@@ -711,7 +711,7 @@ void main() {
         find.text(loc.locationSelected('Kemaliye, Erzincan')),
         findsOneWidget,
       );
-      expect(find.textContaining(loc.timesFollowPhoneClock), findsNothing);
+      expect(find.textContaining(loc.timesFollowCityClock), findsNothing);
       await _finish(tester);
 
       // İl merkezi: sadece il kaydedilir
@@ -741,7 +741,7 @@ void main() {
       expect(
         find.text(
           '${loc.locationSelected('Köln, Almanya')}\n'
-          '${loc.timesFollowPhoneClock}',
+          '${loc.timesFollowCityClock}',
         ),
         findsOneWidget,
       );

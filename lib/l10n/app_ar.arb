@@ -89,6 +89,15 @@
     "provinceCenter": "مركز الولاية",
     "searchOnline": "البحث عبر الإنترنت",
     "timesFollowPhoneClock": "هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.",
+    "timesFollowCityClock": "تُعرض المواقيت حسب التوقيت المحلي للمدينة المختارة.",
+    "cityLocalTime": "التوقيت المحلي: {time}",
+    "@cityLocalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
     "navTools": "الأدوات",
     "a11yHours": "{count, plural, =1{ساعة واحدة} =2{ساعتان} few{{count} ساعات} many{{count} ساعة} other{{count} ساعة}}",
     "@a11yHours": {

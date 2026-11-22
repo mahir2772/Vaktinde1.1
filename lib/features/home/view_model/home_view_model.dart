@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/services/location_service.dart';
 import '../../../data/services/prayer_time_service.dart';
+import '../../../data/services/prayer_timezone.dart';
 import '../../../data/services/storage_service.dart';
 import '../../../data/services/hadith_service.dart';
 import '../../../data/models/prayer_times_model.dart';
@@ -50,13 +51,16 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   String? city;
   String? district;
-  String hijriDateText = ""; // 🔥 YENİ: Hicri Tarih Metni
+
+  /// Seçilen şehrin IANA saat dilimi (örn. 'Europe/Istanbul'); null = cihazınki
+  String? timeZone;
+  String hijriDateText = "";
 
   bool isLoading = true;
   String errorMessageKey = "";
   String? errorDetail;
   bool _isDataLoaded = false;
-  DateTime? _timesDate; // Ekrandaki vakitlerin ait olduğu gün
+  String? _timesDateKey; // Ekrandaki vakitlerin ait olduğu şehir takvim günü
 
   Map<String, bool> onTimeAlarms = {};
   Map<String, bool> reminderAlarms = {};
@@ -127,20 +131,29 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   Timer? _midnightTimer;
 
-  // Uygulama açık kalsa da gece yarısından hemen sonra vakitler yenilenir
+  // Uygulama açık kalsa da seçilen şehrin gece yarısından hemen sonra vakitler yenilenir
   void _armMidnightTimer() {
     _midnightTimer?.cancel();
-    final now = DateTime.now();
-    final next = DateTime(now.year, now.month, now.day + 1, 0, 0, 30);
-    _midnightTimer = Timer(next.difference(now), () {
-      if (_isDataLoaded) {
-        try {
-          _calculateHijriDate();
-          _refreshTimesIfNewDay().catchError((Object e) {});
-        } catch (e) {}
-      }
-      _armMidnightTimer();
-    });
+    final cityNow = PrayerTimeZone.nowIn(timeZone);
+    final next = PrayerTimeZone.at(
+      timeZone,
+      DateTime(cityNow.year, cityNow.month, cityNow.day + 1),
+      0,
+      0,
+    ).add(const Duration(seconds: 30));
+    final delay = next.difference(DateTime.now());
+    _midnightTimer = Timer(
+      delay.isNegative ? const Duration(seconds: 30) : delay,
+      () {
+        if (_isDataLoaded) {
+          try {
+            _calculateHijriDate();
+            _refreshTimesIfNewDay().catchError((Object e) {});
+          } catch (e) {}
+        }
+        _armMidnightTimer();
+      },
+    );
   }
 
   void updateLocalization(AppLocalizations loc) {
@@ -168,13 +181,15 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  // 🔥 YENİ: Hicri Tarih Hesaplama Fonksiyonu
+  // Hicri tarih seçilen şehrin takvim gününe göre hesaplanır
   void _calculateHijriDate() {
     if (_currentLoc == null) return;
 
-    // Uygulama diline göre, örn: 7 Safer 1448 (hijri paketinde olmayan de/fr için İngilizce)
     String langCode = _currentLoc!.localeName.substring(0, 2);
-    hijriDateText = PrayerRefreshService.hijriDateText(langCode);
+    hijriDateText = PrayerRefreshService.hijriDateText(
+      langCode,
+      date: PrayerTimeZone.nowIn(timeZone),
+    );
     notifyListeners();
   }
 
@@ -199,6 +214,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     try {
       await initializeDateFormatting('tr_TR', null);
       await _loadSavedSettings();
+      timeZone = await _storageService.loadTimeZone();
+      _armMidnightTimer();
       await checkAlarmStreamSupport();
       await notificationService.init();
       alarmHealth.refresh();
@@ -221,7 +238,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         district = savedDistrict;
         isLoading = false;
         _isDataLoaded = true;
-        _timesDate = DateTime.now();
+        _timesDateKey = PrayerTimeZone.dateKey(PrayerTimeZone.nowIn(timeZone));
 
         _updateHomeScreenWidget();
         await _rescheduleAlarms();
@@ -240,7 +257,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
       await Future.delayed(const Duration(milliseconds: 500));
       if (savedCity != null && savedCity.isNotEmpty) {
-        await changeCityAndDistrict(savedCity, savedDistrict);
+        await changeCityAndDistrict(
+          savedCity,
+          savedDistrict,
+          timeZone: timeZone,
+        );
       } else {
         await changeCityAndDistrict("İstanbul", null);
       }
@@ -254,27 +275,32 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  // Kayıtlı koordinat + vakit ince ayarı ile bugünün vakitleri (koordinat yoksa null)
+  // Kayıtlı koordinat + saat dilimi + vakit ince ayarı ile bugünün vakitleri
   Future<PrayerTimesModel?> _calculateFromSavedCoordinates() async {
-    final times = await _prayerTimeService.forDate(DateTime.now());
+    final savedZone = await _storageService.loadTimeZone();
+    timeZone = savedZone;
+    final cityNow = PrayerTimeZone.nowIn(savedZone);
+    final times = await _prayerTimeService.forDate(
+      cityNow,
+      timeZone: savedZone,
+    );
     if (times == null) return null;
-    _timesDate = DateTime.now();
+    _timesDateKey = PrayerTimeZone.dateKey(cityNow);
     await _storageService.savePrayerTimesData(times);
     return times;
   }
 
-  // Gün değiştiyse (uygulama arka plandan dönünce) vakitleri yeniden hesapla
+  // Seçilen şehirde gün değiştiyse vakitleri yeniden hesapla
   Future<void> _refreshTimesIfNewDay() async {
-    if (_timesDate != null && DateUtils.isSameDay(_timesDate, DateTime.now())) {
-      return;
-    }
+    final todayKey = PrayerTimeZone.dateKey(PrayerTimeZone.nowIn(timeZone));
+    if (_timesDateKey == todayKey) return;
     // Dünün ayet/hadisi tekrar kurulmasın: yenileri alınır (kendileri kurar)
     _refreshDailyContent();
     final times = await _calculateFromSavedCoordinates();
     if (times == null) {
       // Eski sürümden gelen (koordinatsız) kullanıcı: konumu bir kez çözümle
       if (city != null && !isLoading) {
-        await changeCityAndDistrict(city!, district);
+        await changeCityAndDistrict(city!, district, timeZone: timeZone);
       }
       return;
     }
@@ -308,6 +334,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     String? newDistrict, {
     double? lat,
     double? lng,
+    String? timeZone,
   }) async {
     isLoading = true;
     notifyListeners();
@@ -327,12 +354,19 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         lng = coords?.lng;
       }
 
+      final validZone = PrayerTimeZone.resolve(timeZone) == null
+          ? null
+          : timeZone!.trim();
+      final cityNow = PrayerTimeZone.nowIn(validZone);
+
       // Öncelik: cihazda hesaplama. Koordinat bulunamazsa yedek: Aladhan API
       final PrayerTimesModel? apiResult = (lat != null && lng != null)
           ? _prayerTimeService.calculate(
               lat,
               lng,
+              date: cityNow,
               offsets: await _storageService.loadTimeOffsets(),
+              timeZone: validZone,
             )
           : await _prayerTimeService.getPrayerTimes(
               newCity,
@@ -341,10 +375,16 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
       if (apiResult != null) {
         if (lat != null && lng != null) {
           await _storageService.saveCoordinates(lat, lng);
+          await _storageService.saveTimeZone(validZone);
+          this.timeZone = validZone;
         } else {
           await _storageService.clearCoordinates();
+          await _storageService.saveTimeZone(null);
+          this.timeZone = null;
         }
-        _timesDate = DateTime.now();
+        _timesDateKey = PrayerTimeZone.dateKey(
+          PrayerTimeZone.nowIn(this.timeZone),
+        );
         prayerTimes = apiResult;
         city = newCity;
         district = newDistrict;
@@ -359,6 +399,8 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
         }
 
         await _storageService.savePrayerTimesData(apiResult);
+        _armMidnightTimer();
+        _calculateHijriDate();
 
         _updateHomeScreenWidget();
         Future.microtask(() => _rescheduleAlarms());
@@ -421,7 +463,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
               position.latitude,
               position.longitude,
             );
-        // Yer adı bulunamasa da vakitler koordinatla hesaplanır
+        // Yer adı bulunamasa da vakitler koordinatla hesaplanır (GPS: cihaz saat dilimi)
         String city =
             locationData?['city'] ??
             '${position.latitude.toStringAsFixed(2)}, ${position.longitude.toStringAsFixed(2)}';
@@ -432,6 +474,7 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
           district,
           lat: position.latitude,
           lng: position.longitude,
+          timeZone: null,
         );
       } else {
         if (prayerTimes == null) errorMessageKey = "locationError";
@@ -618,6 +661,9 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
     final savedCity = await _storageService.loadLocation();
     final savedDistrict = await _storageService.loadDistrict();
+    final savedZone = await _storageService.loadTimeZone();
+    timeZone = savedZone;
+    _armMidnightTimer();
     final times = await _calculateFromSavedCoordinates();
     if (times != null) {
       prayerTimes = times;
@@ -636,7 +682,11 @@ class HomeViewModel extends ChangeNotifier with WidgetsBindingObserver {
     } else if (savedCity != null && savedCity.isNotEmpty) {
       // Eski (koordinatsız) kayıt: konum bir kez çözümlenir (alarmları da
       // kurar); internet yoksa yeni ayarlar eldeki vakitlerle kurulur
-      await changeCityAndDistrict(savedCity, savedDistrict);
+      await changeCityAndDistrict(
+        savedCity,
+        savedDistrict,
+        timeZone: savedZone,
+      );
       await (_rescheduleRun ?? _rescheduleAlarms());
     } else {
       notifyListeners();

@@ -6,6 +6,10 @@ class PrayerTimesModel {
   final String? aksam;
   final String? yatsi;
 
+  /// Vakitlerin hesaplandığı IANA saat dilimi (örn. 'Europe/Istanbul').
+  /// null ise cihazın yerel saat dilimi kabul edilir.
+  final String? timeZone;
+
   PrayerTimesModel({
     this.imsak,
     this.gunes,
@@ -13,6 +17,7 @@ class PrayerTimesModel {
     this.ikindi,
     this.aksam,
     this.yatsi,
+    this.timeZone,
   });
 
   Map<String, dynamic> toJson() {
@@ -23,6 +28,7 @@ class PrayerTimesModel {
       'ikindi': ikindi,
       'aksam': aksam,
       'yatsi': yatsi,
+      if (timeZone != null) 'timeZone': timeZone,
     };
   }
 
@@ -34,6 +40,7 @@ class PrayerTimesModel {
       ikindi: json['ikindi'],
       aksam: json['aksam'],
       yatsi: json['yatsi'],
+      timeZone: json['timeZone'] as String?,
     );
   }
 }

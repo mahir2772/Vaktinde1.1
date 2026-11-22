@@ -310,5 +310,9 @@ void main() {
       );
     }
     expect(LocationCatalog.timeZoneDiffers('US'), isFalse);
+    expect(LocationCatalog.timeZoneForCountry('TR'), 'Europe/Istanbul');
+    expect(LocationCatalog.timeZoneForCountry('de'), 'Europe/Berlin');
+    expect(LocationCatalog.timeZoneForCountry('SA'), 'Asia/Riyadh');
+    expect(LocationCatalog.timeZoneForCountry('US'), isNull);
   });
 }

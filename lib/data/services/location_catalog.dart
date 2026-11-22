@@ -1,9 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:timezone/data/latest_all.dart' as tzdata;
-import 'package:timezone/timezone.dart' as tz;
 
+import 'prayer_timezone.dart';
 import 'quran_service.dart';
 
 /// Gömülü listedeki yer: il merkezi, ilçe ya da yurt dışı şehir. Seçim mevcut
@@ -160,7 +159,7 @@ class LocationCatalog {
     }
   }
 
-  /// Ülkenin saat dilimi (KKTC: Asia/Famagusta)
+  /// Gömülü listedeki ülkelerin IANA saat dilimleri (KKTC: Asia/Famagusta)
   static const timeZones = {
     'TR': 'Europe/Istanbul',
     'DE': 'Europe/Berlin',
@@ -176,18 +175,74 @@ class LocationCatalog {
     'KKTC': 'Asia/Famagusta',
   };
 
-  /// Vakitler telefonun saatiyle gösterilir: ülkenin şu anki UTC farkı
-  /// telefonunkinden farklıysa true (bilinmeyen ülke: false)
+  /// Çevrimiçi aramada seçilebilecek diğer tek saat dilimli ülkeler (çok
+  /// dilimli ülkeler — ör. US/CA/RU/AU — bilinçli olarak burada yer almaz)
+  static const _extraCountryTimeZones = {
+    'IT': 'Europe/Rome',
+    'ES': 'Europe/Madrid',
+    'PT': 'Europe/Lisbon',
+    'IE': 'Europe/Dublin',
+    'LU': 'Europe/Luxembourg',
+    'PL': 'Europe/Warsaw',
+    'CZ': 'Europe/Prague',
+    'SK': 'Europe/Bratislava',
+    'HU': 'Europe/Budapest',
+    'RO': 'Europe/Bucharest',
+    'BG': 'Europe/Sofia',
+    'GR': 'Europe/Athens',
+    'FI': 'Europe/Helsinki',
+    'BA': 'Europe/Sarajevo',
+    'AL': 'Europe/Tirane',
+    'MK': 'Europe/Skopje',
+    'XK': 'Europe/Belgrade',
+    'RS': 'Europe/Belgrade',
+    'HR': 'Europe/Zagreb',
+    'SI': 'Europe/Ljubljana',
+    'CY': 'Asia/Nicosia',
+    'AZ': 'Asia/Baku',
+    'GE': 'Asia/Tbilisi',
+    'SA': 'Asia/Riyadh',
+    'AE': 'Asia/Dubai',
+    'QA': 'Asia/Qatar',
+    'KW': 'Asia/Kuwait',
+    'BH': 'Asia/Bahrain',
+    'OM': 'Asia/Muscat',
+    'JO': 'Asia/Amman',
+    'LB': 'Asia/Beirut',
+    'IQ': 'Asia/Baghdad',
+    'SY': 'Asia/Damascus',
+    'PS': 'Asia/Hebron',
+    'EG': 'Africa/Cairo',
+    'MA': 'Africa/Casablanca',
+    'DZ': 'Africa/Algiers',
+    'TN': 'Africa/Tunis',
+    'LY': 'Africa/Tripoli',
+    'PK': 'Asia/Karachi',
+    'BD': 'Asia/Dhaka',
+    'IN': 'Asia/Kolkata',
+    'MY': 'Asia/Kuala_Lumpur',
+    'SG': 'Asia/Singapore',
+    'UZ': 'Asia/Tashkent',
+    'TM': 'Asia/Ashgabat',
+    'KG': 'Asia/Bishkek',
+    'TJ': 'Asia/Dushanbe',
+    'JP': 'Asia/Tokyo',
+    'KR': 'Asia/Seoul',
+  };
+
+  /// Ülke kodunun (ISO-2 veya 'KKTC') IANA saat dilimi; çok dilimli veya
+  /// bilinmeyen ülkede null.
+  static String? timeZoneForCountry(String? country) {
+    final code = country?.trim().toUpperCase();
+    if (code == null || code.isEmpty) return null;
+    return timeZones[code] ?? _extraCountryTimeZones[code];
+  }
+
+  /// Ülkenin şu anki UTC farkı telefonunkinden farklıysa true (bilinmeyen
+  /// veya çok dilimli ülkede false).
   static bool timeZoneDiffers(String country, {DateTime? now}) {
-    final zone = timeZones[country];
+    final zone = timeZoneForCountry(country);
     if (zone == null) return false;
-    try {
-      if (!tz.timeZoneDatabase.isInitialized) tzdata.initializeTimeZones();
-      final local = (now ?? DateTime.now()).toLocal();
-      final there = tz.TZDateTime.from(local, tz.getLocation(zone));
-      return there.timeZoneOffset != local.timeZoneOffset;
-    } catch (_) {
-      return false;
-    }
+    return PrayerTimeZone.differsFromLocal(zone, now: now);
   }
 }

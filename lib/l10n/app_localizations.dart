@@ -542,6 +542,18 @@ abstract class AppLocalizations {
   /// **'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.'**
   String get timesFollowPhoneClock;
 
+  /// No description provided for @timesFollowCityClock.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitler seçilen şehrin yerel saatine göre gösterilir.'**
+  String get timesFollowCityClock;
+
+  /// No description provided for @cityLocalTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şehir saati: {time}'**
+  String cityLocalTime(String time);
+
   /// No description provided for @navTools.
   ///
   /// In tr, this message translates to:

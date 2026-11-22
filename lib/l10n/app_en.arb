@@ -89,6 +89,15 @@
     "provinceCenter": "Provincial capital",
     "searchOnline": "Search online",
     "timesFollowPhoneClock": "This place is in a different time zone: times are shown in your phone's time.",
+    "timesFollowCityClock": "Prayer times are shown in the selected city's local time.",
+    "cityLocalTime": "City time: {time}",
+    "@cityLocalTime": {
+        "placeholders": {
+            "time": {
+                "type": "String"
+            }
+        }
+    },
     "navTools": "Tools",
     "a11yHours": "{count, plural, =1{1 hour} other{{count} hours}}",
     "@a11yHours": {

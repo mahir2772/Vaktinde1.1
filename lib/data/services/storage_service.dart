@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prayer_times_model.dart';
+import 'prayer_timezone.dart';
 import 'prayer_tracker.dart';
 
 class StorageService {
@@ -68,6 +69,9 @@ class StorageService {
   /// "Sessiz modda da çal": ezan alarm ses akışında çalar (varsayılan kapalı)
   static const String ezanAlarmStreamKey = 'ezan_alarm_stream';
 
+  /// Seçilen şehrin IANA saat dilimi (örn. 'Europe/Istanbul'); yoksa cihazınki
+  static const String timeZoneKey = 'saved_timezone';
+
   Future<void> saveEzanAlarmStream(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(ezanAlarmStreamKey, enabled);
@@ -113,6 +117,22 @@ class StorageService {
     return (lat: lat, lng: lng);
   }
 
+  Future<void> saveTimeZone(String? zoneId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final trimmed = zoneId?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      await prefs.remove(timeZoneKey);
+    } else {
+      await prefs.setString(timeZoneKey, trimmed);
+    }
+  }
+
+  Future<String?> loadTimeZone() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(timeZoneKey)?.trim();
+    return (value == null || value.isEmpty) ? null : value;
+  }
+
   /// Vakit ince ayarı (dakika). Anahtarlar: İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı
   Future<void> saveTimeOffsets(Map<String, int> offsets) async {
     final prefs = await SharedPreferences.getInstance();
@@ -137,7 +157,7 @@ class StorageService {
     String jsonString = jsonEncode(data.toJson());
     await prefs.setString('cached_prayer_times', jsonString);
 
-    String today = DateTime.now().toIso8601String().split('T')[0];
+    String today = PrayerTimeZone.dateKey(PrayerTimeZone.nowIn(data.timeZone));
     await prefs.setString('cached_prayer_date', today);
   }
 
@@ -145,7 +165,8 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
 
     String? savedDate = prefs.getString('cached_prayer_date');
-    String today = DateTime.now().toIso8601String().split('T')[0];
+    String? savedZone = prefs.getString(timeZoneKey);
+    String today = PrayerTimeZone.dateKey(PrayerTimeZone.nowIn(savedZone));
 
     if (savedDate != today) return null;
 

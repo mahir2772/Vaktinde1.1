@@ -11,6 +11,7 @@ import 'ayah_service.dart';
 import 'hadith_service.dart';
 import 'hatim.dart';
 import 'hatim_service.dart';
+import 'prayer_timezone.dart';
 import 'quran_service.dart';
 import 'storage_service.dart';
 
@@ -100,13 +101,14 @@ abstract final class BackupService {
 
   static const String _languageKey = 'language_code';
 
-  /// Konum birlikte geri yüklenir (il adı başka, koordinat başka yerin olmasın);
-  /// yedekte hiçbiri yoksa telefondaki konum korunur
+  /// Konum birlikte geri yüklenir (il adı başka, koordinat/saat dilimi başka
+  /// yerin olmasın); yedekte hiçbiri yoksa telefondaki konum korunur
   static const Set<String> locationKeys = {
     'saved_city',
     'saved_district',
     'saved_lat',
     'saved_lng',
+    StorageService.timeZoneKey,
   };
 
   // Bugünün vakit önbelleği (StorageService.savePrayerTimesData): konum
@@ -117,11 +119,12 @@ abstract final class BackupService {
   ];
 
   static final Map<String, _Field> _fields = {
-    // Konum ve vakit ince ayarı
+    // Konum, saat dilimi ve vakit ince ayarı
     'saved_city': const _Field(_Kind.text),
     'saved_district': const _Field(_Kind.text),
     'saved_lat': const _Field(_Kind.decimal, _isLatitude),
     'saved_lng': const _Field(_Kind.decimal, _isLongitude),
+    StorageService.timeZoneKey: const _Field(_Kind.text, _isTimeZone),
     'time_offsets': const _Field(_Kind.text, _isTimeOffsets),
     // Ezan, hatırlatma ve bildirim ayarları
     for (final vakit in _vakitler) ...{
@@ -374,6 +377,8 @@ abstract final class BackupService {
 bool _isLatitude(Object v) => v is double && v.isFinite && v.abs() <= 90;
 
 bool _isLongitude(Object v) => v is double && v.isFinite && v.abs() <= 180;
+
+bool _isTimeZone(Object v) => v is String && PrayerTimeZone.resolve(v) != null;
 
 bool _isFinite(Object v) => v is double && v.isFinite;
 

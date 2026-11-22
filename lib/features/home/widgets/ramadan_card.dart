@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:ezan_saati/l10n/app_localizations.dart';
 import '../../../data/models/prayer_times_model.dart';
 import '../../../data/services/prayer_time_service.dart';
+import '../../../data/services/prayer_timezone.dart';
 import '../../common/share_card.dart';
 import '../../imsakiye/imsakiye_logic.dart';
 import '../../imsakiye/ramadan_calendar_loader.dart';
@@ -105,7 +106,17 @@ class _RamadanCardState extends State<RamadanCard> {
   void _tick({bool rebuild = true}) {
     final calendar = _calendar;
     if (!mounted || calendar == null) return;
-    final now = (widget.clock ?? DateTime.now)();
+    final rawNow = (widget.clock ?? DateTime.now)();
+    final cityNow = PrayerTimeZone.nowIn(widget.prayerTimes.timeZone, rawNow);
+    // Şehir duvar saatiyle aynı referans: ramadanCountdown hedefi de duvar saatidir
+    final now = DateTime(
+      cityNow.year,
+      cityNow.month,
+      cityNow.day,
+      cityNow.hour,
+      cityNow.minute,
+      cityNow.second,
+    );
     final today = dateOnly(now);
     final tomorrow = DateTime(today.year, today.month, today.day + 1);
 
@@ -146,7 +157,10 @@ class _RamadanCardState extends State<RamadanCard> {
   Future<void> _loadTomorrow(DateTime date) async {
     _tomorrowRequested = date;
     try {
-      final times = await PrayerTimeService().forDate(date);
+      final times = await PrayerTimeService().forDate(
+        date,
+        timeZone: widget.prayerTimes.timeZone,
+      );
       if (!mounted || _tomorrowRequested != date) return;
       _tomorrowTimes = times;
       _tomorrowTimesDate = date;
