@@ -258,6 +258,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'This place is in a different time zone: times are shown in your phone\'s time.';
 
   @override
+  String get whatsNewSilenceDesc =>
+      'Automatically silences your phone during prayers and Jumu\'ah, then restores it afterward.';
+
+  @override
+  String get whatsNewCityClockTitle => 'Selected city local time';
+
+  @override
+  String get whatsNewCityClockDesc =>
+      'Prayer times follow the selected city\'s own time zone, with improved late-night Isha handling.';
+
+  @override
+  String get whatsNewKazaEstTitle => 'Qada completion estimate';
+
+  @override
+  String get whatsNewKazaEstDesc =>
+      'See your estimated completion time based on your daily qada pace.';
+
+  @override
+  String get whatsNewOfflineHadithTitle => 'Offline hadiths & religious days';
+
+  @override
+  String get whatsNewOfflineHadithDesc =>
+      'Expanded offline hadith collection and direct navigation from religious day notifications.';
+
+  @override
   String get prayerSilenceTitle => 'Prayer silence (auto DND)';
 
   @override

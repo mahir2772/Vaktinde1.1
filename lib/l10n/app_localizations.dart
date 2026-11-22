@@ -542,6 +542,48 @@ abstract class AppLocalizations {
   /// **'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.'**
   String get timesFollowPhoneClock;
 
+  /// No description provided for @whatsNewSilenceDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vakitlerde ve Cuma namazında telefonu otomatik sessize alır, süre bitince eski hâline döndürür.'**
+  String get whatsNewSilenceDesc;
+
+  /// No description provided for @whatsNewCityClockTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçilen şehrin yerel saati'**
+  String get whatsNewCityClockTitle;
+
+  /// No description provided for @whatsNewCityClockDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Farklı saat dilimindeki şehirlerde vakitler şehrin kendi saatinde gösterilir; Avrupa yaz yatsısı düzeltildi.'**
+  String get whatsNewCityClockDesc;
+
+  /// No description provided for @whatsNewKazaEstTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaza bitiş tahmini'**
+  String get whatsNewKazaEstTitle;
+
+  /// No description provided for @whatsNewKazaEstDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük kaza hedefiyle borcunuzun tahmini bitiş süresini Kaza sekmesinde görün.'**
+  String get whatsNewKazaEstDesc;
+
+  /// No description provided for @whatsNewOfflineHadithTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çevrimdışı hadisler ve dini günler'**
+  String get whatsNewOfflineHadithTitle;
+
+  /// No description provided for @whatsNewOfflineHadithDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İnternetsiz zenginleştirilmiş hadis havuzu ve dini gün bildirimlerinden doğrudan ilgili ekrana geçiş.'**
+  String get whatsNewOfflineHadithDesc;
+
   /// No description provided for @prayerSilenceTitle.
   ///
   /// In tr, this message translates to:

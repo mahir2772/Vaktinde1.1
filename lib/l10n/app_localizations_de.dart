@@ -260,6 +260,31 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dieser Ort liegt in einer anderen Zeitzone: Die Zeiten werden nach der Uhrzeit Ihres Telefons angezeigt.';
 
   @override
+  String get whatsNewSilenceDesc =>
+      'Schaltet das Telefon während der Gebete und des Freitagsgebets automatisch stumm und stellt es danach wieder her.';
+
+  @override
+  String get whatsNewCityClockTitle => 'Ortszeit der gewählten Stadt';
+
+  @override
+  String get whatsNewCityClockDesc =>
+      'Gebetszeiten folgen der Zeitzone der gewählten Stadt – inkl. korrigiertem Sommer-Isha nach Mitternacht.';
+
+  @override
+  String get whatsNewKazaEstTitle => 'Qada-Abschlussprognose';
+
+  @override
+  String get whatsNewKazaEstDesc =>
+      'Sehen Sie die geschätzte Dauer bis zum Abschluss Ihrer Nachholgebete.';
+
+  @override
+  String get whatsNewOfflineHadithTitle => 'Offline-Hadithe & religiöse Tage';
+
+  @override
+  String get whatsNewOfflineHadithDesc =>
+      'Erweiterte Offline-Hadith-Sammlung und direkter Sprung aus Benachrichtigungen zu religiösen Tagen.';
+
+  @override
   String get prayerSilenceTitle => 'Gebetsruhe (Auto-Stumm)';
 
   @override

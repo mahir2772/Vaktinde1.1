@@ -259,6 +259,31 @@ class AppLocalizationsTr extends AppLocalizations {
       'Seçilen yerin saat dilimi farklı: vakitler telefonunuzun saatine göre gösterilir.';
 
   @override
+  String get whatsNewSilenceDesc =>
+      'Vakitlerde ve Cuma namazında telefonu otomatik sessize alır, süre bitince eski hâline döndürür.';
+
+  @override
+  String get whatsNewCityClockTitle => 'Seçilen şehrin yerel saati';
+
+  @override
+  String get whatsNewCityClockDesc =>
+      'Farklı saat dilimindeki şehirlerde vakitler şehrin kendi saatinde gösterilir; Avrupa yaz yatsısı düzeltildi.';
+
+  @override
+  String get whatsNewKazaEstTitle => 'Kaza bitiş tahmini';
+
+  @override
+  String get whatsNewKazaEstDesc =>
+      'Günlük kaza hedefiyle borcunuzun tahmini bitiş süresini Kaza sekmesinde görün.';
+
+  @override
+  String get whatsNewOfflineHadithTitle => 'Çevrimdışı hadisler ve dini günler';
+
+  @override
+  String get whatsNewOfflineHadithDesc =>
+      'İnternetsiz zenginleştirilmiş hadis havuzu ve dini gün bildirimlerinden doğrudan ilgili ekrana geçiş.';
+
+  @override
   String get prayerSilenceTitle => 'Namazdayım (otomatik sessiz)';
 
   @override

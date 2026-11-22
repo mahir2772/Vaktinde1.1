@@ -32,7 +32,6 @@ import 'package:ezan_saati/features/prayer_guide/prayer_guide_data.dart';
 import 'package:ezan_saati/features/prayer_guide/view/prayer_guide_view.dart';
 import 'package:ezan_saati/features/prayer_tracker/streak_review.dart';
 import 'package:ezan_saati/features/prayer_tracker/view/prayer_tracker_view.dart';
-import 'package:ezan_saati/features/quran/view/quran_view.dart';
 import 'package:ezan_saati/features/religious_days/view/religious_days_view.dart';
 import 'package:ezan_saati/features/settings/view/notification_settings_view.dart';
 import 'package:ezan_saati/features/settings/view/settings_view.dart';
@@ -448,8 +447,6 @@ void main() {
   });
 
   group('Yenilikler', () {
-    int selected(WidgetTester tester) =>
-        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex;
 
     testWidgets('yeni kurulum: tur başlar, Yenilikler çıkmaz; bu sürümün '
         'listesi görüldü sayılır', (tester) async {
@@ -516,22 +513,17 @@ void main() {
         expect(find.text(tr.whatsNewTitle), findsNothing);
       }
 
-      await openRow(tr.hatimTitle);
-      expect(selected(tester), MainTab.quran.index);
-      expect(find.byType(QuranView), findsOneWidget);
-
-      // Araçlar sekmesinden: Zikir sekmesi
-      await tester.tap(find.text(tr.navTools));
-      await settle(tester);
-      await openRow(tr.whatsNewDhikrsTitle);
-      expect(selected(tester), MainTab.zikir.index);
-
       for (final (title, page) in [
-        (tr.duasTitle, DuasView),
-        (tr.storiesTitle, StoriesView),
+        (tr.prayerSilenceTitle, NotificationSettingsView),
+        (tr.whatsNewCityClockTitle, LocationSearchDialog),
+        (tr.whatsNewKazaEstTitle, PrayerTrackerView),
+        (tr.whatsNewOfflineHadithTitle, ReligiousDaysView),
       ]) {
         await openRow(title);
         expect(find.byType(page), findsOneWidget, reason: title);
+        if (title == tr.whatsNewKazaEstTitle) {
+          expect(find.text(tr.missedPrayersInfo), findsOneWidget);
+        }
         navigator(tester).pop();
         await settle(tester);
       }

@@ -255,6 +255,31 @@ class AppLocalizationsAr extends AppLocalizations {
       'هذا المكان في منطقة زمنية مختلفة: تُعرض الأوقات حسب توقيت هاتفك.';
 
   @override
+  String get whatsNewSilenceDesc =>
+      'يكتم الهاتف تلقائيًا أثناء الصلوات وصلاة الجمعة ثم يعيده كما كان بعد انتهاء المدة.';
+
+  @override
+  String get whatsNewCityClockTitle => 'التوقيت المحلي للمدينة المختارة';
+
+  @override
+  String get whatsNewCityClockDesc =>
+      'تُعرض المواقيت حسب المنطقة الزمنية للمدينة المختارة مع تحسين وقت العشاء بعد منتصف الليل.';
+
+  @override
+  String get whatsNewKazaEstTitle => 'تقدير إنهاء الفوائت';
+
+  @override
+  String get whatsNewKazaEstDesc =>
+      'اطّلع على المدة التقديرية لإنهاء صلوات القضاء حسب وتيرتك اليومية.';
+
+  @override
+  String get whatsNewOfflineHadithTitle => 'أحاديث دون إنترنت ومناسبات دينية';
+
+  @override
+  String get whatsNewOfflineHadithDesc =>
+      'مجموعة أحاديث موسّعة تعمل دون إنترنت وفتح مباشر من إشعارات المناسبات الدينية.';
+
+  @override
   String get prayerSilenceTitle => 'أثناء الصلاة (صامت تلقائي)';
 
   @override

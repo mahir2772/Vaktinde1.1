@@ -21,32 +21,32 @@ class WhatsNew {
   static const String seenKey = 'whats_new_seen';
 
   /// Listenin ait olduğu sürüm
-  static const String version = '1.4.0';
+  static const String version = '1.5.0';
 
   static List<WhatsNewItem> items(AppLocalizations loc) => [
     (
-      icon: Icons.flag_outlined,
-      title: loc.hatimTitle,
-      subtitle: loc.whatsNewHatimDesc,
-      feature: AppFeature.quran,
+      icon: Icons.do_not_disturb_on_outlined,
+      title: loc.prayerSilenceTitle,
+      subtitle: loc.whatsNewSilenceDesc,
+      feature: AppFeature.notificationSettings,
+    ),
+    (
+      icon: Icons.schedule_outlined,
+      title: loc.whatsNewCityClockTitle,
+      subtitle: loc.whatsNewCityClockDesc,
+      feature: AppFeature.location,
+    ),
+    (
+      icon: Icons.hourglass_bottom_outlined,
+      title: loc.whatsNewKazaEstTitle,
+      subtitle: loc.whatsNewKazaEstDesc,
+      feature: AppFeature.kaza,
     ),
     (
       icon: Icons.auto_stories_outlined,
-      title: loc.duasTitle,
-      subtitle: loc.whatsNewDuasDesc,
-      feature: AppFeature.duas,
-    ),
-    (
-      icon: Icons.history_edu_outlined,
-      title: loc.storiesTitle,
-      subtitle: loc.whatsNewStoriesDesc,
-      feature: AppFeature.stories,
-    ),
-    (
-      icon: Icons.touch_app_outlined,
-      title: loc.whatsNewDhikrsTitle,
-      subtitle: loc.whatsNewDhikrsDesc,
-      feature: AppFeature.zikir,
+      title: loc.whatsNewOfflineHadithTitle,
+      subtitle: loc.whatsNewOfflineHadithDesc,
+      feature: AppFeature.religiousDays,
     ),
   ];
 

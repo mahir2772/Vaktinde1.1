@@ -261,6 +261,32 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce lieu est dans un autre fuseau horaire : les horaires sont affichés à l\'heure de votre téléphone.';
 
   @override
+  String get whatsNewSilenceDesc =>
+      'Met le téléphone en silencieux pendant les prières et le vendredi, puis rétablit le son automatiquement.';
+
+  @override
+  String get whatsNewCityClockTitle => 'Heure locale de la ville choisie';
+
+  @override
+  String get whatsNewCityClockDesc =>
+      'Les horaires suivent le fuseau horaire de la ville choisie, avec une gestion améliorée d\'Isha après minuit.';
+
+  @override
+  String get whatsNewKazaEstTitle => 'Estimation de fin de Qada';
+
+  @override
+  String get whatsNewKazaEstDesc =>
+      'Consultez la durée estimée pour rattraper vos prières selon votre rythme quotidien.';
+
+  @override
+  String get whatsNewOfflineHadithTitle =>
+      'Hadiths hors ligne & jours religieux';
+
+  @override
+  String get whatsNewOfflineHadithDesc =>
+      'Collection de hadiths hors ligne enrichie et ouverture directe depuis les notifications des jours religieux.';
+
+  @override
   String get prayerSilenceTitle => 'En prière (silencieux auto)';
 
   @override
