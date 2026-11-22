@@ -37,4 +37,18 @@ class KazaEstimate {
 
   /// Eklenecek kaza yok (süre ve oruç 0): ekleme düğmesi kapalı
   bool get isEmpty => prayers == 0 && fasts == 0;
+
+  /// Günde 1 günlük kaza (her vakitten 1 kaza) kılınırsa namaz kazalarının
+  /// tahmini bitiş süresi. [maxPrayerCount] ≤ 0 ise null.
+  /// 1 yıl = 365 gün, 1 ay = 30 gün (KazaEstimate ile aynı kural).
+  static ({int years, int months, int days})? completionDuration(
+    int maxPrayerCount,
+  ) {
+    if (maxPrayerCount <= 0) return null;
+    final years = maxPrayerCount ~/ 365;
+    final remAfterYears = maxPrayerCount % 365;
+    final months = remAfterYears ~/ 30;
+    final days = remAfterYears % 30;
+    return (years: years, months: months, days: days);
+  }
 }

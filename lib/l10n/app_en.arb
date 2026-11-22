@@ -690,6 +690,38 @@
         }
     },
     "kazaCalcAdded": "Estimate added to your qada counters.",
+    "kazaDurationYears": "{count, plural, =1{1 year} other{{count} years}}",
+    "@kazaDurationYears": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationMonths": "{count, plural, =1{1 month} other{{count} months}}",
+    "@kazaDurationMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationDays": "{count, plural, =1{1 day} other{{count} days}}",
+    "@kazaDurationDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCompletionEstimate": "If you make up 1 day of prayers per day, your missed prayers will take about {duration}.",
+    "@kazaCompletionEstimate": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
     "missedPrayersInfo": "Note your missed prayers here and subtract them as you make them up.\n(Tap a number to enter it manually)",
     "editMissedTitle": "Edit Missed {title}",
     "@editMissedTitle": {

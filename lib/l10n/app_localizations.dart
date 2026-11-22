@@ -2294,6 +2294,30 @@ abstract class AppLocalizations {
   /// **'Tahmini kaza, Kaza Takibi\'ne eklendi.'**
   String get kazaCalcAdded;
 
+  /// No description provided for @kazaDurationYears.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} yıl'**
+  String kazaDurationYears(int count);
+
+  /// No description provided for @kazaDurationMonths.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ay'**
+  String kazaDurationMonths(int count);
+
+  /// No description provided for @kazaDurationDays.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} gün'**
+  String kazaDurationDays(int count);
+
+  /// No description provided for @kazaCompletionEstimate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günde 1 günlük kaza kılarsanız namaz kazalarınız yaklaşık {duration} içinde biter.'**
+  String kazaCompletionEstimate(String duration);
+
   /// No description provided for @missedPrayersInfo.
   ///
   /// In tr, this message translates to:

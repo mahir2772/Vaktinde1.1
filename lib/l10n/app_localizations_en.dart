@@ -1330,6 +1330,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kazaCalcAdded => 'Estimate added to your qada counters.';
 
   @override
+  String kazaDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years',
+      one: '1 year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months',
+      one: '1 month',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaCompletionEstimate(String duration) {
+    return 'If you make up 1 day of prayers per day, your missed prayers will take about $duration.';
+  }
+
+  @override
   String get missedPrayersInfo =>
       'Note your missed prayers here and subtract them as you make them up.\n(Tap a number to enter it manually)';
 

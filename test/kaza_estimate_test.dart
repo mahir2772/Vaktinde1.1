@@ -55,4 +55,25 @@ void main() {
       KazaEstimate.maxFastDays,
     );
   });
+
+  test('tahmini bitiş süresi: günde 1 günlük kaza', () {
+    expect(KazaEstimate.completionDuration(0), isNull);
+    expect(KazaEstimate.completionDuration(-5), isNull);
+    expect(KazaEstimate.completionDuration(12), (
+      years: 0,
+      months: 0,
+      days: 12,
+    ));
+    expect(KazaEstimate.completionDuration(95), (years: 0, months: 3, days: 5));
+    expect(KazaEstimate.completionDuration(365), (
+      years: 1,
+      months: 0,
+      days: 0,
+    ));
+    expect(KazaEstimate.completionDuration(1500), (
+      years: 4,
+      months: 1,
+      days: 10,
+    ));
+  });
 }

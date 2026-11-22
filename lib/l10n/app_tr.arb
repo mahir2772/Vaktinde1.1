@@ -711,6 +711,38 @@
         }
     },
     "kazaCalcAdded": "Tahmini kaza, Kaza Takibi'ne eklendi.",
+    "kazaDurationYears": "{count} yıl",
+    "@kazaDurationYears": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationMonths": "{count} ay",
+    "@kazaDurationMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationDays": "{count} gün",
+    "@kazaDurationDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCompletionEstimate": "Günde 1 günlük kaza kılarsanız namaz kazalarınız yaklaşık {duration} içinde biter.",
+    "@kazaCompletionEstimate": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
     "missedPrayersInfo": "Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)",
     "editMissedTitle": "{title} Kazasını Düzenle",
     "@editMissedTitle": {

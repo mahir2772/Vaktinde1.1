@@ -1345,6 +1345,51 @@ class AppLocalizationsAr extends AppLocalizations {
   String get kazaCalcAdded => 'أُضيف القضاء التقديري إلى عدادات القضاء.';
 
   @override
+  String kazaDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سنة',
+      few: '$count سنوات',
+      two: 'سنتين',
+      one: 'سنة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count شهرًا',
+      few: '$count أشهر',
+      two: 'شهرين',
+      one: 'شهر واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      many: '$count يومًا',
+      few: '$count أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaCompletionEstimate(String duration) {
+    return 'إذا قضيت صلوات يوم واحد كل يوم، تنتهي فوائتك خلال $duration تقريبًا.';
+  }
+
+  @override
   String get missedPrayersInfo =>
       'سجل صلواتك الفائتة هنا واطرحها عند قضائها.\n(اضغط على الرقم للإدخال يدوياً)';
 

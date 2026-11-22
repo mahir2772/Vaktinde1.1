@@ -1328,6 +1328,44 @@ class AppLocalizationsDe extends AppLocalizations {
   String get kazaCalcAdded => 'Schätzung zu den Qada-Zählern hinzugefügt.';
 
   @override
+  String kazaDurationYears(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Jahre',
+      one: '1 Jahr',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationMonths(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Monate',
+      one: '1 Monat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Tage',
+      one: '1 Tag',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kazaCompletionEstimate(String duration) {
+    return 'Wenn Sie täglich 1 Gebetstag nachholen, sind Ihre Qada-Gebete in etwa $duration abgeschlossen.';
+  }
+
+  @override
   String get missedPrayersInfo =>
       'Notieren Sie hier verpasste Gebete und ziehen Sie diese nach dem Nachholen ab.\n(Tippen Sie auf die Zahl zur manuellen Eingabe)';
 

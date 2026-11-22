@@ -1307,6 +1307,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get kazaCalcAdded => 'Tahmini kaza, Kaza Takibi\'ne eklendi.';
 
   @override
+  String kazaDurationYears(int count) {
+    return '$count yıl';
+  }
+
+  @override
+  String kazaDurationMonths(int count) {
+    return '$count ay';
+  }
+
+  @override
+  String kazaDurationDays(int count) {
+    return '$count gün';
+  }
+
+  @override
+  String kazaCompletionEstimate(String duration) {
+    return 'Günde 1 günlük kaza kılarsanız namaz kazalarınız yaklaşık $duration içinde biter.';
+  }
+
+  @override
   String get missedPrayersInfo =>
       'Kılmadığınız namazları buraya not edip, kıldıkça düşebilirsiniz.\n(Sayıya dokunarak elle girebilirsiniz)';
 

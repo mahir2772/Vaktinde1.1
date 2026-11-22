@@ -1,3 +1,5 @@
+import 'dart:math' show max;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ezan_saati/core/ui/ui.dart';
@@ -86,6 +88,23 @@ class _MissedPrayersTabState extends State<MissedPrayersTab> {
     }
   }
 
+  String? _completionNote(AppLocalizations loc) {
+    var maxCount = 0;
+    for (final (key, _) in _prayers) {
+      maxCount = max(maxCount, _missedPrayers[key] ?? 0);
+    }
+    final duration = KazaEstimate.completionDuration(maxCount);
+    if (duration == null) return null;
+    final parts = <String>[
+      if (duration.years > 0) loc.kazaDurationYears(duration.years),
+      if (duration.months > 0) loc.kazaDurationMonths(duration.months),
+      if (duration.years == 0 && duration.days > 0)
+        loc.kazaDurationDays(duration.days),
+    ];
+    if (parts.isEmpty) return null;
+    return loc.kazaCompletionEstimate(parts.join(' '));
+  }
+
   /// Yanlışlıkla silme/fazladan sıfır gibi durumlar için onay gerekir mi
   static bool _needsConfirm(int from, int to) =>
       (from - to).abs() >= 10 || (to == 0 && from > 1);
@@ -146,6 +165,7 @@ class _MissedPrayersTabState extends State<MissedPrayersTab> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final completionNote = _completionNote(loc);
 
     Widget row((String, IconData) item) {
       final (key, icon) = item;
@@ -191,6 +211,13 @@ class _MissedPrayersTabState extends State<MissedPrayersTab> {
             ],
           ),
         ),
+        if (completionNote != null) ...[
+          const SizedBox(height: AppSpacing.md),
+          InfoBanner(
+            message: completionNote,
+            icon: Icons.event_available_outlined,
+          ),
+        ],
         const SizedBox(height: AppSpacing.lg),
         AppCard(padding: EdgeInsets.zero, child: row(_fast)),
       ],

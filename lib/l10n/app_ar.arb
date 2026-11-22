@@ -690,6 +690,39 @@
         }
     },
     "kazaCalcAdded": "أُضيف القضاء التقديري إلى عدادات القضاء.",
+    "kazaDurationYears": "{count, plural, =1{سنة واحدة} =2{سنتين} few{{count} سنوات} other{{count} سنة}}",
+    "@kazaDurationYears": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationMonths": "{count, plural, =1{شهر واحد} =2{شهرين} few{{count} أشهر} other{{count} شهرًا}}",
+    "@kazaDurationMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationDays": "{count, plural, =1{يوم واحد} =2{يومين} few{{count} أيام} many{{count} يومًا} other{{count} يوم}}",
+    "@kazaDurationDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCompletionEstimate": "إذا قضيت صلوات يوم واحد كل يوم، تنتهي فوائتك خلال {duration} تقريبًا.",
+    "@kazaCompletionEstimate": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+
     "missedPrayersInfo": "سجل صلواتك الفائتة هنا واطرحها عند قضائها.\n(اضغط على الرقم للإدخال يدوياً)",
     "editMissedTitle": "تعديل قضاء {title}",
     "@editMissedTitle": {

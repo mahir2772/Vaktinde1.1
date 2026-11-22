@@ -690,6 +690,38 @@
         }
     },
     "kazaCalcAdded": "Estimation ajoutée aux compteurs de qada.",
+    "kazaDurationYears": "{count, plural, =1{1 an} other{{count} ans}}",
+    "@kazaDurationYears": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationMonths": "{count} mois",
+    "@kazaDurationMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationDays": "{count, plural, =1{1 jour} other{{count} jours}}",
+    "@kazaDurationDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCompletionEstimate": "En rattrapant 1 journée de prières par jour, vos prières manquées seront terminées dans environ {duration}.",
+    "@kazaCompletionEstimate": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
     "missedPrayersInfo": "Notez ici vos prières manquées et déduisez-les au fur et à mesure.\n(Appuyez sur le nombre pour une saisie manuelle)",
     "editMissedTitle": "Modifier le compteur : {title}",
     "@editMissedTitle": {

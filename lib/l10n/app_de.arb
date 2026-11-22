@@ -690,6 +690,38 @@
         }
     },
     "kazaCalcAdded": "Schätzung zu den Qada-Zählern hinzugefügt.",
+    "kazaDurationYears": "{count, plural, =1{1 Jahr} other{{count} Jahre}}",
+    "@kazaDurationYears": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationMonths": "{count, plural, =1{1 Monat} other{{count} Monate}}",
+    "@kazaDurationMonths": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaDurationDays": "{count, plural, =1{1 Tag} other{{count} Tage}}",
+    "@kazaDurationDays": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "kazaCompletionEstimate": "Wenn Sie täglich 1 Gebetstag nachholen, sind Ihre Qada-Gebete in etwa {duration} abgeschlossen.",
+    "@kazaCompletionEstimate": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
     "missedPrayersInfo": "Notieren Sie hier verpasste Gebete und ziehen Sie diese nach dem Nachholen ab.\n(Tippen Sie auf die Zahl zur manuellen Eingabe)",
     "editMissedTitle": "Qada für {title} bearbeiten",
     "@editMissedTitle": {
